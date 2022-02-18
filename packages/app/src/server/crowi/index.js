@@ -22,6 +22,7 @@ import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
+import PageOperationService from '../service/page-operation';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { InstallerService } from '../service/installer';
@@ -398,11 +399,12 @@ Crowi.prototype.autoInstall = function() {
     admin: true,
   };
   const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+  const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
 
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
@@ -677,6 +679,9 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
+  }
+  if (this.pageOperationService == null) {
+    this.pageOperationService = new PageOperationService(this);
   }
 };
 

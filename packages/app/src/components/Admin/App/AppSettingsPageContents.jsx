@@ -19,7 +19,7 @@ class AppSettingsPageContents extends React.Component {
     const { isV5Compatible } = adminAppContainer.state;
 
     return (
-      <Fragment>
+      <div data-testid="admin-app-settings">
         {
           !isV5Compatible
           && (
@@ -66,7 +66,7 @@ class AppSettingsPageContents extends React.Component {
             <PluginSetting />
           </div>
         </div>
-      </Fragment>
+      </div>
     );
   }
 

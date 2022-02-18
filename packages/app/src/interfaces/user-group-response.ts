@@ -7,6 +7,7 @@ export type UserGroupListResult = {
 
 export type ChildUserGroupListResult = {
   childUserGroups: IUserGroupHasId[],
+  grandChildUserGroups: IUserGroupHasId[],
 };
 
 export type UserGroupRelationListResult = {

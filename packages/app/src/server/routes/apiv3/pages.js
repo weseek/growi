@@ -1,11 +1,10 @@
-import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
-const { pathUtils } = require('@growi/core');
+const { pathUtils, pagePathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
@@ -485,7 +484,7 @@ module.exports = (crowi) => {
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
-      // if page found, cannot cannot rename to that path
+      // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
@@ -637,6 +636,11 @@ module.exports = (crowi) => {
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
+    const isCreatable = isCreatablePage(newPagePath);
+    if (!isCreatable) {
+      return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
+    }
+
     // check page existence
     const isExist = (await Page.count({ path: newPagePath })) > 0;
     if (isExist) {
@@ -645,7 +649,7 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
     if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
@@ -765,7 +769,8 @@ module.exports = (crowi) => {
     }
 
     // run delete
-    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+    const options = { isCompletely, isRecursively };
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
@@ -787,7 +792,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
     const pageIds = _pageIds == null ? [] : _pageIds;
 
@@ -795,17 +800,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
-    if (isRecursively) {
-      // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
+    try {
+      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
     }
-    else {
-      try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-      }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
     return res.apiv3({});

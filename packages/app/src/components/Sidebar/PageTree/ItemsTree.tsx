@@ -4,13 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren, useSWRxPageChildren, useSWRxRootPage } from '../../../stores/page-listing';
+import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 /*
  * Utility to generate initial node
@@ -62,9 +67,10 @@ const renderByInitialNode = (
     initialNode: ItemNode,
     isEnableActions: boolean,
     targetPathOrId?: string,
-    onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-    onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    isEnabledAttachTitleHeader?: boolean,
+    onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
+    onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
 
   return (
@@ -74,6 +80,7 @@ const renderByInitialNode = (
         targetPathOrId={targetPathOrId}
         itemNode={initialNode}
         isOpen
+        isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
         isEnableActions={isEnableActions}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickRenameMenuItem={onClickRenameMenuItem}
@@ -95,11 +102,16 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { t } = useTranslation();
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   useEffect(() => {
     const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
@@ -110,44 +122,35 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     }
   }, [ancestorsChildrenData]);
 
-  const onClickDuplicateMenuItem = (pageId: string, path: string) => {
-    openDuplicateModal(pageId, path);
+  const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
+    openDuplicateModal(pageToDuplicate);
   };
 
-  const onClickRenameMenuItem = (pageId: string, revisionId: string, path: string) => {
-    openRenameModal(pageId, revisionId, path);
-  };
-
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    mutateChildren();
-
-    const path = pathOrPathsToDelete;
-
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
-    }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
-    }
+  const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
+    openRenameModal(pageToRename);
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], onDeletedHandler);
+    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   };
 
   if (error1 != null || error2 != null) {
@@ -161,7 +164,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   /*
@@ -169,7 +174,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   return null;

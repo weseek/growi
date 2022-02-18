@@ -125,6 +125,7 @@
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
+  "ChildUserGroup": "子グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
@@ -439,6 +440,8 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_pages": "ページをゴミ箱に入れました",
+  "deleted_pages_completely": "ページを完全に削除しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
@@ -632,6 +635,22 @@
       "relationScore": "関連度順",
       "createdAt": "作成日時",
       "updatedAt": "更新日時"
+    }
+  },
+  "private_legacy_pages": {
+    "bulk_operation": "一括操作",
+    "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
+    "alert_title": "古い v4 互換形式のプライベートページを表示しています",
+    "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
+    "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
+    "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード  <i class='icon-share-alt'></i></a> を参照ください。",
+    "modal": {
+      "title": "新しい v5 互換形式への変換",
+      "converting_pages": "以下のページを変換します",
+      "convert_recursively_label": "再起的に変換",
+      "convert_recursively_desc": "このページの配下のページを再起的に変換します",
+      "button_label": "変換"
     }
   },
   "security_setting": {
@@ -969,8 +988,10 @@
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
   "pagetree": {
-    "private_legacy_pages": "待避所",
-    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません"
+    "private_legacy_pages": "旧形式のプライベートページ",
+    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
+    "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
+    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",

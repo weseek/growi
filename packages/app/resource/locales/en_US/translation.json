@@ -125,6 +125,7 @@
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
+  "ChildUserGroup": "ChildUserGroup",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
@@ -440,6 +441,8 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_pages": "Page(s) has been deleted",
+  "deleted_pages_completely": "Page(s) has been deleted completely",
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
     "notice": "The pages deleted completely are unrecoverable."
@@ -633,6 +636,22 @@
       "relationScore": "Sort by relevance",
       "createdAt": "Creation date",
       "updatedAt": "Last update date"
+    }
+  },
+  "private_legacy_pages": {
+    "bulk_operation": "Bulk operation",
+    "convert_all_selected_pages": "Convert all to new v5 compatible format",
+    "alert_title": "You are viewing old v4 compatible private pages.",
+    "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
+    "nopages_title": "Congratulations. Ready to use GROWI v5!",
+    "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
+    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <i class='icon-share-alt'></i></a>.",
+    "modal": {
+      "title": "Convert to new v5 compatible format",
+      "converting_pages": "Converting pages",
+      "convert_recursively_label": "Convert child pages recursively.",
+      "convert_recursively_desc": "Convert pages under this path recursively.",
+      "button_label": "Convert"
     }
   },
   "security_setting": {
@@ -978,7 +997,9 @@
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",
-    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
+    "you_cannot_move_this_page_now": "You cannot move this page now",
+    "something_went_wrong_with_moving_page": "Something went wrong with moving page"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",

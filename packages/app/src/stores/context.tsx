@@ -131,6 +131,22 @@ export const useNotFoundTargetPathOrId = (initialData?: Nullable<NotFoundTargetP
   return useStaticSWR<Nullable<NotFoundTargetPathOrId>, Error>('notFoundTargetPathOrId', initialData);
 };
 
+export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
+};
+
+export const useIsSearchServiceConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSearchServiceConfigured', initialData);
+};
+
+export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
+};
+
+export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts

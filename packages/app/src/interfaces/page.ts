@@ -41,6 +41,7 @@ export type IPageInfo = {
   isMovable: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
+  isRevertible: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {

@@ -6,9 +6,8 @@ import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
 import { PageQueryBuilder } from '../models/obsolete-page';
 import UpdatePost from '../models/update-post';
-import { PageRedirectModel } from '../models/page-redirect';
 
-const { isCreatablePage, isTopPage } = pagePathUtils;
+const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -142,7 +141,6 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
@@ -171,14 +169,6 @@ module.exports = function(crowi, app) {
 
   function getPathFromRequest(req) {
     return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
-  }
-
-  function isUserPage(path) {
-    if (path.match(/^\/user\/[^/]+\/?$/)) {
-      return true;
-    }
-
-    return false;
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -450,7 +440,7 @@ module.exports = function(crowi, app) {
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
 
-    if (isUserPage(path)) {
+    if (isUsersHomePage(path)) {
       // change template
       view = 'layout-growi/user_page';
       await addRenderVarsForUserPage(renderVars, page);
@@ -531,16 +521,6 @@ module.exports = function(crowi, app) {
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('layout-growi/shared_page', renderVars);
   };
-
-  /**
-   * switch action by behaviorType
-   */
-  /* eslint-disable no-else-return */
-  actions.trashPageListShowWrapper = function(req, res) {
-    // redirect to '/trash'
-    return res.redirect('/trash');
-  };
-  /* eslint-enable no-else-return */
 
   /**
    * switch action by behaviorType
@@ -900,7 +880,7 @@ module.exports = function(crowi, app) {
    * - If revision_id is not specified => force update by the new contents.
    */
   api.update = async function(req, res) {
-    const pageBody = body ?? null;
+    const pageBody = req.body.body ?? null;
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
