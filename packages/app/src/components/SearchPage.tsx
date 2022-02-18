@@ -15,7 +15,9 @@ import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
-import { SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageTreeTermManager } from '~/stores/page-listing';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -115,15 +117,18 @@ export const SearchPage = (props: Props): JSX.Element => {
   });
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
-  const searchPageBaseRef = useRef<ISelectableAll|null>(null);
+  const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions } = useSWRxFullTextSearch(keyword, {
+  const { data, conditions, mutate } = useSWRxFullTextSearch(keyword, {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
     ...configurationsByPagination,
   });
+
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
@@ -163,13 +168,22 @@ export const SearchPage = (props: Props): JSX.Element => {
     }
   }, []);
 
+  const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
+    setConfigurationsByPagination({
+      ...configurationsByPagination,
+      limit: pagingSize,
+    });
+    mutate();
+  }, [configurationsByPagination, mutate]);
+
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
     const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
     setConfigurationsByPagination({
       ...configurationsByPagination,
       offset: (activePage - 1) * currentLimit,
     });
-  }, [configurationsByPagination]);
+    mutate();
+  }, [configurationsByPagination, mutate]);
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
@@ -177,6 +191,39 @@ export const SearchPage = (props: Props): JSX.Element => {
       limit: INITIAL_PAGIONG_SIZE,
     };
   }, [initQ]);
+
+  const { open: openDeleteModal } = usePageDeleteModal();
+  const deleteAllButtonClickedHandler = useCallback(() => {
+    if (data == null) {
+      return;
+    }
+
+    const instance = searchPageBaseRef.current;
+    if (instance == null || instance.getSelectedPageIds == null) {
+      return;
+    }
+
+    const selectedPageIds = instance.getSelectedPageIds();
+
+    if (selectedPageIds.size === 0) {
+      return;
+    }
+
+    const selectedPages = data.data
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
+      .map(pageWithMeta => ({
+        pageId: pageWithMeta.pageData._id,
+        path: pageWithMeta.pageData.path,
+        revisionId: pageWithMeta.pageData.revision as string,
+      } as IPageForPageDeleteModal));
+
+    openDeleteModal(selectedPages, {
+      onDeleted: () => {
+        mutate();
+        advancePt();
+      },
+    });
+  }, [advancePt, data, mutate, openDeleteModal]);
 
   // push state
   useEffect(() => {
@@ -201,14 +248,14 @@ export const SearchPage = (props: Props): JSX.Element => {
           type="button"
           className="btn btn-outline-danger border-0 px-2"
           disabled={isDisabled}
-          onClick={() => null /* TODO implement */}
+          onClick={deleteAllButtonClickedHandler}
         >
           <i className="icon-fw icon-trash"></i>
           {t('search_result.delete_all_selected_page')}
         </button>
       </OperateAllControl>
     );
-  }, [hitsCount, selectAllCheckboxChangedHandler, t]);
+  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
     if (!isSearchServiceReachable) {
@@ -235,10 +282,10 @@ export const SearchPage = (props: Props): JSX.Element => {
         searchingKeyword={keyword}
         offset={offset}
         pagingSize={limit}
-        onPagingSizeChanged={() => {}}
+        onPagingSizeChanged={pagingSizeChangedHandler}
       />
     );
-  }, [data, keyword, limit, offset]);
+  }, [data, keyword, limit, offset, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
