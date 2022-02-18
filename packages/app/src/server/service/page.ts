@@ -450,6 +450,11 @@ class PageService {
     // remove empty pages at leaf position
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
+    // create page redirect
+    if (options.createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
     this.pageEvent.emit('rename', page, user);
 
     // Set to Sub

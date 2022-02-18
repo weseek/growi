@@ -1,15 +1,21 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
+  forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess } from '~/client/util/apiNotification';
 import { IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageTreeTermManager } from '~/stores/page-listing';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
+
 
 export interface IReturnSelectedPageIds {
   getSelectedPageIds?: () => Set<string>,
@@ -26,7 +32,7 @@ type Props = {
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
   searchControl: React.ReactNode,
-  searchResultListHead: React.ReactNode,
+  searchResultListHead: React.ReactElement,
   searchPager: React.ReactNode,
 }
 
@@ -117,6 +123,11 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
+  useEffect(() => {
+    if (searchResultListHead != null && searchResultListHead.props != null) {
+      setHightlightKeywords(searchResultListHead.props.searchingKeyword);
+    }
+  }, [searchResultListHead]);
   if (!isSearchServiceConfigured) {
     return (
       <div className="grw-container-convertible">
@@ -203,6 +214,60 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
       </div>
     </div>
   );
+};
+
+
+type VoidFunction = () => void;
+
+export const usePageDeleteModalForBulkDeletion = (
+    data: IFormattedSearchResult | undefined,
+    ref: React.MutableRefObject<(ISelectableAll & IReturnSelectedPageIds) | null>,
+    onDeleted?: OnDeletedFunction,
+): VoidFunction => {
+
+  const { t } = useTranslation();
+
+  const { open: openDeleteModal } = usePageDeleteModal();
+
+  // for PageTree mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+
+  return () => {
+    if (data == null) {
+      return;
+    }
+
+    const instance = ref.current;
+    if (instance == null || instance.getSelectedPageIds == null) {
+      return;
+    }
+
+    const selectedPageIds = instance.getSelectedPageIds();
+
+    if (selectedPageIds.size === 0) {
+      return;
+    }
+
+    const selectedPages = data.data
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
+      .map(pageWithMeta => ({
+        pageId: pageWithMeta.pageData._id,
+        path: pageWithMeta.pageData.path,
+        revisionId: pageWithMeta.pageData.revision as string,
+      } as IPageForPageDeleteModal));
+
+    openDeleteModal(selectedPages, {
+      onDeleted: (...args) => {
+        toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
+        advancePt();
+
+        if (onDeleted != null) {
+          onDeleted(...args);
+        }
+      },
+    });
+  };
+
 };
 
 

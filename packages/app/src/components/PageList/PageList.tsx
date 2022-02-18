@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 import { PageListItemL } from './PageListItemL';
 
@@ -10,11 +11,12 @@ import { PageListItemL } from './PageListItemL';
 type Props = {
   pages: IPagingResult<IPageWithMeta>,
   isEnableActions?: boolean,
+  onPagesDeleted?: OnDeletedFunction,
 }
 
 const PageList = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { pages, isEnableActions } = props;
+  const { pages, isEnableActions, onPagesDeleted } = props;
 
   if (pages == null) {
     return (
@@ -27,7 +29,12 @@ const PageList = (props: Props): JSX.Element => {
   }
 
   const pageList = pages.items.map(page => (
-    <PageListItemL key={page.pageData._id} page={page} isEnableActions={isEnableActions} />
+    <PageListItemL
+      key={page.pageData._id}
+      page={page}
+      isEnableActions={isEnableActions}
+      onPageDeleted={onPagesDeleted}
+    />
   ));
 
   if (pageList.length === 0) {

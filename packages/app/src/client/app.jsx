@@ -22,7 +22,6 @@ import PageComments from '../components/PageComments';
 import PageContentFooter from '../components/PageContentFooter';
 import PageTimeline from '../components/PageTimeline';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
-import PageManagement from '../components/Page/PageManagement';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import DuplicatedAlert from '../components/Page/DuplicatedAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
@@ -127,7 +126,6 @@ if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-management': <PageManagement />,
     'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
