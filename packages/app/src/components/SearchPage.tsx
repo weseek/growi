@@ -15,10 +15,7 @@ import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
-import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
-import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
-import { usePageTreeTermManager } from '~/stores/page-listing';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -128,9 +125,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     ...configurationsByPagination,
   });
 
-  // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
-
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
     setConfigurationsByControl(newConfigurations);
@@ -193,39 +187,8 @@ export const SearchPage = (props: Props): JSX.Element => {
     };
   }, [initQ]);
 
-  const { open: openDeleteModal } = usePageDeleteModal();
-  const deleteAllButtonClickedHandler = useCallback(() => {
-    if (data == null) {
-      return;
-    }
-
-    const instance = searchPageBaseRef.current;
-    if (instance == null || instance.getSelectedPageIds == null) {
-      return;
-    }
-
-    const selectedPageIds = instance.getSelectedPageIds();
-
-    if (selectedPageIds.size === 0) {
-      return;
-    }
-
-    const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
-      .map(pageWithMeta => ({
-        pageId: pageWithMeta.pageData._id,
-        path: pageWithMeta.pageData.path,
-        revisionId: pageWithMeta.pageData.revision as string,
-      } as IPageForPageDeleteModal));
-
-    openDeleteModal(selectedPages, {
-      onDeleted: (idOrpaths, isRecursively, isCompletely) => {
-        toastSuccess(isCompletely ? t('deleted_pages_completely') : t('deleted_pages'));
-        mutate();
-        advancePt();
-      },
-    });
-  }, [advancePt, data, mutate, openDeleteModal, t]);
+  // for bulk deletion
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate);
 
   // push state
   useEffect(() => {
