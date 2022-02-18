@@ -22,8 +22,8 @@ context('Open presentation modal', () => {
 
   it('Successfully loaded the presentation modal in /.', () => {
     cy.visit('/');
-    cy.getByTestid('sub-nav-buttons-page-item-control').click();
-    cy.getByTestid('open-presentation-modal-btn').click();
+    cy.getByTestid('sub-nav-buttons-page-item-control').first().click();
+    cy.getByTestid('open-presentation-modal-btn').first().click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });

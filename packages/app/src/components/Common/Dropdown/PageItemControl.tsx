@@ -53,7 +53,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    dataTestId,
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
@@ -189,7 +188,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   return (
     <DropdownMenu
-      data-testid={dataTestId || ''}
       positionFixed
       modifiers={{ preventOverflow: { boundariesElement: undefined } }}
     >
@@ -209,7 +207,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
-    children,
+    children, dataTestId,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
@@ -255,8 +253,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid={dataTestId || ''}>
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
           <i className="icon-options text-muted"></i>
