@@ -6,7 +6,7 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageDeleteModal, IPageForPageRenameModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -25,7 +25,7 @@ type CommonProps = {
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-  onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
+  onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
 }
 
@@ -108,8 +108,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
-
-    onClickRenameMenuItem(pageId, revisionId, path);
+    const page: IPageForPageRenameModal = { pageId, revisionId, path };
+    onClickRenameMenuItem(page);
   }, [onClickRenameMenuItem, pageId, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {

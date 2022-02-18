@@ -111,8 +111,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDuplicateModal(pageId, path);
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
+  const renameItemClickedHandler = useCallback(async(pageToRename) => {
+    openRenameModal(pageToRename);
   }, [openRenameModal]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete) => {

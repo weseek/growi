@@ -8,7 +8,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-lis
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -66,7 +66,7 @@ const renderByInitialNode = (
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-    onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
+    onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
     onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal, onItemDeleted: VoidFunction) => void,
 ): JSX.Element => {
 
@@ -118,8 +118,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openDuplicateModal(pageId, path);
   };
 
-  const onClickRenameMenuItem = (pageId: string, revisionId: string, path: string) => {
-    openRenameModal(pageId, revisionId, path);
+  const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
+    openRenameModal(pageToRename);
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, onItemDeleted: VoidFunction) => {
