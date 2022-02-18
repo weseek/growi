@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
@@ -31,6 +31,8 @@ const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
   collectAncestorPaths, isMovablePage,
 } = pagePathUtils;
+
+const { addTrailingSlash } = pathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
@@ -2365,7 +2367,7 @@ class PageService {
 
   async normalizeParentRecursively(paths: string[], publicOnly = false): Promise<void> {
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p));
-    const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(p)}`, 'i'));
+    const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
 
     return this._normalizeParentRecursively(regexps, ancestorPaths, publicOnly);
   }
