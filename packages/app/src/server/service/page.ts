@@ -1467,7 +1467,7 @@ class PageService {
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
       Revision.deleteMany({ pageId: { $in: pageIds } }),
-      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
+      Page.deleteMany({ _id: { $in: pageIds } }),
       PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
