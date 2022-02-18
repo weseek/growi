@@ -26,6 +26,11 @@ class PageOperationService {
    */
   async canOperate(isRecursively: boolean, fromPathToOp: string | null, toPathToOp: string | null): Promise<boolean> {
     const mainOps = await PageOperation.findMainOps();
+
+    if (mainOps.length === 0) {
+      return true;
+    }
+
     const toPaths = mainOps.map(op => op.toPath).filter((p): p is string => p != null);
 
     if (isRecursively) {
