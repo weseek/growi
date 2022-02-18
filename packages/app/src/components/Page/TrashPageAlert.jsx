@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -30,7 +30,6 @@ const TrashPageAlert = (props) => {
 
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
-  const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
@@ -66,7 +65,6 @@ const TrashPageAlert = (props) => {
       [pageToDelete],
       {
         isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
-        forceDeleteCompletelyMode: true,
         onDeletedHandler,
       },
     );
@@ -100,7 +98,7 @@ const TrashPageAlert = (props) => {
         <button
           type="button"
           className="btn btn-danger rounded-pill btn-sm"
-          disabled={!isAbleToDeleteCompletely}
+          disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
