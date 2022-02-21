@@ -15,6 +15,8 @@ type Props = {
   userGroup?: IUserGroupHasId,
   submitButtonLabel: TFunctionResult;
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
+  isShow?: boolean
+  onHide?: () => Promise<void> | void
 };
 
 const UserGroupModal: FC<Props> = (props: Props) => {
@@ -22,7 +24,9 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const { userGroup, submitButtonLabel, onSubmit } = props;
+  const {
+    userGroup, submitButtonLabel, onSubmit, isShow,
+  } = props;
 
   /*
    * State
@@ -54,7 +58,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
 
   return (
-    <Modal className="modal-md" isOpen>
+    <Modal className="modal-md" isOpen={isShow}>
       <ModalHeader tag="h4" className="bg-danger text-light">
         Create user groups
       </ModalHeader>

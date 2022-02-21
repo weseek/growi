@@ -4,7 +4,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupForm from './UserGroupForm';
 import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
@@ -45,11 +44,16 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * State
    */
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
    * Functions
    */
+  const showCreateModal = useCallback(() => {
+    setCreateModalShown(true);
+  }, [setCreateModalShown]);
+
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
       await mutateUserGroups();
@@ -113,26 +117,21 @@ const UserGroupPage: FC<Props> = (props: Props) => {
 
   return (
     <div data-testid="admin-user-groups">
-      {/* {
+      {
         isAclEnabled ? (
           <div className="mb-2">
-            <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createGroupForm">
+            <button type="button" className="btn btn-outline-secondary" onClick={showCreateModal}>
               {t('admin:user_group_management.create_group')}
             </button>
-            <div id="createGroupForm" className="collapse">
-              <UserGroupForm
-                submitButtonLabel={t('Create')}
-                onSubmit={createUserGroup}
-              />
-            </div>
           </div>
         ) : (
           t('admin:user_group_management.deny_create_group')
         )
-      } */}
+      }
       <UserGroupModal
         submitButtonLabel={t('Create')}
         onSubmit={createUserGroup}
+        isShow={isCreateModalShown}
       />
       <>
         <UserGroupTable
