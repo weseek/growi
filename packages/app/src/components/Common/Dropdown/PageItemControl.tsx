@@ -187,10 +187,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu
-      positionFixed
-      modifiers={{ preventOverflow: { boundariesElement: undefined } }}
-    >
+    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
       {contents}
     </DropdownMenu>
   );
@@ -253,7 +250,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid={dataTestId || ''}>
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid={dataTestId}>
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
           <i className="icon-options text-muted"></i>
