@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useState, memo,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
@@ -18,7 +20,7 @@ type Props = {
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
 };
 
-const UserGroupForm: FC<Props> = (props: Props) => {
+const UserGroupForm: FC<Props> = memo((props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
 
   const { t } = useTranslation();
@@ -109,7 +111,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
       </fieldset>
     </form>
   );
-};
+});
 
 /**
  * Wrapper component for using unstated
