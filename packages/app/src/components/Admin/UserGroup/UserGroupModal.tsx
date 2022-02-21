@@ -14,7 +14,7 @@ import Xss from '~/services/xss';
 type Props = {
   userGroup?: IUserGroupHasId,
   submitButtonLabel: TFunctionResult;
-  onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
+  onClickCreateButton?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
 };
@@ -25,7 +25,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, submitButtonLabel, onSubmit, isShow, onHide,
+    userGroup, submitButtonLabel, onClickCreateButton, isShow, onHide,
   } = props;
 
   /*
@@ -33,11 +33,10 @@ const UserGroupModal: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [currentParent, setParent] = useState(userGroup != null ? userGroup.parent : '');
 
   /*
-     * Function
-     */
+   * Function
+   */
   const onChangeNameHandler = useCallback((e) => {
     setName(e.target.value);
   }, []);
@@ -46,76 +45,65 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onSubmitHandler = useCallback(async(e) => {
+  const onClickCreateButtonHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
 
-    if (onSubmit == null) {
+    if (onClickCreateButton == null) {
       return;
     }
 
-    await onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
-  }, [currentName, currentDescription, currentParent, onSubmit]);
+    await onClickCreateButton({ name: currentName, description: currentDescription });
+  }, [currentName, currentDescription, onClickCreateButton]);
 
 
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
-      <ModalHeader tag="h4" toggle={onHide} className="bg-danger text-light">
-        Create user groups
+      <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
+        {t('admin:user_group_management.basic_info')}
       </ModalHeader>
 
       <ModalBody>
-
-        <form onSubmit={onSubmitHandler}>
-
-          <fieldset>
-            <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
-            {/* TODO 85062: improve style */}
-            {
-              userGroup?.createdAt != null && (
-                <div className="form-group row">
-                  <p className="col-md-2 col-form-label">{t('Created')}</p>
-                  <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
-                </div>
-              )
-            }
-            <div className="form-group row">
-              <label htmlFor="name" className="col-md-2 col-form-label">
-                {t('admin:user_group_management.group_name')}
-              </label>
-              <div className="col-md-4">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="name"
-                  placeholder={t('admin:user_group_management.group_example')}
-                  value={currentName}
-                  onChange={onChangeNameHandler}
-                  required
-                />
+        <form>
+          {
+            userGroup?.createdAt != null && (
+              <div className="form-group">
+                <p className="col-md-2 col-form-label">{t('Created')}</p>
+                <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
               </div>
-            </div>
-            <div className="form-group row">
-              <label htmlFor="description" className="col-md-2 col-form-label">
-                {t('Description')}
-              </label>
-              <div className="col-md-4">
-                <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} required />
-              </div>
-            </div>
+            )
+          }
 
-            {/* TODO 85062: select parent dropdown */}
+          <div className="form-group">
+            <label htmlFor="name">
+              {t('admin:user_group_management.group_name')}
+            </label>
+            <input
+              className="form-control"
+              type="text"
+              name="name"
+              placeholder={t('admin:user_group_management.group_example')}
+              value={currentName}
+              onChange={onChangeNameHandler}
+              required
+            />
+          </div>
 
-            <div className="form-group row">
-              <div className="offset-md-2 col-md-10">
-                <button type="submit" className="btn btn-primary">
-                  {submitButtonLabel}
-                </button>
-              </div>
-            </div>
-          </fieldset>
+          <div className="form-group">
+            <label htmlFor="description">
+              {t('Description')}
+            </label>
+            <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} required />
+          </div>
         </form>
-
       </ModalBody>
+
+      <ModalFooter>
+        <div className="form-group">
+          <button type="button" className="btn btn-primary" onClick={onClickCreateButtonHandler}>
+            {submitButtonLabel}
+          </button>
+        </div>
+      </ModalFooter>
     </Modal>
   );
 };

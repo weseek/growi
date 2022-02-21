@@ -134,7 +134,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       }
       <UserGroupModal
         submitButtonLabel={t('Create')}
-        onSubmit={createUserGroup}
+        onClickCreateButton={createUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
