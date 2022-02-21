@@ -1524,19 +1524,19 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
-    // replace with an empty page
-    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
-    if (shouldReplace) {
-      await Page.replaceTargetWithPage(page);
-    }
-
     // 1. update descendantCount
     if (isRecursively) {
       const inc = page.isEmpty ? -page.descendantCount : -(page.descendantCount + 1);
       await this.updateDescendantCountOfAncestors(page.parent, inc, true);
     }
     else {
-      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+      // replace with an empty page
+      const shouldReplace = await Page.exists({ parent: page._id });
+      let pageToUpdateDescendantCount = page;
+      if (shouldReplace) {
+        pageToUpdateDescendantCount = await Page.replaceTargetWithPage(page);
+      }
+      await this.updateDescendantCountOfAncestors(pageToUpdateDescendantCount.parent, -1, true);
     }
     // 2. then delete target completely
     await this.deleteCompletelyOperation(ids, paths);
