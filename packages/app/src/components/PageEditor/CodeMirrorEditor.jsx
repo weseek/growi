@@ -696,15 +696,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderEmojiPicker() {
-    const { emojiSearchText, isInputtingEmoji } = this.state;
+    const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
               close={this.toggleEmojiPicker}
-              selectEmoji={isInputtingEmoji ? this.emojiPickerHelper.addEmojiOnSearch : this.emojiPickerHelper.addEmoji}
               emojiSearchText={emojiSearchText}
+              editor={this.getCodeMirror()}
             />
           </div>
         </div>
