@@ -4,8 +4,6 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
-import { TFunctionResult } from 'i18next';
-
 
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
@@ -13,7 +11,6 @@ import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  submitButtonLabel: TFunctionResult;
   onClickCreateButton?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
@@ -25,7 +22,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, submitButtonLabel, onClickCreateButton, isShow, onHide,
+    userGroup, onClickCreateButton, isShow, onHide,
   } = props;
 
   /*
@@ -54,7 +51,6 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
     await onClickCreateButton({ name: currentName, description: currentDescription });
   }, [currentName, currentDescription, onClickCreateButton]);
-
 
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
@@ -100,7 +96,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
       <ModalFooter>
         <div className="form-group">
           <button type="button" className="btn btn-primary" onClick={onClickCreateButtonHandler}>
-            {submitButtonLabel}
+            {t('Create')}
           </button>
         </div>
       </ModalFooter>
