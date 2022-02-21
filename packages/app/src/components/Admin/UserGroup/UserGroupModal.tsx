@@ -58,29 +58,27 @@ const UserGroupModal: FC<Props> = (props: Props) => {
       </ModalHeader>
 
       <ModalBody>
-        <form>
-          <div className="form-group">
-            <label htmlFor="name">
-              {t('admin:user_group_management.group_name')}
-            </label>
-            <input
-              className="form-control"
-              type="text"
-              name="name"
-              placeholder={t('admin:user_group_management.group_example')}
-              value={currentName}
-              onChange={onChangeNameHandler}
-              required
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="name">
+            {t('admin:user_group_management.group_name')}
+          </label>
+          <input
+            className="form-control"
+            type="text"
+            name="name"
+            placeholder={t('admin:user_group_management.group_example')}
+            value={currentName}
+            onChange={onChangeNameHandler}
+            required
+          />
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="description">
-              {t('Description')}
-            </label>
-            <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} required />
-          </div>
-        </form>
+        <div className="form-group">
+          <label htmlFor="description">
+            {t('Description')}
+          </label>
+          <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
+        </div>
       </ModalBody>
 
       <ModalFooter>
