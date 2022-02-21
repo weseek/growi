@@ -1,6 +1,4 @@
-import React, {
-  FC, Fragment, useState, useCallback,
-} from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
@@ -131,24 +129,22 @@ const UserGroupPage: FC = () => {
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
-      <>
-        <UserGroupTable
-          headerLabel={t('admin:user_group_management.group_list')}
-          userGroups={userGroups}
-          childUserGroups={childUserGroups}
-          isAclEnabled={isAclEnabled ?? false}
-          onDelete={showDeleteModal}
-          userGroupRelations={userGroupRelations}
-        />
-        <UserGroupDeleteModal
-          userGroups={userGroups}
-          deleteUserGroup={selectedUserGroup}
-          onDelete={deleteUserGroupById}
-          isShow={isDeleteModalShown}
-          onShow={showDeleteModal}
-          onHide={hideDeleteModal}
-        />
-      </>
+      <UserGroupTable
+        headerLabel={t('admin:user_group_management.group_list')}
+        userGroups={userGroups}
+        childUserGroups={childUserGroups}
+        isAclEnabled={isAclEnabled ?? false}
+        onDelete={showDeleteModal}
+        userGroupRelations={userGroupRelations}
+      />
+      <UserGroupDeleteModal
+        userGroups={userGroups}
+        deleteUserGroup={selectedUserGroup}
+        onDelete={deleteUserGroupById}
+        isShow={isDeleteModalShown}
+        onShow={showDeleteModal}
+        onHide={hideDeleteModal}
+      />
     </div>
   );
 };
