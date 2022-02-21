@@ -1,5 +1,5 @@
 import React, {
-  FC, Fragment, useState, useCallback, useMemo,
+  FC, Fragment, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -104,11 +104,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     }
   }, [mutateUserGroups, mutateUserGroupRelations]);
 
-  const isAnyGroupNull: boolean = useMemo(() => {
-    return (
-      userGroups == null || userGroupRelations == null || childUserGroups == null
-    );
-  }, [userGroups, userGroupRelations, childUserGroups]);
 
   return (
     <Fragment>
@@ -131,29 +126,25 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-      {!isAnyGroupNull
-        && (
-          <>
-            <UserGroupTable
-              appContainer={props.appContainer}
-              userGroups={userGroups ?? []}
-              childUserGroups={childUserGroups ?? []}
-              isAclEnabled={isAclEnabled}
-              onDelete={showDeleteModal}
-              userGroupRelations={userGroupRelations ?? []}
-            />
-            <UserGroupDeleteModal
-              appContainer={props.appContainer}
-              userGroups={userGroups ?? []}
-              deleteUserGroup={selectedUserGroup}
-              onDelete={deleteUserGroupById}
-              isShow={isDeleteModalShown}
-              onShow={showDeleteModal}
-              onHide={hideDeleteModal}
-            />
-          </>
-        )
-      }
+      <>
+        <UserGroupTable
+          appContainer={props.appContainer}
+          userGroups={userGroups ?? []}
+          childUserGroups={childUserGroups ?? []}
+          isAclEnabled={isAclEnabled}
+          onDelete={showDeleteModal}
+          userGroupRelations={userGroupRelations ?? []}
+        />
+        <UserGroupDeleteModal
+          appContainer={props.appContainer}
+          userGroups={userGroups ?? []}
+          deleteUserGroup={selectedUserGroup}
+          onDelete={deleteUserGroupById}
+          isShow={isDeleteModalShown}
+          onShow={showDeleteModal}
+          onHide={hideDeleteModal}
+        />
+      </>
     </Fragment>
   );
 };
