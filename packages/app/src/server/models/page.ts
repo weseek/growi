@@ -738,7 +738,7 @@ export default (crowi: Crowi): any => {
 
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const grant = options.grant || pageData.grant; // use the previous data if absence
-    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const grantedUserIds = pageData.grantedUserIds || [user._id];
 
