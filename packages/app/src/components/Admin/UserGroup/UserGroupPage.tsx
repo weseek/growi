@@ -54,6 +54,10 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setCreateModalShown(true);
   }, [setCreateModalShown]);
 
+  const hideCreateModal = useCallback(() => {
+    setCreateModalShown(false);
+  }, [setCreateModalShown]);
+
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
       await mutateUserGroups();
@@ -132,6 +136,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         submitButtonLabel={t('Create')}
         onSubmit={createUserGroup}
         isShow={isCreateModalShown}
+        onHide={hideCreateModal}
       />
       <>
         <UserGroupTable

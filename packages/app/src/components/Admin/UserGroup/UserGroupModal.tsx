@@ -25,7 +25,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, submitButtonLabel, onSubmit, isShow,
+    userGroup, submitButtonLabel, onSubmit, isShow, onHide,
   } = props;
 
   /*
@@ -58,8 +58,8 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
 
   return (
-    <Modal className="modal-md" isOpen={isShow}>
-      <ModalHeader tag="h4" className="bg-danger text-light">
+    <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
+      <ModalHeader tag="h4" toggle={onHide} className="bg-danger text-light">
         Create user groups
       </ModalHeader>
 
