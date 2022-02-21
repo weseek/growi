@@ -7,8 +7,6 @@ import UserGroupTable from './UserGroupTable';
 import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
@@ -17,11 +15,7 @@ import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const UserGroupPage: FC<Props> = (props: Props) => {
+const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
 
@@ -159,9 +153,4 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
-
-export default UserGroupPageWrapper;
+export default UserGroupPage;
