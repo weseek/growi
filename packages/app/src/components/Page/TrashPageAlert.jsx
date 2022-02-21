@@ -14,6 +14,14 @@ import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
+const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+  if (typeof pathOrPathsToDelete !== 'string') {
+    return;
+  }
+
+  window.location.href = '/';
+};
+
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
@@ -46,15 +54,6 @@ const TrashPageAlert = (props) => {
     openPutBackPageModal(pageId, path);
   }
 
-  const onDeletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-    window.location.href = path;
-  }, []);
-
   function openPageDeleteModalHandler() {
     const pageToDelete = {
       pageId,
@@ -65,7 +64,7 @@ const TrashPageAlert = (props) => {
       [pageToDelete],
       {
         isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
-        onDeletedHandler,
+        onDeleted: onDeletedHandler,
       },
     );
   }

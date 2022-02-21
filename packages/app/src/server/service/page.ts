@@ -293,7 +293,7 @@ class PageService {
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isTrashPage && !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = isTrashPage && !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
