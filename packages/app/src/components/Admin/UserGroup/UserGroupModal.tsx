@@ -3,7 +3,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
 
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
@@ -60,15 +59,6 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
       <ModalBody>
         <form>
-          {
-            userGroup?.createdAt != null && (
-              <div className="form-group">
-                <p className="col-md-2 col-form-label">{t('Created')}</p>
-                <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
-              </div>
-            )
-          }
-
           <div className="form-group">
             <label htmlFor="name">
               {t('admin:user_group_management.group_name')}
