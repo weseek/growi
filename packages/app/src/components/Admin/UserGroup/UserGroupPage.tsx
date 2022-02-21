@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupForm from './UserGroupForm';
+import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -112,7 +113,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
 
   return (
     <div data-testid="admin-user-groups">
-      {
+      {/* {
         isAclEnabled ? (
           <div className="mb-2">
             <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createGroupForm">
@@ -128,7 +129,11 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         ) : (
           t('admin:user_group_management.deny_create_group')
         )
-      }
+      } */}
+      <UserGroupModal
+        submitButtonLabel={t('Create')}
+        onSubmit={createUserGroup}
+      />
       <>
         <UserGroupTable
           headerLabel={t('admin:user_group_management.group_list')}
