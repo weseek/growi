@@ -59,6 +59,7 @@ describe('PageService', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
+    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': null });
 
     User = mongoose.model('User');
     Page = mongoose.model('Page');
