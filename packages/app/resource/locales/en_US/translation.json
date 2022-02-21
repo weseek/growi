@@ -945,7 +945,7 @@
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
   "emoji" :{
-    "title": "Emoji Mart",
+    "title": "Pick an Emoji",
     "search": "Search",
     "clear": "Clear",
     "notfound": "No Emoji Found",
