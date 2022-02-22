@@ -22,8 +22,15 @@ context('Open presentation modal', () => {
 
   it('PageCreateModal for "/" is shown successfully', () => {
     cy.visit('/');
-    cy.getByTestid('open-page-item-control-button').first().click({force: true});
-    cy.getByTestid('open-presentation-modal-btn').first().click({force: true});
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true})
+    });
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+    });
+
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
@@ -31,8 +38,15 @@ context('Open presentation modal', () => {
 
   it('PageCreateModal for "/Sandbox/Bootstrap4" is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4');
-    cy.getByTestid('open-page-item-control-button').first().click({force: true});
-    cy.getByTestid('open-presentation-modal-btn').first().click({force: true});
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true})
+    });
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+    });
+
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
@@ -40,8 +54,15 @@ context('Open presentation modal', () => {
 
   it('PageCreateModal for /Sandbox/Bootstrap4#Cards" is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4#Cards');
-    cy.getByTestid('open-page-item-control-button').first().click({force: true});
-    cy.getByTestid('open-presentation-modal-btn').first().click({force: true});
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true})
+    });
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+    });
+
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });

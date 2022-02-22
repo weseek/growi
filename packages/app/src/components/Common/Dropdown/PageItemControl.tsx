@@ -32,7 +32,6 @@ type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
-  dataTestId?: string
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
@@ -203,8 +202,7 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit,
-    children, dataTestId,
+    pageId, pageInfo: presetPageInfo, fetchOnInit, children,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
@@ -250,7 +248,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid={dataTestId}>
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
           <i className="icon-options text-muted"></i>
