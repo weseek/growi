@@ -43,7 +43,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
     const isCurrentCollapsed = $contents.hasClass('d-none');
     // toggle when the current state and isCoolapsed is not match
     if (isCurrentCollapsed !== isCollapsed) {
-      cy.getByTestid("grw-navigation-resize-button").click();
+      cy.getByTestid("grw-navigation-resize-button").click({force: true});
     }
   });
 });
