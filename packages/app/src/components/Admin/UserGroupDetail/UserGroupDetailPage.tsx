@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupTable from '../UserGroup/UserGroupTable';
+import UserGroupCreateModal from '../UserGroup/UserGroupCreateModal';
 import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
@@ -33,11 +34,11 @@ const UserGroupDetailPage: FC = () => {
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
-  const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
@@ -86,14 +87,6 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [t, userGroup._id, setUserGroup]);
 
-  const openUserGroupUserModal = useCallback(() => {
-    setUserGroupUserModalOpen(true);
-  }, []);
-
-  const closeUserGroupUserModal = useCallback(() => {
-    setUserGroupUserModalOpen(false);
-  }, []);
-
   const fetchApplicableUsers = useCallback(async(searchWord) => {
     const res = await apiv3Get(`/user-groups/${userGroup._id}/unrelated-users`, {
       searchWord,
@@ -139,6 +132,28 @@ const UserGroupDetailPage: FC = () => {
   const onClickCreateChildGroupButtonHandler = () => {
     console.log('button clicked!');
   };
+
+  const showCreateModal = useCallback(() => {
+    setCreateModalShown(true);
+  }, [setCreateModalShown]);
+
+  const hideCreateModal = useCallback(() => {
+    setCreateModalShown(false);
+  }, [setCreateModalShown]);
+
+  const createChildUserGroup = useCallback(async(userGroupData: IUserGroup) => {
+    try {
+      await apiv3Post('/user-groups', {
+        name: userGroupData.name,
+        description: userGroupData.description,
+        parentId: userGroup._id,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [userGroup, t]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
@@ -199,7 +214,12 @@ const UserGroupDetailPage: FC = () => {
       <UserGroupDropdown
         selectableUserGroups={selectableUserGroups}
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
-        onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
+        onClickCreateUserGroupButtonHandler={showCreateModal}
+      />
+      <UserGroupCreateModal
+        onClickCreateButton={createChildUserGroup}
+        isShow={isCreateModalShown}
+        onHide={hideCreateModal}
       />
 
       <>
