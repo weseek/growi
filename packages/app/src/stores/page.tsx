@@ -82,8 +82,11 @@ export const useSWRxPageInfo = (
     shareLinkId?: string | null,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
+  // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
+  const fixedShareLinkId = shareLinkId ?? null;
+
   return useSWRImmutable(
-    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
