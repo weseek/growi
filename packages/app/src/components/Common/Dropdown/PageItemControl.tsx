@@ -202,7 +202,8 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit, children,
+    pageId, pageInfo: presetPageInfo, fetchOnInit,
+    children,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
