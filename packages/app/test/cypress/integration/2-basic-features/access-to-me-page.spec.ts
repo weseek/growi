@@ -1,6 +1,5 @@
-const ssPrefix = 'access-to-page-';
-
-context('Access to page', () => {
+context('Access to /me page', () => {
+  const ssPrefix = 'access-to-me-page-';
 
   let connectSid: string | undefined;
 
@@ -23,6 +22,11 @@ context('Access to page', () => {
   it('/me is successfully loaded', () => {
     cy.visit('/me', {  });
     cy.screenshot(`${ssPrefix}-me`, { capture: 'viewport' });
+  });
+
+  it('Draft page is successfully shown', () => {
+    cy.visit('/me/drafts');
+    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
   });
 
 });

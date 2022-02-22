@@ -1,31 +1,46 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
+  forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess } from '~/client/util/apiNotification';
 import { IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser } from '~/stores/context';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
+import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
+
+
+export interface IReturnSelectedPageIds {
+  getSelectedPageIds?: () => Set<string>,
+}
+
 
 type Props = {
   appContainer: AppContainer,
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
 
+  forceHideMenuItems?: ForceHideMenuItems,
+
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
   searchControl: React.ReactNode,
-  searchResultListHead: React.ReactNode,
+  searchResultListHead: React.ReactElement,
   searchPager: React.ReactNode,
 }
 
-const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
+const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
   const {
     appContainer,
     pages,
+    forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
   } = props;
@@ -33,6 +48,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   // TODO get search keywords and split
   // ref: RevisionRenderer
@@ -61,6 +78,9 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       }
 
       selectedPageIdsByCheckboxes.clear();
+    },
+    getSelectedPageIds: () => {
+      return selectedPageIdsByCheckboxes;
     },
   }));
 
@@ -103,11 +123,38 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
-  const isLoading = pages == null;
+  useEffect(() => {
+    if (searchResultListHead != null && searchResultListHead.props != null) {
+      setHightlightKeywords(searchResultListHead.props.searchingKeyword);
+    }
+  }, [searchResultListHead]);
+  if (!isSearchServiceConfigured) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service is not configured in this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSearchServiceReachable) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content-main">
-      <div className="search-result d-flex" id="search-result">
+      <div className="search-result-base d-flex" data-testid="search-result-base">
 
         <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
 
@@ -115,27 +162,33 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
 
           <div className="search-result-list-scroll">
 
-            { isLoading && (
+            {/* Loading */}
+            { pages == null && (
               <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
                 <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
               </div>
             ) }
 
-            { !isLoading && (
+            {/* Loaded */}
+            { pages != null && (
               <>
-                <div className="my-3 px-md-4">
+                <div className="my-3 px-md-4 px-3">
                   {searchResultListHead}
                 </div>
-                <div className="page-list px-md-4">
-                  <SearchResultList
-                    ref={searchResultListRef}
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    pages={pages!}
-                    selectedPageId={selectedPageWithMeta?.pageData._id}
-                    onPageSelected={page => setSelectedPageWithMeta(page)}
-                    onCheckboxChanged={checkboxChangedHandler}
-                  />
-                </div>
+
+                { pages.length > 0 && (
+                  <div className="page-list px-md-4">
+                    <SearchResultList
+                      ref={searchResultListRef}
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      pages={pages!}
+                      selectedPageId={selectedPageWithMeta?.pageData._id}
+                      forceHideMenuItems={forceHideMenuItems}
+                      onPageSelected={page => setSelectedPageWithMeta(page)}
+                      onCheckboxChanged={checkboxChangedHandler}
+                    />
+                  </div>
+                ) }
                 <div className="my-4 d-flex justify-content-center">
                   {searchPager}
                 </div>
@@ -153,6 +206,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}
+              forceHideMenuItems={forceHideMenuItems}
             />
           )}
         </div>
@@ -160,6 +214,60 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       </div>
     </div>
   );
+};
+
+
+type VoidFunction = () => void;
+
+export const usePageDeleteModalForBulkDeletion = (
+    data: IFormattedSearchResult | undefined,
+    ref: React.MutableRefObject<(ISelectableAll & IReturnSelectedPageIds) | null>,
+    onDeleted?: OnDeletedFunction,
+): VoidFunction => {
+
+  const { t } = useTranslation();
+
+  const { open: openDeleteModal } = usePageDeleteModal();
+
+  // for PageTree mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+
+  return () => {
+    if (data == null) {
+      return;
+    }
+
+    const instance = ref.current;
+    if (instance == null || instance.getSelectedPageIds == null) {
+      return;
+    }
+
+    const selectedPageIds = instance.getSelectedPageIds();
+
+    if (selectedPageIds.size === 0) {
+      return;
+    }
+
+    const selectedPages = data.data
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
+      .map(pageWithMeta => ({
+        pageId: pageWithMeta.pageData._id,
+        path: pageWithMeta.pageData.path,
+        revisionId: pageWithMeta.pageData.revision as string,
+      } as IPageForPageDeleteModal));
+
+    openDeleteModal(selectedPages, {
+      onDeleted: (...args) => {
+        toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
+        advancePt();
+
+        if (onDeleted != null) {
+          onDeleted(...args);
+        }
+      },
+    });
+  };
+
 };
 
 

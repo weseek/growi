@@ -167,7 +167,7 @@ schema.statics.createEmptyPage = async function(
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?, deleteExPageIfEmpty = false): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?, deleteExPageIfEmpty = false) {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -207,6 +207,8 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
     await this.deleteOne({ _id: exPage._id });
     logger.warn('Deleted empty page since it was replaced with another page.');
   }
+
+  return this.findById(newTarget._id);
 };
 
 /**
@@ -225,7 +227,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   /*
    * Fill parents if parent is null
    */
-  const ancestorPaths = collectAncestorPaths(path, [path]); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);
@@ -424,40 +426,6 @@ async function pushRevision(pageData, newRevision, user) {
 }
 
 /**
- * return aggregate condition to get following pages
- * - page that has the same path as the provided path
- * - pages that are descendants of the above page
- * pages without parent will be ignored
- */
-schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
-  let match;
-  if (isTopPage(path)) {
-    match = {
-      // https://regex101.com/r/Kip2rV/1
-      $match: { $or: [{ path: { $regex: '^/.*' }, parent: { $ne: null } }, { path: '/' }] },
-    };
-  }
-  else {
-    match = {
-      // https://regex101.com/r/mJvGrG/1
-      $match: { path: { $regex: `^${path}(/.*|$)` }, parent: { $ne: null } },
-    };
-  }
-  return [
-    match,
-    {
-      $project: {
-        path: 1,
-        parent: 1,
-        field_length: { $strLenCP: '$path' },
-      },
-    },
-    { $sort: { field_length: -1 } },
-    { $project: { field_length: 0 } },
-  ];
-};
-
-/**
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
  */
@@ -512,6 +480,9 @@ schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
   const self = this;
   const target = await this.findById(pageId);
+  if (target == null) {
+    throw Error('Target not found');
+  }
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {
     const parent = await self.findOne({ _id: target.parent });
@@ -531,44 +502,41 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
  * @param pageId ObjectIdLike
  * @returns Promise<void>
  */
-schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): Promise<void> {
+schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectIdLike): Promise<void> {
   const self = this;
 
-  const initialLeafPage = await this.findById(pageId);
+  const initialPage = await this.findById(pageId);
 
-  if (initialLeafPage == null) {
+  if (initialPage == null) {
     return;
   }
 
-  if (!initialLeafPage.isEmpty) {
+  if (!initialPage.isEmpty) {
     return;
   }
 
-  async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
+  async function generatePageIdsToRemove(childPage, page, pageIds: ObjectIdLike[] = []): Promise<ObjectIdLike[]> {
+    if (!page.isEmpty) {
+      return pageIds;
+    }
+
+    const isChildrenOtherThanTargetExist = await self.exists({ _id: { $ne: childPage?._id }, parent: page._id });
+    if (isChildrenOtherThanTargetExist) {
+      return pageIds;
+    }
+
+    pageIds.push(page._id);
+
     const nextPage = await self.findById(page.parent);
 
     if (nextPage == null) {
       return pageIds;
     }
 
-    // delete leaf empty pages
-    const isNextPageEmpty = nextPage.isEmpty;
-
-    if (!isNextPageEmpty) {
-      return pageIds;
-    }
-
-    const isSiblingsExist = await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } });
-    if (isSiblingsExist) {
-      return pageIds;
-    }
-
-    return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
+    return generatePageIdsToRemove(page, nextPage, pageIds);
   }
 
-  const initialPageIdsToRemove = [initialLeafPage._id];
-
-  const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
+  const pageIdsToRemove = await generatePageIdsToRemove(null, initialPage);
 
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
 };
@@ -578,7 +546,7 @@ schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpt
 
   await this.addConditionToFilteringByViewerToEdit(builder, user);
 
-  const pages = await builder.query.lean().exec();
+  const pages = await builder.query.exec();
 
   return pages;
 };
@@ -608,7 +576,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null || crowi.pageOperationService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -616,6 +584,11 @@ export default (crowi: Crowi): any => {
     // v4 compatible process
     if (!isV5Compatible) {
       return this.createV4(path, body, user, options);
+    }
+
+    const canOperate = await crowi.pageOperationService.canOperate(false, null, path);
+    if (!canOperate) {
+      throw Error(`Cannot operate create to path "${path}" right now.`);
     }
 
     const Page = this;
@@ -707,7 +680,7 @@ export default (crowi: Crowi): any => {
     // Delete PageRedirect if exists
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     try {
-      await PageRedirect.deleteOne({ from: path });
+      await PageRedirect.deleteOne({ fromPath: path });
       logger.warn(`Deleted page redirect after creating a new page at path "${path}".`);
     }
     catch (err) {

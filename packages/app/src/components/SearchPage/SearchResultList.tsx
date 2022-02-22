@@ -7,6 +7,9 @@ import { IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from '../PageList/PageListItemL';
 
@@ -14,6 +17,7 @@ import { PageListItemL } from '../PageList/PageListItemL';
 type Props = {
   pages: IPageWithMeta<IPageSearchMeta>[],
   selectedPageId?: string,
+  forceHideMenuItems?: ForceHideMenuItems,
   onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
 }
@@ -21,6 +25,7 @@ type Props = {
 const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
   const {
     pages, selectedPageId,
+    forceHideMenuItems,
     onPageSelected,
   } = props;
 
@@ -30,6 +35,10 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);
 
@@ -56,7 +65,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     }
   }, [onPageSelected, pages]);
 
-
   let injectedPage;
   // inject data to list
   if (idToPageInfo != null) {
@@ -79,7 +87,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   }
 
   return (
-    <ul className="page-list-ul list-group list-group-flush">
+    <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">
       { (injectedPage ?? pages).map((page, i) => {
         return (
           <PageListItemL
@@ -89,8 +97,10 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             page={page}
             isEnableActions={!isGuestUser}
             isSelected={page.pageData._id === selectedPageId}
+            forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
+            onPageDeleted={() => { advancePt(); advanceFts() }}
           />
         );
       })}

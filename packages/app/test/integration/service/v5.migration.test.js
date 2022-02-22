@@ -16,17 +16,19 @@ describe('V5 page migration', () => {
     Page = mongoose.model('Page');
     User = mongoose.model('User');
 
+    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+
     await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
     testUser1 = await User.findOne({ username: 'testUser1' });
   });
 
 
-  describe('normalizeParentRecursivelyByPageIds()', () => {
+  describe('normalizeParentRecursivelyByPages()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
 
       // initialize pages for test
-      const pages = await Page.insertMany([
+      let pages = await Page.insertMany([
         {
           path: '/private1',
           grant: Page.GRANT_OWNER,
@@ -57,9 +59,15 @@ describe('V5 page migration', () => {
         },
       ]);
 
-      const pageIds = pages.map(page => page._id);
+      if (!await Page.exists({ path: '/' })) {
+        const additionalPages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
+        pages = [...additionalPages, ...pages];
+      }
+
+      const pagesToRun = await Page.find({ path: { $in: ['/private1', '/dummyParent/private1'] } });
+
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, testUser1);
+      await crowi.pageService.normalizeParentRecursivelyByPages(pagesToRun, testUser1);
 
       const migratedPages = await Page.find({
         path: {

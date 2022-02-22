@@ -312,7 +312,7 @@ const Sidebar: FC<Props> = (props: Props) => {
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
                 <div className="grw-contextual-navigation-child">
-                  <div role="group" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
+                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
                     <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>
@@ -328,6 +328,7 @@ const Sidebar: FC<Props> = (props: Props) => {
                 </div>
               ) }
               <button
+                data-testid="grw-navigation-resize-button"
                 className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
                 aria-expanded="true"

@@ -8,14 +8,14 @@ import { parse as parseQuerystring } from 'querystring';
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { useIsSearchServiceReachable } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
-import { SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -46,17 +46,25 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const leftNum = offset + 1;
   const rightNum = offset + hitsCount;
 
+  if (total === 0) {
+    return (
+      <div className="d-flex justify-content-center h2 text-muted my-5">
+        0 {t('search_result.page_number_unit')}
+      </div>
+    );
+  }
+
   return (
-    <div className="d-flex align-items-center justify-content-between">
+    <div className="form-inline d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
-        <span className="search-result-keyword">{`"${searchingKeyword}"`}</span>
+        <span className="search-result-keyword">{`${searchingKeyword}`}</span>
         <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           <span className="ml-3 text-muted">({took}ms)</span>
         ) }
       </div>
-      <div className="input-group search-result-select-group ml-4 d-lg-flex d-none">
+      <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
         <div className="input-group-prepend">
           <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>
@@ -101,26 +109,24 @@ export const SearchPage = (props: Props): JSX.Element => {
   const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
-  const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({
-  });
-  const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
-    limit: INITIAL_PAGIONG_SIZE,
-  });
+  const [offset, setOffset] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
-  const searchPageBaseRef = useRef<ISelectableAll|null>(null);
+  const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions } = useSWRxFullTextSearch(keyword, {
-    limit: INITIAL_PAGIONG_SIZE,
+  const { data, conditions, mutate } = useSWRxFullTextSearch(keyword, {
     ...configurationsByControl,
-    ...configurationsByPagination,
+    offset,
+    limit,
   });
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
+    setOffset(0);
     setConfigurationsByControl(newConfigurations);
   }, []);
 
@@ -157,13 +163,16 @@ export const SearchPage = (props: Props): JSX.Element => {
     }
   }, []);
 
+  const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
+    setOffset(0);
+    setLimit(pagingSize);
+    mutate();
+  }, [mutate]);
+
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
-    const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
-    setConfigurationsByPagination({
-      ...configurationsByPagination,
-      offset: (activePage - 1) * currentLimit,
-    });
-  }, [configurationsByPagination]);
+    setOffset((activePage - 1) * limit);
+    mutate();
+  }, [limit, mutate]);
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
@@ -172,6 +181,9 @@ export const SearchPage = (props: Props): JSX.Element => {
     };
   }, [initQ]);
 
+  // for bulk deletion
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
+
   // push state
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
@@ -179,8 +191,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
   }, [keyword]);
   const hitsCount = data?.meta.hitsCount;
-
-  const { offset, limit } = conditions;
 
   const deleteAllControl = useMemo(() => {
     const isDisabled = hitsCount === 0;
@@ -195,25 +205,29 @@ export const SearchPage = (props: Props): JSX.Element => {
           type="button"
           className="btn btn-outline-danger border-0 px-2"
           disabled={isDisabled}
-          onClick={() => null /* TODO implement */}
+          onClick={deleteAllButtonClickedHandler}
         >
           <i className="icon-fw icon-trash"></i>
           {t('search_result.delete_all_selected_page')}
         </button>
       </OperateAllControl>
     );
-  }, [hitsCount, selectAllCheckboxChangedHandler, t]);
+  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
+    if (!isSearchServiceReachable) {
+      return <></>;
+    }
     return (
       <SearchControl
+        isSearchServiceReachable={isSearchServiceReachable}
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
         deleteAllControl={deleteAllControl}
       >
       </SearchControl>
     );
-  }, [deleteAllControl, initialSearchConditions, searchInvokedHandler]);
+  }, [deleteAllControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -225,10 +239,10 @@ export const SearchPage = (props: Props): JSX.Element => {
         searchingKeyword={keyword}
         offset={offset}
         pagingSize={limit}
-        onPagingSizeChanged={() => {}}
+        onPagingSizeChanged={pagingSizeChangedHandler}
       />
     );
-  }, [data, keyword, limit, offset]);
+  }, [data, keyword, limit, offset, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
@@ -243,35 +257,11 @@ export const SearchPage = (props: Props): JSX.Element => {
       <PaginationWrapper
         activePage={Math.floor(offset / limit) + 1}
         totalItemsCount={total}
-        pagingLimit={configurationsByPagination?.limit}
+        pagingLimit={limit}
         changePage={pagingNumberChangedHandler}
       />
     );
-  }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
-
-  if (!isSearchServiceConfigured) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service is not configured in this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isSearchServiceReachable) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [conditions, data, pagingNumberChangedHandler]);
 
   return (
     <SearchPageBase

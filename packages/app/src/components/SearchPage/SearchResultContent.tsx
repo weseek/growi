@@ -1,9 +1,9 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
@@ -15,9 +15,11 @@ import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+} from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -31,15 +33,11 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { pageId, revisionId } = props;
 
   return (
-    <>
-      <DropdownItem divider />
-
-      {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
-        {t('export_bulk.export_page_markdown')}
-      </DropdownItem>
-    </>
+    // Export markdown
+    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
+      <i className="icon-fw icon-cloud-download"></i>
+      {t('export_bulk.export_page_markdown')}
+    </DropdownItem>
   );
 };
 
@@ -51,6 +49,7 @@ type Props ={
   pageWithMeta : IPageWithMeta<IPageSearchMeta>,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
 }
 
 const scrollTo = (scrollElement:HTMLElement) => {
@@ -97,26 +96,26 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     pageWithMeta,
     highlightKeywords,
     showPageControlDropdown,
+    forceHideMenuItems,
   } = props;
 
+  const page = pageWithMeta?.pageData;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const page = pageWithMeta?.pageData;
-
   const growiRenderer = appContainer.getRenderer('searchresult');
 
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
+    openDuplicateModal(pageToDuplicate);
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
+  const renameItemClickedHandler = useCallback(async(pageToRename) => {
+    openRenameModal(pageToRename);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+  const deleteItemClickedHandler = useCallback((pageToDelete) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
 
@@ -137,7 +136,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             revisionId={revisionId}
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
+            forceHideMenuItems={forceHideMenuItems}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -147,18 +148,22 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
 
   return (
-    <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <GrowiSubNavigation
-        page={page}
-        controls={ControlComponents}
-      />
-      <div className="search-result-page-content" ref={scrollElementRef}>
+    <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
+      <div className="grw-subnav-append-shadow-container">
+        <GrowiSubNavigation
+          page={page}
+          controls={ControlComponents}
+          isCompactMode
+          additionalClasses={['px-4']}
+        />
+      </div>
+      <div className="search-result-content-body-container" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}

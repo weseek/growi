@@ -11,38 +11,48 @@ export const isTopPage = (path: string): boolean => {
 };
 
 /**
+ * Whether path is the top page of users
+ * @param path
+ */
+export const isUsersTopPage = (path: string): boolean => {
+  return path === '/user';
+};
+
+/**
+ * Whether path is user's home page
+ * @param path
+ */
+export const isUsersHomePage = (path: string): boolean => {
+  // https://regex101.com/r/utVQct/1
+  if (path.match(/^\/user\/[^/]+$/)) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Whether path is the protected pages for systems
+ * @param path
+ */
+export const isUsersProtectedPages = (path: string): boolean => {
+  return isUsersTopPage(path) || isUsersHomePage(path);
+};
+
+/**
+ * Whether path is movable
+ * @param path
+ */
+export const isMovablePage = (path: string): boolean => {
+  return !isTopPage(path) && !isUsersProtectedPages(path);
+};
+
+/**
  * Whether path belongs to the trash page
  * @param path
  */
 export const isTrashPage = (path: string): boolean => {
   // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/trash(\/.*)?$/)) {
-    return true;
-  }
-
-  return false;
-};
-
-/**
- * Whether path belongs to the user page
- * @param path
- */
-export const isUserPage = (path: string): boolean => {
-  // https://regex101.com/r/SxPejV/1
-  if (path.match(/^\/user(\/.*)?$/)) {
-    return true;
-  }
-
-  return false;
-};
-
-/**
- * Whether path is right under the path '/user'
- * @param path
- */
-export const isUserNamePage = (path: string): boolean => {
-  // https://regex101.com/r/GUZntH/1
-  if (path.match(/^\/user\/[^/]+$/)) {
     return true;
   }
 
@@ -62,13 +72,6 @@ export const isSharedPage = (path: string): boolean => {
   return false;
 };
 
-const restrictedPatternsToDelete: Array<RegExp> = [
-  /^\/user\/[^/]+$/, // user page
-];
-export const isDeletablePage = (path: string): boolean => {
-  return !restrictedPatternsToDelete.some(pattern => path.match(pattern));
-};
-
 const restrictedPatternsToCreate: Array<RegExp> = [
   /\^|\$|\*|\+|#|%|\?/,
   /^\/-\/.*/,
@@ -81,6 +84,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /.+\.md$/,
   /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
   /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
+  /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
 ];
 export const isCreatablePage = (path: string): boolean => {
