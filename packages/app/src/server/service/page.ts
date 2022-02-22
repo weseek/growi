@@ -473,6 +473,8 @@ class PageService {
   }
 
   async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const exParentId = page.parent;
 
     // update descendants first
