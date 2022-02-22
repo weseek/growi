@@ -212,7 +212,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
   const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
 
-  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(shouldMutate ? pageId : null);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
