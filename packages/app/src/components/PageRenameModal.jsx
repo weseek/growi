@@ -70,7 +70,7 @@ const PageRenameModal = (props) => {
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_rename.label.Fail to get subordinated pages'));
+      toastError(t('modal_rename.label.Failed to get subordinated pages'));
     }
   }, [path, t]);
 

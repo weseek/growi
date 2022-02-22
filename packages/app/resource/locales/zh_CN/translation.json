@@ -394,8 +394,8 @@
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",
       "New page name": "新建页面名称",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
-      "Fail to get exist path": "Fail to get exist path",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
+      "Failed to get exist path": "Failed to get exist path",
       "Rename without exist path": "Rename without exist path",
 			"Current page name": "当前页面名称",
 			"Recursively": "递归地",
@@ -427,7 +427,7 @@
 		"label": {
 			"Duplicate page": "Duplicate page",
       "New page name": "New page name",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
 			"Current page name": "Current page name",
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
