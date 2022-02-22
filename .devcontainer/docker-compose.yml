@@ -34,12 +34,21 @@ services:
     volumes:
       - /data/db
 
+  ogp:
+    image: ghcr.io/weseek/growi-unique-ogp:latest
+    ports:
+      - 8088:8088
+    restart: unless-stopped
+    tty: true
+
   # This container requires '../../growi-docker-compose' repository
   #   cloned from https://github.com/weseek/growi-docker-compose.git
   elasticsearch:
     build:
       context: ../../growi-docker-compose/elasticsearch
       dockerfile: ./Dockerfile
+      args:
+        - version=6.8.22
     container_name: elasticsearch
     restart: unless-stopped
     ports:
@@ -57,7 +66,7 @@ services:
 
   #need to adjust kibana version based on elasticsearch version
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.8.0
+    image: docker.elastic.co/kibana/kibana:6.8.22
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'

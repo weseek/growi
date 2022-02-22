@@ -44,6 +44,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <button
           className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
           type="button"
+          data-testid="newPageBtn"
           onClick={() => openCreateModal(currentPagePath || '')}
         >
           <i className="icon-pencil mr-2"></i>

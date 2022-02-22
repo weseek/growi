@@ -1,3 +1,7 @@
+.custom-checkbox .custom-control-label::before {
+  border-radius: $border-radius !important;
+}
+
 label.custom-control-label {
   font-weight: normal;
 }

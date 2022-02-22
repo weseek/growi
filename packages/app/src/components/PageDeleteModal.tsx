@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useMemo } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -11,6 +11,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 const deleteIconAndKey = {
@@ -26,25 +27,30 @@ const deleteIconAndKey = {
   },
 };
 
-type Props = {
-  isDeleteCompletelyModal: boolean,
-  isAbleToDeleteCompletely: boolean,
-  onClose?: () => void,
-}
-
-const PageDeleteModal: FC<Props> = (props: Props) => {
-  const { t } = useTranslation('');
-  const {
-    isDeleteCompletelyModal, isAbleToDeleteCompletely,
-  } = props;
+const PageDeleteModal: FC = () => {
+  const { t } = useTranslation();
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
 
+  const isAbleToDeleteCompletely = useMemo(() => {
+    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+      return deleteModalData.pages.every(page => page.isAbleToDeleteCompletely);
+    }
+    return true;
+  }, [deleteModalData]);
+
+  const forceDeleteCompletelyMode = useMemo(() => {
+    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+      return deleteModalData.pages.every(page => isTrashPage(page.path));
+    }
+    return false;
+  }, [deleteModalData]);
+
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
-  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
-  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+  const [isDeleteCompletely, setIsDeleteCompletely] = useState(forceDeleteCompletelyMode);
+  const deleteMode = forceDeleteCompletelyMode || isDeleteCompletely ? 'completely' : 'temporary';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
@@ -54,7 +60,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   function changeIsDeleteCompletelyHandler() {
-    if (!isAbleToDeleteCompletely) {
+    if (forceDeleteCompletelyMode) {
       return;
     }
     setIsDeleteCompletely(!isDeleteCompletely);
@@ -82,8 +88,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           isCompletely,
         });
 
-        if (deleteModalData.onDeleted != null) {
-          deleteModalData.onDeleted(data.paths, data.isRecursively, data.isCompletely);
+        const onDeleted = deleteModalData.opts?.onDeleted;
+        if (onDeleted != null) {
+          onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
       }
       catch (err) {
@@ -96,7 +103,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     else {
       try {
         const recursively = isDeleteRecursively === true ? true : undefined;
-        const completely = isDeleteCompletely === true ? true : undefined;
+        const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
         const page = deleteModalData.pages[0];
 
@@ -107,8 +114,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IDeleteSinglePageApiv1Result;
 
-        if (deleteModalData.onDeleted != null) {
-          deleteModalData.onDeleted(path, isRecursively, isCompletely);
+        const onDeleted = deleteModalData.opts?.onDeleted;
+        if (onDeleted != null) {
+          onDeleted(path, isRecursively, isCompletely);
         }
       }
       catch (err) {
@@ -135,17 +143,12 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
   }
 
-  // DeleteCompletely is currently disabled
-  // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
-  // Story: https://redmine.weseek.co.jp/issues/82222
-
-  // TODO2 : use toaster
-  // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-danger">
@@ -154,13 +157,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          // disabled={!isAbleToDeleteCompletely}
-          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          disabled={!isAbleToDeleteCompletely}
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
-        {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
         <label className="custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
@@ -196,7 +196,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           {renderPagePathsToDelete()}
         </div>
         {renderDeleteRecursivelyForm()}
-        {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
+        { !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />

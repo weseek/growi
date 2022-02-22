@@ -7,14 +7,18 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
+import { usePutBackPageModal } from '~/stores/modal';
 import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, onClose, pageId, path,
+    t,
   } = props;
+
+  const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
+  const { isOpened, pageId, path } = pageDataToRevert;
 
   const [errs, setErrs] = useState(null);
 
@@ -50,8 +54,8 @@ const PutBackPageModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
+    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </ModalHeader>
       <ModalBody>
@@ -88,12 +92,6 @@ const PutBackPageModal = (props) => {
 
 PutBackPageModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
-  pageId: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
 };
 
 

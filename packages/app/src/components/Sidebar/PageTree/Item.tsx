@@ -14,7 +14,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal, IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -26,10 +26,12 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
+  isScrolled: boolean,
   isOpen?: boolean
-  onClickDuplicateMenuItem?(pageId: string, path: string): void
-  onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
+  isEnabledAttachTitleHeader?: boolean
+  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
+  onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -70,7 +72,8 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -104,9 +107,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
     item: { page },
-    end: () => {
+    end: (item, monitor) => {
       // in order to set d-none to dropped Item
-      setShouldHide(true);
+      const dropResult = monitor.getDropResult();
+      if (dropResult != null) {
+        setShouldHide(true);
+      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -137,18 +143,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       // force open
       setIsOpen(true);
-
-      toastSuccess('TODO: i18n Successfully moved pages.');
     }
     catch (err) {
       // display the dropped item
       displayDroppedItemByPageId(droppedPage._id);
 
       if (err.code === 'operation__blocked') {
-        toastWarning('TODO: i18n You cannot move this page now.');
+        toastWarning(t('pagetree.you_cannot_move_this_page_now'));
       }
       else {
-        toastError('TODO: i18n Something went wrong with moving page.');
+        toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
   };
@@ -194,7 +198,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and path must not be null.');
     }
 
-    onClickDuplicateMenuItem(pageId, path);
+    const pageToDuplicate = { pageId, path };
+
+    onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
 
@@ -234,14 +240,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and revisionId and path must not be null.');
     }
 
-    onClickRenameMenuItem(pageId, revisionId as string, path);
+    const pageToRename: IPageForPageRenameModal = {
+      pageId,
+      revisionId: revisionId as string,
+      path,
+    };
+
+    onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
-  const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
     const { _id: pageId, revision: revisionId, path } = page;
 
     if (pageId == null || revisionId == null || path == null) {
@@ -252,10 +260,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       pageId,
       revisionId: revisionId as string,
       path,
+      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
     };
 
-    onClickDeleteMenuItem(pageToDelete);
-  }, [page, onClickDeleteMenuItem]);
+    if (onClickDeleteMenuItem != null) {
+      onClickDeleteMenuItem(pageToDelete);
+    }
+  }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -268,17 +279,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
-    // const initBody = '';
-    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
-    // if (isEnabledAttachTitleHeader) {
-    //   initBody = pathUtils.attachTitleHeader(newPagePath);
-    // }
+    let initBody = '';
+    if (isEnabledAttachTitleHeader) {
+      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      initBody = pathUtils.attachTitleHeader(pageTitle);
+    }
 
     try {
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: '',
+        body: initBody,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
@@ -308,6 +318,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     return null;
   };
+
+  useEffect(() => {
+    if (!props.isScrolled && page.isTarget) {
+      document.dispatchEvent(new CustomEvent('targetItemRendered'));
+    }
+  }, [props.isScrolled, page.isTarget]);
 
   // didMount
   useEffect(() => {
@@ -339,7 +355,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
@@ -366,7 +383,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && ( */}
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}
@@ -375,23 +392,23 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <ItemCount descendantCount={page.descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-none">
+        <div className="grw-pagetree-control d-flex">
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
-            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
+            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
@@ -415,7 +432,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
+              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}

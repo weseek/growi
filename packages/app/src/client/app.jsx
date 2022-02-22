@@ -13,7 +13,7 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
-import SearchPage from '../components/SearchPage';
+import { SearchPage } from '../components/SearchPage';
 import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
@@ -22,7 +22,6 @@ import PageComments from '../components/PageComments';
 import PageContentFooter from '../components/PageContentFooter';
 import PageTimeline from '../components/PageTimeline';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
-import PageManagement from '../components/Page/PageManagement';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import DuplicatedAlert from '../components/Page/DuplicatedAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
@@ -54,6 +53,7 @@ import PersonalContainer from '~/client/services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
 import { toastError } from './util/apiNotification';
+import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -85,7 +85,9 @@ logger.info('unstated containers have been initialized');
 Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
-  'search-page': <SearchPage crowi={appContainer} />,
+  'search-page': <SearchPage appContainer={appContainer} />,
+  'private-regacy-pages': <PrivateLegacyPages appContainer={appContainer} />,
+
   'all-in-app-notifications': <InAppNotificationPage />,
   'identical-path-page': <IdenticalPathPage />,
 
@@ -96,7 +98,7 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'trash-page-list': <TrashPageList />,
+  'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
 
@@ -124,7 +126,6 @@ if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-management': <PageManagement />,
     'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
