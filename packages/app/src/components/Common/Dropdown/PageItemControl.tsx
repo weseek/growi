@@ -88,7 +88,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       return;
     }
     await onClickRevertMenuItem(pageId);
-  }, [onClickRevertMenuItem]);
+  }, [onClickRevertMenuItem, pageId]);
 
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
