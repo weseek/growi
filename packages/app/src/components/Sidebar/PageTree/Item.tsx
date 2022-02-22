@@ -355,7 +355,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
         id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
@@ -401,13 +401,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
+            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
