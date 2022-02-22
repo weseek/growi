@@ -705,7 +705,7 @@ export default (crowi: Crowi): any => {
     pageEvent.emit('create', savedPage, user);
 
     // update descendantCount asynchronously
-    crowi.pageService.updateDescendantCountOfAncestors(savedPage._id, 1, false);
+    await crowi.pageService.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
     return savedPage;
   };
