@@ -434,11 +434,15 @@ class PageService {
       }
     }
 
-    // Rename target (update parent attr)
+    // 1. Take target off from tree
+    await Page.takeOffFromTree(page._id);
+
+    // 2. Find new parent
     const update: Partial<IPage> = {};
     // find or create parent
     const newParent = await Page.getParentAndFillAncestors(newPagePath);
-    // update Page
+
+    // 3. Put back target page to tree (also update the other attrs)
     update.path = newPagePath;
     update.parent = newParent._id;
     if (updateMetadata) {
@@ -446,9 +450,6 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-
-    // remove empty pages at leaf position
-    await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     // create page redirect
     if (options.createRedirectPage) {
@@ -472,6 +473,8 @@ class PageService {
   }
 
   async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const exParentId = page.parent;
 
     // update descendants first
@@ -484,6 +487,15 @@ class PageService {
     // increase ancestore's descendantCount
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
+
+    // Remove leaf empty pages if not moving to under the ex-target position
+    const pathToTest = escapeStringRegexp(addTrailingSlash(page.path));
+    const pathToBeTested = newPagePath;
+    const isRenamingToUnderExTarget = (new RegExp(`^${pathToTest}`)).test(pathToBeTested);
+    if (!isRenamingToUnderExTarget) {
+      // remove empty pages at leaf position
+      await Page.removeLeafEmptyPagesRecursively(page.parent);
+    }
 
     await PageOperation.findByIdAndDelete(pageOpId);
   }
@@ -2457,7 +2469,7 @@ class PageService {
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
+        await Page.createEmptyPagesByPaths(parentPaths, false, publicOnly);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
