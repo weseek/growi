@@ -434,11 +434,21 @@ class PageService {
       }
     }
 
-    // Rename target (update parent attr)
+    const pathToTest = escapeStringRegexp(addTrailingSlash(page.path));
+    const pathToBeTested = newPagePath;
+    const isRenamingToUnderExTarget = (new RegExp(`^${pathToTest}`)).test(pathToBeTested);
+
+    // 1. Take target off from tree
+    await Page.takeOffFromTree(page._id);
+    console.log('00000', newPagePath, await Page.count({ path: page.path }), await Page.find({ path: page.path }).lean().exec());
+
+    // 2. Find new parent
     const update: Partial<IPage> = {};
     // find or create parent
     const newParent = await Page.getParentAndFillAncestors(newPagePath);
-    // update Page
+    console.log('11111', newPagePath, await Page.count({ path: page.path }), await Page.find({ path: page.path }).lean().exec());
+
+    // 3. Put back target page to tree (also update the other attrs)
     update.path = newPagePath;
     update.parent = newParent._id;
     if (updateMetadata) {
@@ -446,9 +456,12 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-
-    // remove empty pages at leaf position
-    await Page.removeLeafEmptyPagesRecursively(page.parent);
+    console.log('2w222', await Page.count({ path: page.path }), await Page.find({ path: page.path }).lean().exec());
+    // Remove leaf empty pages if not moving to under the ex-target position
+    if (!isRenamingToUnderExTarget) {
+      // remove empty pages at leaf position
+      await Page.removeLeafEmptyPagesRecursively(page.parent);
+    }
 
     // create page redirect
     if (options.createRedirectPage) {
@@ -2457,7 +2470,7 @@ class PageService {
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
+        await Page.createEmptyPagesByPaths(parentPaths, false, publicOnly);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
