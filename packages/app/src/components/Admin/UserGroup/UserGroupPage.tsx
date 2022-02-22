@@ -1,14 +1,10 @@
-import React, {
-  FC, Fragment, useState, useCallback,
-} from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupForm from './UserGroupForm';
+import UserGroupCreateModal from './UserGroupCreateModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
@@ -17,11 +13,7 @@ import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const UserGroupPage: FC<Props> = (props: Props) => {
+const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
 
@@ -44,11 +36,20 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * State
    */
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
    * Functions
    */
+  const showCreateModal = useCallback(() => {
+    setCreateModalShown(true);
+  }, [setCreateModalShown]);
+
+  const hideCreateModal = useCallback(() => {
+    setCreateModalShown(false);
+  }, [setCreateModalShown]);
+
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
       await mutateUserGroups();
@@ -115,45 +116,37 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       {
         isAclEnabled ? (
           <div className="mb-2">
-            <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createGroupForm">
+            <button type="button" className="btn btn-outline-secondary" onClick={showCreateModal}>
               {t('admin:user_group_management.create_group')}
             </button>
-            <div id="createGroupForm" className="collapse">
-              <UserGroupForm
-                submitButtonLabel={t('Create')}
-                onSubmit={createUserGroup}
-              />
-            </div>
           </div>
         ) : (
           t('admin:user_group_management.deny_create_group')
         )
       }
-      <>
-        <UserGroupTable
-          headerLabel={t('admin:user_group_management.group_list')}
-          userGroups={userGroups}
-          childUserGroups={childUserGroups}
-          isAclEnabled={isAclEnabled ?? false}
-          onDelete={showDeleteModal}
-          userGroupRelations={userGroupRelations}
-        />
-        <UserGroupDeleteModal
-          userGroups={userGroups}
-          deleteUserGroup={selectedUserGroup}
-          onDelete={deleteUserGroupById}
-          isShow={isDeleteModalShown}
-          onShow={showDeleteModal}
-          onHide={hideDeleteModal}
-        />
-      </>
+      <UserGroupCreateModal
+        onClickCreateButton={createUserGroup}
+        isShow={isCreateModalShown}
+        onHide={hideCreateModal}
+      />
+      <UserGroupTable
+        headerLabel={t('admin:user_group_management.group_list')}
+        userGroups={userGroups}
+        childUserGroups={childUserGroups}
+        isAclEnabled={isAclEnabled ?? false}
+        onDelete={showDeleteModal}
+        userGroupRelations={userGroupRelations}
+      />
+      <UserGroupDeleteModal
+        userGroups={userGroups}
+        deleteUserGroup={selectedUserGroup}
+        onDelete={deleteUserGroupById}
+        isShow={isDeleteModalShown}
+        onShow={showDeleteModal}
+        onHide={hideDeleteModal}
+      />
     </div>
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
-
-export default UserGroupPageWrapper;
+export default UserGroupPage;
