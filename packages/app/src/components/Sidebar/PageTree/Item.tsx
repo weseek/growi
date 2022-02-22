@@ -401,13 +401,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
+            {/* pass the color propaty to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
