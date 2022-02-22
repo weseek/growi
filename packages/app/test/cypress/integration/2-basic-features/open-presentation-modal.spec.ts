@@ -25,9 +25,6 @@ context('Open presentation modal', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true})
-    });
-
-    cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
@@ -41,9 +38,6 @@ context('Open presentation modal', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true})
-    });
-
-    cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
@@ -57,9 +51,6 @@ context('Open presentation modal', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true})
-    });
-
-    cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
