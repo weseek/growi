@@ -128,11 +128,6 @@ const UserGroupDetailPage: FC = () => {
     }
   };
 
-  // TODO 87614: UserGroup New creation form can be displayed in modal
-  const onClickCreateChildGroupButtonHandler = () => {
-    console.log('button clicked!');
-  };
-
   const showCreateModal = useCallback(() => {
     setCreateModalShown(true);
   }, [setCreateModalShown]);
@@ -222,23 +217,21 @@ const UserGroupDetailPage: FC = () => {
         onHide={hideCreateModal}
       />
 
-      <>
-        <UserGroupTable
-          userGroups={childUserGroups}
-          childUserGroups={grandChildUserGroups}
-          isAclEnabled={isAclEnabled ?? false}
-          onDelete={showDeleteModal}
-          userGroupRelations={childUserGroupRelations}
-        />
-        <UserGroupDeleteModal
-          userGroups={childUserGroups}
-          deleteUserGroup={selectedUserGroup}
-          onDelete={deleteChildUserGroupById}
-          isShow={isDeleteModalShown}
-          onShow={showDeleteModal}
-          onHide={hideDeleteModal}
-        />
-      </>
+      <UserGroupTable
+        userGroups={childUserGroups}
+        childUserGroups={grandChildUserGroups}
+        isAclEnabled={isAclEnabled ?? false}
+        onDelete={showDeleteModal}
+        userGroupRelations={childUserGroupRelations}
+      />
+      <UserGroupDeleteModal
+        userGroups={childUserGroups}
+        deleteUserGroup={selectedUserGroup}
+        onDelete={deleteChildUserGroupById}
+        isShow={isDeleteModalShown}
+        onShow={showDeleteModal}
+        onHide={hideDeleteModal}
+      />
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
