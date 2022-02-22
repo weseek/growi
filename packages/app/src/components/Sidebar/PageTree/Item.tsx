@@ -281,7 +281,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     let initBody = '';
     if (isEnabledAttachTitleHeader) {
-      initBody = pathUtils.attachTitleHeader(newPagePath);
+      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      initBody = pathUtils.attachTitleHeader(pageTitle);
     }
 
     try {
