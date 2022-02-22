@@ -355,7 +355,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
         id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
