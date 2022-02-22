@@ -143,12 +143,13 @@ const UserGroupDetailPage: FC = () => {
         description: userGroupData.description,
         parentId: userGroup._id,
       });
+      mutateChildUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [userGroup, t]);
+  }, [t, userGroup, mutateChildUserGroups]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
