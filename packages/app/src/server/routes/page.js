@@ -604,8 +604,7 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    // Include isEmpty page to handle _notFound
-    const builder = new PageQueryBuilder(Page.find({ path }), true);
+    const builder = new PageQueryBuilder(Page.find({ path }));
     await Page.addConditionToFilteringByViewerForList(builder, req.user);
 
     const pages = await builder.query.lean().clone().exec('find');
@@ -624,10 +623,6 @@ module.exports = function(crowi, app) {
     }
 
     if (pages.length === 1) {
-      if (pages[0].isEmpty) {
-        return _notFound(req, res);
-      }
-
       const url = new URL('https://dummy.origin');
       url.pathname = `/${pages[0]._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
@@ -636,7 +631,9 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    const isForbidden = await Page.exists({ path });
+    // Include isEmpty page to handle _notFound or forbidden
+    const isForbidden = await Page.exists({ path, isEmpty: false });
+    console.log('isForbidden and path', isForbidden, path);
     if (isForbidden) {
       req.isForbidden = true;
       return _notFound(req, res);
