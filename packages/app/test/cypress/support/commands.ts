@@ -39,7 +39,11 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
-  cy.visit('/');
+  const isGrowiPage = Cypress.$('body.growi').length > 0;
+
+  if (!isGrowiPage) {
+    cy.visit('/');
+  }
 
   cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
     const isCurrentCollapsed = $contents.hasClass('d-none');
