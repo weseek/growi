@@ -11,6 +11,8 @@ context('Access to search result page directly', () => {
     cy.getCookie('connect.sid').then(cookie => {
       connectSid = cookie?.value;
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   beforeEach(() => {
