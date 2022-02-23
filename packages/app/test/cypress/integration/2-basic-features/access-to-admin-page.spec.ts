@@ -79,6 +79,8 @@ context('Access to Admin page', () => {
   it('/admin/notification is successfully loaded', () => {
     cy.visit('/admin/notification');
     cy.getByTestid('admin-notification').should('be.visible');
+    // wait for retrieving slack integration status
+    cy.getByTestid('slack-integration-list-item').should('be.visible');
     cy.screenshot(`${ssPrefix}-admin-notification`, { capture: 'viewport' });
   });
 
@@ -109,6 +111,8 @@ context('Access to Admin page', () => {
   it('/admin/search is successfully loaded', () => {
     cy.visit('/admin/search');
     cy.getByTestid('admin-full-text-search').should('be.visible');
+    // wait for connected
+    cy.getByTestid('connection-status-badge-connected').should('be.visible');
     cy.screenshot(`${ssPrefix}-admin-search`, { capture: 'viewport' });
   });
 
