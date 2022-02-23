@@ -37,9 +37,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: lerna bootstrap
       run: |
@@ -124,6 +125,7 @@ jobs:
           **/node_modules
         key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
         restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
           node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
@@ -212,8 +214,9 @@ jobs:
           **/node_modules
           ~/.cache/Cypress
           ${{ steps.yarn-cache-dir.outputs.value }}
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
+          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
 
     - name: lerna bootstrap
