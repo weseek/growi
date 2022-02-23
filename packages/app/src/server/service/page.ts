@@ -266,9 +266,9 @@ class PageService {
       };
     }
 
-    const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
-    const isLiked = page.isLiked(user);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
+    const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
+    const isLiked: boolean = page.isLiked(user);
+    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
