@@ -437,7 +437,6 @@
       "recursive": "Duplicate children of under this path recursively"
     }
   },
-
   "duplicated_pages": "{{path}} 已重复",
 	"modal_putback": {
 		"label": {

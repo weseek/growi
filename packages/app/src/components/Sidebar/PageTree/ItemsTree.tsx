@@ -146,7 +146,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     const duplicatedHandler: OnDuplicatedFunction = (path) => {
       toastSuccess(t('duplicated_pages', { path }));
 
-
       advancePt();
       advanceFts();
       advanceDpl();
