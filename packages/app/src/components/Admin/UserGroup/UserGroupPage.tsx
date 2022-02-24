@@ -81,7 +81,6 @@ const UserGroupPage: FC = () => {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
-        parent: userGroupData.parent,
       });
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
       await mutateUserGroups();

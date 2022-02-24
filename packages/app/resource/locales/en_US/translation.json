@@ -383,9 +383,6 @@
       "no_deadline":"This page has no expiration date"
     }
   },
-  "page_table_of_contents": {
-    "empty": "Table of Contents is empty"
-  },
   "page_edit": {
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",

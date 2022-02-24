@@ -29,7 +29,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage,
+  collectAncestorPaths, isMovablePage, canMoveByPath,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -344,8 +344,7 @@ class PageService {
 
     const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
-      // if page found, cannot rename to that path
-      throw new Error('the path already exists');
+      throw Error(`Page already exists at ${newPagePath}`);
     }
 
     if (isTopPage(page.path)) {
@@ -358,8 +357,14 @@ class PageService {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
-    if (await Page.exists({ path: newPagePath })) {
-      throw Error(`Page already exists at ${newPagePath}`);
+    if (options.isMoveMode) {
+      const fromPath = page.path;
+      const toPath = newPagePath;
+      const canMove = canMoveByPath(fromPath, toPath) && await Page.exists({ path: newPagePath });
+
+      if (!canMove) {
+        throw Error('Cannot move to this path.');
+      }
     }
 
     const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, newPagePath);

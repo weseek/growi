@@ -1,6 +1,7 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+import { addTrailingSlash } from './path-utils';
 
 /**
  * Whether path is the top page
@@ -193,4 +194,61 @@ export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
 
     return !isDuplicate;
   });
+};
+
+/**
+ * Check if the area of either path1 or path2 includes the area of the other path
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
+  if (path1 === path2) {
+    return true;
+  }
+
+  const path1WithSlash = addTrailingSlash(path1);
+  const path2WithSlash = addTrailingSlash(path2);
+
+  const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`, 'i');
+  const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`, 'i');
+
+  if (path1Area.test(path2) || path2Area.test(path1)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Check if the area of pathToTest includes the area of pathToBeTested
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean => {
+  if (pathToTest === pathToBeTested) {
+    return true;
+  }
+
+  const pathWithSlash = addTrailingSlash(pathToTest);
+
+  const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`, 'i');
+  if (pathAreaToTest.test(pathToBeTested)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Determine whether can move by fromPath and toPath
+ * @param fromPath string
+ * @param toPath string
+ * @returns boolean
+ */
+export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
+  return !isPathAreaOverlap(fromPath, toPath);
 };
