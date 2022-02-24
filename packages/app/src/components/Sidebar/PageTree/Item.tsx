@@ -236,7 +236,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     const { _id: pageId, revision: revisionId, path } = page;
 
-    if (pageId == null || revisionId == null || path == null) {
+    if (!page.isEmpty && revisionId == null) {
+      throw Error('Existing page should have revisionId');
+    }
+
+    if (pageId == null || path == null) {
       throw Error('Any of _id and revisionId and path must not be null.');
     }
 
