@@ -47,6 +47,7 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
+    slackId: { type: String },
     // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
@@ -687,6 +688,22 @@ module.exports = function(crowi) {
 
     user.isInvitationEmailSended = true;
     user.save();
+  };
+
+  userSchema.statics.findUserBySlackId = async function(slackId) {
+    const user = this.findOne({ slackId });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  };
+
+  userSchema.statics.findUsersBySlackIds = async function(slackIds) {
+    const users = this.find({ slackId: { $in: slackIds } });
+    if (!users) {
+      throw new Error('No user found');
+    }
+    return users;
   };
 
   class UserUpperLimitException {

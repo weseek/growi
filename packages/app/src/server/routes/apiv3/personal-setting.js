@@ -79,6 +79,7 @@ module.exports = (crowi) => {
       body('email').isEmail(),
       body('lang').isString().isIn(listLocaleIds()),
       body('isEmailPublished').isBoolean(),
+      body('slackId').optional().isString(),
     ],
     imageType: [
       body('isGravatarEnabled').isBoolean(),
@@ -221,6 +222,7 @@ module.exports = (crowi) => {
       user.email = req.body.email;
       user.lang = req.body.lang;
       user.isEmailPublished = req.body.isEmailPublished;
+      user.slackId = req.body.slackId;
 
       const updatedUser = await user.save();
       req.i18n.changeLanguage(req.body.lang);

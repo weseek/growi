@@ -128,6 +128,19 @@ class BasicInfoSettings extends React.Component {
             }
           </div>
         </div>
+        <div className="form-group row">
+          <label htmlFor="userForm[slackId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack ID')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+              key={personalContainer.state.slackId}
+              name="userForm[slackId]"
+              defaultValue={personalContainer.state.slackId}
+              onChange={(e) => { personalContainer.changeSlackId(e.target.value) }}
+            />
+          </div>
+        </div>
 
         <div className="row my-3">
           <div className="offset-4 col-5">
