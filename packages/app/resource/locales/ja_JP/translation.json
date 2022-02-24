@@ -441,7 +441,7 @@
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
   "deleted_pages": "{{path}} をゴミ箱に入れました",
-  "deleted_pages_completely": "ページを完全に削除しました",
+  "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
