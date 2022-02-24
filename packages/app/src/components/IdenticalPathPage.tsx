@@ -66,7 +66,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
   const { data: currentPath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
+  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds, true);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 

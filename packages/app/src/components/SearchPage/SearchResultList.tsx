@@ -34,7 +34,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     .map(page => page.pageData._id);
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, true);
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
