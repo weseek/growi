@@ -35,7 +35,7 @@ module.exports = (crowi) => {
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const user = await User.findUserBySlackId(payload.user.id);
 
-    const userId = user ? user._id : null;
+    const userId = user != null ? user._id : null;
     // validate form
     const { path, oldest, newest } = await this.keepValidateForm(client, payload, interactionPayloadAccessor);
     // get messages
