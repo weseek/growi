@@ -23,7 +23,7 @@ addEmojiOnSearch = (emoji) => {
   const currentPos = this.editor.getCursor();
   const sc = this.getSearchCursor();
   if (sc.findPrevious()) {
-    sc.replace(emoji.colons, this.editor.getTokenAt(currentPos).string);
+    sc.replace(emoji.native, this.editor.getTokenAt(currentPos).string);
     this.editor.focus();
     this.editor.refresh();
   }
@@ -34,7 +34,7 @@ addEmojiOnSearch = (emoji) => {
 addEmoji = (emoji) => {
   const currentPos = this.editor.getCursor();
   const doc = this.editor.getDoc();
-  doc.replaceRange(emoji.colons, currentPos);
+  doc.replaceRange(emoji.native, currentPos);
   this.editor.focus();
   this.editor.refresh();
 }

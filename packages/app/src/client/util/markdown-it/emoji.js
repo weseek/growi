@@ -5,7 +5,7 @@ export default class EmojiConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-emoji'));
+    md.use(require('markdown-it-emoji-mart'));
   }
 
 }
