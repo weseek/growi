@@ -21,7 +21,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  EditorMode, useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
@@ -147,7 +147,7 @@ class Page extends React.Component {
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
     const { markdown, revisionId } = pageContainer.state;
-    const renderable = !(editorMode === 'view' && revisionId === null);
+    const renderable = !(editorMode === EditorMode.View && revisionId == null);
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
