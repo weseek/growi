@@ -458,6 +458,7 @@
       "recursive": "配下のページも複製します"
     }
   },
+  "duplicated_pages": "{{path}} を複製しました",
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
