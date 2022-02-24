@@ -93,13 +93,13 @@ export const useSWRxPageInfo = (
 
 export const useSWRxPageInfoForList = (
     pageIds: string[] | null | undefined,
-    includeShortBody = false,
+    attachShortBody = false,
 ): SWRResponse<Record<string, IPageInfo | IPageInfoForListing>, Error> => {
 
   const shouldFetch = pageIds != null && pageIds.length > 0;
 
   return useSWRImmutable(
-    shouldFetch ? ['/page-listing/info', pageIds, includeShortBody] : null,
-    (endpoint, pageIds, includeShortBody) => apiv3Get(endpoint, { pageIds, includeShortBody }).then(response => response.data),
+    shouldFetch ? ['/page-listing/info', pageIds, attachShortBody] : null,
+    (endpoint, pageIds, attachShortBody) => apiv3Get(endpoint, { pageIds, attachShortBody }).then(response => response.data),
   );
 };

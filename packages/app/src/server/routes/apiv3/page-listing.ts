@@ -35,7 +35,7 @@ const validator = {
   ], 'id or path is required'),
   infoParams: [
     query('pageIds').isArray().withMessage('pageIds is required'),
-    query('includeShortBody').isBoolean().optional(),
+    query('attachShortBody').isBoolean().optional(),
   ],
 };
 
@@ -101,9 +101,9 @@ export default (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   router.get('/info', accessTokenParser, loginRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { pageIds, includeShortBody: includeShortBodyParam } = req.query;
+    const { pageIds, attachShortBody: attachShortBodyParam } = req.query;
 
-    const includeShortBody: boolean = includeShortBodyParam === 'true';
+    const attachShortBody: boolean = attachShortBodyParam === 'true';
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Bookmark = crowi.model('Bookmark');
@@ -116,7 +116,7 @@ export default (crowi: Crowi): Router => {
       const foundIds = pages.map(page => page._id);
 
       let shortBodiesMap;
-      if (includeShortBody) {
+      if (attachShortBody) {
         shortBodiesMap = await pageService.shortBodiesMapByPageIds(foundIds, req.user);
       }
 
