@@ -54,7 +54,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   // TODO get search keywords and split
   // ref: RevisionRenderer
   //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
-  const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
+  const [highlightKeywords, setHightlightKeywords] = useState<string>('');
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();

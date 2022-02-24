@@ -47,7 +47,7 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 type Props ={
   appContainer: AppContainer,
   pageWithMeta : IPageWithMeta<IPageSearchMeta>,
-  highlightKeywords?: string[],
+  highlightKeywords?: string,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
 }
