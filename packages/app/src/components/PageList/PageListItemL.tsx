@@ -11,6 +11,10 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+
+
+import { ISelectable } from '~/client/interfaces/selectable-all';
+import { bookmark, unbookmark } from '~/client/services/page-operation';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
@@ -20,11 +24,10 @@ import {
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
+import LinkedPagePath from '~/models/linked-page-path';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
-import { ISelectable } from '~/client/interfaces/selectable-all';
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
@@ -91,6 +94,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       onClickItem(pageData._id);
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+    const bookmarkOperation = _newValue ? bookmark : unbookmark;
+    await bookmarkOperation(_pageId);
+  };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
     const page = {
@@ -206,6 +214,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageInfo={pageMeta}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
+                  onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}

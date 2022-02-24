@@ -43,7 +43,7 @@ type TargetAndAncestorsResult = {
 export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
+  createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
   getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
@@ -121,9 +121,12 @@ const generateChildrenRegExp = (path: string): RegExp => {
 /*
  * Create empty pages if the page in paths didn't exist
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicOnly = false): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], onlyMigratedAsExistingPages = true, publicOnly = false): Promise<void> {
   // find existing parents
   const builder = new PageQueryBuilder(this.find(publicOnly ? { grant: GRANT_PUBLIC } : {}, { _id: 0, path: 1 }), true);
+  if (onlyMigratedAsExistingPages) {
+    builder.addConditionAsMigrated();
+  }
   const existingPages = await builder
     .addConditionToListByPathsArray(paths)
     .query
@@ -219,9 +222,15 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
  */
 schema.statics.getParentAndFillAncestors = async function(path: string): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
-  const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
-  if (parent != null) {
-    return parent;
+
+  const builder1 = new PageQueryBuilder(this.find({ path: parentPath }), true);
+  const pagesCanBeParent = await builder1
+    .addConditionAsMigrated()
+    .query
+    .exec();
+
+  if (pagesCanBeParent.length >= 1) {
+    return pagesCanBeParent[0]; // the earliest page will be the result
   }
 
   /*
@@ -233,8 +242,8 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   await this.createEmptyPagesByPaths(ancestorPaths);
 
   // find ancestors
-  const builder = new PageQueryBuilder(this.find(), true);
-  const ancestors = await builder
+  const builder2 = new PageQueryBuilder(this.find(), true);
+  const ancestors = await builder2
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortPagesByDescPath()
     .query
@@ -246,15 +255,14 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   // bulkWrite to update ancestors
   const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
   const operations = nonRootAncestors.map((page) => {
-    const { path } = page;
-    const parentPath = nodePath.dirname(path);
+    const parentPath = nodePath.dirname(page.path);
     return {
       updateOne: {
         filter: {
-          path,
+          _id: page._id,
         },
         update: {
-          parent: ancestorsMap.get(parentPath),
+          parent: ancestorsMap.get(parentPath)._id,
         },
       },
     };
@@ -560,6 +568,10 @@ schema.statics.normalizeDescendantCountById = async function(pageId) {
   return this.updateOne({ _id: pageId }, { $set: { descendantCount: sumChildrenDescendantCount + sumChildPages } }, { new: true });
 };
 
+schema.statics.takeOffFromTree = async function(pageId: ObjectIdLike) {
+  return this.findByIdAndUpdate(pageId, { $set: { parent: null } });
+};
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
@@ -672,8 +684,6 @@ export default (crowi: Crowi): any => {
 
     let savedPage = await page.save();
 
-    await crowi.pageService.updateDescendantCountOfAncestors(page._id, 1, false);
-
     /*
      * After save
      */
@@ -693,6 +703,9 @@ export default (crowi: Crowi): any => {
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
+
+    // update descendantCount asynchronously
+    await crowi.pageService.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
     return savedPage;
   };

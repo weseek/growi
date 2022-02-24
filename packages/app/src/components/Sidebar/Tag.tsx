@@ -11,7 +11,7 @@ const Tag: FC = () => {
   }, [isOnReload]);
 
   return (
-    <>
+    <div data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>
         <button
@@ -36,7 +36,7 @@ const Tag: FC = () => {
       <div className="grw-container-convertible mb-5 pb-5">
         <TagsList isOnReload={isOnReload} />
       </div>
-    </>
+    </div>
   );
 
 };

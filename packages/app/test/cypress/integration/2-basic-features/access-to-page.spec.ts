@@ -12,6 +12,8 @@ context('Access to page', () => {
     cy.getCookie('connect.sid').then(cookie => {
       connectSid = cookie?.value;
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   beforeEach(() => {
@@ -22,12 +24,6 @@ context('Access to page', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox', {  });
-
-    // collapse sidebar and wait saving
-    cy.collapseSidebar(true);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-
     cy.screenshot(`${ssPrefix}-sandbox`, { capture: 'viewport' });
   });
 

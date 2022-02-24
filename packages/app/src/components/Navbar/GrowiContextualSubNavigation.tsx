@@ -67,12 +67,15 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = '?presentation=1';
+  const hrefForPresentationModal = `${pageId}/?presentation=1`;
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
+      <DropdownItem
+        onClick={() => openPresentationModal(hrefForPresentationModal)}
+        data-testid="open-presentation-modal-btn"
+      >
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>

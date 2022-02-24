@@ -258,6 +258,11 @@ module.exports = (crowi) => {
    */
   router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
+    const userId = req.user?._id;
+
+    if (userId == null) {
+      return res.apiv3Err('A logged in user is required.');
+    }
 
     let bookmark;
     try {
@@ -265,15 +270,29 @@ module.exports = (crowi) => {
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
-      if (bool) {
-        bookmark = await Bookmark.add(page, req.user);
 
-        const pageEvent = crowi.event('page');
-        // in-app notification
-        pageEvent.emit('bookmark', page, req.user);
+      bookmark = await Bookmark.findByPageIdAndUserId(page._id, req.user._id);
+
+      if (bookmark == null) {
+        if (bool) {
+          bookmark = await Bookmark.add(page, req.user);
+
+          const pageEvent = crowi.event('page');
+          // in-app notification
+          pageEvent.emit('bookmark', page, req.user);
+        }
+        else {
+          logger.warn(`Removing the bookmark for ${page._id} by ${req.user._id} failed because the bookmark does not exist.`);
+        }
       }
       else {
-        bookmark = await Bookmark.removeBookmark(page, req.user);
+        // eslint-disable-next-line no-lonely-if
+        if (bool) {
+          logger.warn(`Adding the bookmark for ${page._id} by ${req.user._id} failed because the bookmark has already exist.`);
+        }
+        else {
+          bookmark = await Bookmark.removeBookmark(page, req.user);
+        }
       }
     }
     catch (err) {
@@ -281,8 +300,10 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    bookmark.depopulate('page');
-    bookmark.depopulate('user');
+    if (bookmark != null) {
+      bookmark.depopulate('page');
+      bookmark.depopulate('user');
+    }
 
     return res.apiv3({ bookmark });
   });

@@ -718,10 +718,10 @@ module.exports = (crowi) => {
     const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
     try {
-      const pageData = await Page.findByPath(path);
+      const pageData = await Page.findByPath(path, true);
       const result = await Page.findManageableListWithDescendants(pageData, req.user, { limit });
 
-      return res.apiv3({ subordinatedPaths: result });
+      return res.apiv3({ subordinatedPages: result });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);

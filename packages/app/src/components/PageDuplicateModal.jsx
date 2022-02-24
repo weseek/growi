@@ -89,12 +89,11 @@ const PageDuplicateModal = (props) => {
   const getSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
+      toastError(t('modal_duplicate.label.Failed to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
