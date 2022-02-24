@@ -74,7 +74,6 @@ const TableOfContents = (props) => {
             id="revision-toc-content"
             className="revision-toc-content mb-2"
           >
-            <span className="text-muted">({t('page_table_of_contents.empty')})</span>
           </div>
         ) }
 
