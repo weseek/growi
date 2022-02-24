@@ -2644,7 +2644,7 @@ class PageService {
   }
 
   private emitUpdateDescCount(data: UpdateDescCountData): void {
-    const socket = this.crowi.socketIoService;
+    const socket = this.crowi.socketIoService.getDefaultSocket();
 
     socket.emit(SocketNamespace.UpdateDescCount, data);
   }
