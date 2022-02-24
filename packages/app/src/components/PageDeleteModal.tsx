@@ -8,10 +8,13 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePageDeleteModal } from '~/stores/modal';
 
-import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
+import {
+  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, isIPageInfoForOperation, IPageWithAnyMeta,
+} from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import { isTrashPage } from '^/../core/src/utils/page-path-utils';
+import { useSWRxPageInfoForList } from '~/stores/page';
 
 
 const deleteIconAndKey = {
@@ -34,16 +37,23 @@ const PageDeleteModal: FC = () => {
 
   const isOpened = deleteModalData?.isOpened ?? false;
 
+  // const notOperatablePages: IPageWithAnyMeta[] = (deleteModalData?.pages ?? [])
+  //   .filter(p => !isIPageInfoForOperation(p.pageMeta));
+  // const notOperatablePageIds = notOperatablePages.map(p => p.pageData._id);
+
+  // const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
+  // const injectedPages = injectTo(deleteModalData?.pages);
+
   const isAbleToDeleteCompletely = useMemo(() => {
-    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      return deleteModalData.pages.every(page => page.isAbleToDeleteCompletely);
-    }
+    // if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+    //   return deleteModalData.pages.every(page => page.pageMeta?.isAbleToDeleteCompletely);
+    // }
     return true;
   }, [deleteModalData]);
 
   const forceDeleteCompletelyMode = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      return deleteModalData.pages.every(page => isTrashPage(page.pageData.path));
+      return deleteModalData.pages.every(page => isTrashPage(page.pageData?.path ?? ''));
     }
     return false;
   }, [deleteModalData]);
@@ -80,7 +90,7 @@ const PageDeleteModal: FC = () => {
         const isCompletely = isDeleteCompletely === true ? true : undefined;
 
         const pageIdToRevisionIdMap = {};
-        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
+        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageData._id] = p.pageData.revision });
 
         const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
@@ -105,11 +115,11 @@ const PageDeleteModal: FC = () => {
         const recursively = isDeleteRecursively === true ? true : undefined;
         const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
-        const page = deleteModalData.pages[0];
+        const page = deleteModalData.pages[0].pageData;
 
         const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
-          page_id: page.pageId,
-          revision_id: page.revisionId,
+          page_id: page._id,
+          revision_id: page.revision,
           recursively,
           completely,
         }) as IDeleteSinglePageApiv1Result;
@@ -177,7 +187,7 @@ const PageDeleteModal: FC = () => {
 
   const renderPagePathsToDelete = () => {
     if (deleteModalData != null && deleteModalData.pages != null) {
-      return deleteModalData.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+      return deleteModalData.pages.map(page => <div key={page.pageData._id}><code>{ page.pageData.path }</code></div>);
     }
     return <></>;
   };
