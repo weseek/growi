@@ -65,8 +65,7 @@ const PageRenameModal = (props) => {
   const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await apiv3Get('/pages/subordinated-list', { path });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
