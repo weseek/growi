@@ -175,6 +175,7 @@ module.exports = (crowi) => {
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -473,6 +474,7 @@ module.exports = (crowi) => {
     const options = {
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: !req.body.isRemainMetadata,
+      isMoveMode: req.body.isMoveMode,
     };
 
     if (!isCreatablePage(newPagePath)) {
