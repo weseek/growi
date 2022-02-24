@@ -6,7 +6,7 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
@@ -143,7 +143,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   }, []);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
-    openDuplicateModal(pageToDuplicate);
+    const duplicatedHandler: OnDuplicatedFunction = (path) => {
+      toastSuccess(t('duplicated_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
   };
 
   const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {

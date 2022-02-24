@@ -459,6 +459,7 @@
       "recursive": "Duplicate children of under this path recursively"
     }
   },
+  "duplicated_pages": "{{path}} has been duplicated",
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",

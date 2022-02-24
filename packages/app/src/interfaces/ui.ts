@@ -23,3 +23,4 @@ export type ICustomNavTabMappings = { [key: string]: ICustomTabContent };
 
 export type OnDeletedFunction = (idOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 export type OnRenamedFunction = (path: string) => void;
+export type OnDuplicatedFunction = (path: string) => void;
