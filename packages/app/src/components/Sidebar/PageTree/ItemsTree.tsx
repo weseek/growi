@@ -148,8 +148,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
     const renamedHandler: OnRenamedFunction = (path) => {
-      console.log('path_onRenamedHandler', path);
-
       toastSuccess(t('renamed_pages', { path }));
 
       advancePt();
