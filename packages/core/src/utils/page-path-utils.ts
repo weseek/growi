@@ -196,8 +196,14 @@ export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
   });
 };
 
-
-const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
+/**
+ * Check if the area of either path1 or path2 includes the area of the other path
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
   if (path1 === path2) {
     return true;
   }
@@ -205,8 +211,8 @@ const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
   const path1WithSlash = addTrailingSlash(path1);
   const path2WithSlash = addTrailingSlash(path2);
 
-  const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`);
-  const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`);
+  const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`, 'i');
+  const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`, 'i');
 
   if (path1Area.test(path2) || path2Area.test(path1)) {
     return true;
@@ -214,14 +220,22 @@ const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
 
   return false;
 };
-const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean => {
+
+/**
+ * Check if the area of pathToTest includes the area of pathToBeTested
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean => {
   if (pathToTest === pathToBeTested) {
     return true;
   }
 
   const pathWithSlash = addTrailingSlash(pathToTest);
 
-  const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`);
+  const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`, 'i');
   if (pathAreaToTest.test(pathToBeTested)) {
     return true;
   }
@@ -229,33 +243,16 @@ const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean 
   return false;
 };
 
-export const isOperatable = (isRecursively: boolean, fromPathToOp: string | null, toPathToOp: string | null, toPathsToTest: string[]): boolean => {
-  if (isRecursively) {
-
-    if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
-      const flag = toPathsToTest.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
-      if (flag) return false;
-    }
-
-    if (toPathToOp != null && !isTrashPage(toPathToOp)) {
-      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, toPathToOp));
-      if (flag) return false;
-    }
-
-  }
-  else {
-
-    if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
-      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, fromPathToOp));
-      if (flag) return false;
-    }
-
-    if (toPathToOp != null && !isTrashPage(toPathToOp)) {
-      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, toPathToOp));
-      if (flag) return false;
-    }
-
+/**
+ * Determine whether can move by fromPath and toPath
+ * @param fromPath string
+ * @param toPath string
+ * @returns boolean
+ */
+export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
+  if (fromPath === toPath) {
+    return false;
   }
 
-  return true;
+  return !isPathAreaOverlap(fromPath, toPath);
 };
