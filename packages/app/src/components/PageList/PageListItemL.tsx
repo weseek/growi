@@ -20,7 +20,7 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+  IPageInfoAll, IPageToDeleteWithMeta, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -118,12 +118,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }, [openRenameModal, pageData]);
 
 
-  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
-    const { _id: pageId, revision: revisionId, path } = pageData;
-    const isAbleToDeleteCompletely = pageInfo.isAbleToDeleteCompletely;
-    const pageToDelete = {
-      pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
-    };
+  const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
+    const pageToDelete = { pageData, pageInfo };
 
     // open modal
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });

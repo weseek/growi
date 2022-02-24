@@ -43,7 +43,7 @@ const PageDeleteModal: FC = () => {
 
   const forceDeleteCompletelyMode = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      return deleteModalData.pages.every(page => isTrashPage(page.path));
+      return deleteModalData.pages.every(page => isTrashPage(page.pageData.path));
     }
     return false;
   }, [deleteModalData]);

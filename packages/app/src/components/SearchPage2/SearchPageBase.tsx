@@ -1,5 +1,5 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState,
+  forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
@@ -9,7 +9,7 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
-import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
@@ -249,12 +249,7 @@ export const usePageDeleteModalForBulkDeletion = (
     }
 
     const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
-      .map(pageWithMeta => ({
-        pageId: pageWithMeta.pageData._id,
-        path: pageWithMeta.pageData.path,
-        revisionId: pageWithMeta.pageData.revision as string,
-      } as IPageForPageDeleteModal));
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id));
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {

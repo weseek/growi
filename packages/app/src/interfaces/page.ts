@@ -99,6 +99,11 @@ export type IPageWithMeta<M = IPageInfoAll> = {
   pageMeta?: M,
 };
 
+export type IPageToDeleteWithMeta<M = IPageInfoAll> = {
+  pageData: Partial<IPage> & HasObjectId & { path: string },
+  pageMeta?: M,
+};
+
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean
   path: string,

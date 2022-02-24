@@ -33,6 +33,7 @@ const validator = {
   ], 'id or path is required'),
   pageIdsRequired: [
     query('pageIds').isArray().withMessage('pageIds is required'),
+    query('includeShortBodyParam').optional().isBoolean().withMessage('pageIds is required'),
   ],
 };
 
@@ -98,8 +99,10 @@ export default (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser, loginRequired, validator.pageIdsRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { pageIds } = req.query;
+  router.get('/info', /* accessTokenParser, loginRequired, */ validator.pageIdsRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const { pageIds, includeShortBody: includeShortBodyParam } = req.query;
+
+    const includeShortBody: boolean = includeShortBodyParam === 'true';
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Bookmark = crowi.model('Bookmark');
@@ -111,7 +114,11 @@ export default (crowi: Crowi): Router => {
 
       const foundIds = pages.map(page => page._id);
 
-      const shortBodiesMap = await pageService.shortBodiesMapByPageIds(foundIds, req.user);
+      let shortBodiesMap;
+      if (includeShortBody) {
+        shortBodiesMap = await pageService.shortBodiesMapByPageIds(foundIds, req.user);
+      }
+
       const bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
 
       const idToPageInfoMap: Record<string, IPageInfoAll> = {};
@@ -122,11 +129,11 @@ export default (crowi: Crowi): Router => {
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
-          // create IPageInfoForList
+          // create IPageInfoForListing
           : {
             ...basicPageInfo,
             bookmarkCount: bookmarkCountMap[page._id],
-            revisionShortBody: shortBodiesMap[page._id],
+            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
 
         idToPageInfoMap[page._id] = pageInfo;
@@ -137,22 +144,6 @@ export default (crowi: Crowi): Router => {
     catch (err) {
       logger.error('Error occurred while fetching page informations.', err);
       return res.apiv3Err(new ErrorV3('Error occurred while fetching page informations.'));
-    }
-  });
-
-  // eslint-disable-next-line max-len
-  router.get('/short-bodies', accessTokenParser, loginRequired, validator.pageIdsRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { pageIds } = req.query;
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      // const shortBodiesMap = await crowi.pageService!.shortBodiesMapByPageIds(pageIds as string[], req.user);
-      // return res.apiv3({ shortBodiesMap });
-      return res.apiv3();
-    }
-    catch (err) {
-      logger.error('Error occurred while fetching shortBodiesMap.', err);
-      return res.apiv3Err(new ErrorV3('Error occurred while fetching shortBodiesMap.'));
     }
   });
 

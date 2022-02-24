@@ -14,13 +14,14 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDuplicateModal, IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
+import { IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 
 interface ItemProps {
   isEnableActions: boolean
@@ -31,7 +32,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
@@ -253,18 +254,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
-    const { _id: pageId, revision: revisionId, path } = page;
-
-    if (pageId == null || revisionId == null || path == null) {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
-      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      pageData: page,
+      pageMeta: pageInfo,
     };
 
     if (onClickDeleteMenuItem != null) {

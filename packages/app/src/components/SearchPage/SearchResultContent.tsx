@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -115,7 +115,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageToRename);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback((pageToDelete) => {
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
 
