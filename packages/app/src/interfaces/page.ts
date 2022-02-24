@@ -99,6 +99,11 @@ export type IPageWithMeta<M = IPageInfoAll> = {
   pageMeta?: M,
 };
 
+export type IPageWithAnyMeta = {
+  pageData: IPageHasId,
+  pageMeta?: unknown,
+};
+
 export type IPageToDeleteWithMeta<M = IPageInfoAll> = {
   pageData: Partial<IPage & HasObjectId & { path: string }>,
   pageMeta?: M,

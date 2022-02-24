@@ -37,41 +37,19 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
-  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds, true);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true);
 
-  let pagingResultWithMeta: IPagingResult<IPageWithMeta> | undefined;
+  let pageWithMetas: IPageWithMeta[] = [];
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
 
   // initial data
   if (pagingResult != null) {
-    const pages = pagingResult.items;
-
     // convert without meta at first
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pages.map(page => convertToIPageWithEmptyMeta(page)),
-    };
-  }
-
-  // inject data for listing
-  if (pagingResult != null) {
-    const pages = pagingResult.items;
-
-    const pageWithMetas = pages.map((page) => {
-      const pageInfo = (idToPageInfo ?? {})[page._id];
-
-      return {
-        pageData: page,
-        pageMeta: pageInfo,
-      } as IPageWithMeta;
-    });
-
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pageWithMetas,
-    };
+    pageWithMetas = pagingResult.items.map(page => convertToIPageWithEmptyMeta(page));
+    // inject data for listing
+    pageWithMetas = injectTo(pageWithMetas);
   }
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
@@ -88,7 +66,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     setActivePage(selectedPageNumber);
   }
 
-  if (pagingResult == null || pagingResultWithMeta == null) {
+  if (pagingResult == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -103,7 +81,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   return (
     <>
       <PageList
-        pages={pagingResultWithMeta}
+        pages={pageWithMetas}
         isEnableActions={!isGuestUser}
         onPagesDeleted={pageDeletedHandler}
       />
