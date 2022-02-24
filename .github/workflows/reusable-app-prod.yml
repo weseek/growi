@@ -25,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3.0.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -105,7 +105,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3.0.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
