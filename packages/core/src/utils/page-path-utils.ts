@@ -1,6 +1,7 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+import { addTrailingSlash } from './path-utils';
 
 /**
  * Whether path is the top page
@@ -193,4 +194,68 @@ export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
 
     return !isDuplicate;
   });
+};
+
+
+const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
+  if (path1 === path2) {
+    return true;
+  }
+
+  const path1WithSlash = addTrailingSlash(path1);
+  const path2WithSlash = addTrailingSlash(path2);
+
+  const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`);
+  const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`);
+
+  if (path1Area.test(path2) || path2Area.test(path1)) {
+    return true;
+  }
+
+  return false;
+};
+const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean => {
+  if (pathToTest === pathToBeTested) {
+    return true;
+  }
+
+  const pathWithSlash = addTrailingSlash(pathToTest);
+
+  const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`);
+  if (pathAreaToTest.test(pathToBeTested)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const isOperatable = (isRecursively: boolean, fromPathToOp: string | null, toPathToOp: string | null, toPathsToTest: string[]): boolean => {
+  if (isRecursively) {
+
+    if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
+      const flag = toPathsToTest.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
+      if (flag) return false;
+    }
+
+    if (toPathToOp != null && !isTrashPage(toPathToOp)) {
+      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, toPathToOp));
+      if (flag) return false;
+    }
+
+  }
+  else {
+
+    if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
+      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, fromPathToOp));
+      if (flag) return false;
+    }
+
+    if (toPathToOp != null && !isTrashPage(toPathToOp)) {
+      const flag = toPathsToTest.some(p => isPathAreaOverlap(p, toPathToOp));
+      if (flag) return false;
+    }
+
+  }
+
+  return true;
 };
