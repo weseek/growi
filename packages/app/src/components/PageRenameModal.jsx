@@ -134,7 +134,11 @@ const PageRenameModal = (props) => {
         url.searchParams.append('withRedirect', true);
       }
 
-      window.location.href = `${url.pathname}${url.search}`;
+      const onRenamed = renameModalData.opts?.onRenamed;
+      if (onRenamed != null) {
+        onRenamed(path);
+      }
+      closeRenameModal();
     }
     catch (err) {
       setErrs(err);

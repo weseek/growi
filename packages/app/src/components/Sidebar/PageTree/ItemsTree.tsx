@@ -6,7 +6,7 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
@@ -147,7 +147,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   };
 
   const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
-    openRenameModal(pageToRename);
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      // TODO: revalidation by https://redmine.weseek.co.jp/issues/89258
+    };
+
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
