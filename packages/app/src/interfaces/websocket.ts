@@ -3,7 +3,6 @@ export const SocketNamespace = {
 } as const;
 export type SocketNamespace = typeof SocketNamespace[keyof typeof SocketNamespace];
 
-export type UpdateDescCountData = {
-  path: string,
-  descendantCount: number,
-}[];
+type PagePath = string;
+type DescendantCount = number;
+export type UpdateDescCountData = Map<PagePath, DescendantCount>;
