@@ -10,6 +10,7 @@ import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
 import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
 import PageService from '../../service/page';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -43,7 +44,6 @@ const validator = {
 export default (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const router = express.Router();
 
