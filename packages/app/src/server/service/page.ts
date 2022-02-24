@@ -21,7 +21,7 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import { SocketNamespace, UpdateDescCountData } from '~/interfaces/websocket';
+import { SocketNamespace, UpdateDescCountRawData } from '~/interfaces/websocket';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
 
@@ -2639,11 +2639,11 @@ class PageService {
 
     await Page.incrementDescendantCountOfPageIds(ancestorPageIds, inc);
 
-    const updateDescCountData: UpdateDescCountData = new Map(ancestors.map(p => [p.path, p.descendantCount + inc]));
+    const updateDescCountData: UpdateDescCountRawData = Object.fromEntries(ancestors.map(p => [p.path, p.descendantCount + inc]));
     this.emitUpdateDescCount(updateDescCountData);
   }
 
-  private emitUpdateDescCount(data: UpdateDescCountData): void {
+  private emitUpdateDescCount(data: UpdateDescCountRawData): void {
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
     socket.emit(SocketNamespace.UpdateDescCount, data);
