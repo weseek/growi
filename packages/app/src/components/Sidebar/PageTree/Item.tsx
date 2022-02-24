@@ -303,7 +303,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
-      pageData: page,
+      pageData: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
       pageMeta: pageInfo,
     };
 
