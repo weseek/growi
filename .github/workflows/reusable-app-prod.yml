@@ -37,10 +37,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: lerna bootstrap
       run: |
