@@ -3,12 +3,13 @@ import { query, oneOf } from 'express-validator';
 
 import mongoose from 'mongoose';
 
+import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
+import loggerFactory from '~/utils/logger';
+
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
-import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
-import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
 import PageService from '../../service/page';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -32,9 +33,9 @@ const validator = {
     query('id').isMongoId(),
     query('path').isString(),
   ], 'id or path is required'),
-  pageIdsRequired: [
+  infoParams: [
     query('pageIds').isArray().withMessage('pageIds is required'),
-    query('includeShortBodyParam').optional().isBoolean().withMessage('pageIds is required'),
+    query('includeShortBody').isBoolean().optional(),
   ],
 };
 
@@ -83,7 +84,7 @@ export default (crowi: Crowi): Router => {
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
@@ -99,7 +100,7 @@ export default (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/info', /* accessTokenParser, loginRequired, */ validator.pageIdsRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser, loginRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { pageIds, includeShortBody: includeShortBodyParam } = req.query;
 
     const includeShortBody: boolean = includeShortBodyParam === 'true';
