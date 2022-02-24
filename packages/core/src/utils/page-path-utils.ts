@@ -250,9 +250,5 @@ export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): b
  * @returns boolean
  */
 export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
-  if (fromPath === toPath) {
-    return false;
-  }
-
   return !isPathAreaOverlap(fromPath, toPath);
 };
