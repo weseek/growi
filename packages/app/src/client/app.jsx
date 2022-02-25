@@ -23,7 +23,6 @@ import PageContentFooter from '../components/PageContentFooter';
 import PageTimeline from '../components/PageTimeline';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
-import DuplicatedAlert from '../components/Page/DuplicatedAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import TrashPageList from '../components/TrashPageList';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
@@ -112,7 +111,6 @@ Object.assign(componentMappings, {
   'grw-fab-container': <Fab />,
 
   'share-link-alert': <ShareLinkAlert />,
-  'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'not-found-alert': <NotFoundAlert
     isGuestUserMode={appContainer.isGuestUser}

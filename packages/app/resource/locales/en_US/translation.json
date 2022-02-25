@@ -373,8 +373,6 @@
       "moved_period": ".",
       "redirected": "You are redirected from",
       "redirected_period": ".",
-      "duplicated": "This page was duplicated from",
-      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
