@@ -129,7 +129,6 @@ const PageRenameModal = (props) => {
 
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
-      url.searchParams.append('renamedFrom', path);
       if (isRenameRedirect) {
         url.searchParams.append('withRedirect', true);
       }

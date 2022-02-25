@@ -25,7 +25,6 @@ import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLa
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import DuplicatedAlert from '../components/Page/DuplicatedAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
-import RenamedAlert from '../components/Page/RenamedAlert';
 import TrashPageList from '../components/TrashPageList';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
 import NotFoundPage from '../components/NotFoundPage';
@@ -115,7 +114,6 @@ Object.assign(componentMappings, {
   'share-link-alert': <ShareLinkAlert />,
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
-  'renamed-alert': <RenamedAlert />,
   'not-found-alert': <NotFoundAlert
     isGuestUserMode={appContainer.isGuestUser}
   />,
