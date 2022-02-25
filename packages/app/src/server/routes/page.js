@@ -273,8 +273,8 @@ module.exports = function(crowi, app) {
 
     renderVars.notFoundTargetPathOrId = pathOrId;
 
-    const isNotPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = isNotPath && !await Page.exists({ _id: pathOrId });
+    const isPath = pathOrId.includes('/');
+    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
