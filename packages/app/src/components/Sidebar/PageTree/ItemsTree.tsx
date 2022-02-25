@@ -7,6 +7,7 @@ import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDeletedFunction } from '~/interfaces/ui';
+import { SocketNamespace, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
@@ -16,6 +17,7 @@ import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
+import { useGlobalSocket } from '~/stores/websocket';
 
 /*
  * Utility to generate initial node
@@ -124,6 +126,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const { data: socket } = useGlobalSocket();
+
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
@@ -141,6 +145,18 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       document.removeEventListener('targetItemRendered', scrollItem);
     };
   }, []);
+
+  useEffect(() => {
+    if (socket == null) {
+      return;
+    }
+
+    // socket
+    socket.on(SocketNamespace.UpdateDescCount, (data: UpdateDescCountRawData) => {
+      // save to global state
+      const dataToSave: UpdateDescCountData = new Map(Object.entries(data));
+    });
+  }, [socket]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     openDuplicateModal(pageToDuplicate);
