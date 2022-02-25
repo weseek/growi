@@ -68,7 +68,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
       }
 
       if (pages != null) {
-        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.pageData._id));
+        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.data._id));
       }
     },
     deselectAll: () => {
@@ -182,7 +182,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       ref={searchResultListRef}
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       pages={pages!}
-                      selectedPageId={selectedPageWithMeta?.pageData._id}
+                      selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
@@ -249,7 +249,7 @@ export const usePageDeleteModalForBulkDeletion = (
     }
 
     const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id));
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.data._id));
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {

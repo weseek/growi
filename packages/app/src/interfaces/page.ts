@@ -97,20 +97,14 @@ export const isIPageInfoForListing = (pageInfo: any | undefined): pageInfo is IP
 //   return <IPageInfoTypeResolver<T>>pageInfo;
 // };
 
-export type IPageWithMeta<M = IPageInfoAll> = {
-  pageData: IPageHasId,
-  pageMeta?: M,
-};
+export type IDataWithMeta<D = unknown, M = unknown> = {
+  data: D,
+  meta?: M,
+}
 
-export type IPageWithAnyMeta = {
-  pageData: IPageHasId,
-  pageMeta?: unknown,
-};
+export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta<M = IPageInfoAll> = {
-  pageData: HasObjectId & { path: string, revision: string },
-  pageMeta?: M,
-};
+export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForOperation | unknown>;
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

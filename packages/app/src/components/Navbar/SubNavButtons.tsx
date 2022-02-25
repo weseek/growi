@@ -121,12 +121,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
-      pageData: {
+      data: {
         _id: pageId,
         revision: revisionId,
         path,
       },
-      pageMeta: pageInfo,
+      meta: pageInfo,
     };
 
     onClickDeleteMenuItem(pageToDelete);

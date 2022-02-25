@@ -2,9 +2,10 @@ import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IPageWithMeta, IPageWithAnyMeta,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
@@ -92,38 +93,38 @@ export const useSWRxPageInfo = (
 };
 
 type PageInfoInjector = {
-  injectTo: (pages: (IPageHasId | IPageWithAnyMeta)[]) => IPageWithMeta[],
+  injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => IDataWithMeta<D, IPageInfoForOperation>[],
 }
 
-const isIPageWithMeta = (page: IPageHasId | IPageWithAnyMeta): page is IPageWithAnyMeta => {
-  return 'pageData' in page;
+const isIDataWithMeta = (item: HasObjectId | IDataWithMeta): item is IDataWithMeta => {
+  return 'data' in item;
 };
 
 export const useSWRxPageInfoForList = (
     pageIds: string[] | null | undefined,
     attachShortBody = false,
-): SWRResponse<Record<string, IPageInfo | IPageInfoForListing>, Error> & PageInfoInjector => {
+): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
 
   const shouldFetch = pageIds != null && pageIds.length > 0;
 
-  const swrResult = useSWRImmutable<Record<string, IPageInfo | IPageInfoForListing>>(
+  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
     shouldFetch ? ['/page-listing/info', pageIds, attachShortBody] : null,
     (endpoint, pageIds, attachShortBody) => apiv3Get(endpoint, { pageIds, attachShortBody }).then(response => response.data),
   );
 
   return {
     ...swrResult,
-    injectTo: (pages: (IPageHasId | IPageWithAnyMeta)[]) => {
+    injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => {
       return pages.map((item) => {
-        const page: IPageHasId = isIPageWithMeta(item) ? item.pageData : item;
-        const orgPageMeta = isIPageWithMeta(item) ? item.pageMeta : undefined;
+        const page = isIDataWithMeta(item) ? item.data : item;
+        const orgPageMeta = isIDataWithMeta(item) ? item.meta : undefined;
 
         // get an applicable IPageInfo
         const applicablePageInfo = (swrResult.data ?? {})[page._id];
 
         return {
-          pageData: page,
-          pageMeta: applicablePageInfo ?? orgPageMeta,
+          data: page,
+          meta: applicablePageInfo ?? orgPageMeta,
         };
       });
     },

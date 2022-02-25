@@ -370,7 +370,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      return res.apiv3(pageWithMeta.pageMeta);
+      return res.apiv3(pageWithMeta.meta);
     }
     catch (err) {
       logger.error('get-page-info', err);

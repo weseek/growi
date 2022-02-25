@@ -2,7 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageHasId, IPageWithMeta,
+  IDataWithMeta,
+  IPageHasId,
+  IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -22,8 +24,8 @@ type SubstanceProps = {
   onPagesDeleted?: OnDeletedFunction,
 }
 
-const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
-  return { pageData: page };
+const convertToIDataWithMeta = (page: IPageHasId): IDataWithMeta<IPageHasId> => {
+  return { data: page };
 };
 
 export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
@@ -39,7 +41,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true);
 
-  let pageWithMetas: IPageWithMeta[] = [];
+  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
@@ -47,9 +49,9 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   // initial data
   if (pagingResult != null) {
     // convert without meta at first
-    pageWithMetas = pagingResult.items.map(page => convertToIPageWithEmptyMeta(page));
+    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
     // inject data for listing
-    pageWithMetas = injectTo(pageWithMetas);
+    pageWithMetas = injectTo(dataWithMetas);
   }
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {

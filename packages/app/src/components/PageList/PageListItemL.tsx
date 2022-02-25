@@ -20,7 +20,7 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+  IPageInfoAll, IPageInfoForListing, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -30,7 +30,7 @@ import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItem
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
-  page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
+  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -43,7 +43,7 @@ type Props = {
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, isEnableActions,
+    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDeleted,
@@ -119,7 +119,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
 
   const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
-    const pageToDelete = { pageData, pageInfo };
+    const pageToDelete = { data: pageData, meta: pageInfo };
 
     // open modal
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
@@ -207,7 +207,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               <div className="item-control ml-auto">
                 <PageItemControl
                   pageId={pageData._id}
-                  pageInfo={pageMeta}
+                  pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
                   onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}

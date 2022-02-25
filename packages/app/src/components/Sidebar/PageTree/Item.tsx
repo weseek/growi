@@ -303,12 +303,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
-      pageData: {
+      data: {
         _id: page._id,
         revision: page.revision as string,
         path: page.path,
       },
-      pageMeta: pageInfo,
+      meta: pageInfo,
     };
 
     if (onClickDeleteMenuItem != null) {

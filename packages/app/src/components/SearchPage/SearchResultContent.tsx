@@ -103,7 +103,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const page = pageWithMeta?.pageData;
+  const page = pageWithMeta?.data;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();

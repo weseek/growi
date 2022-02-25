@@ -29,7 +29,7 @@ const PageList = (props: Props): JSX.Element => {
 
   const pageList = pages.map(page => (
     <PageListItemL
-      key={page.pageData._id}
+      key={page.data._id}
       page={page}
       isEnableActions={isEnableActions}
       onPageDeleted={onPagesDeleted}

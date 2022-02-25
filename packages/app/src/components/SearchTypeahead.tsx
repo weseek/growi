@@ -190,7 +190,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   }
 
   const renderMenuItemChildren = (option: IPageWithMeta<IPageSearchMeta>) => {
-    const { pageData } = option;
+    const { data: pageData } = option;
     return (
       <span>
         <UserPicture user={pageData.lastUpdateUser} size="sm" noLink />

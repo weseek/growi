@@ -1,10 +1,7 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageWithMeta,
-} from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
 
 
 /*
@@ -31,29 +28,19 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   };
 };
 
-/*
-* PageDeleteModal
-*/
-// export type IPageForPageDeleteModal = {
-//   pageId: string,
-//   revisionId?: string,
-//   path: string
-//   isAbleToDeleteCompletely?: boolean,
-// }
-
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
 }
 
 type DeleteModalStatus = {
   isOpened: boolean,
-  pages?: (IPageWithMeta<IPageInfoAll | IPageSearchMeta> | IPageToDeleteWithMeta)[],
+  pages?: IPageToDeleteWithMeta[],
   opts?: IDeleteModalOption,
 }
 
 type DeleteModalStatusUtils = {
   open(
-    pages?: (IPageWithMeta<IPageInfoAll | IPageSearchMeta> | IPageToDeleteWithMeta)[],
+    pages?: IPageToDeleteWithMeta[],
     opts?: IDeleteModalOption,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
@@ -69,7 +56,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   return {
     ...swrResponse,
     open: (
-        pages?: (IPageWithMeta<IPageInfoAll | IPageSearchMeta> | IPageToDeleteWithMeta)[],
+        pages?: IPageToDeleteWithMeta[],
         opts?: IDeleteModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
