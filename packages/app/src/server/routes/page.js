@@ -275,6 +275,7 @@ module.exports = function(crowi, app) {
 
     const isPath = pathOrId.includes('/');
     renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
+    console.log('あああ', renderVars.isNotFoundPermalink);
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -332,7 +333,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
 
-    addRenderVarsWhenNotFound(renderVars, pathOrId);
+    await addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
   }
