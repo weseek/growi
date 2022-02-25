@@ -160,7 +160,7 @@ module.exports = (crowi) => {
 
     messages.map(async(message) => {
       const growiUser = growiUsers.find(user => user.slackId === message.user);
-      if (growiUser) {
+      if (growiUser !== null) {
         message.user = `${growiUser.name} (@${growiUser.username})`;
       }
       else {
