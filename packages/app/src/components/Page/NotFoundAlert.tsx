@@ -44,7 +44,7 @@ const NotFoundAlert = (props: Props): JSX.Element => {
           {t('not_found_page.page_not_exist_alert')}
         </h2>
         {
-          isNotFoundPermalink && (
+          !isNotFoundPermalink && (
             <div id="create-page-btn-wrapper-for-tooltip" className="d-inline-block">
               <button
                 type="button"
