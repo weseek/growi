@@ -128,7 +128,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const { data: socket } = useGlobalSocket();
-  const { data: ptDescCountMap, mutate: mutatePtDescCountMap } = usePageTreeDescCountMap();
+  const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
 
   // for mutation
@@ -157,11 +157,10 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
       // save to global state
       const newData: UpdateDescCountData = new Map(Object.entries(data));
-      const oldData: UpdateDescCountData = ptDescCountMap || new Map();
 
-      mutatePtDescCountMap(new Map([...oldData, ...newData]));
+      updatePtDescCountMap(newData);
     });
-  }, [socket, ptDescCountMap, mutatePtDescCountMap]);
+  }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     openDuplicateModal(pageToDuplicate);

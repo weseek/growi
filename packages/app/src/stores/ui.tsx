@@ -335,8 +335,17 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> => {
+type PageTreeDescCountMapUtils = {
+  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
+}
+
+export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
   const key = 'pageTreeDescCountMap';
 
-  return useStaticSWR(key, initialData, { fallbackData: new Map() });
+  const swrResponse = useStaticSWR<UpdateDescCountData, Error>(key, initialData, { fallbackData: new Map() });
+
+  return {
+    ...swrResponse,
+    update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
+  };
 };
