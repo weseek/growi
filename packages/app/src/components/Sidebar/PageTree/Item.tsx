@@ -89,8 +89,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
   // descendantCount
-  const { data: ptDescCountMap } = usePageTreeDescCountMap();
-  const descendantCount = ptDescCountMap?.get(page._id || '') || page.descendantCount || 0;
+  const { getDescCount } = usePageTreeDescCountMap();
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
 
 
   // hasDescendants flag

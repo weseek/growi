@@ -3,10 +3,10 @@ export const SocketEventName = {
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 
-type PagePath = string;
+type PageId = string;
 type DescendantCount = number;
 /**
  * Data of updateDescCount when used through socket.io. Convert to UpdateDescCountData type when use with swr cache.
  */
-export type UpdateDescCountRawData = Record<PagePath, DescendantCount>;
-export type UpdateDescCountData = Map<PagePath, DescendantCount>;
+export type UpdateDescCountRawData = Record<PageId, DescendantCount>;
+export type UpdateDescCountData = Map<PageId, DescendantCount>;
