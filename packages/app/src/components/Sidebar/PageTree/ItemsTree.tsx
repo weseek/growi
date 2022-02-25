@@ -7,7 +7,7 @@ import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { SocketNamespace, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
@@ -152,7 +152,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     }
 
     // socket
-    socket.on(SocketNamespace.UpdateDescCount, (data: UpdateDescCountRawData) => {
+    socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
       // save to global state
       const dataToSave: UpdateDescCountData = new Map(Object.entries(data));
     });
