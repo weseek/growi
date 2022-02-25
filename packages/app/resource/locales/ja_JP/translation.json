@@ -13,7 +13,6 @@
   "Click to copy": "クリックでコピー",
   "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
-  "Moved": "移動しました",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -369,8 +368,6 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは",
-      "moved_period":"から移動しました。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
       "unlinked": "このページへのリダイレクトは削除されました。",

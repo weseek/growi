@@ -13,7 +13,6 @@
   "Click to copy": "Click to copy",
   "Rename" : "Rename",
   "Move/Rename": "Move/Rename",
-  "Moved": "Moved",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
@@ -369,8 +368,6 @@
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
-      "moved": "This page was moved from",
-      "moved_period": ".",
       "redirected": "You are redirected from",
       "redirected_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
