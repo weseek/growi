@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { DropdownItem } from 'reactstrap';
 
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { IPageHasId } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -188,7 +188,10 @@ const GrowiContextualSubNavigation = (props) => {
   }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
-    openRenameModal(page);
+    const renamedHandler: OnRenamedFunction = () => {
+      window.location.reload();
+    };
+    openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
