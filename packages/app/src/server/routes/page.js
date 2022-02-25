@@ -621,9 +621,8 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    // Include isEmpty page to handle _notFound or forbidden
+    // Exclude isEmpty page to handle _notFound or forbidden
     const isForbidden = await Page.exists({ path, isEmpty: false });
-    console.log('isForbidden and path', isForbidden, path);
     if (isForbidden) {
       req.isForbidden = true;
       return _notFound(req, res);
