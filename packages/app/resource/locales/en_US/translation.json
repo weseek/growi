@@ -383,9 +383,6 @@
       "no_deadline":"This page has no expiration date"
     }
   },
-  "page_table_of_contents": {
-    "empty": "Table of Contents is empty"
-  },
   "page_edit": {
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
@@ -441,8 +438,9 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
-  "deleted_pages": "Page(s) has been deleted",
-  "deleted_pages_completely": "Page(s) has been deleted completely",
+  "deleted_pages": "{{path}} has been deleted",
+  "deleted_pages_completely": "{{path}} has been deleted completely",
+  "renamed_pages": "{{path}} has been renamed",
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
     "notice": "The pages deleted completely are unrecoverable."
@@ -461,6 +459,7 @@
       "recursive": "Duplicate children of under this path recursively"
     }
   },
+  "duplicated_pages": "{{path}} has been duplicated",
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",

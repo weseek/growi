@@ -33,16 +33,20 @@ class LegacyRevisionRenderer extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.initCurrentRenderingContext();
-    this.renderHtml();
+    const { renderable } = this.props;
+
+    if (renderable) {
+      this.initCurrentRenderingContext();
+      this.renderHtml();
+    }
   }
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords } = this.props;
+    const { markdown, renderable, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
-    if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
+    if ((markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) && renderable) {
       this.initCurrentRenderingContext();
       this.renderHtml();
       return;
@@ -172,6 +176,7 @@ LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  renderable: PropTypes.bool,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
 };

@@ -65,8 +65,7 @@ const PageRenameModal = (props) => {
   const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await apiv3Get('/pages/subordinated-list', { path });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
@@ -135,7 +134,11 @@ const PageRenameModal = (props) => {
         url.searchParams.append('withRedirect', true);
       }
 
-      window.location.href = `${url.pathname}${url.search}`;
+      const onRenamed = renameModalData.opts?.onRenamed;
+      if (onRenamed != null) {
+        onRenamed(path);
+      }
+      closeRenameModal();
     }
     catch (err) {
       setErrs(err);
