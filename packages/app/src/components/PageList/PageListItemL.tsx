@@ -20,7 +20,7 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageInfoForListing, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -30,7 +30,7 @@ import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItem
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
-  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
+  page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -197,11 +197,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              { isIPageInfoForEntity(pageMeta) && (
-                <div className="d-none d-md-flex py-0 px-1">
-                  <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
-                </div>
-              ) }
+              <div className="d-none d-md-flex py-0 px-1">
+                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
+              </div>
 
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
