@@ -112,10 +112,10 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      const { data } = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
       const onDuplicated = duplicateModalData.opts?.onDuplicated;
       if (onDuplicated != null) {
-        onDuplicated(path);
+        onDuplicated(path, data.page._id);
       }
       closeDuplicateModal();
     }
