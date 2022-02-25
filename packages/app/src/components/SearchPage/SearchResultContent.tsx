@@ -7,8 +7,10 @@ import { DropdownItem } from 'reactstrap';
 
 import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -99,6 +101,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     forceHideMenuItems,
   } = props;
 
+  const { t } = useTranslation();
+
   const page = pageWithMeta?.pageData;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -115,9 +119,24 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageToRename);
   }, [openRenameModal]);
 
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
+    }
+    else {
+      toastSuccess(t('deleted_pages', { path }));
+    }
+
+  }, [t]);
+
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {

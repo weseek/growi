@@ -1,6 +1,6 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageWithMeta,
 } from '~/interfaces/page';
@@ -87,7 +87,7 @@ export type IPageForPageDuplicateModal = {
 }
 
 export type IDuplicateModalOption = {
-  onDeleted?: OnDeletedFunction,
+  onDuplicated?: OnDuplicatedFunction,
 }
 
 type DuplicateModalStatus = {
@@ -99,7 +99,7 @@ type DuplicateModalStatus = {
 type DuplicateModalStatusUtils = {
   open(
     page?: IPageForPageDuplicateModal,
-    opts?: IRenameModalOption
+    opts?: IDuplicateModalOption
   ): Promise<DuplicateModalStatus | undefined>
   close(): Promise<DuplicateModalStatus | undefined>
 }
@@ -129,7 +129,7 @@ export type IPageForPageRenameModal = {
 }
 
 export type IRenameModalOption = {
-  onDeleted?: OnDeletedFunction,
+  onRenamed?: OnRenamedFunction,
 }
 
 type RenameModalStatus = {

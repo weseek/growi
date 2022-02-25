@@ -437,8 +437,9 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
-  "deleted_pages": "ページをゴミ箱に入れました",
-  "deleted_pages_completely": "ページを完全に削除しました",
+  "deleted_pages": "{{path}} をゴミ箱に入れました",
+  "deleted_pages_completely": "{{path}} を完全に削除しました",
+  "renamed_pages": "{{path}} を移動/名前変更しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
@@ -457,6 +458,7 @@
       "recursive": "配下のページも複製します"
     }
   },
+  "duplicated_pages": "{{path}} を複製しました",
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
