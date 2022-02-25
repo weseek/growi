@@ -18,6 +18,7 @@ import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { useGlobalSocket } from '~/stores/websocket';
+import { usePageTreeDescCountMap } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
@@ -127,6 +128,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const { data: socket } = useGlobalSocket();
+  const { data: ptDescCountMap, mutate: mutatePtDescCountMap } = usePageTreeDescCountMap();
 
 
   // for mutation
@@ -154,9 +156,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     // socket
     socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
       // save to global state
-      const dataToSave: UpdateDescCountData = new Map(Object.entries(data));
+      const newData: UpdateDescCountData = new Map(Object.entries(data));
+      const oldData: UpdateDescCountData = ptDescCountMap || new Map();
+
+      mutatePtDescCountMap(new Map([...oldData, ...newData]));
     });
-  }, [socket]);
+  }, [socket, ptDescCountMap, mutatePtDescCountMap]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     openDuplicateModal(pageToDuplicate);

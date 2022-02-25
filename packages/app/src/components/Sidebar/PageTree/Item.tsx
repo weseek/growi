@@ -21,6 +21,7 @@ import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
+import { usePageTreeDescCountMap } from '~/stores/ui';
 
 interface ItemProps {
   isEnableActions: boolean
@@ -87,9 +88,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  // descendantCount
+  const { data: ptDescCountMap } = usePageTreeDescCountMap();
+  const descendantCount = ptDescCountMap?.get(page._id || '') || page.descendantCount || 0;
+
+
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
-  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
+  const hasDescendants = descendantCount > 0 || isChildrenLoaded;
 
   // to re-show hidden item when useDrag end() callback
   const displayDroppedItemByPageId = useCallback((pageId) => {
@@ -391,9 +397,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}
-        {(page.descendantCount != null && page.descendantCount > 0) && (
+        {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
-            <ItemCount descendantCount={page.descendantCount} />
+            <ItemCount descendantCount={descendantCount} />
           </div>
         )}
         <div className="grw-pagetree-control d-flex">

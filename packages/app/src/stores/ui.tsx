@@ -17,6 +17,7 @@ import {
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { Nullable } from '~/interfaces/common';
+import { UpdateDescCountData } from '~/interfaces/websocket';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -332,4 +333,10 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : key,
     () => isPageExist && !isUserPage,
   );
+};
+
+export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> => {
+  const key = 'pageTreeDescCountMap';
+
+  return useStaticSWR(key, initialData, { fallbackData: new Map() });
 };
