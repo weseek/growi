@@ -2639,7 +2639,7 @@ class PageService {
 
     await Page.incrementDescendantCountOfPageIds(ancestorPageIds, inc);
 
-    const updateDescCountData: UpdateDescCountRawData = Object.fromEntries(ancestors.map(p => [p.path, p.descendantCount + inc]));
+    const updateDescCountData: UpdateDescCountRawData = Object.fromEntries(ancestors.map(p => [p._id.toString(), p.descendantCount + inc]));
     this.emitUpdateDescCount(updateDescCountData);
   }
 

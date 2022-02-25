@@ -337,6 +337,7 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
 
 type PageTreeDescCountMapUtils = {
   update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
+  getDescCount(pageId?: string): number | null | undefined
 }
 
 export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
@@ -346,6 +347,7 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
 
   return {
     ...swrResponse,
+    getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
