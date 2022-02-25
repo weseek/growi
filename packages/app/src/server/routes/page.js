@@ -266,12 +266,15 @@ module.exports = function(crowi, app) {
     renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
   }
 
-  function addRenderVarsWhenNotFound(renderVars, pathOrId) {
+  async function addRenderVarsWhenNotFound(renderVars, pathOrId) {
     if (pathOrId == null) {
       return;
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
+
+    const isNotPath = pathOrId.includes('/');
+    renderVars.isNotFoundPermalink = isNotPath && !await Page.exists({ _id: pathOrId });
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
