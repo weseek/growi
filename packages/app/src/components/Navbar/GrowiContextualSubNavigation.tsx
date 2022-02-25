@@ -184,8 +184,8 @@ const GrowiContextualSubNavigation = (props) => {
   }, [pageId]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
-    const duplicatedHandler: OnDuplicatedFunction = (path, pageId) => {
-      window.location.href = pageId;
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      window.location.href = toPath;
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
