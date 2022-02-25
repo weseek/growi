@@ -1,7 +1,7 @@
-export const SocketNamespace = {
+export const SocketEventName = {
   UpdateDescCount: 'UpdateDsecCount',
 } as const;
-export type SocketNamespace = typeof SocketNamespace[keyof typeof SocketNamespace];
+export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 
 type PagePath = string;
 type DescendantCount = number;
