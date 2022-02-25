@@ -330,7 +330,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToMinimizeDataForRendering() {
-    this.query = this.query.select('_id path isEmpty grant revision, descendantCount');
+    this.query = this.query.select('_id path isEmpty grant revision descendantCount');
 
     return this;
   }
