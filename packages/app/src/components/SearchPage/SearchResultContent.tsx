@@ -147,8 +147,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-
-  }, []);
+    advancePt();
+    advanceFts();
+    advanceDpl();
+  }, [advanceDpl, advanceFts, advancePt, t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
