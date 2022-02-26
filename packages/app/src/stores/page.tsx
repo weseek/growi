@@ -102,14 +102,17 @@ const isIDataWithMeta = (item: HasObjectId | IDataWithMeta): item is IDataWithMe
 
 export const useSWRxPageInfoForList = (
     pageIds: string[] | null | undefined,
+    attachBookmarkCount = false,
     attachShortBody = false,
 ): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
 
   const shouldFetch = pageIds != null && pageIds.length > 0;
 
   const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
-    shouldFetch ? ['/page-listing/info', pageIds, attachShortBody] : null,
-    (endpoint, pageIds, attachShortBody) => apiv3Get(endpoint, { pageIds, attachShortBody }).then(response => response.data),
+    shouldFetch ? ['/page-listing/info', pageIds, attachBookmarkCount, attachShortBody] : null,
+    (endpoint, pageIds, attachBookmarkCount, attachShortBody) => {
+      return apiv3Get(endpoint, { pageIds, attachBookmarkCount, attachShortBody }).then(response => response.data);
+    },
   );
 
   return {

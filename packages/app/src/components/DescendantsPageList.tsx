@@ -39,7 +39,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 

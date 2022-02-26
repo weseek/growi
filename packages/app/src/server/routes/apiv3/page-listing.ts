@@ -12,6 +12,7 @@ import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
 import PageService from '../../service/page';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { IUserHasId } from '~/interfaces/user';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -35,6 +36,7 @@ const validator = {
   ], 'id or path is required'),
   infoParams: [
     query('pageIds').isArray().withMessage('pageIds is required'),
+    query('attachBookmarkCount').isBoolean().optional(),
     query('attachShortBody').isBoolean().optional(),
   ],
 };
@@ -101,8 +103,9 @@ export default (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   router.get('/info', accessTokenParser, loginRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { pageIds, attachShortBody: attachShortBodyParam } = req.query;
+    const { pageIds, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam } = req.query;
 
+    const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -120,7 +123,10 @@ export default (crowi: Crowi): Router => {
         shortBodiesMap = await pageService.shortBodiesMapByPageIds(foundIds, req.user);
       }
 
-      const bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
+      let bookmarkCountMap;
+      if (attachBookmarkCount) {
+        bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
+      }
 
       const idToPageInfoMap: Record<string, IPageInfoAll> = {};
 
@@ -133,7 +139,8 @@ export default (crowi: Crowi): Router => {
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            bookmarkCount: bookmarkCountMap[page._id],
+            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user),
+            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
 
