@@ -103,6 +103,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
             onPageDeleted={() => { advancePt(); advanceFts() }}
+            onPageDuplicated={() => { advancePt(); advanceFts() }}
           />
         );
       })}

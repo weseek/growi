@@ -23,7 +23,7 @@ import {
   IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -37,6 +37,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageDuplicated?: OnDuplicatedFunction,
   onPageDeleted?: OnDeletedFunction,
 }
 
@@ -46,7 +47,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageDeleted,
+    onClickItem, onCheckboxChanged, onPageDuplicated, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -105,8 +106,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       pageId: pageData._id,
       path: pageData.path,
     };
-    openDuplicateModal(page);
-  }, [openDuplicateModal, pageData]);
+    openDuplicateModal(page, { onDuplicated: onPageDuplicated });
+  }, [onPageDuplicated, openDuplicateModal, pageData._id, pageData.path]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     const page = {

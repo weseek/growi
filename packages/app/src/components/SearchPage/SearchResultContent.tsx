@@ -7,7 +7,10 @@ import { DropdownItem } from 'reactstrap';
 
 import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
@@ -76,6 +79,11 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
@@ -112,8 +120,15 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
-    openDuplicateModal(pageToDuplicate);
-  }, [openDuplicateModal]);
+    const duplicatedHandler: OnDuplicatedFunction = (path) => {
+      toastSuccess(t('duplicated_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback(async(pageToRename) => {
     openRenameModal(pageToRename);
@@ -131,8 +146,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-
-  }, [t]);
+    advancePt();
+    advanceFts();
+    advanceDpl();
+  }, [advanceDpl, advanceFts, advancePt, t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
