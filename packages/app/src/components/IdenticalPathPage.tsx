@@ -66,7 +66,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
   const { data: currentPath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
@@ -98,7 +98,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
         <div className="page-list">
           <ul className="page-list-ul list-group list-group-flush">
             {injectedPages.map((pageWithMeta) => {
-              const pageId = pageWithMeta.pageData._id;
+              const pageId = pageWithMeta.data._id;
 
               return (
                 <PageListItemL
