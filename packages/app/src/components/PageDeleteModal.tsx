@@ -7,14 +7,19 @@ import { useTranslation } from 'react-i18next';
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePageDeleteModal } from '~/stores/modal';
+import loggerFactory from '~/utils/logger';
 
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, isIPageInfoForOperation, IPageToDeleteWithMeta, IDataWithMeta, IPageInfoForOperation,
 } from '~/interfaces/page';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 import { useSWRxPageInfoForList } from '~/stores/page';
+
+
+const logger = loggerFactory('growi:cli:PageDeleteModal');
 
 
 const deleteIconAndKey = {
@@ -43,16 +48,23 @@ const PageDeleteModal: FC = () => {
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
 
-  const isAbleToDeleteCompletely = useMemo(() => {
-    let injectedPages: IDataWithMeta<unknown, IPageInfoForOperation>[];
-    if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
-      injectedPages = injectTo(deleteModalData?.pages);
+  // inject IPageInfo to operate
+  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForOperation>[] | null = null;
+  if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
+    injectedPages = injectTo(deleteModalData?.pages);
+  }
 
-      return injectedPages.every(pageWithMeta => pageWithMeta.meta?.isAbleToDeleteCompletely);
+  // calculate conditions to delete
+  const [isDeletable, isAbleToDeleteCompletely] = useMemo(() => {
+    if (injectedPages != null && injectedPages.length > 0) {
+      const isDeletable = injectedPages.every(pageWithMeta => pageWithMeta.meta?.isDeletable);
+      const isAbleToDeleteCompletely = injectedPages.every(pageWithMeta => pageWithMeta.meta?.isAbleToDeleteCompletely);
+      return [isDeletable, isAbleToDeleteCompletely];
     }
-    return true;
-  }, [deleteModalData?.pages, injectTo, notOperatablePageIds.length]);
+    return [true, true];
+  }, [injectedPages]);
 
+  // calculate condition to determine modal status
   const forceDeleteCompletelyMode = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
       return deleteModalData.pages.every(pageWithMeta => isTrashPage(pageWithMeta.data?.path ?? ''));
@@ -80,6 +92,11 @@ const PageDeleteModal: FC = () => {
 
   async function deletePage() {
     if (deleteModalData == null || deleteModalData.pages == null) {
+      return;
+    }
+
+    if (!isDeletable) {
+      logger.error('At least one page is not deletable.');
       return;
     }
 
@@ -188,8 +205,13 @@ const PageDeleteModal: FC = () => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (deleteModalData != null && deleteModalData.pages != null) {
-      return deleteModalData.pages.map(page => <div key={page.data._id}><code>{ page.data.path }</code></div>);
+    if (injectedPages != null && injectedPages != null) {
+      return injectedPages.map(page => (
+        <div key={page.data._id}>
+          <code>{ page.data.path }</code>
+          { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
+        </div>
+      ));
     }
     return <></>;
   };
@@ -207,12 +229,17 @@ const PageDeleteModal: FC = () => {
           {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
-        {renderDeleteRecursivelyForm()}
-        { !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
+        { isDeletable && renderDeleteRecursivelyForm()}
+        { isDeletable && !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
-        <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
+        <button
+          type="button"
+          className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
+          disabled={!isDeletable}
+          onClick={deleteButtonHandler}
+        >
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
