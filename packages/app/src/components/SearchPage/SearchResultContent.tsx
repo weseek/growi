@@ -207,6 +207,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pagePath={page.path}
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
+          isRenderable
         />
       </div>
     </div>
