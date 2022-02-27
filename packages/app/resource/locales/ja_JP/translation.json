@@ -13,7 +13,6 @@
   "Click to copy": "クリックでコピー",
   "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
-  "Moved": "移動しました",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -369,12 +368,8 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは",
-      "moved_period":"から移動しました。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
-      "duplicated": "このページは",
-      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",

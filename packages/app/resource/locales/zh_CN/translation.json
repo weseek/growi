@@ -14,7 +14,6 @@
 	"Click to copy": "点击复制",
   "Rename": "重命名",
 	"Move/Rename": "移动/重命名",
-	"Moved": "移动",
 	"Redirected": "重定向",
 	"Unlinked": "Unlinked",
 	"Like!": "Like!",
@@ -348,12 +347,8 @@
 	"page_page": {
 		"notice": {
 			"version": "这不是当前版本。",
-			"moved": "此页已从",
-      "moved_period": "",
 			"redirected": "您将从",
       "redirected_period": "",
-			"duplicated": "此页来自",
-      "duplicated_period": "",
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
