@@ -121,6 +121,8 @@ const PageDeleteModal: FC = () => {
         if (onDeleted != null) {
           onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
+
+        closeDeleteModal();
       }
       catch (err) {
         setErrs([err]);
@@ -147,6 +149,8 @@ const PageDeleteModal: FC = () => {
         if (onDeleted != null) {
           onDeleted(path, isRecursively, isCompletely);
         }
+
+        closeDeleteModal();
       }
       catch (err) {
         setErrs([err]);
@@ -155,7 +159,6 @@ const PageDeleteModal: FC = () => {
   }
 
   async function deleteButtonHandler() {
-    await closeDeleteModal();
     await deletePage();
   }
 
