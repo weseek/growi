@@ -7,7 +7,7 @@ import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
-import { TargetAndAncestors, NotFoundTargetPathOrId } from '../interfaces/page-listing-results';
+import { TargetAndAncestors, NotFoundTargetPathOrId, IsNotFoundPermalink } from '../interfaces/page-listing-results';
 
 type Nullable<T> = T | null;
 
@@ -129,6 +129,10 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
 
 export const useNotFoundTargetPathOrId = (initialData?: Nullable<NotFoundTargetPathOrId>): SWRResponse<Nullable<NotFoundTargetPathOrId>, Error> => {
   return useStaticSWR<Nullable<NotFoundTargetPathOrId>, Error>('notFoundTargetPathOrId', initialData);
+};
+
+export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
+  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {

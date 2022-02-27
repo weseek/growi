@@ -325,9 +325,8 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
     const page = await this.findOne({ _id });
-    if (page == null) throw new Error('Page not found.');
 
-    path = page.path;
+    path = page == null ? '/' : page.path;
   }
   else {
     path = pathOrId;
