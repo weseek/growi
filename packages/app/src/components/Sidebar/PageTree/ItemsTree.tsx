@@ -143,8 +143,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   }, []);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
-    const duplicatedHandler: OnDuplicatedFunction = (path) => {
-      toastSuccess(t('duplicated_pages', { path }));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      toastSuccess(t('duplicated_pages', { fromPath }));
 
       advancePt();
       advanceFts();
