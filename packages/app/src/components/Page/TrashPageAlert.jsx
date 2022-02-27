@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -8,11 +8,11 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-import EmptyTrashModal from '../EmptyTrashModal';
-
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
+
+import EmptyTrashModal from '../EmptyTrashModal';
 
 const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
   if (typeof pathOrPathsToDelete !== 'string') {
@@ -56,9 +56,11 @@ const TrashPageAlert = (props) => {
 
   function openPageDeleteModalHandler() {
     const pageToDelete = {
-      pageId,
-      revisionId,
-      path,
+      pageData: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
     };
     openDeleteModal(
       [pageToDelete],

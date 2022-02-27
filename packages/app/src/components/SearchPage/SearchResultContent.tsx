@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { usePageTreeTermManager } from '~/stores/page-listing';
@@ -111,7 +111,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const page = pageWithMeta?.pageData;
+  const page = pageWithMeta?.data;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -135,7 +135,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageToRename);
   }, [openRenameModal]);
 
-
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
@@ -153,9 +152,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     advanceDpl();
   }, [advanceDpl, advanceFts, advancePt, t]);
 
-  const deleteItemClickedHandler = useCallback((pageToDelete) => {
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [openDeleteModal, onDeletedHandler]);
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {

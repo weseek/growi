@@ -198,8 +198,8 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     }
 
     const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
-      .map(pageWithMeta => ({ pageId: pageWithMeta.pageData._id, path: pageWithMeta.pageData.path } as ILegacyPrivatePage));
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.data._id))
+      .map(pageWithMeta => ({ pageId: pageWithMeta.data._id, path: pageWithMeta.data.path } as ILegacyPrivatePage));
 
     openModal(
       selectedPages,

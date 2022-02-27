@@ -1,21 +1,23 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IPageHasId } from '../../../interfaces/page';
-import { ItemNode } from './ItemNode';
-import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
+
+import { ItemNode } from './ItemNode';
+import Item from './Item';
+
 
 /*
  * Utility to generate initial node
@@ -71,7 +73,7 @@ const renderByInitialNode = (
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
     onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 ): JSX.Element => {
 
   return (
@@ -165,7 +167,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
   };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
+  const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
