@@ -455,9 +455,9 @@ class PageService {
 
     // 2. Find new parent
     let newParent;
-    // If renaming to under target, run forceCreateEmptyTreeForRename to fill new ancestors
+    // If renaming to under target, run getParentAndforceCreateEmptyTree to fill new ancestors
     if (this.isRenamingToUnderTarget(page.path, newPagePath)) {
-      newParent = await this.forceCreateEmptyTreeForRename(page, newPagePath);
+      newParent = await this.getParentAndforceCreateEmptyTree(page, newPagePath);
     }
     else {
       newParent = await Page.getParentAndFillAncestors(newPagePath);
@@ -526,7 +526,7 @@ class PageService {
     return (new RegExp(`^${pathToTest}`, 'i')).test(pathToBeTested);
   }
 
-  private async forceCreateEmptyTreeForRename(originalPage, toPath: string) {
+  private async getParentAndforceCreateEmptyTree(originalPage, toPath: string) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const fromPath = originalPage.path;
