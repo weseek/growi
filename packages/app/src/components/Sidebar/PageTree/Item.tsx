@@ -31,7 +31,6 @@ const logger = loggerFactory('growi:cli:Item');
 
 
 interface ItemProps {
-  canDrag?:boolean
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
@@ -162,7 +161,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
     }),
   });
 
