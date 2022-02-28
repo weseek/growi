@@ -5,6 +5,7 @@ import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage }
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
@@ -14,6 +15,8 @@ import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
+import { useGlobalSocket } from '~/stores/websocket';
+import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { ItemNode } from './ItemNode';
 import Item from './Item';
@@ -126,6 +129,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const { data: socket } = useGlobalSocket();
+  const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
+
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
@@ -143,6 +149,20 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       document.removeEventListener('targetItemRendered', scrollItem);
     };
   }, []);
+
+  useEffect(() => {
+    if (socket == null) {
+      return;
+    }
+
+    // socket
+    socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
+      // save to global state
+      const newData: UpdateDescCountData = new Map(Object.entries(data));
+
+      updatePtDescCountMap(newData);
+    });
+  }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
