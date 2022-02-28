@@ -21,6 +21,7 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
 
@@ -237,8 +238,8 @@ class PageService {
 
     if (isSharedPage) {
       return {
-        pageData: page,
-        pageMeta: {
+        data: page,
+        meta: {
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -261,8 +262,8 @@ class PageService {
 
     if (isGuestUser) {
       return {
-        pageData: page,
-        pageMeta: metadataForGuest,
+        data: page,
+        meta: metadataForGuest,
       };
     }
 
@@ -273,8 +274,8 @@ class PageService {
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
     return {
-      pageData: page,
-      pageMeta: {
+      data: page,
+      meta: {
         ...metadataForGuest,
         isAbleToDeleteCompletely,
         isBookmarked,
@@ -2635,7 +2636,17 @@ class PageService {
     const Page = this.crowi.model('Page');
     const ancestors = await Page.findAncestorsUsingParentRecursively(pageId, shouldIncludeTarget);
     const ancestorPageIds = ancestors.map(p => p._id);
+
     await Page.incrementDescendantCountOfPageIds(ancestorPageIds, inc);
+
+    const updateDescCountData: UpdateDescCountRawData = Object.fromEntries(ancestors.map(p => [p._id.toString(), p.descendantCount + inc]));
+    this.emitUpdateDescCount(updateDescCountData);
+  }
+
+  private emitUpdateDescCount(data: UpdateDescCountRawData): void {
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
+    socket.emit(SocketEventName.UpdateDescCount, data);
   }
 
 }

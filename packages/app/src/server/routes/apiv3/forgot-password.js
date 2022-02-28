@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
 import httpErrorHandler from '../../middlewares/http-error-handler';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
@@ -21,7 +22,6 @@ module.exports = (crowi) => {
   const User = crowi.model('User');
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
     password: [

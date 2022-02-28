@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 
-import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageToDeleteWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+} from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal, IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -26,7 +28,7 @@ type CommonProps = {
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -118,15 +120,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return;
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId,
-      path,
-      isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
+  }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;

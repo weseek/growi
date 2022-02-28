@@ -85,6 +85,7 @@ class PageTimeline extends React.Component {
                     growiRenderer={this.growiRenderer}
                     pageId={page._id}
                     revisionId={page.revision}
+                    isRenderable
                   />
                 </div>
               </div>

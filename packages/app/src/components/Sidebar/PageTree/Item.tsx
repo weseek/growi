@@ -10,17 +10,25 @@ import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
 
+import loggerFactory from '~/utils/logger';
+
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDuplicateModal, IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
+import { usePageTreeDescCountMap } from '~/stores/ui';
+import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+
+
+const logger = loggerFactory('growi:cli:Item');
+
 
 interface ItemProps {
   isEnableActions: boolean
@@ -31,7 +39,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
@@ -52,6 +60,37 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
 const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
   const bookmarkOperation = _newValue ? bookmark : unbookmark;
   await bookmarkOperation(_pageId);
+};
+
+
+/**
+ * Return new page path after the droppedPagePath is moved under the newParentPagePath
+ * @param droppedPagePath
+ * @param newParentPagePath
+ * @returns
+ */
+const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
+  const pageTitle = nodePath.basename(droppedPagePath);
+  return nodePath.join(newParentPagePath, pageTitle);
+};
+
+/**
+ * Return whether the fromPage could be moved under the newParentPage
+ * @param fromPage
+ * @param newParentPage
+ * @param printLog
+ * @returns
+ */
+const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
+  if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
+    if (printLog) {
+      logger.warn('Any of page, page.path or droppedPage.path is null');
+    }
+    return false;
+  }
+
+  const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
+  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved);
 };
 
 
@@ -87,9 +126,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  // descendantCount
+  const { getDescCount } = usePageTreeDescCountMap();
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
-  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
+  const hasDescendants = descendantCount > 0 || isChildrenLoaded;
 
   // to re-show hidden item when useDrag end() callback
   const displayDroppedItemByPageId = useCallback((pageId) => {
@@ -119,16 +163,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  const pageItemDropHandler = async(item, monitor) => {
-    if (page == null || page.path == null) {
+  const pageItemDropHandler = async(item: ItemNode) => {
+    const { page: droppedPage } = item;
+
+    if (!canMoveUnderNewParent(droppedPage, page, true)) {
       return;
     }
 
-    const { page: droppedPage } = item;
+    if (droppedPage.path == null || page.path == null) {
+      return;
+    }
 
-    const pageTitle = nodePath.basename(droppedPage.path);
-    const newParentPath = page.path;
-    const newPagePath = nodePath.join(newParentPath, pageTitle);
+    const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
 
     try {
       await apiv3Put('/pages/rename', {
@@ -157,7 +203,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
     hover: (item, monitor) => {
@@ -169,6 +215,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           }
         }, 1000);
       }
+    },
+    canDrop: (item) => {
+      const { page: droppedPage } = item;
+      return canMoveUnderNewParent(droppedPage, page);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -253,18 +303,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
-    const { _id: pageId, revision: revisionId, path } = page;
-
-    if (pageId == null || revisionId == null || path == null) {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
-      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
     };
 
     if (onClickDeleteMenuItem != null) {
@@ -391,9 +441,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}
-        {(page.descendantCount != null && page.descendantCount > 0) && (
+        {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
-            <ItemCount descendantCount={page.descendantCount} />
+            <ItemCount descendantCount={descendantCount} />
           </div>
         )}
         <div className="grw-pagetree-control d-flex">

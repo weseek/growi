@@ -1,6 +1,7 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
 
 
 /*
@@ -27,29 +28,19 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   };
 };
 
-/*
-* PageDeleteModal
-*/
-export type IPageForPageDeleteModal = {
-  pageId: string,
-  revisionId?: string,
-  path: string
-  isAbleToDeleteCompletely?: boolean,
-}
-
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
 }
 
 type DeleteModalStatus = {
   isOpened: boolean,
-  pages?: IPageForPageDeleteModal[],
+  pages?: IPageToDeleteWithMeta[],
   opts?: IDeleteModalOption,
 }
 
 type DeleteModalStatusUtils = {
   open(
-    pages?: IPageForPageDeleteModal[],
+    pages?: IPageToDeleteWithMeta[],
     opts?: IDeleteModalOption,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
@@ -65,7 +56,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   return {
     ...swrResponse,
     open: (
-        pages?: IPageForPageDeleteModal[],
+        pages?: IPageToDeleteWithMeta[],
         opts?: IDeleteModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
@@ -83,7 +74,7 @@ export type IPageForPageDuplicateModal = {
 }
 
 export type IDuplicateModalOption = {
-  onDeleted?: OnDeletedFunction,
+  onDuplicated?: OnDuplicatedFunction,
 }
 
 type DuplicateModalStatus = {
@@ -95,7 +86,7 @@ type DuplicateModalStatus = {
 type DuplicateModalStatusUtils = {
   open(
     page?: IPageForPageDuplicateModal,
-    opts?: IRenameModalOption
+    opts?: IDuplicateModalOption
   ): Promise<DuplicateModalStatus | undefined>
   close(): Promise<DuplicateModalStatus | undefined>
 }
@@ -125,7 +116,7 @@ export type IPageForPageRenameModal = {
 }
 
 export type IRenameModalOption = {
-  onDeleted?: OnDeletedFunction,
+  onRenamed?: OnRenamedFunction,
 }
 
 type RenameModalStatus = {

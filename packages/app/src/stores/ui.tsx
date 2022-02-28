@@ -13,10 +13,11 @@ import loggerFactory from '~/utils/logger';
 import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { Nullable } from '~/interfaces/common';
+import { UpdateDescCountData } from '~/interfaces/websocket';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -311,12 +312,13 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isNotFoundPermalink } = useIsNotFoundPermalink();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFoundPermalink].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFoundPermalink,
   );
 };
 
@@ -332,4 +334,21 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : key,
     () => isPageExist && !isUserPage,
   );
+};
+
+type PageTreeDescCountMapUtils = {
+  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
+  getDescCount(pageId?: string): number | null | undefined
+}
+
+export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
+  const key = 'pageTreeDescCountMap';
+
+  const swrResponse = useStaticSWR<UpdateDescCountData, Error>(key, initialData, { fallbackData: new Map() });
+
+  return {
+    ...swrResponse,
+    getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
+    update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
+  };
 };

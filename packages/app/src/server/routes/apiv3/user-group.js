@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import UserGroup from '~/server/models/user-group';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -31,7 +33,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     UserGroupRelation,

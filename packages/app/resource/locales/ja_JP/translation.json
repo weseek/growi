@@ -13,7 +13,6 @@
   "Click to copy": "クリックでコピー",
   "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
-  "Moved": "移動しました",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -369,12 +368,8 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは",
-      "moved_period":"から移動しました。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
-      "duplicated": "このページは",
-      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
@@ -437,8 +432,9 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
-  "deleted_pages": "ページをゴミ箱に入れました",
-  "deleted_pages_completely": "ページを完全に削除しました",
+  "deleted_pages": "{{path}} をゴミ箱に入れました",
+  "deleted_pages_completely": "{{path}} を完全に削除しました",
+  "renamed_pages": "{{path}} を移動/名前変更しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
@@ -457,6 +453,7 @@
       "recursive": "配下のページも複製します"
     }
   },
+  "duplicated_pages": "{{fromPath}} を複製しました",
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",

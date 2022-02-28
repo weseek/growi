@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DevidedPagePath } from '@growi/core';
 
-import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
+import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page';
@@ -66,9 +66,11 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
   const { data: currentPath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+
+  const injectedPages = injectTo(pages);
 
   return (
     <div className="d-flex flex-column flex-lg-row-reverse">
@@ -95,14 +97,8 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
 
         <div className="page-list">
           <ul className="page-list-ul list-group list-group-flush">
-            {pages.map((page) => {
-              const pageId = page._id;
-              const pageInfo = (idToPageInfoMap ?? {})[pageId];
-
-              const pageWithMeta: IPageWithMeta = {
-                pageData: page,
-                pageMeta: pageInfo,
-              };
+            {injectedPages.map((pageWithMeta) => {
+              const pageId = pageWithMeta.data._id;
 
               return (
                 <PageListItemL
