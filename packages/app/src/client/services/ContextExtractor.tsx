@@ -14,6 +14,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
   useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
+import { useSetupGlobalSocket } from '~/stores/websocket';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -155,6 +156,9 @@ const ContextExtractorOnce: FC = () => {
 
   // SearchResult
   useIsDeviceSmallerThanLg();
+
+  // Global Socket
+  useSetupGlobalSocket();
 
   return null;
 };
