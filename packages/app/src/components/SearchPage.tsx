@@ -268,6 +268,7 @@ export const SearchPage = (props: Props): JSX.Element => {
       ref={searchPageBaseRef}
       appContainer={appContainer}
       pages={data?.data}
+      searchingKeyword={keyword}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
       // Components
       searchControl={searchControl}

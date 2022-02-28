@@ -647,7 +647,7 @@ body.pathname-sidebar {
   }
   .page-list {
     .highlighted-keyword {
-      background-color: $bgcolor-keyword-highlighted;
+      background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
     }
   }
 }
