@@ -4,6 +4,8 @@ import loggerFactory from '~/utils/logger';
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -158,7 +160,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -363,13 +364,13 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, isSharedPage);
+      const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true, isSharedPage);
 
       if (pageWithMeta == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      return res.apiv3(pageWithMeta.pageMeta);
+      return res.apiv3(pageWithMeta.meta);
     }
     catch (err) {
       logger.error('get-page-info', err);

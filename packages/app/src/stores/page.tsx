@@ -2,9 +2,10 @@ import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
@@ -82,18 +83,53 @@ export const useSWRxPageInfo = (
     shareLinkId?: string | null,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
+  // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
+  const fixedShareLinkId = shareLinkId ?? null;
+
   return useSWRImmutable(
-    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
 
-export const useSWRxPageInfoForList = (pageIds: string[] | null | undefined): SWRResponse<Record<string, IPageInfo | IPageInfoForListing>, Error> => {
+type PageInfoInjector = {
+  injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => IDataWithMeta<D, IPageInfoForOperation>[],
+}
+
+const isIDataWithMeta = (item: HasObjectId | IDataWithMeta): item is IDataWithMeta => {
+  return 'data' in item;
+};
+
+export const useSWRxPageInfoForList = (
+    pageIds: string[] | null | undefined,
+    attachBookmarkCount = false,
+    attachShortBody = false,
+): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
 
   const shouldFetch = pageIds != null && pageIds.length > 0;
 
-  return useSWRImmutable(
-    shouldFetch ? ['/page-listing/info', pageIds] : null,
-    (endpoint, pageIds) => apiv3Get(endpoint, { pageIds }).then(response => response.data),
+  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
+    shouldFetch ? ['/page-listing/info', pageIds, attachBookmarkCount, attachShortBody] : null,
+    (endpoint, pageIds, attachBookmarkCount, attachShortBody) => {
+      return apiv3Get(endpoint, { pageIds, attachBookmarkCount, attachShortBody }).then(response => response.data);
+    },
   );
+
+  return {
+    ...swrResult,
+    injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => {
+      return pages.map((item) => {
+        const page = isIDataWithMeta(item) ? item.data : item;
+        const orgPageMeta = isIDataWithMeta(item) ? item.meta : undefined;
+
+        // get an applicable IPageInfo
+        const applicablePageInfo = (swrResult.data ?? {})[page._id];
+
+        return {
+          data: page,
+          meta: applicablePageInfo ?? orgPageMeta,
+        };
+      });
+    },
+  };
 };

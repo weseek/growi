@@ -2,7 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageHasId, IPageWithMeta,
+  IDataWithMeta,
+  IPageHasId,
+  IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -22,8 +24,8 @@ type SubstanceProps = {
   onPagesDeleted?: OnDeletedFunction,
 }
 
-const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
-  return { pageData: page };
+const convertToIDataWithMeta = (page: IPageHasId): IDataWithMeta<IPageHasId> => {
+  return { data: page };
 };
 
 export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
@@ -37,41 +39,19 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
-  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
-  let pagingResultWithMeta: IPagingResult<IPageWithMeta> | undefined;
+  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
 
   // initial data
   if (pagingResult != null) {
-    const pages = pagingResult.items;
-
     // convert without meta at first
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pages.map(page => convertToIPageWithEmptyMeta(page)),
-    };
-  }
-
-  // inject data for listing
-  if (pagingResult != null) {
-    const pages = pagingResult.items;
-
-    const pageWithMetas = pages.map((page) => {
-      const pageInfo = (idToPageInfo ?? {})[page._id];
-
-      return {
-        pageData: page,
-        pageMeta: pageInfo,
-      } as IPageWithMeta;
-    });
-
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pageWithMetas,
-    };
+    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
+    // inject data for listing
+    pageWithMetas = injectTo(dataWithMetas);
   }
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
@@ -88,7 +68,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     setActivePage(selectedPageNumber);
   }
 
-  if (pagingResult == null || pagingResultWithMeta == null) {
+  if (pagingResult == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -103,7 +83,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   return (
     <>
       <PageList
-        pages={pagingResultWithMeta}
+        pages={pageWithMetas}
         isEnableActions={!isGuestUser}
         onPagesDeleted={pageDeletedHandler}
       />

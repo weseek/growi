@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 
-import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageToDeleteWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+} from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal, IPageForPageRenameModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -24,9 +26,9 @@ type CommonProps = {
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
-  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+  onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -100,8 +102,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickDuplicateMenuItem == null || path == null) {
       return;
     }
+    const page: IPageForPageDuplicateModal = { pageId, path };
 
-    onClickDuplicateMenuItem(pageId, path);
+    onClickDuplicateMenuItem(page);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
@@ -117,15 +120,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return;
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId,
-      path,
-      isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
+  }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;

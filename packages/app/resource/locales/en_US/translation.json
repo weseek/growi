@@ -13,7 +13,6 @@
   "Click to copy": "Click to copy",
   "Rename" : "Rename",
   "Move/Rename": "Move/Rename",
-  "Moved": "Moved",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
@@ -369,12 +368,8 @@
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
-      "moved": "This page was moved from",
-      "moved_period": ".",
       "redirected": "You are redirected from",
       "redirected_period": ".",
-      "duplicated": "This page was duplicated from",
-      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
@@ -382,9 +377,6 @@
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
       "no_deadline":"This page has no expiration date"
     }
-  },
-  "page_table_of_contents": {
-    "empty": "Table of Contents is empty"
   },
   "page_edit": {
     "Show active line": "Show active line",
@@ -416,8 +408,8 @@
     "label": {
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
-      "Fail to get exist path": "Fail to get exist path",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
+      "Failed to get exist path": "Failed to get exist path",
       "Rename without exist path": "Rename without exist path",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
@@ -441,8 +433,9 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
-  "deleted_pages": "Page(s) has been deleted",
-  "deleted_pages_completely": "Page(s) has been deleted completely",
+  "deleted_pages": "{{path}} has been deleted",
+  "deleted_pages_completely": "{{path}} has been deleted completely",
+  "renamed_pages": "{{path}} has been renamed",
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
     "notice": "The pages deleted completely are unrecoverable."
@@ -451,7 +444,7 @@
     "label": {
       "Duplicate page": "Duplicate page",
       "New page name": "New page name",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
@@ -461,6 +454,7 @@
       "recursive": "Duplicate children of under this path recursively"
     }
   },
+  "duplicated_pages": "{{fromPath}} has been duplicated",
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",

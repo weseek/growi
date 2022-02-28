@@ -11,39 +11,43 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+
+
+import { ISelectable } from '~/client/interfaces/selectable-all';
+import { bookmark, unbookmark } from '~/client/services/page-operation';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import LinkedPagePath from '~/models/linked-page-path';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
-import { ISelectable } from '~/client/interfaces/selectable-all';
 
 type Props = {
-  page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
+  page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageDuplicated?: OnDuplicatedFunction,
   onPageDeleted?: OnDeletedFunction,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, isEnableActions,
+    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageDeleted,
+    onClickItem, onCheckboxChanged, onPageDuplicated, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,10 +96,18 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
+  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+    const bookmarkOperation = _newValue ? bookmark : unbookmark;
+    await bookmarkOperation(_pageId);
+  };
+
   const duplicateMenuItemClickHandler = useCallback(() => {
-    const { _id: pageId, path } = pageData;
-    openDuplicateModal(pageId, path);
-  }, [openDuplicateModal, pageData]);
+    const page = {
+      pageId: pageData._id,
+      path: pageData.path,
+    };
+    openDuplicateModal(page, { onDuplicated: onPageDuplicated });
+  }, [onPageDuplicated, openDuplicateModal, pageData._id, pageData.path]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     const page = {
@@ -107,12 +119,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }, [openRenameModal, pageData]);
 
 
-  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
-    const { _id: pageId, revision: revisionId, path } = pageData;
-    const isAbleToDeleteCompletely = pageInfo.isAbleToDeleteCompletely;
-    const pageToDelete = {
-      pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
-    };
+  const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
+    const pageToDelete = { data: pageData, meta: pageInfo };
 
     // open modal
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
@@ -190,19 +198,18 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              { isIPageInfoForEntity(pageMeta) && (
-                <div className="d-none d-md-flex py-0 px-1">
-                  <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
-                </div>
-              ) }
+              <div className="d-none d-md-flex py-0 px-1">
+                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
+              </div>
 
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
                 <PageItemControl
                   pageId={pageData._id}
-                  pageInfo={pageMeta}
+                  pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
+                  onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}

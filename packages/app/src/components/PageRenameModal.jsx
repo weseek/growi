@@ -65,12 +65,11 @@ const PageRenameModal = (props) => {
   const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await apiv3Get('/pages/subordinated-list', { path });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_rename.label.Fail to get subordinated pages'));
+      toastError(t('modal_rename.label.Failed to get subordinated pages'));
     }
   }, [path, t]);
 
@@ -130,12 +129,15 @@ const PageRenameModal = (props) => {
 
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
-      url.searchParams.append('renamedFrom', path);
       if (isRenameRedirect) {
         url.searchParams.append('withRedirect', true);
       }
 
-      window.location.href = `${url.pathname}${url.search}`;
+      const onRenamed = renameModalData.opts?.onRenamed;
+      if (onRenamed != null) {
+        onRenamed(path);
+      }
+      closeRenameModal();
     }
     catch (err) {
       setErrs(err);

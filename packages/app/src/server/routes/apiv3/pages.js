@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -142,7 +144,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -175,6 +176,7 @@ module.exports = (crowi) => {
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -473,6 +475,7 @@ module.exports = (crowi) => {
     const options = {
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: !req.body.isRemainMetadata,
+      isMoveMode: req.body.isMoveMode,
     };
 
     if (!isCreatablePage(newPagePath)) {
@@ -718,10 +721,10 @@ module.exports = (crowi) => {
     const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
     try {
-      const pageData = await Page.findByPath(path);
+      const pageData = await Page.findByPath(path, true);
       const result = await Page.findManageableListWithDescendants(pageData, req.user, { limit });
 
-      return res.apiv3({ subordinatedPaths: result });
+      return res.apiv3({ subordinatedPages: result });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
@@ -769,7 +772,8 @@ module.exports = (crowi) => {
     }
 
     // run delete
-    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+    const options = { isCompletely, isRecursively };
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
@@ -799,17 +803,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
-    if (isRecursively) {
-      // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
+    try {
+      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
     }
-    else {
-      try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-      }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
     return res.apiv3({});

@@ -10,28 +10,36 @@ import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
 
+import loggerFactory from '~/utils/logger';
+
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
+import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+
+
+const logger = loggerFactory('growi:cli:Item');
+
 
 interface ItemProps {
   canDrag?:boolean
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
+  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onClickDuplicateMenuItem?(pageId: string, path: string): void
+  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
@@ -52,6 +60,37 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
 const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
   const bookmarkOperation = _newValue ? bookmark : unbookmark;
   await bookmarkOperation(_pageId);
+};
+
+
+/**
+ * Return new page path after the droppedPagePath is moved under the newParentPagePath
+ * @param droppedPagePath
+ * @param newParentPagePath
+ * @returns
+ */
+const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
+  const pageTitle = nodePath.basename(droppedPagePath);
+  return nodePath.join(newParentPagePath, pageTitle);
+};
+
+/**
+ * Return whether the fromPage could be moved under the newParentPage
+ * @param fromPage
+ * @param newParentPage
+ * @param printLog
+ * @returns
+ */
+const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
+  if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
+    if (printLog) {
+      logger.warn('Any of page, page.path or droppedPage.path is null');
+    }
+    return false;
+  }
+
+  const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
+  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved);
 };
 
 
@@ -127,16 +166,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   console.log('canDrag', canDrag);
 
-  const pageItemDropHandler = async(item, monitor) => {
-    if (page == null || page.path == null) {
+  const pageItemDropHandler = async(item: ItemNode) => {
+    const { page: droppedPage } = item;
+
+    if (!canMoveUnderNewParent(droppedPage, page, true)) {
       return;
     }
 
-    const { page: droppedPage } = item;
+    if (droppedPage.path == null || page.path == null) {
+      return;
+    }
 
-    const pageTitle = nodePath.basename(droppedPage.path);
-    const newParentPath = page.path;
-    const newPagePath = nodePath.join(newParentPath, pageTitle);
+    const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
 
     try {
       await apiv3Put('/pages/rename', {
@@ -165,7 +206,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
     hover: (item, monitor) => {
@@ -177,6 +218,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           }
         }, 1000);
       }
+    },
+    canDrop: (item) => {
+      const { page: droppedPage } = item;
+      return canMoveUnderNewParent(droppedPage, page);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -206,7 +251,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and path must not be null.');
     }
 
-    onClickDuplicateMenuItem(pageId, path);
+    const pageToDuplicate = { pageId, path };
+
+    onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
 
@@ -242,7 +289,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     const { _id: pageId, revision: revisionId, path } = page;
 
-    if (pageId == null || revisionId == null || path == null) {
+    if (!page.isEmpty && revisionId == null) {
+      throw Error('Existing page should have revisionId');
+    }
+
+    if (pageId == null || path == null) {
       throw Error('Any of _id and revisionId and path must not be null.');
     }
 
@@ -255,18 +306,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
-    const { _id: pageId, revision: revisionId, path } = page;
-
-    if (pageId == null || revisionId == null || path == null) {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
-      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
     };
 
     if (onClickDeleteMenuItem != null) {
@@ -287,7 +338,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     let initBody = '';
     if (isEnabledAttachTitleHeader) {
-      initBody = pathUtils.attachTitleHeader(newPagePath);
+      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      initBody = pathUtils.attachTitleHeader(pageTitle);
     }
 
     try {
@@ -324,6 +376,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  useEffect(() => {
+    if (!props.isScrolled && page.isTarget) {
+      document.dispatchEvent(new CustomEvent('targetItemRendered'));
+    }
+  }, [props.isScrolled, page.isTarget]);
+
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -359,7 +417,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
@@ -395,7 +454,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <ItemCount descendantCount={page.descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-none">
+        <div className="grw-pagetree-control d-flex">
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
@@ -404,13 +463,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
-            <DropdownToggle className="btn btn-transparent border-0 rounded btn-page-item-control p-0">
+            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn btn-transparent btn-page-item-control p-0"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
@@ -434,6 +494,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}

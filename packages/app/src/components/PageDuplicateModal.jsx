@@ -27,9 +27,10 @@ const PageDuplicateModal = (props) => {
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const { crowi } = appContainer.config;
-  const { data: pagesDataToDuplicate, close: closeDuplicateModal } = usePageDuplicateModal();
+  const { data: duplicateModalData, close: closeDuplicateModal } = usePageDuplicateModal();
 
-  const { isOpened, path, pageId } = pagesDataToDuplicate;
+  const { isOpened, page } = duplicateModalData;
+  const { pageId, path } = page;
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
@@ -40,7 +41,7 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [existingPaths, setExistingPaths] = useState([]);
 
-  const checkExistPaths = async(newParentPath) => {
+  const checkExistPaths = useCallback(async(newParentPath) => {
     try {
       const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
@@ -50,15 +51,15 @@ const PageDuplicateModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Fail to get exist path'));
     }
-  };
+  }, [appContainer, path, t]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [pageId, path],
-  );
+
+  const checkExistPathsDebounce = useCallback(() => {
+    debounce(1000, checkExistPaths);
+  }, [checkExistPaths]);
 
   useEffect(() => {
-    if (pageId != null && pageNameInput !== path) {
+    if (pageId != null && path != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
   }, [pageNameInput, subordinatedPages, path, pageId, checkExistPathsDebounce]);
@@ -88,12 +89,11 @@ const PageDuplicateModal = (props) => {
   const getSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
+      toastError(t('modal_duplicate.label.Failed to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
@@ -112,8 +112,15 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
-      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+      const { data } = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      const onDuplicated = duplicateModalData.opts?.onDuplicated;
+      const fromPath = path;
+      const toPath = data.page.path;
+
+      if (onDuplicated != null) {
+        onDuplicated(fromPath, toPath);
+      }
+      closeDuplicateModal();
     }
     catch (err) {
       setErrs(err);

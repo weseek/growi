@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 import { DropdownItem } from 'reactstrap';
 
-import { OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId } from '~/interfaces/page';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -15,8 +15,8 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
-  usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
+  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 
 
@@ -67,12 +67,15 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = '?presentation=1';
+  const hrefForPresentationModal = `${pageId}/?presentation=1`;
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
+      <DropdownItem
+        onClick={() => openPresentationModal(hrefForPresentationModal)}
+        data-testid="open-presentation-modal-btn"
+      >
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -180,12 +183,18 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      window.location.href = toPath;
+    };
+    openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
-    openRenameModal(page);
+    const renamedHandler: OnRenamedFunction = () => {
+      window.location.reload();
+    };
+    openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -204,8 +213,8 @@ const GrowiContextualSubNavigation = (props) => {
     }
   }, []);
 
-  const deleteItemClickedHandler = useCallback((pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
+    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
