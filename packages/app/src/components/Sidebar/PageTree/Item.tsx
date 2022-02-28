@@ -121,7 +121,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  const [isDraggable, setIsDraggable] = useState(false);
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -152,8 +151,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     canDrag: () => {
-      const canDragItem = !pagePathUtils.isUserPage(page.path || '/');
-      setIsDraggable(canDragItem);
+      const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
       return isDraggable;
     },
     end: (item, monitor) => {
