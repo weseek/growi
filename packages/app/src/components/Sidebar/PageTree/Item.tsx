@@ -116,7 +116,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { page, children } = itemNode;
 
-  const [pageTitle, setPageTitle] = useState(page.path);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -447,7 +446,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         )}
         { !isRenameInputShown && ( */}
         <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
         </a>
         {/* )} */}
         {(descendantCount > 0) && (
