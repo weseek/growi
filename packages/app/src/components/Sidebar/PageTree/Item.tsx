@@ -16,7 +16,6 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useIsUserPage } from '~/stores/context';
 import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 
@@ -116,7 +115,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
   const [canDragItem, setCanDragItem] = useState(false);
-  const { data: isUserPage } = useIsUserPage();
 
   const { page, children } = itemNode;
 
@@ -147,12 +145,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }, 500);
   }, []);
 
-  const [{ canDrag }, drag] = useDrag({
+  const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
-    canDrag: () => {
-      return canDragItem;
-    },
+    canDrag: canDragItem,
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -415,8 +411,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   return (
     <div
       id={`pagetree-item-${page._id}`}
-      className={`grw-pagetree-item-container
-    ${isOver ? 'grw-pagetree-is-over' : ''}
+      className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
     ${shouldHide ? 'd-none' : ''}`}
     >
       <li
