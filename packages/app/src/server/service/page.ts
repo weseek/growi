@@ -47,7 +47,7 @@ class PageCursorsForDescendantsFactory {
 
   private shouldIncludeEmpty: boolean;
 
-  private initialCursor: QueryCursor<any>; // TODO: wait for mongoose update
+  private initialCursor: QueryCursor<any> | never[]; // TODO: wait for mongoose update
 
   private Page: PageModel;
 
@@ -69,11 +69,11 @@ class PageCursorsForDescendantsFactory {
    * Returns Iterable that yields only descendant pages unorderedly
    * @returns Promise<AsyncGenerator>
    */
-  async generateIterable(): Promise<AsyncGenerator> {
+  async generateIterable(): Promise<AsyncGenerator | never[]> {
     // initialize cursor
     await this.init();
 
-    return this.generateOnlyDescendants(this.initialCursor);
+    return this.isNeverArray(this.initialCursor) ? [] : this.generateOnlyDescendants(this.initialCursor);
   }
 
   /**
@@ -90,13 +90,19 @@ class PageCursorsForDescendantsFactory {
   private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
     for await (const page of cursor) {
       const nextCursor = await this.generateCursorToFindChildren(page);
-      yield* this.generateOnlyDescendants(nextCursor); // recursively yield
+      if (!this.isNeverArray(nextCursor)) {
+        yield* this.generateOnlyDescendants(nextCursor); // recursively yield
+      }
 
       yield page;
     }
   }
 
-  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any>> {
+  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any> | never[]> {
+    if (page == null) {
+      return [];
+    }
+
     const { PageQueryBuilder } = this.Page;
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
@@ -106,6 +112,10 @@ class PageCursorsForDescendantsFactory {
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
     return cursor;
+  }
+
+  private isNeverArray(val: QueryCursor<any> | never[]): val is never[] {
+    return 'length' in val && val.length === 0;
   }
 
 }
@@ -444,11 +454,17 @@ class PageService {
     await Page.takeOffFromTree(page._id);
 
     // 2. Find new parent
-    const update: Partial<IPage> = {};
-    // find or create parent
-    const newParent = await Page.getParentAndFillAncestors(newPagePath);
+    let newParent;
+    // If renaming to under target, run forceCreateEmptyTreeForRename to fill new ancestors
+    if (this.isRenamingToUnderTarget(page.path, newPagePath)) {
+      newParent = await this.forceCreateEmptyTreeForRename(page, newPagePath);
+    }
+    else {
+      newParent = await Page.getParentAndFillAncestors(newPagePath);
+    }
 
     // 3. Put back target page to tree (also update the other attrs)
+    const update: Partial<IPage> = {};
     update.path = newPagePath;
     update.parent = newParent._id;
     if (updateMetadata) {
@@ -495,15 +511,79 @@ class PageService {
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
     // Remove leaf empty pages if not moving to under the ex-target position
-    const pathToTest = escapeStringRegexp(addTrailingSlash(page.path));
-    const pathToBeTested = newPagePath;
-    const isRenamingToUnderExTarget = (new RegExp(`^${pathToTest}`)).test(pathToBeTested);
-    if (!isRenamingToUnderExTarget) {
+    if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
       // remove empty pages at leaf position
       await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
+  private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
+    const pathToTest = escapeStringRegexp(addTrailingSlash(fromPath));
+    const pathToBeTested = toPath;
+
+    return (new RegExp(`^${pathToTest}`, 'i')).test(pathToBeTested);
+  }
+
+  // maximum around 10 recursive calls are expected
+  private async forceCreateEmptyTreeForRename(originalPage, toPath: string) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const fromPath = originalPage.path;
+    const newParentPath = pathlib.dirname(toPath);
+
+    // local util
+    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = [path]): string[] => {
+      const nextPath = pathlib.dirname(path);
+      if (nextPath === fromPath) {
+        return [...paths, nextPath];
+      }
+
+      paths.push(nextPath);
+
+      return collectAncestorPathsUntilFromPath(nextPath, paths);
+    };
+
+    const pathsToInsert = collectAncestorPathsUntilFromPath(newParentPath);
+    const originalParent = await Page.findById(originalPage.parent);
+    if (originalParent == null) {
+      throw Error('Original parent not found');
+    }
+    const insertedPages = await Page.insertMany(pathsToInsert.map((path) => {
+      return {
+        path,
+        isEmpty: true,
+      };
+    }));
+
+    const pages = [...insertedPages, originalParent];
+
+    const ancestorsMap = new Map<string, PageDocument & {_id: any}>(pages.map(p => [p.path, p]));
+
+    // bulkWrite to update ancestors
+    const operations = insertedPages.map((page) => {
+      const parentPath = pathlib.dirname(page.path);
+      const op = {
+        updateOne: {
+          filter: {
+            _id: page._id,
+          },
+          update: {
+            $set: {
+              parent: ancestorsMap.get(parentPath)?._id,
+              descedantCount: originalParent.descendantCount,
+            },
+          },
+        },
+      };
+
+      return op;
+    });
+    await Page.bulkWrite(operations);
+
+    const newParent = ancestorsMap.get(newParentPath);
+    return newParent;
   }
 
   // !!renaming always include descendant pages!!

@@ -12,7 +12,7 @@ class PageOperationService {
     this.crowi = crowi;
 
     // TODO: Remove this code when resuming feature is implemented
-    PageOperation.deleteMany();
+    PageOperation.deleteMany({});
   }
 
   /**
