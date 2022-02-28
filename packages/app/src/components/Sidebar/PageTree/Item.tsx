@@ -16,7 +16,9 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { useIsUserPage } from '~/stores/context';
 import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -61,7 +63,6 @@ const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean):
   const bookmarkOperation = _newValue ? bookmark : unbookmark;
   await bookmarkOperation(_pageId);
 };
-
 
 /**
  * Return new page path after the droppedPagePath is moved under the newParentPagePath
@@ -114,6 +115,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
+  const [canDragItem, setCanDragItem] = useState(false);
+  const { data: isUserPage } = useIsUserPage();
 
   const { page, children } = itemNode;
 
@@ -122,6 +125,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
+
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -146,10 +150,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [{ canDrag }, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
-    canDrag: (monitor) => {
-      const item = monitor.getItem();
-      console.log('dragitem', item);
-      return false;
+    canDrag: () => {
+      return canDragItem;
     },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
@@ -163,8 +165,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       canDrag: monitor.canDrag(),
     }),
   });
-
-  console.log('canDrag', canDrag);
 
   const pageItemDropHandler = async(item: ItemNode) => {
     const { page: droppedPage } = item;
@@ -375,6 +375,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     return null;
   };
+
+  useEffect(() => {
+    setCanDragItem(pagePathUtils.canDragByPath(page.path || '/'));
+  }, [page.path]);
 
   useEffect(() => {
     if (!props.isScrolled && page.isTarget) {

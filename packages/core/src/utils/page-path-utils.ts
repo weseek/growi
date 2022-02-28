@@ -48,6 +48,19 @@ export const isMovablePage = (path: string): boolean => {
 };
 
 /**
+ * Whether path belongs to the user page
+ * @param path
+ */
+export const isUserPage = (path: string): boolean => {
+  // https://regex101.com/r/BSDdRr/1
+  if (path.match(/^\/user(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * Whether path belongs to the trash page
  * @param path
  */
@@ -251,4 +264,13 @@ export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): b
  */
 export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
   return !isPathAreaOverlap(fromPath, toPath);
+};
+
+/**
+ * Determine whether can move by path
+ * @param path string
+ * @returns boolean
+ */
+export const canDragByPath = (path: string): boolean => {
+  return !isUserPage(path);
 };
