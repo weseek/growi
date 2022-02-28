@@ -121,7 +121,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  const [canDragItem, setCanDragItem] = useState(false);
+  const [isDraggable, setIsDraggable] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -150,7 +150,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
-    canDrag: canDragItem,
+    canDrag: isDraggable,
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -375,8 +375,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   useEffect(() => {
-    const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
-    setCanDragItem(isDraggable);
+    const canDragItem = !pagePathUtils.isUserPage(page.path || '/');
+    setIsDraggable(canDragItem);
   }, [page.path]);
 
   useEffect(() => {
