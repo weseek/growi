@@ -181,7 +181,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 
-      // TODO: revalidation by https://redmine.weseek.co.jp/issues/89258
+      advancePt();
+      advanceFts();
+      advanceDpl();
     };
 
     openRenameModal(pageToRename, { onRenamed: renamedHandler });

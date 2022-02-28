@@ -492,6 +492,7 @@ module.exports = (crowi) => {
     }
 
     let page;
+    let renamedPage;
 
     try {
       page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
@@ -508,14 +509,14 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    const result = { page: serializePageSecurely(page) };
+    const result = { page: serializePageSecurely(renamedPage ?? page) };
 
     try {
       // global notification

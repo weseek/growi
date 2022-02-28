@@ -62,7 +62,6 @@ const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean):
   await bookmarkOperation(_pageId);
 };
 
-
 /**
  * Return new page path after the droppedPagePath is moved under the newParentPagePath
  * @param droppedPagePath
@@ -117,7 +116,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { page, children } = itemNode;
 
-  const [pageTitle, setPageTitle] = useState(page.path);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -148,9 +146,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }, 500);
   }, []);
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
+    canDrag: () => {
+      const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
+      return isDraggable;
+    },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -160,8 +162,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
     }),
-  }));
+  });
 
   const pageItemDropHandler = async(item: ItemNode) => {
     const { page: droppedPage } = item;
@@ -373,6 +376,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+
   useEffect(() => {
     if (!props.isScrolled && page.isTarget) {
       document.dispatchEvent(new CustomEvent('targetItemRendered'));
@@ -406,7 +410,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   return (
-    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
+    <div
+      id={`pagetree-item-${page._id}`}
+      className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
+    ${shouldHide ? 'd-none' : ''}`}
+    >
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
@@ -438,7 +446,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         )}
         { !isRenameInputShown && ( */}
         <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
         </a>
         {/* )} */}
         {(descendantCount > 0) && (

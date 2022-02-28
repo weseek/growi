@@ -66,11 +66,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
    * @param {string} body html strings
    * @param {string} keywords
    */
-  getHighlightedBody(body, _keywords) {
-    const keywords = Array.isArray(_keywords)
-      ? _keywords
-      : [_keywords];
-
+  getHighlightedBody(body, keywords) {
     const normalizedKeywordsArray = [];
     // !!TODO!!: add test code refs: https://redmine.weseek.co.jp/issues/86841
     // Separate keywords
@@ -147,7 +143,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     await interceptorManager.process('prePostProcess', context);
     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-    if (highlightKeywords != null && highlightKeywords.length > 0) {
+    const isMarkdownEmpty = context.markdown.trim().length === 0;
+    if (highlightKeywords != null && highlightKeywords === '' && !isMarkdownEmpty) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
@@ -177,7 +174,7 @@ LegacyRevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   isRenderable: PropTypes.bool,
-  highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
 
@@ -195,7 +192,7 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
 
