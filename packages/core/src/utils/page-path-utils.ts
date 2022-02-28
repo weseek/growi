@@ -267,7 +267,7 @@ export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
 };
 
 /**
- * Determine whether can move by path
+ * Determine whether can drag by path
  * @param path string
  * @returns boolean
  */
