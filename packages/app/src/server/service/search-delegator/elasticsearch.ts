@@ -635,7 +635,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     // for debug
     if (process.env.NODE_ENV === 'development') {
-      logger.debug('query: ', { query });
+      logger.debug('query: ', JSON.stringify(query, null, 2));
 
       const { body: result } = await this.client.indices.validateQuery({
         index: query.index,
@@ -970,12 +970,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     this.appendResultSize(query, from, size);
 
-    if (sort != null) {
-      this.appendSortOrder(query, sort, order);
-    }
-    else {
-      await this.appendFunctionScore(query, queryString);
-    }
+    this.appendSortOrder(query, sort, order);
+    await this.appendFunctionScore(query, queryString);
 
     this.appendHighlight(query);
 
