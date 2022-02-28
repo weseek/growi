@@ -56,7 +56,7 @@ const TrashPageAlert = (props) => {
 
   function openPageDeleteModalHandler() {
     const pageToDelete = {
-      pageData: {
+      data: {
         _id: pageId,
         revision: revisionId,
         path,
