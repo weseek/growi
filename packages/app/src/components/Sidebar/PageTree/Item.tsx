@@ -151,7 +151,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
-    canDrag: isDraggable,
+    canDrag: () => {
+      const canDragItem = !pagePathUtils.isUserPage(page.path || '/');
+      setIsDraggable(canDragItem);
+      return isDraggable;
+    },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -161,6 +165,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
     }),
   });
 
@@ -374,11 +379,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
-
-  useEffect(() => {
-    const canDragItem = !pagePathUtils.isUserPage(page.path || '/');
-    setIsDraggable(canDragItem);
-  }, [page.path]);
 
   useEffect(() => {
     if (!props.isScrolled && page.isTarget) {
