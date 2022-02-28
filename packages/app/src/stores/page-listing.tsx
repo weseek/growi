@@ -27,8 +27,10 @@ export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
+  const { data: termNumber } = usePageTreeTermManager();
+
   return useSWR(
-    path ? `/page-listing/ancestors-children?path=${path}` : null,
+    path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
