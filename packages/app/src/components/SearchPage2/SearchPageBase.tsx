@@ -17,6 +17,10 @@ import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
 
+// https://regex101.com/r/brrkBu/1
+const highlightKeywordsSplitter = new RegExp('"[^"]+"|[^\u{20}\u{3000}]+', 'ug');
+
+
 export interface IReturnSelectedPageIds {
   getSelectedPageIds?: () => Set<string>,
 }
@@ -26,6 +30,7 @@ type Props = {
   appContainer: AppContainer,
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
+  searchingKeyword?: string,
 
   forceHideMenuItems?: ForceHideMenuItems,
 
@@ -40,6 +45,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const {
     appContainer,
     pages,
+    searchingKeyword,
     forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
@@ -51,10 +57,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  // TODO get search keywords and split
-  // ref: RevisionRenderer
-  //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
-  const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
@@ -123,11 +125,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
-  useEffect(() => {
-    if (searchResultListHead != null && searchResultListHead.props != null) {
-      setHightlightKeywords(searchResultListHead.props.searchingKeyword);
-    }
-  }, [searchResultListHead]);
   if (!isSearchServiceConfigured) {
     return (
       <div className="grw-container-convertible">
@@ -151,6 +148,10 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
       </div>
     );
   }
+
+  const highlightKeywords = searchingKeyword != null
+    ? highlightKeywordsSplitter.exec(searchingKeyword) ?? undefined
+    : undefined;
 
   return (
     <div className="content-main">
