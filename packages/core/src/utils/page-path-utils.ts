@@ -265,12 +265,3 @@ export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): b
 export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
   return !isPathAreaOverlap(fromPath, toPath);
 };
-
-/**
- * Determine whether can drag by path
- * @param path string
- * @returns boolean
- */
-export const canDragByPath = (path: string): boolean => {
-  return !isUserPage(path);
-};

@@ -113,7 +113,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
-  const [canDragItem, setCanDragItem] = useState(false);
 
   const { page, children } = itemNode;
 
@@ -122,7 +121,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  // const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [canDragItem, setCanDragItem] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -374,8 +373,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+
   useEffect(() => {
-    setCanDragItem(pagePathUtils.canDragByPath(page.path || '/'));
+    const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
+    setCanDragItem(isDraggable);
   }, [page.path]);
 
   useEffect(() => {
