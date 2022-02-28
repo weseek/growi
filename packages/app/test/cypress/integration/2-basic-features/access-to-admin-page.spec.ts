@@ -99,6 +99,7 @@ context('Access to Admin page', () => {
   it('/admin/users is successfully loaded', () => {
     cy.visit('/admin/users');
     cy.getByTestid('admin-users').should('be.visible');
+    cy.getByTestid('user-table-tr').first().should('be.visible');
     cy.screenshot(`${ssPrefix}-admin-users`, { capture: 'viewport' });
   });
 
