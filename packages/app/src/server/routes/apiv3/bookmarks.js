@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -69,7 +71,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const { Page, Bookmark, User } = crowi.models;
 

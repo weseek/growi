@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 import { DropdownItem } from 'reactstrap';
 
-import { OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId } from '~/interfaces/page';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -16,7 +16,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
+  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 
 
@@ -184,11 +184,17 @@ const GrowiContextualSubNavigation = (props) => {
   }, [pageId]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
-    openDuplicateModal(page);
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      window.location.href = toPath;
+    };
+    openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
-    openRenameModal(page);
+    const renamedHandler: OnRenamedFunction = () => {
+      window.location.reload();
+    };
+    openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -207,8 +213,8 @@ const GrowiContextualSubNavigation = (props) => {
     }
   }, []);
 
-  const deleteItemClickedHandler = useCallback((pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
+    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {

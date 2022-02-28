@@ -7,7 +7,7 @@ import {
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
-  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -24,7 +24,8 @@ const jsonNull = 'null';
 const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
-  const notFoundContent = document.getElementById('growi-pagetree-not-found-context');
+  const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
+  const notFoundContent = document.getElementById('growi-not-found-context');
   const forbiddenContent = document.getElementById('forbidden-page');
 
   /*
@@ -77,7 +78,8 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
-  const notFoundTargetPathOrId = JSON.parse(notFoundContent?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
+  const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
+  const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
 
@@ -133,6 +135,7 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
+  useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
 
   // Navigation

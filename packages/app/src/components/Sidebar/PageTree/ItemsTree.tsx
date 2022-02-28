@@ -1,16 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IPageHasId } from '../../../interfaces/page';
-import { ItemNode } from './ItemNode';
-import Item from './Item';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -19,6 +17,10 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { useGlobalSocket } from '~/stores/websocket';
 import { usePageTreeDescCountMap } from '~/stores/ui';
+
+import { ItemNode } from './ItemNode';
+import Item from './Item';
+
 
 /*
  * Utility to generate initial node
@@ -74,7 +76,7 @@ const renderByInitialNode = (
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
     onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 ): JSX.Element => {
 
   return (
@@ -163,14 +165,29 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
-    openDuplicateModal(pageToDuplicate);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      toastSuccess(t('duplicated_pages', { fromPath }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
   };
 
   const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
-    openRenameModal(pageToRename);
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      // TODO: revalidation by https://redmine.weseek.co.jp/issues/89258
+    };
+
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
   };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
+  const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;

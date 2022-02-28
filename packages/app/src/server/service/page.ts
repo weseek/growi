@@ -238,8 +238,8 @@ class PageService {
 
     if (isSharedPage) {
       return {
-        pageData: page,
-        pageMeta: {
+        data: page,
+        meta: {
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -262,8 +262,8 @@ class PageService {
 
     if (isGuestUser) {
       return {
-        pageData: page,
-        pageMeta: metadataForGuest,
+        data: page,
+        meta: metadataForGuest,
       };
     }
 
@@ -274,8 +274,8 @@ class PageService {
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
     return {
-      pageData: page,
-      pageMeta: {
+      data: page,
+      meta: {
         ...metadataForGuest,
         isAbleToDeleteCompletely,
         isBookmarked,
