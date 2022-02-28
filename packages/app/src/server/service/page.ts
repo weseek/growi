@@ -526,7 +526,6 @@ class PageService {
     return (new RegExp(`^${pathToTest}`, 'i')).test(pathToBeTested);
   }
 
-  // maximum around 10 recursive calls are expected
   private async forceCreateEmptyTreeForRename(originalPage, toPath: string) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
