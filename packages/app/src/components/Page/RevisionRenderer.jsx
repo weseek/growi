@@ -143,7 +143,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     await interceptorManager.process('prePostProcess', context);
     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-    if (highlightKeywords != null && highlightKeywords.length > 0) {
+    const isMarkdownEmpty = context.markdown.trim().length === 0;
+    if (highlightKeywords != null && highlightKeywords === '' && !isMarkdownEmpty) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
