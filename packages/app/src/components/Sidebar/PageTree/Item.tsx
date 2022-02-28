@@ -122,6 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
+  // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
