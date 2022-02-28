@@ -708,14 +708,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
-    query.sort = { [sort]: { order } };
-  }
-
-  convertSortQuery(sortAxis) {
-    switch (sortAxis) {
-      case RELATION_SCORE:
-        return '_score';
-    }
+    query.body.sort = { [sort]: { order } };
   }
 
   initializeBoolQuery(query) {
@@ -977,9 +970,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     this.appendResultSize(query, from, size);
 
-    this.appendSortOrder(query, sort, order);
+    if (sort != null) {
+      this.appendSortOrder(query, sort, order);
+    }
+    else {
+      await this.appendFunctionScore(query, queryString);
+    }
 
-    await this.appendFunctionScore(query, queryString);
     this.appendHighlight(query);
 
     return this.searchKeyword(query);
