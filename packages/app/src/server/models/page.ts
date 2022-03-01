@@ -861,6 +861,8 @@ schema.statics.removeEmptyPagesByPaths = async function(paths: string[]): Promis
   });
 };
 
+schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
+
 export function generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
