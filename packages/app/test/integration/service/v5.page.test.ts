@@ -1118,28 +1118,37 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Rename the path of a non-empty page to its grandchild page path that has an empty parent', async() => {
-      const page1 = await Page.findOne({ path: '/v5_pageForRename21', isEmpty: false });
-      const page2 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22', isEmpty: true, parent: page1._id });
-      const page3 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23', isEmpty: false, parent: page2._id });
+      const initialPathForPage1 = '/v5_pageForRename21';
+      const initialPathForPage2 = '/v5_pageForRename21/v5_pageForRename22';
+      const initialPathForPage3 = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: false });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: true, parent: page1._id });
+      const page3 = await Page.findOne({ path: initialPathForPage3, isEmpty: false, parent: page2._id });
+
       expectAllToBeTruthy([page1, page2, page3]);
 
-      const newPath = page3.path + page1.path;
-      const renamedPage = await renamePage(page1, newPath, dummyUser1, {});
-      const renamedPageChild = await Page.findOne({ parent: renamedPage._id });
-      const renamedPageGrandchild = await Page.findOne({ parent: renamedPageChild._id });
+      const newParentalPath = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
+      const newPath = newParentalPath + page1.path;
+
+      await renamePage(page1, newPath, dummyUser1, {});
+
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
+      const renamedPageGrandchild = await Page.findOne({ path: newParentalPath + initialPathForPage3 });
 
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename21' });
-      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22', parent: newlyCreatedEmptyPage1._id });
-      const newlyCreatedEmptyPage3 = await Page.findOne({
-        path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23',
-        parent: newlyCreatedEmptyPage2._id,
-      });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22' });
+      const newlyCreatedEmptyPage3 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23' });
 
       expectAllToBeTruthy([renamedPage, renamedPageChild, renamedPageGrandchild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2, newlyCreatedEmptyPage3]);
 
       // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(newlyCreatedEmptyPage2.parent).toStrictEqual(newlyCreatedEmptyPage1._id);
+      expect(newlyCreatedEmptyPage3.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
       expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage3._id);
+      expect(renamedPageChild.parent).toStrictEqual(renamedPage._id);
+      expect(renamedPageGrandchild.parent).toStrictEqual(renamedPageChild._id);
 
       // check isEmpty
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
@@ -1148,14 +1157,6 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPageChild.isEmpty).toBeTruthy();
       expect(renamedPageGrandchild.isEmpty).toBe(false);
-
-      // check path
-      const expectedPath1 = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23/v5_pageForRename21';
-      const expectedPath2 = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23/v5_pageForRename21/v5_pageForRename22';
-      const expectedPath3 = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
-      expect(renamedPage.path).toBe(expectedPath1);
-      expect(renamedPageChild.path).toBe(expectedPath2);
-      expect(renamedPageGrandchild.path).toBe(expectedPath3);
     });
   });
 
