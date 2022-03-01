@@ -150,7 +150,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   }
 
   const highlightKeywords = searchingKeyword != null
-    ? highlightKeywordsSplitter.exec(searchingKeyword) ?? undefined
+    ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
     : undefined;
 
   return (
