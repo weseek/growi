@@ -1229,7 +1229,7 @@ module.exports = function(crowi, app) {
 
   validator.revertRemove = [
     body('recursively')
-      .custom(v => v === 'true' || v === true || null)
+      .custom(v => v === 'true' || v === true || v == null)
       .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
