@@ -29,7 +29,8 @@ describe('PageService page operations with only public pages', () => {
 
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data) => {
+    dataList.forEach((data, i) => {
+      if (data == null) { console.log(`index: ${i}`) }
       expect(data).toBeTruthy();
     });
   };
@@ -83,9 +84,16 @@ describe('PageService page operations with only public pages', () => {
 
     const pageIdForRename16 = new mongoose.Types.ObjectId();
 
+    const pageIdForRename17 = new mongoose.Types.ObjectId();
+    const pageIdForRename18 = new mongoose.Types.ObjectId();
+    const pageIdForRename19 = new mongoose.Types.ObjectId();
+    const pageIdForRename20 = new mongoose.Types.ObjectId();
+    const pageIdForRename21 = new mongoose.Types.ObjectId();
+    const pageIdForRename22 = new mongoose.Types.ObjectId();
+    const pageIdForRename23 = new mongoose.Types.ObjectId();
+
     // Create Pages
     await Page.insertMany([
-      // parents
       {
         _id: pageIdForRename1,
         path: '/v5_ParentForRename1',
@@ -157,7 +165,6 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
-      // children
       {
         _id: pageIdForRename10,
         path: '/v5_ChildForRename1',
@@ -206,7 +213,6 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         isEmpty: true,
       },
-      // Grandchild
       {
         path: '/v5_ChildForRename5/v5_GrandchildForRename5',
         grant: Page.GRANT_PUBLIC,
@@ -221,6 +227,60 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename16,
+      },
+      {
+        _id: pageIdForRename17,
+        path: '/v5_pageForRename17',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdForRename18,
+        path: '/v5_pageForRename17/v5_pageForRename18',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename17,
+      },
+      {
+        _id: pageIdForRename19,
+        path: '/v5_pageForRename19',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForRename20,
+        path: '/v5_pageForRename19/v5_pageForRename20',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename19,
+      },
+      {
+        _id: pageIdForRename21,
+        path: '/v5_pageForRename21',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdForRename22,
+        path: '/v5_pageForRename21/v5_pageForRename22',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        parent: pageIdForRename21,
+      },
+      {
+        _id: pageIdForRename23,
+        path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename22,
       },
     ]);
 
@@ -997,6 +1057,113 @@ describe('PageService page operations with only public pages', () => {
       }
 
       expect(isThrown).toBe(true);
+    });
+    test('Rename non-empty page path to its descendant non-empty page path', async() => {
+      const initialPathForPage1 = '/v5_pageForRename17';
+      const initialPathForPage2 = '/v5_pageForRename17/v5_pageForRename18';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: false });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
+
+      expectAllToBeTruthy([page1, page2]);
+
+      const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
+      const newPath = newParentalPath + page1.path;
+      await renamePage(page1, newPath, dummyUser1, {});
+
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
+      const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename17' });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18' });
+
+      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+
+      // check parent
+      expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(newlyCreatedEmptyPage2.parent).toStrictEqual(newlyCreatedEmptyPage1._id);
+      expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
+      expect(renamedPageChild.parent).toStrictEqual(renamedPage._id);
+
+      // check isEmpty
+      expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
+      expect(renamedPage.isEmpty).toBe(false);
+      expect(renamedPageChild.isEmpty).toBe(false);
+
+    });
+
+    test('Rename empty page path to its descendant non-empty page path', async() => {
+      const initialPathForPage1 = '/v5_pageForRename19';
+      const initialPathForPage2 = '/v5_pageForRename19/v5_pageForRename20';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: true });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
+
+      expectAllToBeTruthy([page1, page2]);
+
+      const newParentalPath = '/v5_pageForRename19/v5_pageForRename20';
+      const newPath = newParentalPath + page1.path;
+      await renamePage(page1, newPath, dummyUser1, {});
+
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
+      const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename19' });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20' });
+
+      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+
+      // check parent
+      expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(newlyCreatedEmptyPage2.parent).toStrictEqual(newlyCreatedEmptyPage1._id);
+      expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
+      expect(renamedPageChild.parent).toStrictEqual(renamedPage._id);
+
+      // check isEmpty
+      expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
+      expect(renamedPage.isEmpty).toBeTruthy();
+      expect(renamedPageChild.isEmpty).toBe(false);
+
+    });
+
+    test('Rename the path of a non-empty page to its grandchild page path that has an empty parent', async() => {
+      const initialPathForPage1 = '/v5_pageForRename21';
+      const initialPathForPage2 = '/v5_pageForRename21/v5_pageForRename22';
+      const initialPathForPage3 = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: false });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: true, parent: page1._id });
+      const page3 = await Page.findOne({ path: initialPathForPage3, isEmpty: false, parent: page2._id });
+
+      expectAllToBeTruthy([page1, page2, page3]);
+
+      const newParentalPath = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
+      const newPath = newParentalPath + page1.path;
+
+      await renamePage(page1, newPath, dummyUser1, {});
+
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
+      const renamedPageGrandchild = await Page.findOne({ path: newParentalPath + initialPathForPage3 });
+
+      const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename21' });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22' });
+      const newlyCreatedEmptyPage3 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23' });
+
+      expectAllToBeTruthy([renamedPage, renamedPageChild, renamedPageGrandchild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2, newlyCreatedEmptyPage3]);
+
+      // check parent
+      expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(newlyCreatedEmptyPage2.parent).toStrictEqual(newlyCreatedEmptyPage1._id);
+      expect(newlyCreatedEmptyPage3.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
+      expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage3._id);
+      expect(renamedPageChild.parent).toStrictEqual(renamedPage._id);
+      expect(renamedPageGrandchild.parent).toStrictEqual(renamedPageChild._id);
+
+      // check isEmpty
+      expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage3.isEmpty).toBeTruthy();
+      expect(renamedPage.isEmpty).toBe(false);
+      expect(renamedPageChild.isEmpty).toBeTruthy();
+      expect(renamedPageGrandchild.isEmpty).toBe(false);
     });
   });
 
