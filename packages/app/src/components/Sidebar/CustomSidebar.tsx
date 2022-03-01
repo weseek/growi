@@ -46,21 +46,22 @@ const CustomSidebar: FC<Props> = (props: Props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      { markdown == null && <SidebarNotFound /> }
-      {/* eslint-disable-next-line react/no-danger */}
-      { markdown != null && (
-        <div className="p-3">
-          <RevisionRenderer
-            isRenderable
-            growiRenderer={renderer}
-            markdown={markdown}
-            additionalClassName="grw-custom-sidebar-content"
-          />
-        </div>
-      ) }
+      {
+        markdown != null ? (
+          <div className="p-3">
+            <RevisionRenderer
+              isRenderable
+              growiRenderer={renderer}
+              markdown={markdown}
+              additionalClassName="grw-custom-sidebar-content"
+            />
+          </div>
+        ) : (
+          <SidebarNotFound />
+        )
+      }
     </>
   );
-
 };
 
 /**
