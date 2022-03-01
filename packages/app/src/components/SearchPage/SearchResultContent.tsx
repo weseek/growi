@@ -7,7 +7,7 @@ import { DropdownItem } from 'reactstrap';
 
 import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
@@ -132,8 +132,15 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback(async(pageToRename) => {
-    openRenameModal(pageToRename);
-  }, [openRenameModal]);
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
