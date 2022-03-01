@@ -295,7 +295,7 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToPagenate(offset, limit, sortOpt) {
+  addConditionToPagenate(offset, limit, sortOpt?) {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
