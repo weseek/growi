@@ -1050,7 +1050,6 @@ describe('PageService page operations with only public pages', () => {
 
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
-
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPageChild.isEmpty).toBe(false);
 
@@ -1077,7 +1076,6 @@ describe('PageService page operations with only public pages', () => {
 
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
-
       expect(renamedPage.isEmpty).toBeTruthy();
       expect(renamedPageChild.isEmpty).toBe(false);
 
