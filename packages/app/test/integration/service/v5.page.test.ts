@@ -1063,18 +1063,21 @@ describe('PageService page operations with only public pages', () => {
       const page2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', isEmpty: false, parent: page1._id });
       expectAllToBeTruthy([page1, page2]);
 
-      const newPath = page2.path + page1.path;
-      const renamedPage = await renamePage(page1, newPath, dummyUser1, {});
-      const renamedPageChild = await Page.findOne({ parent: renamedPage._id });
+      const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
+      await renamePage(page1, newParentalPath + page1.path, dummyUser1, {});
 
+      const renamedPage = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename17` });
+      const renamedPageChild = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename17/v5_pageForRename18` });
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename17' });
-      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', parent: newlyCreatedEmptyPage1._id });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18' });
 
       expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
 
       // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(newlyCreatedEmptyPage2.parent).toStrictEqual(newlyCreatedEmptyPage1._id);
       expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
+      expect(renamedPageChild.parent).toStrictEqual(renamedPage._id);
 
       // check isEmpty
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
@@ -1082,9 +1085,6 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPageChild.isEmpty).toBe(false);
 
-      // check path
-      expect(renamedPage.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17');
-      expect(renamedPageChild.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17/v5_pageForRename18');
     });
 
     test('Rename empty page path to its descendant non-empty page path', async() => {
