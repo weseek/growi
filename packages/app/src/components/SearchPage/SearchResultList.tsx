@@ -2,11 +2,14 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction, useCallback, useImperativeHandle, useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
+import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
@@ -30,6 +33,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     forceHideMenuItems,
     onPageSelected,
   } = props;
+
+  const { t } = useTranslation();
 
   const pageIdsWithNoSnippet = pages
     .filter(page => (page.meta?.elasticSearchResult?.snippet.length ?? 0) === 0)
@@ -88,6 +93,38 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const duplicatedHandler : OnDuplicatedFunction = (fromPath, toPath) => {
+    toastSuccess(t('duplicated_pages', { fromPath }));
+
+    advancePt();
+    advanceFts();
+  };
+
+  const renamedHandler: OnRenamedFunction = (path) => {
+    toastSuccess(t('renamed_pages', { path }));
+
+    advancePt();
+    advanceFts();
+  };
+  const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
+    }
+    else {
+      toastSuccess(t('deleted_pages', { path }));
+    }
+    advancePt();
+    advanceFts();
+  };
+
+
   return (
     <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">
       { (injectedPages ?? pages).map((page, i) => {
@@ -102,8 +139,9 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
-            onPageDeleted={() => { advancePt(); advanceFts() }}
-            onPageDuplicated={() => { advancePt(); advanceFts() }}
+            onPageDuplicated={duplicatedHandler}
+            onPageRenamed={renamedHandler}
+            onPageDeleted={deletedHandler}
           />
         );
       })}
