@@ -5,13 +5,14 @@ import mongoose, {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
+import escapeStringRegexp from 'escape-string-regexp';
 import nodePath from 'path';
-import { getOrCreateModel, pagePathUtils } from '@growi/core';
+import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
-import { getPageSchema, PageQueryBuilder } from './obsolete-page';
+import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { PageRedirectModel } from './page-redirect';
 
@@ -121,6 +122,276 @@ const generateChildrenRegExp = (path: string): RegExp => {
   // ex. /parent/any_child OR /any_level1
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
+
+class PageQueryBuilder {
+
+  query: any;
+
+  constructor(query, includeEmpty = false) {
+    this.query = query;
+    if (!includeEmpty) {
+      this.query = this.query
+        .and({
+          $or: [
+            { isEmpty: false },
+            { isEmpty: null }, // for v4 compatibility
+          ],
+        });
+    }
+  }
+
+  addConditionToExcludeTrashed() {
+    this.query = this.query
+      .and({
+        $or: [
+          { status: null },
+          { status: STATUS_PUBLISHED },
+        ],
+      });
+
+    return this;
+  }
+
+  /**
+   * generate the query to find the pages '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
+   */
+  addConditionToListWithDescendants(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const pathNormalized = pathUtils.normalizePath(path);
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({
+        $or: [
+          { path: pathNormalized },
+          { path: new RegExp(`^${startsPattern}`) },
+        ],
+      });
+
+    return this;
+  }
+
+  /**
+   * generate the query to find the pages '{path}/*' (exclude '{path}' self).
+   * If top page, return without doing anything.
+   */
+  addConditionToListOnlyDescendants(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+
+  }
+
+  addConditionToListOnlyAncestors(path) {
+    const pathNormalized = pathUtils.normalizePath(path);
+    const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
+
+    this.query = this.query
+      .and({
+        path: {
+          $in: ancestorsPaths,
+        },
+      });
+
+    return this;
+
+  }
+
+  /**
+   * generate the query to find pages that start with `path`
+   *
+   * In normal case, returns '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
+   *
+   * *option*
+   *   Left for backward compatibility
+   */
+  addConditionToListByStartWith(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const startsPattern = escapeStringRegexp(path);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+  }
+
+  async addConditionForParentNormalization(user) {
+    // determine UserGroup condition
+    let userGroups = null;
+    if (user != null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const grantConditions: any[] = [
+      { grant: null },
+      { grant: GRANT_PUBLIC },
+    ];
+
+    if (user != null) {
+      grantConditions.push(
+        { grant: GRANT_OWNER, grantedUsers: user._id },
+      );
+    }
+
+    if (userGroups != null && userGroups.length > 0) {
+      grantConditions.push(
+        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      );
+    }
+
+    this.query = this.query
+      .and({
+        $or: grantConditions,
+      });
+
+    return this;
+  }
+
+  async addConditionAsMigratablePages(user) {
+    this.query = this.query
+      .and({
+        $or: [
+          { grant: { $ne: GRANT_RESTRICTED } },
+          { grant: { $ne: GRANT_SPECIFIED } },
+        ],
+      });
+    this.addConditionAsNotMigrated();
+    this.addConditionAsNonRootPage();
+    this.addConditionToExcludeTrashed();
+    await this.addConditionForParentNormalization(user);
+
+    return this;
+  }
+
+  addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
+    const condition = generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
+
+    this.query = this.query
+      .and(condition);
+
+    return this;
+  }
+
+  addConditionToPagenate(offset, limit, sortOpt) {
+    this.query = this.query
+      .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
+
+    return this;
+  }
+
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
+
+    return this;
+  }
+
+  addConditionAsNotMigrated() {
+    this.query = this.query
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and(
+        {
+          $or: [
+            { parent: { $ne: null } },
+            { path: '/' },
+          ],
+        },
+      );
+
+    return this;
+  }
+
+  /*
+   * Add this condition when get any ancestor pages including the target's parent
+   */
+  addConditionToSortPagesByDescPath() {
+    this.query = this.query.sort('-path');
+
+    return this;
+  }
+
+  addConditionToSortPagesByAscPath() {
+    this.query = this.query.sort('path');
+
+    return this;
+  }
+
+  addConditionToMinimizeDataForRendering() {
+    this.query = this.query.select('_id path isEmpty grant revision descendantCount');
+
+    return this;
+  }
+
+  addConditionToListByPathsArray(paths) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: paths,
+        },
+      });
+
+    return this;
+  }
+
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
+        },
+      });
+
+    return this;
+  }
+
+  populateDataToList(userPublicFields) {
+    this.query = this.query
+      .populate({
+        path: 'lastUpdateUser',
+        select: userPublicFields,
+      });
+    return this;
+  }
+
+  populateDataToShowRevision(userPublicFields) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields);
+    return this;
+  }
+
+  addConditionToFilteringByParentId(parentId) {
+    this.query = this.query.and({ parent: parentId });
+    return this;
+  }
+
+}
 
 /**
  * Create empty pages if the page in paths didn't exist
