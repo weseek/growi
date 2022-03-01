@@ -1066,7 +1066,8 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([page1, page2]);
 
       const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
-      await renamePage(page1, newParentalPath + page1.path, dummyUser1, {});
+      const newPath = newParentalPath + page1.path;
+      await renamePage(page1, newPath, dummyUser1, {});
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
