@@ -585,17 +585,22 @@ class PageService {
     return newParent;
   }
 
-  // !!renaming always include descendant pages!!
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const updateMetadata = options.updateMetadata || false;
+    const {
+      isRecursively = false,
+      createRedirectPage = false,
+      updateMetadata = false,
+    } = options;
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
 
 
     const update: any = {};
@@ -610,11 +615,15 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
+    if (createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
+
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
-
 
   private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
     // v4 compatible process
