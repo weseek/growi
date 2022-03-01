@@ -1046,6 +1046,7 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
 
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
 
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
@@ -1072,6 +1073,7 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
 
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+      expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
 
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
