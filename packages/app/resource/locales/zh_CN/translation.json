@@ -388,9 +388,7 @@
       "New page name": "新建页面名称",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
 			"Current page name": "当前页面名称",
-			"Recursively": "递归地",
 			"Do not update metadata": "不更新元数据",
 			"Redirect": "重定向"
 		},
