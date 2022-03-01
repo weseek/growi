@@ -1014,7 +1014,7 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
-    test('Rename: pages:["/a", "/a/b"] => rename "/a" "/a/b/a"', async() => {
+    test('Rename non-empty page path to its descendant non-empty page path', async() => {
       const page1 = await Page.findOne({ path: '/v5_pageForRename17', isEmpty: false });
       const page2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', isEmpty: false, parent: page1._id });
       expectAllToBeTruthy([page1, page2]);
