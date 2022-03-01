@@ -23,7 +23,7 @@ import {
   IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -38,6 +38,7 @@ type Props = {
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
   onPageDuplicated?: OnDuplicatedFunction,
+  onPageRenamed?: OnRenamedFunction,
   onPageDeleted?: OnDeletedFunction,
 }
 
@@ -47,7 +48,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageDuplicated, onPageDeleted,
+    onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -115,8 +116,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       revisionId: pageData.revision as string,
       path: pageData.path,
     };
-    openRenameModal(page);
-  }, [openRenameModal, pageData]);
+    openRenameModal(page, { onRenamed: onPageRenamed });
+  }, [onPageRenamed, openRenameModal, pageData._id, pageData.path, pageData.revision]);
 
 
   const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
