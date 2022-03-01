@@ -86,6 +86,8 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename16 = new mongoose.Types.ObjectId();
 
     const pageIdForRename17 = new mongoose.Types.ObjectId();
+    const pageIdForRename18 = new mongoose.Types.ObjectId();
+    const pageIdForRename19 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -232,11 +234,26 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
+        _id: pageIdForRename18,
         path: '/v5_pageForRename17/v5_pageForRename18',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename17,
+      },
+      {
+        _id: pageIdForRename19,
+        path: '/v5_pageForRename19',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_pageForRename19/v5_pageForRename20',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename19,
       },
     ]);
 
@@ -1038,6 +1055,32 @@ describe('PageService page operations with only public pages', () => {
 
       expect(renamedPage.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17');
       expect(renamedPageChild.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17/v5_pageForRename18');
+    });
+
+    test('Rename empty page path to its descendant non-empty page path', async() => {
+      const page1 = await Page.findOne({ path: '/v5_pageForRename19', isEmpty: true });
+      const page2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20', isEmpty: false, parent: page1._id });
+      expectAllToBeTruthy([page1, page2]);
+
+      const newPath = page2.path + page1.path;
+      const renamedPage = await renamePage(page1, newPath, dummyUser1, {});
+      const renamedPageChild = await Page.findOne({ parent: renamedPage._id });
+
+      const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename19' });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20', parent: newlyCreatedEmptyPage1._id });
+
+      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+
+      expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
+
+      expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
+
+      expect(renamedPage.isEmpty).toBeTruthy();
+      expect(renamedPageChild.isEmpty).toBe(false);
+
+      expect(renamedPage.path).toBe('/v5_pageForRename19/v5_pageForRename20/v5_pageForRename19');
+      expect(renamedPageChild.path).toBe('/v5_pageForRename19/v5_pageForRename20/v5_pageForRename19/v5_pageForRename20');
     });
   });
 
