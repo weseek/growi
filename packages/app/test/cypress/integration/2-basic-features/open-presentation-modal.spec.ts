@@ -1,12 +1,5 @@
-const getIframeBody = () => {
-  return cy
-    .getByTestid('page-presentation-modal')
-    .its('0.contentDocument').should('exist')
-    .its('body').should('not.be.undefined')
-    .then(cy.wrap)
-};
-
 context('Open presentation modal', () => {
+
   const ssPrefix = 'access-to-presentation-modal-';
 
   let connectSid: string | undefined;
@@ -35,7 +28,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
-    getIframeBody().find('slides').should('exist');
+    cy.getByTestid('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
   });
 
@@ -47,7 +40,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
-    getIframeBody().find('slides').should('exist');
+    cy.getByTestid('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
   });
 
@@ -59,7 +52,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true})
     });
 
-    getIframeBody().find('slides').should('exist');
+    cy.getByTestid('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });
   });
 });
