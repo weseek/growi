@@ -10,7 +10,7 @@ const DEFAULT_EMOJI_SIZE = 24;
  * @param skin number
  * @returns emoji data with skin tone
  */
-const emojiSkinTone = async(emoji) => {
+const getEmojiSkinTone = async(emoji) => {
   const emojiData = {};
   [...Array(6).keys()].forEach((index) => {
     if (index > 0) {
@@ -37,15 +37,17 @@ const emojiSkinTone = async(emoji) => {
 const getNativeEmoji = async(emojis) => {
   const emojiData = {};
   emojis.forEach(async(emoji) => {
+    const emojiName = emoji[0];
+    const hasSkinVariation = emoji[1].skin_variations;
     const elem = Emoji({
       set: 'apple',
-      emoji: emoji[0],
+      emoji: emojiName,
       size: DEFAULT_EMOJI_SIZE,
     });
     if (elem) {
-      emojiData[emoji[0]] = elem.props['aria-label'].split(',')[0];
-      if (emoji[1].skin_variations) {
-        const emojiWithSkinTone = await emojiSkinTone(emoji[0]);
+      emojiData[emojiName] = elem.props['aria-label'].split(',')[0];
+      if (hasSkinVariation) {
+        const emojiWithSkinTone = await getEmojiSkinTone(emojiName);
         Object.assign(emojiData, emojiWithSkinTone);
       }
     }
