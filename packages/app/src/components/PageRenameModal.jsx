@@ -40,19 +40,9 @@ const PageRenameModal = (props) => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState([]);
-  const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
   const [subordinatedError] = useState(null);
-  const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
-
-  function changeIsRenameRecursivelyHandler() {
-    SetIsRenameRecursively(!isRenameRecursively);
-  }
-
-  function changeIsRenameRecursivelyWithoutExistPathHandler() {
-    setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
-  }
 
   function changeIsRenameRedirectHandler() {
     SetIsRenameRedirect(!isRenameRedirect);
@@ -120,7 +110,6 @@ const PageRenameModal = (props) => {
       const response = await apiv3Put('/pages/rename', {
         revisionId,
         pageId,
-        isRecursively: isRenameRecursively,
         isRenameRedirect,
         isRemainMetadata,
         newPagePath: pageNameInput,
@@ -172,40 +161,9 @@ const PageRenameModal = (props) => {
             </form>
           </div>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input
-            className="custom-control-input"
-            name="recursively"
-            id="cbRenameRecursively"
-            type="checkbox"
-            checked={isRenameRecursively}
-            onChange={changeIsRenameRecursivelyHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbRenameRecursively">
-            { t('modal_rename.label.Recursively') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
-          </label>
-          {existingPaths.length !== 0 && (
-            <div
-              className="custom-control custom-checkbox custom-checkbox-warning"
-              style={{ display: isRenameRecursively ? '' : 'none' }}
-            >
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbRenamewithoutExistRecursively"
-                type="checkbox"
-                checked={isRenameRecursivelyWithoutExistPath}
-                onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
-              />
-              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-                { t('modal_rename.label.Rename without exist path') }
-              </label>
-            </div>
-          )}
-          {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
-        </div>
+        <p className="mt-0">{ t('modal_rename.help.recursive') }</p>
+        {path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+        {existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
           <input
@@ -244,7 +202,7 @@ const PageRenameModal = (props) => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={existingPaths.length !== 0}
         >Rename
         </button>
       </ModalFooter>
