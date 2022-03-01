@@ -1059,15 +1059,17 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Rename non-empty page path to its descendant non-empty page path', async() => {
-      const page1 = await Page.findOne({ path: '/v5_pageForRename17', isEmpty: false });
-      const page2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', isEmpty: false, parent: page1._id });
+      const initialPathForPage1 = '/v5_pageForRename17';
+      const initialPathForPage2 = '/v5_pageForRename17/v5_pageForRename18';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: false });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
       expectAllToBeTruthy([page1, page2]);
 
       const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
       await renamePage(page1, newParentalPath + page1.path, dummyUser1, {});
 
-      const renamedPage = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename17` });
-      const renamedPageChild = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename17/v5_pageForRename18` });
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename17' });
       const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18' });
 
@@ -1088,15 +1090,17 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Rename empty page path to its descendant non-empty page path', async() => {
-      const page1 = await Page.findOne({ path: '/v5_pageForRename19', isEmpty: true });
-      const page2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20', isEmpty: false, parent: page1._id });
+      const initialPathForPage1 = '/v5_pageForRename19';
+      const initialPathForPage2 = '/v5_pageForRename19/v5_pageForRename20';
+      const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: true });
+      const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
       expectAllToBeTruthy([page1, page2]);
 
       const newParentalPath = '/v5_pageForRename19/v5_pageForRename20';
       await renamePage(page1, `${newParentalPath}/v5_pageForRename19`, dummyUser1, {});
 
-      const renamedPage = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename19` });
-      const renamedPageChild = await Page.findOne({ path: `${newParentalPath}/v5_pageForRename19/v5_pageForRename20` });
+      const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
+      const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
 
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename19' });
       const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20' });
