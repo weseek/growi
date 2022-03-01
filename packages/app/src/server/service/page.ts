@@ -8,7 +8,7 @@ import { Readable, Writable } from 'stream';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
-  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel, PageDocument,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
@@ -2082,11 +2082,16 @@ class PageService {
   }
 
   async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const MAX_LENGTH = 350;
 
     // aggregation options
-    const viewerCondition = await generateGrantCondition(user, null);
+    let userGroups;
+    if (user != null && userGroups == null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // Typescriptize model
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    const viewerCondition = Page.generateGrantCondition(user, userGroups);
     const filterByIds = {
       _id: { $in: pageIds },
     };
@@ -2100,7 +2105,9 @@ class PageService {
             $match: filterByIds,
           },
           // filter by viewer
-          viewerCondition,
+          {
+            $match: viewerCondition,
+          },
           // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
           {
             $lookup: {
@@ -2487,7 +2494,7 @@ class PageService {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const grantFiltersByUser: { $or: any[] } = PageQueryBuilder.generateGrantCondition(user, userGroups);
+    const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
     return this._normalizeParentRecursively(regexps, ancestorPaths, grantFiltersByUser, user);
   }

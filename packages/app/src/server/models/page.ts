@@ -51,6 +51,10 @@ export interface PageModel extends Model<PageDocument> {
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
 
+  generateGrantCondition(
+    user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+  ): { $or: any[] }
+
   PageQueryBuilder: typeof PageQueryBuilder
 
   GRANT_PUBLIC
@@ -586,6 +590,49 @@ schema.statics.removeEmptyPagesByPaths = async function(paths: string[]): Promis
   });
 };
 
+export function generateGrantCondition(
+    user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+): { $or: any[] } {
+  const grantConditions: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+  ];
+
+  if (showAnyoneKnowsLink) {
+    grantConditions.push({ grant: GRANT_RESTRICTED });
+  }
+
+  if (showPagesRestrictedByOwner) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED },
+      { grant: GRANT_OWNER },
+    );
+  }
+  else if (user != null) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED, grantedUsers: user._id },
+      { grant: GRANT_OWNER, grantedUsers: user._id },
+    );
+  }
+
+  if (showPagesRestrictedByGroup) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP },
+    );
+  }
+  else if (userGroups != null && userGroups.length > 0) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+    );
+  }
+
+  return {
+    $or: grantConditions,
+  };
+}
+
+schema.statics.generateGrantCondition = generateGrantCondition;
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
@@ -789,61 +836,4 @@ export default (crowi: Crowi): any => {
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema as any); // TODO: improve type
-};
-
-/*
- * Aggregation utilities
- */
-// TODO: use the original type when upgraded https://github.com/Automattic/mongoose/blob/master/index.d.ts#L3090
-type PipelineStageMatch = {
-  $match: AnyObject
-};
-
-export const generateGrantCondition = async(
-    user, _userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
-): Promise<PipelineStageMatch> => {
-  let userGroups = _userGroups;
-  if (user != null && userGroups == null) {
-    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-  }
-
-  const grantConditions: AnyObject[] = [
-    { grant: null },
-    { grant: GRANT_PUBLIC },
-  ];
-
-  if (showAnyoneKnowsLink) {
-    grantConditions.push({ grant: GRANT_RESTRICTED });
-  }
-
-  if (showPagesRestrictedByOwner) {
-    grantConditions.push(
-      { grant: GRANT_SPECIFIED },
-      { grant: GRANT_OWNER },
-    );
-  }
-  else if (user != null) {
-    grantConditions.push(
-      { grant: GRANT_SPECIFIED, grantedUsers: user._id },
-      { grant: GRANT_OWNER, grantedUsers: user._id },
-    );
-  }
-
-  if (showPagesRestrictedByGroup) {
-    grantConditions.push(
-      { grant: GRANT_USER_GROUP },
-    );
-  }
-  else if (userGroups != null && userGroups.length > 0) {
-    grantConditions.push(
-      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
-    );
-  }
-
-  return {
-    $match: {
-      $or: grantConditions,
-    },
-  };
 };

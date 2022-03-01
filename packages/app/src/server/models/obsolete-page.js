@@ -1,5 +1,9 @@
 import { templateChecker, pagePathUtils } from '@growi/core';
+
+import { generateGrantCondition } from './page';
+
 import loggerFactory from '~/utils/logger';
+
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
@@ -239,49 +243,12 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const condition = this.generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
+    const condition = generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     this.query = this.query
       .and(condition);
 
     return this;
-  }
-
-  generateGrantCondition(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const grantConditions = [
-      { grant: null },
-      { grant: GRANT_PUBLIC },
-    ];
-
-    if (showAnyoneKnowsLink) {
-      grantConditions.push({ grant: GRANT_RESTRICTED });
-    }
-
-    if (showPagesRestrictedByOwner) {
-      grantConditions.push(
-        { grant: GRANT_SPECIFIED },
-        { grant: GRANT_OWNER },
-      );
-    }
-    else if (user != null) {
-      grantConditions.push(
-        { grant: GRANT_SPECIFIED, grantedUsers: user._id },
-        { grant: GRANT_OWNER, grantedUsers: user._id },
-      );
-    }
-
-    if (showPagesRestrictedByGroup) {
-      grantConditions.push(
-        { grant: GRANT_USER_GROUP },
-      );
-    }
-    else if (userGroups != null && userGroups.length > 0) {
-      grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
-      );
-    }
-
-    return { $or: grantConditions };
   }
 
   addConditionToPagenate(offset, limit, sortOpt) {
