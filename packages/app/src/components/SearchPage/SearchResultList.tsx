@@ -99,7 +99,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
 
     advancePt();
     advanceFts();
-
   };
 
   const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -117,7 +116,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     }
     advancePt();
     advanceFts();
-
   };
 
 
