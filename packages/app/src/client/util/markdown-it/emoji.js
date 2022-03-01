@@ -7,8 +7,10 @@ export default class EmojiConfigurer {
   }
 
   configure(md) {
-    const data = emojiMartData();
-    md.use(require('markdown-it-emoji-mart'), { defs: data });
+    emojiMartData().then((data) => {
+      console.log(data);
+      md.use(require('markdown-it-emoji-mart'), { defs: data });
+    });
   }
 
 }

@@ -10,17 +10,22 @@ const DEFAULT_EMOJI_SIZE = 24;
  * @param skin number
  * @returns emoji data with skin tone
  */
-const emojiSkinTone = (emoji, skin) => {
-  const elem = Emoji({
-    set: 'apple',
-    emoji,
-    skin,
-    size: DEFAULT_EMOJI_SIZE,
+const emojiSkinTone = async(emoji) => {
+  const emojiData = {};
+  [...Array(6).keys()].forEach((index) => {
+    if (index > 0) {
+      const elem = Emoji({
+        set: 'apple',
+        emoji,
+        skin: index + 1,
+        size: DEFAULT_EMOJI_SIZE,
+      });
+      if (elem) {
+        emojiData[`${emoji}::skin-tone-${index + 1}`] = elem.props['aria-label'].split(',')[0];
+      }
+    }
   });
-  if (elem && skin > 0) {
-    return elem.props['aria-label'].split(',')[0];
-  }
-
+  return emojiData;
 };
 
 /**
@@ -29,9 +34,9 @@ const emojiSkinTone = (emoji, skin) => {
  * @returns emoji data
  */
 
-const getNativeEmoji = (emojis) => {
+const getNativeEmoji = async(emojis) => {
   const emojiData = {};
-  emojis.forEach((emoji) => {
+  emojis.forEach(async(emoji) => {
     const elem = Emoji({
       set: 'apple',
       emoji: emoji[0],
@@ -40,11 +45,8 @@ const getNativeEmoji = (emojis) => {
     if (elem) {
       emojiData[emoji[0]] = elem.props['aria-label'].split(',')[0];
       if (emoji[1].skin_variations) {
-        [...Array(6).keys()].forEach((index) => {
-          if (index > 0) {
-            emojiData[`${emoji[0]}::skin-tone-${index + 1}`] = emojiSkinTone(emoji[0], index + 1);
-          }
-        });
+        const emojiWithSkinTone = await emojiSkinTone(emoji[0]);
+        Object.assign(emojiData, emojiWithSkinTone);
       }
     }
   });
