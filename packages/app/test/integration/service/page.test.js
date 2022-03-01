@@ -348,7 +348,6 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled(); // single rename is deprecated
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename1, testUser2);
 
@@ -362,7 +361,6 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename2, testUser2);
 
@@ -376,7 +374,6 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename3, testUser2);
 
         expect(resultPage.path).toBe('/renamed3');
