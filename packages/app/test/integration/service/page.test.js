@@ -293,7 +293,7 @@ describe('PageService', () => {
 
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
     test('rename page with different tree with isRecursively [deeper]', async() => {
-      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {});
+      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, { isRecursively: true });
       const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
       const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
       const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
@@ -315,7 +315,7 @@ describe('PageService', () => {
 
       // when
       //   rename /level1/level2 --> /level1
-      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {});
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, { isRecursively: true });
 
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
@@ -386,7 +386,7 @@ describe('PageService', () => {
 
       test('rename page with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { }, true);
+        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -399,7 +399,7 @@ describe('PageService', () => {
 
       test('rename page with different tree with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, {}, true);
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true });
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 
