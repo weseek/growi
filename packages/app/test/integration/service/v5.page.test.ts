@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { createLogger } from 'browser-bunyan';
 import { advanceTo } from 'jest-date-mock';
 
 import mongoose from 'mongoose';
