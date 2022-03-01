@@ -852,8 +852,11 @@ schema.statics.takeOffFromTree = async function(pageId: ObjectIdLike) {
   return this.findByIdAndUpdate(pageId, { $set: { parent: null } });
 };
 
-schema.statics.removeEmptyPagesByPaths = async function(paths: string[]): Promise<void> {
+schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLike[], paths: string[]): Promise<void> {
   await this.deleteMany({
+    _id: {
+      $nin: pageIdsToNotRemove,
+    },
     path: {
       $in: paths,
     },

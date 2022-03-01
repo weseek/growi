@@ -2482,7 +2482,6 @@ class PageService {
    */
   async normalizeParentRecursively(paths: string[], user: any | null): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, [p]));
     const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
@@ -2626,7 +2625,7 @@ class PageService {
         }
 
         // Remove unnecessary empty pages
-        await Page.removeEmptyPagesByPaths(pages.map(p => p.path));
+        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
 
         callback();
       },
