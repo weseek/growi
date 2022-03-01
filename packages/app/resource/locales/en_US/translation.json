@@ -410,9 +410,7 @@
       "New page name": "New page name",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
       "Current page name": "Current page name",
-      "Recursively": "Recursively",
       "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
