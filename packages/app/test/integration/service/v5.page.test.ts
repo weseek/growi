@@ -1045,14 +1045,17 @@ describe('PageService page operations with only public pages', () => {
 
       expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
 
+      // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
       expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
 
+      // check isEmpty
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPageChild.isEmpty).toBe(false);
 
+      // check path
       expect(renamedPage.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17');
       expect(renamedPageChild.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17/v5_pageForRename18');
     });
@@ -1071,14 +1074,17 @@ describe('PageService page operations with only public pages', () => {
 
       expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
 
+      // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
       expect(renamedPage.parent).toStrictEqual(newlyCreatedEmptyPage2._id);
 
+      // check isEmpty
       expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
       expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
       expect(renamedPage.isEmpty).toBeTruthy();
       expect(renamedPageChild.isEmpty).toBe(false);
 
+      // check path
       expect(renamedPage.path).toBe('/v5_pageForRename19/v5_pageForRename20/v5_pageForRename19');
       expect(renamedPageChild.path).toBe('/v5_pageForRename19/v5_pageForRename20/v5_pageForRename19/v5_pageForRename20');
     });
