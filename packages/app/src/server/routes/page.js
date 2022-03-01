@@ -4,7 +4,6 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import { PageQueryBuilder } from '../models/obsolete-page';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -145,6 +144,8 @@ module.exports = function(crowi, app) {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');
+
+  const { PageQueryBuilder } = Page;
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
