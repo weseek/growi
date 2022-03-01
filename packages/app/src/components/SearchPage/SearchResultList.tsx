@@ -9,7 +9,7 @@ import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
@@ -101,6 +101,12 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     advanceFts();
   };
 
+  const renamedHandler: OnRenamedFunction = (path) => {
+    toastSuccess(t('renamed_pages', { path }));
+
+    advancePt();
+    advanceFts();
+  };
   const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
@@ -134,6 +140,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
             onPageDuplicated={duplicatedHandler}
+            onPageRenamed={renamedHandler}
             onPageDeleted={deletedHandler}
           />
         );
