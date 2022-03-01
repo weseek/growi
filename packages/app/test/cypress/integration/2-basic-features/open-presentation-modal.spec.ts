@@ -28,7 +28,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.getByTestid('.grw-presentation-modal').should('exist');
+    cy.get('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
   });
 
@@ -40,7 +40,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.getByTestid('.grw-presentation-modal').should('exist');
+    cy.get('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
   });
 
@@ -52,7 +52,7 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.getByTestid('.grw-presentation-modal').should('exist');
+    cy.get('.grw-presentation-modal').should('exist');
     cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });
   });
 });
