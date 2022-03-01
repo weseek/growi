@@ -2502,7 +2502,6 @@ class PageService {
   private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], grantFiltersByUser: { $or: any[] }, user): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
-    const publicOnly = grantFiltersByUser == null;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2581,16 +2580,13 @@ class PageService {
           // Build filter
           const parentPathEscaped = escapeStringRegexp(parent.path === '/' ? '' : parent.path); // adjust the path for RegExp
           const filter: any = {
-            $and: [{
-              path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
-            }],
+            $and: [
+              {
+                path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
+              },
+              grantFiltersByUser,
+            ],
           };
-          if (publicOnly) {
-            filter.$and.push({ grant: Page.GRANT_PUBLIC });
-          }
-          else {
-            filter.$and.push(grantFiltersByUser);
-          }
 
           return {
             updateMany: {
