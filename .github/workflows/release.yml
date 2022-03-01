@@ -18,7 +18,7 @@ jobs:
       RELEASED_VERSION: ${{ steps.package-json.outputs.packageVersion }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
@@ -131,7 +131,7 @@ jobs:
         flavor: [default, nocdn]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
         lfs: true
