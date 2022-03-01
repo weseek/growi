@@ -12,7 +12,7 @@ const PagePresentationModal = () => {
   return (
     <Modal isOpen={presentationData.isOpened} toggle={closePresentationModal} className="grw-presentation-modal" unmountOnClose={false}>
       <ModalBody className="modal-body">
-        <iframe src={presentationData.href} />
+        <iframe src={presentationData.href} data-testid="page-presentation-modal" />
       </ModalBody>
     </Modal>
   );
