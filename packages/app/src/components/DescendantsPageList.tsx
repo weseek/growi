@@ -8,10 +8,11 @@ import {
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
 
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
+import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
 
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
@@ -21,6 +22,7 @@ type SubstanceProps = {
   pagingResult: IPagingResult<IPageHasId> | undefined,
   activePage: number,
   setActivePage: (activePage: number) => void,
+  forceHideMenuItems?: ForceHideMenuItems,
   onPagesDeleted?: OnDeletedFunction,
 }
 
@@ -33,7 +35,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { t } = useTranslation();
 
   const {
-    pagingResult, activePage, setActivePage, onPagesDeleted,
+    pagingResult, activePage, setActivePage, forceHideMenuItems, onPagesDeleted,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -85,6 +87,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
       <PageList
         pages={pageWithMetas}
         isEnableActions={!isGuestUser}
+        forceHideMenuItems={forceHideMenuItems}
         onPagesDeleted={pageDeletedHandler}
       />
 
@@ -137,6 +140,8 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
 export const DescendantsPageListForCurrentPath = (): JSX.Element => {
 
   const [activePage, setActivePage] = useState(1);
+
+  const { data: isTrashPage } = useIsTrashPage();
   const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage);
 
   if (error != null) {
@@ -147,11 +152,14 @@ export const DescendantsPageListForCurrentPath = (): JSX.Element => {
     );
   }
 
+  const forceHideMenuItems = isTrashPage ? [MenuItemType.RENAME] : undefined;
+
   return (
     <DescendantsPageListSubstance
       pagingResult={pagingResult}
       activePage={activePage}
       setActivePage={setActivePage}
+      forceHideMenuItems={forceHideMenuItems}
       onPagesDeleted={() => mutate()}
     />
   );
