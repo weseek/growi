@@ -33,7 +33,6 @@ const CustomSidebar: FC<Props> = (props: Props) => {
 
   const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
 
-  const isLoading = page === undefined;
   const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
@@ -47,7 +46,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      { !isLoading && markdown == null && <SidebarNotFound /> }
+      { markdown == null && <SidebarNotFound /> }
       {/* eslint-disable-next-line react/no-danger */}
       { markdown != null && (
         <div className="p-3">
