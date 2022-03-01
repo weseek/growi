@@ -239,7 +239,7 @@ class PageQueryBuilder {
 
   async addConditionForParentNormalization(user) {
     // determine UserGroup condition
-    let userGroups = null;
+    let userGroups;
     if (user != null) {
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
