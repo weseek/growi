@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { createLogger } from 'browser-bunyan';
 import { advanceTo } from 'jest-date-mock';
 
 import mongoose from 'mongoose';
@@ -29,7 +30,8 @@ describe('PageService page operations with only public pages', () => {
 
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data) => {
+    dataList.forEach((data, i) => {
+      if (data == null) { console.log(`index: ${i}`) }
       expect(data).toBeTruthy();
     });
   };
@@ -83,9 +85,10 @@ describe('PageService page operations with only public pages', () => {
 
     const pageIdForRename16 = new mongoose.Types.ObjectId();
 
+    const pageIdForRename17 = new mongoose.Types.ObjectId();
+
     // Create Pages
     await Page.insertMany([
-      // parents
       {
         _id: pageIdForRename1,
         path: '/v5_ParentForRename1',
@@ -157,7 +160,6 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
-      // children
       {
         _id: pageIdForRename10,
         path: '/v5_ChildForRename1',
@@ -206,7 +208,6 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         isEmpty: true,
       },
-      // Grandchild
       {
         path: '/v5_ChildForRename5/v5_GrandchildForRename5',
         grant: Page.GRANT_PUBLIC,
@@ -221,6 +222,21 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename16,
+      },
+      {
+        _id: pageIdForRename17,
+        path: '/v5_pageForRename17',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        path: '/v5_pageForRename17/v5_pageForRename18',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename17,
       },
     ]);
 
@@ -997,6 +1013,31 @@ describe('PageService page operations with only public pages', () => {
       }
 
       expect(isThrown).toBe(true);
+    });
+    test('Rename: pages:["/a", "/a/b"] => rename "/a" "/a/b/a"', async() => {
+      const page1 = await Page.findOne({ path: '/v5_pageForRename17', isEmpty: false });
+      const page2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', isEmpty: false, parent: page1._id });
+      expectAllToBeTruthy([page1, page2]);
+
+      const newPath = page2.path + page1.path;
+      const renamedPage = await renamePage(page1, newPath, dummyUser1, {});
+      const renamedPageChild = await Page.findOne({ parent: renamedPage._id });
+
+      const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename17' });
+      const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18', parent: newlyCreatedEmptyPage1._id });
+
+      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+
+      expect(newlyCreatedEmptyPage1.parent).toBe(rootPage._id);
+
+      expect(newlyCreatedEmptyPage1.isEmpty).toBeTruthy();
+      expect(newlyCreatedEmptyPage2.isEmpty).toBeTruthy();
+
+      expect(renamedPage.isEmpty).toBe(false);
+      expect(renamedPageChild.isEmpty).toBe(false);
+
+      expect(renamedPage.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17');
+      expect(renamedPageChild.path).toBe('/v5_pageForRename17/v5_pageForRename18/v5_pageForRename17/v5_pageForRename18');
     });
   });
 
