@@ -239,6 +239,15 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
+    const condition = this.generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
+
+    this.query = this.query
+      .and(condition);
+
+    return this;
+  }
+
+  generateGrantCondition(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
     const grantConditions = [
       { grant: null },
       { grant: GRANT_PUBLIC },
@@ -272,12 +281,7 @@ export class PageQueryBuilder {
       );
     }
 
-    this.query = this.query
-      .and({
-        $or: grantConditions,
-      });
-
-    return this;
+    return { $or: grantConditions };
   }
 
   addConditionToPagenate(offset, limit, sortOpt) {

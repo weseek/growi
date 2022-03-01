@@ -44,7 +44,7 @@ export type CreateMethod = (path: string, body: string, user, options) => Promis
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
-  getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
+  getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -118,15 +118,21 @@ const generateChildrenRegExp = (path: string): RegExp => {
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
-/*
+/**
  * Create empty pages if the page in paths didn't exist
+ * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
+ * an empty page will not be created at that page's path.
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], onlyMigratedAsExistingPages = true, publicOnly = false): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true): Promise<void> {
   // find existing parents
-  const builder = new PageQueryBuilder(this.find(publicOnly ? { grant: GRANT_PUBLIC } : {}, { _id: 0, path: 1 }), true);
+  const builder = new PageQueryBuilder(this.find({}, { _id: 0, path: 1 }), true);
+
+  await this.addConditionToFilteringByViewerToEdit(builder, user);
+
   if (onlyMigratedAsExistingPages) {
     builder.addConditionAsMigrated();
   }
+
   const existingPages = await builder
     .addConditionToListByPathsArray(paths)
     .query
@@ -220,7 +226,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
  * @param path string
  * @returns Promise<PageDocument>
  */
-schema.statics.getParentAndFillAncestors = async function(path: string): Promise<PageDocument> {
+schema.statics.getParentAndFillAncestors = async function(path: string, user): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
 
   const builder1 = new PageQueryBuilder(this.find({ path: parentPath }), true);
@@ -239,7 +245,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
   // just create ancestors with empty pages
-  await this.createEmptyPagesByPaths(ancestorPaths);
+  await this.createEmptyPagesByPaths(ancestorPaths, user);
 
   // find ancestors
   const builder2 = new PageQueryBuilder(this.find(), true);
@@ -571,6 +577,15 @@ schema.statics.takeOffFromTree = async function(pageId: ObjectIdLike) {
   return this.findByIdAndUpdate(pageId, { $set: { parent: null } });
 };
 
+schema.statics.removeEmptyPagesByPaths = async function(paths: string[]): Promise<void> {
+  await this.deleteMany({
+    path: {
+      $in: paths,
+    },
+    isEmpty: true,
+  });
+};
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
@@ -661,7 +676,7 @@ export default (crowi: Crowi): any => {
     }
 
     let parentId: IObjectId | string | null = null;
-    const parent = await Page.getParentAndFillAncestors(path);
+    const parent = await Page.getParentAndFillAncestors(path, user);
     if (!isTopPage(path)) {
       parentId = parent._id;
     }
