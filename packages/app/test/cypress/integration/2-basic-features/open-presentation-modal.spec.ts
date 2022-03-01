@@ -24,8 +24,8 @@ context('Open presentation modal', () => {
     cy.visit('/');
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true})
-      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
     cy.getByTestid('.grw-presentation-modal').should('exist');
@@ -36,8 +36,8 @@ context('Open presentation modal', () => {
     cy.visit('/Sandbox/Bootstrap4');
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true})
-      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
     cy.getByTestid('.grw-presentation-modal').should('exist');
@@ -48,8 +48,8 @@ context('Open presentation modal', () => {
     cy.visit('/Sandbox/Bootstrap4#Cards');
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true})
-      cy.getByTestid('open-presentation-modal-btn').click({force: true})
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
     cy.getByTestid('.grw-presentation-modal').should('exist');
