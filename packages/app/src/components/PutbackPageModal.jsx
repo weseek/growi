@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -12,7 +11,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-const PutBackPageModal = (props) => {
+const PutBackPageModal = () => {
   const { t } = useTranslation();
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
