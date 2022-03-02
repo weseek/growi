@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -12,6 +14,8 @@ import { toastError } from '~/client/util/apiNotification';
 import { usePageDuplicateModal } from '~/stores/modal';
 
 import AppContainer from '~/client/services/AppContainer';
+import { apiv3Get } from '~/client/util/apiv3-client';
+
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
@@ -42,25 +46,35 @@ const PageDuplicateModal = (props) => {
   const [existingPaths, setExistingPaths] = useState([]);
 
   const checkExistPaths = useCallback(async(newParentPath) => {
+    if (page == null) {
+      return;
+    }
+
     try {
-      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_rename.label.Fail to get exist path'));
+      toastError(t('modal_rename.label.Failed to get exist path'));
     }
-  }, [appContainer, path, t]);
+  }, [page, path, t]);
 
-
-  const checkExistPathsDebounce = useCallback(() => {
-    debounce(1000, checkExistPaths);
+  const checkExistPathsDebounce = useMemo(() => {
+    return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
   useEffect(() => {
     if (pageId != null && path != null && pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+      checkExistPathsDebounce(pageNameInput);
+    }
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, pageId, path]);
+
+
+  useEffect(() => {
+    if (pageId != null && path != null && pageNameInput !== path) {
+      checkExistPathsDebounce(pageNameInput);
     }
   }, [pageNameInput, subordinatedPages, path, pageId, checkExistPathsDebounce]);
 
