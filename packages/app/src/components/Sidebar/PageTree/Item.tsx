@@ -16,7 +16,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -24,7 +24,9 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta,
+} from '~/interfaces/page';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -38,7 +40,7 @@ interface ItemProps {
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
+  onClickRenameMenuItem?(pageToRename: IPageToRenameWithMeta): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
@@ -282,31 +284,32 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   //   }
   // };
 
-  const renameMenuItemClickHandler = useCallback((): void => {
+  const renameMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickRenameMenuItem == null) {
       return;
     }
 
-    const { _id: pageId, revision: revisionId, path } = page;
-
-    if (!page.isEmpty && revisionId == null) {
-      throw Error('Existing page should have revisionId');
+    if (page._id == null || page.revision == null || page.path == null) {
+      throw Error('Any of _id, revision, and path must not be null.');
     }
 
-    if (pageId == null || path == null) {
-      throw Error('Any of _id and revisionId and path must not be null.');
-    }
-
-    const pageToRename: IPageForPageRenameModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
+    const pageToRename: IPageToRenameWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
     };
 
     onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (onClickDeleteMenuItem == null) {
+      return;
+    }
+
     if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
@@ -320,9 +323,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       meta: pageInfo,
     };
 
-    if (onClickDeleteMenuItem != null) {
-      onClickDeleteMenuItem(pageToDelete);
-    }
+    onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {

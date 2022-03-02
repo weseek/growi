@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { IPageHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDuplicateModal, usePageDuplicateModal, IPageForPageRenameModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDuplicateModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -75,7 +75,7 @@ const renderByInitialNode = (
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
-    onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
+    onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
     onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 ): JSX.Element => {
 
@@ -177,7 +177,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
   };
 
-  const onClickRenameMenuItem = (pageToRename: IPageForPageRenameModal) => {
+  const onClickRenameMenuItem = (pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 

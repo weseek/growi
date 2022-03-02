@@ -1,38 +1,42 @@
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, useMemo,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
 import { usePageRenameModal } from '~/stores/modal';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
+import { useSiteUrl } from '~/stores/context';
+import { isIPageInfoForEntity } from '~/interfaces/page';
+import { useSWRxPageInfo } from '~/stores/page';
 
 
-const PageRenameModal = (props) => {
-  const {
-    t, appContainer,
-  } = props;
+const PageRenameModal = (): JSX.Element => {
+  const { t } = useTranslation();
 
-  const { crowi } = appContainer.config;
+  const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
 
-  const { isOpened, page } = renameModalData;
-  const { pageId, revisionId, path } = page;
+  const isOpened = renameModalData?.isOpened ?? false;
+  const page = renameModalData?.page;
+
+  const shouldFetch = page != null && !isIPageInfoForEntity(page.meta);
+  const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? page?.data._id : null);
+
+  if (page != null && pageInfo != null) {
+    page.meta = pageInfo;
+  }
 
   const [pageNameInput, setPageNameInput] = useState('');
 
@@ -63,6 +67,11 @@ const PageRenameModal = (props) => {
   }
 
   const updateSubordinatedList = useCallback(async() => {
+    if (page == null) {
+      return;
+    }
+
+    const { path } = page.data;
     try {
       const res = await apiv3Get('/pages/subordinated-list', { path });
       setSubordinatedPages(res.data.subordinatedPages);
@@ -71,38 +80,41 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Failed to get subordinated pages'));
     }
-  }, [path, t]);
+  }, [page, t]);
 
   useEffect(() => {
-    if (isOpened) {
+    if (page != null && isOpened) {
       updateSubordinatedList();
-      setPageNameInput(path);
+      setPageNameInput(page.data.path);
     }
-  }, [isOpened, path, updateSubordinatedList]);
+  }, [isOpened, page, updateSubordinatedList]);
 
 
-  const checkExistPaths = useCallback(async(newParentPath) => {
+  const checkExistPaths = useCallback(async(fromPath, toPath) => {
+    if (page == null) {
+      return;
+    }
+
     try {
-      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_rename.label.Fail to get exist path'));
+      toastError(t('modal_rename.label.Failed to get exist path'));
     }
-  }, [path, t]);
+  }, [page, t]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const checkExistPathsDebounce = useCallback(() => {
-    debounce(1000, checkExistPaths);
+  const checkExistPathsDebounce = useMemo(() => {
+    return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
   useEffect(() => {
-    if (pageId != null && path != null && pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    if (page != null && pageNameInput !== page.data.path) {
+      checkExistPathsDebounce(page.data.path, pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
   /**
    * change pageNameInput
@@ -114,12 +126,17 @@ const PageRenameModal = (props) => {
   }
 
   async function rename() {
+    if (page == null) {
+      return;
+    }
+
     setErrs(null);
 
+    const { _id, path, revision } = page.data;
     try {
       const response = await apiv3Put('/pages/rename', {
-        revisionId,
-        pageId,
+        pageId: _id,
+        revisionId: revision,
         isRecursively: isRenameRecursively,
         isRenameRedirect,
         isRemainMetadata,
@@ -130,10 +147,10 @@ const PageRenameModal = (props) => {
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
       if (isRenameRedirect) {
-        url.searchParams.append('withRedirect', true);
+        url.searchParams.append('withRedirect', 'true');
       }
 
-      const onRenamed = renameModalData.opts?.onRenamed;
+      const onRenamed = renameModalData?.opts?.onRenamed;
       if (onRenamed != null) {
         onRenamed(path);
       }
@@ -143,6 +160,13 @@ const PageRenameModal = (props) => {
       setErrs(err);
     }
   }
+
+  if (page == null) {
+    return <></>;
+  }
+
+  const { path } = page.data;
+  const isV5Compatible = isIPageInfoForEntity(page.meta) ? page.meta.isV5Compatible : null;
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
@@ -158,7 +182,7 @@ const PageRenameModal = (props) => {
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
-              <span className="input-group-text">{crowi.url}</span>
+              <span className="input-group-text">{siteUrl}</span>
             </div>
             <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
               <input
@@ -172,40 +196,43 @@ const PageRenameModal = (props) => {
             </form>
           </div>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input
-            className="custom-control-input"
-            name="recursively"
-            id="cbRenameRecursively"
-            type="checkbox"
-            checked={isRenameRecursively}
-            onChange={changeIsRenameRecursivelyHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbRenameRecursively">
-            { t('modal_rename.label.Recursively') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
-          </label>
-          {existingPaths.length !== 0 && (
-            <div
-              className="custom-control custom-checkbox custom-checkbox-warning"
-              style={{ display: isRenameRecursively ? '' : 'none' }}
-            >
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbRenamewithoutExistRecursively"
-                type="checkbox"
-                checked={isRenameRecursivelyWithoutExistPath}
-                onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
-              />
-              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-                { t('modal_rename.label.Rename without exist path') }
-              </label>
-            </div>
-          )}
-          {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
-        </div>
+
+        { isV5Compatible === false && (
+          <div className="custom-control custom-checkbox custom-checkbox-warning">
+            <input
+              className="custom-control-input"
+              name="recursively"
+              id="cbRenameRecursively"
+              type="checkbox"
+              checked={isRenameRecursively}
+              onChange={changeIsRenameRecursivelyHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbRenameRecursively">
+              { t('modal_rename.label.Recursively') }
+              <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
+            </label>
+            {existingPaths.length !== 0 && (
+              <div
+                className="custom-control custom-checkbox custom-checkbox-warning"
+                style={{ display: isRenameRecursively ? '' : 'none' }}
+              >
+                <input
+                  className="custom-control-input"
+                  name="withoutExistRecursively"
+                  id="cbRenamewithoutExistRecursively"
+                  type="checkbox"
+                  checked={isRenameRecursivelyWithoutExistPath}
+                  onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
+                />
+                <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+                  { t('modal_rename.label.Rename without exist path') }
+                </label>
+              </div>
+            )}
+            {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+          </div>
+        ) }
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
           <input
@@ -252,14 +279,4 @@ const PageRenameModal = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer]);
-
-PageRenameModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(PageRenameModalWrapper);
+export default PageRenameModal;
