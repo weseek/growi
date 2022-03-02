@@ -23,12 +23,12 @@ context('Access to /me page', () => {
 
   it('/me is successfully loaded', () => {
     cy.visit('/me', {  });
-    cy.screenshot(`${ssPrefix}-me`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-me`);
   });
 
   it('Draft page is successfully shown', () => {
     cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-draft-page`);
   });
 
 });

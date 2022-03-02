@@ -30,7 +30,7 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-opne-top`);
   });
 
   it('PageCreateModal for "/Sandbox/Bootstrap4" is shown successfully', () => {
@@ -43,7 +43,7 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
   it('PageCreateModal for /Sandbox/Bootstrap4#Cards" is shown successfully', () => {
@@ -56,6 +56,6 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`);
   });
 });
