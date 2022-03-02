@@ -18,7 +18,8 @@ const PutBackPageModal = (props) => {
   } = props;
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
-  const { isOpened, pageId, path } = pageDataToRevert;
+  const { isOpened, page } = pageDataToRevert;
+  const { pageId, path } = page;
 
   const [errs, setErrs] = useState(null);
 
@@ -28,7 +29,7 @@ const PutBackPageModal = (props) => {
     setIsPutbackRecursively(!isPutbackRecursively);
   }
 
-  async function putbackPage() {
+  async function putbackPageButtonHandler() {
     setErrs(null);
 
     try {
@@ -49,9 +50,6 @@ const PutBackPageModal = (props) => {
     }
   }
 
-  async function putbackPageButtonHandler() {
-    putbackPage();
-  }
 
   return (
     <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">

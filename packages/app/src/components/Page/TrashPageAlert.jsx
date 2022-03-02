@@ -51,7 +51,7 @@ const TrashPageAlert = (props) => {
   }
 
   function openPutbackPageModalHandler() {
-    openPutBackPageModal(pageId, path);
+    openPutBackPageModal({ pageId, path });
   }
 
   function openPageDeleteModalHandler() {
