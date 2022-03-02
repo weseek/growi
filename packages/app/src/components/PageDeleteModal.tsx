@@ -10,7 +10,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, isIPageInfoForOperation, IPageToDeleteWithMeta, IDataWithMeta, IPageInfoForOperation,
+  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
@@ -43,13 +43,13 @@ const PageDeleteModal: FC = () => {
   const isOpened = deleteModalData?.isOpened ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForOperation(p.meta));
+    .filter(p => !isIPageInfoForEntity(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
 
   // inject IPageInfo to operate
-  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForOperation>[] | null = null;
+  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
   if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
     injectedPages = injectTo(deleteModalData?.pages);
   }

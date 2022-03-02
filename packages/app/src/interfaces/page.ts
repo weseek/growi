@@ -104,7 +104,7 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
 
 export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForOperation | unknown>;
+export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean
