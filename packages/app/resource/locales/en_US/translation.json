@@ -424,6 +424,7 @@
   },
   "Put Back": "Put back",
   "Delete Completely": "Delete completely",
+  "page_has_been_reverted": "{{path}} has been reverted",
   "modal_delete": {
     "delete_page": "Delete page",
     "deleting_page": "Deleting page",
