@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { usePutBackPageModal } from '~/stores/modal';
 import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-const PutBackPageModal = (props) => {
-  const {
-    t,
-  } = props;
+const PutBackPageModal = () => {
+  const { t } = useTranslation();
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
-  const { isOpened, pageId, path } = pageDataToRevert;
+  const { isOpened, page } = pageDataToRevert;
+  const { pageId, path } = page;
+  const onPutBacked = pageDataToRevert.opts?.onPutBacked;
 
   const [errs, setErrs] = useState(null);
 
@@ -28,7 +27,7 @@ const PutBackPageModal = (props) => {
     setIsPutbackRecursively(!isPutbackRecursively);
   }
 
-  async function putbackPage() {
+  async function putbackPageButtonHandler() {
     setErrs(null);
 
     try {
@@ -41,17 +40,17 @@ const PutBackPageModal = (props) => {
         recursively,
       });
 
-      const putbackPagePath = response.page.path;
-      window.location.href = encodeURI(putbackPagePath);
+      const putbackPagePath = encodeURI(response.page.path);
+      if (onPutBacked != null) {
+        onPutBacked(putbackPagePath);
+      }
+      closePutBackPageModal();
     }
     catch (err) {
       setErrs(err);
     }
   }
 
-  async function putbackPageButtonHandler() {
-    putbackPage();
-  }
 
   return (
     <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
@@ -90,9 +89,4 @@ const PutBackPageModal = (props) => {
 
 };
 
-PutBackPageModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-};
-
-
-export default withTranslation()(PutBackPageModal);
+export default PutBackPageModal;

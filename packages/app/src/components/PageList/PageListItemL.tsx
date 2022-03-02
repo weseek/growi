@@ -129,7 +129,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const revertMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, path } = pageData;
-    openPutBackPageModal(pageId, path);
+    openPutBackPageModal({ pageId, path });
   }, [openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
