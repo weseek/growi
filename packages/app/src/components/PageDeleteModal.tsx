@@ -208,11 +208,13 @@ const PageDeleteModal: FC = () => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (deleteModalData != null && deleteModalData.pages != null) {
-      return deleteModalData.pages.map(page => (
+    const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
+
+    if (pages != null) {
+      return pages.map(page => (
         <div key={page.data._id}>
           <code>{ page.data.path }</code>
-          { !isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
+          { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
         </div>
       ));
     }
