@@ -155,13 +155,16 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       return;
     }
 
-    // socket
-    socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
-      // save to global state
-      const newData: UpdateDescCountData = new Map(Object.entries(data));
+    socket.off(SocketEventName.UpdateDescCount, () => {
 
-      updatePtDescCountMap(newData);
+      socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
+        // save to global state
+        const newData: UpdateDescCountData = new Map(Object.entries(data));
+
+        updatePtDescCountMap(newData);
+      });
     });
+
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
