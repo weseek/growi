@@ -1,6 +1,8 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+} from '~/interfaces/ui';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 
 
@@ -161,7 +163,7 @@ export type IPageForPagePutBackModal = {
 }
 
 export type IPutBackPageModalOption = {
-  onPutBacked?: OnRenamedFunction,
+  onPutBacked?: OnPutBackedFunction,
 }
 
 type PutBackPageModalStatus = {
