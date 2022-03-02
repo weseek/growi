@@ -212,10 +212,10 @@ const PageDeleteModal: FC = () => {
 
     if (pages != null) {
       return pages.map(page => (
-        <div key={page.data._id}>
+        <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
           { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
-        </div>
+        </p>
       ));
     }
     return <></>;
