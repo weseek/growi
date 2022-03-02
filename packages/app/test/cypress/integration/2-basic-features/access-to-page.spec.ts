@@ -30,10 +30,9 @@ context('Access to page', () => {
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(400);
-
-    cy.getByTestid('grw-fab-create-page').should('be.visible');
-    cy.getByTestid('grw-fab-return-to-top').should('be.visible');
+    cy.wait(1000);
+    cy.getByTestid('grw-fab-create-page').should('have.class', 'fadeInUp').should('be.visible');
+    cy.getByTestid('grw-fab-return-to-top').should('have.class', 'fadeInUp').should('be.visible');
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
