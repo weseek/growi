@@ -10,7 +10,9 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
 
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
+import {
+  useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList, useDescendantsPageListForCurrentPathTermManager,
+} from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
 
@@ -48,6 +50,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // initial data
   if (pagingResult != null) {
@@ -71,11 +74,12 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     toastSuccess(t('page_has_been_reverted', { path }));
 
     advancePt();
+    advanceDpl();
 
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [advancePt, onPagePutBacked, t]);
+  }, [advanceDpl, advancePt, onPagePutBacked, t]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
