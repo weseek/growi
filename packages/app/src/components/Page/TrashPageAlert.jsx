@@ -52,7 +52,7 @@ const TrashPageAlert = (props) => {
 
   function openPutbackPageModalHandler() {
     const putBackedHandler = (path) => {
-      window.location.href = path;
+      window.location.reload();
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }
