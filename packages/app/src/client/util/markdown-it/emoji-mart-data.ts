@@ -1,4 +1,4 @@
-import data from 'emoji-mart/data/all.json';
+import data from 'emoji-mart/data/apple.json';
 import { Emoji } from 'emoji-mart';
 
 const DEFAULT_EMOJI_SIZE = 24;
@@ -15,7 +15,6 @@ const getEmojiSkinTone = async(emoji) => {
   [...Array(6).keys()].forEach((index) => {
     if (index > 0) {
       const elem = Emoji({
-        set: 'apple',
         emoji,
         skin: index + 1,
         size: DEFAULT_EMOJI_SIZE,
@@ -40,7 +39,6 @@ const getNativeEmoji = async(emojis) => {
     const emojiName = emoji[0];
     const hasSkinVariation = emoji[1].skin_variations;
     const elem = Emoji({
-      set: 'apple',
       emoji: emojiName,
       size: DEFAULT_EMOJI_SIZE,
     });

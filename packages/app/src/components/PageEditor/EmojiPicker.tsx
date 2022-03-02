@@ -1,4 +1,5 @@
 import React, { FC, useRef, useEffect } from 'react';
+import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
 
@@ -49,6 +50,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     else {
       emojiPickerHelper.addEmoji(emoji);
     }
+    props.close();
   };
 
   const translation = getEmojiTranslation();
@@ -56,7 +58,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   return (
     <div className="overlay">
       <div ref={emojiPickerContainer}>
-        <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} />
+        <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} emojiTooltip />
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import 'emoji-mart/css/emoji-mart.css';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
 import InterceptorManager from '~/services/interceptor-manager';
@@ -570,7 +569,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
-    this.emojiPickerHandler();
+
+    /**
+     * Prevent emoji picker to show on delete emoji colons
+     */
+    editor.on('keydown', (editor, ev) => {
+      if (ev.key !== 'Backspace') {
+        this.emojiPickerHandler();
+      }
+    });
+
   }
 
   /**
