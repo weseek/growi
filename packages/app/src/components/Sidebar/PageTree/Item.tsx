@@ -256,7 +256,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
-  const renameMenuItemClickHandler = useCallback(async(): Promise<void> => {
+  const renameMenuItemClickHandler = useCallback(() => {
     setRenameInputShown(true);
   }, []);
 
@@ -276,7 +276,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         mutateAfterRenamed();
       }
 
-      toastSuccess(t('renamed_pages', { path: newPagePath }));
+      toastSuccess(t('renamed_pages', { path: page.path }));
     }
     catch (err) {
       setRenameInputShown(true);
