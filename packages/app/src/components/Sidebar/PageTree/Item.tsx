@@ -277,6 +277,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       if (mutateAfterRenamed != null) {
         mutateAfterRenamed();
       }
+
+      toastSuccess(t('renamed_pages', { newPagePath }));
     }
     catch (err) {
       setRenameInputShown(true);
