@@ -262,7 +262,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
-    const newPagePath = `${parentPath}${inputText}`;
+    const newPagePath = nodePath.resolve(parentPath, inputText);
 
     if (newPagePath === page.path) {
       setRenameInputShown(false);
