@@ -119,16 +119,20 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
               </label>
             </div>
           </div>
-          <div className="card mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckChecked"
-                  defaultChecked={includeTrashPages}
-                  onChange={e => setIncludeTrashPages(e.target.checked)}
-                />
+          <div className="border rounded py-1 px-2">
+            <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <input
+                className="custom-control-input mr-2"
+                type="checkbox"
+                id="flexCheckChecked"
+                checked={includeTrashPages}
+                onChange={e => setIncludeTrashPages(e.target.checked)}
+              />
+              <label
+                className="custom-control-label search-include-label
+              d-flex align-items-center text-secondary with-no-font-weight"
+                htmlFor="flexCheckChecked"
+              >
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
             </div>
