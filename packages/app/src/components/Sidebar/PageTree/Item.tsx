@@ -264,6 +264,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = `${parentPath}${inputText}`;
 
+    if (newPagePath === page.path) {
+      setRenameInputShown(false);
+      return;
+    }
+
     try {
       setRenameInputShown(false);
       await apiv3Put('/pages/rename', {
