@@ -37,7 +37,7 @@ interface ItemProps {
   isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  mutateAfterRenamed?(): void
+  onRenamed?(): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
@@ -111,7 +111,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
-    mutateAfterRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
+    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -277,8 +277,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         newPagePath,
       });
 
-      if (mutateAfterRenamed != null) {
-        mutateAfterRenamed();
+      if (onRenamed != null) {
+        onRenamed();
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
@@ -479,7 +479,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
-              mutateAfterRenamed={mutateAfterRenamed}
+              onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />

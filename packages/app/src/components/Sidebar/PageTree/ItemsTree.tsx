@@ -74,7 +74,7 @@ const renderByInitialNode = (
     isScrolled: boolean,
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
-    mutateAfterRenamed?: () => void,
+    onRenamed?: () => void,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
     onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 ): JSX.Element => {
@@ -88,7 +88,7 @@ const renderByInitialNode = (
         isOpen
         isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
         isEnableActions={isEnableActions}
-        mutateAfterRenamed={mutateAfterRenamed}
+        onRenamed={onRenamed}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickDeleteMenuItem={onClickDeleteMenuItem}
         isScrolled={isScrolled}
@@ -163,7 +163,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     });
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
-  const mutateAfterRenamed = () => {
+  const onRenamed = () => {
     advancePt();
     advanceFts();
     advanceDpl();
@@ -218,7 +218,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
     return renderByInitialNode(
       // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, mutateAfterRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     );
   }
 
@@ -229,7 +229,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
     return renderByInitialNode(
       // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, mutateAfterRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     );
   }
 
