@@ -120,7 +120,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  // const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -261,50 +261,53 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   * Rename: TODO: rename page title on input form by #87757
   */
 
-  // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
-  //   setRenameInputShown(true);
-  // }, []);
+  const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+    setRenameInputShown(true);
+  }, []);
 
-  // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   const parentPath = getParentPagePath(page.path as string)
-  //   const newPagePath = `${parentPath}/${inputText}`;
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+    const newPagePath = `${parentPath}${inputText}`;
 
-  //   try {
-  //     setPageTitle(inputText);
-  //     setRenameInputShown(false);
-  //     await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+    try {
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', {
+        pageId: page._id,
+        revisionId: page.revision,
+        newPagePath,
+        isRenameRedirect: false,
+        isRemainMetadata: false,
+      });
+    }
+    catch (err) {
+      setRenameInputShown(true);
+      toastError(err);
+    }
+  };
+
+  // const renameMenuItemClickHandler = useCallback((): void => {
+  //   if (onClickRenameMenuItem == null) {
+  //     return;
   //   }
-  //   catch (err) {
-  //     // open ClosableInput and set pageTitle back to the previous title
-  //     setPageTitle(nodePath.basename(pageTitle as string));
-  //     setRenameInputShown(true);
-  //     toastError(err);
+
+  //   const { _id: pageId, revision: revisionId, path } = page;
+
+  //   if (!page.isEmpty && revisionId == null) {
+  //     throw Error('Existing page should have revisionId');
   //   }
-  // };
 
-  const renameMenuItemClickHandler = useCallback((): void => {
-    if (onClickRenameMenuItem == null) {
-      return;
-    }
+  //   if (pageId == null || path == null) {
+  //     throw Error('Any of _id and revisionId and path must not be null.');
+  //   }
 
-    const { _id: pageId, revision: revisionId, path } = page;
+  //   const pageToRename: IPageForPageRenameModal = {
+  //     pageId,
+  //     revisionId: revisionId as string,
+  //     path,
+  //   };
 
-    if (!page.isEmpty && revisionId == null) {
-      throw Error('Existing page should have revisionId');
-    }
-
-    if (pageId == null || path == null) {
-      throw Error('Any of _id and revisionId and path must not be null.');
-    }
-
-    const pageToRename: IPageForPageRenameModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
-    };
-
-    onClickRenameMenuItem(pageToRename);
-  }, [onClickRenameMenuItem, page]);
+  //   onClickRenameMenuItem(pageToRename);
+  // }, [onClickRenameMenuItem, page]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (page._id == null || page.revision == null || page.path == null) {
@@ -434,21 +437,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )}
         </div>
         {/* TODO: rename page title on input form by 87757 */}
-        {/* { isRenameInputShown && (
+        { isRenameInputShown && (
           <ClosableTextInput
             isShown
-            value={nodePath.basename(pageTitle as string)}
+            value={nodePath.basename(page.path ?? '')}
             placeholder={t('Input page name')}
             onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={onPressEnterForRenameHandler}
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && ( */}
-        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-        </a>
-        {/* )} */}
+        { !isRenameInputShown && (
+          <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+          </a>
+        )}
         {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={descendantCount} />
