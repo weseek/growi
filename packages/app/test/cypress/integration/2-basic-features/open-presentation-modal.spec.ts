@@ -28,7 +28,8 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.get('.grw-presentation-modal').should('exist');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
   });
 
@@ -40,7 +41,8 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.get('.grw-presentation-modal').should('exist');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
   });
 
@@ -52,7 +54,8 @@ context('Open presentation modal', () => {
       cy.getByTestid('open-presentation-modal-btn').click({force: true});
     });
 
-    cy.get('.grw-presentation-modal').should('exist');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });
   });
 });
