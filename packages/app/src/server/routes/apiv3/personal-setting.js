@@ -76,7 +76,12 @@ module.exports = (crowi) => {
   const validator = {
     personal: [
       body('name').isString().not().isEmpty(),
-      body('email').isEmail(),
+      body('email')
+        .isEmail()
+        .custom((email) => {
+          if (!User.isEmailValid(email)) throw new Error('email is not included in whitelist');
+          return true;
+        }),
       body('lang').isString().isIn(listLocaleIds()),
       body('isEmailPublished').isBoolean(),
     ],
