@@ -270,15 +270,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         pageId: page._id,
         revisionId: page.revision,
         newPagePath,
-        isRenameRedirect: false,
-        isRemainMetadata: false,
       });
 
       if (mutateAfterRenamed != null) {
         mutateAfterRenamed();
       }
 
-      console.log(newPagePath);
       toastSuccess(t('renamed_pages', { path: newPagePath }));
     }
     catch (err) {
