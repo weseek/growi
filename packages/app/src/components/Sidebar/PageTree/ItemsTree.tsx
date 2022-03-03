@@ -150,22 +150,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (socket == null) {
-  //     return;
-  //   }
-
-  //   socket.off(SocketEventName.UpdateDescCount, () => {
-
-  //     socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
-  //       // save to global state
-  //       const newData: UpdateDescCountData = new Map(Object.entries(data));
-
-  //       updatePtDescCountMap(newData);
-  //     });
-  //   });
-
-  // }, [socket, ptDescCountMap, updatePtDescCountMap]);
   useEffect(() => {
     if (socket == null) {
       return;
