@@ -401,7 +401,8 @@
 		}
 	},
 	"Put Back": "Put back",
-	"Delete Completely": "Delete completely",
+  "Delete Completely": "Delete completely",
+  "page_has_been_reverted": "{{path}} 已还原",
 	"modal_delete": {
 		"delete_page": "Delete page",
 		"deleting_page": "Deleting page",

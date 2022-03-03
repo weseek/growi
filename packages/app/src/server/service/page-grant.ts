@@ -4,7 +4,6 @@ import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
 import { PageDocument, PageModel } from '~/server/models/page';
-import { PageQueryBuilder } from '../models/obsolete-page';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
@@ -216,6 +215,7 @@ class PageGrantService {
    */
   private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     let applicableUserIds: ObjectIdLike[] | undefined;

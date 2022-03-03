@@ -8,7 +8,7 @@ import { Readable, Writable } from 'stream';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
-  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel, PageDocument,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
@@ -460,7 +460,7 @@ class PageService {
       newParent = await this.getParentAndforceCreateEmptyTree(page, newPagePath);
     }
     else {
-      newParent = await Page.getParentAndFillAncestors(newPagePath);
+      newParent = await Page.getParentAndFillAncestors(newPagePath, user);
     }
 
     // 3. Put back target page to tree (also update the other attrs)
@@ -585,17 +585,22 @@ class PageService {
     return newParent;
   }
 
-  // !!renaming always include descendant pages!!
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const updateMetadata = options.updateMetadata || false;
+    const {
+      isRecursively = false,
+      createRedirectPage = false,
+      updateMetadata = false,
+    } = options;
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
 
 
     const update: any = {};
@@ -610,11 +615,15 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
+    if (createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
+
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
-
 
   private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
     // v4 compatible process
@@ -910,7 +919,7 @@ class PageService {
     };
     let duplicatedTarget;
     if (page.isEmpty) {
-      const parent = await Page.getParentAndFillAncestors(newPagePath);
+      const parent = await Page.getParentAndFillAncestors(newPagePath, user);
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
     }
     else {
@@ -963,7 +972,7 @@ class PageService {
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
       try {
-        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath);
+        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath, user);
         logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
       }
       catch (err) {
@@ -1839,7 +1848,7 @@ class PageService {
     }
 
     // 2. Revert target
-    const parent = await Page.getParentAndFillAncestors(newPath);
+    const parent = await Page.getParentAndFillAncestors(newPath, user);
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id, descendantCount: 0,
@@ -1886,7 +1895,7 @@ class PageService {
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
       try {
-        await this.normalizeParentAndDescendantCountOfDescendants(newPath);
+        await this.normalizeParentAndDescendantCountOfDescendants(newPath, user);
         logger.info(`Successfully normalized reverted descendant pages under "${newPath}"`);
       }
       catch (err) {
@@ -2082,11 +2091,16 @@ class PageService {
   }
 
   async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const MAX_LENGTH = 350;
 
     // aggregation options
-    const viewerCondition = await generateGrantCondition(user, null);
+    let userGroups;
+    if (user != null && userGroups == null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // Typescriptize model
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    const viewerCondition = Page.generateGrantCondition(user, userGroups);
     const filterByIds = {
       _id: { $in: pageIds },
     };
@@ -2100,7 +2114,9 @@ class PageService {
             $match: filterByIds,
           },
           // filter by viewer
-          viewerCondition,
+          {
+            $match: viewerCondition,
+          },
           // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
           {
             $lookup: {
@@ -2253,7 +2269,7 @@ class PageService {
     }
     else {
       // getParentAndFillAncestors
-      const parent = await Page.getParentAndFillAncestors(page.path);
+      const parent = await Page.getParentAndFillAncestors(page.path, user);
       updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
 
@@ -2326,7 +2342,7 @@ class PageService {
     // TODO: insertOne PageOperationBlock
 
     try {
-      await this.normalizeParentRecursively([page.path]);
+      await this.normalizeParentRecursively([page.path], user);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2425,7 +2441,7 @@ class PageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], true);
+      await this.normalizeParentRecursively(['/'], null);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2460,40 +2476,46 @@ class PageService {
     }
   }
 
-  private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
-    await this.normalizeParentRecursively([path]);
+  private async normalizeParentAndDescendantCountOfDescendants(path: string, user): Promise<void> {
+    await this.normalizeParentRecursively([path], user);
 
     // update descendantCount of descendant pages
     await this.updateDescendantCountOfSelfAndDescendants(path);
   }
 
-  async normalizeParentRecursively(paths: string[], publicOnly = false): Promise<void> {
+  /**
+   * Normalize parent attribute by passing paths and user.
+   * @param paths Pages under this paths value will be updated.
+   * @param user To be used to filter pages to update. If null, only public pages will be updated.
+   * @returns Promise<void>
+   */
+  async normalizeParentRecursively(paths: string[], user: any | null): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, [p]));
     const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
 
-    return this._normalizeParentRecursively(regexps, ancestorPaths, publicOnly);
+    // determine UserGroup condition
+    let userGroups = null;
+    if (user != null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
+
+    return this._normalizeParentRecursively(regexps, ancestorPaths, grantFiltersByUser, user);
   }
 
   // TODO: use websocket to show progress
-  private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], publicOnly: boolean): Promise<void> {
+  private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], grantFiltersByUser: { $or: any[] }, user): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
 
-    // GRANT_RESTRICTED and GRANT_SPECIFIED will never have parent
-    const grantFilter: any = {
-      $and: [
-        { grant: { $ne: Page.GRANT_RESTRICTED } },
-        { grant: { $ne: Page.GRANT_SPECIFIED } },
-      ],
-    };
-
-    if (publicOnly) { // add grant condition if not null
-      grantFilter.$and = [...grantFilter.$and, { grant: Page.GRANT_PUBLIC }];
-    }
-
-    // generate filter
+    // Build filter
     const filter: any = {
       $and: [
         {
@@ -2518,11 +2540,9 @@ class PageService {
       });
     }
 
-    const total = await Page.countDocuments(filter);
-
     let baseAggregation = Page
       .aggregate([
-        { $match: grantFilter },
+        { $match: grantFiltersByUser },
         { $match: filter },
         {
           $project: { // minimize data to fetch
@@ -2533,6 +2553,7 @@ class PageService {
       ]);
 
     // limit pages to get
+    const total = await Page.countDocuments(filter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
@@ -2545,18 +2566,15 @@ class PageService {
     let countPages = 0;
     let shouldContinue = true;
 
-    // migrate all siblings for each page
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
-        // make list to create empty pages
-        const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
-        const parentPaths = Array.from(parentPathsSet);
+        const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths, false, publicOnly);
+        // Fill parents with empty pages
+        await Page.createEmptyPagesByPaths(parentPaths, user, false);
 
-        // find parents again
+        // Find parents
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
         const parents = await builder
           .addConditionToListByPathsArray(parentPaths)
@@ -2564,22 +2582,20 @@ class PageService {
           .lean()
           .exec();
 
-        // bulkWrite to update parent
+        // Normalize all siblings for each page
         const updateManyOperations = parents.map((parent) => {
           const parentId = parent._id;
 
-          // modify to adjust for RegExp
-          let parentPath = parent.path === '/' ? '' : parent.path;
-          parentPath = escapeStringRegexp(parentPath);
-
+          // Build filter
+          const parentPathEscaped = escapeStringRegexp(parent.path === '/' ? '' : parent.path); // adjust the path for RegExp
           const filter: any = {
-            // regexr.com/6889f
-            // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
+            $and: [
+              {
+                path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
+              },
+              grantFiltersByUser,
+            ],
           };
-          if (publicOnly) {
-            filter.grant = Page.GRANT_PUBLIC;
-          }
 
           return {
             updateMany: {
@@ -2592,16 +2608,17 @@ class PageService {
         });
         try {
           const res = await Page.bulkWrite(updateManyOperations);
+
           countPages += res.result.nModified;
           logger.info(`Page migration processing: (count=${countPages})`);
 
-          // throw
+          // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
             throw Error('Failed to migrate some pages');
           }
 
-          // finish migration
+          // Finish migration if no modification occurred
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
@@ -2611,6 +2628,9 @@ class PageService {
           logger.error('Failed to update page.parent.', err);
           throw err;
         }
+
+        // Remove unnecessary empty pages
+        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
 
         callback();
       },
@@ -2625,9 +2645,9 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    const existsFilter = { $and: [...grantFilter.$and, ...filter.$and] };
+    const existsFilter = { $and: [grantFiltersByUser, ...filter.$and] };
     if (await Page.exists(existsFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(regexps, pathsToInclude, publicOnly);
+      return this._normalizeParentRecursively(regexps, pathsToInclude, grantFiltersByUser, user);
     }
 
   }
