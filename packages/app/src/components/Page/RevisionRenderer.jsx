@@ -192,6 +192,7 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  isRenderable: PropTypes.bool,
   highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
