@@ -256,7 +256,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
-  const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+  const renameMenuItemClickHandler = useCallback(async(): Promise<void> => {
     setRenameInputShown(true);
   }, []);
 
