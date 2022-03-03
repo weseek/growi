@@ -25,7 +25,7 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta,
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
 
 
@@ -39,8 +39,8 @@ interface ItemProps {
   isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
+  onRenamed?(): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickRenameMenuItem?(pageToRename: IPageToRenameWithMeta): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
@@ -113,7 +113,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -122,7 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  // const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -258,52 +258,38 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
+  const renameMenuItemClickHandler = useCallback(() => {
+    setRenameInputShown(true);
+  }, []);
 
-  /*
-  * Rename: TODO: rename page title on input form by #87757
-  */
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
 
-  // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
-  //   setRenameInputShown(true);
-  // }, []);
-
-  // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   const parentPath = getParentPagePath(page.path as string)
-  //   const newPagePath = `${parentPath}/${inputText}`;
-
-  //   try {
-  //     setPageTitle(inputText);
-  //     setRenameInputShown(false);
-  //     await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
-  //   }
-  //   catch (err) {
-  //     // open ClosableInput and set pageTitle back to the previous title
-  //     setPageTitle(nodePath.basename(pageTitle as string));
-  //     setRenameInputShown(true);
-  //     toastError(err);
-  //   }
-  // };
-
-  const renameMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
-    if (onClickRenameMenuItem == null) {
+    if (newPagePath === page.path) {
+      setRenameInputShown(false);
       return;
     }
 
-    if (page._id == null || page.revision == null || page.path == null) {
-      throw Error('Any of _id, revision, and path must not be null.');
+    try {
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', {
+        pageId: page._id,
+        revisionId: page.revision,
+        newPagePath,
+      });
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
+      toastSuccess(t('renamed_pages', { path: page.path }));
     }
-
-    const pageToRename: IPageToRenameWithMeta = {
-      data: {
-        _id: page._id,
-        revision: page.revision as string,
-        path: page.path,
-      },
-      meta: pageInfo,
-    };
-
-    onClickRenameMenuItem(pageToRename);
-  }, [onClickRenameMenuItem, page]);
+    catch (err) {
+      setRenameInputShown(true);
+      toastError(err);
+    }
+  };
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
@@ -418,7 +404,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-0 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
         id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
@@ -434,22 +420,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        {/* TODO: rename page title on input form by 87757 */}
-        {/* { isRenameInputShown && (
+        { isRenameInputShown && (
           <ClosableTextInput
             isShown
-            value={nodePath.basename(pageTitle as string)}
+            value={nodePath.basename(page.path ?? '')}
             placeholder={t('Input page name')}
             onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={onPressEnterForRenameHandler}
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && ( */}
-        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-        </a>
-        {/* )} */}
+        { !isRenameInputShown && (
+          <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+          </a>
+        )}
         {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={descendantCount} />
@@ -465,7 +450,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
@@ -474,7 +459,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
-            <i className="icon-plus text-muted d-block p-1" />
+            <i className="icon-plus text-muted d-block p-0" />
           </button>
         </div>
       </li>
@@ -498,8 +483,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
+              onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-              onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>

@@ -40,9 +40,8 @@ const PutBackPageModal = () => {
         recursively,
       });
 
-      const putbackPagePath = encodeURI(response.page.path);
       if (onPutBacked != null) {
-        onPutBacked(putbackPagePath);
+        onPutBacked(response.page.path);
       }
       closePutBackPageModal();
     }
