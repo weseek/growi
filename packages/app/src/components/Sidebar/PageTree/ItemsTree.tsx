@@ -154,13 +154,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       return;
     }
 
-    // socket
     socket.on(SocketEventName.UpdateDescCount, (data: UpdateDescCountRawData) => {
       // save to global state
       const newData: UpdateDescCountData = new Map(Object.entries(data));
 
       updatePtDescCountMap(newData);
     });
+
+    return () => { socket.off(SocketEventName.UpdateDescCount) };
+
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onRenamed = () => {

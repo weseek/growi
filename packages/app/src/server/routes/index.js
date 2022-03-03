@@ -203,7 +203,7 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleErrosMiddleware));
 
   app.use('/_private-legacy-pages', express.Router()
-    .get('/', privateLegacyPages.renderPrivateLegacyPages));
+    .get('/', injectUserUISettings, privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
