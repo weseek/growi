@@ -31,8 +31,9 @@ const CustomSidebar: FC<Props> = (props: Props) => {
 
   const renderer = appContainer.getRenderer('sidebar');
 
-  const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
+  const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
 
+  const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
@@ -46,14 +47,23 @@ const CustomSidebar: FC<Props> = (props: Props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
+
       {
-        markdown != null ? (
+        isLoading && (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        )
+      }
+
+      {
+        !isLoading && markdown != null ? (
           <div className="p-3">
             <RevisionRenderer
-              isRenderable
               growiRenderer={renderer}
               markdown={markdown}
               additionalClassName="grw-custom-sidebar-content"
+              isRenderable
             />
           </div>
         ) : (
