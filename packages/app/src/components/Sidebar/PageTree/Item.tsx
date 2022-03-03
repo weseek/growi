@@ -16,7 +16,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -256,11 +256,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
-
-  /*
-  * Rename: TODO: rename page title on input form by #87757
-  */
-
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     setRenameInputShown(true);
   }, []);
@@ -288,30 +283,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       toastError(err);
     }
   };
-
-  // const renameMenuItemClickHandler = useCallback((): void => {
-  //   if (onClickRenameMenuItem == null) {
-  //     return;
-  //   }
-
-  //   const { _id: pageId, revision: revisionId, path } = page;
-
-  //   if (!page.isEmpty && revisionId == null) {
-  //     throw Error('Existing page should have revisionId');
-  //   }
-
-  //   if (pageId == null || path == null) {
-  //     throw Error('Any of _id and revisionId and path must not be null.');
-  //   }
-
-  //   const pageToRename: IPageForPageRenameModal = {
-  //     pageId,
-  //     revisionId: revisionId as string,
-  //     path,
-  //   };
-
-  //   onClickRenameMenuItem(pageToRename);
-  // }, [onClickRenameMenuItem, page]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (page._id == null || page.revision == null || page.path == null) {
@@ -440,7 +411,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        {/* TODO: rename page title on input form by 87757 */}
         { isRenameInputShown && (
           <ClosableTextInput
             isShown
