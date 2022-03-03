@@ -43,7 +43,7 @@ const PageRenameModal = (): JSX.Element => {
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
-  const [existingPaths, setExistingPaths] = useState([]);
+  const [existingPaths, setExistingPaths] = useState<string>([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
@@ -167,6 +167,7 @@ const PageRenameModal = (): JSX.Element => {
 
   const { path } = page.data;
   const isV5Compatible = isIPageInfoForEntity(page.meta) ? page.meta.isV5Compatible : null;
+  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
@@ -197,73 +198,87 @@ const PageRenameModal = (): JSX.Element => {
           </div>
         </div>
 
-        { isV5Compatible === false && (
-          <div className="custom-control custom-checkbox custom-checkbox-warning">
-            <input
-              className="custom-control-input"
-              name="recursively"
-              id="cbRenameRecursively"
-              type="checkbox"
-              checked={isRenameRecursively}
-              onChange={changeIsRenameRecursivelyHandler}
-            />
-            <label className="custom-control-label" htmlFor="cbRenameRecursively">
-              { t('modal_rename.label.Recursively') }
-              <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
-            </label>
-            {existingPaths.length !== 0 && (
-              <div
-                className="custom-control custom-checkbox custom-checkbox-warning"
-                style={{ display: isRenameRecursively ? '' : 'none' }}
-              >
-                <input
-                  className="custom-control-input"
-                  name="withoutExistRecursively"
-                  id="cbRenamewithoutExistRecursively"
-                  type="checkbox"
-                  checked={isRenameRecursivelyWithoutExistPath}
-                  onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
-                />
-                <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-                  { t('modal_rename.label.Rename without exist path') }
-                </label>
-              </div>
-            )}
-            {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-            {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
-          </div>
+        { isTargetPageDuplicate && (
+          <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        <div className="custom-control custom-checkbox custom-checkbox-success">
-          <input
-            className="custom-control-input"
-            name="create_redirect"
-            id="cbRenameRedirect"
-            type="checkbox"
-            checked={isRenameRedirect}
-            onChange={changeIsRenameRedirectHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbRenameRedirect">
-            { t('modal_rename.label.Redirect') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
-          </label>
+        { isV5Compatible === false && (
+          <>
+            <div className="custom-control custom-radio custom-radio-warning">
+              <input
+                className="custom-control-input"
+                name="recursively"
+                id="cbRenameRecursively"
+                type="radio"
+                checked={isRenameRecursively}
+                onChange={changeIsRenameRecursivelyHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbRenameRecursively">
+                {/* { t('modal_rename.label.Recursively') } */}
+                Rename this page only
+                {/* <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p> */}
+              </label>
+            </div>
+            <div className="custom-control custom-radio custom-radio-warning">
+              <input
+                className="custom-control-input"
+                name="withoutExistRecursively"
+                id="cbRenamewithoutExistRecursively"
+                type="radio"
+                // checked={isRenameRecursivelyWithoutExistPath}
+                // onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
+                checked={!isRenameRecursively}
+                onChange={changeIsRenameRecursivelyHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+                {/* { t('modal_rename.label.Rename without exist path') } */}
+                Force rename all pages
+                <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
+              </label>
+              {!isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            </div>
+            {/* {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />} */}
+          </>
+        ) }
+
+        <p className="mt-2">
+          <a data-toggle="collapse" href="#collapseOptions" role="button" aria-expanded="false" aria-controls="collapseOptions">
+            <i className="fa fa-fw fa-arrow-right"></i> Other options
+          </a>
+        </p>
+        <div className="collapse" id="collapseOptions">
+          <div className="custom-control custom-checkbox custom-checkbox-success">
+            <input
+              className="custom-control-input"
+              name="create_redirect"
+              id="cbRenameRedirect"
+              type="checkbox"
+              checked={isRenameRedirect}
+              onChange={changeIsRenameRedirectHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbRenameRedirect">
+              { t('modal_rename.label.Redirect') }
+              <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
+            </label>
+          </div>
+
+          <div className="custom-control custom-checkbox custom-checkbox-primary">
+            <input
+              className="custom-control-input"
+              name="remain_metadata"
+              id="cbRemainMetadata"
+              type="checkbox"
+              checked={isRemainMetadata}
+              onChange={changeIsRemainMetadataHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbRemainMetadata">
+              { t('modal_rename.label.Do not update metadata') }
+              <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
+            </label>
+          </div>
+          <div> {subordinatedError} </div>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-primary">
-          <input
-            className="custom-control-input"
-            name="remain_metadata"
-            id="cbRemainMetadata"
-            type="checkbox"
-            checked={isRemainMetadata}
-            onChange={changeIsRemainMetadataHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbRemainMetadata">
-            { t('modal_rename.label.Do not update metadata') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
-          </label>
-        </div>
-        <div> {subordinatedError} </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
