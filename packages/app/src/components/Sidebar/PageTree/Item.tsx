@@ -37,8 +37,8 @@ interface ItemProps {
   isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
+  mutateAfterRenamed?(): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
@@ -111,7 +111,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    mutateAfterRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -278,6 +278,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isRenameRedirect: false,
         isRemainMetadata: false,
       });
+
+      if (mutateAfterRenamed != null) {
+        mutateAfterRenamed();
+      }
     }
     catch (err) {
       setRenameInputShown(true);
@@ -500,8 +504,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
+              mutateAfterRenamed={mutateAfterRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-              onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>
