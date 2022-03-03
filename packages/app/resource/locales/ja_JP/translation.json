@@ -423,6 +423,7 @@
   },
   "Put Back": "元に戻す",
   "Delete Completely": "完全削除",
+  "page_has_been_reverted": "{{path}} を元に戻しました",
   "modal_delete": {
     "delete_page": "ページを削除する",
     "deleting_page": "ページパス",
