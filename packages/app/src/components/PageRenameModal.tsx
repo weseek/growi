@@ -30,7 +30,7 @@ const PageRenameModal = (): JSX.Element => {
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;
 
-  const shouldFetch = page != null && !isIPageInfoForEntity(page.meta);
+  const shouldFetch = isOpened && page != null && !isIPageInfoForEntity(page.meta);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? page?.data._id : null);
 
   if (page != null && pageInfo != null) {
@@ -143,6 +143,25 @@ const PageRenameModal = (): JSX.Element => {
       setErrs(err);
     }
   }
+
+  useEffect(() => {
+    if (isOpened) {
+      return;
+    }
+
+    // reset states after the modal closed
+    setTimeout(() => {
+      setPageNameInput('');
+      setErrs(null);
+      setSubordinatedPages([]);
+      setExistingPaths([]);
+      setIsRenameRecursively(true);
+      setIsRenameRedirect(false);
+      setIsRemainMetadata(false);
+      setExpandOtherOptions(false);
+    }, 1000);
+
+  }, [isOpened]);
 
   if (page == null) {
     return <></>;
