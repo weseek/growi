@@ -97,9 +97,9 @@ const renderByInitialNode = (
 
 const scrollPageTree = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  const target = document.getElementById('grw-pagetree-is-target');
-  if (scrollElement != null && target != null) {
-    jQuerySlimScrollIntoView(scrollElement, target, true);
+  const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
+  if (scrollElement != null && scrollTargetElement != null) {
+    jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, true);
   }
 };
 // --- end ---
