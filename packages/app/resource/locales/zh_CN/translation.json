@@ -384,21 +384,21 @@
   },
 	"modal_rename": {
 		"label": {
-			"Move/Rename page": "页面 移动/重命名",
+      "Move/Rename page": "页面 移动/重命名",
       "New page name": "新建页面名称",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-			"Current page name": "当前页面名称",
+      "Current page name": "当前页面名称",
       "Rename this page only": "仅重命名此页面",
       "Force rename all child pages": "强制重命名所有子页面 ",
       "Other options": "其他选项",
       "Update metadata": "更新元数据",
-			"Redirect": "重定向"
+      "Redirect": "重定向"
 		},
 		"help": {
-			"redirect": "Redirect to new page if someone accesses <code>%s</code>",
-			"metadata": "Update last update user and updated date",
-			"recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "metadata": "Update last update user and updated date",
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
 		}
 	},
 	"Put Back": "Put back",
