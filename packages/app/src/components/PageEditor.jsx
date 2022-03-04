@@ -1,9 +1,10 @@
 import React from 'react';
+import nodePath from 'path';
 import PropTypes from 'prop-types';
 import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
-import { envUtils } from '@growi/core';
+import { envUtils, pathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -324,16 +325,24 @@ class PageEditor extends React.Component {
       return null;
     }
 
+    const { pageContainer } = this.props;
+    const { path, revisionId } = pageContainer.state;
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
+    const isEnabledAttachTitleHeader = config.isEnabledAttachTitleHeader;
+
+    let initValueForEditor = this.state.markdown;
+    if (revisionId == null && isEnabledAttachTitleHeader) {
+      initValueForEditor = pathUtils.attachTitleHeader(nodePath.basename(path));
+    }
 
     return (
       <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
           <Editor
             ref={(c) => { this.editor = c }}
-            value={this.state.markdown}
+            value={initValueForEditor}
             noCdn={noCdn}
             isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
