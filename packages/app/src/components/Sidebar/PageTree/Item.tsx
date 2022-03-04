@@ -216,7 +216,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           if (monitor.isOver()) {
             setIsOpen(true);
           }
-        }, 1000);
+        }, 600);
       }
     },
     canDrop: (item) => {
@@ -410,7 +410,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
-              <div className="grw-triangle-icon d-flex justify-content-center">
+              <div className="d-flex justify-content-center">
                 <TriangleIcon />
               </div>
             </button>
