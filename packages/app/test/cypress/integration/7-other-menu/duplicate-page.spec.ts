@@ -27,8 +27,7 @@ context('Duplicate page', () => {
     cy.wait(300);
     cy.get('.search-clear').click();
 
-    const randomInteger = () => Cypress._.random(0, 1e6)
-    cy.get('[name="new_path"]').type(`/test${randomInteger}`);
+    cy.get('[name="new_path"]').type('test');
     cy.get('.modal-footer .btn-primary').click();
 
     cy.wait(1500);
