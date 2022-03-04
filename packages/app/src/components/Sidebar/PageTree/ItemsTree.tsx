@@ -71,7 +71,6 @@ type ItemsTreeProps = {
 const renderByInitialNode = (
     initialNode: ItemNode,
     isEnableActions: boolean,
-    isScrolled: boolean,
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
     onRenamed?: () => void,
@@ -91,7 +90,6 @@ const renderByInitialNode = (
         onRenamed={onRenamed}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickDeleteMenuItem={onClickDeleteMenuItem}
-        isScrolled={isScrolled}
       />
     </ul>
   );
@@ -105,7 +103,8 @@ const scrollTargetItem = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
   const target = document.getElementById('grw-pagetree-is-target');
   if (scrollElement != null && target != null) {
-    smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
+    const useSlimScroll = true;
+    smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement, useSlimScroll);
   }
 };
 // --- end ---
@@ -126,7 +125,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const [isScrolled, setIsScrolled] = useState(false);
 
   const { data: socket } = useGlobalSocket();
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
@@ -137,17 +135,22 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isRenderedCompletely, setIsRenderedCompletely] = useState(false);
+
   const scrollItem = () => {
-    scrollTargetItem();
-    setIsScrolled(true);
+    if (!isScrolled) {
+      scrollTargetItem();
+      setIsScrolled(true);
+    }
   };
 
   useEffect(() => {
-    document.addEventListener('targetItemRendered', scrollItem);
+    document.addEventListener('scrollPageTree', scrollItem);
     return () => {
-      document.removeEventListener('targetItemRendered', scrollItem);
+      document.removeEventListener('scrollPageTree', scrollItem);
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (socket == null) {
@@ -170,6 +173,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     advanceFts();
     advanceDpl();
   };
+
+  useEffect(() => {
+    if (!isRenderedCompletely) return;
+    document.dispatchEvent(new CustomEvent('resetScroller'));
+  }, [isRenderedCompletely]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -216,11 +224,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   /*
    * Render completely
    */
-  if (ancestorsChildrenData != null && rootPageData != null) {
+  if (ancestorsChildrenData != null && rootPageData != null && !isRenderedCompletely) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
+    setIsRenderedCompletely(true);
     return renderByInitialNode(
       // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     );
   }
 
@@ -231,7 +240,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
     return renderByInitialNode(
       // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     );
   }
 

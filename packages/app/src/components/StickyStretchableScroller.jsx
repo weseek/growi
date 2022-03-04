@@ -63,13 +63,10 @@ const StickyStretchableScroller = (props) => {
    * Reset scrollbar
    */
   const resetScrollbar = useCallback(() => {
-    console.log('------');
     const contentsElem = document.querySelector(contentsElemSelector);
-    console.log('contentsElem', contentsElem);
     if (contentsElem == null) {
       return;
     }
-    console.log('scrollTargetSelector', scrollTargetSelector);
     const viewHeight = calcViewHeightFunc != null
       ? calcViewHeightFunc()
       : 'auto';
@@ -81,9 +78,7 @@ const StickyStretchableScroller = (props) => {
     logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
 
     const isScrollEnabled = viewHeight === 'auto' || (viewHeight < contentsHeight);
-    console.log('viewHeight', viewHeight);
-    console.log('contentsHeight', contentsHeight);
-    console.log('viewHeight < contentsHeight', viewHeight < contentsHeight);
+
     $(scrollTargetSelector).slimScroll({
       color: '#666',
       railColor: '#999',
@@ -94,6 +89,9 @@ const StickyStretchableScroller = (props) => {
       allowPageScroll: true,
     });
 
+    if (isScrollEnabled && scrollTargetSelector === '#grw-sidebar-contents-scroll-target') {
+      document.dispatchEvent(new CustomEvent('scrollPageTree'));
+    }
     // destroy
     if (!isScrollEnabled) {
       $(scrollTargetSelector).slimScroll({ destroy: true });
@@ -103,6 +101,13 @@ const StickyStretchableScroller = (props) => {
 
   const resetScrollbarDebounced = debounce(100, resetScrollbar);
 
+
+  useEffect(() => {
+    document.addEventListener('resetScroller', resetScrollbarDebounced);
+    return () => {
+      document.removeEventListener('resetScroller', resetScrollbarDebounced);
+    };
+  }, []);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
