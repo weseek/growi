@@ -10,7 +10,7 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { jQuerySlimScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
@@ -95,14 +95,11 @@ const renderByInitialNode = (
   );
 };
 
-const SCROLL_OFFSET_TOP = window.innerHeight / 2;
-
-const scrollTargetItem = () => {
+const scrollPageTree = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
   const target = document.getElementById('grw-pagetree-is-target');
   if (scrollElement != null && target != null) {
-    const useSlimScroll = true;
-    smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement, useSlimScroll);
+    jQuerySlimScrollIntoView(scrollElement, target, true);
   }
 };
 // --- end ---
@@ -136,17 +133,17 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isRenderedCompletely, setIsRenderedCompletely] = useState(false);
 
-  const scrollItem = () => {
+  const scrollToTargetItem = () => {
     if (!isScrolled) {
-      scrollTargetItem();
+      scrollPageTree();
       setIsScrolled(true);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('scrollPageTree', scrollItem);
+    document.addEventListener('scrollPageTree', scrollToTargetItem);
     return () => {
-      document.removeEventListener('scrollPageTree', scrollItem);
+      document.removeEventListener('scrollPageTree', scrollToTargetItem);
     };
   });
 
