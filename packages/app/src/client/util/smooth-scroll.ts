@@ -7,6 +7,7 @@ export const smoothScrollIntoView = (element: HTMLElement, offsetTop = 0, scroll
   const rectTop = targetElement.getBoundingClientRect().top;
 
   const top = window.pageYOffset + rectTop - offsetTop;
+
   scrollElement.scrollTo({
     top,
     behavior: 'smooth',
