@@ -45,7 +45,7 @@ const PageRenameModal = (): JSX.Element => {
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
-  const [isRemainMetadata, setIsRemainMetadata] = useState(true);
+  const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
 
@@ -122,7 +122,7 @@ const PageRenameModal = (): JSX.Element => {
         revisionId: revision,
         isRecursively: isRenameRecursively,
         isRenameRedirect,
-        isRemainMetadata,
+        updateMetadata: !isRemainMetadata,
         newPagePath: pageNameInput,
         path,
       });
@@ -246,13 +246,13 @@ const PageRenameModal = (): JSX.Element => {
             <input
               className="custom-control-input"
               name="remain_metadata"
-              id="cbUpdateMetadata"
+              id="cbRemainMetadata"
               type="checkbox"
-              checked={!isRemainMetadata}
+              checked={isRemainMetadata}
               onChange={() => setIsRemainMetadata(!isRemainMetadata)}
             />
-            <label className="custom-control-label" htmlFor="cbUpdateMetadata">
-              { t('modal_rename.label.Update metadata') }
+            <label className="custom-control-label" htmlFor="cbRemainMetadata">
+              { t('modal_rename.label.Do not update metadata') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
             </label>
           </div>

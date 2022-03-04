@@ -413,12 +413,12 @@
       "Rename this page only": "このページのみを移動/名前変更",
       "Force rename all child pages": "全ての配下のページを移動/名前変更する",
       "Other options": "その他のオプション",
-      "Update metadata": "メタデータを更新する",
+      "Do not update metadata": "不更新元数据",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "アクセスされた際に自動的に新しいページにジャンプします",
-      "metadata": "最終更新ユーザー、最終更新日を更新します",
+      "metadata": "Remains last update user and updated date as is",
       "recursive": "配下のページも移動/名前変更します"
     }
   },

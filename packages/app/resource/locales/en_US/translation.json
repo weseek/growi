@@ -414,12 +414,12 @@
       "Rename this page only": "Rename this page only",
       "Force rename all child pages": "Force rename all pages",
       "Other options": "Other options",
-      "Update metadata": "Update metadata",
+      "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses under this path",
-      "metadata": "Update last update user and updated date",
+      "metadata": "Remains last update user and updated date as is",
       "recursive": "Move/Rename children of under this path recursively"
     }
   },

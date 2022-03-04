@@ -187,7 +187,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         revisionId: droppedPage.revision,
         newPagePath,
         isRenameRedirect: false,
-        isRemainMetadata: false,
+        updateMetadata: true,
       });
 
       await mutateChildren();
