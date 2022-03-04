@@ -171,6 +171,10 @@ module.exports = function(crowi, req, locals) {
     });
   };
 
+  locals.attachTitleHeader = function(path) {
+    return pathUtils.attachTitleHeader(path);
+  };
+
   locals.css = {
     grant(pageData) {
       if (!pageData) {

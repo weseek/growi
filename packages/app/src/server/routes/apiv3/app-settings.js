@@ -1,6 +1,8 @@
 import { body } from 'express-validator';
 import loggerFactory from '~/utils/logger';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
 const debug = require('debug')('growi:routes:admin');
@@ -150,7 +152,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
     appSetting: [

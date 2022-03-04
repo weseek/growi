@@ -41,6 +41,7 @@ export type IPageInfo = {
   isMovable: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
+  isRevertible: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {
@@ -61,17 +62,20 @@ export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
 
 export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperation | IPageInfoForListing;
 
-export const isIPageInfoForEntity = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && !pageInfo.isEmpty;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && ('isEmpty' in pageInfo) && pageInfo.isEmpty === false;
 };
 
-export const isIPageInfoForOperation = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForOperation => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIPageInfoForOperation = (pageInfo: any | undefined): pageInfo is IPageInfoForOperation => {
   return pageInfo != null
     && isIPageInfoForEntity(pageInfo)
     && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
 };
 
-export const isIPageInfoForListing = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForListing => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIPageInfoForListing = (pageInfo: any | undefined): pageInfo is IPageInfoForListing => {
   return pageInfo != null
     && isIPageInfoForEntity(pageInfo)
     && 'revisionShortBody' in pageInfo;
@@ -93,10 +97,14 @@ export const isIPageInfoForListing = (pageInfo: IPageInfoAll | undefined): pageI
 //   return <IPageInfoTypeResolver<T>>pageInfo;
 // };
 
-export type IPageWithMeta<M = IPageInfoAll> = {
-  pageData: IPageHasId,
-  pageMeta?: M,
-};
+export type IDataWithMeta<D = unknown, M = unknown> = {
+  data: D,
+  meta?: M,
+}
+
+export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
+
+export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForOperation | unknown>;
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

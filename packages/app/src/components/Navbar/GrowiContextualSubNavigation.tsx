@@ -1,17 +1,25 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
+
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
+import {
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
+  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
+
+
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
@@ -21,7 +29,6 @@ import { useSWRTagsInfo } from '~/stores/page';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { IPageHasId } from '~/interfaces/page';
 
 import HistoryIcon from '../Icons/HistoryIcon';
 import AttachmentIcon from '../Icons/AttachmentIcon';
@@ -57,12 +64,18 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { open } = usePageAccessoriesModal();
+  const { open: openPresentationModal } = usePagePresentationModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModal();
+
+  const hrefForPresentationModal = `${pageId}/?presentation=1`;
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
+      <DropdownItem
+        onClick={() => openPresentationModal(hrefForPresentationModal)}
+        data-testid="open-presentation-modal-btn"
+      >
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -80,7 +93,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         refs: PageAccessoriesModalControl
       */}
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
       >
         <span className="mr-1"><HistoryIcon /></span>
@@ -88,14 +101,14 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
       >
         <span className="mr-1"><ShareLinkIcon /></span>
@@ -136,8 +149,8 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
@@ -170,17 +183,39 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      window.location.href = toPath;
+    };
+    openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
+  const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
+    const renamedHandler: OnRenamedFunction = () => {
+      window.location.reload();
+    };
+    openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      // redirect to NotFound Page
+      window.location.href = path;
+    }
+    else {
+      window.location.reload();
+    }
+  }, []);
+
+  const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
+    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
@@ -192,9 +227,11 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
+    const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
+
     return (
       <>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={className}>
           { pageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
@@ -219,7 +256,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           ) }
         </div>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={className}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
@@ -274,6 +311,7 @@ const GrowiContextualSubNavigation = (props) => {
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
+      additionalClasses={['container-fluid']}
     />
   );
 };

@@ -33,16 +33,20 @@ class LegacyRevisionRenderer extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.initCurrentRenderingContext();
-    this.renderHtml();
+    const { isRenderable } = this.props;
+
+    if (isRenderable) {
+      this.initCurrentRenderingContext();
+      this.renderHtml();
+    }
   }
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords } = this.props;
+    const { markdown, isRenderable, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
-    if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
+    if ((markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) && isRenderable) {
       this.initCurrentRenderingContext();
       this.renderHtml();
       return;
@@ -68,7 +72,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     // Separate keywords
     // - Surrounded by double quotation
     // - Split by both full-width and half-width spaces
-    [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    // [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    keywords.forEach((keyword, i) => {
       if (keyword === '') {
         return;
       }
@@ -138,7 +143,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     await interceptorManager.process('prePostProcess', context);
     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-    if (highlightKeywords != null) {
+    const isMarkdownEmpty = context.markdown.trim().length === 0;
+    if (highlightKeywords != null && highlightKeywords.length > 0 && !isMarkdownEmpty) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
@@ -167,7 +173,8 @@ LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  isRenderable: PropTypes.bool,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
 
@@ -185,7 +192,8 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  isRenderable: PropTypes.bool,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
 

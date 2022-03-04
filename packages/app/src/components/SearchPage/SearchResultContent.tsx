@@ -1,20 +1,30 @@
-import React, { FC, useCallback } from 'react';
-
-import { DropdownItem } from 'reactstrap';
+import React, {
+  FC, useCallback, useEffect, useRef,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { DropdownItem } from 'reactstrap';
+
+import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal } from '~/stores/ui';
+import {
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+} from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -28,53 +38,130 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { pageId, revisionId } = props;
 
   return (
-    <>
-      <DropdownItem divider />
-
-      {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
-        {t('export_bulk.export_page_markdown')}
-      </DropdownItem>
-    </>
+    // Export markdown
+    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
+      <i className="icon-fw icon-cloud-download"></i>
+      {t('export_bulk.export_page_markdown')}
+    </DropdownItem>
   );
 };
 
+const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
+const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  searchingKeyword:string,
-  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
 }
 
-const SearchResultContent: FC<Props> = (props: Props) => {
+const scrollTo = (scrollElement:HTMLElement) => {
+  // use querySelector to intentionally get the first element found
+  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
+  if (highlightedKeyword != null) {
+    smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
+  }
+};
+
+const generateObserverCallback = (doScroll: ()=>void) => {
+  return (mutationRecords:MutationRecord[]) => {
+    mutationRecords.forEach((record:MutationRecord) => {
+      const target = record.target as HTMLElement;
+      const targetId = target.id as string;
+      if (targetId !== 'wiki') return;
+      doScroll();
+    });
+  };
+};
+
+export const SearchResultContent: FC<Props> = (props: Props) => {
+  const scrollElementRef = useRef(null);
+
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    const scrollElement = scrollElementRef.current as HTMLElement | null;
+    if (scrollElement == null) return;
+
+    const observerCallback = generateObserverCallback(() => {
+      scrollTo(scrollElement);
+    });
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
+    return () => {
+      observer.disconnect();
+    };
+  });
+  // *******************************  end  *******************************
+
   const {
     appContainer,
-    focusedSearchResultData,
+    pageWithMeta,
+    highlightKeywords,
     showPageControlDropdown,
+    forceHideMenuItems,
   } = props;
 
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { t } = useTranslation();
 
-  const page = focusedSearchResultData?.pageData;
+  const page = pageWithMeta?.data;
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
-  }, [openDuplicateModal]);
+  const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      toastSuccess(t('duplicated_pages', { fromPath }));
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
-  }, [openRenameModal]);
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const renameItemClickedHandler = useCallback(async(pageToRename) => {
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
+    }
+    else {
+      toastSuccess(t('deleted_pages', { path }));
+    }
+    advancePt();
+    advanceFts();
+    advanceDpl();
+  }, [advanceDpl, advanceFts, advancePt, t]);
+
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
@@ -93,7 +180,9 @@ const SearchResultContent: FC<Props> = (props: Props) => {
             revisionId={revisionId}
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
+            forceHideMenuItems={forceHideMenuItems}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -103,29 +192,31 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
 
   return (
-    <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <GrowiSubNavigation
-        page={page}
-        controls={ControlComponents}
-      />
-      <div className="search-result-page-content">
+    <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
+      <div className="grw-subnav-append-shadow-container">
+        <GrowiSubNavigation
+          page={page}
+          controls={ControlComponents}
+          isCompactMode
+          additionalClasses={['px-4']}
+        />
+      </div>
+      <div className="search-result-content-body-container" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}
           pagePath={page.path}
           revisionId={page.revision}
-          highlightKeywords={props.searchingKeyword}
+          highlightKeywords={highlightKeywords}
+          isRenderable
         />
       </div>
     </div>
   );
 };
-
-
-export default SearchResultContent;

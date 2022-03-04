@@ -4,7 +4,8 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { pagePathUtils } from '@growi/core';
 
-import { EditorMode, useEditorMode, useDescendantsPageListModal } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useDescendantsPageListModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
@@ -111,7 +112,7 @@ const DisplaySwitcher = (): JSX.Element => {
         </TabPane>
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
-            <div id="page-editor">
+            <div data-testid="page-editor" id="page-editor">
               <Editor />
             </div>
           </TabPane>

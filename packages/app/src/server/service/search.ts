@@ -1,12 +1,13 @@
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
@@ -16,6 +17,8 @@ import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
 const filterXssOptions = {
@@ -236,7 +239,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[Result<any> & MetaData, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
     let parsedQuery;
     // parse
     try {
@@ -348,18 +351,16 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<IFormattedSearchResult> {
+  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
-      const data = searchResult.data.map((page) => {
+      const data: IPageWithMeta<IPageSearchMeta>[] = searchResult.data.map((page) => {
         return {
-          pageData: page,
-          pageMeta: {},
+          data: page,
         };
       });
 
       return {
         data,
-        totalCount: data.length,
         meta: searchResult.meta,
       };
     }
@@ -377,13 +378,16 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     // set meta data
     result.meta = searchResult.meta;
-    result.totalCount = findPageResult.totalCount;
 
     // set search result page data
-    result.data = searchResult.data.map((data) => {
+    const pages: (IPageWithMeta<IPageSearchMeta> | null)[] = searchResult.data.map((data) => {
       const pageData = findPageResult.pages.find((pageData) => {
         return pageData.id === data._id;
       });
+
+      if (pageData == null) {
+        return null;
+      }
 
       // add tags and seenUserCount to pageData
       pageData._doc.tags = data._source.tag_names;
@@ -419,9 +423,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
         elasticSearchResult,
       };
 
-      return { pageData, pageMeta };
+      return { data: pageData, meta: pageMeta };
     });
 
+    result.data = pages.filter(nonNullable);
     return result;
   }
 

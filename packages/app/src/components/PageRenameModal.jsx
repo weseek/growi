@@ -10,7 +10,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
-import { usePageRenameModalStatus, usePageRenameModalOpened } from '~/stores/ui';
+import { usePageRenameModal } from '~/stores/modal';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -29,10 +29,10 @@ const PageRenameModal = (props) => {
   } = props;
 
   const { crowi } = appContainer.config;
-  const { data: isOpened } = usePageRenameModalOpened();
-  const { data: pagesDataToRename, close: closeRenameModal } = usePageRenameModalStatus();
+  const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
 
-  const { path, revisionId, pageId } = pagesDataToRename;
+  const { isOpened, page } = renameModalData;
+  const { pageId, revisionId, path } = page;
 
   const [pageNameInput, setPageNameInput] = useState('');
 
@@ -65,12 +65,11 @@ const PageRenameModal = (props) => {
   const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await apiv3Get('/pages/subordinated-list', { path });
-      const { subordinatedPaths } = res.data;
-      setSubordinatedPages(subordinatedPaths);
+      setSubordinatedPages(res.data.subordinatedPages);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_rename.label.Fail to get subordinated pages'));
+      toastError(t('modal_rename.label.Failed to get subordinated pages'));
     }
   }, [path, t]);
 
@@ -82,7 +81,7 @@ const PageRenameModal = (props) => {
   }, [isOpened, path, updateSubordinatedList]);
 
 
-  const checkExistPaths = async(newParentPath) => {
+  const checkExistPaths = useCallback(async(newParentPath) => {
     try {
       const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
@@ -92,15 +91,15 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Fail to get exist path'));
     }
-  };
+  }, [path, t]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [path],
-  );
+  const checkExistPathsDebounce = useCallback(() => {
+    debounce(1000, checkExistPaths);
+  }, [checkExistPaths]);
 
   useEffect(() => {
-    if (pageId != null && pageNameInput !== path) {
+    if (pageId != null && path != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
   }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
@@ -130,12 +129,15 @@ const PageRenameModal = (props) => {
 
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
-      url.searchParams.append('renamedFrom', path);
       if (isRenameRedirect) {
         url.searchParams.append('withRedirect', true);
       }
 
-      window.location.href = `${url.pathname}${url.search}`;
+      const onRenamed = renameModalData.opts?.onRenamed;
+      if (onRenamed != null) {
+        onRenamed(path);
+      }
+      closeRenameModal();
     }
     catch (err) {
       setErrs(err);

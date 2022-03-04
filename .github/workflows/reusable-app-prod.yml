@@ -37,8 +37,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: lerna bootstrap
@@ -94,10 +95,12 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
         ports:
-        - 27017/tcp
+        - 9200/tcp
+        env:
+          discovery.type: single-node
 
     steps:
     - uses: actions/checkout@v2
@@ -122,6 +125,7 @@ jobs:
           **/node_modules
         key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
         restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
           node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
@@ -151,13 +155,7 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
-    - name: yarn server:ci with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -187,13 +185,19 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['1', '2']
+        spec-group: ['1', '2', '3']
 
     services:
       mongodb:
         image: mongo:4.4
         ports:
         - 27017/tcp
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        ports:
+        - 9200/tcp
+        env:
+          discovery.type: single-node
 
     steps:
     - uses: actions/checkout@v2
@@ -210,8 +214,9 @@ jobs:
           **/node_modules
           ~/.cache/Cypress
           ${{ steps.yarn-cache-dir.outputs.value }}
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
+          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
 
     - name: lerna bootstrap
@@ -254,6 +259,7 @@ jobs:
         wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
+        ELASTICSEARCH_URI: http://elasticsearch:9200/growi
 
     - name: Upload results
       if: always()

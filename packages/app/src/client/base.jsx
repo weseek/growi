@@ -10,7 +10,9 @@ import PageCreateModal from '../components/PageCreateModal';
 import PageDeleteModal from '../components/PageDeleteModal';
 import PageDuplicateModal from '../components/PageDuplicateModal';
 import PageRenameModal from '../components/PageRenameModal';
+import PagePresentationModal from '../components/PagePresentationModal';
 import PageAccessoriesModal from '../components/PageAccessoriesModal';
+import PutbackPageModal from '~/components/PutbackPageModal';
 
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
@@ -48,8 +50,10 @@ const componentMappings = {
   'page-delete-modal': <PageDeleteModal />,
   'page-duplicate-modal': <PageDuplicateModal />,
   'page-rename-modal': <PageRenameModal />,
+  'page-presentation-modal': <PagePresentationModal />,
   'page-accessories-modal': <PageAccessoriesModal />,
   'descendants-page-list-modal': <DescendantsPageListModal />,
+  'page-put-back-modal': <PutbackPageModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 

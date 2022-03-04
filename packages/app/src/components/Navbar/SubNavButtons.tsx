@@ -1,32 +1,37 @@
 import React, { useCallback } from 'react';
 
-import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageToDeleteWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+} from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal } from '~/stores/ui';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
 import BookmarkButtons from '../BookmarkButtons';
 import SeenUserInfo from '../User/SeenUserInfo';
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
-import { AdditionalMenuItemsRendererProps, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import {
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+} from '../Common/Dropdown/PageItemControl';
 
 
 type CommonProps = {
   isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
-  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-  onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+  onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
+  onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
-type SubNavButtonsSubstanceProps= CommonProps & {
+type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string,
@@ -38,7 +43,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
@@ -97,16 +102,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickDuplicateMenuItem == null || path == null) {
       return;
     }
+    const page: IPageForPageDuplicateModal = { pageId, path };
 
-    onClickDuplicateMenuItem(pageId, path);
+    onClickDuplicateMenuItem(page);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
-
-    onClickRenameMenuItem(pageId, revisionId, path);
+    const page: IPageForPageRenameModal = { pageId, revisionId, path };
+    onClickRenameMenuItem(page);
   }, [onClickRenameMenuItem, pageId, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
@@ -114,14 +120,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return;
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId,
-      path,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageId, path, revisionId]);
+  }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
@@ -129,8 +138,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 
   const {
-    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
   } = pageInfo;
+
+  const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
+  forceHideMenuItemsWithBookmark.push(MenuItemType.BOOKMARK);
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
@@ -154,12 +166,19 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
         onBookMarkClicked={bookmarkClickHandler}
       />
-      <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+      { !isCompactMode && (
+        <SeenUserInfo
+          seenUsers={seenUsers}
+          sumOfSeenUsers={sumOfSeenUsers}
+          disabled={disableSeenUserInfoPopover}
+        />
+      ) }
       { showPageControlDropdown && (
         <PageItemControl
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
+          forceHideMenuItems={forceHideMenuItemsWithBookmark}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}

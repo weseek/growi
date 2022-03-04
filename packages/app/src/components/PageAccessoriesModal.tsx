@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
-import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/ui';
+import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 import AppContainer from '~/client/services/AppContainer';
 
 import HistoryIcon from './Icons/HistoryIcon';

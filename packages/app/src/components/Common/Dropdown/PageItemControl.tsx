@@ -3,7 +3,6 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
 import loggerFactory from '~/utils/logger';
@@ -16,16 +15,29 @@ import { useSWRxPageInfo } from '~/stores/page';
 const logger = loggerFactory('growi:cli:PageItemControl');
 
 
+export const MenuItemType = {
+  BOOKMARK: 'bookmark',
+  DUPLICATE: 'duplicate',
+  RENAME: 'rename',
+  DELETE: 'delete',
+  REVERT: 'revert',
+} as const;
+export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
+
+export type ForceHideMenuItems = MenuItemType[];
+
 export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
 
 type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
-  showBookmarkMenuItem?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
+
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
+  onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -41,8 +53,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   const {
     pageId, isLoading,
-    pageInfo, isEnableActions, showBookmarkMenuItem,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageInfo, isEnableActions, forceHideMenuItems,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
 
@@ -71,6 +83,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     await onClickRenameMenuItem(pageId);
   }, [onClickRenameMenuItem, pageId]);
 
+  const revertItemClickedHandler = useCallback(async() => {
+    if (onClickRevertMenuItem == null) {
+      return;
+    }
+    await onClickRevertMenuItem(pageId);
+  }, [onClickRevertMenuItem, pageId]);
+
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
     if (pageInfo == null || onClickDeleteMenuItem == null) {
@@ -80,7 +100,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       logger.warn('This page could not be deleted.');
       return;
     }
-    await onClickDeleteMenuItem(pageId);
+    await onClickDeleteMenuItem(pageId, pageInfo);
   }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
   let contents = <></>;
@@ -93,6 +113,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     );
   }
   else if (pageId != null && pageInfo != null) {
+
+    const showDeviderBeforeAdditionalMenuItems = (forceHideMenuItems?.length ?? 0) < 3;
+    const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
+
     contents = (
       <>
         { !isEnableActions && (
@@ -104,7 +128,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Bookmark */}
-        { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+        { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
           <DropdownItem onClick={bookmarkItemClickedHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -112,7 +136,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Duplicate */}
-        { isEnableActions && !pageInfo.isEmpty && (
+        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
           <DropdownItem onClick={duplicateItemClickedHandler}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
@@ -120,20 +144,33 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { isEnableActions && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
           <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
         ) }
 
-        { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
+        {/* Revert */}
+        { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
+          <DropdownItem onClick={revertItemClickedHandler}>
+            <i className="icon-fw  icon-action-undo"></i>
+            {t('modal_putback.label.Put Back Page')}
+          </DropdownItem>
+        ) }
+
+        { AdditionalMenuItems && (
+          <>
+            { showDeviderBeforeAdditionalMenuItems && <DropdownItem divider /> }
+            <AdditionalMenuItems pageInfo={pageInfo} />
+          </>
+        ) }
 
         {/* divider */}
         {/* Delete */}
-        { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && pageInfo.isMovable && (
           <>
-            <DropdownItem divider />
+            { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
@@ -167,7 +204,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -175,7 +212,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
   const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
 
-  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(shouldMutate ? pageId : null);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -204,9 +242,15 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     await onClickRenameMenuItem(pageId);
   }, [onClickRenameMenuItem, pageId]);
 
-  return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
+  const deleteMenuItemClickHandler = useCallback(async() => {
+    if (onClickDeleteMenuItem == null) {
+      return;
+    }
+    await onClickDeleteMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
+  }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
+  return (
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
           <i className="icon-options text-muted"></i>
@@ -220,6 +264,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickRenameMenuItem={renameMenuItemClickHandler}
+        onClickDeleteMenuItem={deleteMenuItemClickHandler}
       />
     </Dropdown>
   );

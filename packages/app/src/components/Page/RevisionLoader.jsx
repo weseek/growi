@@ -107,6 +107,7 @@ class LegacyRevisionLoader extends React.Component {
         growiRenderer={this.props.growiRenderer}
         markdown={markdown}
         highlightKeywords={this.props.highlightKeywords}
+        isRenderable={this.props.isRenderable}
       />
     );
   }
@@ -126,7 +127,8 @@ LegacyRevisionLoader.propTypes = {
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   onRevisionLoaded: PropTypes.func,
-  highlightKeywords: PropTypes.string,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
+  isRenderable: PropTypes.bool,
 };
 
 const RevisionLoader = (props) => {

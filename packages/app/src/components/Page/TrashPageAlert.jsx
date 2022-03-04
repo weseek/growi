@@ -7,22 +7,40 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PutbackPageModal from '../PutbackPageModal';
+
+import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
+import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
+import { useSWRxPageInfo } from '~/stores/page';
+
 import EmptyTrashModal from '../EmptyTrashModal';
 
-import { useCurrentUpdatedAt } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/ui';
+const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+  if (typeof pathOrPathsToDelete !== 'string') {
+    return;
+  }
+
+  window.location.href = '/';
+};
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
+  const { data: shareLinkId } = useShareLinkId();
+
+  /*
+  * TODO: Do not use useSWRxPageInfo on this component
+  * Ideal: use useSWRxPageInfo on TrashPage after applying Next.js
+  * Reference: https://github.com/weseek/growi/pull/5359#discussion_r808381329
+  */
+  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
-  const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
 
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openPutBackPageModal } = usePutBackPageModal();
 
   function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
@@ -33,20 +51,27 @@ const TrashPageAlert = (props) => {
   }
 
   function openPutbackPageModalHandler() {
-    setIsPutbackPageModalShown(true);
-  }
-
-  function closePutbackPageModalHandler() {
-    setIsPutbackPageModalShown(false);
+    const putBackedHandler = (path) => {
+      window.location.reload();
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }
 
   function openPageDeleteModalHandler() {
     const pageToDelete = {
-      pageId,
-      revisionId,
-      path,
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
     };
-    openDeleteModal([pageToDelete]);
+    openDeleteModal(
+      [pageToDelete],
+      {
+        isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+        onDeleted: onDeletedHandler,
+      },
+    );
   }
 
   function renderEmptyButton() {
@@ -77,7 +102,7 @@ const TrashPageAlert = (props) => {
         <button
           type="button"
           className="btn btn-danger rounded-pill btn-sm"
-          disabled={!isAbleToDeleteCompletely}
+          disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
@@ -92,12 +117,6 @@ const TrashPageAlert = (props) => {
         <EmptyTrashModal
           isOpen={isEmptyTrashModalShown}
           onClose={closeEmptyTrashModalHandler}
-        />
-        <PutbackPageModal
-          isOpen={isPutbackPageModalShown}
-          onClose={closePutbackPageModalHandler}
-          pageId={pageId}
-          path={path}
         />
       </>
     );

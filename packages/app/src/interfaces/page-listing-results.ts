@@ -27,6 +27,10 @@ export interface NotFoundTargetPathOrId {
   notFoundTargetPathOrId: string
 }
 
+export interface IsNotFoundPermalink {
+  isNotFoundPermalink: boolean
+}
+
 
 export interface V5MigrationStatus {
   isV5Compatible : boolean,

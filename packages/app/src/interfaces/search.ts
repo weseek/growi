@@ -1,10 +1,4 @@
-import { IPageInfoAll, IPageWithMeta } from './page';
-
-export enum CheckboxType {
-  NONE_CHECKED = 'noneChecked',
-  INDETERMINATE = 'indeterminate',
-  ALL_CHECKED = 'allChecked',
-}
+import { IPageWithMeta } from './page';
 
 export type IPageSearchMeta = {
   bookmarkCount?: number,
@@ -15,21 +9,24 @@ export type IPageSearchMeta = {
   };
 }
 
-export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSearchMeta) | undefined): meta is IPageInfoAll & IPageSearchMeta => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
   return meta != null && 'elasticSearchResult' in meta;
 };
 
-export type IFormattedSearchResult = {
-  data: IPageWithMeta<IPageSearchMeta>[]
-
-  totalCount: number
-
-  meta: {
-    total: number
-    took?: number
-    count?: number
-  }
+export type ISearchResult<T > = ISearchResultMeta & {
+  data: T[],
 }
+
+export type ISearchResultMeta = {
+  meta: {
+    took?: number
+    total: number
+    hitsCount: number
+  },
+}
+
+export type IFormattedSearchResult = ISearchResult<IPageWithMeta<IPageSearchMeta>>;
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',

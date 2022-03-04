@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import './screenshot'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -25,6 +26,7 @@ declare global {
     interface Chainable {
        getByTestid(selector: string, options?: Partial<Loggable & Timeoutable & Withinable & Shadow>): Chainable<JQuery<Element>>,
        login(username: string, password: string): Chainable<void>,
+       collapseSidebar(isCollapsed: boolean): Chainable<void>,
     }
   }
 }

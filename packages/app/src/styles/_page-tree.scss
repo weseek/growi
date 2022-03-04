@@ -5,10 +5,20 @@ $grw-pagetree-item-padding-left: 10px;
 .grw-pagetree {
   min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
+  .btn-page-item-control {
+    .icon-plus::before {
+      font-size: 18px;
+    }
+  }
+
   .list-group-item {
+    .grw-visible-on-hover {
+      display: none;
+    }
+
     &:hover {
-      .grw-pagetree-control {
-        display: flex !important;
+      .grw-visible-on-hover {
+        display: block;
       }
 
       .grw-pagetree-count {
