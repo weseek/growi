@@ -15,7 +15,6 @@ import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 import { useSiteUrl } from '~/stores/context';
 import { isIPageInfoForEntity } from '~/interfaces/page';
@@ -43,25 +42,12 @@ const PageRenameModal = (): JSX.Element => {
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [existingPaths, setExistingPaths] = useState<string[]>([]);
+  const [isRenameRecursively, setIsRenameRecursively] = useState(true);
+  const [isRenameRedirect, setIsRenameRedirect] = useState(false);
+  const [isRemainMetadata, setIsRemainMetadata] = useState(true);
   const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
-  const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
-
-  function changeIsRenameRecursivelyHandler() {
-    SetIsRenameRecursively(!isRenameRecursively);
-  }
-
-  function changeIsRenameRecursivelyWithoutExistPathHandler() {
-    setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
-  }
-
-  function changeIsRenameRedirectHandler() {
-    SetIsRenameRedirect(!isRenameRedirect);
-  }
-
-  function changeIsRemainMetadataHandler() {
-    SetIsRemainMetadata(!isRemainMetadata);
-  }
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -93,7 +79,7 @@ const PageRenameModal = (): JSX.Element => {
     }
 
     try {
-      const res = await apiv3Get('/page/exist-paths', { fromPath, toPath });
+      const res = await apiv3Get<{ existPaths: string[] }>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -205,42 +191,37 @@ const PageRenameModal = (): JSX.Element => {
               <input
                 className="custom-control-input"
                 name="recursively"
-                id="cbRenameRecursively"
+                id="cbRenameThisPageOnly"
                 type="radio"
-                checked={isRenameRecursively}
-                onChange={changeIsRenameRecursivelyHandler}
+                checked={!isRenameRecursively}
+                onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="custom-control-label" htmlFor="cbRenameRecursively">
-                {/* { t('modal_rename.label.Recursively') } */}
-                Rename this page only
-                {/* <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p> */}
+              <label className="custom-control-label" htmlFor="cbRenameThisPageOnly">
+                { t('modal_rename.label.Rename this page only') }
               </label>
             </div>
-            <div className="custom-control custom-radio custom-radio-warning">
+            <div className="custom-control custom-radio custom-radio-warning mt-1">
               <input
                 className="custom-control-input"
                 name="withoutExistRecursively"
-                id="cbRenamewithoutExistRecursively"
+                id="cbForceRenameRecursively"
                 type="radio"
-                // checked={isRenameRecursivelyWithoutExistPath}
-                // onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
-                checked={!isRenameRecursively}
-                onChange={changeIsRenameRecursivelyHandler}
+                checked={isRenameRecursively}
+                onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-                {/* { t('modal_rename.label.Rename without exist path') } */}
-                Force rename all pages
+              <label className="custom-control-label" htmlFor="cbForceRenameRecursively">
+                { t('modal_rename.label.Force rename all child pages') }
                 <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
               </label>
-              {!isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+              {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
             </div>
-            {/* {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />} */}
           </>
         ) }
 
         <p className="mt-2">
           <button type="button" className="btn btn-link mt-2 p-0" aria-expanded="false" onClick={() => setExpandOtherOptions(!expandOtherOptions)}>
-            <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i> Other options
+            <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
+            { t('modal_rename.label.Other options') }
           </button>
         </p>
         <Collapse isOpen={expandOtherOptions}>
@@ -251,7 +232,7 @@ const PageRenameModal = (): JSX.Element => {
               id="cbRenameRedirect"
               type="checkbox"
               checked={isRenameRedirect}
-              onChange={changeIsRenameRedirectHandler}
+              onChange={() => setIsRenameRedirect(!isRenameRedirect)}
             />
             <label className="custom-control-label" htmlFor="cbRenameRedirect">
               { t('modal_rename.label.Redirect') }
@@ -263,13 +244,13 @@ const PageRenameModal = (): JSX.Element => {
             <input
               className="custom-control-input"
               name="remain_metadata"
-              id="cbRemainMetadata"
+              id="cbUpdateMetadata"
               type="checkbox"
-              checked={isRemainMetadata}
-              onChange={changeIsRemainMetadataHandler}
+              checked={!isRemainMetadata}
+              onChange={() => setIsRemainMetadata(!isRemainMetadata)}
             />
-            <label className="custom-control-label" htmlFor="cbRemainMetadata">
-              { t('modal_rename.label.Do not update metadata') }
+            <label className="custom-control-label" htmlFor="cbUpdateMetadata">
+              { t('modal_rename.label.Update metadata') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
             </label>
           </div>
@@ -283,7 +264,7 @@ const PageRenameModal = (): JSX.Element => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={(!isRenameRecursively && existingPaths.length !== 0)}
         >Rename
         </button>
       </ModalFooter>

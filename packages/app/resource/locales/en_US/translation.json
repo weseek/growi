@@ -410,15 +410,16 @@
       "New page name": "New page name",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
       "Current page name": "Current page name",
-      "Recursively": "Recursively",
-      "Do not update metadata": "Do not update metadata",
+      "Rename this page only": "Rename this page only",
+      "Force rename all child pages": "Force rename all pages",
+      "Other options": "Other options",
+      "Update metadata": "Update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses under this path",
-      "metadata": "Remains last update user and updated date as is",
+      "metadata": "Update last update user and updated date",
       "recursive": "Move/Rename children of under this path recursively"
     }
   },
