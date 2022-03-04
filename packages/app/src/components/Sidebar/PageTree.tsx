@@ -19,7 +19,7 @@ const PageTree: FC = memo(() => {
   const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
+  const targetPathOrId = targetId || notFoundTargetPathOrIdData;
 
   if (migrationStatus == null) {
     return (

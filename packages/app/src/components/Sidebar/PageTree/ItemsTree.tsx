@@ -95,8 +95,6 @@ const renderByInitialNode = (
   );
 };
 
-// --- Auto scroll related vars and util ---
-
 const SCROLL_OFFSET_TOP = window.innerHeight / 2;
 
 const scrollTargetItem = () => {
