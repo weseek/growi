@@ -16,10 +16,10 @@ const PageTree: FC = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
-  const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  const targetPathOrId = targetId || notFoundTargetPathOrIdData;
+  const targetPathOrId = targetId || notFoundTargetPathOrId;
 
   if (migrationStatus == null) {
     return (
