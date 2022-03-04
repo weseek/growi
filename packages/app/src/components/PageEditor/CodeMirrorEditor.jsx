@@ -116,8 +116,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: null,
-      isInputtingEmoji: false,
-      searchEmojiTimeout: 0,
     };
 
     this.gridEditModal = React.createRef();
@@ -142,6 +140,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+    this.keyUpHandler = this.keyUpHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -570,15 +569,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.updateCheatsheetStates(null, value);
 
-    /**
-     * Prevent emoji picker to show on delete emoji colons
-     */
-    editor.on('keydown', (editor, ev) => {
-      if (ev.key !== 'Backspace') {
-        this.emojiPickerHandler();
-      }
-    });
+  }
 
+  keyUpHandler(editor, event) {
+    if (event.key !== 'Backspace') {
+      this.emojiPickerHandler();
+    }
   }
 
   /**
@@ -611,19 +607,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (!emoji) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
-      this.setState({ isInputtingEmoji: false });
     }
     else {
-      this.setState({ isInputtingEmoji: true });
-      if (this.state.searchEmojiTimeout) {
-        clearTimeout(this.state.searchEmojiTimeout);
-      }
+      this.setState({ emojiSearchText: emoji });
       // Show emoji picker after user stop typing
-      const timeout = setTimeout(() => {
+      setTimeout(() => {
         this.setState({ isEmojiPickerShown: true });
-        this.setState({ emojiSearchText: emoji });
       }, 700);
-      this.setState({ searchEmojiTimeout: timeout });
     }
   }
 
@@ -1036,6 +1026,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
+          onKeyUp={this.keyUpHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
