@@ -95,6 +95,7 @@ const renderByInitialNode = (
   );
 };
 
+// Auto scroll by jquery slimScroll
 const scrollPageTree = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
   const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
@@ -102,8 +103,6 @@ const scrollPageTree = () => {
     jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, true);
   }
 };
-// --- end ---
-
 
 /*
  * ItemsTree
