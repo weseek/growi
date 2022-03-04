@@ -21,10 +21,10 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  EditorMode, useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
-import { useSlackChannels } from '~/stores/context';
+import { useSlackChannels, useIsEnabledAttachTitleHeader } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
 
@@ -143,14 +143,18 @@ class Page extends React.Component {
   }
 
   render() {
-    const { appContainer, pageContainer } = this.props;
+    const {
+      appContainer, pageContainer, editorMode, isEnabledAttachTitleHeader,
+    } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
-    const { markdown } = pageContainer.state;
+    const { markdown, revisionId } = pageContainer.state;
+
+    const isRenderable = !(revisionId == null && isEnabledAttachTitleHeader && editorMode === EditorMode.View);
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={isRenderable ? markdown : ''} />
 
         { isLoggedIn && (
           <>
@@ -178,6 +182,7 @@ Page.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  isEnabledAttachTitleHeader: PropTypes.bool,
 };
 
 const PageWrapper = (props) => {
@@ -187,6 +192,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
 
 
   if (editorMode == null) {
@@ -202,6 +208,7 @@ const PageWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
     />
   );
 };
