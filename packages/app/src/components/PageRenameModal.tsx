@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { useTranslation } from 'react-i18next';
@@ -43,10 +43,7 @@ const PageRenameModal = (): JSX.Element => {
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
-  const [existingPaths, setExistingPaths] = useState<string>([]);
-  const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
-  const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
-  const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
+  const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
@@ -242,11 +239,11 @@ const PageRenameModal = (): JSX.Element => {
         ) }
 
         <p className="mt-2">
-          <a data-toggle="collapse" href="#collapseOptions" role="button" aria-expanded="false" aria-controls="collapseOptions">
-            <i className="fa fa-fw fa-arrow-right"></i> Other options
-          </a>
+          <button type="button" className="btn btn-link mt-2 p-0" aria-expanded="false" onClick={() => setExpandOtherOptions(!expandOtherOptions)}>
+            <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i> Other options
+          </button>
         </p>
-        <div className="collapse" id="collapseOptions">
+        <Collapse isOpen={expandOtherOptions}>
           <div className="custom-control custom-checkbox custom-checkbox-success">
             <input
               className="custom-control-input"
@@ -277,7 +274,7 @@ const PageRenameModal = (): JSX.Element => {
             </label>
           </div>
           <div> {subordinatedError} </div>
-        </div>
+        </Collapse>
 
       </ModalBody>
       <ModalFooter>
