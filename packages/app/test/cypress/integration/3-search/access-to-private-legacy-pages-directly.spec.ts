@@ -26,7 +26,7 @@ context('Access to legacy private pages directly', () => {
 
     cy.getByTestid('search-result-base').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}-shown`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-shown`);
   });
 
 });
