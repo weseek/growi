@@ -213,7 +213,9 @@ const PageRenameModal = (): JSX.Element => {
                 { t('modal_rename.label.Force rename all child pages') }
                 <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
               </label>
-              {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+              {isRenameRecursively && existingPaths.length !== 0 && (
+                <DuplicatedPathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
+              ) }
             </div>
           </>
         ) }

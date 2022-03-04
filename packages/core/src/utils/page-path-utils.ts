@@ -124,7 +124,7 @@ export const userPageRoot = (user: any): string => {
  * @param newPath
  */
 export const convertToNewAffiliationPath = (oldPath: string, newPath: string, childPath: string): string => {
-  if (newPath === null) {
+  if (newPath == null) {
     throw new Error('Please input the new page path');
   }
   const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
