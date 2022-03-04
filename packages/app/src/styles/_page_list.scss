@@ -4,6 +4,15 @@ body .page-list {
     line-height: 1.6em;
   }
 
+  .btn-page-item-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+  }
+
   .page-list-ul {
     padding-left: 0;
     margin: 0;
