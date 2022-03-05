@@ -121,6 +121,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenaming, setRenaming] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -271,6 +272,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
+      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -286,6 +288,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
+    }
+    finally {
+      setRenaming(false);
     }
   };
 
@@ -426,10 +431,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && (
+        { !isRenameInputShown && !isRenaming && (
           <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
           </a>
+        )}
+        { isRenaming && (
+          <i className="fa fa-spinner fa-pulse mr-1"></i>
         )}
         {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
