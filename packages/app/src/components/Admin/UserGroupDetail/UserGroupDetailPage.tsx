@@ -57,7 +57,6 @@ const UserGroupDetailPage: FC = () => {
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
-  console.log(ancestorUserGroups);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
