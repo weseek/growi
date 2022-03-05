@@ -130,14 +130,13 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/ancestor', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
       const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
-      const ancestorUserGroup = ancestorUserGroups.find(group => group.parent == null);
-      return res.apiv3({ ancestorUserGroup });
+      return res.apiv3({ ancestorUserGroups });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';
