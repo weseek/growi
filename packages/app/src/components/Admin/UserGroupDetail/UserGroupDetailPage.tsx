@@ -215,7 +215,7 @@ const UserGroupDetailPage: FC = () => {
             <div className="dropdown-menu">
               {
                 ancestorUserGroups.map(userGroup => (
-                  <a className="dropdown-item" href={`/admin/user-group-detail/${userGroup._id}`}>{userGroup.name}</a>
+                  <a className="dropdown-item" key={userGroup._id} href={`/admin/user-group-detail/${userGroup._id}`}>{userGroup.name}</a>
                 ))
               }
             </div>
