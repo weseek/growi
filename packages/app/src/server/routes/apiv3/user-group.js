@@ -61,6 +61,9 @@ module.exports = (crowi) => {
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
     ],
+    ancestorGroup: [
+      query('groupId', 'groupId must be a string').optional().isString(),
+    ],
     selectableGroups: [
       query('groupId', 'groupId must be a string').optional().isString(),
     ],
@@ -127,14 +130,14 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/ancestor', async(req, res) => {
+  router.get('/ancestor', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
-      const ancestorGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
-      const ancestorGroup = ancestorGroups.find(group => group.parent == null);
-      return res.apiv3({ ancestorGroup });
+      const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
+      const ancestorUserGroup = ancestorUserGroups.find(group => group.parent == null);
+      return res.apiv3({ ancestorUserGroup });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';
