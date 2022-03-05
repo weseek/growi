@@ -127,6 +127,22 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/ancestor', async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+      const ancestorGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
+      const ancestorGroup = ancestorGroups.find(group => group.parent == null);
+      return res.apiv3({ ancestorGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
+
   // TODO 85062: improve sort
   router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
     try {
