@@ -21,7 +21,7 @@ import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups, useSWRxAncestorUserGroup,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -55,6 +55,9 @@ const UserGroupDetailPage: FC = () => {
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const { data: ancestorUserGroup } = useSWRxAncestorUserGroup(userGroup._id);
+  const ancestorUserGroupId = ancestorUserGroup?._id;
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -194,7 +197,14 @@ const UserGroupDetailPage: FC = () => {
         <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {t('admin:user_group_management.back_to_list')}
       </a>
-      {/* TODO 85062: Link to the ancestors group */}
+
+      {ancestorUserGroupId != null && (
+        <a href={`/admin/user-group-detail/${ancestorUserGroupId}`} className="btn btn-outline-secondary ml-2">
+          <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+          {t('admin:user_group_management.back_to_ancestor_group')}
+        </a>
+      ) }
+
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
