@@ -316,7 +316,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = `${parentPath}${inputText}`;
+    const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (!isCreatable) {
@@ -326,7 +326,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     let initBody = '';
     if (isEnabledAttachTitleHeader) {
-      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      const pageTitle = nodePath.basename(newPagePath);
       initBody = pathUtils.attachTitleHeader(pageTitle);
     }
 
