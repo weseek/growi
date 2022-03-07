@@ -165,7 +165,7 @@ module.exports = (crowi) => {
 
     try {
       const userGroup = await UserGroup.findById(groupId);
-      const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
+      const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
       return res.apiv3({ ancestorUserGroups });
     }
     catch (err) {
