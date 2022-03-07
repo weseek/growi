@@ -71,7 +71,6 @@ describe('V5 page migration', () => {
     ]);
   });
 
-
   describe('normalizeParentRecursivelyByPages()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
