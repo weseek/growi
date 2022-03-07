@@ -1014,7 +1014,7 @@ module.exports = function(crowi) {
 
     const Revision = crowi.model('Revision');
     const grant = options.grant || pageData.grant; //                                  use the previous data if absence
-    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const grantUserGroupId = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
