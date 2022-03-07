@@ -63,7 +63,7 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/'                         , applicationInstalled, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
