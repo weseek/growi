@@ -57,7 +57,6 @@ const UserGroupDetailPage: FC = () => {
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
-  console.log(ancestorUserGroups);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -195,7 +194,24 @@ const UserGroupDetailPage: FC = () => {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/admin/user-groups">UserGroup 一覧</a></li>
+          <li className="breadcrumb-item"><a href="/admin/user-groups">UserGroupList</a></li>
+          { ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
+            ancestorUserGroups.reverse().map(ancestorUserGroup => (
+              <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
+                { ancestorUserGroup._id === userGroup._id ? (
+                  <>{ancestorUserGroup.name}</>
+                ) : (
+                  <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
+                )}
+              </li>
+            ))
+          )}
+        </ol>
+      </nav>
+
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><a href="#">Home</a></li>
           <li className="breadcrumb-item"><a href="#">Library</a></li>
           <li className="breadcrumb-item active" aria-current="page">Data</li>
         </ol>
