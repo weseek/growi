@@ -437,7 +437,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </a>
         )}
         { isRenaming && (
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-spinner fa-pulse mx-auto text-muted"></i>
         )}
         {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
