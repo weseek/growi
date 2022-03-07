@@ -63,9 +63,7 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
       />
-      <span className="ml-2">
-        {children}
-      </span>
+      {children}
     </div>
   );
 
