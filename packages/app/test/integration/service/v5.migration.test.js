@@ -287,6 +287,10 @@ describe('V5 page migration', () => {
       const page4AF = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
       expectAllToBeTruthy([page1AF, page2AF, page3AF, page4AF]);
 
+      expect(page1AF.isEmpty).toBeTruthy();
+      expect(page2AF.parent).toStrictEqual(page1AF._id);
+      expect(page3AF.parent).toStrictEqual(page2AF._id);
+      expect(page4AF.parent).toStrictEqual(page1AF._id);
     });
   });
 
