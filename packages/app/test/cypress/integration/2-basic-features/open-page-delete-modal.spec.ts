@@ -25,7 +25,7 @@ context('Open PageDeleteModal', () => {
 
   it('PageDeleteModal is shown successfully', () => {
     cy.visit('/Sandbox');
-    cy.getByTestid('open-delete-modal open-page-item-control-btn')[0].click();
+    cy.getByTestid('open-page-item-control-btn')[0].click();
     cy.contains('Delete').click();
     cy.screenshot(`${ssPrefix}-open`,{ capture: 'viewport' });
 
