@@ -13,6 +13,10 @@ describe('V5 page migration', () => {
 
   let rootPage;
 
+  let groupIdIsolate;
+  let groupIdA;
+  let groupIdB;
+  let groupIdC;
 
   // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
@@ -38,6 +42,33 @@ describe('V5 page migration', () => {
     await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
     testUser1 = await User.findOne({ username: 'testUser1' });
     rootPage = await Page.findOne({ path: '/' });
+
+
+    groupIdIsolate = new mongoose.Types.ObjectId();
+    groupIdA = new mongoose.Types.ObjectId();
+    groupIdB = new mongoose.Types.ObjectId();
+    groupIdC = new mongoose.Types.ObjectId();
+
+    await UserGroup.insertMany([
+      {
+        _id: groupIdIsolate,
+        name: 'groupIsolate',
+      },
+      {
+        _id: groupIdA,
+        name: 'groupA',
+      },
+      {
+        _id: groupIdB,
+        name: 'groupB',
+        parent: groupIdA,
+      },
+      {
+        _id: groupIdC,
+        name: 'groupC',
+        parent: groupIdB,
+      },
+    ]);
   });
 
 
@@ -73,6 +104,27 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          path: '/normalize1/normalize2_g1',
+          grant: Page.GRANT_USER_GROUP,
+          creator: testUser1,
+          grantedGroup: groupIdA,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          path: '/normalize1/normalize2_g1/normalize2_g2',
+          grant: Page.GRANT_USER_GROUP,
+          creator: testUser1,
+          grantedGroup: groupIdB,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          path: '/normalize1/normalize2_g3',
+          grant: Page.GRANT_USER_GROUP,
+          creator: testUser1,
+          grantedGroup: groupIdC,
           grantedUsers: [testUser1._id],
         },
       ]);
@@ -193,9 +245,6 @@ describe('V5 page migration', () => {
   });
 
   describe('normalizeParentByPageId()', () => {
-    const groupIdIsolate = new mongoose.Types.ObjectId();
-    const groupIdA = new mongoose.Types.ObjectId();
-    const groupIdB = new mongoose.Types.ObjectId();
 
     const pageId1 = new mongoose.Types.ObjectId();
     const pageId2 = new mongoose.Types.ObjectId();
@@ -205,21 +254,6 @@ describe('V5 page migration', () => {
     const pageId6 = new mongoose.Types.ObjectId();
 
     beforeAll(async() => {
-      await UserGroup.insertMany([
-        {
-          _id: groupIdIsolate,
-          name: 'groupIsolate',
-        },
-        {
-          _id: groupIdA,
-          name: 'groupA',
-        },
-        {
-          _id: groupIdB,
-          name: 'groupB',
-          parent: groupIdA,
-        },
-      ]);
 
       await UserGroupRelation.insertMany([
         {
