@@ -469,6 +469,7 @@
     "group_list": "Group list",
     "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
+    "back_to_ancestors_group": "Go back to ancestors group",
     "basic_info": "Basic info",
     "user_list": "User list",
     "created_group": "Group was created",
