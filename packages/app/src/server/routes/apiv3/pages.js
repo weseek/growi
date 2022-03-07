@@ -176,7 +176,7 @@ module.exports = (crowi) => {
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
-      body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
       body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     duplicatePage: [
@@ -445,9 +445,9 @@ module.exports = (crowi) => {
    *                  isRenameRedirect:
    *                    type: boolean
    *                    description: whether redirect page
-   *                  isRemainMetadata:
+   *                  updateMetadata:
    *                    type: boolean
-   *                    description: whether remain meta data
+   *                    description: whether update meta data
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether rename page with descendants
@@ -476,7 +476,7 @@ module.exports = (crowi) => {
     const options = {
       isRecursively: req.body.isRecursively,
       createRedirectPage: req.body.isRenameRedirect,
-      updateMetadata: !req.body.isRemainMetadata,
+      updateMetadata: req.body.updateMetadata,
       isMoveMode: req.body.isMoveMode,
     };
 

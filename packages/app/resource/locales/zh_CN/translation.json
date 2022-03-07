@@ -173,7 +173,7 @@
   "Page Tree": "页面树",
   "original_path":"Original path",
   "new_path":"New path",
-  "duplicated_path":"duplicated_path",
+  "duplicated_path":"Duplicated path",
   "Link sharing is disabled": "你不允许分享该链接",
   "successfully_saved_the_page": "成功地保存了该页面",
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
@@ -384,20 +384,21 @@
   },
 	"modal_rename": {
 		"label": {
-			"Move/Rename page": "页面 移动/重命名",
+      "Move/Rename page": "页面 移动/重命名",
       "New page name": "新建页面名称",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
-			"Current page name": "当前页面名称",
-			"Recursively": "递归地",
-			"Do not update metadata": "不更新元数据",
-			"Redirect": "重定向"
+      "Current page name": "当前页面名称",
+      "Rename this page only": "仅重命名此页面",
+      "Force rename all child pages": "强制重命名所有子页面 ",
+      "Other options": "其他选项",
+      "Update metadata": "更新元数据",
+      "Redirect": "重定向"
 		},
 		"help": {
-			"redirect": "Redirect to new page if someone accesses <code>%s</code>",
-			"metadata": "Remains last update user and updated date as is",
-			"recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "metadata": "Update last update user and updated date",
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
 		}
 	},
 	"Put Back": "Put back",

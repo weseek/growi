@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
+  useSiteUrl,
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
@@ -101,6 +102,7 @@ const ContextExtractorOnce: FC = () => {
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // hydrated config
+  useSiteUrl(configByContextHydrate.crowi.url);
   useIsAclEnabled(configByContextHydrate.isAclEnabled);
   useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
   useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);

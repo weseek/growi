@@ -409,15 +409,16 @@
       "New page name": "移動先のページ名",
       "Failed to get subordinated pages": "配下ページの取得に失敗しました",
       "Failed to get exist path": "存在するパスの取得に失敗しました",
-      "Rename without exist path": "存在するパス以外を名前変更する",
       "Current page name": "現在のページ名",
-      "Recursively": "再帰的に移動/名前変更",
-      "Do not update metadata": "メタデータを更新しない",
+      "Rename this page only": "このページのみを移動/名前変更",
+      "Force rename all child pages": "全ての配下のページを移動/名前変更する",
+      "Other options": "その他のオプション",
+      "Do not update metadata": "不更新元数据",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "アクセスされた際に自動的に新しいページにジャンプします",
-      "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
+      "metadata": "Remains last update user and updated date as is",
       "recursive": "配下のページも移動/名前変更します"
     }
   },

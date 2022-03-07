@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
+import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -16,7 +16,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 
 
@@ -190,7 +190,7 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = () => {
       window.location.reload();
     };
