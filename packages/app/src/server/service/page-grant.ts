@@ -367,15 +367,10 @@ class PageGrantService {
 
     for await (const page of pages) {
       const {
-        path, grant, status, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
-      if (grant === Page.GRANT_RESTRICTED || grant === Page.GRANT_SPECIFIED) {
-        nonNormalizable.push(page);
-        continue;
-      }
-
-      if (status === Page.STATUS_DELETED) {
+      if (Page.isV4Page(page)) {
         nonNormalizable.push(page);
         continue;
       }

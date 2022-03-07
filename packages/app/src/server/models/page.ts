@@ -897,6 +897,36 @@ export function generateGrantCondition(
   };
 }
 
+/**
+ * Returns true if the page's schema is v4 by checking its values.
+ * This does not check grantedUser or grantedGroup.
+ * @param page PageDocument
+ * @returns boolean
+ */
+schema.statics.isV4Page = function(page): boolean {
+  const {
+    path, parent, grant, status,
+  } = page;
+
+  if (grant === GRANT_RESTRICTED || grant === GRANT_SPECIFIED) {
+    return false;
+  }
+
+  if (status === STATUS_DELETED) {
+    return false;
+  }
+
+  if (isTopPage(path)) {
+    return false;
+  }
+
+  if (parent != null) {
+    return false;
+  }
+
+  return true;
+};
+
 schema.statics.generateGrantCondition = generateGrantCondition;
 
 export type PageCreateOptions = {
