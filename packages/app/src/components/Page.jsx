@@ -143,16 +143,18 @@ class Page extends React.Component {
   }
 
   render() {
-    const {
-      appContainer, pageContainer, editorMode, isEnabledAttachTitleHeader,
-    } = this.props;
+    const { appContainer, pageContainer } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
     const { markdown, revisionId } = pageContainer.state;
 
+    if (revisionId == null) {
+      return <></>;
+    }
+
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={revisionId != null ? markdown : ''} />
+        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
 
         { isLoggedIn && (
           <>
