@@ -25,21 +25,6 @@ import {
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
-const sortGroupByAncestorOrder = (group: IUserGroupHasId, targetGroups: IUserGroupHasId[], ancestors = [group]) => {
-  if (group == null) {
-    return ancestors;
-  }
-
-  const parentGroup = targetGroups.find(targetGroup => targetGroup.parent === group._id);
-  if (parentGroup == null) {
-    return ancestors;
-  }
-  ancestors.push(parentGroup);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return sortGroupByAncestorOrder(parentGroup, targetGroups, ancestors);
-};
-
 const UserGroupDetailPage: FC = () => {
   const { t } = useTranslation();
   const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
@@ -198,10 +183,12 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
-  const topAncestorUserGroup = ancestorUserGroups?.find(userGroup => userGroup.parent == null);
-  const sortedAncestorUesrGroups = (topAncestorUserGroup != null && ancestorUserGroups != null)
-    ? sortGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
-    : [];
+  console.log(ancestorUserGroups);
+
+  // const topAncestorUserGroup = ancestorUserGroups?.find(userGroup => userGroup.parent == null);
+  // const sortedAncestorUesrGroups = (topAncestorUserGroup != null && ancestorUserGroups != null)
+  //   ? sortGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
+  //   : [];
 
   /*
    * Dependencies
@@ -216,8 +203,8 @@ const UserGroupDetailPage: FC = () => {
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><a href="/admin/user-groups">{t('admin:user_group_management.group_list')}</a></li>
           {
-            sortedAncestorUesrGroups.length > 0 && (
-              sortedAncestorUesrGroups.map((ancestorUserGroup: IUserGroupHasId) => (
+            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
+              ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
                 <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
                   { ancestorUserGroup._id === userGroup._id ? (
                     <>{ancestorUserGroup.name}</>
