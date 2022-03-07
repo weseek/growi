@@ -299,6 +299,32 @@ describe('V5 page migration', () => {
       expect(page3AF.parent).toStrictEqual(rootPage._id);
       expect(page2AF.parent).toStrictEqual(page3AF._id);
     });
+
+    test('it should normalize not v5 page with usergroup that has no parent or child group', async() => {
+      const page4 = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
+      const page5 = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
+      const page6 = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
+
+      expectAllToBeTruthy([page4, page5, page6]);
+
+      let isThrown;
+      try {
+        await normalizeParentByPageId(page6, testUser1);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      // AF => After Migration
+      const page4AF = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
+      const page5AF = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
+      const page6AF = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
+
+      expect(isThrown).toBeTruthy();
+      expect(page4AF).toEqual(page4);
+      expect(page5AF).toEqual(page5);
+      expect(page6AF).toEqual(page6);
+    });
   });
 
   test('replace private parents with empty pages', async() => {
