@@ -159,6 +159,9 @@ const PageDuplicateModal = (): JSX.Element => {
   const { path } = page;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
+  const submitButtonEnabled = existingPaths.length === 0
+    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} className="grw-duplicate-page" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
@@ -246,7 +249,7 @@ const PageDuplicateModal = (): JSX.Element => {
           type="button"
           className="btn btn-primary"
           onClick={duplicate}
-          disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={!submitButtonEnabled}
         >
           { t('modal_duplicate.label.Duplicate page') }
         </button>
