@@ -370,7 +370,7 @@ class PageGrantService {
         path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
-      if (Page.isV4Page(page)) {
+      if (!Page.isV4Page(page)) {
         nonNormalizable.push(page);
         continue;
       }
