@@ -188,10 +188,9 @@ describe('V5 page migration', () => {
       {
         _id: pageId8,
         path: '/normalize_10/normalize_11_gA',
-        grant: Page.GRANT_PUBLIC,
-        isEmpty: true,
-        parent: pageId7,
-        descendantCount: 1,
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
       },
       {
         _id: pageId9,
