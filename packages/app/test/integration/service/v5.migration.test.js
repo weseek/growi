@@ -24,6 +24,10 @@ describe('V5 page migration', () => {
   const pageId4 = new mongoose.Types.ObjectId();
   const pageId5 = new mongoose.Types.ObjectId();
   const pageId6 = new mongoose.Types.ObjectId();
+  const pageId7 = new mongoose.Types.ObjectId();
+  const pageId8 = new mongoose.Types.ObjectId();
+  const pageId9 = new mongoose.Types.ObjectId();
+  const pageId10 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     jest.restoreAllMocks();
@@ -154,26 +158,62 @@ describe('V5 page migration', () => {
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_7/normalize_8_g1',
+        path: '/normalize_7/normalize_8_gA',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
         grantedGroup: groupIdA,
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_7/normalize_8_g1/normalize_9_g2',
+        path: '/normalize_7/normalize_8_gA/normalize_9_gB',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
         grantedGroup: groupIdB,
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_7/normalize_8_g3',
+        path: '/normalize_7/normalize_8_gC',
         grant: Page.GRANT_USER_GROUP,
-        creator: testUser1,
         grantedGroup: groupIdC,
         grantedUsers: [testUser1._id],
       },
+      {
+        _id: pageId7,
+        path: '/normalize_10',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        parent: rootPage._id,
+        descendantCount: 3,
+      },
+      {
+        _id: pageId8,
+        path: '/normalize_10/normalize_11_gA',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
+        isEmpty: true,
+        parent: pageId7,
+        descendantCount: 1,
+      },
+      {
+        _id: pageId9,
+        path: '/normalize_10/normalize_11_gA/normalize_11_gB',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        grantedUsers: [testUser1._id],
+        parent: pageId8,
+        descendantCount: 0,
+      },
+      {
+        _id: pageId10,
+        path: '/normalize_10/normalize_12_gC',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        grantedUsers: [testUser1._id],
+        parent: pageId7,
+        descendantCount: 0,
+      },
+
     ]);
 
   });
@@ -213,17 +253,17 @@ describe('V5 page migration', () => {
     });
 
     test('should normalize all pages with usergroup set and create empty parent page from no data', async() => {
-      const page8 = await Page.findOne({ path: '/normalize_7/normalize_8_g1' });
-      const page9 = await Page.findOne({ path: '/normalize_7/normalize_8_g1/normalize_9_g2' });
-      const page10 = await Page.findOne({ path: '/normalize_7/normalize_8_g3' });
+      const page8 = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
+      const page9 = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
+      const page10 = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
       expectAllToBeTruthy([page8, page9, page10]);
 
       await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
 
       const page7 = await Page.findOne({ path: '/normalize_7' });
-      const page8AF = await Page.findOne({ path: '/normalize_7/normalize_8_g1' });
-      const page9AF = await Page.findOne({ path: '/normalize_7/normalize_8_g1/normalize_9_g2' });
-      const page10AF = await Page.findOne({ path: '/normalize_7/normalize_8_g3' });
+      const page8AF = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
+      const page9AF = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
+      const page10AF = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
       expectAllToBeTruthy([page7, page8AF, page9AF, page10AF]);
 
       expect(page7.parent).toStrictEqual(rootPage._id);
@@ -232,7 +272,20 @@ describe('V5 page migration', () => {
       expect(page10AF.parent).toStrictEqual(page7._id);
     });
 
-    test('should normalize', async() => {
+    // eslint-disable-next-line jest/expect-expect
+    test('should normalize all v5 pages with usergroup set and target page should be not empty', async() => {
+      const page1 = await Page.findOne({ path: '/normalize_10' });
+      const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
+      const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
+      const page4 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
+      expectAllToBeTruthy([page1, page2, page3, page4]);
+      await normalizeParentRecursivelyByPages([page2], testUser1);
+
+      const page1AF = await Page.findOne({ path: '/normalize_10' });
+      const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
+      const page3AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
+      const page4AF = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
+      expectAllToBeTruthy([page1AF, page2AF, page3AF, page4AF]);
 
     });
   });
