@@ -63,7 +63,6 @@ const CustomSidebar: FC<Props> = (props: Props) => {
               growiRenderer={renderer}
               markdown={markdown}
               additionalClassName="grw-custom-sidebar-content"
-              isRenderable
             />
           </div>
         ) : (
