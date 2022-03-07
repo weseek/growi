@@ -21,3 +21,7 @@ export type UserGroupPagesResult = {
 export type SelectableUserGroupsResult = {
   selectableUserGroups: IUserGroupHasId[],
 }
+
+export type AncestorUserGroupsResult = {
+  ancestorUserGroups: IUserGroupHasId[],
+}
