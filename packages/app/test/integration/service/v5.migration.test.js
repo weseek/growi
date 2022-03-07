@@ -13,6 +13,17 @@ describe('V5 page migration', () => {
 
   let rootPage;
 
+
+  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
+  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
+  const expectAllToBeTruthy = (dataList) => {
+    dataList.forEach((data, i) => {
+      if (data == null) { console.log(`index: ${i}`) }
+      expect(data).toBeTruthy();
+    });
+  };
+
+
   beforeAll(async() => {
     jest.restoreAllMocks();
 
@@ -245,6 +256,28 @@ describe('V5 page migration', () => {
 
     });
 
+    const normalizeParentByPageId = async(page, user) => {
+      return crowi.pageService.normalizeParentByPageId(page, user);
+    };
+    test('it should set v4 page parent to v5 parental page', async() => {
+      const pageToMigrate = await Page.findOne({ _id: pageId3, path: '/a' });
+      const parentPage = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
+      const childPage = await Page.findOne({ _id: pageId2, path: '/a/groupB' });
+
+      expectAllToBeTruthy([parentPage, childPage, pageToMigrate]);
+      await normalizeParentByPageId(pageToMigrate, testUser1);
+
+      const migratedpage = await Page.findOne({ _id: pageId3, path: '/a' });
+      const parentPageAftMig = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
+      const childPageAftMig = await Page.findOne({ path: '/a/groupB' });
+
+      expect(parentPageAftMig).toBeNull();
+      expectAllToBeTruthy([migratedpage, childPageAftMig]);
+
+      expect(migratedpage.parent).toStrictEqual(rootPage._id);
+      expect(childPageAftMig.parent).toStrictEqual(migratedpage._id);
+
+    });
   });
 
   test('replace private parents with empty pages', async() => {
