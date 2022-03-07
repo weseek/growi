@@ -249,6 +249,7 @@ class PageService {
       return {
         data: page,
         meta: {
+          isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -2064,6 +2065,7 @@ class PageService {
 
     if (page.isEmpty) {
       return {
+        isV5Compatible: true,
         isEmpty: true,
         isMovable,
         isDeletable: false,
@@ -2076,6 +2078,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     return {
+      isV5Compatible: isTopPage(page.path) || page.parent != null,
       isEmpty: false,
       sumOfLikers: page.liker.length,
       likerIds: this.extractStringIds(likers),
