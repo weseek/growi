@@ -268,20 +268,21 @@ describe('V5 page migration', () => {
 
     // test('should create new non-empty parent page and update children parent', async() => {
     //   const page1 = await Page.findOne({ path: '/normalize_10' });
-    //   const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
+    //   const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
     //   const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
     //   const page4 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
     //   expectAllToBeTruthy([page1, page2, page3, page4]);
-    //   await normalizeParentRecursivelyByPages([page5], testUser1);
+    //   await normalizeParentRecursivelyByPages([page2], testUser1);
 
     //   const page1AF = await Page.findOne({ path: '/normalize_10' });
-    //   const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
+    //   const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
     //   const page3AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
     //   const page4AF = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
     //   expectAllToBeTruthy([page1AF, page2AF, page3AF, page4AF]);
 
     //   expect(page1AF.isEmpty).toBeTruthy();
     //   expect(page2AF.parent).toStrictEqual(page1AF._id);
+    //   expect(page3AF.parent).toStrictEqual(page2AF._id);
     //   expect(page4AF.parent).toStrictEqual(page1AF._id);
     // });
   });
