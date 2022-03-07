@@ -90,6 +90,13 @@ const StickyStretchableScroller = (props) => {
       allowPageScroll: true,
     });
 
+    /**
+     * The below code is a workaround for the following effect
+     * The scrollbar doesn't move without mouseover event after applying slimscroll
+     * https://github.com/rochal/jQuery-slimScroll/issues/287#issuecomment-797090432
+     */
+    $(scrollTargetSelector).trigger('mouseover');
+
     // destroy
     if (!isScrollEnabled) {
       $(scrollTargetSelector).slimScroll({ destroy: true });

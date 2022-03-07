@@ -23,11 +23,6 @@ export const jQuerySlimScrollIntoView = (scrollableElement: HTMLElement, scrollT
 
   const scrollTo = targetTop - offsetTop;
   (<any>$(scrollableElement)).slimScroll({ scrollTo });
-  /**
-   * the following code is a workaround since the scrollbar doesn't move without mouseover event after applying slimscroll
-   * https://github.com/rochal/jQuery-slimScroll/issues/287#issuecomment-797090432
-   */
-  (<any>$(scrollableElement)).trigger('mouseover');
 };
 
 export type SmoothScrollEventCallback = (elem: HTMLElement) => void;
