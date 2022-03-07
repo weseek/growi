@@ -25,19 +25,19 @@ import {
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
-const sortUserGroupByAncestorOrder = (group: IUserGroupHasId, groups: IUserGroupHasId[], ancestors = [group]) => {
+const sortGroupByAncestorOrder = (group: IUserGroupHasId, targetGroups: IUserGroupHasId[], ancestors = [group]) => {
   if (group == null) {
     return ancestors;
   }
 
-  const parentUserGroup = groups.find(ancestorUserGroup => ancestorUserGroup.parent === group._id);
-  if (parentUserGroup == null) {
+  const parentGroup = targetGroups.find(targetGroup => targetGroup.parent === group._id);
+  if (parentGroup == null) {
     return ancestors;
   }
-  ancestors.push(parentUserGroup);
+  ancestors.push(parentGroup);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return sortUserGroupByAncestorOrder(parentUserGroup, groups, ancestors);
+  return sortGroupByAncestorOrder(parentGroup, targetGroups, ancestors);
 };
 
 const UserGroupDetailPage: FC = () => {
@@ -200,7 +200,7 @@ const UserGroupDetailPage: FC = () => {
 
   const topAncestorUserGroup = ancestorUserGroups?.find(userGroup => userGroup.parent == null);
   const sortedAncestorUesrGroups = (topAncestorUserGroup != null && ancestorUserGroups != null)
-    ? sortUserGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
+    ? sortGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
     : [];
 
   /*
