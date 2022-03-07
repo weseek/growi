@@ -133,6 +133,10 @@ export default class AppService implements S2sMessageHandlable {
     }
   }
 
+  isMaintenanceMode(): boolean {
+    return this.configManager.getConfig('crowi', 'app:isMaintenanceMode');
+  }
+
   private async startMaintenanceMode() {
     await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': true });
   }

@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import { generateUnavailableWhenMaintenanceModeMiddleware } from '../middlewares/unavailable-when-maintenance-mode';
 
 import * as loginFormValidator from '../middlewares/login-form-validator';
 import * as registerFormValidator from '../middlewares/register-form-validator';
@@ -51,6 +52,8 @@ module.exports = function(crowi, app) {
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
+
+  const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -142,6 +145,13 @@ module.exports = function(crowi, app) {
 
   app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
+  app.get('/share/:linkId', page.showSharedPage);
+
+  /*
+   * Routes below are unavailable when maintenance mode
+   */
+  app.use(unavailableWhenMaintenanceMode);
+
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
   // my in-app-notifications
@@ -208,8 +218,6 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
   app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
-
-  app.get('/share/:linkId', page.showSharedPage);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
