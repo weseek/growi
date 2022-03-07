@@ -228,14 +228,14 @@ describe('V5 page migration', () => {
       await Page.insertMany([
         {
           _id: pageId1,
-          path: '/a',
+          path: '/normalize_1',
           parent: rootPage._id,
           grant: Page.GRANT_PUBLIC,
           isEmpty: true,
         },
         {
           _id: pageId2,
-          path: '/a/groupB',
+          path: '/normalize_1/normalize_2',
           parent: pageId1,
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: groupIdB,
@@ -245,7 +245,7 @@ describe('V5 page migration', () => {
         },
         {
           _id: pageId3,
-          path: '/a',
+          path: '/normalize_1',
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: groupIdA,
           grantedUsers: [testUser1._id],
@@ -259,18 +259,18 @@ describe('V5 page migration', () => {
     const normalizeParentByPageId = async(page, user) => {
       return crowi.pageService.normalizeParentByPageId(page, user);
     };
-    test('it should set v4 page parent to v5 parental page', async() => {
-      const page1 = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
-      const page2 = await Page.findOne({ _id: pageId2, path: '/a/groupB', parent: page1._id });
-      const page3 = await Page.findOne({ _id: pageId3, path: '/a' }); // NOT v5
+    test('it should normalize not v5 page with usergroup that has parent group', async() => {
+      const page1 = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
+      const page2 = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page1._id });
+      const page3 = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // NOT v5
 
       expectAllToBeTruthy([page1, page2, page3]);
       await normalizeParentByPageId(page3, testUser1);
 
       // AF => After Migration
-      const page3AF = await Page.findOne({ _id: pageId3, path: '/a' }); // v5 compatible
-      const page2AF = await Page.findOne({ _id: pageId2, path: '/a/groupB', parent: page3AF._id });
-      const page1AF = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
+      const page3AF = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
+      const page2AF = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page3AF._id });
+      const page1AF = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
 
       expectAllToBeTruthy([page3AF, page2AF]);
       expect(page1AF).toBeNull();
