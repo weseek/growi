@@ -6,8 +6,12 @@ describe('V5 page migration', () => {
   let crowi;
   let Page;
   let User;
+  let UserGroup;
+  let UserGroupRelation;
 
   let testUser1;
+
+  let rootPage;
 
   beforeAll(async() => {
     jest.restoreAllMocks();
@@ -15,11 +19,14 @@ describe('V5 page migration', () => {
     crowi = await getInstance();
     Page = mongoose.model('Page');
     User = mongoose.model('User');
+    UserGroup = mongoose.model('UserGroup');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
 
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
     testUser1 = await User.findOne({ username: 'testUser1' });
+    rootPage = await Page.findOne({ path: '/' });
   });
 
 
@@ -172,6 +179,72 @@ describe('V5 page migration', () => {
       expect(migratedEmptyPaths).toStrictEqual(expectedMigratedEmptyPaths);
       expect(nonMigratedPaths).toStrictEqual(expectedNonMigratedPaths);
     });
+  });
+
+  describe('normalizeParentByPageId()', () => {
+    const groupIdIsolate = new mongoose.Types.ObjectId();
+    const groupIdA = new mongoose.Types.ObjectId();
+    const groupIdB = new mongoose.Types.ObjectId();
+
+    const pageId1 = new mongoose.Types.ObjectId();
+    const pageId2 = new mongoose.Types.ObjectId();
+    const pageId3 = new mongoose.Types.ObjectId();
+
+    beforeAll(async() => {
+      await UserGroup.insertMany([
+        {
+          _id: groupIdIsolate,
+          name: 'groupIsolate',
+        },
+        {
+          _id: groupIdA,
+          name: 'groupA',
+        },
+        {
+          _id: groupIdB,
+          name: 'groupB',
+          parent: groupIdA,
+        },
+      ]);
+
+      await UserGroupRelation.insertMany([
+        {
+          relatedGroup: groupIdIsolate,
+          relatedUser: testUser1._id,
+        },
+      ]);
+
+      await Page.insertMany([
+        {
+          _id: pageId1,
+          path: '/a',
+          parent: rootPage._id,
+          grant: Page.GRANT_PUBLIC,
+          isEmpty: true,
+        },
+        {
+          _id: pageId2,
+          path: '/a/groupB',
+          parent: pageId1,
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroup: groupIdB,
+          grantedUsers: [testUser1._id],
+          creator: testUser1,
+          lastUpdateUser: testUser1._id,
+        },
+        {
+          _id: pageId3,
+          path: '/a',
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroup: groupIdA,
+          grantedUsers: [testUser1._id],
+          creator: testUser1,
+          lastUpdateUser: testUser1._id,
+        },
+      ]);
+
+    });
+
   });
 
   test('replace private parents with empty pages', async() => {
