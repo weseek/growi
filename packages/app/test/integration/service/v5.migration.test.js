@@ -107,6 +107,34 @@ describe('V5 page migration', () => {
 
     await Page.insertMany([
       {
+        path: '/private1',
+        grant: Page.GRANT_OWNER,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        path: '/dummyParent/private1',
+        grant: Page.GRANT_OWNER,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        path: '/dummyParent/private1/private2',
+        grant: Page.GRANT_OWNER,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        path: '/dummyParent/private1/private3',
+        grant: Page.GRANT_OWNER,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        grantedUsers: [testUser1._id],
+      },
+      {
         _id: pageId1,
         path: '/normalize_1',
         parent: rootPage._id,
@@ -150,72 +178,44 @@ describe('V5 page migration', () => {
         grantedGroup: groupIdIsolate,
         grantedUsers: [testUser1._id],
       },
+      {
+        path: '/normalize_6/normalize_7_g1',
+        grant: Page.GRANT_USER_GROUP,
+        creator: testUser1,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        path: '/normalize_6/normalize_7_g1/normalize_8_g2',
+        grant: Page.GRANT_USER_GROUP,
+        creator: testUser1,
+        grantedGroup: groupIdB,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        path: '/normalize_6/normalize_7_g3',
+        grant: Page.GRANT_USER_GROUP,
+        creator: testUser1,
+        grantedGroup: groupIdC,
+        grantedUsers: [testUser1._id],
+      },
     ]);
 
   });
 
   describe('normalizeParentRecursivelyByPages()', () => {
+
+    const normalizeParentRecursivelyByPages = async(pages, user) => {
+      return crowi.pageService.normalizeParentRecursivelyByPages(pages, user);
+    };
+
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
-
-      // initialize pages for test
-      await Page.insertMany([
-        {
-          path: '/private1',
-          grant: Page.GRANT_OWNER,
-          creator: testUser1,
-          lastUpdateUser: testUser1,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/dummyParent/private1',
-          grant: Page.GRANT_OWNER,
-          creator: testUser1,
-          lastUpdateUser: testUser1,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/dummyParent/private1/private2',
-          grant: Page.GRANT_OWNER,
-          creator: testUser1,
-          lastUpdateUser: testUser1,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/dummyParent/private1/private3',
-          grant: Page.GRANT_OWNER,
-          creator: testUser1,
-          lastUpdateUser: testUser1,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/normalize1/normalize2_g1',
-          grant: Page.GRANT_USER_GROUP,
-          creator: testUser1,
-          grantedGroup: groupIdA,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/normalize1/normalize2_g1/normalize2_g2',
-          grant: Page.GRANT_USER_GROUP,
-          creator: testUser1,
-          grantedGroup: groupIdB,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          path: '/normalize1/normalize2_g3',
-          grant: Page.GRANT_USER_GROUP,
-          creator: testUser1,
-          grantedGroup: groupIdC,
-          grantedUsers: [testUser1._id],
-        },
-      ]);
 
       const pagesToRun = await Page.find({ path: { $in: ['/private1', '/dummyParent/private1'] } });
 
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPages(pagesToRun, testUser1);
-
+      await normalizeParentRecursivelyByPages(pagesToRun, testUser1);
       const migratedPages = await Page.find({
         path: {
           $in: ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'],
