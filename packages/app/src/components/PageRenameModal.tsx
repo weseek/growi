@@ -176,6 +176,10 @@ const PageRenameModal = (): JSX.Element => {
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
+  const submitButtonDisabled = isV5Compatible(page.meta)
+    ? existingPaths.length !== 0 // v5 data
+    : !isRenameRecursively; // v4 data
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
@@ -290,7 +294,7 @@ const PageRenameModal = (): JSX.Element => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={(!isRenameRecursively && existingPaths.length !== 0)}
+          disabled={submitButtonDisabled}
         >Rename
         </button>
       </ModalFooter>

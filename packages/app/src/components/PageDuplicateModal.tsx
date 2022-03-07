@@ -1,57 +1,68 @@
 import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { usePageDuplicateModal } from '~/stores/modal';
 
-import AppContainer from '~/client/services/AppContainer';
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/apiNotification';
+
+import { usePageDuplicateModal } from '~/stores/modal';
+import { useIsSearchServiceReachable, useSiteUrl } from '~/stores/context';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import ComparePathsTable from './ComparePathsTable';
 import DuplicatePathsTable from './DuplicatedPathsTable';
 
-const LIMIT_FOR_LIST = 10;
 
-const PageDuplicateModal = (props) => {
-  const {
-    t, appContainer,
-  } = props;
+const PageDuplicateModal = (): JSX.Element => {
+  const { t } = useTranslation();
 
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
-  const { crowi } = appContainer.config;
+  const { data: siteUrl } = useSiteUrl();
+  const { data: isReachable } = useIsSearchServiceReachable();
+
   const { data: duplicateModalData, close: closeDuplicateModal } = usePageDuplicateModal();
 
-  const { isOpened, page } = duplicateModalData;
-  const { pageId, path } = page;
+  const isOpened = duplicateModalData?.isOpened ?? false;
+  const page = duplicateModalData?.page;
 
-  const [pageNameInput, setPageNameInput] = useState(path);
+  const [pageNameInput, setPageNameInput] = useState('');
 
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [existingPaths, setExistingPaths] = useState<string[]>([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-  const [existingPaths, setExistingPaths] = useState([]);
 
-  const checkExistPaths = useCallback(async(newParentPath) => {
+  const updateSubordinatedList = useCallback(async() => {
+    if (page == null) {
+      return;
+    }
+
+    const { path } = page;
+    try {
+      const res = await apiv3Get('/pages/subordinated-list', { path });
+      setSubordinatedPages(res.data.subordinatedPages);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Failed to get subordinated pages'));
+    }
+  }, [page, t]);
+
+  const checkExistPaths = useCallback(async(fromPath, toPath) => {
     if (page == null) {
       return;
     }
 
     try {
-      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get<{ existPaths: string[] }>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -59,24 +70,17 @@ const PageDuplicateModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Failed to get exist path'));
     }
-  }, [page, path, t]);
+  }, [page, t]);
 
   const checkExistPathsDebounce = useMemo(() => {
     return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
   useEffect(() => {
-    if (pageId != null && path != null && pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput);
+    if (page != null && pageNameInput !== page.path) {
+      checkExistPathsDebounce(page.path, pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, pageId, path]);
-
-
-  useEffect(() => {
-    if (pageId != null && path != null && pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput);
-    }
-  }, [pageNameInput, subordinatedPages, path, pageId, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -100,34 +104,24 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursively(!isDuplicateRecursively);
   }
 
-  const getSubordinatedList = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
-      setSubordinatedPages(res.data.subordinatedPages);
-    }
-    catch (err) {
-      setErrs(err);
-      toastError(t('modal_duplicate.label.Failed to get subordinated pages'));
-    }
-  }, [appContainer, path, t]);
-
   useEffect(() => {
-    if (isOpened) {
-      getSubordinatedList();
-      setPageNameInput(path);
+    if (page != null && isOpened) {
+      updateSubordinatedList();
+      setPageNameInput(page.path);
     }
-  }, [isOpened, getSubordinatedList, path]);
+  }, [isOpened, page, updateSubordinatedList]);
 
-  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
-    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
-  }
+  const duplicate = useCallback(async() => {
+    if (page == null) {
+      return;
+    }
 
-  async function duplicate() {
     setErrs(null);
 
+    const { pageId, path } = page;
     try {
-      const { data } = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
-      const onDuplicated = duplicateModalData.opts?.onDuplicated;
+      const { data } = await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      const onDuplicated = duplicateModalData?.opts?.onDuplicated;
       const fromPath = path;
       const toPath = data.page.path;
 
@@ -139,11 +133,34 @@ const PageDuplicateModal = (props) => {
     catch (err) {
       setErrs(err);
     }
+  }, [closeDuplicateModal, duplicateModalData?.opts?.onDuplicated, isDuplicateRecursively, page, pageNameInput]);
+
+  useEffect(() => {
+    if (isOpened) {
+      return;
+    }
+
+    // reset states after the modal closed
+    setTimeout(() => {
+      setPageNameInput('');
+      setErrs(null);
+      setSubordinatedPages([]);
+      setExistingPaths([]);
+      setIsDuplicateRecursively(true);
+      setIsDuplicateRecursivelyWithoutExistPath(false);
+    }, 1000);
+
+  }, [isOpened]);
+
+  if (page == null) {
+    return <></>;
   }
 
-  function ppacSubmitHandler() {
-    duplicate();
-  }
+  const { path } = page;
+  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
+
+  const submitButtonEnabled = existingPaths.length === 0
+    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} className="grw-duplicate-page" autoFocus={false}>
@@ -158,14 +175,14 @@ const PageDuplicateModal = (props) => {
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
-              <span className="input-group-text">{crowi.url}</span>
+              <span className="input-group-text">{siteUrl}</span>
             </div>
             <div className="flex-fill">
               {isReachable
                 ? (
                   <PagePathAutoComplete
                     initializedPath={path}
-                    onSubmit={ppacSubmitHandler}
+                    onSubmit={duplicate}
                     onInputChange={ppacInputChangeHandler}
                     autoFocus
                   />
@@ -182,6 +199,11 @@ const PageDuplicateModal = (props) => {
             </div>
           </div>
         </div>
+
+        { isTargetPageDuplicate && (
+          <p className="text-danger">Error: Target path is duplicated.</p>
+        ) }
+
         <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
           <input
             className="custom-control-input"
@@ -205,7 +227,7 @@ const PageDuplicateModal = (props) => {
                   id="cbDuplicatewithoutExistRecursively"
                   type="checkbox"
                   checked={isDuplicateRecursivelyWithoutExistPath}
-                  onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+                  onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
                 />
                 <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
                   { t('modal_duplicate.label.Duplicate without exist path') }
@@ -214,8 +236,9 @@ const PageDuplicateModal = (props) => {
             )}
           </div>
           <div>
-            {isDuplicateRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-            {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            {isDuplicateRecursively && existingPaths.length !== 0 && (
+              <DuplicatePathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
+            ) }
           </div>
         </div>
 
@@ -226,7 +249,7 @@ const PageDuplicateModal = (props) => {
           type="button"
           className="btn btn-primary"
           onClick={duplicate}
-          disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={!submitButtonEnabled}
         >
           { t('modal_duplicate.label.Duplicate page') }
         </button>
@@ -236,15 +259,4 @@ const PageDuplicateModal = (props) => {
 };
 
 
-/**
- * Wrapper component for using unstated
- */
-const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer]);
-
-
-PageDuplicateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(PageDuplicateModallWrapper);
+export default PageDuplicateModal;
