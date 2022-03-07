@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'throttle-debounce';
 
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
@@ -107,8 +106,6 @@ const scrollPageTree = () => {
   }
 };
 
-// use debounce as resetScrollbar in StickyStretchableScroller component also uses debounce
-const scrollPageTreeDebounced = debounce(100, false, scrollPageTree);
 
 /*
  * ItemsTree
@@ -163,7 +160,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   useEffect(() => {
     if (isRenderedCompletely && !isScrolled) {
       document.dispatchEvent(new CustomEvent(SidebarScrollerEvent.RESET_SCROLLBAR));
-      scrollPageTreeDebounced();
+      // use setTimeout as resetScrollbar in StickyStretchableScroller component uses debounce and wait 100ms
+      setTimeout(scrollPageTree, 100);
+
       setIsScrolled(true);
     }
   }, [isRenderedCompletely, isScrolled]);
