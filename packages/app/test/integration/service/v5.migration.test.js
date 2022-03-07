@@ -200,6 +200,9 @@ describe('V5 page migration', () => {
     const pageId1 = new mongoose.Types.ObjectId();
     const pageId2 = new mongoose.Types.ObjectId();
     const pageId3 = new mongoose.Types.ObjectId();
+    const pageId4 = new mongoose.Types.ObjectId();
+    const pageId5 = new mongoose.Types.ObjectId();
+    const pageId6 = new mongoose.Types.ObjectId();
 
     beforeAll(async() => {
       await UserGroup.insertMany([
@@ -240,8 +243,6 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: groupIdB,
           grantedUsers: [testUser1._id],
-          creator: testUser1,
-          lastUpdateUser: testUser1._id,
         },
         {
           _id: pageId3,
@@ -249,8 +250,28 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: groupIdA,
           grantedUsers: [testUser1._id],
-          creator: testUser1,
-          lastUpdateUser: testUser1._id,
+        },
+        {
+          _id: pageId4,
+          path: '/normalize_4',
+          parent: rootPage._id,
+          grant: Page.GRANT_PUBLIC,
+          isEmpty: true,
+        },
+        {
+          _id: pageId5,
+          path: '/normalize_4/normalize_5',
+          parent: pageId4,
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroup: groupIdA,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          _id: pageId6,
+          path: '/normalize_4',
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroup: groupIdIsolate,
+          grantedUsers: [testUser1._id],
         },
       ]);
 
@@ -277,7 +298,6 @@ describe('V5 page migration', () => {
 
       expect(page3AF.parent).toStrictEqual(rootPage._id);
       expect(page2AF.parent).toStrictEqual(page3AF._id);
-
     });
   });
 
