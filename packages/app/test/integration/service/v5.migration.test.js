@@ -231,6 +231,10 @@ describe('V5 page migration', () => {
       expect(page9AF.parent).toStrictEqual(page8AF._id);
       expect(page10AF.parent).toStrictEqual(page7._id);
     });
+
+    test('should normalize', async() => {
+
+    });
   });
 
   describe('normalizeAllPublicPages()', () => {
