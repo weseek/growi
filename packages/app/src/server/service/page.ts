@@ -250,6 +250,7 @@ class PageService {
       return {
         data: page,
         meta: {
+          isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
