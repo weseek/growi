@@ -17,12 +17,10 @@ import { useIsSearchServiceReachable, useSiteUrl } from '~/stores/context';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-// import ComparePathsTable from './ComparePathsTable';
 import DuplicatePathsTable from './DuplicatedPathsTable';
 
-const LIMIT_FOR_LIST = 10;
 
-const PageDuplicateModal = (props) => {
+const PageDuplicateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: siteUrl } = useSiteUrl();
