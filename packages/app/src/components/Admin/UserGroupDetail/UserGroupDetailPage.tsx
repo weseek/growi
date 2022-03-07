@@ -57,6 +57,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
+  console.log(ancestorUserGroups);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -192,7 +193,15 @@ const UserGroupDetailPage: FC = () => {
 
   return (
     <div>
-      <a href="/admin/user-groups" className="btn btn-outline-secondary">
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><a href="/admin/user-groups">UserGroup 一覧</a></li>
+          <li className="breadcrumb-item"><a href="#">Library</a></li>
+          <li className="breadcrumb-item active" aria-current="page">Data</li>
+        </ol>
+      </nav>
+
+      {/* <a href="/admin/user-groups" className="btn btn-outline-secondary">
         <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {t('admin:user_group_management.back_to_list')}
       </a>
@@ -221,7 +230,7 @@ const UserGroupDetailPage: FC = () => {
             </div>
           </div>
         )
-      }
+      } */}
 
       <div className="mt-4 form-box">
         <UserGroupForm
