@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
 
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnDeletedFunction, SidebarScrollerEvent } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
@@ -21,6 +22,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 
+const SCROLL_OFFSET_TOP = 60; // approximate height of navigation
 
 /*
  * Utility to generate initial node
@@ -99,10 +101,14 @@ const renderByInitialNode = (
 const scrollPageTree = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
   const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
+
   if (scrollElement != null && scrollTargetElement != null) {
-    jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, true);
+    jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, SCROLL_OFFSET_TOP);
   }
 };
+
+// use debounce as resetScrollbar in StickyStretchableScroller component also uses debounce
+const scrollPageTreeDebounced = debounce(100, false, scrollPageTree);
 
 /*
  * ItemsTree
@@ -132,20 +138,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isRenderedCompletely, setIsRenderedCompletely] = useState(false);
 
-  const scrollToTargetItem = () => {
-    if (!isScrolled) {
-      scrollPageTree();
-      setIsScrolled(true);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('scrollPageTree', scrollToTargetItem);
-    return () => {
-      document.removeEventListener('scrollPageTree', scrollToTargetItem);
-    };
-  });
-
   useEffect(() => {
     if (socket == null) {
       return;
@@ -169,9 +161,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   };
 
   useEffect(() => {
-    if (!isRenderedCompletely) return;
-    document.dispatchEvent(new CustomEvent('resetScroller'));
-  }, [isRenderedCompletely]);
+    if (isRenderedCompletely && !isScrolled) {
+      document.dispatchEvent(new CustomEvent(SidebarScrollerEvent.RESET_SCROLLBAR));
+      scrollPageTreeDebounced();
+      setIsScrolled(true);
+    }
+  }, [isRenderedCompletely, isScrolled]);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
