@@ -107,7 +107,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
