@@ -191,6 +191,9 @@ describe('V5 page migration', () => {
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
         grantedUsers: [testUser1._id],
+        isEmpty: true,
+        parent: pageId7,
+        descendantCount: 1,
       },
       {
         _id: pageId9,
