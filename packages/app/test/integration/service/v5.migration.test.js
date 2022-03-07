@@ -321,9 +321,9 @@ describe('V5 page migration', () => {
       const page6AF = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
 
       expect(isThrown).toBeTruthy();
-      expect(page4AF).toEqual(page4);
-      expect(page5AF).toEqual(page5);
-      expect(page6AF).toEqual(page6);
+      expect(page4AF).toStrictEqual(page4);
+      expect(page5AF).toStrictEqual(page5);
+      expect(page6AF).toStrictEqual(page6);
     });
   });
 
