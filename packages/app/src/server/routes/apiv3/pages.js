@@ -786,8 +786,10 @@ module.exports = (crowi) => {
 
     try {
       if (!isV5Compatible) {
-        // this method throws and emit socketIo event when error occurs
-        crowi.pageService.normalizeAllPublicPages(); // not await
+        crowi.appService.useMaintenanceMode(async() => {
+          // This method throws and emit socketIo event when error occurs
+          await crowi.pageService.normalizeAllPublicPages();
+        });
       }
     }
     catch (err) {

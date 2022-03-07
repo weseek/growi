@@ -280,7 +280,9 @@ module.exports = (crowi) => {
      * import
      */
     try {
-      importService.import(collections, importSettingsMap);
+      crowi.appService.useMaintenanceMode(async() => {
+        await importService.import(collections, importSettingsMap);
+      });
     }
     catch (err) {
       logger.error(err);
