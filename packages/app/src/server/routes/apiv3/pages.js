@@ -497,7 +497,7 @@ module.exports = (crowi) => {
     let renamedPage;
 
     try {
-      page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
+      page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
@@ -653,7 +653,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
     }
 
-    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
     if (page == null || isEmptyAndNotRecursively) {
@@ -748,7 +748,7 @@ module.exports = (crowi) => {
 
     let pagesToDelete;
     try {
-      pagesToDelete = await Page.findByPageIdsToEdit(pageIds, req.user, true);
+      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true);
     }
     catch (err) {
       logger.error('Failed to find pages to delete.', err);

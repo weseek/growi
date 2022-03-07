@@ -2189,7 +2189,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
