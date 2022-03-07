@@ -209,45 +209,6 @@ const UserGroupDetailPage: FC = () => {
         </ol>
       </nav>
 
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="#">Home</a></li>
-          <li className="breadcrumb-item"><a href="#">Library</a></li>
-          <li className="breadcrumb-item active" aria-current="page">Data</li>
-        </ol>
-      </nav>
-
-      {/* <a href="/admin/user-groups" className="btn btn-outline-secondary">
-        <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-        {t('admin:user_group_management.back_to_list')}
-      </a>
-
-      {
-        userGroup?.parent != null && ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
-          <div className="btn-group ml-2">
-            <a className="btn btn-outline-secondary" href={`/admin/user-group-detail/${userGroup.parent}`}>
-              <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-              {t('admin:user_group_management.back_to_ancestors_group')}
-            </a>
-            <button
-              type="button"
-              className="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              ria-expanded="false"
-            >
-            </button>
-            <div className="dropdown-menu">
-              {
-                ancestorUserGroups.map(userGroup => (
-                  <a className="dropdown-item" key={userGroup._id} href={`/admin/user-group-detail/${userGroup._id}`}>{userGroup.name}</a>
-                ))
-              }
-            </div>
-          </div>
-        )
-      } */}
-
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
