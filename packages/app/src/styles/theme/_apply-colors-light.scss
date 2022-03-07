@@ -180,6 +180,11 @@ $border-color: $border-color-global;
       $gray-400
     );
   }
+  .grw-pagetree-footer {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+  }
 }
 
 /*

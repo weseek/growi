@@ -280,6 +280,11 @@ ul.pagination {
       $gray-500
     );
   }
+  .grw-pagetree-footer {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+  }
 }
 
 /*
