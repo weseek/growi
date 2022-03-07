@@ -357,6 +357,8 @@ class PageGrantService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
@@ -365,8 +367,18 @@ class PageGrantService {
 
     for await (const page of pages) {
       const {
-        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+        path, grant, status, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
+
+      if (grant === Page.GRANT_RESTRICTED || grant === Page.GRANT_SPECIFIED) {
+        nonNormalizable.push(page);
+        continue;
+      }
+
+      if (status === Page.STATUS_DELETED) {
+        nonNormalizable.push(page);
+        continue;
+      }
 
       const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
       if (isNormalized) {
