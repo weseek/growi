@@ -69,6 +69,25 @@ describe('V5 page migration', () => {
         parent: groupIdB,
       },
     ]);
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: groupIdIsolate,
+        relatedUser: testUser1._id,
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: testUser1._id,
+      },
+      {
+        relatedGroup: groupIdB,
+        relatedUser: testUser1._id,
+      },
+      {
+        relatedGroup: groupIdC,
+        relatedUser: testUser1._id,
+      },
+    ]);
   });
 
   describe('normalizeParentRecursivelyByPages()', () => {
@@ -253,13 +272,6 @@ describe('V5 page migration', () => {
     const pageId6 = new mongoose.Types.ObjectId();
 
     beforeAll(async() => {
-
-      await UserGroupRelation.insertMany([
-        {
-          relatedGroup: groupIdIsolate,
-          relatedUser: testUser1._id,
-        },
-      ]);
 
       await Page.insertMany([
         {
