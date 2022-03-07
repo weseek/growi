@@ -144,16 +144,16 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   return (
     <li
       key={pageData._id}
-      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive}`}
+      className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
     >
       <div
-        className="text-break"
+        className="text-break w-100"
         onClick={clickHandler}
       >
         <div className="d-flex">
           {/* checkbox */}
           {onCheckboxChanged != null && (
-            <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
+            <div className="d-flex align-items-center justify-content-center">
               <CustomInput
                 type="checkbox"
                 id={`cbSelect-${pageData._id}`}
@@ -164,7 +164,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
           )}
 
-          <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
+          <div className="flex-grow-1 px-2 px-md-4">
             <div className="d-flex justify-content-between">
               {/* page path */}
               <PagePathHierarchicalLink
