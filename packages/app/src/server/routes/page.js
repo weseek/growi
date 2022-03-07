@@ -599,7 +599,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     const builder = new PageQueryBuilder(Page.find({ path }));
-    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
