@@ -148,13 +148,12 @@ class Page extends React.Component {
     const isLoggedIn = appContainer.currentUser != null;
     const { markdown, revisionId } = pageContainer.state;
 
-    if (revisionId == null) {
-      return <></>;
-    }
-
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+
+        { revisionId != null && (
+          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+        )}
 
         { isLoggedIn && (
           <>
