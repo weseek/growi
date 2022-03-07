@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 import loggerFactory from '~/utils/logger';
+import { SidebarScrollerEvent } from '~/interfaces/ui';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
@@ -89,9 +90,6 @@ const StickyStretchableScroller = (props) => {
       allowPageScroll: true,
     });
 
-    if (isScrollEnabled && scrollTargetSelector === '#grw-sidebar-contents-scroll-target') {
-      document.dispatchEvent(new CustomEvent('scrollPageTree'));
-    }
     // destroy
     if (!isScrollEnabled) {
       $(scrollTargetSelector).slimScroll({ destroy: true });
@@ -103,9 +101,9 @@ const StickyStretchableScroller = (props) => {
 
 
   useEffect(() => {
-    document.addEventListener('resetScroller', resetScrollbarDebounced);
+    document.addEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
     return () => {
-      document.removeEventListener('resetScroller', resetScrollbarDebounced);
+      document.removeEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
     };
   }, []);
 
