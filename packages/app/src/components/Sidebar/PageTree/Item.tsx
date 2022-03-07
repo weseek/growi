@@ -431,13 +431,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && !isRenaming && (
+        { isRenaming && (
+          <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+        )}
+        { !isRenameInputShown && (
           <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
           </a>
-        )}
-        { isRenaming && (
-          <i className="fa fa-spinner fa-pulse mx-auto text-muted"></i>
         )}
         {(descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
