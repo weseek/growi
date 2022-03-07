@@ -13,27 +13,17 @@ describe('V5 page migration', () => {
 
   let rootPage;
 
-  let groupIdIsolate;
-  let groupIdA;
-  let groupIdB;
-  let groupIdC;
+  const groupIdIsolate = new mongoose.Types.ObjectId();
+  const groupIdA = new mongoose.Types.ObjectId();
+  const groupIdB = new mongoose.Types.ObjectId();
+  const groupIdC = new mongoose.Types.ObjectId();
 
-  let pageId1;
-  let pageId2;
-  let pageId3;
-  let pageId4;
-  let pageId5;
-  let pageId6;
-
-  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
-  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
-  const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data, i) => {
-      if (data == null) { console.log(`index: ${i}`) }
-      expect(data).toBeTruthy();
-    });
-  };
-
+  const pageId1 = new mongoose.Types.ObjectId();
+  const pageId2 = new mongoose.Types.ObjectId();
+  const pageId3 = new mongoose.Types.ObjectId();
+  const pageId4 = new mongoose.Types.ObjectId();
+  const pageId5 = new mongoose.Types.ObjectId();
+  const pageId6 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     jest.restoreAllMocks();
@@ -49,12 +39,6 @@ describe('V5 page migration', () => {
     await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
     testUser1 = await User.findOne({ username: 'testUser1' });
     rootPage = await Page.findOne({ path: '/' });
-
-
-    groupIdIsolate = new mongoose.Types.ObjectId();
-    groupIdA = new mongoose.Types.ObjectId();
-    groupIdB = new mongoose.Types.ObjectId();
-    groupIdC = new mongoose.Types.ObjectId();
 
     await UserGroup.insertMany([
       {
@@ -95,15 +79,6 @@ describe('V5 page migration', () => {
         relatedUser: testUser1._id,
       },
     ]);
-
-
-    pageId1 = new mongoose.Types.ObjectId();
-    pageId2 = new mongoose.Types.ObjectId();
-    pageId3 = new mongoose.Types.ObjectId();
-    pageId4 = new mongoose.Types.ObjectId();
-    pageId5 = new mongoose.Types.ObjectId();
-    pageId6 = new mongoose.Types.ObjectId();
-
 
     await Page.insertMany([
       {
@@ -179,21 +154,21 @@ describe('V5 page migration', () => {
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_6/normalize_7_g1',
+        path: '/normalize_7/normalize_8_g1',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
         grantedGroup: groupIdA,
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_6/normalize_7_g1/normalize_8_g2',
+        path: '/normalize_7/normalize_8_g1/normalize_9_g2',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
         grantedGroup: groupIdB,
         grantedUsers: [testUser1._id],
       },
       {
-        path: '/normalize_6/normalize_7_g3',
+        path: '/normalize_7/normalize_8_g3',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
         grantedGroup: groupIdC,
@@ -202,6 +177,15 @@ describe('V5 page migration', () => {
     ]);
 
   });
+
+  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
+  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
+  const expectAllToBeTruthy = (dataList) => {
+    dataList.forEach((data, i) => {
+      if (data == null) { console.log(`index: ${i}`) }
+      expect(data).toBeTruthy();
+    });
+  };
 
   describe('normalizeParentRecursivelyByPages()', () => {
 
@@ -229,7 +213,23 @@ describe('V5 page migration', () => {
     });
 
     test('should normalize all pages with usergroup set and create empty parent page from no data', async() => {
+      const page8 = await Page.findOne({ path: '/normalize_7/normalize_8_g1' });
+      const page9 = await Page.findOne({ path: '/normalize_7/normalize_8_g1/normalize_9_g2' });
+      const page10 = await Page.findOne({ path: '/normalize_7/normalize_8_g3' });
+      expectAllToBeTruthy([page8, page9, page10]);
 
+      await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
+
+      const page7 = await Page.findOne({ path: '/normalize_7' });
+      const page8AF = await Page.findOne({ path: '/normalize_7/normalize_8_g1' });
+      const page9AF = await Page.findOne({ path: '/normalize_7/normalize_8_g1/normalize_9_g2' });
+      const page10AF = await Page.findOne({ path: '/normalize_7/normalize_8_g3' });
+      expectAllToBeTruthy([page7, page8AF, page9AF, page10AF]);
+
+      expect(page7.parent).toStrictEqual(rootPage._id);
+      expect(page8AF.parent).toStrictEqual(page7._id);
+      expect(page9AF.parent).toStrictEqual(page8AF._id);
+      expect(page10AF.parent).toStrictEqual(page7._id);
     });
   });
 
