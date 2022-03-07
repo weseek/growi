@@ -39,7 +39,7 @@ export const isOnTree = (page): boolean => {
  * @returns boolean
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const isNormalized = (page): boolean => {
+export const isPageNormalized = (page): boolean => {
   const { grant, status } = page;
 
   if (grant === GRANT_RESTRICTED || grant === GRANT_SPECIFIED) {
