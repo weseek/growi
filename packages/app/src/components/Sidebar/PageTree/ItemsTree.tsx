@@ -74,7 +74,7 @@ const renderByInitialNode = (
     isScrolled: boolean,
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
-    onRenamed?: () => void,
+    onRenamed?: () => Promise<void>,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
     onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 ): JSX.Element => {
