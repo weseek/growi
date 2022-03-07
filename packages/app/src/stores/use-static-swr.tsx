@@ -48,10 +48,10 @@ export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & IT
         return;
       }
 
-      await new Promise((r) => {
+      await new Promise((resolve) => {
         setTimeout(async() => {
           await swrResult.mutate(currentNum + 1);
-          r(null);
+          resolve(null);
         }, ADVANCE_DELAY_MS);
       });
     },
