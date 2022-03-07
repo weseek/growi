@@ -37,7 +37,7 @@ interface ItemProps {
   isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onRenamed?(): void
+  onRenamed?(): Promise<void>
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
@@ -280,7 +280,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       if (onRenamed != null) {
-        onRenamed();
+        await onRenamed();
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
