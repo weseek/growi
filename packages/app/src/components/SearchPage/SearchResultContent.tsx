@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import { IPageToDeleteWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { usePageTreeTermManager } from '~/stores/page-listing';
@@ -131,7 +131,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
   }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const renameItemClickedHandler = useCallback(async(pageToRename) => {
+  const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 

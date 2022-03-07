@@ -3,7 +3,7 @@ import { useStaticSWR } from './use-static-swr';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 
 
 /*
@@ -109,47 +109,39 @@ export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRRespons
 
 
 /*
-* PageRenameModal
-*/
-export type IPageForPageRenameModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
-}
-
+ * PageRenameModal
+ */
 export type IRenameModalOption = {
   onRenamed?: OnRenamedFunction,
 }
 
 type RenameModalStatus = {
   isOpened: boolean,
-  page?: IPageForPageRenameModal,
+  page?: IPageToRenameWithMeta,
   opts?: IRenameModalOption
 }
 
 type RenameModalStatusUtils = {
   open(
-    page?: IPageForPageRenameModal,
+    page?: IPageToRenameWithMeta,
     opts?: IRenameModalOption
     ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
 export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
-  const initialData: RenameModalStatus = {
-    isOpened: false, page: { pageId: '', revisionId: '', path: '' },
-  };
+  const initialData: RenameModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
     open: (
-        page?: IPageForPageRenameModal,
+        page?: IPageToRenameWithMeta,
         opts?: IRenameModalOption,
     ) => swrResponse.mutate({
       isOpened: true, page, opts,
     }),
-    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', revisionId: '', path: '' } }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 

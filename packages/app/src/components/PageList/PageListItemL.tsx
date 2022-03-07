@@ -113,14 +113,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDuplicateModal(page, { onDuplicated: onPageDuplicated });
   }, [onPageDuplicated, openDuplicateModal, pageData._id, pageData.path]);
 
-  const renameMenuItemClickHandler = useCallback(() => {
-    const page = {
-      pageId: pageData._id,
-      revisionId: pageData.revision as string,
-      path: pageData.path,
-    };
+  const renameMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
+    const page = { data: pageData, meta: pageInfo };
     openRenameModal(page, { onRenamed: onPageRenamed });
-  }, [onPageRenamed, openRenameModal, pageData._id, pageData.path, pageData.revision]);
+  }, [pageData, onPageRenamed, openRenameModal]);
 
 
   const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
