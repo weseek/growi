@@ -224,7 +224,7 @@ const PageDuplicateModal = (): JSX.Element => {
                   id="cbDuplicatewithoutExistRecursively"
                   type="checkbox"
                   checked={isDuplicateRecursivelyWithoutExistPath}
-                  onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursively)}
+                  onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
                 />
                 <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
                   { t('modal_duplicate.label.Duplicate without exist path') }
