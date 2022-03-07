@@ -16,20 +16,12 @@ export const smoothScrollIntoView = (element: HTMLElement, offsetTop = 0, scroll
 
 /**
  * scroll to the top of the target element
- * or
- * scroll the target element to the center of the view
  * by using JQuery slimScroll: http://rocha.la/jQuery-slimScroll
  */
-export const jQuerySlimScrollIntoView = (scrollableElement: HTMLElement, scrollTargetElement: HTMLElement, shouldScrollTargetToCenter = false): void => {
-  const windowCenter = window.innerHeight / 2;
+export const jQuerySlimScrollIntoView = (scrollableElement: HTMLElement, scrollTargetElement: HTMLElement, offsetTop = 0): void => {
   const targetTop = scrollTargetElement.getBoundingClientRect().top;
 
-  let scrollTo;
-  scrollTo = targetTop;
-  if (shouldScrollTargetToCenter) {
-    if (targetTop <= windowCenter) return;
-    scrollTo = targetTop - windowCenter;
-  }
+  const scrollTo = targetTop - offsetTop;
   (<any>$(scrollableElement)).slimScroll({ scrollTo });
 };
 
