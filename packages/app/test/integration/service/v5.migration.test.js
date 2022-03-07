@@ -183,6 +183,7 @@ describe('V5 page migration', () => {
         grant: Page.GRANT_PUBLIC,
         isEmpty: true,
         parent: rootPage._id,
+        descendantCount: 3,
       },
       {
         _id: pageId8,
@@ -190,6 +191,7 @@ describe('V5 page migration', () => {
         grant: Page.GRANT_PUBLIC,
         isEmpty: true,
         parent: pageId7,
+        descendantCount: 1,
       },
       {
         _id: pageId9,
@@ -198,6 +200,7 @@ describe('V5 page migration', () => {
         grantedGroup: groupIdB,
         grantedUsers: [testUser1._id],
         parent: pageId8,
+        descendantCount: 0,
       },
       {
         _id: pageId10,
@@ -206,6 +209,7 @@ describe('V5 page migration', () => {
         grantedGroup: groupIdC,
         grantedUsers: [testUser1._id],
         parent: pageId7,
+        descendantCount: 0,
       },
 
     ]);
