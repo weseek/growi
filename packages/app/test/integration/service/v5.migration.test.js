@@ -18,6 +18,13 @@ describe('V5 page migration', () => {
   let groupIdB;
   let groupIdC;
 
+  let pageId1;
+  let pageId2;
+  let pageId3;
+  let pageId4;
+  let pageId5;
+  let pageId6;
+
   // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
@@ -88,6 +95,63 @@ describe('V5 page migration', () => {
         relatedUser: testUser1._id,
       },
     ]);
+
+
+    pageId1 = new mongoose.Types.ObjectId();
+    pageId2 = new mongoose.Types.ObjectId();
+    pageId3 = new mongoose.Types.ObjectId();
+    pageId4 = new mongoose.Types.ObjectId();
+    pageId5 = new mongoose.Types.ObjectId();
+    pageId6 = new mongoose.Types.ObjectId();
+
+
+    await Page.insertMany([
+      {
+        _id: pageId1,
+        path: '/normalize_1',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      },
+      {
+        _id: pageId2,
+        path: '/normalize_1/normalize_2',
+        parent: pageId1,
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        _id: pageId3,
+        path: '/normalize_1',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        _id: pageId4,
+        path: '/normalize_4',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      },
+      {
+        _id: pageId5,
+        path: '/normalize_4/normalize_5',
+        parent: pageId4,
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
+      },
+      {
+        _id: pageId6,
+        path: '/normalize_4',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdIsolate,
+        grantedUsers: [testUser1._id],
+      },
+    ]);
+
   });
 
   describe('normalizeParentRecursivelyByPages()', () => {
@@ -164,6 +228,9 @@ describe('V5 page migration', () => {
       expect(migratedPagePaths.sort()).toStrictEqual(expected.sort());
     });
 
+    test('should normalize all pages with usergroup set and create empty parent page from no data', async() => {
+
+    });
   });
 
   describe('normalizeAllPublicPages()', () => {
@@ -263,65 +330,6 @@ describe('V5 page migration', () => {
   });
 
   describe('normalizeParentByPageId()', () => {
-
-    const pageId1 = new mongoose.Types.ObjectId();
-    const pageId2 = new mongoose.Types.ObjectId();
-    const pageId3 = new mongoose.Types.ObjectId();
-    const pageId4 = new mongoose.Types.ObjectId();
-    const pageId5 = new mongoose.Types.ObjectId();
-    const pageId6 = new mongoose.Types.ObjectId();
-
-    beforeAll(async() => {
-
-      await Page.insertMany([
-        {
-          _id: pageId1,
-          path: '/normalize_1',
-          parent: rootPage._id,
-          grant: Page.GRANT_PUBLIC,
-          isEmpty: true,
-        },
-        {
-          _id: pageId2,
-          path: '/normalize_1/normalize_2',
-          parent: pageId1,
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: groupIdB,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          _id: pageId3,
-          path: '/normalize_1',
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: groupIdA,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          _id: pageId4,
-          path: '/normalize_4',
-          parent: rootPage._id,
-          grant: Page.GRANT_PUBLIC,
-          isEmpty: true,
-        },
-        {
-          _id: pageId5,
-          path: '/normalize_4/normalize_5',
-          parent: pageId4,
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: groupIdA,
-          grantedUsers: [testUser1._id],
-        },
-        {
-          _id: pageId6,
-          path: '/normalize_4',
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: groupIdIsolate,
-          grantedUsers: [testUser1._id],
-        },
-      ]);
-
-    });
-
     const normalizeParentByPageId = async(page, user) => {
       return crowi.pageService.normalizeParentByPageId(page, user);
     };
