@@ -24,7 +24,9 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
+} from '~/interfaces/page';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -186,7 +188,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         revisionId: droppedPage.revision,
         newPagePath,
         isRenameRedirect: false,
-        isRemainMetadata: false,
+        updateMetadata: true,
       });
 
       await mutateChildren();
@@ -295,6 +297,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (onClickDeleteMenuItem == null) {
+      return;
+    }
+
     if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
@@ -308,9 +314,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       meta: pageInfo,
     };
 
-    if (onClickDeleteMenuItem != null) {
-      onClickDeleteMenuItem(pageToDelete);
-    }
+    onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
