@@ -34,7 +34,7 @@ export function useStaticSWR<Data, Error>(
 const ADVANCE_DELAY_MS = 800;
 
 export type ITermNumberManagerUtil = {
-  advance(): Promise<void> | void,
+  advance(): Promise<void>
 }
 
 export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
