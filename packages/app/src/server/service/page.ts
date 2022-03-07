@@ -2369,7 +2369,7 @@ class PageService {
 
       // find pages again to get updated descendantCount
       // then calculate inc
-      const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
+      const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user, null, true);
 
       const exDescendantCount = page.descendantCount;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;

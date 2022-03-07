@@ -28,6 +28,7 @@ describe('V5 page migration', () => {
   const pageId8 = new mongoose.Types.ObjectId();
   const pageId9 = new mongoose.Types.ObjectId();
   const pageId10 = new mongoose.Types.ObjectId();
+  const pageId11 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     jest.restoreAllMocks();
@@ -183,17 +184,13 @@ describe('V5 page migration', () => {
         grant: Page.GRANT_PUBLIC,
         isEmpty: true,
         parent: rootPage._id,
-        descendantCount: 3,
       },
       {
         _id: pageId8,
         path: '/normalize_10/normalize_11_gA',
-        grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
-        grantedUsers: [testUser1._id],
+        grant: Page.GRANT_PUBLIC,
         isEmpty: true,
         parent: pageId7,
-        descendantCount: 1,
       },
       {
         _id: pageId9,
@@ -202,7 +199,6 @@ describe('V5 page migration', () => {
         grantedGroup: groupIdB,
         grantedUsers: [testUser1._id],
         parent: pageId8,
-        descendantCount: 0,
       },
       {
         _id: pageId10,
@@ -211,7 +207,13 @@ describe('V5 page migration', () => {
         grantedGroup: groupIdC,
         grantedUsers: [testUser1._id],
         parent: pageId7,
-        descendantCount: 0,
+      },
+      {
+        _id: pageId11,
+        path: '/normalize_10/normalize_11_gA',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        grantedUsers: [testUser1._id],
       },
 
     ]);
@@ -274,22 +276,27 @@ describe('V5 page migration', () => {
 
     // test('should create new non-empty parent page and update children parent', async() => {
     //   const page1 = await Page.findOne({ path: '/normalize_10' });
-    //   const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
+    //   const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
     //   const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
     //   const page4 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
-    //   expectAllToBeTruthy([page1, page2, page3, page4]);
-    //   await normalizeParentRecursivelyByPages([page2], testUser1);
+    //   const page5 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId11 });
+    //   expectAllToBeTruthy([page1, page2, page3, page4, page5]);
+    //   await normalizeParentRecursivelyByPages([page5], testUser1);
 
     //   const page1AF = await Page.findOne({ path: '/normalize_10' });
-    //   const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA' });
+    //   const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
     //   const page3AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
     //   const page4AF = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
-    //   expectAllToBeTruthy([page1AF, page2AF, page3AF, page4AF]);
+    //   const page5AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId11 });
+    //   expectAllToBeTruthy([page1AF, page3AF, page4AF, page5AF]);
+    //   expect(page2AF).toBeNull();
 
     //   expect(page1AF.isEmpty).toBeTruthy();
-    //   expect(page2AF.parent).toStrictEqual(page1AF._id);
-    //   expect(page3AF.parent).toStrictEqual(page2AF._id);
+    //   expect(page5AF.isEmpty).toBeFalsy();
+    //   expect(page1AF.parent).toStrictEqual(rootPage._id);
+    //   expect(page3AF.parent).toStrictEqual(page5AF._id);
     //   expect(page4AF.parent).toStrictEqual(page1AF._id);
+    //   expect(page5AF.parent).toStrictEqual(page1AF._id);
     // });
   });
 
