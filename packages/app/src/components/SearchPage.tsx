@@ -204,7 +204,7 @@ export const SearchPage = (props: Props): JSX.Element => {
       >
         <button
           type="button"
-          className="btn btn-outline-danger border-0 px-2"
+          className="btn btn-outline-danger border-0 px-1 px-md-2"
           disabled={isDisabled}
           onClick={deleteAllButtonClickedHandler}
         >
