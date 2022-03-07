@@ -21,6 +21,11 @@ import { isIPageInfoForEntity } from '~/interfaces/page';
 import { useSWRxPageInfo } from '~/stores/page';
 
 
+const isV5Compatible = (meta: unknown): boolean => {
+  return isIPageInfoForEntity(meta) ? meta.isV5Compatible : true;
+};
+
+
 const PageRenameModal = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -72,6 +77,43 @@ const PageRenameModal = (): JSX.Element => {
     }
   }, [isOpened, page, updateSubordinatedList]);
 
+  const rename = useCallback(async() => {
+    if (page == null) {
+      return;
+    }
+
+    const _isV5Compatible = isV5Compatible(page.meta);
+
+    setErrs(null);
+
+    const { _id, path, revision } = page.data;
+    try {
+      const response = await apiv3Put('/pages/rename', {
+        pageId: _id,
+        revisionId: revision,
+        isRecursively: !_isV5Compatible ? isRenameRecursively : undefined,
+        isRenameRedirect,
+        updateMetadata: !isRemainMetadata,
+        newPagePath: pageNameInput,
+        path,
+      });
+
+      const { page } = response.data;
+      const url = new URL(page.path, 'https://dummy');
+      if (isRenameRedirect) {
+        url.searchParams.append('withRedirect', 'true');
+      }
+
+      const onRenamed = renameModalData?.opts?.onRenamed;
+      if (onRenamed != null) {
+        onRenamed(path);
+      }
+      closeRenameModal();
+    }
+    catch (err) {
+      setErrs(err);
+    }
+  }, [closeRenameModal, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
   const checkExistPaths = useCallback(async(fromPath, toPath) => {
     if (page == null) {
@@ -108,42 +150,6 @@ const PageRenameModal = (): JSX.Element => {
     setPageNameInput(value);
   }
 
-  async function rename() {
-    if (page == null) {
-      return;
-    }
-
-    setErrs(null);
-
-    const { _id, path, revision } = page.data;
-    try {
-      const response = await apiv3Put('/pages/rename', {
-        pageId: _id,
-        revisionId: revision,
-        isRecursively: isRenameRecursively,
-        isRenameRedirect,
-        updateMetadata: !isRemainMetadata,
-        newPagePath: pageNameInput,
-        path,
-      });
-
-      const { page } = response.data;
-      const url = new URL(page.path, 'https://dummy');
-      if (isRenameRedirect) {
-        url.searchParams.append('withRedirect', 'true');
-      }
-
-      const onRenamed = renameModalData?.opts?.onRenamed;
-      if (onRenamed != null) {
-        onRenamed(path);
-      }
-      closeRenameModal();
-    }
-    catch (err) {
-      setErrs(err);
-    }
-  }
-
   useEffect(() => {
     if (isOpened) {
       return;
@@ -168,7 +174,6 @@ const PageRenameModal = (): JSX.Element => {
   }
 
   const { path } = page.data;
-  const isV5Compatible = isIPageInfoForEntity(page.meta) ? page.meta.isV5Compatible : null;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
   return (
@@ -204,7 +209,7 @@ const PageRenameModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        { isV5Compatible === false && (
+        { !isV5Compatible(page.meta) && (
           <>
             <div className="custom-control custom-radio custom-radio-warning">
               <input
