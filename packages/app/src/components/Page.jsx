@@ -21,10 +21,10 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import {
-  EditorMode, useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
-import { useSlackChannels, useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
 
@@ -181,7 +181,6 @@ Page.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
-  isEnabledAttachTitleHeader: PropTypes.bool,
 };
 
 const PageWrapper = (props) => {
@@ -191,8 +190,6 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
-
 
   if (editorMode == null) {
     return null;
@@ -207,7 +204,6 @@ const PageWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
-      isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
     />
   );
 };
