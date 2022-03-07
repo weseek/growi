@@ -406,7 +406,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       let elasticSearchResult;
       const highlightData = data._highlight;
       if (highlightData != null) {
-        const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+        const snippet = highlightData['body.en'] || highlightData['body.ja'] || highlightData['comments.en'] || highlightData['comments.ja'] || '';
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
