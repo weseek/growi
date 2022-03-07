@@ -202,7 +202,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1">
+              <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
               </div>
 
