@@ -183,13 +183,6 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
-  console.log(ancestorUserGroups);
-
-  // const topAncestorUserGroup = ancestorUserGroups?.find(userGroup => userGroup.parent == null);
-  // const sortedAncestorUesrGroups = (topAncestorUserGroup != null && ancestorUserGroups != null)
-  //   ? sortGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
-  //   : [];
-
   /*
    * Dependencies
    */
