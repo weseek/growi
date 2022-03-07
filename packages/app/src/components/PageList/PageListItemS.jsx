@@ -20,7 +20,9 @@ export default class PageListItemS extends React.Component {
       <>
         <UserPicture user={page.lastUpdateUser} noLink={noLink} />
         {pagePathElem}
-        <PageListMeta page={page} />
+        <span className="ml-2">
+          <PageListMeta page={page} />
+        </span>
       </>
     );
   }

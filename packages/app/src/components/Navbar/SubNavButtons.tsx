@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -27,7 +27,7 @@ type CommonProps = {
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
-  onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
+  onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
@@ -111,9 +111,18 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
-    const page: IPageForPageRenameModal = { pageId, revisionId, path };
+
+    const page: IPageToRenameWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
+    };
+
     onClickRenameMenuItem(page);
-  }, [onClickRenameMenuItem, pageId, path, revisionId]);
+  }, [onClickRenameMenuItem, pageId, pageInfo, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteMenuItem == null || path == null) {
