@@ -94,7 +94,7 @@ type DuplicateModalStatusUtils = {
 }
 
 export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
-  const initialData: DuplicateModalStatus = { isOpened: false, page: { pageId: '', path: '/' } };
+  const initialData: DuplicateModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
   return {
@@ -103,7 +103,7 @@ export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRRespons
         page?: IPageForPageDuplicateModal,
         opts?: IDuplicateModalOption,
     ) => swrResponse.mutate({ isOpened: true, page, opts }),
-    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '/' } }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
