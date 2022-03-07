@@ -260,22 +260,23 @@ describe('V5 page migration', () => {
       return crowi.pageService.normalizeParentByPageId(page, user);
     };
     test('it should set v4 page parent to v5 parental page', async() => {
-      const pageToMigrate = await Page.findOne({ _id: pageId3, path: '/a' });
-      const parentPage = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
-      const childPage = await Page.findOne({ _id: pageId2, path: '/a/groupB' });
+      const page1 = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
+      const page2 = await Page.findOne({ _id: pageId2, path: '/a/groupB', parent: page1._id });
+      const page3 = await Page.findOne({ _id: pageId3, path: '/a' }); // NOT v5
 
-      expectAllToBeTruthy([parentPage, childPage, pageToMigrate]);
-      await normalizeParentByPageId(pageToMigrate, testUser1);
+      expectAllToBeTruthy([page1, page2, page3]);
+      await normalizeParentByPageId(page3, testUser1);
 
-      const migratedpage = await Page.findOne({ _id: pageId3, path: '/a' });
-      const parentPageAftMig = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
-      const childPageAftMig = await Page.findOne({ path: '/a/groupB' });
+      // AF => After Migration
+      const page3AF = await Page.findOne({ _id: pageId3, path: '/a' }); // v5 compatible
+      const page2AF = await Page.findOne({ _id: pageId2, path: '/a/groupB', parent: page3AF._id });
+      const page1AF = await Page.findOne({ _id: pageId1, path: '/a', isEmpty: true });
 
-      expect(parentPageAftMig).toBeNull();
-      expectAllToBeTruthy([migratedpage, childPageAftMig]);
+      expectAllToBeTruthy([page3AF, page2AF]);
+      expect(page1AF).toBeNull();
 
-      expect(migratedpage.parent).toStrictEqual(rootPage._id);
-      expect(childPageAftMig.parent).toStrictEqual(migratedpage._id);
+      expect(page3AF.parent).toStrictEqual(rootPage._id);
+      expect(page2AF.parent).toStrictEqual(page3AF._id);
 
     });
   });
