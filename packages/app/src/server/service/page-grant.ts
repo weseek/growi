@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
@@ -370,7 +370,7 @@ class PageGrantService {
         path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
-      if (!Page.isV4Page(page)) {
+      if (pageUtils.isNormalized(page)) {
         nonNormalizable.push(page);
         continue;
       }
