@@ -25,6 +25,21 @@ import {
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
+const sortUserGroupByAncestorOrder = (group: IUserGroupHasId, groups: IUserGroupHasId[], ancestors = [group]) => {
+  if (group == null) {
+    return ancestors;
+  }
+
+  const parentUserGroup = groups.find(ancestorUserGroup => ancestorUserGroup.parent === group._id);
+  if (parentUserGroup == null) {
+    return ancestors;
+  }
+  ancestors.push(parentUserGroup);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return sortUserGroupByAncestorOrder(parentUserGroup, groups, ancestors);
+};
+
 const UserGroupDetailPage: FC = () => {
   const { t } = useTranslation();
   const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
@@ -183,6 +198,11 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
+  const topAncestorUserGroup = ancestorUserGroups?.find(userGroup => userGroup.parent == null);
+  const sortedAncestorUesrGroups = (topAncestorUserGroup != null && ancestorUserGroups != null)
+    ? sortUserGroupByAncestorOrder(topAncestorUserGroup, ancestorUserGroups)
+    : [];
+
   /*
    * Dependencies
    */
@@ -194,18 +214,20 @@ const UserGroupDetailPage: FC = () => {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/admin/user-groups">UserGroupList</a></li>
-          { ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
-            ancestorUserGroups.reverse().map(ancestorUserGroup => (
-              <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
-                { ancestorUserGroup._id === userGroup._id ? (
-                  <>{ancestorUserGroup.name}</>
-                ) : (
-                  <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
-                )}
-              </li>
-            ))
-          )}
+          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('admin:user_group_management.group_list')}</a></li>
+          {
+            sortedAncestorUesrGroups.length > 0 && (
+              sortedAncestorUesrGroups.map((ancestorUserGroup: IUserGroupHasId) => (
+                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
+                  { ancestorUserGroup._id === userGroup._id ? (
+                    <>{ancestorUserGroup.name}</>
+                  ) : (
+                    <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
+                  )}
+                </li>
+              ))
+            )
+          }
         </ol>
       </nav>
 
