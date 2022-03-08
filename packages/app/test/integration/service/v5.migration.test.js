@@ -417,14 +417,14 @@ describe('V5 page migration', () => {
       await normalizeParentByPageId(page3, testUser1);
 
       // AM => After Migration
-      const page3AM = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
-      const page2AM = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page3AM._id });
       const page1AM = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
-      expectAllToBeTruthy([page3AM, page2AM]);
+      const page2AM = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2' });
+      const page3AM = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
+      expectAllToBeTruthy([page2AM, page3AM]);
       expect(page1AM).toBeNull();
 
-      expect(page3AM.parent).toStrictEqual(rootPage._id);
       expect(page2AM.parent).toStrictEqual(page3AM._id);
+      expect(page3AM.parent).toStrictEqual(rootPage._id);
     });
 
     test('it should normalize not v5 page with usergroup that has no parent or child group', async() => {
