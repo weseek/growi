@@ -1,13 +1,21 @@
-import React, { useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useEffect, useCallback, ReactNode, useRef, useState, useMemo,
+} from 'react';
 
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
+import SimpleBar from 'simplebar-react';
+
 import loggerFactory from '~/utils/logger';
-import { SidebarScrollerEvent } from '~/interfaces/ui';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
+
+export type StickyStretchableScrollerProps = {
+  stickyElemSelector: string,
+  calcViewHeight?: (scrollElement: HTMLElement) => number,
+  children?: ReactNode,
+}
 
 /**
  * USAGE:
@@ -22,89 +30,44 @@ const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
   return (
     <StickyStretchableScroller
-      contentsElemSelector="#long-contents-elem"
       stickyElemSelector="#sticky-elem"
-      calcViewHeightFunc={calcViewHeight}
+      calcViewHeight={calcViewHeight}
     >
-      <div id="scroll-elem">
+      <div>
         ...
       </div>
     </StickyStretchableScroller>
   );
-
-  or
-
-  return (
-    <StickyStretchableScroller
-      scrollTargetId="scroll-elem"
-      contentsElemSelector="#long-contents-elem"
-      stickyElemSelector="#sticky-elem"
-      calcViewHeightFunc={calcViewHeight}
-    />
-  );
  */
-const StickyStretchableScroller = (props) => {
+export const StickyStretchableScroller = (props: StickyStretchableScrollerProps): JSX.Element => {
 
-  let { scrollTargetSelector } = props;
   const {
-    children, contentsElemSelector, stickyElemSelector,
-    calcViewHeightFunc, calcContentsHeightFunc,
-    resetKey,
+    children, stickyElemSelector, calcViewHeight,
   } = props;
 
-  if (scrollTargetSelector == null && children == null) {
-    throw new Error('Either of scrollTargetSelector or children is required');
-  }
-
-  if (scrollTargetSelector == null) {
-    scrollTargetSelector = `#${children.props.id}`;
-  }
+  const simplebarRef = useRef<SimpleBar>(null);
+  const [simplebarMaxHeight, setSimplebarMaxHeight] = useState<number|undefined>();
 
   /**
    * Reset scrollbar
    */
   const resetScrollbar = useCallback(() => {
-    const contentsElem = document.querySelector(contentsElemSelector);
-    if (contentsElem == null) {
+    if (simplebarRef.current == null || calcViewHeight == null) {
       return;
     }
-    const viewHeight = calcViewHeightFunc != null
-      ? calcViewHeightFunc()
-      : 'auto';
-    const contentsHeight = calcContentsHeightFunc != null
-      ? calcContentsHeightFunc(contentsElem)
-      : contentsElem.getBoundingClientRect().height;
 
-    logger.debug(`[${scrollTargetSelector}] viewHeight`, viewHeight);
-    logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
+    const scrollElement = simplebarRef.current.getScrollElement();
+    const newHeight = calcViewHeight(scrollElement);
 
-    // const isScrollEnabled = viewHeight === 'auto' || (viewHeight < contentsHeight);
+    logger.debug('Set new height to simplebar', newHeight);
 
-    // $(scrollTargetSelector).slimScroll({
-    //   color: '#666',
-    //   railColor: '#999',
-    //   railVisible: true,
-    //   position: 'right',
-    //   height: isScrollEnabled ? viewHeight : contentsHeight,
-    //   wheelStep: 10,
-    //   allowPageScroll: true,
-    // });
+    // set new height
+    setSimplebarMaxHeight(newHeight);
+    // reculculate
+    simplebarRef.current.recalculate();
+  }, [calcViewHeight]);
 
-    /**
-     * The below code is a workaround for the following effect
-     * The scrollbar doesn't move without mouseover event after applying slimscroll
-     * https://github.com/rochal/jQuery-slimScroll/issues/287#issuecomment-797090432
-     */
-    // $(scrollTargetSelector).trigger('mouseover');
-
-    // destroy
-    // if (!isScrollEnabled) {
-    //   $(scrollTargetSelector).slimScroll({ destroy: true });
-    // }
-
-  }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc, scrollTargetSelector]);
-
-  const resetScrollbarDebounced = debounce(100, resetScrollbar);
+  const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
 
 
   // useEffect(() => {
@@ -114,20 +77,17 @@ const StickyStretchableScroller = (props) => {
   //   };
   // }, []);
 
-  const stickyChangeHandler = useCallback((event) => {
+  const stickyChangeHandler = useCallback(() => {
     logger.debug('StickyEvents.CHANGE detected');
-    setTimeout(resetScrollbar, 100);
-  }, [resetScrollbar]);
+    resetScrollbarDebounced();
+  }, [resetScrollbarDebounced]);
 
   // setup effect by sticky event
   useEffect(() => {
-    if (stickyElemSelector == null) {
-      return;
-    }
-
     // sticky
     // See: https://github.com/ryanwalters/sticky-events
     const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
+    stickyEvents.enableEvents();
     const { stickySelector } = stickyEvents;
     const elem = document.querySelector(stickySelector);
     elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
@@ -140,7 +100,7 @@ const StickyStretchableScroller = (props) => {
 
   // setup effect by resizing event
   useEffect(() => {
-    const resizeHandler = (event) => {
+    const resizeHandler = () => {
       resetScrollbarDebounced();
     };
 
@@ -154,29 +114,12 @@ const StickyStretchableScroller = (props) => {
 
   // setup effect on init
   useEffect(() => {
-    if (resetKey != null) {
-      resetScrollbarDebounced();
-    }
-  }, [resetKey, resetScrollbarDebounced]);
+    resetScrollbarDebounced();
+  }, [resetScrollbarDebounced]);
 
   return (
-    <>
+    <SimpleBar style={{ maxHeight: simplebarMaxHeight }} ref={simplebarRef}>
       { children }
-    </>
+    </SimpleBar>
   );
 };
-
-StickyStretchableScroller.propTypes = {
-  contentsElemSelector: PropTypes.string.isRequired,
-
-  children: PropTypes.node,
-  scrollTargetSelector: PropTypes.string,
-  stickyElemSelector: PropTypes.string,
-
-  resetKey: PropTypes.any,
-
-  calcViewHeightFunc: PropTypes.func,
-  calcContentsHeightFunc: PropTypes.func,
-};
-
-export default StickyStretchableScroller;

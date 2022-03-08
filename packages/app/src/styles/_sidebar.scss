@@ -74,7 +74,7 @@
             flex-direction: column;
             width: 100%;
             height: 100%;
-            overflow: hidden auto;
+            overflow: hidden;
           }
         }
       }
@@ -89,7 +89,7 @@
       top: 0px;
       bottom: 0px;
       left: 100%;
-      z-index: 100; // greater than the value of slimScrollBar
+      z-index: 10; // greater than the value of SimpleBar
       width: 0;
       .grw-navigation-draggable-hitarea {
         position: relative;
