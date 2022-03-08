@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useCallback, ReactNode, useRef, useState, useMemo,
+  useEffect, useCallback, ReactNode, useRef, useState, useMemo, RefObject,
 } from 'react';
 
 import { debounce } from 'throttle-debounce';
@@ -13,6 +13,7 @@ const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
 export type StickyStretchableScrollerProps = {
   stickyElemSelector: string,
+  simplebarRef?: (ref: RefObject<SimpleBar>) => void,
   calcViewHeight?: (scrollElement: HTMLElement) => number,
   children?: ReactNode,
 }
@@ -42,7 +43,7 @@ export type StickyStretchableScrollerProps = {
 export const StickyStretchableScroller = (props: StickyStretchableScrollerProps): JSX.Element => {
 
   const {
-    children, stickyElemSelector, calcViewHeight,
+    children, stickyElemSelector, calcViewHeight, simplebarRef: setSimplebarRef,
   } = props;
 
   const simplebarRef = useRef<SimpleBar>(null);
@@ -68,14 +69,6 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   }, [calcViewHeight]);
 
   const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
-
-
-  // useEffect(() => {
-  //   document.addEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
-  //   return () => {
-  //     document.removeEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
-  //   };
-  // }, []);
 
   const stickyChangeHandler = useCallback(() => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -116,6 +109,13 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   useEffect(() => {
     resetScrollbarDebounced();
   }, [resetScrollbarDebounced]);
+
+  // update ref
+  useEffect(() => {
+    if (setSimplebarRef != null) {
+      setSimplebarRef(simplebarRef);
+    }
+  }, [setSimplebarRef]);
 
   return (
     <SimpleBar style={{ maxHeight: simplebarMaxHeight }} ref={simplebarRef}>

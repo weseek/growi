@@ -9,6 +9,7 @@ import {
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
+  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
@@ -50,6 +51,8 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
+  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+
   const calcViewHeight = useCallback(() => {
     const elem = document.querySelector('#grw-sidebar-contents-wrapper');
     return elem != null
@@ -61,6 +64,7 @@ const SidebarContentsWrapper = () => {
     <>
       <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
         <StickyStretchableScroller
+          simplebarRef={mutateSidebarScroller}
           stickyElemSelector=".grw-sidebar"
           calcViewHeight={calcViewHeight}
         >

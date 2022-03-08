@@ -25,7 +25,3 @@ export type OnDeletedFunction = (idOrPaths: string | string[], isRecursively: Nu
 export type OnRenamedFunction = (path: string) => void;
 export type OnDuplicatedFunction = (fromPath: string, toPath: string) => void;
 export type OnPutBackedFunction = (path: string) => void;
-
-export enum SidebarScrollerEvent {
-  RESET_SCROLLBAR = 'resetScrollbar'
-}
