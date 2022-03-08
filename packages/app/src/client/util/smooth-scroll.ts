@@ -14,17 +14,6 @@ export const smoothScrollIntoView = (element: HTMLElement, offsetTop = 0, scroll
   });
 };
 
-/**
- * scroll to the top of the target element
- * by using JQuery slimScroll: http://rocha.la/jQuery-slimScroll
- */
-export const jQuerySlimScrollIntoView = (scrollableElement: HTMLElement, scrollTargetElement: HTMLElement, offsetTop = 0): void => {
-  const targetTop = scrollTargetElement.getBoundingClientRect().top;
-
-  const scrollTo = targetTop - offsetTop;
-  (<any>$(scrollableElement)).slimScroll({ scrollTo });
-};
-
 export type SmoothScrollEventCallback = (elem: HTMLElement) => void;
 
 export const addSmoothScrollEvent = (elements: HTMLAnchorElement[], callback?: SmoothScrollEventCallback): void => {
