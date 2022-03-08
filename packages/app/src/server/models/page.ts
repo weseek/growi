@@ -372,6 +372,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToExcludeByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $nin: pageIds,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
