@@ -145,8 +145,6 @@ module.exports = function(crowi, app) {
 
   app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
-  app.get('/share/:linkId', page.showSharedPage);
-
   /*
    * Routes below are unavailable when maintenance mode
    */
@@ -218,6 +216,8 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
   app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
+
+  app.get('/share/:linkId', page.showSharedPage);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
