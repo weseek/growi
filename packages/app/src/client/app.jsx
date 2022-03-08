@@ -123,8 +123,8 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
     'page-content-footer': <PageContentFooter
-      createdAt={pageContainer.state.createdAt}
-      updatedAt={pageContainer.state.updatedAt}
+      createdAt={new Date(pageContainer.state.createdAt)}
+      updatedAt={new Date(pageContainer.state.updatedAt)}
       creator={pageContainer.state.creator}
       revisionAuthor={pageContainer.state.revisionAuthor}
     />,

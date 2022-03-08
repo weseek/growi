@@ -7,7 +7,7 @@ import { Nullable } from '../interfaces/common';
 
 type IResponseComment = {
   comments: ICommentHasIdList,
-  ok: string,
+  ok: boolean,
 }
 
 export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<ICommentHasIdList, Error> => {

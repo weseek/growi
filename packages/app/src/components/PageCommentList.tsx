@@ -16,7 +16,7 @@ type Props = {
 
 }
 
-const PageCommentsThread:FC<Props> = memo((props:Props):JSX.Element => {
+const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
   const { appContainer, pageId } = props;
 
@@ -103,4 +103,4 @@ const PageCommentsThread:FC<Props> = memo((props:Props):JSX.Element => {
 });
 
 
-export default PageCommentsThread;
+export default PageCommentList;

@@ -427,9 +427,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
         bookmarkCount: data._source.bookmark_count || 0,
         elasticSearchResult,
       };
-      console.log('pageData:', pageData);
-      console.log('pageMEta:', pageMeta);
-
 
       return { data: pageData, meta: pageMeta };
     });
