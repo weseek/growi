@@ -218,6 +218,11 @@ module.exports = (crowi) => {
       }
     }
 
+    const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+    if (!isMaintenanceMode) {
+      return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
+    }
+
 
     const zipFile = importService.getFile(fileName);
 
@@ -280,9 +285,7 @@ module.exports = (crowi) => {
      * import
      */
     try {
-      crowi.appService.useMaintenanceMode(async() => {
-        await importService.import(collections, importSettingsMap);
-      });
+      importService.import(collections, importSettingsMap);
     }
     catch (err) {
       logger.error(err);

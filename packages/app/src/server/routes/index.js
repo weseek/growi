@@ -59,9 +59,12 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  // API v3
+  const [apiV3Router, apiV3AdminRouter] = require('./apiv3')(crowi);
+
   app.use('/api-docs', require('./apiv3/docs')(crowi));
-  app.use('/_api/v3', require('./apiv3')(crowi));
+
+  // API v3 for admin
+  app.use('/_api/v3', apiV3AdminRouter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
@@ -149,6 +152,9 @@ module.exports = function(crowi, app) {
    * Routes below are unavailable when maintenance mode
    */
   app.use(unavailableWhenMaintenanceMode);
+
+  // API v3
+  app.use('/_api/v3', apiV3Router);
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts

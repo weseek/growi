@@ -781,24 +781,6 @@ module.exports = (crowi) => {
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
 
-  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    try {
-      if (!isV5Compatible) {
-        crowi.appService.useMaintenanceMode(async() => {
-          // This method throws and emit socketIo event when error occurs
-          await crowi.pageService.normalizeAllPublicPages();
-        });
-      }
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-    }
-
-    return res.apiv3({ isV5Compatible });
-  });
-
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
