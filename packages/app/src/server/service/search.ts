@@ -398,6 +398,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
         pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
       }
 
+      // serialize creator
+      if (pageData.creator != null && pageData.creator instanceof User) {
+        pageData.creator = serializeUserSecurely(pageData.creator);
+      }
+
       // const data = searchResult.data.find((data) => {
       //   return pageData.id === data._id;
       // });
@@ -422,6 +427,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
         bookmarkCount: data._source.bookmark_count || 0,
         elasticSearchResult,
       };
+      console.log('pageData:', pageData);
+      console.log('pageMEta:', pageMeta);
+
 
       return { data: pageData, meta: pageMeta };
     });

@@ -487,7 +487,7 @@ export const getPageSchema = (crowi) => {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
-    const builder = new this.PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
+    const builder = new this.PageQueryBuilder(this.find({ _id: { $in: ids } }).populate('creator'), shouldIncludeEmpty);
 
     builder.addConditionToPagenate(opt.offset, opt.limit);
 

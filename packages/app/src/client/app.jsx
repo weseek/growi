@@ -121,8 +121,13 @@ Object.assign(componentMappings, {
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
-    'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-content-footer': <PageContentFooter />,
+    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
+    'page-content-footer': <PageContentFooter
+      createdAt={pageContainer.state.createdAt}
+      updatedAt={pageContainer.state.updatedAt}
+      creator={pageContainer.state.creator}
+      revisionAuthor={pageContainer.state.revisionAuthor}
+    />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
