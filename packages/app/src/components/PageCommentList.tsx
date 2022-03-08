@@ -7,6 +7,8 @@ import Username from './User/Username';
 import FormattedDistanceDate from './FormattedDistanceDate';
 import HistoryIcon from './Icons/HistoryIcon';
 
+import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
+
 import { useSWRxPageComment } from '../stores/comment';
 
 
@@ -23,6 +25,9 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   const { data: comments } = useSWRxPageComment(pageId);
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
+  const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
+    () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
+  );
   const allReplies = {};
 
   if (commentsFromOldest != null) {
@@ -33,16 +38,41 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }
 
-
+  // todo: use growiRenderer when page comment is highlighted
   const growiRenderer = useMemo(() => appContainer.getRenderer('comment'), [appContainer]);
 
-  if (comments == null) return <></>;
+  const generateCommentInnerElement = (comment: ICommentHasId) => (
+    <>
+      <div className="flex-shrink-0">
+        <UserPicture user={comment.creator} size="md" noLink noTooltip />
+      </div>
+      <div className="flex-grow-1 ml-3">
+        <div className="d-flex">
+          <div className="flex-shrink-0">
+            <Username user={comment.creator} />
+          </div>
+          <div className="flex-grow-1 ml-3 text-right">
+            <div className="page-comment-meta">
+              <HistoryIcon />
+              <a href={`#${comment._id}`}>
+                <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="page-comment-body mt-1">{comment.comment}</div>
+      </div>
+    </>
+  );
+
+
+  if (comments == null || commentsExceptReply == null) return <></>;
 
   return (
     <div className="border border-top mt-5 px-2">
       <h2 className="my-3 text-center"><i className="icon-fw icon-bubbles"></i>Comments</h2>
 
-      { commentsFromOldest?.map((comment) => {
+      { commentsExceptReply.map((comment) => {
 
         const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
@@ -50,48 +80,12 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
           <div key={comment._id} className="age-comment-main">
             {/* display comment */}
             <div className={`d-flex ${hasReply ? 'mb-3' : 'mb-5'}`}>
-              <div className="flex-shrink-0">
-                <UserPicture user={comment.creator} size="md" noLink noTooltip />
-              </div>
-              <div className="flex-grow-1 ml-3">
-                <div className="d-flex">
-                  <div className="flex-shrink-0">
-                    <Username user={comment.creator} />
-                  </div>
-                  <div className="flex-grow-1 ml-3 text-right">
-                    <div className="page-comment-meta">
-                      <HistoryIcon />
-                      <a href={`#${comment._id}`}>
-                        <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="page-comment-body mt-1">{comment.comment}</div>
-              </div>
+              {generateCommentInnerElement(comment)}
             </div>
             {/* display reply comment */}
             {hasReply && (
               <div className="d-flex ml-4 mb-5">
-                <div className="flex-shrink-0">
-                  <UserPicture user={allReplies[comment._id].creator} size="md" noLink noTooltip />
-                </div>
-                <div className="flex-grow-1 ml-3">
-                  <div className="d-flex">
-                    <div className="flex-shrink-0">
-                      <Username user={allReplies[comment._id].creator} />
-                    </div>
-                    <div className="flex-grow-1 ml-3 text-right">
-                      <div className="page-comment-meta">
-                        <HistoryIcon />
-                        <a href={`#${allReplies[comment._id]._id}`}>
-                          <FormattedDistanceDate id={allReplies[comment._id]._id} date={allReplies[comment._id].createdAt} />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="page-comment-body mt-1">{allReplies[comment._id].comment}</div>
-                </div>
+                {generateCommentInnerElement(allReplies[comment._id])}
               </div>
             )}
           </div>
