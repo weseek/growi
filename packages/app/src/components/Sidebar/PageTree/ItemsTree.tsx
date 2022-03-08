@@ -1,5 +1,11 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, {
+  FC, useEffect, useRef, useState, useMemo,
+} from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { debounce } from 'throttle-debounce';
+
+import loggerFactory from '~/utils/logger';
 
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
@@ -22,6 +28,8 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 
 const SCROLL_OFFSET_TOP = 60; // approximate height of navigation
+
+const logger = loggerFactory('growi:cli:ItemsTree');
 
 /*
  * Utility to generate initial node
@@ -62,39 +70,6 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
-type ItemsTreeProps = {
-  isEnableActions: boolean
-  targetPath: string
-  targetPathOrId?: string
-  targetAndAncestorsData?: TargetAndAncestors
-}
-
-const renderByInitialNode = (
-    initialNode: ItemNode,
-    isEnableActions: boolean,
-    targetPathOrId?: string,
-    isEnabledAttachTitleHeader?: boolean,
-    onRenamed?: () => void,
-    onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
-): JSX.Element => {
-
-  return (
-    <ul className="grw-pagetree list-group p-3">
-      <Item
-        key={initialNode.page.path}
-        targetPathOrId={targetPathOrId}
-        itemNode={initialNode}
-        isOpen
-        isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
-        isEnableActions={isEnableActions}
-        onRenamed={onRenamed}
-        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-        onClickDeleteMenuItem={onClickDeleteMenuItem}
-      />
-    </ul>
-  );
-};
 
 // Auto scroll by jquery slimScroll
 const scrollPageTree = () => {
@@ -106,6 +81,13 @@ const scrollPageTree = () => {
   }
 };
 
+
+type ItemsTreeProps = {
+  isEnableActions: boolean
+  targetPath: string
+  targetPathOrId?: string
+  targetAndAncestorsData?: TargetAndAncestors
+}
 
 /*
  * ItemsTree
@@ -132,8 +114,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isRenderedCompletely, setIsRenderedCompletely] = useState(false);
+  const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
+
+  const rootElemRef = useRef(null);
+
+
+  const isSecondStageRendering = ancestorsChildrenData != null && rootPageData != null;
+
 
   useEffect(() => {
     if (socket == null) {
@@ -157,15 +144,47 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     advanceDpl();
   };
 
-  useEffect(() => {
-    if (isRenderedCompletely && !isScrolled) {
+  const initialScrollDebounced = useMemo(() => {
+    return debounce(100, () => {
+      logger.debug('initialScrollDebounced called');
+
+      if (isInitialScrollCompleted) {
+        return;
+      }
+
+      logger.debug('scrollPageTree has invoked after debounce');
+
       document.dispatchEvent(new CustomEvent(SidebarScrollerEvent.RESET_SCROLLBAR));
       // use setTimeout as resetScrollbar in StickyStretchableScroller component uses debounce and wait 100ms
       setTimeout(scrollPageTree, 100);
 
-      setIsScrolled(true);
+      setIsInitialScrollCompleted(true);
+    });
+  }, [isInitialScrollCompleted]);
+
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    if (!isSecondStageRendering || isInitialScrollCompleted) {
+      return;
     }
-  }, [isRenderedCompletely, isScrolled]);
+
+    const rootElement = rootElemRef.current as HTMLElement | null;
+    if (rootElement == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach(() => initialScrollDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(rootElement, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, [initialScrollDebounced, isInitialScrollCompleted, isSecondStageRendering]);
+  // *******************************  end  *******************************
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -209,30 +228,39 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     return null;
   }
 
+  let initialItemNode;
   /*
-   * Render completely
+   * Render second stage
    */
-  if (ancestorsChildrenData != null && rootPageData != null && !isRenderedCompletely) {
-    const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    setIsRenderedCompletely(true);
-    return renderByInitialNode(
-      // eslint-disable-next-line max-len
-      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
-    );
+  if (isSecondStageRendering) {
+    initialItemNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
   }
-
   /*
    * Before swr response comes back
    */
-  if (targetAndAncestorsData != null) {
-    const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(
-      // eslint-disable-next-line max-len
-      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+  else if (targetAndAncestorsData != null) {
+    initialItemNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
+  }
+
+  if (initialItemNode != null) {
+    return (
+      <ul className="grw-pagetree list-group p-3" ref={rootElemRef}>
+        <Item
+          key={initialItemNode.page.path}
+          targetPathOrId={targetPathOrId}
+          itemNode={initialItemNode}
+          isOpen
+          isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
+          isEnableActions={isEnableActions}
+          onRenamed={onRenamed}
+          onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+          onClickDeleteMenuItem={onClickDeleteMenuItem}
+        />
+      </ul>
     );
   }
 
-  return null;
+  return <></>;
 };
 
 export default ItemsTree;
