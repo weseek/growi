@@ -23,11 +23,11 @@ context('Open PageDeleteModal', () => {
     }
   });
 
-  it('PageDeleteModal is shown successfully', () => {
+  it('/_search?q=tag:we is shown successfully', () => {
     cy.visit('/_search?q=tag:we');
-    cy.getByTestid('open-page-item-control-btn')[0].click();
+    cy.getByTestid('open-page-item-control-btn').click();
     cy.contains('Delete').click();
-    cy.screenshot(`${ssPrefix}-open`,{ capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-open-page-item-control-btn`,{ capture: 'viewport' });
 
 
   });
