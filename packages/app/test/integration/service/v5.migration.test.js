@@ -266,15 +266,15 @@ describe('V5 page migration', () => {
       await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
 
       const page7 = await Page.findOne({ path: '/normalize_7' });
-      const page8AF = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
-      const page9AF = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
-      const page10AF = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
-      expectAllToBeTruthy([page7, page8AF, page9AF, page10AF]);
+      const page8AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
+      const page9AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
+      const page10AM = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
+      expectAllToBeTruthy([page7, page8AM, page9AM, page10AM]);
 
       expect(page7.parent).toStrictEqual(rootPage._id);
-      expect(page8AF.parent).toStrictEqual(page7._id);
-      expect(page9AF.parent).toStrictEqual(page8AF._id);
-      expect(page10AF.parent).toStrictEqual(page7._id);
+      expect(page8AM.parent).toStrictEqual(page7._id);
+      expect(page9AM.parent).toStrictEqual(page8AM._id);
+      expect(page10AM.parent).toStrictEqual(page7._id);
     });
 
     test("should replace empty page with same path with new non-empty page and update all related children's parent", async() => {
@@ -284,23 +284,25 @@ describe('V5 page migration', () => {
       const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
       const page5 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
       expectAllToBeTruthy([page1, page2, page3, page4, page5]);
+
       await normalizeParentRecursivelyByPages([page3], testUser1);
 
-      const page1AF = await Page.findOne({ path: '/normalize_10' });
-      const page2AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
-      const page3AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 });
-      const page4AF = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
-      const page5AF = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
-      expectAllToBeTruthy([page1AF, page3AF, page4AF, page5AF]);
-      expect(page2AF).toBeNull();
+      // AM => After Migration
+      const page1AM = await Page.findOne({ path: '/normalize_10' });
+      const page2AM = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
+      const page3AM = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 });
+      const page4AM = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
+      const page5AM = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
+      expectAllToBeTruthy([page1AM, page3AM, page4AM, page5AM]);
+      expect(page2AM).toBeNull();
 
-      expect(page1AF.isEmpty).toBeTruthy();
-      expect(page3AF.parent).toStrictEqual(page1AF._id);
+      expect(page1AM.isEmpty).toBeTruthy();
+      expect(page3AM.parent).toStrictEqual(page1AM._id);
       // Todo: enable the code below after this is solved: https://redmine.weseek.co.jp/issues/90060
-      // expect(page4AF.parent).toStrictEqual(page3AF._id);
-      expect(page5AF.parent).toStrictEqual(page1AF._id);
+      // expect(page4AM.parent).toStrictEqual(page3AF._id);
+      expect(page5AM.parent).toStrictEqual(page1AM._id);
 
-      expect(page3AF.isEmpty).toBeFalsy();
+      expect(page3AM.isEmpty).toBeFalsy();
     });
   });
 
@@ -408,20 +410,19 @@ describe('V5 page migration', () => {
       const page1 = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
       const page2 = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page1._id });
       const page3 = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // NOT v5
-
       expectAllToBeTruthy([page1, page2, page3]);
+
       await normalizeParentByPageId(page3, testUser1);
 
-      // AF => After Migration
-      const page3AF = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
-      const page2AF = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page3AF._id });
-      const page1AF = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
+      // AM => After Migration
+      const page3AM = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
+      const page2AM = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page3AM._id });
+      const page1AM = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
+      expectAllToBeTruthy([page3AM, page2AM]);
+      expect(page1AM).toBeNull();
 
-      expectAllToBeTruthy([page3AF, page2AF]);
-      expect(page1AF).toBeNull();
-
-      expect(page3AF.parent).toStrictEqual(rootPage._id);
-      expect(page2AF.parent).toStrictEqual(page3AF._id);
+      expect(page3AM.parent).toStrictEqual(rootPage._id);
+      expect(page2AM.parent).toStrictEqual(page3AM._id);
     });
 
     test('it should normalize not v5 page with usergroup that has no parent or child group', async() => {
@@ -439,15 +440,16 @@ describe('V5 page migration', () => {
         isThrown = true;
       }
 
-      // AF => After Migration
-      const page4AF = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
-      const page5AF = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
-      const page6AF = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
+      // AM => After Migration
+      const page4AM = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
+      const page5AM = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
+      const page6AM = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
+      expectAllToBeTruthy([page4AM, page5AM, page6AM]);
 
       expect(isThrown).toBeTruthy();
-      expect(page4AF).toStrictEqual(page4);
-      expect(page5AF).toStrictEqual(page5);
-      expect(page6AF).toStrictEqual(page6);
+      expect(page4AM).toStrictEqual(page4);
+      expect(page5AM).toStrictEqual(page5);
+      expect(page6AM).toStrictEqual(page6);
     });
   });
 
