@@ -304,7 +304,7 @@ class PageService {
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || isTrashPage);
+    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
 
     return shouldUseV4Process;
   }
@@ -315,7 +315,7 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
+    const shouldUseV4Process = !isV5Compatible || isPageRestricted;
 
     return shouldUseV4Process;
   }
@@ -533,18 +533,15 @@ class PageService {
     const newParentPath = pathlib.dirname(toPath);
 
     // local util
-    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = [path]): string[] => {
-      const nextPath = pathlib.dirname(path);
-      if (nextPath === fromPath) {
-        return [...paths, nextPath];
-      }
+    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = []): string[] => {
+      if (path === fromPath) return paths;
 
-      paths.push(nextPath);
-
-      return collectAncestorPathsUntilFromPath(nextPath, paths);
+      const parentPath = pathlib.dirname(path);
+      paths.push(parentPath);
+      return collectAncestorPathsUntilFromPath(parentPath, paths);
     };
 
-    const pathsToInsert = collectAncestorPathsUntilFromPath(newParentPath);
+    const pathsToInsert = collectAncestorPathsUntilFromPath(toPath);
     const originalParent = await Page.findById(originalPage.parent);
     if (originalParent == null) {
       throw Error('Original parent not found');
