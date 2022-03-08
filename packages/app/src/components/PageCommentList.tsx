@@ -15,12 +15,12 @@ import { useSWRxPageComment } from '../stores/comment';
 type Props = {
   appContainer: AppContainer,
   pageId: string,
-
+  highlightKeywords?:string[],
 }
 
 const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
-  const { appContainer, pageId } = props;
+  const { appContainer, pageId, highlightKeywords } = props;
 
   const { data: comments } = useSWRxPageComment(pageId);
 
@@ -38,8 +38,13 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }
 
-  // todo: use growiRenderer when page comment is highlighted
-  const growiRenderer = useMemo(() => appContainer.getRenderer('comment'), [appContainer]);
+  const highlightComment = (comment: string) => {
+    let highlightedComment = '';
+    highlightKeywords?.forEach((highlightKeyword) => {
+      highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
+    });
+    return highlightedComment;
+  };
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <>
@@ -60,7 +65,13 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="page-comment-body mt-1">{comment.comment}</div>
+        <div
+          className="page-comment-body text-break mt-1"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: highlightComment(comment.comment),
+          }}
+        />
       </div>
     </>
   );
@@ -69,7 +80,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   if (comments == null || commentsExceptReply == null) return <></>;
 
   return (
-    <div className="border border-top mt-5 px-2">
+    <div className="comment-list border border-top mt-5 px-2">
       <h2 className="my-3 text-center"><i className="icon-fw icon-bubbles"></i>Comments</h2>
 
       { commentsExceptReply.map((comment) => {

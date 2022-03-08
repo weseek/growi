@@ -650,6 +650,11 @@ body.pathname-sidebar {
       background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
     }
   }
+  .comment-list {
+    .highlighted-keyword {
+      background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
+    }
+  }
 }
 
 /*
