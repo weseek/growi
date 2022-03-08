@@ -119,4 +119,16 @@ export default class AppService implements S2sMessageHandlable {
     this.crowi.setupGlobalErrorHandlers();
   }
 
+  isMaintenanceMode(): boolean {
+    return this.configManager.getConfig('crowi', 'app:isMaintenanceMode');
+  }
+
+  async startMaintenanceMode() {
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': true });
+  }
+
+  async endMaintenanceMode() {
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': false });
+  }
+
 }

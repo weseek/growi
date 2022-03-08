@@ -694,5 +694,26 @@ module.exports = (crowi) => {
 
   });
 
+  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+    if (!isMaintenanceMode) {
+      return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
+    }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    try {
+      if (!isV5Compatible) {
+        // This method throws and emit socketIo event when error occurs
+        crowi.pageService.normalizeAllPublicPages();
+      }
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+    }
+
+    return res.apiv3({ isV5Compatible });
+  });
+
   return router;
 };

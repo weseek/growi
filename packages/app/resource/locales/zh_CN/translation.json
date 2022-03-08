@@ -993,6 +993,12 @@
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
   },
+  "maintenance_mode":{
+    "maintenance_mode": "维护模式",
+    "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
+    "admin_page": "管理员页",
+    "login": "登录"
+  },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",

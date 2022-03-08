@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import { generateUnavailableWhenMaintenanceModeMiddleware } from '../middlewares/unavailable-when-maintenance-mode';
 
 import * as loginFormValidator from '../middlewares/login-form-validator';
 import * as registerFormValidator from '../middlewares/register-form-validator';
@@ -52,15 +53,20 @@ module.exports = function(crowi, app) {
   const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
+  const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
+
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  // API v3
-  app.use('/api-docs', require('./apiv3/docs')(crowi));
-  app.use('/_api/v3', require('./apiv3')(crowi));
+  const [apiV3Router, apiV3AdminRouter] = require('./apiv3')(crowi);
 
-  app.get('/'                         , applicationInstalled, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.use('/api-docs', require('./apiv3/docs')(crowi));
+
+  // API v3 for admin
+  app.use('/_api/v3', apiV3AdminRouter);
+
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
@@ -141,6 +147,14 @@ module.exports = function(crowi, app) {
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
   app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
+
+  /*
+   * Routes below are unavailable when maintenance mode
+   */
+  app.use(unavailableWhenMaintenanceMode);
+
+  // API v3
+  app.use('/_api/v3', apiV3Router);
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts

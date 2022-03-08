@@ -181,6 +181,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: undefined,
   },
+  IS_MAINTENANCE_MODE: {
+    ns:      'crowi',
+    key:     'app:isMaintenanceMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   AUTO_INSTALL_ADMIN_USERNAME: {
     ns:      'crowi',
     key:     'autoInstall:adminUsername',
