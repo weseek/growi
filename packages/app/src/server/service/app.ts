@@ -119,7 +119,7 @@ export default class AppService implements S2sMessageHandlable {
     this.crowi.setupGlobalErrorHandlers();
   }
 
-  async useMaintenanceMode(operation: (...args: any[]) => any): Promise<void> {
+  async useMaintenanceMode(operation: () => Promise<void> | void): Promise<void> {
     try {
       await this.startMaintenanceMode();
 
