@@ -266,6 +266,7 @@ describe('V5 page migration', () => {
       expect(page11).toBeNull();
       await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
 
+      // AM => After Migration
       const page7 = await Page.findOne({ path: '/normalize_7' });
       const page8AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
       const page9AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
