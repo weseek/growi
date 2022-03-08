@@ -73,12 +73,12 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
 
 // Auto scroll by jquery slimScroll
 const scrollPageTree = () => {
-  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
+  // const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+  // const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
 
-  if (scrollElement != null && scrollTargetElement != null) {
-    jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, SCROLL_OFFSET_TOP);
-  }
+  // if (scrollElement != null && scrollTargetElement != null) {
+  //   jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, SCROLL_OFFSET_TOP);
+  // }
 };
 
 

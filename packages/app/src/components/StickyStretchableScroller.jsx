@@ -78,41 +78,41 @@ const StickyStretchableScroller = (props) => {
     logger.debug(`[${scrollTargetSelector}] viewHeight`, viewHeight);
     logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
 
-    const isScrollEnabled = viewHeight === 'auto' || (viewHeight < contentsHeight);
+    // const isScrollEnabled = viewHeight === 'auto' || (viewHeight < contentsHeight);
 
-    $(scrollTargetSelector).slimScroll({
-      color: '#666',
-      railColor: '#999',
-      railVisible: true,
-      position: 'right',
-      height: isScrollEnabled ? viewHeight : contentsHeight,
-      wheelStep: 10,
-      allowPageScroll: true,
-    });
+    // $(scrollTargetSelector).slimScroll({
+    //   color: '#666',
+    //   railColor: '#999',
+    //   railVisible: true,
+    //   position: 'right',
+    //   height: isScrollEnabled ? viewHeight : contentsHeight,
+    //   wheelStep: 10,
+    //   allowPageScroll: true,
+    // });
 
     /**
      * The below code is a workaround for the following effect
      * The scrollbar doesn't move without mouseover event after applying slimscroll
      * https://github.com/rochal/jQuery-slimScroll/issues/287#issuecomment-797090432
      */
-    $(scrollTargetSelector).trigger('mouseover');
+    // $(scrollTargetSelector).trigger('mouseover');
 
     // destroy
-    if (!isScrollEnabled) {
-      $(scrollTargetSelector).slimScroll({ destroy: true });
-    }
+    // if (!isScrollEnabled) {
+    //   $(scrollTargetSelector).slimScroll({ destroy: true });
+    // }
 
   }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc, scrollTargetSelector]);
 
   const resetScrollbarDebounced = debounce(100, resetScrollbar);
 
 
-  useEffect(() => {
-    document.addEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
-    return () => {
-      document.removeEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
+  //   return () => {
+  //     document.removeEventListener(SidebarScrollerEvent.RESET_SCROLLBAR, resetScrollbarDebounced);
+  //   };
+  // }, []);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');

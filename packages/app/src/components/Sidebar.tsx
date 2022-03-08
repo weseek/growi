@@ -2,6 +2,8 @@ import React, {
   FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
+import SimpleBar from 'simplebar-react';
+
 import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
@@ -72,9 +74,11 @@ const SidebarContentsWrapper = () => {
       />
 
       <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
-        <div id="grw-sidebar-content-container" className="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
-          <SidebarContents />
-        </div>
+        <SimpleBar style={{ minHeight: `${calcViewHeight()}px` }}>
+          <div id="grw-sidebar-content-container" className="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
+            <SidebarContents />
+          </div>
+        </SimpleBar>
       </div>
 
       <DrawerToggler iconClass="icon-arrow-left" />
