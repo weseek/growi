@@ -1011,7 +1011,8 @@
       "4": "ミディアムスキントーン",
       "5": "ミディアムダークスキントーン",
       "6": "肌の色が濃い"
-    },
+    }
+  },
   "pagetree": {
     "private_legacy_pages": "旧形式のプライベートページ",
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",

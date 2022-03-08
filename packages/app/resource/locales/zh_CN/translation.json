@@ -1021,7 +1021,8 @@
       "4": "中等肤色",
       "5": "中深肤色",
       "6": "深色肤色"
-    },
+    }
+  },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",

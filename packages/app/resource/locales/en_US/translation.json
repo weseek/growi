@@ -1019,7 +1019,8 @@
       "4": "Medium Skin Tone",
       "5": "Medium-Dark Skin Tone",
       "6": "Dark Skin Tone"
-    },
+    }
+  },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
