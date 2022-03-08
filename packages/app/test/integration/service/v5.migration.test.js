@@ -273,6 +273,8 @@ describe('V5 page migration', () => {
       const page10AM = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
       expectAllToBeTruthy([page7, page8AM, page9AM, page10AM]);
 
+      expect(page7.isEmpty).toBe(true);
+
       expect(page7.parent).toStrictEqual(rootPage._id);
       expect(page8AM.parent).toStrictEqual(page7._id);
       expect(page9AM.parent).toStrictEqual(page8AM._id);
@@ -280,7 +282,7 @@ describe('V5 page migration', () => {
     });
 
     test("should replace empty page with same path with new non-empty page and update all related children's parent", async() => {
-      const page1 = await Page.findOne({ path: '/normalize_10' });
+      const page1 = await Page.findOne({ path: '/normalize_10', isEmpty: true });
       const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8, isEmpty: true });
       const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 }); // not v5
       const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
@@ -427,7 +429,7 @@ describe('V5 page migration', () => {
       expect(page3AM.parent).toStrictEqual(rootPage._id);
     });
 
-    test('it should normalize not v5 page with usergroup that has no parent or child group', async() => {
+    test('should throw error if a page with isolated group becomes the parent of other page with different gourp after normalizing', async() => {
       const page4 = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
       const page5 = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
       const page6 = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
@@ -448,7 +450,7 @@ describe('V5 page migration', () => {
       const page6AM = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
       expectAllToBeTruthy([page4AM, page5AM, page6AM]);
 
-      expect(isThrown).toBeTruthy();
+      expect(isThrown).toBe(true);
       expect(page4AM).toStrictEqual(page4);
       expect(page5AM).toStrictEqual(page5);
       expect(page6AM).toStrictEqual(page6);
