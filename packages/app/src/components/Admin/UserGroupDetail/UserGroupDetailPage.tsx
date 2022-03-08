@@ -21,7 +21,7 @@ import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -55,6 +55,8 @@ const UserGroupDetailPage: FC = () => {
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -194,7 +196,33 @@ const UserGroupDetailPage: FC = () => {
         <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {t('admin:user_group_management.back_to_list')}
       </a>
-      {/* TODO 85062: Link to the ancestors group */}
+
+      {
+        userGroup?.parent != null && ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
+          <div className="btn-group ml-2">
+            <a className="btn btn-outline-secondary" href={`/admin/user-group-detail/${userGroup.parent}`}>
+              <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+              {t('admin:user_group_management.back_to_ancestors_group')}
+            </a>
+            <button
+              type="button"
+              className="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              ria-expanded="false"
+            >
+            </button>
+            <div className="dropdown-menu">
+              {
+                ancestorUserGroups.map(userGroup => (
+                  <a className="dropdown-item" key={userGroup._id} href={`/admin/user-group-detail/${userGroup._id}`}>{userGroup.name}</a>
+                ))
+              }
+            </div>
+          </div>
+        )
+      }
+
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
