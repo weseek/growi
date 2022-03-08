@@ -280,7 +280,7 @@ describe('V5 page migration', () => {
 
     test("should replace empty page with same path with new non-empty page and update all related children's parent", async() => {
       const page1 = await Page.findOne({ path: '/normalize_10' });
-      const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8 });
+      const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8, isEmpty: true });
       const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 }); // not v5
       const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
       const page5 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
