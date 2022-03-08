@@ -61,7 +61,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
   }, [invokeSearch]);
 
   return (
-    <div className="position-sticky shadow-sm">
+    <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchForm
