@@ -21,8 +21,6 @@ context('Access to page', () => {
 
   it('PageTree is successfully shown', () => {
     cy.visit('/');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
     cy.screenshot(`${ssPrefix}-pagetree-before-load`, { capture: 'viewport' });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
