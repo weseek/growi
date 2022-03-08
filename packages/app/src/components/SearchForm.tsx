@@ -5,6 +5,8 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 
 import SearchTypeahead from './SearchTypeahead';
 
@@ -83,7 +85,8 @@ type Props = {
 
   dropup?: boolean,
   keyword?: string,
-  onChange?: (data: unknown[]) => void,
+  disableIncrementalSearch?: boolean,
+  onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
   onBlur?: () => void,
   onFocus?: () => void,
   onSubmit?: (input: string) => void,
@@ -95,6 +98,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   const { t } = useTranslation();
   const {
     isSearchServiceReachable, dropup,
+    disableIncrementalSearch,
     onChange, onBlur, onFocus, onSubmit, onInputChange,
   } = props;
 
@@ -127,6 +131,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
+      disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
       onInputChange={onInputChange}

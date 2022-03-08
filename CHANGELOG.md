@@ -1,8 +1,101 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
+
+### 💎 Features
+
+- feat: OGP in public wiki (#5304) @yuto-oweseek
+
+## [v4.5.13](https://github.com/weseek/growi/compare/v4.5.12...v4.5.13) - 2022-02-08
+
+### 🐛 Bug Fixes
+
+- fix: fix: Sidebar collapsing (#5283) @yuki-takei
+
+## [v4.5.12](https://github.com/weseek/growi/compare/v4.5.11...v4.5.12) - 2022-02-01
+
+### 🚀 Improvement
+
+- imprv: Sidebar opening delay (for v4.5.x) (#5218) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: /_api/v3/page with pageId param occurs an 500 error (#5212) @yuki-takei
+- fix: Resolving OIDC issure host (#5220) @yuki-takei
+
+## [v4.5.11](https://github.com/weseek/growi/compare/v4.5.10...v4.5.11) - 2022-01-26
+
+### 🐛 Bug Fixes
+
+- fix: Internal server error occured when "Restrict complete deletion of pages" option's value is "Admin and author" (#5175 ) @yuki-takei
+
+## [v4.5.10](https://github.com/weseek/growi/compare/v4.5.9...v4.5.10) - 2022-01-26
+
+### 💎 Features
+
+- feat: Automatic installation (#5141) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Migrate like states to swr (#5137) @miya
+
+### 🐛 Bug Fixes
+
+- fix: 86631-cannot-reset-password-in-case-that-register-limitation-is-Closed (#5155) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: VRT with Cypress (#5030) @yuki-takei
+
+## [v4.5.9](https://github.com/weseek/growi/compare/v4.5.8...v4.5.9) - 2022-01-21
+
+### 🚀 Improvement
+
+- imprv: 79291 make password min length 8 charactors (#5116) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: OIDC reconnection bug fix (#5104) @mudana-grune
+- fix: /_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
+- fix: Default completely deletion settings label mismatched against to actual (#5102) @yuki-takei
+- fix: OIDC issuer host availability check (#5099) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Improve multistage build (#5090) @yuki-takei
+- support: Omit node-re2 (#5089) @yuki-takei
+- ci(deps-dev): bump swr from 1.0.1 to 1.1.2 (#5018) @dependabot
+
+## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
+
+### 💎 Features
+
+- feat: Display a list of bookmarked users (#5044) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Built-in editor scroll position is reset after save (Introduced by v4.5.3) (#5074) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump y18n to v4.0.3 (#5071) @yuki-takei
+- support: Omit prettier-stylelint (#5070) @yuki-takei
+- support: Bump tar to 6.1.11 (#5069) @yuki-takei
+
+## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
+
+### 🐛 Bug Fixes
+
+- fix: Subnavigation sticking initialization (#5062) @yuki-takei
+- fix: Built-in editor was broken (#5061) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump re2 to 1.17.2 (#5059) @yuki-takei
 
 ## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
 

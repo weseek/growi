@@ -73,6 +73,7 @@ module.exports = (crowi) => {
       yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
       installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
+      isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
     };
 
     return res.apiv3({ adminHomeParams });

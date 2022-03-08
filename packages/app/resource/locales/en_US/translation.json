@@ -11,8 +11,8 @@
   "phone":"Smartphone",
   "tablet":"Tablet",
   "Click to copy": "Click to copy",
+  "Rename" : "Rename",
   "Move/Rename": "Move/Rename",
-  "Moved": "Moved",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
@@ -20,6 +20,7 @@
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
+  "Description": "Description",
   "Admin": "Admin",
   "administrator": "Admin",
   "Tag": "Tag",
@@ -39,6 +40,7 @@
   "account_id": "Account Id",
   "Update": "Update",
   "Update Page": "Update Page",
+  "Error": "Error",
   "Warning": "Warning",
   "Sign in": "Sign in",
   "Sign up is here": "Sign up",
@@ -57,13 +59,16 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
+  "No users have bookmarked yet": "No users have bookmarked yet",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
   "Target page": "Target page",
   "Include Attachment File": "Include Attachment File",
   "Include Comment": "Include Comment",
   "Include Subordinated Page": "Include Subordinated Page",
+  "Include Subordinated Target Page": "include {{target}}",
   "All Subordinated Page": "All Subordinated Page",
   "Specify Hierarchy": "Specify Hierarchy",
   "Submitted the request to create the archive": "Submitted the request to create the archive",
@@ -106,6 +111,9 @@
   "Create under": "Create page under below:",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
+  "V5 Page Migration": "V5 Page Migration",
+  "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
+  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -115,6 +123,8 @@
   "Legacy_Slack_Integration": "Legacy Slack Integration",
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
+  "UserGroup": "UserGroup",
+  "ChildUserGroup": "ChildUserGroup",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
@@ -148,12 +158,17 @@
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
+  "add_bookmark": "Add to Bookmarks",
+  "remove_bookmark": "Remove from Bookmarks",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "Page Tree": "Page Tree",
   "original_path":"Original path",
   "new_path":"New path",
-  "duplicated_path":"duplicated_path",
+  "duplicated_path":"Duplicated path",
   "Link sharing is disabled": "Link sharing is disabled",
+  "successfully_saved_the_page": "Successfully saved the page",
+  "you_can_not_create_page_with_this_name": "You can not create page with this name",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -165,7 +180,10 @@
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid."
+    "invalid_syntax": "The syntax of %s is invalid.",
+    "title_required": "Title is required.",
+    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
+
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -193,7 +211,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 6 characters long.",
+      "password": "Your password must be at least 8 characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
@@ -237,7 +255,7 @@
     "expire": "Expiration",
     "Days": "Days",
     "Custom": "Custom",
-    "description": "description",
+    "description": "Description",
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
     "Issue": "Issue",
@@ -350,12 +368,8 @@
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
-      "moved": "This page was moved from",
-      "moved_period": ".",
       "redirected": "You are redirected from",
       "redirected_period": ".",
-      "duplicated": "This page was duplicated from",
-      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
@@ -363,9 +377,6 @@
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
       "no_deadline":"This page has no expiration date"
     }
-  },
-  "page_table_of_contents": {
-    "empty": "Table of Contents is empty"
   },
   "page_edit": {
     "Show active line": "Show active line",
@@ -397,11 +408,12 @@
     "label": {
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
-      "Fail to get exist path": "Fail to get exist path",
-      "Rename without exist path": "Rename without exist path",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
+      "Failed to get exist path": "Failed to get exist path",
       "Current page name": "Current page name",
-      "Recursively": "Recursively",
+      "Rename this page only": "Rename this page only",
+      "Force rename all child pages": "Force rename all pages",
+      "Other options": "Other options",
       "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
@@ -413,6 +425,7 @@
   },
   "Put Back": "Put back",
   "Delete Completely": "Delete completely",
+  "page_has_been_reverted": "{{path}} has been reverted",
   "modal_delete": {
     "delete_page": "Delete page",
     "deleting_page": "Deleting page",
@@ -422,6 +435,9 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_pages": "{{path}} has been deleted",
+  "deleted_pages_completely": "{{path}} has been deleted completely",
+  "renamed_pages": "{{path}} has been renamed",
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
     "notice": "The pages deleted completely are unrecoverable."
@@ -430,7 +446,7 @@
     "label": {
       "Duplicate page": "Duplicate page",
       "New page name": "New page name",
-      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
@@ -440,6 +456,7 @@
       "recursive": "Duplicate children of under this path recursively"
     }
   },
+  "duplicated_pages": "{{fromPath}} has been duplicated",
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",
@@ -506,7 +523,10 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
     "update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}",
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
@@ -595,13 +615,40 @@
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
-    "result_meta": "Found \"{{keyword}}\" in {{total}}.",
+    "result_meta": "Search results for:",
     "deletion_mode_btn_lavel": "Select and delete page",
     "cancel": "Cancel",
     "delete": "Delete",
     "check_all": "Check all",
     "deletion_modal_header": "Delete page",
-    "delete_completely": "Delete completely"
+    "delete_completely": "Delete completely",
+    "include_certain_path" : "Include {{pathToInclude}} path ",
+    "delete_all_selected_page" : "Delete All",
+    "currently_not_implemented":"This is not currently implemented",
+    "search_again" : "Search again",
+    "number_of_list_to_display" : "Display",
+    "page_number_unit" : "pages",
+    "sort_axis": {
+      "relationScore": "Sort by relevance",
+      "createdAt": "Creation date",
+      "updatedAt": "Last update date"
+    }
+  },
+  "private_legacy_pages": {
+    "bulk_operation": "Bulk operation",
+    "convert_all_selected_pages": "Convert all to new v5 compatible format",
+    "alert_title": "You are viewing old v4 compatible private pages.",
+    "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
+    "nopages_title": "Congratulations. Ready to use GROWI v5!",
+    "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
+    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <i class='icon-share-alt'></i></a>.",
+    "modal": {
+      "title": "Convert to new v5 compatible format",
+      "converting_pages": "Converting pages",
+      "convert_recursively_label": "Convert child pages recursively.",
+      "convert_recursively_desc": "Convert pages under this path recursively.",
+      "button_label": "Convert"
+    }
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
@@ -972,6 +1019,16 @@
       "4": "Medium Skin Tone",
       "5": "Medium-Dark Skin Tone",
       "6": "Dark Skin Tone"
-    }
+    },
+  "pagetree": {
+    "private_legacy_pages": "Private Legacy Pages",
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
+    "you_cannot_move_this_page_now": "You cannot move this page now",
+    "something_went_wrong_with_moving_page": "Something went wrong with moving page"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "Same page name exits as「{{pageName}}」",
+    "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
+    "select_page_to_see" : "Select a page to see"
   }
 }

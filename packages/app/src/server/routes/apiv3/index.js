@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 import * as userActivation from './user-activation';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
 
+import pageListing from './page-listing';
+
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -45,6 +47,8 @@ module.exports = (crowi) => {
   router.use('/page', require('./page')(crowi));
   router.use('/pages', require('./pages')(crowi));
   router.use('/revisions', require('./revisions')(crowi));
+
+  router.use('/page-listing', pageListing(crowi));
 
   router.use('/share-links', require('./share-links')(crowi));
 
