@@ -1,5 +1,5 @@
 import React, {
-  FC, useEffect, useRef, useState, useMemo,
+  useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,24 +10,21 @@ import loggerFactory from '~/utils/logger';
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { OnDuplicatedFunction, OnDeletedFunction, SidebarScrollerEvent } from '~/interfaces/ui';
+import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { jQuerySlimScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { useGlobalSocket } from '~/stores/websocket';
-import { usePageTreeDescCountMap } from '~/stores/ui';
+import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-
-const SCROLL_OFFSET_TOP = 60; // approximate height of navigation
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -71,17 +68,6 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
 };
 
 
-// Auto scroll by jquery slimScroll
-const scrollPageTree = () => {
-  // const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  // const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
-
-  // if (scrollElement != null && scrollTargetElement != null) {
-  //   jQuerySlimScrollIntoView(scrollElement, scrollTargetElement, SCROLL_OFFSET_TOP);
-  // }
-};
-
-
 type ItemsTreeProps = {
   isEnableActions: boolean
   targetPath: string
@@ -92,7 +78,7 @@ type ItemsTreeProps = {
 /*
  * ItemsTree
  */
-const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
+const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
@@ -104,10 +90,10 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: sidebarScrollerRef } = useSidebarScrollerRef();
 
   const { data: socket } = useGlobalSocket();
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
-
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
@@ -120,7 +106,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
 
   const isSecondStageRendering = ancestorsChildrenData != null && rootPageData != null;
-
 
   useEffect(() => {
     if (socket == null) {
@@ -143,48 +128,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     advanceFts();
     advanceDpl();
   };
-
-  const initialScrollDebounced = useMemo(() => {
-    return debounce(100, () => {
-      logger.debug('initialScrollDebounced called');
-
-      if (isInitialScrollCompleted) {
-        return;
-      }
-
-      logger.debug('scrollPageTree has invoked after debounce');
-
-      document.dispatchEvent(new CustomEvent(SidebarScrollerEvent.RESET_SCROLLBAR));
-      // use setTimeout as resetScrollbar in StickyStretchableScroller component uses debounce and wait 100ms
-      setTimeout(scrollPageTree, 100);
-
-      setIsInitialScrollCompleted(true);
-    });
-  }, [isInitialScrollCompleted]);
-
-
-  // ***************************  Auto Scroll  ***************************
-  useEffect(() => {
-    if (!isSecondStageRendering || isInitialScrollCompleted) {
-      return;
-    }
-
-    const rootElement = rootElemRef.current as HTMLElement | null;
-    if (rootElement == null) {
-      return;
-    }
-
-    const observerCallback = (mutationRecords: MutationRecord[]) => {
-      mutationRecords.forEach(() => initialScrollDebounced());
-    };
-
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(rootElement, { childList: true, subtree: true });
-    return () => {
-      observer.disconnect();
-    };
-  }, [initialScrollDebounced, isInitialScrollCompleted, isSecondStageRendering]);
-  // *******************************  end  *******************************
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -222,10 +165,60 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   };
 
+  // ***************************  Scroll on init ***************************
+  const scrollOnInit = useCallback(() => {
+    if (isInitialScrollCompleted) {
+      return;
+    }
+
+    const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
+
+    if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
+      return;
+    }
+
+    logger.debug('scrollOnInit has invoked');
+
+    const scrollElement = sidebarScrollerRef.current.getScrollElement();
+
+    // NOTE: could not use scrollIntoView
+    //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
+
+    // calculate the center point
+    const scrollTop = scrollTargetElement.offsetTop - scrollElement.getBoundingClientRect().height / 2;
+    scrollElement.scrollTo({ top: scrollTop });
+
+    setIsInitialScrollCompleted(true);
+  }, [isInitialScrollCompleted, sidebarScrollerRef]);
+
+  const scrollOnInitDebounced = useMemo(() => debounce(100, scrollOnInit), [scrollOnInit]);
+
+  useEffect(() => {
+    if (!isSecondStageRendering || isInitialScrollCompleted) {
+      return;
+    }
+
+    const rootElement = rootElemRef.current as HTMLElement | null;
+    if (rootElement == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach(() => scrollOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(rootElement, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, [isInitialScrollCompleted, isSecondStageRendering, scrollOnInitDebounced]);
+  // *******************************  end  *******************************
+
   if (error1 != null || error2 != null) {
     // TODO: improve message
     toastError('Error occurred while fetching pages to render PageTree');
-    return null;
+    return <></>;
   }
 
   let initialItemNode;
