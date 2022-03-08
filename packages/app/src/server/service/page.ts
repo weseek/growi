@@ -107,7 +107,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -250,6 +249,7 @@ class PageService {
       return {
         data: page,
         meta: {
+          isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -2065,6 +2065,7 @@ class PageService {
 
     if (page.isEmpty) {
       return {
+        isV5Compatible: true,
         isEmpty: true,
         isMovable,
         isDeletable: false,
@@ -2077,6 +2078,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     return {
+      isV5Compatible: isTopPage(page.path) || page.parent != null,
       isEmpty: false,
       sumOfLikers: page.liker.length,
       likerIds: this.extractStringIds(likers),
@@ -2189,7 +2191,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
@@ -2552,15 +2554,13 @@ class PageService {
         },
       ]);
 
-    // limit pages to get
+    // Limit pages to get
     const total = await Page.countDocuments(filter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
-
-    // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
 
     let countPages = 0;
@@ -2571,10 +2571,15 @@ class PageService {
       async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // Fill parents with empty pages
+        // 1. Remove unnecessary empty pages
+        const pageIdsToNotDelete = pages.map(p => p._id);
+        const emptyPagePathsToDelete = pages.map(p => p.path);
+        await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
+
+        // 2. Create lacking parents as empty pages
         await Page.createEmptyPagesByPaths(parentPaths, user, false);
 
-        // Find parents
+        // 3. Find parents
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
         const parents = await builder
           .addConditionToListByPathsArray(parentPaths)
@@ -2628,9 +2633,6 @@ class PageService {
           logger.error('Failed to update page.parent.', err);
           throw err;
         }
-
-        // Remove unnecessary empty pages
-        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
 
         callback();
       },

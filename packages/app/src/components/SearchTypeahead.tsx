@@ -194,7 +194,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     return (
       <span>
         <UserPicture user={pageData.lastUpdateUser} size="sm" noLink />
-        <span className="ml-1 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
+        <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
         <PageListMeta page={pageData} />
       </span>
     );

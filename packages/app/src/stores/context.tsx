@@ -11,6 +11,11 @@ import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-list
 
 type Nullable<T> = T | null;
 
+
+export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('siteUrl', initialData);
+};
+
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
   return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };

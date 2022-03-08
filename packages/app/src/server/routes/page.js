@@ -599,7 +599,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     const builder = new PageQueryBuilder(Page.find({ path }));
-    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
@@ -1177,7 +1177,7 @@ module.exports = function(crowi, app) {
 
     const options = {};
 
-    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));

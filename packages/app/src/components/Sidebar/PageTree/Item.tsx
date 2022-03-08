@@ -24,7 +24,9 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
+} from '~/interfaces/page';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -99,7 +101,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count badge badge-pill badge-light text-muted">
+      <span className="grw-pagetree-count px-0 badge badge-pill badge-light text-muted">
         {props.descendantCount}
       </span>
     </>
@@ -184,7 +186,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         revisionId: droppedPage.revision,
         newPagePath,
         isRenameRedirect: false,
-        isRemainMetadata: false,
+        updateMetadata: true,
       });
 
       await mutateChildren();
@@ -215,7 +217,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           if (monitor.isOver()) {
             setIsOpen(true);
           }
-        }, 1000);
+        }, 600);
       }
     },
     canDrop: (item) => {
@@ -289,6 +291,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (onClickDeleteMenuItem == null) {
+      return;
+    }
+
     if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
@@ -302,9 +308,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       meta: pageInfo,
     };
 
-    if (onClickDeleteMenuItem != null) {
-      onClickDeleteMenuItem(pageToDelete);
-    }
+    onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
@@ -403,7 +407,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
-              <div className="grw-triangle-icon d-flex justify-content-center">
+              <div className="d-flex justify-content-center">
                 <TriangleIcon />
               </div>
             </button>
@@ -440,7 +444,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
@@ -448,7 +452,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
-            <i className="icon-plus text-muted d-block p-0" />
+            <i className="icon-plus d-block p-0" />
           </button>
         </div>
       </li>

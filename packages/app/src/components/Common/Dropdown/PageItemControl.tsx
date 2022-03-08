@@ -35,7 +35,7 @@ type CommonProps = {
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
@@ -80,8 +80,12 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem(pageId);
-  }, [onClickRenameMenuItem, pageId]);
+    if (!pageInfo?.isMovable) {
+      logger.warn('This page could not be renamed.');
+      return;
+    }
+    await onClickRenameMenuItem(pageId, pageInfo);
+  }, [onClickRenameMenuItem, pageId, pageInfo]);
 
   const revertItemClickedHandler = useCallback(async() => {
     if (onClickRevertMenuItem == null) {
@@ -239,8 +243,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem(pageId);
-  }, [onClickRenameMenuItem, pageId]);
+    await onClickRenameMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
+  }, [onClickRenameMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async() => {
     if (onClickDeleteMenuItem == null) {
@@ -252,8 +256,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
-          <i className="icon-options text-muted"></i>
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+          <i className="icon-options"></i>
         </DropdownToggle>
       ) }
 
