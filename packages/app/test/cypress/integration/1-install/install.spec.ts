@@ -52,7 +52,9 @@ context('Installing', () => {
 
     cy.getByTestid('btnSubmit').click();
 
-    cy.screenshot(`${ssPrefix}-installed`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-installed`, {
+      blackout: ['.grw-sidebar-content-container'],
+    });
   });
 
 });

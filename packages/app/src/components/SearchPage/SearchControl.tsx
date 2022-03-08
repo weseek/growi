@@ -83,7 +83,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-        <div className="d-flex pl-md-2">
+        <div className="d-flex">
           {deleteAllControl}
         </div>
         {/* sort option: show when screen is smaller than lg */}
@@ -105,30 +105,34 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
           </button>
         </div>
         <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
-          <div className="card mr-3 mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckDefault"
-                  defaultChecked={includeUserPages}
-                  onChange={e => setIncludeUserPages(e.target.checked)}
-                />
+          <div className="border rounded px-2 py-1 mr-3">
+            <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <input
+                className="custom-control-input mr-2"
+                type="checkbox"
+                id="flexCheckDefault"
+                defaultChecked={includeUserPages}
+                onChange={e => setIncludeUserPages(e.target.checked)}
+              />
+              <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                 {t('Include Subordinated Target Page', { target: '/user' })}
               </label>
             </div>
           </div>
-          <div className="card mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckChecked"
-                  defaultChecked={includeTrashPages}
-                  onChange={e => setIncludeTrashPages(e.target.checked)}
-                />
+          <div className="border rounded px-2 py-1">
+            <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <input
+                className="custom-control-input mr-2"
+                type="checkbox"
+                id="flexCheckChecked"
+                checked={includeTrashPages}
+                onChange={e => setIncludeTrashPages(e.target.checked)}
+              />
+              <label
+                className="custom-control-label
+              d-flex align-items-center text-secondary with-no-font-weight"
+                htmlFor="flexCheckChecked"
+              >
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
             </div>

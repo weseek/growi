@@ -1,5 +1,5 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState,
+  forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
@@ -9,12 +9,16 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
-import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
+
+
+// https://regex101.com/r/brrkBu/1
+const highlightKeywordsSplitter = new RegExp('"[^"]+"|[^\u{20}\u{3000}]+', 'ug');
 
 
 export interface IReturnSelectedPageIds {
@@ -26,6 +30,7 @@ type Props = {
   appContainer: AppContainer,
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
+  searchingKeyword?: string,
 
   forceHideMenuItems?: ForceHideMenuItems,
 
@@ -40,6 +45,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const {
     appContainer,
     pages,
+    searchingKeyword,
     forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
@@ -51,10 +57,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  // TODO get search keywords and split
-  // ref: RevisionRenderer
-  //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
-  const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
@@ -68,7 +70,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
       }
 
       if (pages != null) {
-        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.pageData._id));
+        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.data._id));
       }
     },
     deselectAll: () => {
@@ -123,11 +125,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
-  useEffect(() => {
-    if (searchResultListHead != null && searchResultListHead.props != null) {
-      setHightlightKeywords(searchResultListHead.props.searchingKeyword);
-    }
-  }, [searchResultListHead]);
   if (!isSearchServiceConfigured) {
     return (
       <div className="grw-container-convertible">
@@ -151,6 +148,10 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
       </div>
     );
   }
+
+  const highlightKeywords = searchingKeyword != null
+    ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
+    : undefined;
 
   return (
     <div className="content-main">
@@ -182,7 +183,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       ref={searchResultListRef}
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       pages={pages!}
-                      selectedPageId={selectedPageWithMeta?.pageData._id}
+                      selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
@@ -249,12 +250,7 @@ export const usePageDeleteModalForBulkDeletion = (
     }
 
     const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
-      .map(pageWithMeta => ({
-        pageId: pageWithMeta.pageData._id,
-        path: pageWithMeta.pageData.path,
-        revisionId: pageWithMeta.pageData.revision as string,
-      } as IPageForPageDeleteModal));
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.data._id));
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {

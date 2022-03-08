@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -8,11 +8,19 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-import EmptyTrashModal from '../EmptyTrashModal';
-
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
+
+import EmptyTrashModal from '../EmptyTrashModal';
+
+const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+  if (typeof pathOrPathsToDelete !== 'string') {
+    return;
+  }
+
+  window.location.href = '/';
+};
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
@@ -43,29 +51,25 @@ const TrashPageAlert = (props) => {
   }
 
   function openPutbackPageModalHandler() {
-    openPutBackPageModal(pageId, path);
+    const putBackedHandler = (path) => {
+      window.location.reload();
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }
-
-  const onDeletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-    window.location.href = path;
-  }, []);
 
   function openPageDeleteModalHandler() {
     const pageToDelete = {
-      pageId,
-      revisionId,
-      path,
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
     };
     openDeleteModal(
       [pageToDelete],
       {
         isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
-        onDeletedHandler,
+        onDeleted: onDeletedHandler,
       },
     );
   }

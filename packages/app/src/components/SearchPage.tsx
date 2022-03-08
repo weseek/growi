@@ -58,10 +58,11 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
     <div className="form-inline d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
-        <span className="search-result-keyword">{`${searchingKeyword}`}</span>
+        <span className="search-result-keyword ml-2">{`${searchingKeyword}`}</span>
         <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
-          <span className="ml-3 text-muted">({took}ms)</span>
+          // blackout 70px rectangle in VRT
+          <span data-hide-in-vrt className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
       <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
@@ -109,10 +110,9 @@ export const SearchPage = (props: Props): JSX.Element => {
   const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
+  const [offset, setOffset] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-  const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
-    limit: INITIAL_PAGIONG_SIZE,
-  });
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
@@ -120,13 +120,14 @@ export const SearchPage = (props: Props): JSX.Element => {
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   const { data, conditions, mutate } = useSWRxFullTextSearch(keyword, {
-    limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
-    ...configurationsByPagination,
+    offset,
+    limit,
   });
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
+    setOffset(0);
     setConfigurationsByControl(newConfigurations);
   }, []);
 
@@ -164,21 +165,15 @@ export const SearchPage = (props: Props): JSX.Element => {
   }, []);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
-    setConfigurationsByPagination({
-      ...configurationsByPagination,
-      limit: pagingSize,
-    });
+    setOffset(0);
+    setLimit(pagingSize);
     mutate();
-  }, [configurationsByPagination, mutate]);
+  }, [mutate]);
 
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
-    const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
-    setConfigurationsByPagination({
-      ...configurationsByPagination,
-      offset: (activePage - 1) * currentLimit,
-    });
+    setOffset((activePage - 1) * limit);
     mutate();
-  }, [configurationsByPagination, mutate]);
+  }, [limit, mutate]);
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
@@ -188,7 +183,7 @@ export const SearchPage = (props: Props): JSX.Element => {
   }, [initQ]);
 
   // for bulk deletion
-  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate);
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
 
   // push state
   useEffect(() => {
@@ -197,8 +192,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
   }, [keyword]);
   const hitsCount = data?.meta.hitsCount;
-
-  const { offset, limit } = conditions;
 
   const deleteAllControl = useMemo(() => {
     const isDisabled = hitsCount === 0;
@@ -265,17 +258,18 @@ export const SearchPage = (props: Props): JSX.Element => {
       <PaginationWrapper
         activePage={Math.floor(offset / limit) + 1}
         totalItemsCount={total}
-        pagingLimit={configurationsByPagination?.limit}
+        pagingLimit={limit}
         changePage={pagingNumberChangedHandler}
       />
     );
-  }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
+  }, [conditions, data, pagingNumberChangedHandler]);
 
   return (
     <SearchPageBase
       ref={searchPageBaseRef}
       appContainer={appContainer}
       pages={data?.data}
+      searchingKeyword={keyword}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
       // Components
       searchControl={searchControl}

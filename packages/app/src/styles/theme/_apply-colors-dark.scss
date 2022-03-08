@@ -280,6 +280,11 @@ ul.pagination {
       $gray-500
     );
   }
+  .private-legacy-pages-link {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+  }
 }
 
 /*

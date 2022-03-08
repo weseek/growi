@@ -54,7 +54,7 @@ export class PageListMeta extends React.Component {
     }
 
     return (
-      <span className="page-list-meta ml-2">
+      <span className="page-list-meta">
         {topLabel}
         {templateLabel}
         {seenUserCount}

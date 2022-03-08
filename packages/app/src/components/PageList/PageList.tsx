@@ -2,21 +2,25 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IPageWithMeta } from '~/interfaces/page';
-import { IPagingResult } from '~/interfaces/paging-result';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from './PageListItemL';
 
 
 type Props = {
-  pages: IPagingResult<IPageWithMeta>,
+  pages: IPageWithMeta[],
   isEnableActions?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
   onPagesDeleted?: OnDeletedFunction,
+  onPagePutBacked?: OnPutBackedFunction,
 }
 
 const PageList = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { pages, isEnableActions, onPagesDeleted } = props;
+  const {
+    pages, isEnableActions, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
+  } = props;
 
   if (pages == null) {
     return (
@@ -28,12 +32,14 @@ const PageList = (props: Props): JSX.Element => {
     );
   }
 
-  const pageList = pages.items.map(page => (
+  const pageList = pages.map(page => (
     <PageListItemL
-      key={page.pageData._id}
+      key={page.data._id}
       page={page}
       isEnableActions={isEnableActions}
+      forceHideMenuItems={forceHideMenuItems}
       onPageDeleted={onPagesDeleted}
+      onPagePutBacked={onPagePutBacked}
     />
   ));
 

@@ -35,7 +35,7 @@ type CommonProps = {
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
@@ -80,15 +80,19 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem(pageId);
-  }, [onClickRenameMenuItem, pageId]);
+    if (!pageInfo?.isMovable) {
+      logger.warn('This page could not be renamed.');
+      return;
+    }
+    await onClickRenameMenuItem(pageId, pageInfo);
+  }, [onClickRenameMenuItem, pageId, pageInfo]);
 
   const revertItemClickedHandler = useCallback(async() => {
     if (onClickRevertMenuItem == null) {
       return;
     }
     await onClickRevertMenuItem(pageId);
-  }, [onClickRevertMenuItem]);
+  }, [onClickRevertMenuItem, pageId]);
 
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -212,7 +216,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
   const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
 
-  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(shouldMutate ? pageId : null);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -238,8 +243,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem(pageId);
-  }, [onClickRenameMenuItem, pageId]);
+    await onClickRenameMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
+  }, [onClickRenameMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async() => {
     if (onClickDeleteMenuItem == null) {
@@ -249,10 +254,9 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
           <i className="icon-options text-muted"></i>
         </DropdownToggle>
       ) }

@@ -15,7 +15,7 @@ type PrimaryItemProps = {
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
-    contents, iconName, onItemSelected,
+    contents, label, iconName, onItemSelected,
   } = props;
 
   const { data: currentContents, mutate } = useCurrentSidebarContents();
@@ -31,10 +31,12 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     scheduleToPutUserUISettings({ currentSidebarContents: contents });
   }, [contents, mutate, onItemSelected]);
 
+  const labelForTestId = label.toLowerCase().replace(' ', '-');
+
   return (
     <button
       type="button"
-      data-testid={props.label === 'Page Tree' ? 'sidebar-pagetree' : ''}
+      data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
       className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
       onClick={itemSelectedHandler}
     >

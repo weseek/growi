@@ -12,6 +12,8 @@ context('Access to page', () => {
     cy.getCookie('connect.sid').then(cookie => {
       connectSid = cookie?.value;
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   beforeEach(() => {
@@ -22,33 +24,29 @@ context('Access to page', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox', {  });
-
-    // collapse sidebar and wait saving
-    cy.collapseSidebar(true);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-
-    cy.screenshot(`${ssPrefix}-sandbox`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
-    cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-sandbox-headers`, {
+      disableTimersAndAnimations: false,
+    });
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.screenshot(`${ssPrefix}-sandbox-math`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.screenshot(`${ssPrefix}-sandbox-edit-page`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
-    cy.screenshot(`${ssPrefix}-user-admin`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
 });

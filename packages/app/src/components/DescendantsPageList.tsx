@@ -2,14 +2,19 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageHasId, IPageWithMeta,
+  IDataWithMeta,
+  IPageHasId,
+  IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { OnDeletedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
 
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
+import {
+  useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList, useDescendantsPageListForCurrentPathTermManager,
+} from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
+import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
 
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
@@ -19,11 +24,13 @@ type SubstanceProps = {
   pagingResult: IPagingResult<IPageHasId> | undefined,
   activePage: number,
   setActivePage: (activePage: number) => void,
+  forceHideMenuItems?: ForceHideMenuItems,
   onPagesDeleted?: OnDeletedFunction,
+  onPagePutBacked?: OnPutBackedFunction,
 }
 
-const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
-  return { pageData: page };
+const convertToIDataWithMeta = (page: IPageHasId): IDataWithMeta<IPageHasId> => {
+  return { data: page };
 };
 
 export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
@@ -31,47 +38,26 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { t } = useTranslation();
 
   const {
-    pagingResult, activePage, setActivePage, onPagesDeleted,
+    pagingResult, activePage, setActivePage, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
-  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
-  let pagingResultWithMeta: IPagingResult<IPageWithMeta> | undefined;
+  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // initial data
   if (pagingResult != null) {
-    const pages = pagingResult.items;
-
     // convert without meta at first
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pages.map(page => convertToIPageWithEmptyMeta(page)),
-    };
-  }
-
-  // inject data for listing
-  if (pagingResult != null) {
-    const pages = pagingResult.items;
-
-    const pageWithMetas = pages.map((page) => {
-      const pageInfo = (idToPageInfo ?? {})[page._id];
-
-      return {
-        pageData: page,
-        pageMeta: pageInfo,
-      } as IPageWithMeta;
-    });
-
-    pagingResultWithMeta = {
-      ...pagingResult,
-      items: pageWithMetas,
-    };
+    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
+    // inject data for listing
+    pageWithMetas = injectTo(dataWithMetas);
   }
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
@@ -84,11 +70,22 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     }
   }, [advancePt, onPagesDeleted, t]);
 
+  const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
+    toastSuccess(t('page_has_been_reverted', { path }));
+
+    advancePt();
+    advanceDpl();
+
+    if (onPagePutBacked != null) {
+      onPagePutBacked(path);
+    }
+  }, [advanceDpl, advancePt, onPagePutBacked, t]);
+
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
   }
 
-  if (pagingResult == null || pagingResultWithMeta == null) {
+  if (pagingResult == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -103,9 +100,11 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   return (
     <>
       <PageList
-        pages={pagingResultWithMeta}
+        pages={pageWithMetas}
         isEnableActions={!isGuestUser}
+        forceHideMenuItems={forceHideMenuItems}
         onPagesDeleted={pageDeletedHandler}
+        onPagePutBacked={pagePutBackedHandler}
       />
 
       { showPager && (
@@ -150,6 +149,7 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
       activePage={activePage}
       setActivePage={setActivePage}
       onPagesDeleted={() => mutate()}
+      onPagePutBacked={() => mutate()}
     />
   );
 };
@@ -157,6 +157,8 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
 export const DescendantsPageListForCurrentPath = (): JSX.Element => {
 
   const [activePage, setActivePage] = useState(1);
+
+  const { data: isTrashPage } = useIsTrashPage();
   const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage);
 
   if (error != null) {
@@ -167,11 +169,14 @@ export const DescendantsPageListForCurrentPath = (): JSX.Element => {
     );
   }
 
+  const forceHideMenuItems = isTrashPage ? [MenuItemType.RENAME] : undefined;
+
   return (
     <DescendantsPageListSubstance
       pagingResult={pagingResult}
       activePage={activePage}
       setActivePage={setActivePage}
+      forceHideMenuItems={forceHideMenuItems}
       onPagesDeleted={() => mutate()}
     />
   );

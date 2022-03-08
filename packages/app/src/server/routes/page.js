@@ -4,7 +4,6 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import { PageQueryBuilder } from '../models/obsolete-page';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -146,6 +145,8 @@ module.exports = function(crowi, app) {
   const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');
 
+  const { PageQueryBuilder } = Page;
+
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
@@ -266,12 +267,15 @@ module.exports = function(crowi, app) {
     renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
   }
 
-  function addRenderVarsWhenNotFound(renderVars, pathOrId) {
+  async function addRenderVarsWhenNotFound(renderVars, pathOrId) {
     if (pathOrId == null) {
       return;
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
+
+    const isPath = pathOrId.includes('/');
+    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -329,7 +333,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
 
-    addRenderVarsWhenNotFound(renderVars, pathOrId);
+    await addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
   }
@@ -344,9 +348,16 @@ module.exports = function(crowi, app) {
       next();
     }
 
+    // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return next();
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
+
     }
 
     const renderVars = {};
@@ -409,8 +420,13 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return _notFound(req, res);
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
     const { path } = page; // this must exist
@@ -484,8 +500,8 @@ module.exports = function(crowi, app) {
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
-    if (shareLink == null || shareLink.relatedPage == null) {
-      // page or sharelink are not found
+    if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+      // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
@@ -583,7 +599,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     const builder = new PageQueryBuilder(Page.find({ path }));
-    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
@@ -601,10 +617,6 @@ module.exports = function(crowi, app) {
     }
 
     if (pages.length === 1) {
-      if (pages[0].isEmpty) {
-        return _notFound(req, res);
-      }
-
       const url = new URL('https://dummy.origin');
       url.pathname = `/${pages[0]._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
@@ -613,7 +625,8 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    const isForbidden = await Page.exists({ path });
+    // Exclude isEmpty page to handle _notFound or forbidden
+    const isForbidden = await Page.exists({ path, isEmpty: false });
     if (isForbidden) {
       req.isForbidden = true;
       return _notFound(req, res);
@@ -1217,7 +1230,8 @@ module.exports = function(crowi, app) {
 
   validator.revertRemove = [
     body('recursively')
-      .custom(v => v === 'true' || v === true || null)
+      .optional()
+      .custom(v => v === 'true' || v === true || v == null)
       .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 

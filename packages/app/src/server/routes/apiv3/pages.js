@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -142,7 +144,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -173,8 +174,10 @@ module.exports = (crowi) => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
-      body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
+      body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -442,9 +445,9 @@ module.exports = (crowi) => {
    *                  isRenameRedirect:
    *                    type: boolean
    *                    description: whether redirect page
-   *                  isRemainMetadata:
+   *                  updateMetadata:
    *                    type: boolean
-   *                    description: whether remain meta data
+   *                    description: whether update meta data
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether rename page with descendants
@@ -471,8 +474,10 @@ module.exports = (crowi) => {
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
     const options = {
+      isRecursively: req.body.isRecursively,
       createRedirectPage: req.body.isRenameRedirect,
-      updateMetadata: !req.body.isRemainMetadata,
+      updateMetadata: req.body.updateMetadata,
+      isMoveMode: req.body.isMoveMode,
     };
 
     if (!isCreatablePage(newPagePath)) {
@@ -489,6 +494,7 @@ module.exports = (crowi) => {
     }
 
     let page;
+    let renamedPage;
 
     try {
       page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
@@ -505,14 +511,14 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    const result = { page: serializePageSecurely(page) };
+    const result = { page: serializePageSecurely(renamedPage ?? page) };
 
     try {
       // global notification
@@ -718,10 +724,10 @@ module.exports = (crowi) => {
     const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
     try {
-      const pageData = await Page.findByPath(path);
+      const pageData = await Page.findByPath(path, true);
       const result = await Page.findManageableListWithDescendants(pageData, req.user, { limit });
 
-      return res.apiv3({ subordinatedPaths: result });
+      return res.apiv3({ subordinatedPages: result });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);

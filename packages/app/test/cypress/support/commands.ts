@@ -39,11 +39,21 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
+  const isGrowiPage = Cypress.$('body.growi').length > 0;
+
+  if (!isGrowiPage) {
+    cy.visit('/');
+  }
+
   cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
     const isCurrentCollapsed = $contents.hasClass('d-none');
     // toggle when the current state and isCoolapsed is not match
     if (isCurrentCollapsed !== isCollapsed) {
-      cy.getByTestid("grw-navigation-resize-button").click();
+      cy.getByTestid("grw-navigation-resize-button").click({force: true});
+
+      // wait until saving UserUISettings
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1500);
     }
   });
 });

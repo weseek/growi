@@ -5,10 +5,15 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -74,6 +79,11 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
@@ -99,7 +109,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     forceHideMenuItems,
   } = props;
 
-  const page = pageWithMeta?.pageData;
+  const { t } = useTranslation();
+
+  const page = pageWithMeta?.data;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -108,16 +120,48 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
-    openDuplicateModal(pageToDuplicate);
-  }, [openDuplicateModal]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      toastSuccess(t('duplicated_pages', { fromPath }));
 
-  const renameItemClickedHandler = useCallback(async(pageToRename) => {
-    openRenameModal(pageToRename);
-  }, [openRenameModal]);
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const deleteItemClickedHandler = useCallback((pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
+    }
+    else {
+      toastSuccess(t('deleted_pages', { path }));
+    }
+    advancePt();
+    advanceFts();
+    advanceDpl();
+  }, [advanceDpl, advanceFts, advancePt, t]);
+
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {

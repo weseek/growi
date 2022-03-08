@@ -11,6 +11,8 @@ context('Access to legacy private pages directly', () => {
     cy.getCookie('connect.sid').then(cookie => {
       connectSid = cookie?.value;
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   beforeEach(() => {
@@ -24,7 +26,7 @@ context('Access to legacy private pages directly', () => {
 
     cy.getByTestid('search-result-base').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}-shown`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-shown`);
   });
 
 });

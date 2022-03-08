@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 
-import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+} from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal, IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -25,8 +27,8 @@ type CommonProps = {
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
-  onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
+  onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -109,24 +111,35 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
-    const page: IPageForPageRenameModal = { pageId, revisionId, path };
+
+    const page: IPageToRenameWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
+    };
+
     onClickRenameMenuItem(page);
-  }, [onClickRenameMenuItem, pageId, path, revisionId]);
+  }, [onClickRenameMenuItem, pageId, pageInfo, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteMenuItem == null || path == null) {
       return;
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId,
-      path,
-      isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: pageId,
+        revision: revisionId,
+        path,
+      },
+      meta: pageInfo,
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
+  }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
