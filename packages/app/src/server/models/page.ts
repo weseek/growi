@@ -864,7 +864,7 @@ schema.statics.takeOffFromTree = async function(pageId: ObjectIdLike) {
 };
 
 schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLike[], paths: string[]): Promise<void> {
-  const result = await this.deleteMany({
+  await this.deleteMany({
     _id: {
       $nin: pageIdsToNotRemove,
     },
@@ -873,8 +873,6 @@ schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLik
     },
     isEmpty: true,
   });
-
-  console.log('りさると', result);
 };
 
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
