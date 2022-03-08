@@ -261,8 +261,9 @@ describe('V5 page migration', () => {
       const page8 = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
       const page9 = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
       const page10 = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
+      const page11 = await Page.findOne({ path: '/normalize_7' });
       expectAllToBeTruthy([page8, page9, page10]);
-
+      expect(page11).toBeNull();
       await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
 
       const page7 = await Page.findOne({ path: '/normalize_7' });
