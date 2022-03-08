@@ -2371,7 +2371,7 @@ class PageService {
       // then calculate inc
       const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
       if (pageAfterUpdatingDescendantCount == null) {
-        throw Error('Failed to fetch page after updating descendantCount');
+        throw Error('Page not found after updating descendantCount');
       }
 
       const exDescendantCount = page.descendantCount;
