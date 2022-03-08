@@ -46,7 +46,7 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
-  findByIdsAndViewer(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -838,16 +838,6 @@ schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectId
   const pageIdsToRemove = await generatePageIdsToRemove(null, initialPage);
 
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
-};
-
-schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpty = false) {
-  const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
-
-  await this.addConditionToFilteringByViewerToEdit(builder, user);
-
-  const pages = await builder.query.exec();
-
-  return pages;
 };
 
 schema.statics.normalizeDescendantCountById = async function(pageId) {

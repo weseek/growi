@@ -107,7 +107,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -2192,7 +2191,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
