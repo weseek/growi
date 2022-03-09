@@ -190,6 +190,7 @@ describe('PageService page operations with non-public pages', () => {
     const revisionIdForDuplicate12 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
+      // ケース1-1: GRNAT_RESTRICTED 単一ページの duplicate
       {
         _id: pageIdForDuplicate1,
         path: '/np_PageForDuplicate1',
@@ -199,6 +200,7 @@ describe('PageService page operations with non-public pages', () => {
         // parent: rootPage._id,
         revision: revisionIdForDuplicate1,
       },
+      // ケース1-2: 子ページに GRANT_RESTRICTED がある場合の再帰的 duplicate
       {
         _id: pageIdForDuplicate2,
         path: '/np_PageForDuplicate2',
@@ -215,6 +217,7 @@ describe('PageService page operations with non-public pages', () => {
         // parent: pageIdForDuplicate2,
         revision: revisionIdForDuplicate2,
       },
+      // ケース1-3: 子ページに GRANT_RESTRICTED がある場合の再帰的 duplicate
       {
         _id: pageIdForDuplicate4,
         path: '/np_PageForDuplicate3',
@@ -222,7 +225,8 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        revision: revisionIdForDuplicate3,
+        // revision: revisionIdForDuplicate3,
+        isEmpty: true,
       },
       {
         _id: pageIdForDuplicate5,
@@ -242,6 +246,7 @@ describe('PageService page operations with non-public pages', () => {
         // parent: pageIdForDuplicate4,
         revision: revisionIdForDuplicate5,
       },
+      // ケース2-1: GRNAT_USER_GROUP 単一ページの duplicate
       {
         _id: pageIdForDuplicate7,
         path: '/np_PageForDuplicate4',
@@ -252,16 +257,17 @@ describe('PageService page operations with non-public pages', () => {
         parent: rootPage._id,
         revision: revisionIdForDuplicate6,
       },
+      // ケース2-2: GRNAT_USER_GROUP が親で、その配下に同じグループで GRNAT_USER_GROUP の子孫がある場合の親ページの duplicate
       {
         _id: pageIdForDuplicate8,
-        path: '/np_PageForDuplicate4/np_empty_PageForDuplicate4',
+        path: '/np_PageForDuplicate5',
         grant: Page.GRANT_PUBLIC,
-        parent: pageIdForDuplicate7,
+        parent: rootPage._id,
         isEmpty: true,
       },
       {
         _id: pageIdForDuplicate9,
-        path: '/np_PageForDuplicate4/np_empty_PageForDuplicate4/np_grandchild_PageForDuplicate4',
+        path: '/np_PageForDuplicate5/np_empty_PageForDuplicate5',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -270,13 +276,14 @@ describe('PageService page operations with non-public pages', () => {
       },
       {
         _id: pageIdForDuplicate10,
-        path: '/np_PageForDuplicate5',
+        path: '/np_PageForDuplicate5/np_empty_PageForDuplicate5/np_grandchild_PageForDuplicate5',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
+        parent: pageIdForDuplicate9,
         revision: revisionIdForDuplicate8,
       },
+      // ケース2-3: GRNAT_USER_GROUP が親で、その配下に親ページのグループの別の子グループで GRNAT_USER_GROUP の子孫がある場合の親ページの duplicate
       {
         _id: pageIdForDuplicate11,
         path: '/np_PageForDuplicate6',
@@ -286,6 +293,7 @@ describe('PageService page operations with non-public pages', () => {
         parent: rootPage._id,
         revision: revisionIdForDuplicate9,
       },
+      // ケース2-4: 親が public とか別の広い範囲の GRANT で、その配下に GRNAT_USER_GROUP の子孫がある場合の duplicate
       {
         _id: pageIdForDuplicate13,
         path: '/np_empty_PageForDuplicate7',
