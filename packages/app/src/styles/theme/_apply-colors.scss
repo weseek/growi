@@ -712,6 +712,7 @@ mark.rbt-highlight-text {
 
 // Page Management Dropdown icon
 .btn-page-item-control {
+  color: $gray-500;
   &:hover,
   &:focus {
     background-color: rgba($color-link, 0.15);

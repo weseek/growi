@@ -107,7 +107,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -305,7 +304,7 @@ class PageService {
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || isTrashPage);
+    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
 
     return shouldUseV4Process;
   }
@@ -316,7 +315,7 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
+    const shouldUseV4Process = !isV5Compatible || isPageRestricted;
 
     return shouldUseV4Process;
   }
@@ -534,18 +533,15 @@ class PageService {
     const newParentPath = pathlib.dirname(toPath);
 
     // local util
-    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = [path]): string[] => {
-      const nextPath = pathlib.dirname(path);
-      if (nextPath === fromPath) {
-        return [...paths, nextPath];
-      }
+    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = []): string[] => {
+      if (path === fromPath) return paths;
 
-      paths.push(nextPath);
-
-      return collectAncestorPathsUntilFromPath(nextPath, paths);
+      const parentPath = pathlib.dirname(path);
+      paths.push(parentPath);
+      return collectAncestorPathsUntilFromPath(parentPath, paths);
     };
 
-    const pathsToInsert = collectAncestorPathsUntilFromPath(newParentPath);
+    const pathsToInsert = collectAncestorPathsUntilFromPath(toPath);
     const originalParent = await Page.findById(originalPage.parent);
     if (originalParent == null) {
       throw Error('Original parent not found');
@@ -2192,7 +2188,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
@@ -2558,15 +2554,13 @@ class PageService {
         },
       ]);
 
-    // limit pages to get
+    // Limit pages to get
     const total = await Page.countDocuments(filter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
-
-    // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
 
     let countPages = 0;
@@ -2577,10 +2571,15 @@ class PageService {
       async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // Fill parents with empty pages
+        // 1. Remove unnecessary empty pages
+        const pageIdsToNotDelete = pages.map(p => p._id);
+        const emptyPagePathsToDelete = pages.map(p => p.path);
+        await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
+
+        // 2. Create lacking parents as empty pages
         await Page.createEmptyPagesByPaths(parentPaths, user, false);
 
-        // Find parents
+        // 3. Find parents
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
         const parents = await builder
           .addConditionToListByPathsArray(parentPaths)
@@ -2634,9 +2633,6 @@ class PageService {
           logger.error('Failed to update page.parent.', err);
           throw err;
         }
-
-        // Remove unnecessary empty pages
-        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
 
         callback();
       },
