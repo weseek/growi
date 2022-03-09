@@ -11,8 +11,9 @@ type IResponseComment = {
 }
 
 export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<ICommentHasIdList, Error> => {
+  const shouldFetch: boolean = pageId != null;
   return useSWR(
-    pageId != null ? '/comments.get' : null,
+    shouldFetch ? '/comments.get' : null,
     endpoint => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
   );
 };

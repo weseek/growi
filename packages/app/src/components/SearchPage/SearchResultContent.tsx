@@ -220,6 +220,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           isRenderable
         />
         <PageCommentList appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} />
+        {/* todo: insert adding comment feature by CommentEditorLazyRenderer */}
         <PageContentFooter
           createdAt={new Date(pageWithMeta.data.createdAt)}
           updatedAt={new Date(pageWithMeta.data.updatedAt)}

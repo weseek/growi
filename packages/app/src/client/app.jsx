@@ -120,6 +120,7 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
+    // todo: replace PageComments by commonalizing PageComments and PageCommentList
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
     'page-content-footer': <PageContentFooter
