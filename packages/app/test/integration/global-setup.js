@@ -34,7 +34,6 @@ module.exports = async() => {
     { name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' },
     { name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' },
   ]);
-
   await pageCollection.insertMany([{
     path: '/',
     grant: 1,
