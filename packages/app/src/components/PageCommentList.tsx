@@ -1,8 +1,11 @@
-import React, { FC, memo, useMemo } from 'react';
+import React, {
+  FC, useEffect, useState, memo, useMemo, useCallback,
+} from 'react';
 
 import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
 
+import RevisionBody from './Page/RevisionBody';
 import Username from './User/Username';
 import FormattedDistanceDate from './FormattedDistanceDate';
 import HistoryIcon from './Icons/HistoryIcon';
@@ -10,6 +13,8 @@ import HistoryIcon from './Icons/HistoryIcon';
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 
 import { useSWRxPageComment } from '../stores/comment';
+
+import MathJaxConfigurer from '~/client/util/markdown-it/mathjax';
 
 
 type Props = {
@@ -23,17 +28,60 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   const { appContainer, pageId, highlightKeywords } = props;
 
   const { data: comments } = useSWRxPageComment(pageId);
+  const [data, setData] = useState<ICommentHasIdList>([]);
 
-  const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
+  const commentsFromOldest = useMemo(() => (data != null ? [...data].reverse() : null), [data]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
     () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
   );
   const allReplies = {};
 
+  const renderHtml = useCallback(async(comment:string) => {
+
+    const { interceptorManager } = appContainer;
+    const growiRenderer = appContainer.getRenderer('comment');
+
+    const context: {markdown: string, parsedHTML: string} = { markdown: comment, parsedHTML: '' };
+
+    if (interceptorManager != null) {
+      await interceptorManager.process('preRenderComment', context);
+      await interceptorManager.process('prePreProcess', context);
+      context.markdown = await growiRenderer.preProcess(context.markdown);
+      await interceptorManager.process('postPreProcess', context);
+      context.parsedHTML = await growiRenderer.process(context.markdown);
+      await interceptorManager.process('prePostProcess', context);
+      context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
+      await interceptorManager.process('postPostProcess', context);
+      await interceptorManager.process('preRenderCommentHtml', context);
+      await interceptorManager.process('postRenderCommentHtml', context);
+
+    }
+
+    return context.parsedHTML;
+
+  }, [appContainer]);
+
+  useEffect(() => {
+    const f = async() => {
+      if (comments != null) {
+        const i = await Promise.all(comments.map(comment => renderHtml(comment.comment)));
+        const t = comments.map((comment, index) => {
+          comment.comment = i[index];
+          return comment;
+        });
+        setData(t);
+      }
+
+    };
+
+    f();
+
+  }, [comments, renderHtml]);
+
   if (commentsFromOldest != null) {
     commentsFromOldest.forEach((comment) => {
       if (comment.replyTo != null) {
-        allReplies[comment.replyTo] = comment;
+        allReplies[comment.replyTo] = allReplies[comment.replyTo] == null ? [comment] : [...allReplies[comment.replyTo], comment];
       }
     });
   }
@@ -46,35 +94,67 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     return highlightedComment;
   };
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
-    <>
-      <div className="flex-shrink-0">
-        <UserPicture user={comment.creator} size="md" noLink noTooltip />
-      </div>
-      <div className="flex-grow-1 ml-3">
-        <div className="d-flex">
-          <div className="flex-shrink-0">
-            <Username user={comment.creator} />
-          </div>
-          <div className="flex-grow-1 ml-3 text-right">
-            <div className="page-comment-meta">
-              <HistoryIcon />
-              <a href={`#${comment._id}`}>
-                <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
-              </a>
+
+  const renderRevisionBody = (comment: string) => {
+    const isMathJaxEnabled = (new MathJaxConfigurer(appContainer)).isEnabled;
+    return (
+      <RevisionBody
+        html={comment}
+        isMathJaxEnabled={isMathJaxEnabled}
+        renderMathJaxOnInit
+        additionalClassName="comment"
+      />
+    );
+  };
+
+  const renderText = (comment: string) => {
+    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
+  };
+
+  const generateCommentInnerElement = (comment: ICommentHasId) => {
+    const highlightedCommentBody = highlightComment(comment.comment);
+    const formatedCommentBody = comment.isMarkdown ? renderRevisionBody(highlightedCommentBody) : renderText(highlightedCommentBody);
+
+    return (
+      <>
+        <div className="flex-shrink-0">
+          <UserPicture user={comment.creator} size="md" noLink noTooltip />
+        </div>
+        <div className="flex-grow-1 ml-3">
+          <div className="d-flex">
+            <div className="flex-shrink-0">
+              <Username user={comment.creator} />
+            </div>
+            <div className="flex-grow-1 ml-3 text-right">
+              <div className="page-comment-meta">
+                <HistoryIcon />
+                <a href={`#${comment._id}`}>
+                  <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
+                </a>
+              </div>
             </div>
           </div>
+          <div className="page-comment-body">{formatedCommentBody}</div>
         </div>
-        <div
-          className="page-comment-body text-break mt-1"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: highlightComment(comment.comment),
-          }}
-        />
-      </div>
-    </>
-  );
+      </>
+    );
+  };
+
+  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => {
+    return (
+      replyComments.map((comment: ICommentHasId, index: number) => {
+        const lastIndex: number = replyComments.length - 1;
+        const isLastIndex: boolean = index === lastIndex;
+
+        return (
+          <div className={`d-flex ml-4 ${isLastIndex ? 'mb-5' : 'mb-3'}`}>
+            {generateCommentInnerElement(comment)}
+          </div>
+        );
+
+      })
+    );
+  };
 
 
   if (comments == null || commentsExceptReply == null) return <></>;
@@ -94,11 +174,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
               {generateCommentInnerElement(comment)}
             </div>
             {/* display reply comment */}
-            {hasReply && (
-              <div className="d-flex ml-4 mb-5">
-                {generateCommentInnerElement(allReplies[comment._id])}
-              </div>
-            )}
+            {hasReply && generateAllRepliesElement(allReplies[comment._id])}
           </div>
         );
       })}
