@@ -14,6 +14,8 @@ describe('PageService page operations with non-public pages', () => {
   let Page;
   let Revision;
   let User;
+  let UserGroup;
+  let UserGroupRelation;
   let Tag;
   let PageTagRelation;
   let Bookmark;
@@ -37,6 +39,8 @@ describe('PageService page operations with non-public pages', () => {
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     User = mongoose.model('User');
+    UserGroup = mongoose.model('UserGroup');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
@@ -52,6 +56,26 @@ describe('PageService page operations with non-public pages', () => {
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+
+    await UserGroup.insertMany([{ name: 'DummyGroup1' }]);
+    const dummyUserGroup1 = await UserGroup.findOne({ username: 'v5DummyUser1' });
+    await UserGroup.insertMany([{ name: 'DummyChildGroup2', parent: dummyUserGroup1 }]);
+    const dummyChildUserGroup2 = await UserGroup.findOne({ name: 'DummyChildGroup2' });
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: dummyUserGroup1,
+        relatedUser: dummyUser1,
+      },
+      {
+        relatedGroup: dummyUserGroup1,
+        relatedUser: dummyUser2,
+      },
+      {
+        relatedGroup: dummyChildUserGroup2,
+        relatedUser: dummyUser1,
+      },
+    ]);
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
