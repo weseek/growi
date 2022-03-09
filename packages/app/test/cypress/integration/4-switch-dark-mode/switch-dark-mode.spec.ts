@@ -27,10 +27,11 @@ context('Switch dark mode', () => {
     cy.get('[for="cbFollowOs"]').click();
     cy.screenshot(`${ssPrefix}-switch-by-os`, { capture: 'viewport' });
 
-    cy.get('[for="swUserPreference"]').click();
+
+    cy.get('#swUserPreference').parent('.custom-switch').click();
     cy.screenshot(`${ssPrefix}-switch-by-user-preference`, { capture: 'viewport' });
 
-    cy.get('[for="swUserPreference"]').click();
+    cy.get('#swUserPreference').parent('.custom-switch').click();
     cy.get('[for="cbFollowOs"]').click();
     cy.screenshot(`${ssPrefix}-switch-back-to-default`, { capture: 'viewport' });
   });

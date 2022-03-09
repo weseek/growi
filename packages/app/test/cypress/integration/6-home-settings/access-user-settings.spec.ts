@@ -32,7 +32,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-user-information`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-1-user-information`, { capture: 'viewport' });
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
 
     // Access External account
@@ -43,7 +43,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-external-account`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-2-external-account`, { capture: 'viewport' });
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
 
     // Access Password setting
@@ -52,7 +52,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-password-setting`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-3-password-setting`, { capture: 'viewport' });
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
 
     // Access API setting
@@ -61,7 +61,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-api-setting`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-4-api-setting`, { capture: 'viewport' });
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
 
     // Access Editor setting
@@ -70,7 +70,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-editor-setting`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-5-editor-setting`, { capture: 'viewport' });
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
 
     // Access In-app notification setting
@@ -79,7 +79,7 @@ context('Access User settings', () => {
 
     cy.wait(500);
 
-    cy.screenshot(`${ssPrefix}-in-app-notification-setting`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-6-in-app-notification-setting`, { capture: 'viewport' });
   });
 
 });
