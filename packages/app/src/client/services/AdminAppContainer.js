@@ -454,9 +454,17 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async v5PageMigrationHandler() {
-    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration');
+    const response = await this.appContainer.apiv3.post('/app-settings/v5-schema-migration');
     const { isV5Compatible } = response.data;
     return { isV5Compatible };
+  }
+
+  async startMaintenanceMode() {
+    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: true });
+  }
+
+  async endMaintenanceMode() {
+    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: false });
   }
 
 }

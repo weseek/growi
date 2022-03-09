@@ -14,3 +14,14 @@ export const generateUnavailableWhenMaintenanceModeMiddleware = crowi => async(r
 
   res.render('maintenance-mode');
 };
+
+export const generateUnavailableWhenMaintenanceModeMiddlewareForApi = crowi => async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+
+  if (!isMaintenanceMode) {
+    next();
+    return;
+  }
+
+  res.status(503).json({ error: 'GROWI is under maintenance.' });
+};

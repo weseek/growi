@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
@@ -9,6 +9,7 @@ import MailSetting from './MailSetting';
 import PluginSetting from './PluginSetting';
 import FileUploadSetting from './FileUploadSetting';
 import V5PageMigration from './V5PageMigration';
+import MaintenanceMode from './MaintenanceMode';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
@@ -66,7 +67,16 @@ class AppSettingsPageContents extends React.Component {
             <PluginSetting />
           </div>
         </div>
+
+        <div className="row">
+          <div className="col-lg-12">
+            <h2 className="admin-setting-header">{t('Maintenance Mode')}</h2>
+            <MaintenanceMode />
+          </div>
+        </div>
+
       </div>
+
     );
   }
 
