@@ -167,10 +167,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
-    if (isInitialScrollCompleted) {
-      return;
-    }
-
     const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
 
     if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
@@ -189,9 +185,9 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     scrollElement.scrollTo({ top: scrollTop });
 
     setIsInitialScrollCompleted(true);
-  }, [isInitialScrollCompleted, sidebarScrollerRef]);
+  }, [sidebarScrollerRef]);
 
-  const scrollOnInitDebounced = useMemo(() => debounce(100, scrollOnInit), [scrollOnInit]);
+  const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
 
   useEffect(() => {
     if (!isSecondStageRendering || isInitialScrollCompleted) {
@@ -209,6 +205,10 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
     const observer = new MutationObserver(observerCallback);
     observer.observe(rootElement, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    scrollOnInitDebounced();
+
     return () => {
       observer.disconnect();
     };
