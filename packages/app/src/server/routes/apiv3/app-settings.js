@@ -265,6 +265,7 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -739,6 +740,8 @@ module.exports = (crowi) => {
         res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
       }
     }
+
+    res.apiv3({ flag });
   });
 
   return router;
