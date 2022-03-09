@@ -189,6 +189,7 @@ describe('PageService page operations with non-public pages', () => {
     const revisionIdForDuplicate11 = new mongoose.Types.ObjectId();
     const revisionIdForDuplicate12 = new mongoose.Types.ObjectId();
 
+    // 軽く数合わせ程度しかしてないので、データの中身はひと通り見直しお願いします。
     await Page.insertMany([
       // ケース1-1: GRNAT_RESTRICTED 単一ページの duplicate
       {
@@ -205,8 +206,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdForDuplicate2,
         path: '/np_PageForDuplicate2',
         grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        isEmpty: true,
+        revision: revisionIdForDuplicate2,
       },
       {
         _id: pageIdForDuplicate3,
@@ -215,9 +218,9 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         // parent: pageIdForDuplicate2,
-        revision: revisionIdForDuplicate2,
+        revision: revisionIdForDuplicate3,
       },
-      // ケース1-3: 子ページに GRANT_RESTRICTED がある場合の再帰的 duplicate
+      // ケース1-3: そこそこ上階層のパスに GRNAT_RESTRICTED があり、該当ページパスを含む子ページが存在する場合の、 GRNAT_RESTRICTED ページの duplicate
       {
         _id: pageIdForDuplicate4,
         path: '/np_PageForDuplicate3',
@@ -225,8 +228,7 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        // revision: revisionIdForDuplicate3,
-        isEmpty: true,
+        revision: revisionIdForDuplicate4,
       },
       {
         _id: pageIdForDuplicate5,
@@ -235,7 +237,7 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForDuplicate4,
-        revision: revisionIdForDuplicate4,
+        revision: revisionIdForDuplicate5,
       },
       {
         _id: pageIdForDuplicate6,
@@ -244,14 +246,14 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         // parent: pageIdForDuplicate4,
-        revision: revisionIdForDuplicate5,
       },
+      // ---------- ↑ ここまでは軽く Page の中身まで見ている ↑ ---------- //
       // ケース2-1: GRNAT_USER_GROUP 単一ページの duplicate
       {
         _id: pageIdForDuplicate7,
         path: '/np_PageForDuplicate4',
         grant: Page.GRANT_USER_GROUP,
-        // grantedGroup TODO: グループ指定
+        grantedGroup: ,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
@@ -473,7 +475,10 @@ describe('PageService page operations with non-public pages', () => {
       return duplicatedPage;
     };
 
-    test('Should duplicate single page', async() => {
+    // public からコピペしただけなのでテストの処理は全部変える必要あり
+
+    test('Should duplicate restricted single page', async() => {
+      // ケース1-1: GRNAT_RESTRICTED 単一ページの duplicate
       const page = await Page.findOne({ path: '/np_PageForDuplicate1' });
       expectAllToBeTruthy([page]);
 
@@ -492,6 +497,7 @@ describe('PageService page operations with non-public pages', () => {
     });
 
     test('Should NOT duplicate single empty page', async() => {
+      // ケース1-2: 子ページに GRANT_RESTRICTED がある場合の再帰的 duplicate
       const page = await Page.findOne({ path: '/np_PageForDuplicate2' });
       expectAllToBeTruthy([page]);
 
@@ -510,6 +516,7 @@ describe('PageService page operations with non-public pages', () => {
     });
 
     test('Should duplicate multiple pages', async() => {
+      // ケース1-3: そこそこ上階層のパスに GRNAT_RESTRICTED があり、該当ページパスを含む子ページが存在する場合の、 GRNAT_RESTRICTED ページの duplicate
       const basePage = await Page.findOne({ path: '/np_PageForDuplicate3' });
       const revision = await Revision.findOne({ pageId: basePage._id });
       const childPage1 = await Page.findOne({ path: '/np_PageForDuplicate3/np_Child_1_ForDuplicate3' }).populate({ path: 'revision', model: 'Revision' });
@@ -538,6 +545,7 @@ describe('PageService page operations with non-public pages', () => {
     });
 
     test('Should duplicate multiple pages with empty child in it', async() => {
+      // ケース2-1: GRNAT_USER_GROUP 単一ページの duplicate
       const basePage = await Page.findOne({ path: '/np_PageForDuplicate4' });
       const baseChild = await Page.findOne({ parent: basePage._id, isEmpty: true });
       const baseGrandchild = await Page.findOne({ parent: baseChild._id });
@@ -560,6 +568,7 @@ describe('PageService page operations with non-public pages', () => {
     });
 
     test('Should duplicate tags', async() => {
+      // ケース2-2: GRNAT_USER_GROUP が親で、その配下に同じグループで GRNAT_USER_GROUP の子孫がある場合の親ページの duplicate
       const basePage = await Page.findOne({ path: '/np_PageForDuplicate5' });
       const tag1 = await Tag.findOne({ name: 'np_duplicate_Tag1' });
       const tag2 = await Tag.findOne({ name:  'np_duplicate_Tag2' });
@@ -591,6 +600,7 @@ describe('PageService page operations with non-public pages', () => {
     });
 
     test('Should duplicate empty page with descendants', async() => {
+      // ケース2-3: GRNAT_USER_GROUP が親で、その配下に親ページのグループの別の子グループで GRNAT_USER_GROUP の子孫がある場合の親ページの duplicate
       const basePage = await Page.findOne({ path: '/np_empty_PageForDuplicate7' });
       const basePageChild = await Page.findOne({ parent: basePage._id }).populate({ path: 'revision', model: 'Revision' });
       const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
