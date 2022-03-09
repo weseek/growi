@@ -34,6 +34,28 @@ describe('PageService page operations with non-public pages', () => {
     });
   };
 
+  /**
+   * Revert
+   */
+  // user id
+  const userIdRevert1 = new mongoose.Types.ObjectId();
+  const userIdRevert2 = new mongoose.Types.ObjectId();
+  const userIdRevert3 = new mongoose.Types.ObjectId();
+  // group id
+  const groupIdRevertIsolate = new mongoose.Types.ObjectId();
+  const groupIdRevertA = new mongoose.Types.ObjectId();
+  const groupIdRevertB = new mongoose.Types.ObjectId();
+  const groupIdRevertC = new mongoose.Types.ObjectId();
+  // page id
+  const pageIdRevert1 = new mongoose.Types.ObjectId();
+  const pageIdRevert2 = new mongoose.Types.ObjectId();
+  // revision id
+  const revisionIdRevert1 = new mongoose.Types.ObjectId();
+  const revisionIdRevert2 = new mongoose.Types.ObjectId();
+  // tag id
+  const tagIdRevert1 = new mongoose.Types.ObjectId();
+  const tagIdRevert2 = new mongoose.Types.ObjectId();
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -84,15 +106,6 @@ describe('PageService page operations with non-public pages', () => {
     /**
      * Revert
      */
-    const userIdRevert1 = new mongoose.Types.ObjectId();
-    const userIdRevert2 = new mongoose.Types.ObjectId();
-    const userIdRevert3 = new mongoose.Types.ObjectId();
-
-    const groupIdRevertIsolate = new mongoose.Types.ObjectId();
-    const groupIdRevertA = new mongoose.Types.ObjectId();
-    const groupIdRevertB = new mongoose.Types.ObjectId();
-    const groupIdRevertC = new mongoose.Types.ObjectId();
-
     await User.insertMany([
       {
         _id: userIdRevert1, name: 'np_revert_user1', username: 'np_revert_user1', email: 'np_revert_user1@example.com',
@@ -167,20 +180,21 @@ describe('PageService page operations with non-public pages', () => {
       },
     ]);
 
-    // page id
-    const pageIdRevert1 = new mongoose.Types.ObjectId();
-    // revision id
-    const revisionIdRevert1 = new mongoose.Types.ObjectId();
-    // tag id
-    const tagIdRevert1 = new mongoose.Types.ObjectId();
-
     await Page.insertMany([
       {
         _id: pageIdRevert1,
         path: '/trash/np_revert1',
         grant: Page.GRANT_RESTRICTED,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdRevert1,
+        status: Page.STATUS_DELETED,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRevert2,
+        path: '/trash/np_revert2',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdRevertA,
+        grantedUsers: [userIdRevert1._id, userIdRevert2._id, userIdRevert3._id],
         revision: revisionIdRevert1,
         status: Page.STATUS_DELETED,
         parent: rootPage._id,
@@ -192,18 +206,31 @@ describe('PageService page operations with non-public pages', () => {
         pageId: pageIdRevert1,
         body: 'np_revert1',
         format: 'markdown',
-        author: dummyUser1,
+        author: dummyUser1._id,
+      },
+      {
+        _id: revisionIdRevert2,
+        pageId: pageIdRevert2,
+        body: 'np_revert2',
+        format: 'markdown',
+        author: userIdRevert1,
       },
     ]);
 
     await Tag.insertMany([
       { _id: tagIdRevert1, name: 'np_revertTag1' },
+      { _id: tagIdRevert2, name: 'np_revertTag2' },
     ]);
 
     await PageTagRelation.insertMany([
       {
         relatedPage: pageIdRevert1,
         relatedTag: tagIdRevert1,
+        isPageTrashed: true,
+      },
+      {
+        relatedPage: pageIdRevert2,
+        relatedTag: tagIdRevert2,
         isPageTrashed: true,
       },
     ]);
@@ -248,13 +275,13 @@ describe('PageService page operations with non-public pages', () => {
 
     };
     test('revert single deleted page with GRANT_RESTRICTED', async() => {
-      const deletedPage = await Page.findOne({ path: '/trash/np_revert1', status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
-      const revision = await Revision.findOne({ pageId: deletedPage._id });
+      const trashedPage = await Page.findOne({ path: '/trash/np_revert1', status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
+      const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag1' });
-      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id, isPageTrashed: true });
-      expectAllToBeTruthy([deletedPage, revision, tag, deletedPageTagRelation]);
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation]);
 
-      await revertDeletedPage(deletedPage, dummyUser1, {}, false);
+      await revertDeletedPage(trashedPage, dummyUser1, {}, false);
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
@@ -265,6 +292,31 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
+      expect(pageTagRelation.isPageTrashed).toBe(false);
+    });
+    test('revert single deleted page with GRANT_USER_GROUP', async() => {
+      const user1 = await User.findOne({ name: 'np_revert_user1' });
+      const user2 = await User.findOne({ name: 'np_revert_user2' });
+      const user3 = await User.findOne({ name: 'np_revert_user3' });
+      const trashedPage = await Page.findOne({ path: '/trash/np_revert2', status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
+      const revision = await Revision.findOne({ pageId: trashedPage._id });
+      const tag = await Tag.findOne({ name: 'np_revertTag2' });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation, user2, user3]);
+
+      await revertDeletedPage(trashedPage, user1, {}, false);
+      const revertedPage = await Page.findOne({ path: '/np_revert2' });
+      const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert2' });
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
+      expectAllToBeTruthy([revertedPage, pageTagRelation]);
+
+      expect(deltedPageBeforeRevert).toBe(null);
+
+      expect(revertedPage.parent).toStrictEqual(rootPage._id);
+      expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
+      expect(revertedPage.grantedGroup).toStrictEqual(groupIdRevertA);
+      expect(revertedPage.grantedUsers).toStrictEqual([user1._id, user2._id, user3._id]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
   });
