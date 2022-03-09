@@ -72,7 +72,7 @@ html[light] {
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: $gray-100;
+  $bgcolor-sidebar-context: lighten($primary, 77%);
   // Sidebar list group
   $bgcolor-sidebar-list-group: $gray-50; // optional
 
