@@ -82,32 +82,30 @@ describe('PageService page operations with non-public pages', () => {
      */
   });
 
-  describe('with only public pages', () => {
-    describe('Rename', () => {
-      test('dummy test to avoid test failure', async() => {
-        // write test code
-        expect(true).toBe(true);
-      });
+  describe('Rename', () => {
+    test('dummy test to avoid test failure', async() => {
+      // write test code
+      expect(true).toBe(true);
     });
-    describe('Duplicate', () => {
-      // test('', async() => {
-      //   // write test code
-      // });
-    });
-    describe('Delete', () => {
-      // test('', async() => {
-      //   // write test code
-      // });
-    });
-    describe('Delete completely', () => {
-      // test('', async() => {
-      //   // write test code
-      // });
-    });
-    describe('revert', () => {
-      // test('', async() => {
-      //   // write test code
-      // });
-    });
+  });
+  describe('Duplicate', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
+  describe('Delete', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
+  describe('Delete completely', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
+  describe('revert', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
   });
 });
