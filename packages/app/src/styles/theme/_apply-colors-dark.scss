@@ -284,6 +284,10 @@ ul.pagination {
       lighten($bgcolor-list-hover, 5%),
       $gray-500
     );
+    .grw-pagetree-count {
+      color: $gray-400;
+      background: $gray-700;
+    }
   }
   .private-legacy-pages-link {
     &:hover {
