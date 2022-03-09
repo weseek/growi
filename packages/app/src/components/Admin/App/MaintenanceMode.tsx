@@ -46,7 +46,7 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
   }, [isMaintenanceMode, adminAppContainer, closeModal]);
 
   return (
-    <>
+    <div className="mb-5">
       <ConfirmModal
         isModalOpen={isModalOpen}
         warningMessage={t('admin:maintenance_mode.warning_message')}
@@ -71,7 +71,7 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
