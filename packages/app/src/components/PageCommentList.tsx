@@ -94,8 +94,10 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   }
 
   const highlightComment = (comment: string):string => {
+    if (highlightKeywords == null) return comment;
+
     let highlightedComment = '';
-    highlightKeywords?.forEach((highlightKeyword) => {
+    highlightKeywords.forEach((highlightKeyword) => {
       highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
     });
     return highlightedComment;
