@@ -68,9 +68,7 @@ const SidebarContentsWrapper = () => {
           stickyElemSelector=".grw-sidebar"
           calcViewHeight={calcViewHeight}
         >
-          <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
-            <SidebarContents />
-          </div>
+          <SidebarContents />
         </StickyStretchableScroller>
       </div>
 
