@@ -22,6 +22,24 @@ class AppSettingsPageContents extends React.Component {
     return (
       <div data-testid="admin-app-settings">
         {
+          // Alert message will be displayed in case that the GROWI is under maintenance
+          adminAppContainer.state.isMaintenanceMode && (
+            <div className="alert alert-danger alert-link" role="alert">
+              <h3 className="alert-heading">
+                {t('maintenance_mode.maintenance_mode')}
+              </h3>
+              <p>
+                {t('maintenance_mode.description')}
+              </p>
+              <hr />
+              <a className="btn-link" href="#maintenance-mode" rel="noopener noreferrer">
+                <i className="fa fa-fw fa-arrow-down ml-1" aria-hidden="true"></i>
+                <strong>{t('maintenance_mode.end_maintenance_mode')}</strong>
+              </a>
+            </div>
+          )
+        }
+        {
           !isV5Compatible
           && (
             <div className="row">
@@ -70,7 +88,7 @@ class AppSettingsPageContents extends React.Component {
 
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('Maintenance Mode')}</h2>
+            <h2 className="admin-setting-header" id="maintenance-mode">{t('Maintenance Mode')}</h2>
             <MaintenanceMode />
           </div>
         </div>
