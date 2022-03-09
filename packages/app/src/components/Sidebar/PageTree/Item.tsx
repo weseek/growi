@@ -102,7 +102,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-0 badge badge-pill badge-light text-muted">
+      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
