@@ -15,6 +15,9 @@ $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', Mei
 //== Layout
 $grw-navbar-height: 52px;
 $grw-navbar-border-width: 3.3333px;
+// slightly larger than $zindex-sticky
+// https://getbootstrap.jp/docs/4.5/layout/overview/#z-index
+$grw-navbar-z-index: 1025;
 
 $grw-subnav-min-height: 95px;
 $grw-subnav-min-height-md: 115px;
@@ -36,7 +39,3 @@ $grw-logomark-width: 36px;
 $grw-nav-main-left-tab-width: 95px;
 $grw-nav-main-left-tab-width-mobile: 50px;
 $grw-nav-main-tab-height: 42px;
-
-// slightly larger than $zindex-fixed
-// https://getbootstrap.jp/docs/4.5/layout/overview/#z-index
-$grw-navbar-z-index-amount: 1035;

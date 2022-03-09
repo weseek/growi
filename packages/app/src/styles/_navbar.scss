@@ -1,7 +1,7 @@
 .grw-navbar {
   top: -$grw-navbar-height !important;
 
-  z-index: $grw-navbar-z-index-amount !important; // should be higher than SubNavigation
+  z-index: $grw-navbar-z-index !important;
   max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
