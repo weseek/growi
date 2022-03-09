@@ -65,13 +65,26 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
   }, [appContainer]);
 
+  const highlightComment = useCallback((comment: string):string => {
+    if (highlightKeywords == null) return comment;
+
+    let highlightedComment = '';
+    highlightKeywords.forEach((highlightKeyword) => {
+      highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
+    });
+    return highlightedComment;
+  }, [highlightKeywords]);
+
   useEffect(() => { mutate() }, [pageId, mutate]);
 
   useEffect(() => {
-    const formatComments = async() => {
+    const formatAndHighlightComments = async() => {
 
       if (comments != null) {
-        const preprocessedCommentList: string[] = await Promise.all(comments.map(comment => preprocessComment(comment.comment)));
+        const preprocessedCommentList: string[] = await Promise.all(comments.map((comment) => {
+          const highlightedComment: string = highlightComment(comment.comment);
+          return preprocessComment(highlightedComment);
+        }));
         const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
           comment.comment = preprocessedCommentList[index];
           return comment;
@@ -81,9 +94,9 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
     };
 
-    formatComments();
+    formatAndHighlightComments();
 
-  }, [comments, preprocessComment]);
+  }, [comments, highlightComment, preprocessComment]);
 
   if (commentsFromOldest != null) {
     commentsFromOldest.forEach((comment) => {
@@ -92,17 +105,6 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
       }
     });
   }
-
-  const highlightComment = (comment: string):string => {
-    if (highlightKeywords == null) return comment;
-
-    let highlightedComment = '';
-    highlightKeywords.forEach((highlightKeyword) => {
-      highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
-    });
-    return highlightedComment;
-  };
-
 
   const generateMarkdownBody = (comment: string): JSX.Element => {
     const isMathJaxEnabled: boolean = (new MathJaxConfigurer(appContainer)).isEnabled;
@@ -121,8 +123,8 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   };
 
   const generateCommentInnerElement = (comment: ICommentHasId) => {
-    const highlightedCommentBody = highlightComment(comment.comment);
-    const formatedCommentBody = comment.isMarkdown ? generateMarkdownBody(highlightedCommentBody) : generateBodyFromPlainText(highlightedCommentBody);
+    const commentBody: string = comment.comment;
+    const formatedCommentBody = comment.isMarkdown ? generateMarkdownBody(commentBody) : generateBodyFromPlainText(commentBody);
 
     return (
       <>
