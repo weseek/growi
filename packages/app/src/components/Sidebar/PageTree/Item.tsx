@@ -36,7 +36,6 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
-  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onRenamed?(): void
@@ -102,7 +101,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-0 badge badge-pill badge-light text-muted">
+      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
@@ -123,6 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenaming, setRenaming] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -273,6 +273,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
+      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -288,6 +289,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
+    }
+    finally {
+      setTimeout(() => {
+        setRenaming(false);
+      }, 1000);
     }
   };
 
@@ -315,7 +321,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = `${parentPath}${inputText}`;
+    const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (!isCreatable) {
@@ -325,7 +331,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     let initBody = '';
     if (isEnabledAttachTitleHeader) {
-      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      const pageTitle = nodePath.basename(newPagePath);
       initBody = pathUtils.attachTitleHeader(pageTitle);
     }
 
@@ -364,12 +370,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
 
-  useEffect(() => {
-    if (!props.isScrolled && page.isTarget) {
-      document.dispatchEvent(new CustomEvent('targetItemRendered'));
-    }
-  }, [props.isScrolled, page.isTarget]);
-
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -404,14 +404,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
-        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
+        className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
+        ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
@@ -420,22 +421,27 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown && (
-          <ClosableTextInput
-            isShown
-            value={nodePath.basename(page.path ?? '')}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={onPressEnterForRenameHandler}
-            inputValidator={inputValidator}
-          />
-        )}
-        { !isRenameInputShown && (
-          <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-          </a>
-        )}
-        {(descendantCount > 0) && (
+        { isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={nodePath.basename(page.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={onPressEnterForRenameHandler}
+              inputValidator={inputValidator}
+            />
+          )
+          : (
+            <>
+              { isRenaming && (
+                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              )}
+              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+              </a>
+            </>
+          )}
+        {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={descendantCount} />
           </div>
@@ -464,9 +470,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
       </li>
 
-      {isEnableActions && (
+      {isEnableActions && isNewPageInputShown && (
         <ClosableTextInput
-          isShown={isNewPageInputShown}
           placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
           onPressEnter={onPressEnterForCreateHandler}
@@ -480,7 +485,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
-              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onRenamed={onRenamed}

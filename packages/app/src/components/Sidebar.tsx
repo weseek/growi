@@ -9,6 +9,7 @@ import {
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
+  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
@@ -16,7 +17,7 @@ import DrawerToggler from './Navbar/DrawerToggler';
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
-import StickyStretchableScroller from './StickyStretchableScroller';
+import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -50,31 +51,25 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
-  const [resetKey, setResetKey] = useState(0);
-
-  const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
+  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
-    const scrollTargetElem = document.querySelector('#grw-sidebar-contents-scroll-target');
-    return scrollTargetElem != null
-      ? window.innerHeight - scrollTargetElem?.getBoundingClientRect().top
+    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+    return elem != null
+      ? window.innerHeight - elem?.getBoundingClientRect().top
       : window.innerHeight;
   }, []);
 
   return (
     <>
-      <StickyStretchableScroller
-        scrollTargetSelector={scrollTargetSelector}
-        contentsElemSelector="#grw-sidebar-content-container"
-        stickyElemSelector=".grw-sidebar"
-        calcViewHeightFunc={calcViewHeight}
-        resetKey={resetKey}
-      />
-
-      <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
-        <div id="grw-sidebar-content-container" className="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
+      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+        <StickyStretchableScroller
+          simplebarRef={mutateSidebarScroller}
+          stickyElemSelector=".grw-sidebar"
+          calcViewHeight={calcViewHeight}
+        >
           <SidebarContents />
-        </div>
+        </StickyStretchableScroller>
       </div>
 
       <DrawerToggler iconClass="icon-arrow-left" />
