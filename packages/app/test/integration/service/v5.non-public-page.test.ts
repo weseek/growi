@@ -54,6 +54,15 @@ describe('PageService page operations with non-public pages', () => {
   const pageIdRename9 = new mongoose.Types.ObjectId();
 
   /**
+   * Duplicate
+   */
+  // page id
+  const pageIdDuplicate1 = new mongoose.Types.ObjectId();
+  // revision id
+  const revisionIdDuplicate1 = new mongoose.Types.ObjectId();
+
+
+  /**
    * Revert
    */
   // page id
@@ -278,6 +287,25 @@ describe('PageService page operations with non-public pages', () => {
     /*
      * Duplicate
      */
+    await Page.insertMany([
+      {
+        _id: pageIdDuplicate1,
+        path: '/np_duplicate1',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdDuplicate1,
+      },
+    ]);
+    await Revision.insertMany([
+      {
+        _id: revisionIdDuplicate1,
+        body: 'np_duplicate1',
+        format: 'markdown',
+        pageId: pageIdDuplicate1,
+        author: npDummyUser1._id,
+      },
+    ]);
 
     /**
      * Delete
@@ -518,9 +546,49 @@ describe('PageService page operations with non-public pages', () => {
     // });
   });
   describe('Duplicate', () => {
-    // test('', async() => {
-    //   // write test code
-    // });
+
+    const duplicate = async(page, newPagePath, user, isRecursively) => {
+      // mock return value
+      const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
+
+      // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
+      const argsForDuplicateRecursivelyMainOperation = mockedDuplicateRecursivelyMainOperation.mock.calls[0];
+
+      // restores the original implementation
+      mockedDuplicateRecursivelyMainOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      // duplicate descendants
+      if (page.grant !== Page.GRANT_RESTRICTED && isRecursively) {
+        await crowi.pageService.duplicateRecursivelyMainOperation(...argsForDuplicateRecursivelyMainOperation);
+      }
+
+      return duplicatedPage;
+    };
+    test('Duplicate sinle page with GRANT_RESTRICTED', async() => {
+      const basePage = await Page.findOne({ path: '/np_duplicate1' });
+      const baseRevision = await Revision.findOne({ pageId: basePage._id });
+      expectAllToBeTruthy([basePage, baseRevision]);
+
+      const newPagePath = '/dup_np_duplicate1';
+      await duplicate(basePage, newPagePath, dummyUser1, false);
+
+      const duplicatedPage = await Page.findOne({ path: newPagePath });
+      const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
+      expectAllToBeTruthy([duplicatedPage]);
+
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage._id).not.toStrictEqual(basePage._id);
+      expect(duplicatedPage.grant).toBe(basePage.grant);
+      expect(duplicatedPage.parent).toBeNull();
+      expect(duplicatedPage.parent).toStrictEqual(basePage.parent);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
+
+      expect(duplicatedRevision.body).toEqual(baseRevision.body);
+    });
   });
   describe('Delete', () => {
     // test('', async() => {
