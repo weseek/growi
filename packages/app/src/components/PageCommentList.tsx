@@ -29,7 +29,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   const { appContainer, pageId, highlightKeywords } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const [formatedComments, setFormatedComments] = useState < ICommentHasIdList | null>(null);
+  const [formatedComments, setFormatedComments] = useState <ICommentHasIdList | null>(null);
 
   const commentsFromOldest = useMemo(() => (formatedComments != null ? [...formatedComments].reverse() : null), [formatedComments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(

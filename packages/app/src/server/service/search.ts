@@ -376,6 +376,15 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const pageIds = searchResult.data.map((page) => { return page._id });
     const findPageResult = await Page.findListByPageIds(pageIds);
 
+    // populate creator
+    const creatorIds: string[] = findPageResult.pages.map(page => page.creator);
+    const creators = await User.find({ _id: { $in: creatorIds } });
+
+    findPageResult.pages = findPageResult.pages.map((page) => {
+      page.creator = creators.find(creator => creator._id.toString() === page.creator.toString());
+      return page;
+    });
+
     // set meta data
     result.meta = searchResult.meta;
 
