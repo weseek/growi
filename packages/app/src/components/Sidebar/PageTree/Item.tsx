@@ -421,7 +421,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )}
         </div>
         { isRenameInputShown
-          && (
+          ? (
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
               placeholder={t('Input page name')}
@@ -430,12 +430,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               inputValidator={inputValidator}
             />
           )
-        }
-        { !isRenameInputShown && (
-          <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-          </a>
-        )}
+          : (
+            <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+              <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+            </a>
+          )}
         {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={descendantCount} />
