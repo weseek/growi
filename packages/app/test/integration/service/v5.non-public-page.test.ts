@@ -501,7 +501,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForChild = '/np_rename7_destination/np_rename8';
       const newPathForGrandchild = '/np_rename7_destination/np_rename8/np_rename9';
-      await renamePage(childPage, newPathForChild, dummyUser1, { isRecursively: true });
+      await renamePage(childPage, newPathForChild, npDummyUser1, { isRecursively: true });
 
       const renamedChildPage = await Page.findOne({ path: newPathForChild });
       const renamedGrandChild = await Page.findOne({ path: newPathForGrandchild });
