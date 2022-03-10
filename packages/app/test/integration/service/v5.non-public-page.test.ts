@@ -666,9 +666,9 @@ describe('PageService page operations with non-public pages', () => {
     test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
       const basePath1 = '/np_duplicate2';
       const basePath2 = '/np_duplicate2/np_duplicate3';
-      const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id })
+      const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id, grantedGroup: groupIdA })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
-      const basePage2 = await Page.findOne({ path: basePath2, parent: basePage1._id })
+      const basePage2 = await Page.findOne({ path: basePath2, parent: basePage1._id, grantedGroup: groupIdB })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
       const baseRevision1 = basePage1.revision;
       const baseRevision2 = basePage2.revision;
