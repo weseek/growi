@@ -41,6 +41,13 @@ describe('PageService page operations with non-public pages', () => {
   };
 
   /**
+   * Rename
+   */
+  const pageIdRename1 = new mongoose.Types.ObjectId();
+  const pageIdRename2 = new mongoose.Types.ObjectId();
+  const pageIdRename3 = new mongoose.Types.ObjectId();
+
+  /**
    * Revert
    */
   // page id
@@ -183,7 +190,34 @@ describe('PageService page operations with non-public pages', () => {
     /*
      * Rename
      */
-
+    await Page.insertMany([
+      {
+        _id: pageIdRename1,
+        path: '/np_rename1_destination',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename2,
+        path: '/np_rename2',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename3,
+        path: '/np_rename2/np_rename3',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        creator: npDummyUser3._id,
+        lastUpdateUser: npDummyUser3._id,
+        parent: pageIdRename2._id,
+      },
+    ]);
     /*
      * Duplicate
      */
@@ -311,9 +345,56 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('Rename', () => {
-    test('dummy test to avoid test failure', async() => {
-      // write test code
-      expect(true).toBe(true);
+    const renamePage = async(page, newPagePath, user, options) => {
+      // mock return value
+      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+
+      // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
+      const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
+
+      // restores the original implementation
+      mockedRenameSubOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      // rename descendants
+      await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+
+      return renamedPage;
+    };
+
+    test('Should rename/move with descendants with grant normalized pages', async() => {
+      // BR => Before Rename
+      const path1BR = '/np_rename1_destination';
+      const path2BR = '/np_rename2';
+      const path3BR = '/np_rename2/np_rename3';
+      const page1 = await Page.findOne({ path: path1BR, grant: Page.GRANT_PUBLIC });
+      const page2 = await Page.findOne({ path: path2BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
+      const page3 = await Page.findOne({
+        path: path3BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC, parent: page2._id,
+      });
+      expectAllToBeTruthy([page1, page2, page3]);
+
+      const newPathForChild = '/np_rename1_destination/np_rename2';
+      const newPathForGrandchild = '/np_rename1_destination/np_rename2/np_rename3';
+      await renamePage(page2, newPathForChild, npDummyUser2, {});
+
+      const renamedPage = await Page.findOne({ path: newPathForChild });
+      const renamedGrandchild = await Page.findOne({ path: newPathForGrandchild });
+
+      const childPageBR = await Page.findOne({ path: path2BR });
+      const grandchildBR = await Page.findOne({ path: path3BR });
+      expectAllToBeTruthy([renamedPage, renamedGrandchild]);
+      expect(childPageBR).toBeNull();
+      expect(grandchildBR).toBeNull();
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(renamedPage.parent).toStrictEqual(page1._id);
+      expect(renamedGrandchild.parent).toStrictEqual(renamedPage._id);
+
+      expect(renamedPage.grantedGroup).toStrictEqual(page2.grantedGroup);
+      expect(renamedGrandchild.grantedGroup).toStrictEqual(page3.grantedGroup);
     });
   });
   describe('Duplicate', () => {
