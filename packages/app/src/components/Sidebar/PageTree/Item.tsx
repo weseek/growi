@@ -123,6 +123,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isRenaming, setRenaming] = useState(false);
+  const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -336,6 +337,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
+      setCreating(true);
       await apiv3Post('/pages/', {
         path: newPagePath,
         body: initBody,
@@ -348,6 +350,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
     catch (err) {
       toastError(err);
+    }
+    finally {
+      setTimeout(() => {
+        setCreating(false);
+      }, 1000);
     }
   };
 
@@ -491,6 +498,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
+            { isCreating && (
+              <div className="text-muted text-center">
+                <i className="fa fa-spinner fa-pulse mr-1"></i>
+              </div>
+            )}
           </div>
         ))
       }
