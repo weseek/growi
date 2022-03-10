@@ -46,6 +46,9 @@ describe('PageService page operations with non-public pages', () => {
   const pageIdRename1 = new mongoose.Types.ObjectId();
   const pageIdRename2 = new mongoose.Types.ObjectId();
   const pageIdRename3 = new mongoose.Types.ObjectId();
+  const pageIdRename4 = new mongoose.Types.ObjectId();
+  const pageIdRename5 = new mongoose.Types.ObjectId();
+  const pageIdRename6 = new mongoose.Types.ObjectId();
 
   /**
    * Revert
@@ -216,6 +219,33 @@ describe('PageService page operations with non-public pages', () => {
         creator: npDummyUser3._id,
         lastUpdateUser: npDummyUser3._id,
         parent: pageIdRename2._id,
+      },
+      {
+        _id: pageIdRename4,
+        path: '/np_rename4_destination',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdIsolate,
+        creator: npDummyUser3._id,
+        lastUpdateUser: npDummyUser3._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename5,
+        path: '/np_rename5',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename6,
+        path: '/np_rename5/np_rename6',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: pageIdRename5,
       },
     ]);
     /*
@@ -395,6 +425,40 @@ describe('PageService page operations with non-public pages', () => {
 
       expect(renamedPage.grantedGroup).toStrictEqual(page2.grantedGroup);
       expect(renamedGrandchild.grantedGroup).toStrictEqual(page3.grantedGroup);
+    });
+    test('Should throw with NOT grant normalized pages', async() => {
+      // BR => Before Rename
+      const path1BR = '/np_rename4_destination';
+      const path2BR = '/np_rename5';
+      const path3BR = '/np_rename5/np_rename6';
+      const page1 = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });// isolate
+      const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });// groupIdB
+      const grandchildPage = await Page.findOne({
+        parent: childPage._id, path: path3BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB, // groupIdB
+      });
+      expectAllToBeTruthy([page1, childPage, grandchildPage]);
+
+      const newPath1 = '/np_rename4_destination/np_rename5';
+      const newPath2 = '/np_rename4_destination/np_rename5/np_rename6';
+
+      let isThrown = false;
+      try {
+        await renamePage(childPage, newPath1, dummyUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(isThrown).toBe(true);
+
+      const childPageBR = await Page.findOne({ path: path2BR });
+      const grandChildPageBR = await Page.findOne({ path: path3BR });
+      const renamedChildPage = await Page.findOne({ path: newPath1 });
+      const renamedGrandchildPage = await Page.findOne({ path: newPath2 });
+      expectAllToBeTruthy([childPageBR, grandChildPageBR]);
+      expect(renamedChildPage).toBeNull();
+      expect(renamedGrandchildPage).toBeNull();
+
     });
   });
   describe('Duplicate', () => {
