@@ -272,7 +272,6 @@ describe('PageService page operations with non-public pages', () => {
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser2._id,
         lastUpdateUser: dummyUser2._id,
-        parent: pageIdRename8,
       },
     ]);
     /*
@@ -489,33 +488,32 @@ describe('PageService page operations with non-public pages', () => {
       expect(renamedGrandchildPage).toBeNull();
 
     });
-    // test('Should rename/move with descendants with only restricted pages', async() => {
-    //   // BR => Before Rename
-    //   const path1BR = '/np_rename7_destination';
-    //   const path2BR = '/np_rename8';
-    //   const path3BR = '/np_rename8/np_rename9';
-    //   const destinationPage = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
-    //   const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_RESTRICTED });
-    //   const grandchild = await Page.findOne({ path: path3BR, grant: Page.GRANT_RESTRICTED, parent: childPage._id });
+    test('Should rename/move with descendants with only restricted pages', async() => {
+      // BR => Before Rename
+      const path1BR = '/np_rename7_destination';
+      const path2BR = '/np_rename8';
+      const path3BR = '/np_rename8/np_rename9';
+      const destinationPage = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
+      const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_RESTRICTED });
+      const grandchild = await Page.findOne({ path: path3BR, grant: Page.GRANT_RESTRICTED });
 
-    //   expectAllToBeTruthy([destinationPage, childPage, grandchild]);
+      expectAllToBeTruthy([destinationPage, childPage, grandchild]);
 
-    //   const newPathForChild = '/np_rename7_destination/np_rename8';
-    //   const newPathForGrandchild = '/np_rename7_destination/np_rename8/np_rename9';
-    //   await renamePage(childPage, newPathForChild, dummyUser1, { isRecursively: true });
+      const newPathForChild = '/np_rename7_destination/np_rename8';
+      const newPathForGrandchild = '/np_rename7_destination/np_rename8/np_rename9';
+      await renamePage(childPage, newPathForChild, dummyUser1, { isRecursively: true });
 
-    //   const renamedChildPage = await Page.findOne({ path: newPathForChild });
-    //   const renamedgrandChild = await Page.findOne({ path: newPathForGrandchild });
-    //   const childPageBeforeRename = await Page.findOne({ path: path2BR });
-    //   const grandchildBeforeRename = await Page.findOne({ path: path3BR });
-    //   expectAllToBeTruthy([renamedChildPage, grandchildBeforeRename]);
+      const renamedChildPage = await Page.findOne({ path: newPathForChild });
+      const renamedGrandChild = await Page.findOne({ path: newPathForGrandchild });
+      const childPageBeforeRename = await Page.findOne({ path: path2BR });
+      const grandchildBeforeRename = await Page.findOne({ path: path3BR });
+      expectAllToBeTruthy([renamedChildPage, grandchildBeforeRename]);
+      expect(renamedGrandChild).toBeNull();
+      expect(childPageBeforeRename).toBeNull();
 
-    //   expect(xssSpy).toHaveBeenCalled();
-    //   expect(renamedChildPage.path).toBe(newPathForChild);
-    //   expect(renamedgrandChild.path).toBe(newPathForChild);
-    //   expect(renamedChildPage.parent).toBeNull();
-    //   expect(childPageBeforeRename).toBeNull();
-    // });
+      expect(xssSpy).toHaveBeenCalled();
+      expect(renamedChildPage.parent).toBeNull();
+    });
   });
   describe('Duplicate', () => {
     // test('', async() => {
