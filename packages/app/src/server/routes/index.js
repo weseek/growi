@@ -3,7 +3,9 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
-import { generateUnavailableWhenMaintenanceModeMiddleware } from '../middlewares/unavailable-when-maintenance-mode';
+import {
+  generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
+} from '../middlewares/unavailable-when-maintenance-mode';
 
 import * as loginFormValidator from '../middlewares/login-form-validator';
 import * as registerFormValidator from '../middlewares/register-form-validator';
@@ -54,6 +56,7 @@ module.exports = function(crowi, app) {
   const ogp = require('./ogp')(crowi);
 
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
+  const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -151,10 +154,47 @@ module.exports = function(crowi, app) {
   /*
    * Routes below are unavailable when maintenance mode
    */
-  app.use(unavailableWhenMaintenanceMode);
 
   // API v3
-  app.use('/_api/v3', apiV3Router);
+  app.use('/_api/v3', unavailableWhenMaintenanceModeForApi, apiV3Router);
+
+  const apiV1Router = express.Router();
+
+  apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
+
+  apiV1Router.get('/check_username'           , user.api.checkUsername);
+  apiV1Router.get('/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
+
+  // HTTP RPC Styled API (に徐々に移行していいこうと思う)
+  apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
+  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
+  apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
+  apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
+  apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
+  // allow posting to guests because the client doesn't know whether the user logged in
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
+  apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
+  apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
+  apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
+  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
+  apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
+  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
+  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
+  apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
+
+  // API v1
+  app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
+
+  app.use(unavailableWhenMaintenanceMode);
+
+  app.get('/tags'                     , loginRequired, tag.showPage);
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
@@ -170,35 +210,6 @@ module.exports = function(crowi, app) {
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, injectUserUISettings, search.searchPage);
-  app.get('/_api/search'                        , accessTokenParser , loginRequired , search.api.search);
-
-  app.get('/_api/check_username'           , user.api.checkUsername);
-  app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
-
-  // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
-  app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
-  app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
-  app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
-  // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
-  app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
-  app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
-  app.get('/tags'                     , loginRequired, tag.showPage);
-  app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
-  app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
-  app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
-  app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
-  app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
-  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
-  app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
-  app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
-  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));

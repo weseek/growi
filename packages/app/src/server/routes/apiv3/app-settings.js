@@ -197,6 +197,9 @@ module.exports = (crowi) => {
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
     ],
+    maintenanceMode: [
+      body('flag').isBoolean(),
+    ],
   };
 
   /**
@@ -262,6 +265,7 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -713,6 +717,31 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3({ isV5Compatible });
+  });
+
+  // eslint-disable-next-line max-len
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+    const { flag } = req.body;
+
+    try {
+      if (flag) {
+        await crowi.appService.startMaintenanceMode();
+      }
+      else {
+        await crowi.appService.endMaintenanceMode();
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      if (flag) {
+        res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
+      }
+      else {
+        res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
+      }
+    }
+
+    res.apiv3({ flag });
   });
 
   return router;
