@@ -192,7 +192,7 @@ $border-color: $border-color-global;
 }
 
 .btn.btn-page-item-control {
-  @include button-outline-variant($gray-500, $primary, rgba($color-link, 0.2), transparent);
+  @include button-outline-variant($gray-500, $primary, lighten($primary, 52%), transparent);
   @include hover() {
     background-color: lighten($primary, 58%);
   }
