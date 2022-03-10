@@ -298,7 +298,6 @@ ul.pagination {
   }
 }
 
-// Page Management Dropdown icon
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
   @include hover() {
