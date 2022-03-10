@@ -347,7 +347,7 @@ describe('PageService page operations with non-public pages', () => {
       return revertedPage;
 
     };
-    test('revert single deleted page with GRANT_RESTRICTED', async() => {
+    test('should revert single deleted page with GRANT_RESTRICTED', async() => {
       const trashedPage = await Page.findOne({ path: '/trash/np_revert1', status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag1' });
@@ -368,7 +368,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
-    test('revert single deleted page with GRANT_USER_GROUP', async() => {
+    test('should revert single deleted page with GRANT_USER_GROUP', async() => {
       const beforeRevertPath = '/trash/np_revert2';
       const user1 = await User.findOne({ name: 'npUser1' });
       const trashedPage = await Page.findOne({ path: beforeRevertPath, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
@@ -390,7 +390,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.grantedGroup).toStrictEqual(groupIdA);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
-    test('revert multiple pages: only target page should be reverted. Middle and leaf page with GRANT_RESTRICTED shoud not be reverted', async() => {
+    test(`revert multiple pages: only target page should be reverted.
+          Non-existant middle page and leaf page with GRANT_RESTRICTED shoud not be reverted`, async() => {
       const beforeRevertPath1 = '/trash/np_revert3';
       const beforeRevertPath2 = '/trash/np_revert3/middle/np_revert4';
       const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grant: Page.GRANT_PUBLIC });
@@ -417,7 +418,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_PUBLIC);
     });
-    test('revert multiple pages: target page, initially non existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
+    test('revert multiple pages: target page, initially non-existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
       const user = await User.findOne({ _id: npDummyUser3 });
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
