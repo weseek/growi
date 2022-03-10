@@ -86,8 +86,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
           return preprocessComment(highlightedComment);
         }));
         const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
-          comment.comment = preprocessedCommentList[index];
-          return comment;
+          return { ...comment, comment: preprocessedCommentList[index] };
         });
         setFormatedComments(preprocessedComments);
       }
