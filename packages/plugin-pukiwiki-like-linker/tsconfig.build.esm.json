@@ -10,7 +10,6 @@
     "preserveConstEnums": true,
     "sourceMap": false,
     "noEmit": false,
-    "inlineSources": true,
 
     "baseUrl": ".",
     "paths": {
