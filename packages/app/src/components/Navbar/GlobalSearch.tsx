@@ -108,7 +108,6 @@ const GlobalSearch: FC<Props> = (props: Props) => {
           onFocus={() => setFocused(true)}
           onInputChange={text => setText(text)}
           onSubmit={search}
-          data-testid="global-search-input"
         />
         { isIndicatorShown && (
           <span className="grw-shortcut-key-indicator">

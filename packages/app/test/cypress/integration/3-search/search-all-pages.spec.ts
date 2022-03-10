@@ -1,9 +1,9 @@
 context('Search all pages', () => {
-  const ssPrefix = 'search-all-pages';
+  const ssPrefix = 'search-all-pages-';
 
   let connectSid: string | undefined;
 
-  before(() =>{
+  before(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
@@ -11,16 +11,25 @@ context('Search all pages', () => {
     cy.getCookie('connect.sid').then(cookie => {
       connectSid = cookie?.value;
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
-  beforeEach(() =>{
-    if(connectSid != null){
+  beforeEach(() => {
+    if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
     }
   });
 
-  it('Searching all pages', () => {
+  it('Search by typing help and press ENTER', () => {
+    const searchText = 'help';
     cy.visit('/');
-    cy.getByTestid('global-search-input').click();
-  })
+    cy.get('div.rbt-input-hint-container > input').click();
+    cy.screenshot(`${ssPrefix}search-input-focused`, { capture: "viewport"});
+    cy.get('div.rbt-input-hint-container > input').type(`${searchText}{enter}`);
+    cy.screenshot(`${ssPrefix}insert-search-text`, { capture: "viewport"});
+    cy.get('div.rbt-input-hint-container > input').type('{enter}');
+    cy.screenshot(`${ssPrefix}press-enter`, { capture: "viewport"});
+  });
+
 });
