@@ -488,7 +488,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(renamedGrandchildPage).toBeNull();
 
     });
-    test('Should rename/move with descendants with only restricted pages', async() => {
+    test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async() => {
       // BR => Before Rename
       const path1BR = '/np_rename7_destination';
       const path2BR = '/np_rename8';
