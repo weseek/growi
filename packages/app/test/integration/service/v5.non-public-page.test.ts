@@ -211,7 +211,6 @@ describe('PageService page operations with non-public pages', () => {
         path: '/trash/np_revert2',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
-        grantedUsers: [npDummyUser1._id, npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert2,
         status: Page.STATUS_DELETED,
       },
@@ -234,7 +233,6 @@ describe('PageService page operations with non-public pages', () => {
         path: '/trash/np_revert5',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
-        grantedUsers: [npDummyUser1._id, npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert5,
         status: Page.STATUS_DELETED,
       },
@@ -243,7 +241,6 @@ describe('PageService page operations with non-public pages', () => {
         path: '/trash/np_revert5/middle/np_revert6',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdB,
-        grantedUsers: [npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert6,
         status: Page.STATUS_DELETED,
       },
@@ -363,10 +360,10 @@ describe('PageService page operations with non-public pages', () => {
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
       expectAllToBeTruthy([revertedPage, pageTagRelation]);
 
-      expect(deltedPageBeforeRevert).toBe(null);
+      expect(deltedPageBeforeRevert).toBeNull();
 
       // page with GRANT_RESTRICTED does not have parent
-      expect(revertedPage.parent).toBe(null);
+      expect(revertedPage.parent).toBeNull();
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
       expect(pageTagRelation.isPageTrashed).toBe(false);
@@ -374,13 +371,11 @@ describe('PageService page operations with non-public pages', () => {
     test('revert single deleted page with GRANT_USER_GROUP', async() => {
       const beforeRevertPath = '/trash/np_revert2';
       const user1 = await User.findOne({ name: 'npUser1' });
-      const user2 = await User.findOne({ name: 'npUser2' });
-      const user3 = await User.findOne({ name: 'npUser3' });
       const trashedPage = await Page.findOne({ path: beforeRevertPath, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag2' });
       const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
-      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation, user2, user3]);
+      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation]);
 
       await revertDeletedPage(trashedPage, user1, {}, false);
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
@@ -393,7 +388,6 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
       expect(revertedPage.grantedGroup).toStrictEqual(groupIdA);
-      expect(revertedPage.grantedUsers).toStrictEqual([user1._id, user2._id, user3._id]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
     test('revert multiple pages: only target page should be reverted. Middle and leaf page with GRANT_RESTRICTED shoud not be reverted', async() => {
@@ -448,6 +442,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(trashedPage1AR).toBeNull();
       expect(trashedPage2AR).toBeNull();
 
+      expect(newlyCreatedPage.isEmpty).toBe(true);
+
       expect(revertedPage1.parent).toStrictEqual(rootPage._id);
       expect(revertedPage2.parent).toStrictEqual(newlyCreatedPage._id);
       expect(newlyCreatedPage.parent).toStrictEqual(revertedPage1._id);
@@ -460,8 +456,6 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
-      expect(newlyCreatedPage.grantedGroup).toBe(Page.groupIdA);
-      expect(newlyCreatedPage.grantedGroup).toBe(Page.groupIdRevertC);
     });
   });
 });
