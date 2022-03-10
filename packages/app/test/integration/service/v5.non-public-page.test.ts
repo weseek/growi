@@ -312,27 +312,27 @@ describe('PageService page operations with non-public pages', () => {
     ]);
   });
 
-  // describe('Rename', () => {
-  //   test('dummy test to avoid test failure', async() => {
-  //     // write test code
-  //     expect(true).toBe(true);
-  //   });
-  // });
-  // describe('Duplicate', () => {
-  //   // test('', async() => {
-  //   //   // write test code
-  //   // });
-  // });
-  // describe('Delete', () => {
-  //   // test('', async() => {
-  //   //   // write test code
-  //   // });
-  // });
-  // describe('Delete completely', () => {
-  //   // test('', async() => {
-  //   //   // write test code
-  //   // });
-  // });
+  describe('Rename', () => {
+    test('dummy test to avoid test failure', async() => {
+      // write test code
+      expect(true).toBe(true);
+    });
+  });
+  describe('Duplicate', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
+  describe('Delete', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
+  describe('Delete completely', () => {
+    // test('', async() => {
+    //   // write test code
+    // });
+  });
   describe('revert', () => {
     const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
       // mock return value
