@@ -191,6 +191,10 @@ $border-color: $border-color-global;
   }
 }
 
+.grw-pagetree-triangle-btn {
+  @include button-outline-svg-icon-variant($gray-400, $primary);
+}
+
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $primary, lighten($primary, 52%), transparent);
   @include hover() {

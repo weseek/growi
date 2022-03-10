@@ -296,6 +296,10 @@ ul.pagination {
   }
 }
 
+.grw-pagetree-triangle-btn {
+  @include button-outline-svg-icon-variant($secondary, $gray-200);
+}
+
 // Page Management Dropdown icon
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);

@@ -412,7 +412,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
