@@ -34,7 +34,7 @@ export function useStaticSWR<Data, Error>(
 const ADVANCE_DELAY_MS = 800;
 
 export type ITermNumberManagerUtil = {
-  advance(): Promise<void>
+  advance(): void,
 }
 
 export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
@@ -42,18 +42,15 @@ export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & IT
 
   return {
     ...swrResult,
-    advance: async() => {
+    advance: () => {
       const { data: currentNum } = swrResult;
       if (currentNum == null) {
         return;
       }
 
-      await new Promise((resolve) => {
-        setTimeout(async() => {
-          await swrResult.mutate(currentNum + 1);
-          resolve(null);
-        }, ADVANCE_DELAY_MS);
-      });
+      setTimeout(() => {
+        swrResult.mutate(currentNum + 1);
+      }, ADVANCE_DELAY_MS);
     },
   };
 };

@@ -165,8 +165,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
-  const onRenamed = async() => {
-    await advancePt();
+  const onRenamed = () => {
+    advancePt();
     advanceFts();
     advanceDpl();
   };
