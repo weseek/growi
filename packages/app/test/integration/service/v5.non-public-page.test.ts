@@ -12,7 +12,9 @@ describe('PageService page operations with non-public pages', () => {
   let npDummyUser1;
   let npDummyUser2;
   let npDummyUser3;
-
+  let groupIdA;
+  let groupIdB;
+  let groupIdC;
   let crowi;
   let Page;
   let Revision;
@@ -26,8 +28,6 @@ describe('PageService page operations with non-public pages', () => {
   let ShareLink;
   let PageRedirect;
   let xssSpy;
-  let UserGroup;
-  let UserGroupRelation;
 
   let rootPage;
 
@@ -42,15 +42,6 @@ describe('PageService page operations with non-public pages', () => {
   /**
    * Revert
    */
-  // user id
-  const userIdRevert1 = new mongoose.Types.ObjectId();
-  const userIdRevert2 = new mongoose.Types.ObjectId();
-  const userIdRevert3 = new mongoose.Types.ObjectId();
-  // group id
-  const groupIdRevertIsolate = new mongoose.Types.ObjectId();
-  const groupIdRevertA = new mongoose.Types.ObjectId();
-  const groupIdRevertB = new mongoose.Types.ObjectId();
-  const groupIdRevertC = new mongoose.Types.ObjectId();
   // page id
   const pageIdRevert1 = new mongoose.Types.ObjectId();
   const pageIdRevert2 = new mongoose.Types.ObjectId();
@@ -91,9 +82,6 @@ describe('PageService page operations with non-public pages', () => {
      * Common
      */
 
-    dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
-    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
-
     const npUserId1 = new mongoose.Types.ObjectId();
     const npUserId2 = new mongoose.Types.ObjectId();
     const npUserId3 = new mongoose.Types.ObjectId();
@@ -110,9 +98,9 @@ describe('PageService page operations with non-public pages', () => {
     ]);
 
     const groupIdIsolate = new mongoose.Types.ObjectId();
-    const groupIdA = new mongoose.Types.ObjectId();
-    const groupIdB = new mongoose.Types.ObjectId();
-    const groupIdC = new mongoose.Types.ObjectId();
+    groupIdA = new mongoose.Types.ObjectId();
+    groupIdB = new mongoose.Types.ObjectId();
+    groupIdC = new mongoose.Types.ObjectId();
     await UserGroup.insertMany([
       {
         _id: groupIdIsolate,
@@ -179,6 +167,12 @@ describe('PageService page operations with non-public pages', () => {
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
+    dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
+    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+    npDummyUser1 = await User.findOne({ username: 'npUser1' });
+    npDummyUser2 = await User.findOne({ username: 'npUser2' });
+    npDummyUser3 = await User.findOne({ username: 'npUser3' });
+
     rootPage = await Page.findOne({ path: '/' });
     if (rootPage == null) {
       const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
@@ -204,80 +198,6 @@ describe('PageService page operations with non-public pages', () => {
     /**
      * Revert
      */
-    await User.insertMany([
-      {
-        _id: userIdRevert1, name: 'np_revert_user1', username: 'np_revert_user1', email: 'np_revert_user1@example.com',
-      },
-      {
-        _id: userIdRevert2, name: 'np_revert_user2', username: 'np_revert_user2', email: 'np_revert_user2@example.com',
-      },
-      {
-        _id: userIdRevert3, name: 'np_revert_user3', username: 'np_revert_user3', email: 'np_revert_user3@example.com',
-      },
-    ]);
-    await UserGroup.insertMany([
-      {
-        _id: groupIdRevertIsolate,
-        name: 'np_revert_groupIsolate',
-      },
-      {
-        _id: groupIdRevertA,
-        name: 'np_revert_groupA',
-      },
-      {
-        _id: groupIdRevertB,
-        name: 'np_revert_groupB',
-        parent: groupIdRevertA,
-      },
-      {
-        _id: groupIdRevertC,
-        name: 'np_revert_groupC',
-        parent: groupIdRevertB,
-      },
-    ]);
-    await UserGroupRelation.insertMany([
-      {
-        relatedGroup: groupIdRevertIsolate,
-        relatedUser: userIdRevert1,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertIsolate,
-        relatedUser: userIdRevert2,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertA,
-        relatedUser: userIdRevert1,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertA,
-        relatedUser: userIdRevert2,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertA,
-        relatedUser: userIdRevert3,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertB,
-        relatedUser: userIdRevert2,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertB,
-        relatedUser: userIdRevert3,
-        createdAt: new Date(),
-      },
-      {
-        relatedGroup: groupIdRevertC,
-        relatedUser: userIdRevert3,
-        createdAt: new Date(),
-      },
-    ]);
-
     await Page.insertMany([
       {
         _id: pageIdRevert1,
@@ -290,8 +210,8 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert2,
         path: '/trash/np_revert2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdRevertA,
-        grantedUsers: [userIdRevert1._id, userIdRevert2._id, userIdRevert3._id],
+        grantedGroup: groupIdA,
+        grantedUsers: [npDummyUser1._id, npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert2,
         status: Page.STATUS_DELETED,
       },
@@ -313,8 +233,8 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert5,
         path: '/trash/np_revert5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdRevertA,
-        grantedUsers: [userIdRevert1._id, userIdRevert2._id, userIdRevert3._id],
+        grantedGroup: groupIdA,
+        grantedUsers: [npDummyUser1._id, npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert5,
         status: Page.STATUS_DELETED,
       },
@@ -322,8 +242,8 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert6,
         path: '/trash/np_revert5/middle/np_revert6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdRevertB,
-        grantedUsers: [userIdRevert2._id, userIdRevert3._id],
+        grantedGroup: groupIdB,
+        grantedUsers: [npDummyUser2._id, npDummyUser3._id],
         revision: revisionIdRevert6,
         status: Page.STATUS_DELETED,
       },
@@ -341,35 +261,35 @@ describe('PageService page operations with non-public pages', () => {
         pageId: pageIdRevert2,
         body: 'np_revert2',
         format: 'markdown',
-        author: userIdRevert1,
+        author: npDummyUser1,
       },
       {
         _id: revisionIdRevert3,
         pageId: pageIdRevert3,
         body: 'np_revert3',
         format: 'markdown',
-        author: userIdRevert1,
+        author: npDummyUser1,
       },
       {
         _id: revisionIdRevert4,
         pageId: pageIdRevert4,
         body: 'np_revert4',
         format: 'markdown',
-        author: userIdRevert1,
+        author: npDummyUser1,
       },
       {
         _id: revisionIdRevert5,
         pageId: pageIdRevert5,
         body: 'np_revert5',
         format: 'markdown',
-        author: userIdRevert1,
+        author: npDummyUser1,
       },
       {
         _id: revisionIdRevert6,
         pageId: pageIdRevert6,
         body: 'np_revert6',
         format: 'markdown',
-        author: userIdRevert1,
+        author: npDummyUser1,
       },
     ]);
 
@@ -453,9 +373,9 @@ describe('PageService page operations with non-public pages', () => {
     });
     test('revert single deleted page with GRANT_USER_GROUP', async() => {
       const beforeRevertPath = '/trash/np_revert2';
-      const user1 = await User.findOne({ name: 'np_revert_user1' });
-      const user2 = await User.findOne({ name: 'np_revert_user2' });
-      const user3 = await User.findOne({ name: 'np_revert_user3' });
+      const user1 = await User.findOne({ name: 'npUser1' });
+      const user2 = await User.findOne({ name: 'npUser2' });
+      const user3 = await User.findOne({ name: 'npUser3' });
       const trashedPage = await Page.findOne({ path: beforeRevertPath, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag2' });
@@ -472,7 +392,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
-      expect(revertedPage.grantedGroup).toStrictEqual(groupIdRevertA);
+      expect(revertedPage.grantedGroup).toStrictEqual(groupIdA);
       expect(revertedPage.grantedUsers).toStrictEqual([user1._id, user2._id, user3._id]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
@@ -504,7 +424,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.grant).toBe(Page.GRANT_PUBLIC);
     });
     test('revert multiple pages: target page, initially non existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
-      const user = await User.findOne({ _id: userIdRevert3 });
+      const user = await User.findOne({ _id: npDummyUser3 });
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
       const beforeRevertPath3 = '/trash/np_revert5/middle';
@@ -540,7 +460,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
-      expect(newlyCreatedPage.grantedGroup).toBe(Page.groupIdRevertA);
+      expect(newlyCreatedPage.grantedGroup).toBe(Page.groupIdA);
       expect(newlyCreatedPage.grantedGroup).toBe(Page.groupIdRevertC);
     });
   });
