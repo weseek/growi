@@ -9,11 +9,16 @@ describe('PageService page operations with non-public pages', () => {
 
   let dummyUser1;
   let dummyUser2;
+  let npDummyUser1;
+  let npDummyUser2;
+  let npDummyUser3;
 
   let crowi;
   let Page;
   let Revision;
   let User;
+  let UserGroup;
+  let UserGroupRelation;
   let Tag;
   let PageTagRelation;
   let Bookmark;
@@ -37,6 +42,8 @@ describe('PageService page operations with non-public pages', () => {
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     User = mongoose.model('User');
+    UserGroup = mongoose.model('UserGroup');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
@@ -52,6 +59,89 @@ describe('PageService page operations with non-public pages', () => {
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+
+    const npUserId1 = new mongoose.Types.ObjectId();
+    const npUserId2 = new mongoose.Types.ObjectId();
+    const npUserId3 = new mongoose.Types.ObjectId();
+    await User.insertMany([
+      {
+        _id: npUserId1, name: 'npUser1', username: 'npUser1', email: 'npUser1@example.com',
+      },
+      {
+        _id: npUserId2, name: 'npUser2', username: 'npUser2', email: 'npUser2@example.com',
+      },
+      {
+        _id: npUserId3, name: 'npUser3', username: 'npUser3', email: 'npUser3@example.com',
+      },
+    ]);
+
+    const groupIdIsolate = new mongoose.Types.ObjectId();
+    const groupIdA = new mongoose.Types.ObjectId();
+    const groupIdB = new mongoose.Types.ObjectId();
+    const groupIdC = new mongoose.Types.ObjectId();
+    await UserGroup.insertMany([
+      {
+        _id: groupIdIsolate,
+        name: 'np_groupIsolate',
+      },
+      {
+        _id: groupIdA,
+        name: 'np_groupA',
+      },
+      {
+        _id: groupIdB,
+        name: 'np_groupB',
+        parent: groupIdA,
+      },
+      {
+        _id: groupIdC,
+        name: 'np_groupC',
+        parent: groupIdB,
+      },
+    ]);
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: groupIdIsolate,
+        relatedUser: npUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdIsolate,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: npUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdB,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdB,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdC,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+    ]);
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
