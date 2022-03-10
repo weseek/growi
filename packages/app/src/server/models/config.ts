@@ -59,7 +59,11 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'security:list-policy:hideRestrictedByOwner' : false,
   'security:list-policy:hideRestrictedByGroup' : false,
-  'security:pageCompleteDeletionAuthority' : undefined,
+  // DEPRECATED: 'security:pageCompleteDeletionAuthority' : undefined,
+  'security:pageSingleDeletionAuthority' : undefined,
+  'security:pageSingleCompleteDeletionAuthority' : undefined,
+  'security:pageRecursiveDeletionAuthority' : undefined,
+  'security:pageRecursiveCompleteDeletionAuthority' : undefined,
   'security:disableLinkSharing' : false,
 
   'security:passport-local:isEnabled' : true,
