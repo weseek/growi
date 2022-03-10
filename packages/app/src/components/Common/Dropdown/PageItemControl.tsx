@@ -212,7 +212,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [shouldFetch, setShouldFetch] = useState(fetchOnInit);
+  const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
