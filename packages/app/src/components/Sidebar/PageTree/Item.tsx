@@ -354,7 +354,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     finally {
       setTimeout(() => {
         setCreating(false);
-      }, 1000);
+      }, 500);
     }
   };
 
@@ -486,7 +486,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         />
       )}
       {
-        isOpen && hasChildren() && currentChildren.map(node => (
+        isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
@@ -498,7 +498,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
-            { isCreating && (
+            { isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
               </div>
