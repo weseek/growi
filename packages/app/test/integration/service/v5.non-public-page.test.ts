@@ -386,7 +386,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.grantedUsers).toStrictEqual([user1._id, user2._id, user3._id]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
-    test('revert multiple pages: leaf page with GRANT_RESTRICTED shoud not be reverted', async() => {
+    test('revert multiple pages: only target page should be reverted. Middle and leaf page with GRANT_RESTRICTED shoud not be reverted', async() => {
       const beforeRevertPath1 = '/trash/np_revert3';
       const beforeRevertPath2 = '/trash/np_revert3/middle/np_revert4';
       const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grant: Page.GRANT_PUBLIC });
@@ -413,7 +413,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_PUBLIC);
     });
-    test('revert multiple pages: leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
+    test('revert multiple pages: target page, initially non existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
       const user = await User.findOne({ _id: userIdRevert3 });
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
