@@ -611,7 +611,7 @@ describe('PageService page operations with non-public pages', () => {
       expectAllToBeTruthy([basePage, baseRevision]);
 
       const newPagePath = '/dup_np_duplicate1';
-      await duplicate(basePage, newPagePath, dummyUser1, false);
+      await duplicate(basePage, newPagePath, npDummyUser1, false);
 
       const duplicatedPage = await Page.findOne({ path: newPagePath });
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
