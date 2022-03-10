@@ -179,6 +179,15 @@ $border-color: $border-color-global;
       $bgcolor-list-active,
       $gray-400
     );
+    .grw-pagetree-count {
+      color: $gray-500;
+      background: $gray-200;
+    }
+  }
+  .private-legacy-pages-link {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
   }
 }
 

@@ -38,8 +38,9 @@ $border-color: $border-color-global;
   */
 input.form-control,
 select.form-control,
+select.custom-select,
 textarea.form-control {
-  color: lighten($color-global, 30%);
+  color: $color-global;
   background-color: darken($bgcolor-global, 5%);
   border-color: $border-color-global;
   &:focus {
@@ -67,6 +68,10 @@ textarea.form-control {
 
 .input-group input {
   border-color: $border-color-global;
+}
+
+label.custom-control-label::before {
+  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
@@ -279,6 +284,15 @@ ul.pagination {
       lighten($bgcolor-list-hover, 5%),
       $gray-500
     );
+    .grw-pagetree-count {
+      color: $gray-400;
+      background: $gray-700;
+    }
+  }
+  .private-legacy-pages-link {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
   }
 }
 

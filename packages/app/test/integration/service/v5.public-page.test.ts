@@ -24,8 +24,6 @@ describe('PageService page operations with only public pages', () => {
 
   let rootPage;
 
-  /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expectAllToBeTruthy"] }] */
-  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
 
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
@@ -901,7 +899,7 @@ describe('PageService page operations with only public pages', () => {
   describe('Rename', () => {
 
     const renamePage = async(page, newPagePath, user, options) => {
-    // mock return value
+      // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
@@ -1166,7 +1164,6 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPageGrandchild.isEmpty).toBe(false);
     });
   });
-
   describe('Duplicate', () => {
 
     const duplicate = async(page, newPagePath, user, isRecursively) => {
@@ -1444,7 +1441,6 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedTagRelation2.isPageTrashed).toBe(true);
     });
   });
-
   describe('Delete completely', () => {
     const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
       const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
@@ -1562,8 +1558,6 @@ describe('PageService page operations with only public pages', () => {
 
     });
   });
-
-
   describe('revert', () => {
     const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
       // mock return value
@@ -1623,7 +1617,4 @@ describe('PageService page operations with only public pages', () => {
     });
   });
 
-});
-describe('PageService page operations with non-public pages', () => {
-  // TODO: write test code
 });

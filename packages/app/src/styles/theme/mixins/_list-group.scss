@@ -36,10 +36,7 @@
     border-color: $border-color-global;
 
     &.grw-pagetree-is-target {
-      background: $bgcolor-active;
-    }
-    .grw-pagetree-count {
-      background: $bgcolor;
+      background: $bgcolor-hover;
     }
     .grw-pagetree-button {
       &:not(:hover) {

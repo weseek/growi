@@ -102,7 +102,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-0 badge badge-pill badge-light text-muted">
+      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
@@ -459,7 +459,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
@@ -467,7 +467,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
-            <i className="icon-plus text-muted d-block p-0" />
+            <i className="icon-plus d-block p-0" />
           </button>
         </div>
       </li>
