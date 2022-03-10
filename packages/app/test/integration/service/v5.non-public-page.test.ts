@@ -400,7 +400,7 @@ describe('PageService page operations with non-public pages', () => {
       const revision2 = await Revision.findOne({ pageId: trashedPage2._id });
       expectAllToBeTruthy([trashedPage1, trashedPage2, revision1, revision2]);
 
-      await revertDeletedPage(trashedPage1, dummyUser1, {}, true);
+      await revertDeletedPage(trashedPage1, npDummyUser2, {}, true);
       const revertedPage = await Page.findOne({ path: '/np_revert3' });
       const middlePage = await Page.findOne({ path: '/np_revert3/middle' });
       const notRestrictedPage = await Page.findOne({ path: '/np_revert3/middle/np_revert4' });
