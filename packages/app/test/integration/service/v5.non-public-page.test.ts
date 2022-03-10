@@ -49,6 +49,9 @@ describe('PageService page operations with non-public pages', () => {
   const pageIdRename4 = new mongoose.Types.ObjectId();
   const pageIdRename5 = new mongoose.Types.ObjectId();
   const pageIdRename6 = new mongoose.Types.ObjectId();
+  const pageIdRename7 = new mongoose.Types.ObjectId();
+  const pageIdRename8 = new mongoose.Types.ObjectId();
+  const pageIdRename9 = new mongoose.Types.ObjectId();
 
   /**
    * Revert
@@ -247,6 +250,29 @@ describe('PageService page operations with non-public pages', () => {
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
       },
+      {
+        _id: pageIdRename7,
+        path: '/np_rename7_destination',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdIsolate,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: pageIdRename5,
+      },
+      {
+        _id: pageIdRename8,
+        path: '/np_rename8',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+      },
+      {
+        _id: pageIdRename9,
+        path: '/np_rename8/np_rename9',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser2._id,
+        lastUpdateUser: dummyUser2._id,
+      },
     ]);
     /*
      * Duplicate
@@ -389,7 +415,9 @@ describe('PageService page operations with non-public pages', () => {
       mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
-      await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+      if (page.grant !== Page.GRANT_RESTRICTED) {
+        await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+      }
 
       return renamedPage;
     };
@@ -459,6 +487,30 @@ describe('PageService page operations with non-public pages', () => {
       expect(renamedChildPage).toBeNull();
       expect(renamedGrandchildPage).toBeNull();
 
+    });
+    test('Should rename/move with descendants with only restricted pages', async() => {
+      // BR => Before Rename
+      const path1BR = '/np_rename7_destination';
+      const path2BR = '/np_rename8';
+      const path3BR = '/np_rename8/np_rename9';
+      const destinationPage = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
+      const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_RESTRICTED });
+      const grandchild = await Page.findOne({ path: path3BR, grant: Page.GRANT_RESTRICTED });
+
+      expectAllToBeTruthy([destinationPage, childPage, grandchild]);
+
+      const newPath = '/np_rename7_destination/np_rename8';
+      await renamePage(childPage, newPath, dummyUser1, { isRecursively: true });
+
+      const renamedPage = await Page.findOne({ path: newPath });
+      const childPageBeforeRename = await Page.findOne({ path: path2BR });
+      const grandchildBeforeRename = await Page.findOne({ path: path3BR });
+      expectAllToBeTruthy([renamedPage, grandchildBeforeRename]);
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toBeNull();
+      expect(childPageBeforeRename).toBeNull();
     });
   });
   describe('Duplicate', () => {
