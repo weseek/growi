@@ -292,7 +292,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       toastError(err);
     }
     finally {
-      setRenaming(false);
+      setTimeout(() => {
+        setRenaming(false);
+      }, 1000);
     }
   };
 
