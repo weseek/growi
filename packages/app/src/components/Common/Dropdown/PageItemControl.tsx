@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -212,11 +212,19 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-
-  const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
-  const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
+  const [shouldFetch, setShouldFetch] = useState(fetchOnInit);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+
+  // update shouldFetch (and will never be false)
+  useEffect(() => {
+    if (shouldFetch) {
+      return;
+    }
+    if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
+      setShouldFetch(true);
+    }
+  }, [isOpen, presetPageInfo, shouldFetch]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -224,10 +232,10 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       await onClickBookmarkMenuItem(_pageId, _newValue);
     }
 
-    if (shouldMutate) {
+    if (shouldFetch) {
       mutatePageInfo();
     }
-  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldMutate]);
+  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
 
   const isLoading = shouldFetch && fetchedPageInfo == null;
 
