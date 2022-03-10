@@ -282,11 +282,13 @@ describe('V5 page migration', () => {
     });
 
     test("should replace empty page with same path with new non-empty page and update all related children's parent", async() => {
-      const page1 = await Page.findOne({ path: '/normalize_10', isEmpty: true });
-      const page2 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId8, isEmpty: true });
-      const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 }); // not v5
-      const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
-      const page5 = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
+      const page1 = await Page.findOne({ path: '/normalize_10', isEmpty: true, parent: { $ne: null } });
+      const page2 = await Page.findOne({
+        path: '/normalize_10/normalize_11_gA', _id: pageId8, isEmpty: true, parent: { $ne: null },
+      });
+      const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9, parent: null }); // not v5
+      const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB', parent: { $ne: null } });
+      const page5 = await Page.findOne({ path: '/normalize_10/normalize_12_gC', parent: { $ne: null } });
       expectAllToBeTruthy([page1, page2, page3, page4, page5]);
 
       await normalizeParentRecursivelyByPages([page3], testUser1);
@@ -302,11 +304,10 @@ describe('V5 page migration', () => {
 
       expect(page1AM.isEmpty).toBeTruthy();
       expect(page3AM.parent).toStrictEqual(page1AM._id);
-      // Todo: enable the code below after this is solved: https://redmine.weseek.co.jp/issues/90060
-      // expect(page4AM.parent).toStrictEqual(page3AF._id);
+      expect(page4AM.parent).toStrictEqual(page3AM._id);
       expect(page5AM.parent).toStrictEqual(page1AM._id);
 
-      expect(page3AM.isEmpty).toBeFalsy();
+      expect(page3AM.isEmpty).toBe(false);
     });
   });
 
