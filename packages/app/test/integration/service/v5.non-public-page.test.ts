@@ -568,8 +568,8 @@ describe('PageService page operations with non-public pages', () => {
       return duplicatedPage;
     };
     test('Duplicate sinle page with GRANT_RESTRICTED', async() => {
-      const basePage = await Page.findOne({ path: '/np_duplicate1' });
-      const baseRevision = await Revision.findOne({ pageId: basePage._id });
+      const basePage = await Page.findOne({ path: '/np_duplicate1' }).populate({ path: 'revision', model: 'Revision' });
+      const baseRevision = basePage.revision;
       expectAllToBeTruthy([basePage, baseRevision]);
 
       const newPagePath = '/dup_np_duplicate1';
