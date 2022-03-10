@@ -284,6 +284,9 @@ ul.pagination {
       lighten($bgcolor-list-hover, 5%),
       $gray-500
     );
+    .grw-pagetree-triangle-btn {
+      @include button-outline-svg-icon-variant($secondary, $gray-200);
+    }
     .grw-pagetree-count {
       color: $gray-400;
       background: $gray-700;
@@ -294,10 +297,6 @@ ul.pagination {
       background: $bgcolor-list-hover;
     }
   }
-}
-
-.grw-pagetree-triangle-btn {
-  @include button-outline-svg-icon-variant($secondary, $gray-200);
 }
 
 // Page Management Dropdown icon

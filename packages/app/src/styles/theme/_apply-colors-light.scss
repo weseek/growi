@@ -179,6 +179,9 @@ $border-color: $border-color-global;
       $bgcolor-list-active,
       $gray-400
     );
+    .grw-pagetree-triangle-btn {
+      @include button-outline-svg-icon-variant($gray-400, $primary);
+    }
     .grw-pagetree-count {
       color: $gray-500;
       background: $gray-200;
@@ -189,10 +192,6 @@ $border-color: $border-color-global;
       background: $bgcolor-list-hover;
     }
   }
-}
-
-.grw-pagetree-triangle-btn {
-  @include button-outline-svg-icon-variant($gray-400, $primary);
 }
 
 .btn.btn-page-item-control {
