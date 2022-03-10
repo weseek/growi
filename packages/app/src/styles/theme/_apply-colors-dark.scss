@@ -296,6 +296,18 @@ ul.pagination {
   }
 }
 
+.btn.btn-page-item-control {
+  @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+  @include hover() {
+    background-color: $gray-600;
+  }
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: $gray-200;
+  }
+  box-shadow: none !important;
+}
+
 /*
  * Popover
  */

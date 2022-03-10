@@ -35,7 +35,7 @@
     background-color: transparent;
     border-color: $border-color-global;
 
-    &.grw-pagetree-is-target {
+    &.grw-pagetree-current-page-item {
       background: $bgcolor-hover;
     }
     .grw-pagetree-button {
