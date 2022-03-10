@@ -2571,17 +2571,38 @@ class PageService {
       async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // 1. Remove unnecessary empty pages
+        // 1. Remove unnecessary empty pages & reset parent for pages which had had those empty pages
         const pageIdsToNotDelete = pages.map(p => p._id);
         const emptyPagePathsToDelete = pages.map(p => p.path);
+
+        const builder1 = new PageQueryBuilder(Page.find({ isEmpty: true }, { _id: 1 }), true);
+        builder1.addConditionToListByPathsArray(emptyPagePathsToDelete);
+        builder1.addConditionToExcludeByPageIdsArray(pageIdsToNotDelete);
+
+        const emptyPagesToDelete = await builder1.query.lean().exec();
+        const resetParentOperations = emptyPagesToDelete.map((p) => {
+          return {
+            updateOne: {
+              filter: {
+                parent: p._id,
+              },
+              update: {
+                parent: null,
+              },
+            },
+          };
+        });
+
+        await Page.bulkWrite(resetParentOperations);
+
         await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
 
         // 2. Create lacking parents as empty pages
         await Page.createEmptyPagesByPaths(parentPaths, user, false);
 
         // 3. Find parents
-        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
-        const parents = await builder
+        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
+        const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
           .query
           .lean()
