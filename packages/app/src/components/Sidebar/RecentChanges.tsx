@@ -121,7 +121,7 @@ SmallPageItem.propTypes = {
 };
 
 
-const RecentChanges: FC<void> = () => {
+const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: pages, mutate } = useSWRxRecentlyUpdated();

@@ -36,7 +36,6 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
-  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onRenamed?(): void
@@ -364,12 +363,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
 
-  useEffect(() => {
-    if (!props.isScrolled && page.isTarget) {
-      document.dispatchEvent(new CustomEvent('targetItemRendered'));
-    }
-  }, [props.isScrolled, page.isTarget]);
-
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -480,7 +473,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
-              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onRenamed={onRenamed}
