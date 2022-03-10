@@ -9,6 +9,9 @@ describe('PageService page operations with non-public pages', () => {
 
   let dummyUser1;
   let dummyUser2;
+  let npDummyUser1;
+  let npDummyUser2;
+  let npDummyUser3;
 
   let crowi;
   let Page;
@@ -57,23 +60,87 @@ describe('PageService page operations with non-public pages', () => {
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
 
-    await UserGroup.insertMany([{ name: 'DummyGroup1' }]);
-    const dummyUserGroup1 = await UserGroup.findOne({ username: 'v5DummyUser1' });
-    await UserGroup.insertMany([{ name: 'DummyChildGroup2', parent: dummyUserGroup1 }]);
-    const dummyChildUserGroup2 = await UserGroup.findOne({ name: 'DummyChildGroup2' });
+    const npDummyUserId1 = new mongoose.Types.ObjectId();
+    const npDummyUserId2 = new mongoose.Types.ObjectId();
+    const npDummyUserId3 = new mongoose.Types.ObjectId();
+    await User.insertMany([
+      {
+        _id: npDummyUserId1, name: 'npDummyUser1', username: 'npDummyUser1', email: 'npDummyUser1@example.com',
+      },
+      {
+        _id: npDummyUserId2, name: 'npDummyUser2', username: 'npDummyUser2', email: 'npDummyUser2@example.com',
+      },
+      {
+        _id: npDummyUserId3, name: 'npDummyUser3', username: 'npDummyUser3', email: 'npDummyUser3@example.com',
+      },
+    ]);
+
+    const dummyGroupIdIsolate = new mongoose.Types.ObjectId();
+    const dummyGroupIdA = new mongoose.Types.ObjectId();
+    const dummyGroupIdB = new mongoose.Types.ObjectId();
+    const dummyGroupIdC = new mongoose.Types.ObjectId();
+
+    await UserGroup.insertMany([
+      {
+        _id: dummyGroupIdIsolate,
+        name: 'np_groupIsolate',
+      },
+      {
+        _id: dummyGroupIdA,
+        name: 'np_groupA',
+      },
+      {
+        _id: dummyGroupIdB,
+        name: 'np_groupB',
+        parent: dummyGroupIdA,
+      },
+      {
+        _id: dummyGroupIdC,
+        name: 'np_groupC',
+        parent: dummyGroupIdB,
+      },
+    ]);
 
     await UserGroupRelation.insertMany([
       {
-        relatedGroup: dummyUserGroup1,
-        relatedUser: dummyUser1,
+        relatedGroup: dummyGroupIdIsolate,
+        relatedUser: npDummyUserId1,
+        createdAt: new Date(),
       },
       {
-        relatedGroup: dummyUserGroup1,
-        relatedUser: dummyUser2,
+        relatedGroup: dummyGroupIdIsolate,
+        relatedUser: npDummyUserId2,
+        createdAt: new Date(),
       },
       {
-        relatedGroup: dummyChildUserGroup2,
-        relatedUser: dummyUser1,
+        relatedGroup: dummyGroupIdA,
+        relatedUser: npDummyUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: dummyGroupIdA,
+        relatedUser: npDummyUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: dummyGroupIdA,
+        relatedUser: npDummyUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: dummyGroupIdB,
+        relatedUser: npDummyUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: dummyGroupIdB,
+        relatedUser: npDummyUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: dummyGroupIdC,
+        relatedUser: npDummyUserId3,
+        createdAt: new Date(),
       },
     ]);
 
