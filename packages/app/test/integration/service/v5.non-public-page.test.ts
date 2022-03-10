@@ -12,6 +12,7 @@ describe('PageService page operations with non-public pages', () => {
   let npDummyUser1;
   let npDummyUser2;
   let npDummyUser3;
+  let groupIdIsolate;
   let groupIdA;
   let groupIdB;
   let groupIdC;
@@ -97,7 +98,7 @@ describe('PageService page operations with non-public pages', () => {
       },
     ]);
 
-    const groupIdIsolate = new mongoose.Types.ObjectId();
+    groupIdIsolate = new mongoose.Types.ObjectId();
     groupIdA = new mongoose.Types.ObjectId();
     groupIdB = new mongoose.Types.ObjectId();
     groupIdC = new mongoose.Types.ObjectId();
