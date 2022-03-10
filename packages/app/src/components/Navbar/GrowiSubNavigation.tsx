@@ -85,13 +85,13 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column" style={{ gap: `${isCompactMode ? '5px' : '0'}` }}>
+        <div className="d-flex flex-column py-md-2" style={{ gap: `${isCompactMode ? '5px' : '0'}` }}>
           { Controls && <Controls></Controls> }
         </div>
 
         {/* Page Authors */}
         { (showPageAuthors && !isCompactMode) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none pl-4 mb-0 ml-3">
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator as IUser} date={createdAt} locate="subnav" />
             </li>
