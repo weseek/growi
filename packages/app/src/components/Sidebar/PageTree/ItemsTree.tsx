@@ -8,7 +8,7 @@ import { debounce } from 'throttle-debounce';
 import loggerFactory from '~/utils/logger';
 
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
-import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
@@ -67,6 +67,19 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
+// user defined typeguard to assert the arg is not null
+type RenderingCondition = {
+  ancestorsChildrenResult: AncestorsChildrenResult | undefined,
+  rootPageResult: RootPageResult | undefined,
+}
+type SecondStageRenderingCondition = {
+  ancestorsChildrenResult: AncestorsChildrenResult,
+  rootPageResult: RootPageResult,
+}
+const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondStageRenderingCondition): condition is SecondStageRenderingCondition => {
+  return condition.ancestorsChildrenResult != null && condition.rootPageResult != null;
+};
+
 
 type ItemsTreeProps = {
   isEnableActions: boolean
@@ -85,8 +98,8 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
+  const { data: rootPageResult, error: error2 } = useSWRxRootPage();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -104,8 +117,12 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const rootElemRef = useRef(null);
 
-
-  const isSecondStageRendering = ancestorsChildrenData != null && rootPageData != null;
+  const renderingCondition = useMemo(() => {
+    return {
+      ancestorsChildrenResult,
+      rootPageResult,
+    };
+  }, [ancestorsChildrenResult, rootPageResult]);
 
   useEffect(() => {
     if (socket == null) {
@@ -190,7 +207,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
 
   useEffect(() => {
-    if (!isSecondStageRendering || isInitialScrollCompleted) {
+    if (!isSecondStageRenderingCondition(renderingCondition) || isInitialScrollCompleted) {
       return;
     }
 
@@ -212,7 +229,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     return () => {
       observer.disconnect();
     };
-  }, [isInitialScrollCompleted, isSecondStageRendering, scrollOnInitDebounced]);
+  }, [isInitialScrollCompleted, renderingCondition, scrollOnInitDebounced]);
   // *******************************  end  *******************************
 
   if (error1 != null || error2 != null) {
@@ -225,8 +242,11 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   /*
    * Render second stage
    */
-  if (isSecondStageRendering) {
-    initialItemNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
+  if (isSecondStageRenderingCondition(renderingCondition)) {
+    initialItemNode = generateInitialNodeAfterResponse(
+      renderingCondition.ancestorsChildrenResult.ancestorsChildren,
+      new ItemNode(renderingCondition.rootPageResult.rootPage),
+    );
   }
   /*
    * Before swr response comes back
