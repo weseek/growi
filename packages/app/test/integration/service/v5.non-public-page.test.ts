@@ -79,7 +79,6 @@ describe('PageService page operations with non-public pages', () => {
     const groupIdA = new mongoose.Types.ObjectId();
     const groupIdB = new mongoose.Types.ObjectId();
     const groupIdC = new mongoose.Types.ObjectId();
-
     await UserGroup.insertMany([
       {
         _id: groupIdIsolate,
