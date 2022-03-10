@@ -6,7 +6,7 @@
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "noEmit": false,
     "inlineSources": true,
 
