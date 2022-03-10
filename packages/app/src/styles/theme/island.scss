@@ -133,6 +133,9 @@ html[dark] {
         $color-list-active,
         lighten($bgcolor-list-hover, 5%)
       );
+      .grw-pagetree-triangle-btn {
+        @include button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
+      }
     }
   }
 }
