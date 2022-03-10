@@ -54,7 +54,7 @@ const AuthorInfo = (props) => {
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date">
+        <div className="text-muted text-date" data-hide-in-vrt>
           {renderParsedDate()}
         </div>
       </div>
