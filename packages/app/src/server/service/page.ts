@@ -208,7 +208,8 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId, operator) {
+  // TODOT: implement
+  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     if (operator.admin) {
       return true;
@@ -224,8 +225,17 @@ class PageService {
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
+  // TODOT: implement
+  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+    return false;
+  }
+
+  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user, isRecursively));
+  }
+
+  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDelete(p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -279,7 +289,7 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
+    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // TODOT: consider
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
