@@ -122,6 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenaming, setRenaming] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -272,6 +273,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
+      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -287,6 +289,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
+    }
+    finally {
+      setTimeout(() => {
+        setRenaming(false);
+      }, 1000);
     }
   };
 
@@ -314,7 +321,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = `${parentPath}${inputText}`;
+    const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (!isCreatable) {
@@ -324,7 +331,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     let initBody = '';
     if (isEnabledAttachTitleHeader) {
-      const pageTitle = pathUtils.addHeadingSlash(nodePath.basename(newPagePath));
+      const pageTitle = nodePath.basename(newPagePath);
       initBody = pathUtils.attachTitleHeader(pageTitle);
     }
 
@@ -425,9 +432,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             />
           )
           : (
-            <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-              <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-            </a>
+            <>
+              { isRenaming && (
+                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              )}
+              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+              </a>
+            </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
