@@ -427,25 +427,27 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown && (
-          <ClosableTextInput
-            isShown
-            value={nodePath.basename(page.path ?? '')}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={onPressEnterForRenameHandler}
-            inputValidator={inputValidator}
-          />
-        )}
-        { isRenaming && (
-          <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
-        )}
-        { !isRenameInputShown && (
-          <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-          </a>
-        )}
-        {(descendantCount > 0) && (
+        { isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={nodePath.basename(page.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={onPressEnterForRenameHandler}
+              inputValidator={inputValidator}
+            />
+          )
+          : (
+            <>
+              { isRenaming && (
+                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              )}
+              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+              </a>
+            </>
+          )}
+        {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={descendantCount} />
           </div>
@@ -474,9 +476,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
       </li>
 
-      {isEnableActions && (
+      {isEnableActions && isNewPageInputShown && (
         <ClosableTextInput
-          isShown={isNewPageInputShown}
           placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
           onPressEnter={onPressEnterForCreateHandler}

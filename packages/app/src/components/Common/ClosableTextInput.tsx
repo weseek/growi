@@ -16,7 +16,6 @@ export type AlertInfo = {
 }
 
 type ClosableTextInputProps = {
-  isShown: boolean
   value?: string
   placeholder?: string
   inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
@@ -107,7 +106,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
 
   return (
-    <div className={props.isShown ? 'd-block' : 'd-none'}>
+    <div className="d-block flex-fill">
       <input
         value={inputText || ''}
         ref={inputRef}
