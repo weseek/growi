@@ -191,6 +191,18 @@ $border-color: $border-color-global;
   }
 }
 
+.btn.btn-page-item-control {
+  @include button-outline-variant($gray-500, $primary, rgba($color-link, 0.2), transparent);
+  @include hover() {
+    background-color: lighten($primary, 58%);
+  }
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: $primary;
+  }
+  box-shadow: none !important;
+}
+
 /*
  * GROWI page list
  */

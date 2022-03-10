@@ -103,7 +103,7 @@ const SCROLL_OFFSET_TOP = window.innerHeight / 2;
 
 const scrollTargetItem = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  const target = document.getElementById('grw-pagetree-is-target');
+  const target = document.getElementById('grw-pagetree-current-page-item');
   if (scrollElement != null && target != null) {
     smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
   }
