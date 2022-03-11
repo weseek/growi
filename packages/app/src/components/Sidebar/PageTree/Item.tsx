@@ -337,7 +337,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
+      // force open
+      setIsOpen(true);
+
       setCreating(true);
+
       await apiv3Post('/pages/', {
         path: newPagePath,
         body: initBody,
@@ -345,11 +349,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
       });
-
-      mutateChildren();
-
-      // force open
-      setIsOpen(true);
 
       toastSuccess(t('successfully_saved_the_page'));
     }
