@@ -1054,9 +1054,9 @@ export default (crowi: Crowi): any => {
     }
 
     const isExRestricted = pageData.grant === GRANT_RESTRICTED;
-    const isPageMigrated = pageData.parent != null;
+    const isPageOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isExRestricted && (!isV5Compatible || !isPageMigrated)) {
+    if (!isExRestricted && (!isV5Compatible || !isPageOnTree)) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
@@ -1071,6 +1071,22 @@ export default (crowi: Crowi): any => {
 
     if (grant === GRANT_RESTRICTED) {
       newPageData.parent = null;
+
+      const isChildrenExist = pageData?.descendantCount > 0;
+
+      if (isPageOnTree) {
+        if (isChildrenExist) {
+          // Update children's parent with new parent
+          const newParentForChildren = await this.createEmptyPage(newPageData.path, pageData.parent, pageData.descendantCount);
+          await this.updateMany(
+            { parent: pageData._id },
+            { parent: newParentForChildren._id },
+          );
+        }
+        else {
+          await this.removeLeafEmptyPagesRecursively(pageData.parent);
+        }
+      }
     }
     else {
       /*
