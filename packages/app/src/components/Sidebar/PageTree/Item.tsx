@@ -341,6 +341,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
+
+      if (!hasDescendants) {
+        setIsOpen(true);
+      }
+
       setCreating(true);
 
       await apiv3Post('/pages/', {
