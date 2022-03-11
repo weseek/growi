@@ -1048,7 +1048,7 @@ export default (crowi: Crowi): any => {
   };
 
   schema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
-    if (crowi.configManager == null || crowi.pageGrantService == null) {
+    if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
     }
 
@@ -1123,6 +1123,17 @@ export default (crowi: Crowi): any => {
     pageEvent.emit('update', savedPage, user);
 
     // Sub operation
+    // 1. Update descendantCount
+    const shouldPlusUpdateDescCount = isExRestricted && grant !== GRANT_RESTRICTED;
+    const shouldMinusUpdateDescCount = isExRestricted && grant !== GRANT_RESTRICTED;
+    if (shouldPlusUpdateDescCount) {
+      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, true);
+    }
+    else if (shouldMinusUpdateDescCount) {
+      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, true);
+    }
+
+    // 2. Delete unnecessary empty pages
     if (isExPageOnTree && !isChildrenExist) {
       await this.removeLeafEmptyPagesRecursively(exParent);
     }
