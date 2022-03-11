@@ -3,6 +3,8 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '@growi/core';
 
+import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+
 export interface Config {
   _id: Types.ObjectId;
   ns: string;
@@ -60,10 +62,10 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:list-policy:hideRestrictedByOwner' : false,
   'security:list-policy:hideRestrictedByGroup' : false,
   // DEPRECATED: 'security:pageCompleteDeletionAuthority' : undefined,
-  'security:pageDeletionAuthority' : undefined,
-  'security:pageCompleteDeletionAuthority' : undefined,
-  'security:pageRecursiveDeletionAuthority' : undefined,
-  'security:pageRecursiveCompleteDeletionAuthority' : undefined,
+  'security:pageDeletionAuthority' : PageDeleteConfigValue.Anyone,
+  'security:pageCompleteDeletionAuthority' : PageDeleteConfigValue.Anyone,
+  'security:pageRecursiveDeletionAuthority' : PageDeleteConfigValue.Inherit,
+  'security:pageRecursiveCompleteDeletionAuthority' : PageDeleteConfigValue.Inherit,
   'security:disableLinkSharing' : false,
 
   'security:passport-local:isEnabled' : true,
