@@ -678,37 +678,37 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision.body).toBe(baseRevision.body);
     });
 
-    // test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
-    //   const basePath1 = '/np_duplicate2';
-    //   const basePath2 = '/np_duplicate2/np_duplicate3';
-    //   const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id, grantedGroup: groupIdA })
-    //     .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
-    //   const basePage2 = await Page.findOne({ path: basePath2, parent: basePage1._id, grantedGroup: groupIdB })
-    //     .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
-    //   const baseRevision1 = basePage1.revision;
-    //   const baseRevision2 = basePage2.revision;
-    //   expectAllToBeTruthy([basePage1, basePage2, baseRevision1, baseRevision2]);
+    test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
+      const basePath1 = '/np_duplicate2';
+      const basePath2 = '/np_duplicate2/np_duplicate3';
+      const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id, grantedGroup: groupIdA })
+        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
+      const basePage2 = await Page.findOne({ path: basePath2, parent: basePage1._id, grantedGroup: groupIdB })
+        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
+      const baseRevision1 = basePage1.revision;
+      const baseRevision2 = basePage2.revision;
+      expectAllToBeTruthy([basePage1, basePage2, baseRevision1, baseRevision2]);
 
-    //   const newPagePath = '/dup_np_duplicate2';
-    //   await duplicate(basePage1, newPagePath, npDummyUser2, true);
+      const newPagePath = '/dup_np_duplicate2';
+      await duplicate(basePage1, newPagePath, npDummyUser2, true);
 
-    //   const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
-    //   const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
-    //   const duplicatedRevision1 = duplicatedPage1.revision;
-    //   const duplicatedRevision2 = duplicatedPage2.revision;
-    //   expectAllToBeTruthy([duplicatedPage1, duplicatedPage2, duplicatedRevision1, duplicatedRevision2]);
+      const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedRevision1 = duplicatedPage1.revision;
+      const duplicatedRevision2 = duplicatedPage2.revision;
+      expectAllToBeTruthy([duplicatedPage1, duplicatedPage2, duplicatedRevision1, duplicatedRevision2]);
 
-    //   expect(xssSpy).toHaveBeenCalled();
-    //   expect(duplicatedPage1.grantedGroup).toStrictEqual(groupIdA._id);
-    //   expect(duplicatedPage2.grantedGroup).toStrictEqual(groupIdB._id);
-    //   expect(duplicatedPage1.parent).toStrictEqual(basePage1.parent);
-    //   expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage1.grantedGroup).toStrictEqual(groupIdA._id);
+      expect(duplicatedPage2.grantedGroup).toStrictEqual(groupIdB._id);
+      expect(duplicatedPage1.parent).toStrictEqual(basePage1.parent);
+      expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
 
-    //   expect(duplicatedRevision1.body).toBe(baseRevision1.body);
-    //   expect(duplicatedRevision2.body).toBe(baseRevision2.body);
-    //   expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
-    //   expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
-    // });
+      expect(duplicatedRevision1.body).toBe(baseRevision1.body);
+      expect(duplicatedRevision2.body).toBe(baseRevision2.body);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+    });
     test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async() => {
       const basePath1 = '/np_duplicate4';
       const basePath2 = '/np_duplicate4/np_duplicate5';
