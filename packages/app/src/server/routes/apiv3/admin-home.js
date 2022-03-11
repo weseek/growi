@@ -74,6 +74,7 @@ module.exports = (crowi) => {
       installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
+      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
 
     return res.apiv3({ adminHomeParams });

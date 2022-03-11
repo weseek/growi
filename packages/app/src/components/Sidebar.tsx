@@ -2,7 +2,7 @@ import React, {
   FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
-import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
@@ -29,6 +29,8 @@ const GlobalNavigation = () => {
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
+  const { scheduleToPut } = useUserUISettings();
+
   const itemSelectedHandler = useCallback((selectedContents) => {
     if (isDrawerMode) {
       return;
@@ -43,9 +45,9 @@ const GlobalNavigation = () => {
     }
 
     mutateSidebarCollapsed(newValue, false);
-    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
+    scheduleToPut({ isSidebarCollapsed: newValue });
 
-  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed]);
+  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
@@ -87,6 +89,8 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
+
+  const { scheduleToPut } = useUserUISettings();
 
   const [isTransitionEnabled, setTransitionEnabled] = useState(false);
 
@@ -165,8 +169,8 @@ const Sidebar: FC<Props> = (props: Props) => {
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
     mutateSidebarCollapsed(newValue, false);
-    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
-  }, [isCollapsed, mutateSidebarCollapsed]);
+    scheduleToPut({ isSidebarCollapsed: newValue });
+  }, [isCollapsed, mutateSidebarCollapsed, scheduleToPut]);
 
   useEffect(() => {
     if (isCollapsed) {
@@ -199,18 +203,18 @@ const Sidebar: FC<Props> = (props: Props) => {
       // force collapsed
       mutateSidebarCollapsed(true);
       mutateProductNavWidth(sidebarMinWidth, false);
-      scheduleToPutUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
+      scheduleToPut({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
     }
     else {
       const newWidth = resizableContainer.current.clientWidth;
       mutateSidebarCollapsed(false);
       mutateProductNavWidth(newWidth, false);
-      scheduleToPutUserUISettings({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
+      scheduleToPut({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');
 
-  }, [mutateProductNavWidth, mutateSidebarCollapsed]);
+  }, [mutateProductNavWidth, mutateSidebarCollapsed, scheduleToPut]);
 
   const dragableAreaMouseDownHandler = useCallback((event: React.MouseEvent) => {
     if (!isResizableByDrag) {
