@@ -22,13 +22,13 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する",
-    "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式にアップグレードしてください。",
+    "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
-    "upgrade_to_v5": "v5 互換形式 へのアップグレード",
-    "modal_migration_warning": "管理者はユーザーに、アップグレード中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
-    "start_upgrading": "アップグレードを開始",
-    "successfully_started": "正常にアップグレードが開始されました",
-    "already_upgraded": "アップグレードは既に完了しています"
+    "upgrade_to_v5": "v5 互換形式 へ変換",
+    "modal_migration_warning": "管理者はユーザーに、v5 互換形式への変換中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
+    "start_upgrading": "v5 互換形式への変換を開始",
+    "successfully_started": "正常に v5 互換形式への変換が開始されました",
+    "already_upgraded": "v5 互換形式への変換は既に完了しています"
   },
   "app_setting": {
     "site_name": "サイト名",
