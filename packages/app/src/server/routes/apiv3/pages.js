@@ -760,7 +760,6 @@ module.exports = (crowi) => {
      * Delete Completely
      */
     if (isCompletely) {
-      // TODOT: pass isRecursively as well
       pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     /*

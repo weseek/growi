@@ -38,6 +38,7 @@ class SecuritySetting extends React.Component {
   }
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, t) {
+    const isRecursiveDeletion = deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
     return (
       <div className="row mb-4">
         <div className="col-md-3 text-md-right mb-2">
@@ -63,7 +64,7 @@ class SecuritySetting extends React.Component {
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion)
+                isRecursiveDeletion
                 && (
                   <button
                     className="dropdown-item"
@@ -74,13 +75,17 @@ class SecuritySetting extends React.Component {
                   </button>
                 )
               }
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => { setState(PageDeleteConfigValue.Anyone) }}
-              >
-                {t('security_setting.anyone')}
-              </button>
+              {
+                !isRecursiveDeletion && (
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => { setState(PageDeleteConfigValue.Anyone) }}
+                  >
+                    {t('security_setting.anyone')}
+                  </button>
+                )
+              }
               <button
                 className="dropdown-item"
                 type="button"

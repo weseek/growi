@@ -22,6 +22,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
 
@@ -208,25 +209,44 @@ class PageService {
     });
   }
 
-  // TODOT: implement
   canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (operator.admin) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      const operatorId = operator?._id;
-      return (operatorId != null && operatorId.equals(creatorId));
-    }
+    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
-    return false;
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
   }
 
-  // TODOT: implement
   canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
+    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, pageRecursiveDeletionAuthority);
+  }
+
+  private canDeleteLogic(creatorId: ObjectIdLike, operator, isRecursively: boolean, authority, recursiveAuthority): boolean {
+    const isAdmin = operator.admin;
+    const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
+
+    if (isAdmin) {
+      return true;
+    }
+
+    if (isRecursively) {
+      if (recursiveAuthority === PageDeleteConfigValue.Inherit || recursiveAuthority == null) {
+        // Do nothing
+      }
+      else if (recursiveAuthority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+        return true;
+      }
+    }
+
+    if (authority === PageDeleteConfigValue.Anyone || authority == null) {
+      return true;
+    }
+    if (authority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+      return true;
+    }
+
     return false;
   }
 
@@ -289,7 +309,7 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // TODOT: consider
+    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
