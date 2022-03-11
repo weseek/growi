@@ -88,7 +88,7 @@ class AppSettingsPageContents extends React.Component {
 
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header" id="maintenance-mode">{t('Maintenance Mode')}</h2>
+            <h2 className="admin-setting-header" id="maintenance-mode">{t('admin:maintenance_mode.maintenance_mode')}</h2>
             <MaintenanceMode />
           </div>
         </div>

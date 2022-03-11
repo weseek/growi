@@ -50,8 +50,9 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
     <div className="mb-5">
       <ConfirmModal
         isModalOpen={isModalOpen}
-        warningMessage={t('admin:maintenance_mode.warning_message')}
-        supplymentaryMessage={t('admin:maintenance_mode.supplymentary_message')}
+        warningMessage={isMaintenanceMode ? t('admin:maintenance_mode.warning_message_to_end') : t('admin:maintenance_mode.warning_message_to_start')}
+        // eslint-disable-next-line max-len
+        supplymentaryMessage={isMaintenanceMode ? null : t('admin:maintenance_mode.supplymentary_message_to_start')}
         confirmButtonTitle={isMaintenanceMode ? t('admin:maintenance_mode.end_maintenance_mode') : t('admin:maintenance_mode.start_maintenance_mode')}
         onConfirm={onConfirmHandler}
         onCancel={() => closeModal()}
@@ -62,7 +63,7 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
         <br />
         <span className="text-warning">
           <i className="icon-exclamation icon-fw"></i>
-          {t('admin:maintenance_mode.supplymentary_message')}
+          {t('admin:maintenance_mode.supplymentary_message_to_start')}
         </span>
       </p>
       <div className="row my-3">
