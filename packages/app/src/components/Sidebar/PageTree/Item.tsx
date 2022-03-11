@@ -241,7 +241,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
-  }, []);
+
+    if (hasDescendants) {
+      setIsOpen(true);
+    }
+  }, [hasDescendants]);
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
@@ -337,9 +341,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
-      // force open
-      setIsOpen(true);
-
       setCreating(true);
 
       await apiv3Post('/pages/', {
@@ -350,17 +351,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         createFromPageTree: true,
       });
 
+      setCreating(false);
+
       mutateChildren();
 
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
       toastError(err);
-    }
-    finally {
-      setTimeout(() => {
-        setCreating(false);
-      }, 500);
     }
   };
 
