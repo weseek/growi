@@ -1053,9 +1053,10 @@ export default (crowi: Crowi): any => {
       throw Error('Crowi is not set up');
     }
 
+    const isExRestricted = pageData.grant === GRANT_RESTRICTED;
     const isPageMigrated = pageData.parent != null;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    if (!isExRestricted && (!isV5Compatible || !isPageMigrated)) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
@@ -1087,6 +1088,11 @@ export default (crowi: Crowi): any => {
       }
       if (!isGrantNormalized) {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+
+      if (isExRestricted) {
+        const newParent = await this.getParentAndFillAncestors(newPageData.path, user);
+        newPageData.parent = newParent._id;
       }
     }
 
