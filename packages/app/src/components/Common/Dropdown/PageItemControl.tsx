@@ -40,6 +40,7 @@ type CommonProps = {
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
+  isInstantRename?: boolean,
 }
 
 
@@ -55,7 +56,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
-    additionalMenuItemRenderer: AdditionalMenuItems,
+    additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
 
 
@@ -151,7 +152,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
           <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
+            {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
 
