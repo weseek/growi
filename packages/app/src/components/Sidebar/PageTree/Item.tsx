@@ -341,10 +341,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
-      if (!hasDescendants) {
-        setIsOpen(true);
-      }
-
       setCreating(true);
 
       await apiv3Post('/pages/', {
@@ -358,6 +354,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       setCreating(false);
 
       mutateChildren();
+
+      if (!hasDescendants) {
+        setIsOpen(true);
+      }
 
       toastSuccess(t('successfully_saved_the_page'));
     }
