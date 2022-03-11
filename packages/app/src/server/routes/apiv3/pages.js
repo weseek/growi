@@ -760,13 +760,14 @@ module.exports = (crowi) => {
      * Delete Completely
      */
     if (isCompletely) {
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     /*
      * Trash
      */
     else {
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
     }
 
     if (pagesCanBeDeleted.length === 0) {

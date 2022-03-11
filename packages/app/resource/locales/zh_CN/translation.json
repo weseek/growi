@@ -371,7 +371,7 @@
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "新建页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
-		"user_not_admin": "仅管理员用户可以完全删除"
+		"user_not_admin": "仅管理员用户可以删除"
   },
   "page_history": {
     "revision_list": "修订清单",
@@ -626,8 +626,15 @@
 		"page_listing_2": "页面列表/搜索<br>受用户组限制",
 		"page_listing_2_desc": "显示列出/搜索时受用户组限制的页面",
     "page_access_and_delete_rights": "页面访问/删除权限",
-		"complete_deletion": "限制完全删除页面",
-		"complete_deletion_explain": "限制可以完全删除页面的用户。",
+    "deletion": "限制捣毁一个选定的单一页面",
+    "deletion_explain": "限制用户对选定的单一页面进行垃圾处理。",
+    "complete_deletion": "限制完全删除一个选定的单页",
+    "complete_deletion_explain": "限制可以完全删除所选单页的用户。",
+    "recursive_deletion": "限制捣毁包括子孙在内的网页",
+    "recursive_deletion_explain": "限制用户可以捣毁包括子孙在内的页面。",
+    "recursive_complete_deletion": "限制完全删除包括子孙在内的页面",
+    "recursive_complete_deletion_explain": "限制可以完全删除页面的用户，包括子孙。",
+    "inherit": "继承（使用与单页相同的设置）。",
 		"admin_only": "仅管理员",
 		"admin_and_author": "管理员|作者",
 		"anyone": "任何人",
