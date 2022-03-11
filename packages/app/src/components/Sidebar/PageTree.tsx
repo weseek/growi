@@ -27,8 +27,8 @@ const PageTree: FC = memo(() => {
         <div className="grw-sidebar-content-header p-3">
           <h3 className="mb-0">{t('Page Tree')}</h3>
         </div>
-        <div className="mt-5 mx-2 text-center">
-          <h3 className="text-gray">Page Tree now loading...</h3>
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
         </div>
       </>
     );
