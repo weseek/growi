@@ -997,7 +997,8 @@
     "maintenance_mode": "维护模式",
     "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
     "admin_page": "管理员页",
-    "login": "登录"
+    "login": "登录",
+    "logout": "登出"
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",
