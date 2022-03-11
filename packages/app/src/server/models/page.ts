@@ -818,7 +818,7 @@ schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectId
     if (!page.isEmpty) {
       return pageIds;
     }
-
+    console.log(await self.find({ _id: { $ne: childPage?._id }, parent: page._id }));
     const isChildrenOtherThanTargetExist = await self.exists({ _id: { $ne: childPage?._id }, parent: page._id });
     if (isChildrenOtherThanTargetExist) {
       return pageIds;
@@ -1054,6 +1054,9 @@ export default (crowi: Crowi): any => {
     }
 
     const isExRestricted = pageData.grant === GRANT_RESTRICTED;
+    const isChildrenExist = pageData?.descendantCount > 0;
+    const exParent = pageData.parent;
+
     const isPageOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isExRestricted && (!isV5Compatible || !isPageOnTree)) {
@@ -1070,23 +1073,17 @@ export default (crowi: Crowi): any => {
     const newPageData = pageData;
 
     if (grant === GRANT_RESTRICTED) {
-      newPageData.parent = null;
 
-      const isChildrenExist = pageData?.descendantCount > 0;
-
-      if (isPageOnTree) {
-        if (isChildrenExist) {
-          // Update children's parent with new parent
-          const newParentForChildren = await this.createEmptyPage(newPageData.path, pageData.parent, pageData.descendantCount);
-          await this.updateMany(
-            { parent: pageData._id },
-            { parent: newParentForChildren._id },
-          );
-        }
-        else {
-          await this.removeLeafEmptyPagesRecursively(pageData.parent);
-        }
+      if (isPageOnTree && isChildrenExist) {
+        // Update children's parent with new parent
+        const newParentForChildren = await this.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
+        await this.updateMany(
+          { parent: pageData._id },
+          { parent: newParentForChildren._id },
+        );
       }
+
+      newPageData.parent = null;
     }
     else {
       /*
@@ -1125,6 +1122,10 @@ export default (crowi: Crowi): any => {
     }
 
     pageEvent.emit('update', savedPage, user);
+
+    if (isPageOnTree && !isChildrenExist) {
+      await this.removeLeafEmptyPagesRecursively(exParent);
+    }
 
     return savedPage;
   };
