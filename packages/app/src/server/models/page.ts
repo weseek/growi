@@ -818,7 +818,7 @@ schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectId
     if (!page.isEmpty) {
       return pageIds;
     }
-    console.log(await self.find({ _id: { $ne: childPage?._id }, parent: page._id }));
+
     const isChildrenOtherThanTargetExist = await self.exists({ _id: { $ne: childPage?._id }, parent: page._id });
     if (isChildrenOtherThanTargetExist) {
       return pageIds;
