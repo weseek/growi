@@ -52,6 +52,13 @@ context('Search all pages', () => {
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
+
+    /** TODO
+     * - Implement Add bookmark, move/rename , delete with tag
+     *
+    */
+
+
   })
 
 });
