@@ -24,10 +24,10 @@
     "go_to_settings": "Go to settings to enable the feature",
     "migration_desc": "There are some pages with old v4 compatibility. To take advantage of new features such as page trees and easy renaming, please convert all your pages to v5 compatibility.",
     "migration_note": "Note: You will lose unique constraints from the page paths.",
-    "upgrade_to_v5": "convert to v5 compatibility",
+    "upgrade_to_v5": "Convert to v5 compatibility",
     "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during the conversion.",
     "start_upgrading": "Start converting to v5 compatibility",
-    "successfully_started": "Succeeded to start the conversion ",
+    "successfully_started": "Succeeded to start the conversion",
     "already_upgraded": "You have already completed the conversion to v5 compatibility"
   },
   "app_setting": {
