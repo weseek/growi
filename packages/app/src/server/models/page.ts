@@ -1139,6 +1139,15 @@ export default (crowi: Crowi): any => {
     }
 
     if (isExRestricted && grant !== GRANT_RESTRICTED) {
+      const emptyPageAtSamePath = await this.findOne({ path: pageData.path, isEmpty: true });
+
+      if (emptyPageAtSamePath != null) {
+        // Update children's parent with new parent
+        await this.updateMany(
+          { parent: emptyPageAtSamePath._id },
+          { parent: savedPage._id },
+        );
+      }
       await this.findOneAndDelete({ path: pageData.path, isEmpty: true });
     }
 
