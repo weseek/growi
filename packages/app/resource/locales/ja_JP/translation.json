@@ -987,7 +987,8 @@
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
     "admin_page": "管理画面へ",
-    "login": "ログイン"
+    "login": "ログイン",
+    "logout": "ログアウト"
   },
   "pagetree": {
     "private_legacy_pages": "旧形式のプライベートページ",
