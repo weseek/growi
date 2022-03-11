@@ -32,6 +32,7 @@ export default class AdminHomeContainer extends Container {
       copyState: this.copyStateValues.DEFAULT,
       installedPlugins: null,
       isV5Compatible: null,
+      isMaintenanceMode: null,
     };
 
   }
@@ -64,6 +65,7 @@ export default class AdminHomeContainer extends Container {
         installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
         isV5Compatible: adminHomeParams.isV5Compatible,
+        isMaintenanceMode: adminHomeParams.isMaintenanceMode,
       }));
     }
     catch (err) {
