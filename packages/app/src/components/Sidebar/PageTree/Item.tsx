@@ -341,7 +341,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
-
       if (!hasDescendants) {
         setIsOpen(true);
       }
