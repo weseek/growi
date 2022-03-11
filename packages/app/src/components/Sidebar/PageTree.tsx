@@ -65,13 +65,12 @@ const PageTree: FC = memo(() => {
         <h3 className="mb-0">{t('Page Tree')}</h3>
       </div>
 
-        <ItemsTree
-          isEnableActions={!isGuestUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-        />
-      </div>
+      <ItemsTree
+        isEnableActions={!isGuestUser}
+        targetPath={path}
+        targetPathOrId={targetPathOrId}
+        targetAndAncestorsData={targetAndAncestorsData}
+      />
 
       {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
         <div className="grw-pagetree-footer border-top p-3 w-100">
