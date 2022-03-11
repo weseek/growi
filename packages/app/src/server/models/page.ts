@@ -1125,7 +1125,7 @@ export default (crowi: Crowi): any => {
     // Sub operation
     // 1. Update descendantCount
     const shouldPlusUpdateDescCount = isExRestricted && grant !== GRANT_RESTRICTED;
-    const shouldMinusUpdateDescCount = isExRestricted && grant !== GRANT_RESTRICTED;
+    const shouldMinusUpdateDescCount = !isExRestricted && grant === GRANT_RESTRICTED;
     if (shouldPlusUpdateDescCount) {
       await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, true);
     }
