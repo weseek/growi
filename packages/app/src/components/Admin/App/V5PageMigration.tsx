@@ -50,7 +50,9 @@ const V5PageMigration: FC<Props> = (props: Props) => {
       </p>
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>Upgrade to v5</button>
+          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>
+            {t('admin:v5_page_migration.upgrade_to_v5')}
+          </button>
         </div>
       </div>
     </>
