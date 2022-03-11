@@ -350,6 +350,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         createFromPageTree: true,
       });
 
+      mutateChildren();
+
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
