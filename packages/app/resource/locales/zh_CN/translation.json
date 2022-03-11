@@ -371,7 +371,7 @@
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "新建页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
-		"user_not_admin": "仅管理员用户可以完全删除"
+		"user_not_admin": "仅管理员用户可以删除"
   },
   "page_history": {
     "revision_list": "修订清单",

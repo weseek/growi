@@ -22,7 +22,9 @@ import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+import {
+  PageDeleteConfigValue, PageDeleteConfigValueToProcessValidation, PageRecursiveDeleteConfigValueToProcessValidation,
+} from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
 
@@ -213,17 +215,35 @@ class PageService {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, recursiveAuthority);
   }
 
   canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, pageRecursiveDeletionAuthority);
+    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, recursiveAuthority);
   }
 
-  private canDeleteLogic(creatorId: ObjectIdLike, operator, isRecursively: boolean, authority, recursiveAuthority): boolean {
+  private calcRecursiveDeleteConfigValue(confForSingle, confForRecursive) {
+    if (confForRecursive === PageDeleteConfigValue.Inherit) {
+      return confForSingle;
+    }
+
+    return confForRecursive;
+  }
+
+  private canDeleteLogic(
+      creatorId: ObjectIdLike,
+      operator,
+      isRecursively: boolean,
+      authority: PageDeleteConfigValueToProcessValidation,
+      recursiveAuthority: PageRecursiveDeleteConfigValueToProcessValidation,
+  ): boolean {
     const isAdmin = operator.admin;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
 
@@ -232,10 +252,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      if (recursiveAuthority === PageDeleteConfigValue.Inherit || recursiveAuthority == null) {
-        // Do nothing
-      }
-      else if (recursiveAuthority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+      if (recursiveAuthority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
         return true;
       }
     }

@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
-import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+import {
+  PageSingleDeleteConfigValue, PageSingleDeleteCompConfigValue,
+  PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
+} from '~/interfaces/page-delete-config';
 import { toastError } from '../util/apiNotification';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -23,10 +26,10 @@ export default class AdminGeneralSecurityContainer extends Container {
       wikiMode: '',
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
-      currentPageDeletionAuthority: PageDeleteConfigValue.AdminOnly,
-      currentPageCompleteDeletionAuthority: PageDeleteConfigValue.AdminOnly,
-      currentPageRecursiveDeletionAuthority: PageDeleteConfigValue.Inherit,
-      currentPageRecursiveCompleteDeletionAuthority: PageDeleteConfigValue.Inherit,
+      currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
+      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
+      currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
+      currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
       appSiteUrl: appContainer.config.crowi.url || '',
