@@ -988,7 +988,7 @@ export default (crowi: Crowi): any => {
      * update empty page if exists, if not, create a new page
      */
     let page;
-    if (emptyPage != null) {
+    if (emptyPage != null && grant !== GRANT_RESTRICTED) {
       page = emptyPage;
       const descendantCount = await this.recountDescendantCount(page._id);
 
@@ -997,12 +997,6 @@ export default (crowi: Crowi): any => {
     }
     else {
       page = new Page();
-    }
-
-    let parentId: IObjectId | string | null = null;
-    const parent = await Page.getParentAndFillAncestors(path, user);
-    if (!isTopPage(path)) {
-      parentId = parent._id;
     }
 
     page.path = path;
