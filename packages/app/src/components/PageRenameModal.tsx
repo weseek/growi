@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
+import { pagePathUtils } from '@growi/core';
 import { usePageRenameModal } from '~/stores/modal';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -29,8 +30,10 @@ const isV5Compatible = (meta: unknown): boolean => {
 const PageRenameModal = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const { isUsersHomePage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
+  const [isPagePathRenameable, setIsPagePathRenameableh] = useState();
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;
@@ -131,15 +134,29 @@ const PageRenameModal = (): JSX.Element => {
     }
   }, [page, t]);
 
+  const checkIsPagePathRenameable = useCallback((pageNameInput) => {
+    if (page == null) {
+      return;
+    }
+    return isUsersHomePage(pageNameInput);
+
+  }, [isUsersHomePage, page]);
+
   const checkExistPathsDebounce = useMemo(() => {
     return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
+  const checkIsUsersHomePageDebounce = useMemo(() => {
+    return debounce(1000, checkIsPagePathRenameable);
+  }, [checkIsPagePathRenameable]);
+
   useEffect(() => {
     if (page != null && pageNameInput !== page.data.path) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
+      checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+
 
   /**
    * change pageNameInput
@@ -175,10 +192,14 @@ const PageRenameModal = (): JSX.Element => {
 
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
-
-  const submitButtonDisabled = isV5Compatible(page.meta)
+  const isDirectoryUnderUserPage = isUsersHomePage(pageNameInput);
+  const submitButtonDisabledForV5 = isV5Compatible(page.meta)
     ? existingPaths.length !== 0 // v5 data
     : !isRenameRecursively; // v4 data
+
+
+  const submitButtonDisabled = isDirectoryUnderUserPage && submitButtonDisabledForV5;
+
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
@@ -209,8 +230,12 @@ const PageRenameModal = (): JSX.Element => {
           </div>
         </div>
 
+
         { isTargetPageDuplicate && (
           <p className="text-danger">Error: Target path is duplicated.</p>
+        ) }
+        { isDirectoryUnderUserPage && (
+          <p className="text-danger">Error: Cannot to move to directory under /user page.</p>
         ) }
 
         { !isV5Compatible(page.meta) && (
