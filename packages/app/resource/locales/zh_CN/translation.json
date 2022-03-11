@@ -392,12 +392,12 @@
       "Rename this page only": "仅重命名此页面",
       "Force rename all child pages": "强制重命名所有子页面 ",
       "Other options": "其他选项",
-      "Update metadata": "更新元数据",
+      "Do not update metadata": "不更新元数据",
       "Redirect": "重定向"
 		},
 		"help": {
       "redirect": "Redirect to new page if someone accesses <code>%s</code>",
-      "metadata": "Update last update user and updated date",
+      "metadata": "Remains last update user and updated date as is",
       "recursive": "Move/Rename children of under <code>%s</code> recursively"
 		}
 	},
