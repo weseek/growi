@@ -23,7 +23,7 @@ import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
-  PageDeleteConfigValue, PageDeleteConfigValueToProcessValidation, PageRecursiveDeleteConfigValueToProcessValidation,
+  PageDeleteConfigValue, PageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
@@ -241,20 +241,22 @@ class PageService {
       creatorId: ObjectIdLike,
       operator,
       isRecursively: boolean,
-      authority: PageDeleteConfigValueToProcessValidation,
-      recursiveAuthority: PageRecursiveDeleteConfigValueToProcessValidation,
+      authority: PageDeleteConfigValueToProcessValidation | null,
+      recursiveAuthority: PageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator.admin;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
 
-    if (isAdmin) {
-      return true;
+    if (isRecursively) {
+      return this.compareDeleteConfig(isAdmin, isOperator, recursiveAuthority);
     }
 
-    if (isRecursively) {
-      if (recursiveAuthority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
-        return true;
-      }
+    return this.compareDeleteConfig(isAdmin, isOperator, authority);
+  }
+
+  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: PageDeleteConfigValueToProcessValidation | null): boolean {
+    if (isAdmin) {
+      return true;
     }
 
     if (authority === PageDeleteConfigValue.Anyone || authority == null) {

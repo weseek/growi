@@ -6,10 +6,7 @@ export const PageDeleteConfigValue = {
 } as const;
 export type PageDeleteConfigValue = typeof PageDeleteConfigValue[keyof typeof PageDeleteConfigValue];
 
-export type PageDeleteConfigValueToProcessValidation =
-  Exclude<PageDeleteConfigValue, typeof PageDeleteConfigValue.Inherit>;
-export type PageRecursiveDeleteConfigValueToProcessValidation =
-  Exclude<PageDeleteConfigValue, typeof PageDeleteConfigValue.Inherit | typeof PageDeleteConfigValue.Anyone>;
+export type PageDeleteConfigValueToProcessValidation = Exclude<PageDeleteConfigValue, typeof PageDeleteConfigValue.Inherit>;
 
 export const PageSingleDeleteConfigValue = {
   Anyone: 'anyOne', // must be "anyOne" (not "anyone") for backward compatibility

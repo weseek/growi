@@ -65,26 +65,24 @@ class SecuritySetting extends React.Component {
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
                 isRecursiveDeletion
-                && (
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => { setState(PageDeleteConfigValue.Inherit) }}
-                  >
-                    {t('security_setting.inherit')}
-                  </button>
-                )
-              }
-              {
-                !isRecursiveDeletion && (
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => { setState(PageDeleteConfigValue.Anyone) }}
-                  >
-                    {t('security_setting.anyone')}
-                  </button>
-                )
+                  ? (
+                    <button
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() => { setState(PageDeleteConfigValue.Inherit) }}
+                    >
+                      {t('security_setting.inherit')}
+                    </button>
+                  )
+                  : (
+                    <button
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() => { setState(PageDeleteConfigValue.Anyone) }}
+                    >
+                      {t('security_setting.anyone')}
+                    </button>
+                  )
               }
               <button
                 className="dropdown-item"
