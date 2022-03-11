@@ -8,7 +8,7 @@ import { TFunctionResult } from 'i18next';
 type ConfirmModalProps = {
   isModalOpen: boolean
   warningMessage: TFunctionResult
-  supplymentaryMessage: TFunctionResult
+  supplymentaryMessage: TFunctionResult | null
   confirmButtonTitle: TFunctionResult
   onConfirm?: () => Promise<void>
   onCancel?: () => void
@@ -31,18 +31,25 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
 
   return (
     <Modal isOpen={props.isModalOpen} toggle={onCancel} className="">
-      <ModalHeader tag="h4" toggle={onCancel} className="bg-warning">
+      <ModalHeader tag="h4" toggle={onCancel} className="bg-danger">
         <i className="icon-fw icon-question" />
         {t('Warning')}
       </ModalHeader>
       <ModalBody>
         {props.warningMessage}
-        <br />
-        <br />
-        <span className="text-danger">
-          <i className="icon-exclamation icon-fw"></i>
-          {props.supplymentaryMessage}
-        </span>
+        {
+          props.supplymentaryMessage != null && (
+            <>
+              <br />
+              <br />
+              <span className="text-warning">
+                <i className="icon-exclamation icon-fw"></i>
+                {props.supplymentaryMessage}
+              </span>
+            </>
+          )
+        }
+
       </ModalBody>
       <ModalFooter>
         <button

@@ -39,19 +39,21 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
       }
     }
     catch (err) {
-      toastError(isMaintenanceMode ? t('maintenance_mode.failed_to_end_maintenance_mode') : t('maintenance_mode.failed_to_start_maintenance_mode'));
+      toastError(isMaintenanceMode ? t('admin:maintenance_mode.failed_to_end_maintenance_mode') : t('admin:maintenance_mode.failed_to_start_maintenance_mode'));
     }
 
-    toastSuccess(isMaintenanceMode ? t('maintenance_mode.successfully_ended_maintenance_mode') : t('maintenance_mode.successfully_started_maintenance_mode'));
+    // eslint-disable-next-line max-len
+    toastSuccess(isMaintenanceMode ? t('admin:maintenance_mode.successfully_ended_maintenance_mode') : t('admin:maintenance_mode.successfully_started_maintenance_mode'));
   }, [isMaintenanceMode, adminAppContainer, closeModal]);
 
   return (
     <div className="mb-5">
       <ConfirmModal
         isModalOpen={isModalOpen}
-        warningMessage={t('admin:maintenance_mode.warning_message')}
-        supplymentaryMessage={t('admin:maintenance_mode.supplymentary_message')}
-        confirmButtonTitle={isMaintenanceMode ? t('maintenance_mode.end_maintenance_mode') : t('maintenance_mode.start_maintenance_mode')}
+        warningMessage={isMaintenanceMode ? t('admin:maintenance_mode.warning_message_to_end') : t('admin:maintenance_mode.warning_message_to_start')}
+        // eslint-disable-next-line max-len
+        supplymentaryMessage={isMaintenanceMode ? null : t('admin:maintenance_mode.supplymentary_message_to_start')}
+        confirmButtonTitle={isMaintenanceMode ? t('admin:maintenance_mode.end_maintenance_mode') : t('admin:maintenance_mode.start_maintenance_mode')}
         onConfirm={onConfirmHandler}
         onCancel={() => closeModal()}
       />
@@ -61,13 +63,13 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
         <br />
         <span className="text-warning">
           <i className="icon-exclamation icon-fw"></i>
-          {t('admin:maintenance_mode.supplymentary_message')}
+          {t('admin:maintenance_mode.supplymentary_message_to_start')}
         </span>
       </p>
       <div className="row my-3">
         <div className="mx-auto">
           <button type="button" className="btn btn-success" onClick={() => openModal()}>
-            {isMaintenanceMode ? t('maintenance_mode.end_maintenance_mode') : t('maintenance_mode.start_maintenance_mode')}
+            {isMaintenanceMode ? t('admin:maintenance_mode.end_maintenance_mode') : t('admin:maintenance_mode.start_maintenance_mode')}
           </button>
         </div>
       </div>

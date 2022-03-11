@@ -26,15 +26,15 @@ class AppSettingsPageContents extends React.Component {
           adminAppContainer.state.isMaintenanceMode && (
             <div className="alert alert-danger alert-link" role="alert">
               <h3 className="alert-heading">
-                {t('maintenance_mode.maintenance_mode')}
+                {t('admin:maintenance_mode.maintenance_mode')}
               </h3>
               <p>
-                {t('maintenance_mode.description')}
+                {t('admin:maintenance_mode.description')}
               </p>
               <hr />
               <a className="btn-link" href="#maintenance-mode" rel="noopener noreferrer">
                 <i className="fa fa-fw fa-arrow-down ml-1" aria-hidden="true"></i>
-                <strong>{t('maintenance_mode.end_maintenance_mode')}</strong>
+                <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
               </a>
             </div>
           )
@@ -88,7 +88,7 @@ class AppSettingsPageContents extends React.Component {
 
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header" id="maintenance-mode">{t('Maintenance Mode')}</h2>
+            <h2 className="admin-setting-header" id="maintenance-mode">{t('admin:maintenance_mode.maintenance_mode')}</h2>
             <MaintenanceMode />
           </div>
         </div>

@@ -30,6 +30,20 @@
     "successfully_started": "正常にマイグレーションが開始されました",
     "already_upgraded": "アップグレードは既に完了しています"
   },
+  "maintenance_mode": {
+    "maintenance_mode": "メンテナンスモード",
+    "under_maintenance_mode": "メンテナンスモード中",
+    "failed_to_start_maintenance_mode": "メンテナンスモードを開始できませんでした",
+    "failed_to_end_maintenance_mode": "メンテナンスモードを終了できませんでした",
+    "successfully_started_maintenance_mode": "メンテナンスモードを開始しました",
+    "successfully_ended_maintenance_mode": "メンテナンスモードを終了しました",
+    "warning_message_to_start": "メンテナンスモード中は管理画面にしかアクセスできなくなり、一般ユーザーは全ての操作が不能になります。",
+    "warning_message_to_end": "「データのインポート」および「V5 へのアップグレード」が進行中の場合は、処理が終了するまでメンテナンスモードを終了しないようにすることを推奨します。",
+    "supplymentary_message_to_start": "API についても管理者用 API しか機能しなくなります。",
+    "start_maintenance_mode": "メンテナンスモードを開始する",
+    "end_maintenance_mode": "メンテナンスモードを終了する",
+    "description": "メンテナンスモードでは、ユーザーのあらゆる操作を制限します。「データのインポート」および「V5 へのアップグレード」の際には必ずメンテナンスモードを開始してから行ってください。終了するには「セキュリティ設定」>「メンテナンスモード」から操作してください。"
+  },
   "app_setting": {
     "site_name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
