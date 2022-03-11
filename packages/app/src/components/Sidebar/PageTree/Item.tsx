@@ -460,7 +460,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
-          {!pagePathUtils.isUsersTopPage(`/${nodePath.basename(page.path ?? '')}`) && (
+          {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
             <button
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
