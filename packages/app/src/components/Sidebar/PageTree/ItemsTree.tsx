@@ -184,7 +184,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
-    const scrollTargetElement = document.getElementById('grw-pagetree-is-target');
+    const scrollTargetElement = document.getElementById('grw-pagetree-current-page-item');
 
     if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
       return;
