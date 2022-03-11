@@ -115,6 +115,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
+  const { isUsersTopPage, isUsersHomePage } = pagePathUtils;
   const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
@@ -152,7 +153,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     canDrag: () => {
-      const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
+      const isDraggable = !isUsersTopPage(page.path ?? '/') && !isUsersHomePage(page.path ?? '/');
       return isDraggable;
     },
     end: (item, monitor) => {
