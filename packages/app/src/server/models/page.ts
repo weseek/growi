@@ -16,6 +16,7 @@ import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } fr
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { PageRedirectModel } from './page-redirect';
 
+const { addTrailingSlash } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
@@ -163,7 +164,7 @@ class PageQueryBuilder {
     }
 
     const pathNormalized = pathUtils.normalizePath(path);
-    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+    const pathWithTrailingSlash = addTrailingSlash(path);
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
@@ -188,7 +189,7 @@ class PageQueryBuilder {
       return this;
     }
 
-    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+    const pathWithTrailingSlash = addTrailingSlash(path);
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
@@ -1052,13 +1053,13 @@ export default (crowi: Crowi): any => {
       throw Error('Crowi is not set up');
     }
 
-    const isExRestricted = pageData.grant === GRANT_RESTRICTED;
-    const isChildrenExist = pageData?.descendantCount > 0;
-    const isExPageOnTree = pageData.parent != null || isTopPage(pageData.path);
+    const wasRestricted = pageData.grant === GRANT_RESTRICTED;
+    const isChildrenExist = await this.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(pageData.path))}`), parent: { $ne: null } });
+    const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const exParent = pageData.parent;
 
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isExRestricted && (!isV5Compatible || !isExPageOnTree)) {
+    if (!wasRestricted && (!isV5Compatible || !wasOnTree)) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
@@ -1068,12 +1069,13 @@ export default (crowi: Crowi): any => {
     const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const grantedUserIds = pageData.grantedUserIds || [user._id];
+    const willBeOnTree = grant !== GRANT_RESTRICTED;
 
     const newPageData = pageData;
 
-    if (grant === GRANT_RESTRICTED) {
+    if (!willBeOnTree) {
 
-      if (isExPageOnTree && isChildrenExist) {
+      if (wasOnTree && isChildrenExist) {
         // Update children's parent with new parent
         const newParentForChildren = await this.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
         await this.updateMany(
@@ -1083,6 +1085,7 @@ export default (crowi: Crowi): any => {
       }
 
       newPageData.parent = null;
+      newPageData.descendantCount = 0;
     }
     else {
       /*
@@ -1102,7 +1105,7 @@ export default (crowi: Crowi): any => {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
       }
 
-      if (isExRestricted) {
+      if (wasRestricted) {
         const newParent = await this.getParentAndFillAncestors(newPageData.path, user);
         newPageData.parent = newParent._id;
       }
@@ -1122,33 +1125,39 @@ export default (crowi: Crowi): any => {
 
     pageEvent.emit('update', savedPage, user);
 
+    // Update ex children's parent
+    if (!wasOnTree && willBeOnTree) {
+      const emptyPageAtSamePath = await this.findOne({ path: pageData.path, isEmpty: true }); // this page is necessary to find children
+
+      if (isChildrenExist) {
+        if (emptyPageAtSamePath != null) {
+          // Update children's parent with new parent
+          await this.updateMany(
+            { parent: emptyPageAtSamePath._id },
+            { parent: savedPage._id },
+          );
+        }
+      }
+
+      await this.findOneAndDelete({ path: pageData.path, isEmpty: true }); // delete here
+    }
+
     // Sub operation
     // 1. Update descendantCount
-    const shouldPlusUpdateDescCount = isExRestricted && grant !== GRANT_RESTRICTED;
-    const shouldMinusUpdateDescCount = !isExRestricted && grant === GRANT_RESTRICTED;
+    const shouldPlusUpdateDescCount = !wasOnTree && willBeOnTree;
+    const shouldMinusUpdateDescCount = wasOnTree && !willBeOnTree;
     if (shouldPlusUpdateDescCount) {
-      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, true);
+      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
+      const newDescendantCount = await this.recountDescendantCount(newPageData._id);
+      await this.updateOne({  }, { descendantCount: newDescendantCount });
     }
     else if (shouldMinusUpdateDescCount) {
-      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, true);
+      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, -1, false);
     }
 
     // 2. Delete unnecessary empty pages
-    if (isExPageOnTree && !isChildrenExist) {
+    if (wasOnTree && !isChildrenExist) {
       await this.removeLeafEmptyPagesRecursively(exParent);
-    }
-
-    if (isExRestricted && grant !== GRANT_RESTRICTED) {
-      const emptyPageAtSamePath = await this.findOne({ path: pageData.path, isEmpty: true });
-
-      if (emptyPageAtSamePath != null) {
-        // Update children's parent with new parent
-        await this.updateMany(
-          { parent: emptyPageAtSamePath._id },
-          { parent: savedPage._id },
-        );
-      }
-      await this.findOneAndDelete({ path: pageData.path, isEmpty: true });
     }
 
     return savedPage;
