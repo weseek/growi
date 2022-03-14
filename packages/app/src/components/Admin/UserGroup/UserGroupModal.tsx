@@ -15,7 +15,7 @@ type Props = {
   onHide?: () => Promise<void> | void
 };
 
-const UserGroupCreateModal: FC<Props> = (props: Props) => {
+const UserGroupModal: FC<Props> = (props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
 
   const { t } = useTranslation();
@@ -92,4 +92,4 @@ const UserGroupCreateModal: FC<Props> = (props: Props) => {
   );
 };
 
-export default UserGroupCreateModal;
+export default UserGroupModal;

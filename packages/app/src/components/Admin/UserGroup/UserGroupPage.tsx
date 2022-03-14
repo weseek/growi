@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupCreateModal from './UserGroupCreateModal';
+import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -123,7 +123,7 @@ const UserGroupPage: FC = () => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-      <UserGroupCreateModal
+      <UserGroupModal
         onClickCreateButton={createUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}

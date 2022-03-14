@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupTable from '../UserGroup/UserGroupTable';
-import UserGroupCreateModal from '../UserGroup/UserGroupCreateModal';
+import UserGroupModal from '../UserGroup/UserGroupModal';
 import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
@@ -228,7 +228,7 @@ const UserGroupDetailPage: FC = () => {
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
         onClickCreateUserGroupButtonHandler={showCreateModal}
       />
-      <UserGroupCreateModal
+      <UserGroupModal
         onClickCreateButton={createChildUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
