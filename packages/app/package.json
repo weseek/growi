@@ -38,7 +38,7 @@
     "lint:swagger2openapi": "node node_modules/.bin/oas-validate tmp/swagger.json",
     "lint": "run-p lint:*",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
-    "test:ci": "cross-env NODE_ENV=test jest",
+    "test:ci": "cross-env NODE_ENV=test jest packages/app/test/integration/service/v5.migration.test.js",
     "prelint:eslint": "yarn resources:plugin",
     "prelint:swagger2openapi": "yarn openapi:v3",
     "reg:run": "reg-suit run",

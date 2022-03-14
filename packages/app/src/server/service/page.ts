@@ -2281,7 +2281,7 @@ class PageService {
     } = page;
 
     // check if any page exists at target path already
-    const existingPage = await Page.findOne({ path });
+    const existingPage = await Page.findOne({ path, parent: { $ne: null } });
     if (existingPage != null && !existingPage.isEmpty) {
       throw Error('Page already exists. Please rename the page to continue.');
     }
@@ -2663,10 +2663,16 @@ class PageService {
         await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
 
         // 2. Create lacking parents as empty pages
-        await Page.createEmptyPagesByPaths(parentPaths, user, false);
+        const orFilters = [
+          { path: { $in: publicPathsToNormalize }, grant: Page.GRANT_PUBLIC, status: Page.STATUS_PUBLISHED },
+          { path: { $in: publicPathsToNormalize }, parent: { $ne: null }, status: Page.STATUS_PUBLISHED },
+          { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
+        ];
+        const filterForEmptyPagesToCreate = { $or: orFilters };
+        await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForEmptyPagesToCreate);
 
         // 3. Find parents
-        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
+        const builder2 = new PageQueryBuilder(Page.find(), true);
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
           .addCustomAndCondition(grantFiltersByUser) // use addCustomAndCondition instead of addConditionToFilteringByViewerToEdit to reduce the num of queries

@@ -44,7 +44,7 @@ type TargetAndAncestorsResult = {
 export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
+  createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean, andFilter?): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
@@ -420,23 +420,40 @@ class PageQueryBuilder {
  * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
  * an empty page will not be created at that page's path.
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true): Promise<void> {
-  // find existing parents
-  const builder = new PageQueryBuilder(this.find({}, { _id: 0, path: 1 }), true);
-
-  await this.addConditionToFilteringByViewerToEdit(builder, user);
-
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true, filter?): Promise<void> {
+  const aggregationPipeline: any[] = [];
+  // 1. Filter by paths
+  aggregationPipeline.push({ $match: { path: { $in: paths } } });
+  // 2. Normalized condition
   if (onlyMigratedAsExistingPages) {
-    builder.addConditionAsMigrated();
+    aggregationPipeline.push({
+      $match: {
+        $or: [
+          { parent: { $ne: null } },
+          { path: '/' },
+        ],
+      },
+    });
   }
+  // 3. Add custom pipeline
+  // if (filter != null) {
+  //   aggregationPipeline.push({ $match: filter });
+  // }
+  // 4. Add grant conditions
+  let userGroups = null;
+  if (user != null) {
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+  const grantCondition = this.generateGrantCondition(user, userGroups);
+  aggregationPipeline.push({ $match: grantCondition });
 
-  const existingPages = await builder
-    .addConditionToListByPathsArray(paths)
-    .query
-    .lean()
-    .exec();
+  // Run aggregation
+  const existingPages = await this.aggregate(aggregationPipeline);
+
+
   const existingPagePaths = existingPages.map(page => page.path);
-
+  console.log('ええええええええ', existingPagePaths);
   // paths to create empty pages
   const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
 
