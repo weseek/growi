@@ -353,8 +353,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         createFromPageTree: true,
       });
 
-      setCreating(false);
-
       mutateChildren();
 
       if (!hasDescendants) {
