@@ -191,9 +191,6 @@ const PageCreateModal = (props) => {
 
           <div className="d-sm-flex align-items-center justify-items-between">
             <div className="flex-fill">
-              { isUsersHomePage(pageNameInput) && (
-                <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
-              ) }
               {isReachable
                 ? (
                   <PagePathAutoComplete
@@ -208,7 +205,6 @@ const PageCreateModal = (props) => {
                   <>
                     ii
                     <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
-                      {/* <form onSubmit={() => console.log('hi')}> */}
                       <input
                         type="text"
                         value={pageNameInput}
@@ -235,6 +231,9 @@ const PageCreateModal = (props) => {
             </div>
 
           </div>
+          { isUsersHomePage(pageNameInput) && (
+            <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
+          ) }
 
         </fieldset>
       </div>
