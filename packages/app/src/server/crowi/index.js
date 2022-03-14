@@ -682,7 +682,8 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
-    await this.pageOperationService.initPageOperation();
+    // TODO: Remove this code when resuming feature is implemented
+    await this.pageOperationService.init();
   }
 };
 

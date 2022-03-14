@@ -14,7 +14,6 @@ class PageOperationService {
 
   // TODO: Remove this code when resuming feature is implemented
   async init():Promise<void> {
-    // TODO: Remove this code when resuming feature is implemented
     await PageOperation.deleteMany({});
   }
 
