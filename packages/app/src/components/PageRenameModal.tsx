@@ -196,9 +196,7 @@ const PageRenameModal = (): JSX.Element => {
     ? existingPaths.length !== 0 // v5 data
     : !isRenameRecursively; // v4 data
 
-
   const isSubmitButtonDisabled = isDirectoryUnderUserPage || isSubmitButtonDisabledV4orV5;
-
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
