@@ -120,9 +120,15 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
+    // todo: replace PageComments by commonalizing PageComments and PageCommentList
     'page-comments-list': <PageComments />,
-    'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-content-footer': <PageContentFooter />,
+    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
+    'page-content-footer': <PageContentFooter
+      createdAt={new Date(pageContainer.state.createdAt)}
+      updatedAt={new Date(pageContainer.state.updatedAt)}
+      creator={pageContainer.state.creator}
+      revisionAuthor={pageContainer.state.revisionAuthor}
+    />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });

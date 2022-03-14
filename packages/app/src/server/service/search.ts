@@ -15,6 +15,8 @@ import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
 
@@ -34,6 +36,31 @@ const normalizeQueryString = (_queryString: string): string => {
   queryString = queryString.replace(/\s+/g, ' ');
 
   return queryString;
+};
+
+const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
+
+  const Page = crowi.model('Page') as unknown as PageModel;
+  const User = crowi.model('User');
+
+  const builder = new Page.PageQueryBuilder(Page.find(({ _id: { $in: pageIds } })), false);
+
+  builder.addConditionToPagenate(undefined, undefined); // offset and limit are unnesessary
+
+  builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL); // populate lastUpdateUser
+  builder.query = builder.query.populate({
+    path: 'creator',
+    select: User.USER_FIELDS_EXCEPT_CONFIDENTIAL,
+  });
+
+  const pages = await builder.query.clone().exec('find');
+  const totalCount = await builder.query.exec('count');
+
+  return {
+    pages,
+    totalCount,
+  };
+
 };
 
 class SearchService implements SearchQueryParser, SearchResolver {
@@ -368,13 +395,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
     /*
      * Format ElasticSearch result
      */
-    const Page = this.crowi.model('Page') as unknown as PageModel;
     const User = this.crowi.model('User');
     const result = {} as IFormattedSearchResult;
 
     // get page data
     const pageIds = searchResult.data.map((page) => { return page._id });
-    const findPageResult = await Page.findListByPageIds(pageIds);
+
+    const findPageResult = await findPageListByIds(pageIds, this.crowi);
 
     // set meta data
     result.meta = searchResult.meta;
@@ -396,6 +423,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
       // serialize lastUpdateUser
       if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
         pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
+      }
+
+      // serialize creator
+      if (pageData.creator != null && pageData.creator instanceof User) {
+        pageData.creator = serializeUserSecurely(pageData.creator);
       }
 
       // const data = searchResult.data.find((data) => {

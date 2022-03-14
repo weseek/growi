@@ -15,6 +15,9 @@ import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 
+import PageContentFooter from '../PageContentFooter';
+import PageCommentList from '../PageCommentList';
+
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -215,6 +218,14 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
           isRenderable
+        />
+        <PageCommentList appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} />
+        {/* todo: insert adding comment feature by CommentEditorLazyRenderer */}
+        <PageContentFooter
+          createdAt={new Date(pageWithMeta.data.createdAt)}
+          updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          creator={pageWithMeta.data.creator}
+          revisionAuthor={pageWithMeta.data.lastUpdateUser}
         />
       </div>
     </div>
