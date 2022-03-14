@@ -111,7 +111,7 @@
   "Create under": "ページを以下に作成",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
-  "V5 Page Migration": "V5 ページマイグレーション",
+  "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
   "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
@@ -392,7 +392,7 @@
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "新しいページが既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
-    "user_not_admin": "権限のあるユーザーのみが完全削除できます"
+    "user_not_admin": "権限のあるユーザーのみが削除できます"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -409,9 +409,10 @@
       "New page name": "移動先のページ名",
       "Failed to get subordinated pages": "配下ページの取得に失敗しました",
       "Failed to get exist path": "存在するパスの取得に失敗しました",
-      "Rename without exist path": "存在するパス以外を名前変更する",
       "Current page name": "現在のページ名",
-      "Recursively": "再帰的に移動/名前変更",
+      "Rename this page only": "このページのみを移動/名前変更",
+      "Force rename all child pages": "全ての配下のページを移動/名前変更する",
+      "Other options": "その他のオプション",
       "Do not update metadata": "メタデータを更新しない",
       "Redirect": "リダイレクトする"
     },
@@ -666,8 +667,15 @@
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_access_and_delete_rights": "ページの閲覧・削除権限",
-    "complete_deletion": "ページの完全削除",
-    "complete_deletion_explain": "ページを完全に削除できるユーザーを制限します。",
+    "deletion": "ページをゴミ箱に入れる(単体のみの操作)",
+    "deletion_explain": "ページをゴミ箱に入れることができるユーザーを制限します。",
+    "complete_deletion": "ページを完全削除する(単体のみの操作)",
+    "complete_deletion_explain": "ページを完全削除することができるユーザーを制限します。",
+    "recursive_deletion": "ページをゴミ箱に入れる(子孫を含む操作)",
+    "recursive_deletion_explain": "子孫を含めたページをゴミ箱に入れることができるユーザーを制限します。",
+    "recursive_complete_deletion": "ページを完全削除する(子孫を含む操作)",
+    "recursive_complete_deletion_explain": "子孫を含めたページを完全削除することができるユーザーを制限します。",
+    "inherit": "単体のみと同じ",
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
@@ -981,6 +989,13 @@
     "success_to_send_email": "メールを送信しました",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
+  },
+  "maintenance_mode":{
+    "maintenance_mode": "メンテナンスモード",
+    "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
+    "admin_page": "管理画面へ",
+    "login": "ログイン",
+    "logout": "ログアウト"
   },
   "pagetree": {
     "private_legacy_pages": "旧形式のプライベートページ",

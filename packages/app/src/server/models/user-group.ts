@@ -101,7 +101,7 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
     return ancestors;
   }
 
-  ancestors.push(parent);
+  ancestors.unshift(parent);
 
   return this.findGroupsWithAncestorsRecursively(parent, ancestors);
 };

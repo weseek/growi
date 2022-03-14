@@ -22,6 +22,9 @@ import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import {
+  PageDeleteConfigValue, PageDeleteConfigValueToProcessValidation,
+} from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
 
@@ -107,7 +110,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -209,24 +211,70 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId, operator) {
+  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (operator.admin) {
+    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
+
+    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, recursiveAuthority);
+  }
+
+  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
+    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
+
+    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, recursiveAuthority);
+  }
+
+  private calcRecursiveDeleteConfigValue(confForSingle, confForRecursive) {
+    if (confForRecursive === PageDeleteConfigValue.Inherit) {
+      return confForSingle;
+    }
+
+    return confForRecursive;
+  }
+
+  private canDeleteLogic(
+      creatorId: ObjectIdLike,
+      operator,
+      isRecursively: boolean,
+      authority: PageDeleteConfigValueToProcessValidation | null,
+      recursiveAuthority: PageDeleteConfigValueToProcessValidation | null,
+  ): boolean {
+    const isAdmin = operator.admin;
+    const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
+
+    if (isRecursively) {
+      return this.compareDeleteConfig(isAdmin, isOperator, recursiveAuthority);
+    }
+
+    return this.compareDeleteConfig(isAdmin, isOperator, authority);
+  }
+
+  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: PageDeleteConfigValueToProcessValidation | null): boolean {
+    if (isAdmin) {
       return true;
     }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
+
+    if (authority === PageDeleteConfigValue.Anyone || authority == null) {
       return true;
     }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      const operatorId = operator?._id;
-      return (operatorId != null && operatorId.equals(creatorId));
+    if (authority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+      return true;
     }
 
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
+  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user, isRecursively));
+  }
+
+  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDelete(p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -250,6 +298,7 @@ class PageService {
       return {
         data: page,
         meta: {
+          isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -279,7 +328,7 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
+    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
@@ -304,7 +353,7 @@ class PageService {
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || isTrashPage);
+    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
 
     return shouldUseV4Process;
   }
@@ -315,7 +364,7 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
+    const shouldUseV4Process = !isV5Compatible || isPageRestricted;
 
     return shouldUseV4Process;
   }
@@ -533,18 +582,15 @@ class PageService {
     const newParentPath = pathlib.dirname(toPath);
 
     // local util
-    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = [path]): string[] => {
-      const nextPath = pathlib.dirname(path);
-      if (nextPath === fromPath) {
-        return [...paths, nextPath];
-      }
+    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = []): string[] => {
+      if (path === fromPath) return paths;
 
-      paths.push(nextPath);
-
-      return collectAncestorPathsUntilFromPath(nextPath, paths);
+      const parentPath = pathlib.dirname(path);
+      paths.push(parentPath);
+      return collectAncestorPathsUntilFromPath(parentPath, paths);
     };
 
-    const pathsToInsert = collectAncestorPathsUntilFromPath(newParentPath);
+    const pathsToInsert = collectAncestorPathsUntilFromPath(toPath);
     const originalParent = await Page.findById(originalPage.parent);
     if (originalParent == null) {
       throw Error('Original parent not found');
@@ -2065,6 +2111,7 @@ class PageService {
 
     if (page.isEmpty) {
       return {
+        isV5Compatible: true,
         isEmpty: true,
         isMovable,
         isDeletable: false,
@@ -2077,6 +2124,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     return {
+      isV5Compatible: isTopPage(page.path) || page.parent != null,
       isEmpty: false,
       sumOfLikers: page.liker.length,
       likerIds: this.extractStringIds(likers),
@@ -2189,7 +2237,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
@@ -2370,6 +2418,9 @@ class PageService {
       // find pages again to get updated descendantCount
       // then calculate inc
       const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
+      if (pageAfterUpdatingDescendantCount == null) {
+        throw Error('Page not found after updating descendantCount');
+      }
 
       const exDescendantCount = page.descendantCount;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
@@ -2552,15 +2603,13 @@ class PageService {
         },
       ]);
 
-    // limit pages to get
+    // Limit pages to get
     const total = await Page.countDocuments(filter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
-
-    // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
 
     let countPages = 0;
@@ -2571,12 +2620,38 @@ class PageService {
       async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // Fill parents with empty pages
+        // 1. Remove unnecessary empty pages & reset parent for pages which had had those empty pages
+        const pageIdsToNotDelete = pages.map(p => p._id);
+        const emptyPagePathsToDelete = pages.map(p => p.path);
+
+        const builder1 = new PageQueryBuilder(Page.find({ isEmpty: true }, { _id: 1 }), true);
+        builder1.addConditionToListByPathsArray(emptyPagePathsToDelete);
+        builder1.addConditionToExcludeByPageIdsArray(pageIdsToNotDelete);
+
+        const emptyPagesToDelete = await builder1.query.lean().exec();
+        const resetParentOperations = emptyPagesToDelete.map((p) => {
+          return {
+            updateOne: {
+              filter: {
+                parent: p._id,
+              },
+              update: {
+                parent: null,
+              },
+            },
+          };
+        });
+
+        await Page.bulkWrite(resetParentOperations);
+
+        await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
+
+        // 2. Create lacking parents as empty pages
         await Page.createEmptyPagesByPaths(parentPaths, user, false);
 
-        // Find parents
-        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
-        const parents = await builder
+        // 3. Find parents
+        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
+        const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
           .query
           .lean()
@@ -2628,9 +2703,6 @@ class PageService {
           logger.error('Failed to update page.parent.', err);
           throw err;
         }
-
-        // Remove unnecessary empty pages
-        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
 
         callback();
       },

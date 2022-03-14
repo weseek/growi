@@ -21,7 +21,7 @@ import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -55,6 +55,8 @@ const UserGroupDetailPage: FC = () => {
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -190,11 +192,25 @@ const UserGroupDetailPage: FC = () => {
 
   return (
     <div>
-      <a href="/admin/user-groups" className="btn btn-outline-secondary">
-        <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-        {t('admin:user_group_management.back_to_list')}
-      </a>
-      {/* TODO 85062: Link to the ancestors group */}
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('admin:user_group_management.group_list')}</a></li>
+          {
+            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
+              ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
+                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
+                  { ancestorUserGroup._id === userGroup._id ? (
+                    <>{ancestorUserGroup.name}</>
+                  ) : (
+                    <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
+                  )}
+                </li>
+              ))
+            )
+          }
+        </ol>
+      </nav>
+
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}

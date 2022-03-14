@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
@@ -357,6 +357,8 @@ class PageGrantService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
@@ -368,8 +370,12 @@ class PageGrantService {
         path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
-      const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
-      if (isNormalized) {
+      if (!pageUtils.isPageNormalized(page)) {
+        nonNormalizable.push(page);
+        continue;
+      }
+
+      if (await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {

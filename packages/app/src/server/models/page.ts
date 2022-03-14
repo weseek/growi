@@ -46,7 +46,7 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
-  findByIdsAndViewer(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -366,6 +366,17 @@ class PageQueryBuilder {
       .and({
         _id: {
           $in: pageIds,
+        },
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $nin: pageIds,
         },
       });
 
@@ -829,16 +840,6 @@ schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectId
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
 };
 
-schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpty = false) {
-  const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
-
-  await this.addConditionToFilteringByViewerToEdit(builder, user);
-
-  const pages = await builder.query.exec();
-
-  return pages;
-};
-
 schema.statics.normalizeDescendantCountById = async function(pageId) {
   const children = await this.find({ parent: pageId });
 
@@ -1052,9 +1053,13 @@ export default (crowi: Crowi): any => {
       throw Error('Crowi is not set up');
     }
 
-    const isPageMigrated = pageData.parent != null;
+    const isExRestricted = pageData.grant === GRANT_RESTRICTED;
+    const isChildrenExist = pageData?.descendantCount > 0;
+    const exParent = pageData.parent;
+
+    const isPageOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    if (!isExRestricted && (!isV5Compatible || !isPageOnTree)) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
@@ -1068,6 +1073,16 @@ export default (crowi: Crowi): any => {
     const newPageData = pageData;
 
     if (grant === GRANT_RESTRICTED) {
+
+      if (isPageOnTree && isChildrenExist) {
+        // Update children's parent with new parent
+        const newParentForChildren = await this.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
+        await this.updateMany(
+          { parent: pageData._id },
+          { parent: newParentForChildren._id },
+        );
+      }
+
       newPageData.parent = null;
     }
     else {
@@ -1087,6 +1102,11 @@ export default (crowi: Crowi): any => {
       if (!isGrantNormalized) {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
       }
+
+      if (isExRestricted) {
+        const newParent = await this.getParentAndFillAncestors(newPageData.path, user);
+        newPageData.parent = newParent._id;
+      }
     }
 
     newPageData.applyScope(user, grant, grantUserGroupId);
@@ -1102,6 +1122,10 @@ export default (crowi: Crowi): any => {
     }
 
     pageEvent.emit('update', savedPage, user);
+
+    if (isPageOnTree && !isChildrenExist) {
+      await this.removeLeafEmptyPagesRecursively(exParent);
+    }
 
     return savedPage;
   };
