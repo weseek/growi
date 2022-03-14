@@ -5,6 +5,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+import { TFunctionResult } from 'i18next';
 
 import { Ref } from '~/interfaces/common';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
@@ -13,6 +14,7 @@ import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
+  buttonLabel?: TFunctionResult,
   onClickButton?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
@@ -24,7 +26,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, onClickButton, isShow, onHide,
+    userGroup, buttonLabel, onClickButton, isShow, onHide,
   } = props;
 
   /*
@@ -102,7 +104,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
       <ModalFooter>
         <div className="form-group">
           <button type="button" className="btn btn-primary" onClick={onClickButtonHandler}>
-            {t('Create')}
+            {buttonLabel}
           </button>
         </div>
       </ModalFooter>
