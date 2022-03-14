@@ -1,5 +1,6 @@
-context('Search all pages', () => {
-  const ssPrefix = 'search-all-pages-';
+/* eslint-disable cypress/no-unnecessary-waiting */
+context('Search current tree', () => {
+  const ssPrefix = 'search-current-page-';
 
   let connectSid: string | undefined;
 
@@ -21,11 +22,11 @@ context('Search all pages', () => {
     }
   });
 
-  it(`Search by typing help and press ENTER`, () => {
+  it(`Search current tree by typing help and press ENTER`, () => {
     const searchText = 'help';
     cy.visit('/');
     cy.getByTestid('select-search-scope').first().click({force: true});
-    cy.getByTestid('earch-current-tree').first().click({force: true});
+    cy.get('div.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
     cy.get('div.rbt-input-hint-container > input').click();
     cy.screenshot(`${ssPrefix}search-input-focused`, { capture: 'viewport'});
     cy.get('div.rbt-input-hint-container > input').type(`${searchText}`);
@@ -40,12 +41,11 @@ context('Search all pages', () => {
   });
 
 
-  it(`Search by tag, ex: tag:help and press ENTER`, () => {
+  it(`Search current tree by tag, ex: tag:help and press ENTER`, () => {
     const searchText = `tag:help`;
     cy.visit('/');
-
     cy.getByTestid('select-search-scope').first().click({force: true});
-    cy.getByTestid('earch-current-tree').first().click({force: true});
+    cy.get('div.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
 
     cy.get('div.rbt-input-hint-container > input').click();
     cy.get('div.rbt-input-hint-container > input').type(`${searchText}`);
@@ -59,12 +59,32 @@ context('Search all pages', () => {
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
-    /** TODO
-     * - Implement Add bookmark, move/rename , delete with tag
-     *
-    */
+    // Add Bookmark
+    cy.getByTestid('add-bookmark').first().click({force: true});
+    cy.wait(2000);
+    cy.screenshot(`${ssPrefix}add-bookmark`, {capture: 'viewport'});
 
+    // Duplicate page
+    cy.getByTestid('duplicate-page').first().click({force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}duplicate-page`, {capture: 'viewport'});
 
-  })
+    // Close Modal
+    cy.get('body').type('{esc}');
+
+    // Move / Rename Page
+    cy.getByTestid('move-page').first().click({force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}move-rename-page`, {capture: 'viewport'});
+
+    // Close Modal
+    cy.get('body').type('{esc}');
+
+    // Delete page
+    cy.getByTestid('delete-page').first().click({ force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}delete-page`, {capture: 'viewport'});
+
+  });
 
 });
