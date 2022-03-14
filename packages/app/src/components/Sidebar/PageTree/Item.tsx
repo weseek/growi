@@ -181,7 +181,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-
     const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
 
     try {
