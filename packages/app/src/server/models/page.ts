@@ -1152,6 +1152,11 @@ export default (crowi: Crowi): any => {
       await this.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
     }
     else if (shouldMinusUpdateDescCount) {
+      // Update from parent. Parent is null if newPageData.grant is RESTRECTED.
+      if (newPageData.grant === GRANT_RESTRICTED) {
+        await crowi.pageService.updateDescendantCountOfAncestors(exParent, -1, true);
+      }
+
       await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, -1, false);
     }
 
