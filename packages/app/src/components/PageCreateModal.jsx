@@ -19,7 +19,7 @@ import { usePageCreateModal } from '~/stores/modal';
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 const {
-  userPageRoot, isCreatablePage, generateEditorPath,
+  userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
@@ -72,6 +72,7 @@ const PageCreateModal = (props) => {
    * @param {string} value
    */
   function onChangePageNameInputHandler(value) {
+    isUsersHomePage(value);
     setPageNameInput(value);
   }
 
@@ -189,8 +190,10 @@ const PageCreateModal = (props) => {
           <h3 className="grw-modal-head pb-2">{t('Create under')}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
-
             <div className="flex-fill">
+              { isUsersHomePage(pageNameInput) && (
+                <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
+              ) }
               {isReachable
                 ? (
                   <PagePathAutoComplete
@@ -202,16 +205,20 @@ const PageCreateModal = (props) => {
                   />
                 )
                 : (
-                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
-                    <input
-                      type="text"
-                      value={pageNameInput}
-                      className="form-control flex-fill"
-                      placeholder={t('Input page name')}
-                      onChange={e => onChangePageNameInputHandler(e.target.value)}
-                      required
-                    />
-                  </form>
+                  <>
+                    ii
+                    <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                      {/* <form onSubmit={() => console.log('hi')}> */}
+                      <input
+                        type="text"
+                        value={pageNameInput}
+                        className="form-control flex-fill"
+                        placeholder={t('Input page name')}
+                        onChange={e => onChangePageNameInputHandler(e.target.value)}
+                        required
+                      />
+                    </form>
+                  </>
                 )}
             </div>
 
@@ -221,6 +228,7 @@ const PageCreateModal = (props) => {
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
+                disabled={isUsersHomePage(pageNameInput)}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
