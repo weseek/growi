@@ -235,7 +235,7 @@ const PageRenameModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
         { isDirectoryUnderUserPage && (
-          <p className="text-danger">Error: Cannot to move to directory under /user page.</p>
+          <p className="text-danger">Error: Cannot move to directory under /user page.</p>
         ) }
 
         { !isV5Compatible(page.meta) && (
