@@ -123,6 +123,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isRenaming, setRenaming] = useState(false);
+  const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -152,8 +153,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     canDrag: () => {
-      const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
-      return isDraggable;
+      if (page.path == null) {
+        return false;
+      }
+      return !pagePathUtils.isUsersProtectedPages(page.path);
     },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
@@ -240,7 +243,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
-  }, []);
+
+    if (hasDescendants) {
+      setIsOpen(true);
+    }
+  }, [hasDescendants]);
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
@@ -336,6 +343,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
+      setCreating(true);
+
       await apiv3Post('/pages/', {
         path: newPagePath,
         body: initBody,
@@ -343,7 +352,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
       });
+
+      setCreating(false);
+
       mutateChildren();
+
+      if (!hasDescendants) {
+        setIsOpen(true);
+      }
+
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
@@ -454,19 +471,22 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            isInstantRename
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
-          <button
-            type="button"
-            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-            onClick={onClickPlusButton}
-          >
-            <i className="icon-plus d-block p-0" />
-          </button>
+          {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+            <button
+              type="button"
+              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              onClick={onClickPlusButton}
+            >
+              <i className="icon-plus d-block p-0" />
+            </button>
+          )}
         </div>
       </li>
 
@@ -479,7 +499,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         />
       )}
       {
-        isOpen && hasChildren() && currentChildren.map(node => (
+        isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
@@ -491,6 +511,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
+            { isCreating && (currentChildren.length - 1 === index) && (
+              <div className="text-muted text-center">
+                <i className="fa fa-spinner fa-pulse mr-1"></i>
+              </div>
+            )}
           </div>
         ))
       }

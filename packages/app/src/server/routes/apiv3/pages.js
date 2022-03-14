@@ -760,13 +760,14 @@ module.exports = (crowi) => {
      * Delete Completely
      */
     if (isCompletely) {
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     /*
      * Trash
      */
     else {
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
     }
 
     if (pagesCanBeDeleted.length === 0) {
@@ -779,22 +780,6 @@ module.exports = (crowi) => {
     crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
-  });
-
-  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    try {
-      if (!isV5Compatible) {
-        // this method throws and emit socketIo event when error occurs
-        crowi.pageService.normalizeAllPublicPages(); // not await
-      }
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-    }
-
-    return res.apiv3({ isV5Compatible });
   });
 
   // eslint-disable-next-line max-len
