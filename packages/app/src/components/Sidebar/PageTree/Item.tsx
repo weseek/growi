@@ -366,6 +366,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     catch (err) {
       toastError(err);
     }
+    finally {
+      setCreating(false);
+    }
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
