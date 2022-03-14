@@ -10,7 +10,7 @@ import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  onClickCreateButton?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
+  onClickButton?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
 };
@@ -21,7 +21,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, onClickCreateButton, isShow, onHide,
+    userGroup, onClickButton, isShow, onHide,
   } = props;
 
   /*
@@ -41,15 +41,15 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onClickCreateButtonHandler = useCallback(async(e) => {
+  const onClickButtonHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
 
-    if (onClickCreateButton == null) {
+    if (onClickButton == null) {
       return;
     }
 
-    await onClickCreateButton({ name: currentName, description: currentDescription });
-  }, [currentName, currentDescription, onClickCreateButton]);
+    await onClickButton({ name: currentName, description: currentDescription });
+  }, [currentName, currentDescription, onClickButton]);
 
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
@@ -83,7 +83,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
       <ModalFooter>
         <div className="form-group">
-          <button type="button" className="btn btn-primary" onClick={onClickCreateButtonHandler}>
+          <button type="button" className="btn btn-primary" onClick={onClickButtonHandler}>
             {t('Create')}
           </button>
         </div>
