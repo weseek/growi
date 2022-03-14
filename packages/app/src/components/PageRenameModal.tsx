@@ -33,7 +33,6 @@ const PageRenameModal = (): JSX.Element => {
   const { isUsersHomePage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
-  const [isPagePathRenameable, setIsPagePathRenameableh] = useState();
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;
