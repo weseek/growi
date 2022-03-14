@@ -1,16 +1,19 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useEffect, useCallback,
+} from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
+import { Ref } from '~/interfaces/common';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  onClickButton?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
+  onClickButton?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
 };
@@ -27,8 +30,9 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
-  const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
+  const [currentName, setName] = useState('');
+  const [currentDescription, setDescription] = useState('');
+  const [currentParent, setParent] = useState<Ref<IUserGroup> | null>(null);
 
   /*
    * Function
@@ -48,8 +52,22 @@ const UserGroupModal: FC<Props> = (props: Props) => {
       return;
     }
 
-    await onClickButton({ name: currentName, description: currentDescription });
-  }, [currentName, currentDescription, onClickButton]);
+    await onClickButton({
+      _id: userGroup?._id,
+      name: currentName,
+      description: currentDescription,
+      parent: currentParent,
+    });
+  }, [userGroup, currentName, currentDescription, currentParent, onClickButton]);
+
+  // componentDidMount
+  useEffect(() => {
+    if (userGroup != null) {
+      setName(userGroup.name);
+      setDescription(userGroup.description);
+      setParent(userGroup.parent);
+    }
+  }, [userGroup]);
 
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
