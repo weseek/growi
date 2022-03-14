@@ -192,12 +192,12 @@ const PageRenameModal = (): JSX.Element => {
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
   const isDirectoryUnderUserPage = isUsersHomePage(pageNameInput);
-  const submitButtonDisabledForV5 = isV5Compatible(page.meta)
+  const isSubmitButtonDisabledV4orV5 = isV5Compatible(page.meta)
     ? existingPaths.length !== 0 // v5 data
     : !isRenameRecursively; // v4 data
 
 
-  const submitButtonDisabled = isDirectoryUnderUserPage || submitButtonDisabledForV5;
+  const isSubmitButtonDisabled = isDirectoryUnderUserPage || isSubmitButtonDisabledV4orV5;
 
 
   return (
@@ -317,7 +317,7 @@ const PageRenameModal = (): JSX.Element => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={submitButtonDisabled}
+          disabled={isSubmitButtonDisabled}
         >Rename
         </button>
       </ModalFooter>
