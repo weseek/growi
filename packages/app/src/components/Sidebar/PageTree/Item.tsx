@@ -123,6 +123,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isRenaming, setRenaming] = useState(false);
+  const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -245,7 +246,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
-  }, []);
+
+    if (hasDescendants) {
+      setIsOpen(true);
+    }
+  }, [hasDescendants]);
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
@@ -341,6 +346,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     try {
+      setCreating(true);
+
       await apiv3Post('/pages/', {
         path: newPagePath,
         body: initBody,
@@ -348,7 +355,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
       });
+
+      setCreating(false);
+
       mutateChildren();
+
+      if (!hasDescendants) {
+        setIsOpen(true);
+      }
+
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
@@ -487,7 +502,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         />
       )}
       {
-        isOpen && hasChildren() && currentChildren.map(node => (
+        isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
@@ -499,6 +514,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
+            { isCreating && (currentChildren.length - 1 === index) && (
+              <div className="text-muted text-center">
+                <i className="fa fa-spinner fa-pulse mr-1"></i>
+              </div>
+            )}
           </div>
         ))
       }
