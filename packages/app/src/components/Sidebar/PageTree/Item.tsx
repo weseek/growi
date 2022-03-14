@@ -209,7 +209,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         toastWarning(t('pagetree.you_cannot_move_this_page_now'));
       }
       else {
-        console.log('err.code', err.code);
         toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
