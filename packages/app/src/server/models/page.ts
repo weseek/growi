@@ -1149,7 +1149,7 @@ export default (crowi: Crowi): any => {
     if (shouldPlusUpdateDescCount) {
       await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
       const newDescendantCount = await this.recountDescendantCount(newPageData._id);
-      await this.updateOne({  }, { descendantCount: newDescendantCount });
+      await this.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
     }
     else if (shouldMinusUpdateDescCount) {
       await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, -1, false);
