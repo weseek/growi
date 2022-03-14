@@ -197,7 +197,7 @@ const PageRenameModal = (): JSX.Element => {
     : !isRenameRecursively; // v4 data
 
 
-  const submitButtonDisabled = isDirectoryUnderUserPage && submitButtonDisabledForV5;
+  const submitButtonDisabled = isDirectoryUnderUserPage || submitButtonDisabledForV5;
 
 
   return (
@@ -228,7 +228,6 @@ const PageRenameModal = (): JSX.Element => {
             </form>
           </div>
         </div>
-
 
         { isTargetPageDuplicate && (
           <p className="text-danger">Error: Target path is duplicated.</p>
