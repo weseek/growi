@@ -140,6 +140,17 @@ class PageQueryBuilder {
     }
   }
 
+  /**
+   * Do not use this method if any substitutional method exists
+   * Or, instead, create another method on PageQueryBuilder and use it.
+   */
+  addCustomAndCondition(condition) {
+    this.query = this.query
+      .and(condition);
+
+    return this;
+  }
+
   addConditionToExcludeTrashed() {
     this.query = this.query
       .and({

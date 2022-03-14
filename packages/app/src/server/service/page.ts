@@ -2543,8 +2543,12 @@ class PageService {
   async normalizeParentRecursively(paths: string[], user: any | null): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, [p]));
-    const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
+    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
+    // targets' descendants
+    const pathAndRegExpsToNormalize: (RegExp | string)[] = paths
+      .map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
+    // include targets' path
+    pathAndRegExpsToNormalize.push(...paths);
 
     // determine UserGroup condition
     let userGroups = null;
@@ -2555,11 +2559,13 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(regexps, ancestorPaths, grantFiltersByUser, user);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
   // TODO: use websocket to show progress
-  private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], grantFiltersByUser: { $or: any[] }, user): Promise<void> {
+  private async _normalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user,
+  ): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
@@ -2567,7 +2573,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     // Build filter
-    const filter: any = {
+    const andFilter: any = {
       $and: [
         {
           parent: null,
@@ -2576,25 +2582,36 @@ class PageService {
         },
       ],
     };
-    let pathCondition: (RegExp | string)[] = [];
-    if (regexps.length > 0) {
-      pathCondition = [...regexps];
+    const orFilter: any = { $or: [] };
+    // specified pathOrRegExps
+    if (pathOrRegExps.length > 0) {
+      orFilter.$or.push(
+        {
+          path: { $in: pathOrRegExps },
+        },
+      );
     }
-    if (pathsToInclude.length > 0) {
-      pathCondition = [...pathCondition, ...pathsToInclude];
+    // not specified but ancestors of specified pathOrRegExps
+    if (publicPathsToNormalize.length > 0) {
+      orFilter.$or.push(
+        {
+          path: { $in: publicPathsToNormalize },
+          grant: Page.GRANT_PUBLIC, // use only public pages to complete the tree
+        },
+      );
     }
-    if (pathCondition.length > 0) {
-      filter.$and.push({
-        parent: null,
-        status: Page.STATUS_PUBLISHED,
-        path: { $in: pathCondition },
-      });
-    }
+
+    // Merge filters
+    const mergedFilter = {
+      $and: [
+        { $and: [grantFiltersByUser, ...andFilter.$and] },
+        { $or: orFilter.$or },
+      ],
+    };
 
     let baseAggregation = Page
       .aggregate([
-        { $match: grantFiltersByUser },
-        { $match: filter },
+        { $match: mergedFilter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -2604,7 +2621,7 @@ class PageService {
       ]);
 
     // Limit pages to get
-    const total = await Page.countDocuments(filter);
+    const total = await Page.countDocuments(mergedFilter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
@@ -2643,7 +2660,6 @@ class PageService {
         });
 
         await Page.bulkWrite(resetParentOperations);
-
         await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
 
         // 2. Create lacking parents as empty pages
@@ -2653,6 +2669,7 @@ class PageService {
         const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
+          .addCustomAndCondition(grantFiltersByUser) // use addCustomAndCondition instead of addConditionToFilteringByViewerToEdit to reduce the num of queries
           .query
           .lean()
           .exec();
@@ -2717,9 +2734,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    const existsFilter = { $and: [grantFiltersByUser, ...filter.$and] };
-    if (await Page.exists(existsFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(regexps, pathsToInclude, grantFiltersByUser, user);
+    if (await Page.exists(mergedFilter) && shouldContinue) {
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user);
     }
 
   }
