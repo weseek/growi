@@ -140,7 +140,7 @@ const UserGroupPage: FC = () => {
     <div data-testid="admin-user-groups">
       {
         isAclEnabled ? (
-          <div className="mb-2">
+          <div className="mb-3">
             <button type="button" className="btn btn-outline-secondary" onClick={showCreateModal}>
               {t('admin:user_group_management.create_group')}
             </button>
