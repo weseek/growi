@@ -23,10 +23,14 @@ context('Open Page Delete Modal', () => {
     }
   });
 
-  it('PageDeleteModal is successfully', () => {
-     cy.visit('/Bootstrap4', {  });
-     cy.getByTestid('open-page-item-control-btn')[0].click();
-     cy.contains('Delete').click();
+  it('PageDeleteModal is shown successfully', () => {
+     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.get('#grw-subnav-container').within(() => {
+       cy.getByTestid('open-page-item-control-btn').click();
+       cy.getByTestid('open-page-delete-modal-btn').click();
+    });
+
+
      cy.screenshot(`${ssPrefix}-bootstrap4`,{ capture: 'viewport' });
   });
 
