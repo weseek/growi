@@ -119,7 +119,7 @@
 	"Create under": "Create page under below:",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
-  "V5 Page Migration": "V5 Page Migration",
+  "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
@@ -919,19 +919,19 @@
     }
 	},
   "private_legacy_pages": {
-    "bulk_operation": "Bulk operation",
-    "convert_all_selected_pages": "Convert all to new v5 compatible format",
-    "alert_title": "You are viewing old v4 compatible private pages.",
-    "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
-    "nopages_title": "Congratulations. Ready to use GROWI v5!",
-    "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
-    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <i class='icon-share-alt'></i></a>.",
+    "bulk_operation": "批量操作",
+    "convert_all_selected_pages": "全部转换为新的v5兼容格式",
+    "alert_title": "你正在查看旧的v4兼容的私人网页。",
+    "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
+    "nopages_title": "恭喜你。准备使用GROWI v5!",
+    "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",
+    "detail_info": "请参见 <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>升级GROWI到v5.0.x <i class='icon-share-alt'></i></a>.的详细内容。",
     "modal": {
-      "title": "Convert to new v5 compatible format",
-      "converting_pages": "Converting pages",
-      "convert_recursively_label": "Convert child pages recursively.",
-      "convert_recursively_desc": "Convert pages under this path recursively.",
-      "button_label": "Convert"
+      "title": "转换为新的v5兼容格式",
+      "converting_pages": "转换页面",
+      "convert_recursively_label": "递归地转换子页面。",
+      "convert_recursively_desc": "递归地转换该路径下的页面。",
+      "button_label": "转换"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
@@ -999,6 +999,13 @@
     "success_to_send_email": "我发了一封电子邮件",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+  },
+  "maintenance_mode":{
+    "maintenance_mode": "维护模式",
+    "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
+    "admin_page": "管理员页",
+    "login": "登录",
+    "logout": "登出"
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",

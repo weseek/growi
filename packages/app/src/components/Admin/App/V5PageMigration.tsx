@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { V5PageMigrationModal } from './V5PageMigrationModal';
+import { ConfirmModal } from './ConfirmModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -31,8 +31,11 @@ const V5PageMigration: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <V5PageMigrationModal
+      <ConfirmModal
         isModalOpen={isV5PageMigrationModalShown}
+        warningMessage={t('admin:v5_page_migration.modal_migration_warning')}
+        supplymentaryMessage={t('admin:v5_page_migration.migration_note')}
+        confirmButtonTitle={t('admin:v5_page_migration.start_upgrading')}
         onConfirm={onConfirm}
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
@@ -47,7 +50,9 @@ const V5PageMigration: FC<Props> = (props: Props) => {
       </p>
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>Upgrade to v5</button>
+          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>
+            {t('admin:v5_page_migration.upgrade_to_v5')}
+          </button>
         </div>
       </div>
     </>

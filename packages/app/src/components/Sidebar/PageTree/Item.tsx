@@ -152,8 +152,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     canDrag: () => {
-      const isDraggable = !pagePathUtils.isUserPage(page.path || '/');
-      return isDraggable;
+      if (page.path == null) {
+        return false;
+      }
+      return !pagePathUtils.isUsersProtectedPages(page.path);
     },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
