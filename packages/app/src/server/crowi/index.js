@@ -682,6 +682,7 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
+    await this.pageOperationService.initPageOperation();
   }
 };
 
