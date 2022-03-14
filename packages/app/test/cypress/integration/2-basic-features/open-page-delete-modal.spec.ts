@@ -1,6 +1,6 @@
-context('Open PageDeleteModal', () => {
 
-  const ssPrefix = 'open-page-delete-modal';
+context('Access to page', () => {
+  const ssPrefix = 'open-page-create-modal-';
 
   let connectSid: string | undefined;
 
@@ -19,25 +19,29 @@ context('Open PageDeleteModal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 
-  it('PageDeleteModal is shown successfully', () => {
-    cy.visit('/Sandbox');
-    cy.getByTestid('open-page-item-control-btn')[0].click();
-    cy.contains('Delete').click();
-    cy.screenshot(`${ssPrefix}-open`,{ capture: 'viewport' });
-
-
+  it('/Sandbox is successfully loaded', () => {
+    cy.visit('/Sandbox', {  });
+    cy.screenshot(`${ssPrefix}-Sandbox`,{ capture: 'viewport' });
   });
-  it('PageDeleteModal is shown successfully', () => {
-    cy.visit('/_search?q=tag:we');
-    cy.getByTestid('open-page-item-control-btn')[0].click();
-    cy.contains('Delete').click();
-    cy.screenshot(`${ssPrefix}_search?q=tag:we`,{ capture: 'viewport' });
+
+  // it('PageDeleteModal is shown successfully', () => {
+    // cy.visit('/Sandbox');
+    // cy.getByTestid('open-page-item-control-btn')[0].click();
+    // cy.contains('Delete').click();
+    // cy.screenshot(`${ssPrefix}-open`,{ capture: 'viewport' });
 
 
-  });
+  // });
+  // it('PageDeleteModal Search is shown successfully', () => {
+  //   cy.visit('/_search?q=tag:we');
+  //   cy.getByTestid('open-page-item-control-btn')[0].click();
+  //   cy.contains('Delete').click();
+  //   cy.screenshot(`${ssPrefix}_search?q=tag:we`,{ capture: 'viewport' });
+
+
+  // });
 
 });
