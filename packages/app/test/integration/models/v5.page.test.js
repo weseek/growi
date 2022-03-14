@@ -18,6 +18,14 @@ describe('Page', () => {
   let rootPage;
   let dummyUser1;
 
+  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
+  const expectAllToBeTruthy = (dataList) => {
+    dataList.forEach((data, i) => {
+      if (data == null) { console.log(`index: ${i}`) }
+      expect(data).toBeTruthy();
+    });
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -56,6 +64,43 @@ describe('Page', () => {
       },
     ]);
 
+    /**
+     * update
+     * mup_ => model update
+     */
+    const pageIdUpd1 = new mongoose.Types.ObjectId();
+    const pageIdUpd2 = new mongoose.Types.ObjectId();
+
+    const revisionIdUpd2 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdUpd1,
+        path: '/mup1_empty',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdUpd2,
+        path: '/mup1_empty/mup2_public',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdUpd1._id,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdUpd2,
+        isEmpty: false,
+      },
+    ]);
+    await Revision.insertMany([
+      {
+        _id: revisionIdUpd2,
+        pageId: pageIdUpd2,
+        format: 'markdown',
+        body: '/mup1_empty/mup2_public',
+      },
+    ]);
+
   });
   describe('create', () => {
 
@@ -91,5 +136,27 @@ describe('Page', () => {
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
     });
 
+  });
+
+  describe('update', () => {
+
+    describe('change grant to Anyone with the link', () => {
+      test('change grant of only child of empty parent should delete empty page', async() => {
+        const page1 = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
+        const page2 = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
+        const revision = page2.revision;
+        const newBody = 'newBody';
+        const options = { isSyncRevisionToHackmd: false, grant: 2, grantUserGroupId: null };
+        expectAllToBeTruthy([page1, page2, revision]);
+
+        await Page.updatePage(page2, newBody, revision.body, dummyUser1, options);
+        // AU => After Update
+        const page1AU = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
+        const page2AU = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
+
+        expect(page2AU).toBeTruthy();
+        expect(page1AU).toBeNull();
+      });
+    });
   });
 });
