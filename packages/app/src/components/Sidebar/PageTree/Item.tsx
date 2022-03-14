@@ -228,7 +228,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       if (page.path == null) {
         return false;
       }
-      return canMoveUnderNewParent(droppedPage, page) && !pagePathUtils.isUsersProtectedPages(page.path);
+      return canMoveUnderNewParent(droppedPage, page) && !pagePathUtils.isUsersTopPage(page.path);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
