@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 context('Search all pages', () => {
   const ssPrefix = 'search-all-pages-';
 
@@ -21,7 +22,7 @@ context('Search all pages', () => {
     }
   });
 
-  it(`Search by typing help and press ENTER`, () => {
+  it(`Search all paeges by typing help and press ENTER`, () => {
     const searchText = 'help';
     cy.visit('/');
     cy.get('div.rbt-input-hint-container > input').click();
@@ -38,7 +39,7 @@ context('Search all pages', () => {
   });
 
 
-  it(`Search by tag, ex: tag:help and press ENTER`, () => {
+  it(`Search all pages by tag, ex: tag:help and press ENTER`, () => {
     const searchText = `tag:help`;
     cy.visit('/');
     cy.get('div.rbt-input-hint-container > input').click();
@@ -53,12 +54,31 @@ context('Search all pages', () => {
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
-    /** TODO
-     * - Implement Add bookmark, move/rename , delete with tag
-     *
-    */
+    // Add Bookmark
+    cy.getByTestid('add-bookmark').first().click({force: true});
+    cy.wait(2000);
+    cy.screenshot(`${ssPrefix}add-bookmark`, {capture: 'viewport'});
 
+    // Duplicate page
+    cy.getByTestid('duplicate-page').first().click({force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}duplicate-page`, {capture: 'viewport'});
 
-  })
+    // Close Modal
+    cy.get('body').type('{esc}');
+
+    // Move / Rename Page
+    cy.getByTestid('move-page').first().click({force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}move-rename-page`, {capture: 'viewport'});
+
+    // Close Modal
+    cy.get('body').type('{esc}');
+
+    // Delete page
+    cy.getByTestid('delete-page').first().click({ force: true});
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}delete-page`, {capture: 'viewport'});
+  });
 
 });
