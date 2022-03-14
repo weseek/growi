@@ -181,9 +181,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    if (pagePathUtils.isUsersProtectedPages(page.path)) {
-      return toastError(t('pagetree.forbidden_to_move_target_page'));
-    }
 
     const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
 
@@ -229,7 +226,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     canDrop: (item) => {
       const { page: droppedPage } = item;
-      return canMoveUnderNewParent(droppedPage, page);
+      if (page.path == null) {
+        return false;
+      }
+      return canMoveUnderNewParent(droppedPage, page) && !pagePathUtils.isUsersProtectedPages(page.path);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
