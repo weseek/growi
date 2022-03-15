@@ -100,6 +100,7 @@ describe('Page', () => {
     const pageIdUpd1 = new mongoose.Types.ObjectId();
     const pageIdUpd2 = new mongoose.Types.ObjectId();
     const pageIdUpd3 = new mongoose.Types.ObjectId();
+    const pageIdUpd4 = new mongoose.Types.ObjectId();
 
     const revisionIdUpd2 = new mongoose.Types.ObjectId();
 
@@ -128,14 +129,12 @@ describe('Page', () => {
         isEmpty: true,
       },
       {
-        _id: pageIdUpd2,
+        _id: pageIdUpd4,
         path: '/mup6_public',
         grant: Page.GRANT_PUBLIC,
-        parent: pageIdUpd1._id,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        revision: revisionIdUpd2,
-        isEmpty: false,
+        parent: rootPage._id,
       },
     ]);
     await Revision.insertMany([
