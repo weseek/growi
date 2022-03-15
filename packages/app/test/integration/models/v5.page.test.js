@@ -85,6 +85,12 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         parent: pageIdCreate2,
       },
+      {
+        path: '/mc_awl3',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+      },
     ]);
 
     /**
@@ -174,8 +180,9 @@ describe('Page', () => {
         expectAllToBeTruthy([page1, page2]);
         expect(count).toBe(1);
 
-        await Page.create('/mc_emp', 'create1', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await Page.create('/mc_emp', 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
+        // AF => After Create
         const page1AF = await Page.findOne({ _id: page1._id });
         const page2AF = await Page.findOne({ _id: page2._id });
         const countAF = await Page.count({ path: '/mc_emp' });
@@ -186,8 +193,25 @@ describe('Page', () => {
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
-      test('should create an new empty page with the same path as the grant RESTRECTED page', async() => {
+      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+        const page1 = await Page.findOne({ path: '/mc_awl3', grant: Page.GRANT_RESTRICTED });
+        const count = await Page.count({ path: '/mc_awl3' });
+        expectAllToBeTruthy([page1]);
+        expect(count).toBe(1);
 
+        await Page.create('/mc_awl3/mc_pub4', 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+
+        // AF => After Create
+        const page1AF = await Page.findOne({ path: '/mc_awl3', grant: Page.GRANT_RESTRICTED });
+        const countAF = await Page.count({ path: '/mc_awl3' });
+
+        const newPage = await Page.findOne({ path: '/mc_awl3/mc_pub4', grant: Page.GRANT_PUBLIC });
+        const newPageParent = await Page.findOne({ path: '/mc_awl3', grant: Page.GRANT_PUBLIC, isEmpty: true });
+        expectAllToBeTruthy([page1AF, newPageParent, newPage]);
+        expect(countAF).toBe(2);
+
+        expect(newPage.parent).toStrictEqual(newPageParent._id);
+        expect(newPageParent.parent).toStrictEqual(rootPage._id);
       });
     });
 
