@@ -1,8 +1,11 @@
 
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useState, useMemo, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
@@ -39,11 +42,24 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
+  const [isUsersHomePageHoge, setIsUsersHomePageHoge] = useState(false);
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
     setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
   }, [pathname]);
+
+  const checkIsUsersHomePage = useCallback(() => {
+    setIsUsersHomePageHoge(isUsersHomePage(pageNameInput));
+  }, [pageNameInput]);
+
+  const checkIsUsersHomePageDebounce = useMemo(() => {
+    return debounce(1000, checkIsUsersHomePage);
+  }, [checkIsUsersHomePage]);
+
+  useEffect(() => {
+    checkIsUsersHomePageDebounce(pageNameInput);
+  }, [checkIsUsersHomePageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -202,19 +218,16 @@ const PageCreateModal = (props) => {
                   />
                 )
                 : (
-                  <>
-                    ii
-                    <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
-                      <input
-                        type="text"
-                        value={pageNameInput}
-                        className="form-control flex-fill"
-                        placeholder={t('Input page name')}
-                        onChange={e => onChangePageNameInputHandler(e.target.value)}
-                        required
-                      />
-                    </form>
-                  </>
+                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                    <input
+                      type="text"
+                      value={pageNameInput}
+                      className="form-control flex-fill"
+                      placeholder={t('Input page name')}
+                      onChange={e => onChangePageNameInputHandler(e.target.value)}
+                      required
+                    />
+                  </form>
                 )}
             </div>
 
@@ -231,7 +244,7 @@ const PageCreateModal = (props) => {
             </div>
 
           </div>
-          { isUsersHomePage(pageNameInput) && (
+          { isUsersHomePageHoge && (
             <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
           ) }
 
