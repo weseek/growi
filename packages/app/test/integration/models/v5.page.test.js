@@ -108,18 +108,19 @@ describe('Page', () => {
     const pageIdUpd6 = new mongoose.Types.ObjectId();
     const pageIdUpd7 = new mongoose.Types.ObjectId();
     const pageIdUpd8 = new mongoose.Types.ObjectId();
+    const pageIdUpd9 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
         _id: pageIdUpd1,
-        path: '/mup1_emp',
+        path: '/mup13_top/mup1_emp',
         grant: Page.GRANT_PUBLIC,
-        parent: rootPage._id,
+        parent: pageIdUpd9._id,
         isEmpty: true,
       },
       {
         _id: pageIdUpd2,
-        path: '/mup1_emp/mup2_pub',
+        path: '/mup13_top/mup1_emp/mup2_pub',
         grant: Page.GRANT_PUBLIC,
         parent: pageIdUpd1._id,
         creator: dummyUser1,
@@ -182,6 +183,16 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
+      },
+      {
+        _id: pageIdUpd9,
+        path: '/mup13_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 2,
       },
     ]);
 
@@ -269,18 +280,21 @@ describe('Page', () => {
 
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
-        const page1 = await Page.findOne({ path: '/mup1_emp', isEmpty: true });
-        const page2 = await Page.findOne({ path: '/mup1_emp/mup2_pub' });
+        const top = await Page.findOne({ path: '/mup13_top', descendantCount: 2 });
+        const page1 = await Page.findOne({ path: '/mup13_top/mup1_emp', isEmpty: true });
+        const page2 = await Page.findOne({ path: '/mup13_top/mup1_emp/mup2_pub' });
         const options = { grant: 2, grantUserGroupId: null };
-        expectAllToBeTruthy([page1, page2]);
+        expectAllToBeTruthy([top, page1, page2]);
 
         await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
         // AU => After Update
-        const page1AU = await Page.findOne({ path: '/mup1_emp', isEmpty: true });
-        const page2AU = await Page.findOne({ path: '/mup1_emp/mup2_pub' });
+        const topAF = await Page.findOne({ _id: top._id });
+        const page1AU = await Page.findOne({ _id: page1._id });
+        const page2AU = await Page.findOne({ _id: page2._id });
 
         expect(page2AU).toBeTruthy();
         expect(page1AU).toBeNull();
+        expect(topAF.descendantCount).toBe(1);
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
         const page1 = await Page.findOne({ path: '/mup6_pub', grant: Page.GRANT_PUBLIC });
