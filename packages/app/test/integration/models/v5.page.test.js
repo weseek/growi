@@ -106,6 +106,8 @@ describe('Page', () => {
     const pageIdUpd4 = new mongoose.Types.ObjectId();
     const pageIdUpd5 = new mongoose.Types.ObjectId();
     const pageIdUpd6 = new mongoose.Types.ObjectId();
+    const pageIdUpd7 = new mongoose.Types.ObjectId();
+    const pageIdUpd8 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -159,6 +161,23 @@ describe('Page', () => {
       {
         _id: pageIdUpd6,
         path: '/mup9_pub/mup10_pub/mup11_awl',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdUpd7,
+        path: '/mup12_emp',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: true,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdUpd8,
+        path: '/mup12_emp',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -333,7 +352,21 @@ describe('Page', () => {
         expect(page2AF.isEmpty).toBe(true);
         expect(page2AF.parent).toStrictEqual(page1AF._id);
       });
-      test('a page will replace an empty page with the same path if any', async() => {});
+      test('a page will replace an empty page with the same path if any', async() => {
+        const page1 = await Page.findOne({ path: '/mup12_emp', grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const page2 = await Page.findOne({ path: '/mup12_emp', grant: Page.GRANT_RESTRICTED, isEmpty: false });
+        expectAllToBeTruthy([page1, page2]);
+
+        await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
+
+        const page1AF = await Page.findOne({ _id: page1._id });
+        const page2AF = await Page.findOne({ _id: page2._id });
+        expect(page1AF).toBeNull();
+        expect(page2AF).toBeTruthy();
+
+        expect(page2AF.grant).toBe(Page.GRANT_PUBLIC);
+        expect(page2AF.parent).toStrictEqual(rootPage._id);
+      });
     });
 
 
