@@ -297,8 +297,6 @@ describe('Page', () => {
 
         expect(emptyPage).toBeNull();
         expect(pageAF.grant).toBe(Page.GRANT_RESTRICTED);
-
-
       });
     });
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
