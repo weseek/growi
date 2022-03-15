@@ -404,12 +404,12 @@ describe('Page', () => {
         // AU => After Update
         const topAF = await Page.findOne({ _id: top._id });
         const pageAF = await Page.findOne({ _id: page._id });
-        const emptyPage = await Page.findOne({ path: '/mup15_top/mup8_pub', isEmpty: true });
+        const notExistantPage = await Page.findOne({ path: '/mup15_top/mup8_pub', isEmpty: true });
         const countAF = await Page.count({ path: '/mup15_top/mup8_pub' });
         expectAllToBeTruthy([pageAF]);
         expect(countAF).toBe(1);
 
-        expect(emptyPage).toBeNull();
+        expect(notExistantPage).toBeNull();
         expect(pageAF.grant).toBe(Page.GRANT_RESTRICTED);
 
         expect(topAF.descendantCount).toBe(0);
@@ -427,10 +427,10 @@ describe('Page', () => {
 
         await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
 
-        const topAF = await Page.findOne({ path: '/mup16_top' });
+        const topAF = await Page.findOne({ _id: top._id });
         const pageAF = await Page.findOne({ _id: page._id });
-        const page1AF = await Page.findOne({ path: '/mup16_top/mup9_pub' });
-        const page2AF = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
+        const page1AF = await Page.findOne({ _id: page1._id });
+        const page2AF = await Page.findOne({ _id: page2._id });
         expectAllToBeTruthy([pageAF, page1AF, page2AF]);
 
         expect(pageAF.grant).toBe(Page.GRANT_PUBLIC);
