@@ -1,6 +1,6 @@
+context('Open Page Delete Modal', () => {
 
-context('Access to page', () => {
-  const ssPrefix = 'open-page-create-modal-';
+  const ssPrefix = 'access-to-page-delete-modal-';
 
   let connectSid: string | undefined;
 
@@ -19,29 +19,21 @@ context('Access to page', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
+      cy.visit('/');
     }
   });
 
-  it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
-    cy.screenshot(`${ssPrefix}-Sandbox`,{ capture: 'viewport' });
+  it('PageDeleteModal is shown successfully', () => {
+     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.get('#grw-subnav-container').within(() => {
+       cy.getByTestid('open-page-item-control-btn').click();
+       cy.getByTestid('open-page-delete-modal-btn').click();
+    });
+
+     // eslint-disable-next-line cypress/no-unnecessary-waiting
+     cy.wait(1500);
+     cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
   });
 
-  // it('PageDeleteModal is shown successfully', () => {
-    // cy.visit('/Sandbox');
-    // cy.getByTestid('open-page-item-control-btn')[0].click();
-    // cy.contains('Delete').click();
-    // cy.screenshot(`${ssPrefix}-open`,{ capture: 'viewport' });
-
-
-  // });
-  // it('PageDeleteModal Search is shown successfully', () => {
-  //   cy.visit('/_search?q=tag:we');
-  //   cy.getByTestid('open-page-item-control-btn')[0].click();
-  //   cy.contains('Delete').click();
-  //   cy.screenshot(`${ssPrefix}_search?q=tag:we`,{ capture: 'viewport' });
-
-
-  // });
-
 });
+
