@@ -1000,7 +1000,7 @@ export default (crowi: Crowi): any => {
         const shouldCheckDescendants = emptyPage != null;
         const newGrantedUserIds = grant === GRANT_OWNER ? [user._id] as IObjectId[] : undefined;
 
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -1118,9 +1118,7 @@ export default (crowi: Crowi): any => {
        */
       let isGrantNormalized = false;
       try {
-        const shouldCheckDescendants = true;
-
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, true);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
