@@ -109,6 +109,7 @@ describe('Page', () => {
     const pageIdUpd7 = new mongoose.Types.ObjectId();
     const pageIdUpd8 = new mongoose.Types.ObjectId();
     const pageIdUpd9 = new mongoose.Types.ObjectId();
+    const pageIdUpd10 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -135,20 +136,22 @@ describe('Page', () => {
       },
       {
         _id: pageIdUpd4,
-        path: '/mup6_pub',
+        path: '/mup14_top/mup6_pub',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
+        parent: pageIdUpd10,
         isEmpty: false,
+        descendantCount: 1,
       },
       {
-        path: '/mup6_pub/mup7_pub',
+        path: '/mup14_top/mup6_pub/mup7_pub',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdUpd4,
         isEmpty: false,
+        descendantCount: 0,
       },
       {
         _id: pageIdUpd5,
@@ -187,6 +190,16 @@ describe('Page', () => {
       {
         _id: pageIdUpd9,
         path: '/mup13_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 2,
+      },
+      {
+        _id: pageIdUpd10,
+        path: '/mup14_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -297,19 +310,21 @@ describe('Page', () => {
         expect(topAF.descendantCount).toBe(1);
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
-        const page1 = await Page.findOne({ path: '/mup6_pub', grant: Page.GRANT_PUBLIC });
-        const page2 = await Page.findOne({ path: '/mup6_pub/mup7_pub', grant: Page.GRANT_PUBLIC });
-        const count = await Page.count({ path: '/mup6_pub' });
-        expectAllToBeTruthy([page1, page2]);
+        const top = await Page.findOne({ path: '/mup14_top', descendantCount: 2 });
+        const page1 = await Page.findOne({ path: '/mup14_top/mup6_pub', grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: '/mup14_top/mup6_pub/mup7_pub', grant: Page.GRANT_PUBLIC });
+        const count = await Page.count({ path: '/mup14_top/mup6_pub' });
+        expectAllToBeTruthy([top, page1, page2]);
         expect(count).toBe(1);
 
         await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 2 });
 
         // AU => After Update
+        const topAF = await Page.findOne({ _id: top._id });
         const page1AF = await Page.findOne({ _id: page1._id });
         const page2AF = await Page.findOne({ _id: page2._id });
-        const newlyCreatedPage = await Page.findOne({ _id: { $ne: page1._id }, path: '/mup6_pub' });
-        const countAF = await Page.count({ path: '/mup6_pub' });
+        const newlyCreatedPage = await Page.findOne({ _id: { $ne: page1._id }, path: '/mup14_top/mup6_pub' });
+        const countAF = await Page.count({ path: '/mup14_top/mup6_pub' });
         expectAllToBeTruthy([page1AF, page2AF, newlyCreatedPage]);
         expect(countAF).toBe(2);
 
@@ -321,7 +336,9 @@ describe('Page', () => {
 
         expect(newlyCreatedPage.isEmpty).toBe(true);
         expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
-        expect(newlyCreatedPage.parent).toStrictEqual(rootPage._id);
+        expect(newlyCreatedPage.parent).toStrictEqual(top._id);
+
+        expect(topAF.descendantCount).toBe(1);
       });
       test('of a leaf page will NOT have empty page with the same path', async() => {
         const page = await Page.findOne({ path: '/mup8_pub', grant: Page.GRANT_PUBLIC });
