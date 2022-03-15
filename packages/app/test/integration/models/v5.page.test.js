@@ -47,6 +47,7 @@ describe('Page', () => {
 
     const pageIdCreate1 = new mongoose.Types.ObjectId();
     const pageIdCreate2 = new mongoose.Types.ObjectId();
+    const pageIdCreate3 = new mongoose.Types.ObjectId();
 
     /**
      * create
@@ -88,11 +89,21 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        path: '/mc3_awl',
+        path: '/mc4_top/mc3_awl',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
+      },
+      {
+        _id: pageIdCreate3,
+        path: '/mc4_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
       },
     ]);
 
@@ -292,24 +303,27 @@ describe('Page', () => {
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
       test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
-        const page1 = await Page.findOne({ path: '/mc3_awl', grant: Page.GRANT_RESTRICTED });
-        const count = await Page.count({ path: '/mc3_awl' });
-        expectAllToBeTruthy([page1]);
+        const top = await Page.findOne({ path: '/mc4_top' });
+        const page1 = await Page.findOne({ path: '/mc4_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
+        const count = await Page.count({ path: '/mc4_top/mc3_awl' });
+        expectAllToBeTruthy([top, page1]);
         expect(count).toBe(1);
 
-        await Page.create('/mc3_awl/mc4_pub', 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await Page.create('/mc4_top/mc3_awl/mc4_pub', 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         // AF => After Create
-        const page1AF = await Page.findOne({ path: '/mc3_awl', grant: Page.GRANT_RESTRICTED });
-        const countAF = await Page.count({ path: '/mc3_awl' });
+        const topAF = await Page.findOne({ _id: top._id });
+        const page1AF = await Page.findOne({ path: '/mc4_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
+        const countAF = await Page.count({ path: '/mc4_top/mc3_awl' });
 
-        const newPage = await Page.findOne({ path: '/mc3_awl/mc4_pub', grant: Page.GRANT_PUBLIC });
-        const newPageParent = await Page.findOne({ path: '/mc3_awl', grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const newPage = await Page.findOne({ path: '/mc4_top/mc3_awl/mc4_pub', grant: Page.GRANT_PUBLIC });
+        const newPageParent = await Page.findOne({ path: '/mc4_top/mc3_awl', grant: Page.GRANT_PUBLIC, isEmpty: true });
         expectAllToBeTruthy([page1AF, newPageParent, newPage]);
         expect(countAF).toBe(2);
 
         expect(newPage.parent).toStrictEqual(newPageParent._id);
-        expect(newPageParent.parent).toStrictEqual(rootPage._id);
+        expect(newPageParent.parent).toStrictEqual(topAF._id);
+        expect(topAF.descendantCount).toStrictEqual(0);
       });
     });
 
