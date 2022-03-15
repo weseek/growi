@@ -237,7 +237,7 @@ const PageCreateModal = (props) => {
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
-                disabled={isUsersHomePage(pageNameInput)}
+                disabled={isUsersHomePageHoge}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
