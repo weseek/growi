@@ -23,12 +23,16 @@ context('Tag', () => {
   it('Add Tag', () => {
     const tag = 'we';
     cy.visit('/');
-    cy.getByTestid('open-tag-editor').click();
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
     cy.wait(1000);
+
     cy.screenshot(`${ssPrefix}click-add-tag`, {capture: 'viewport'});
 
-    // cy.get('#edit-tag-modal > div.rbt-input > input').type(tag);
-    // cy.screenshot('tag input ', {capture: 'viewport'});
+    cy.get('#edit-tag-modal').within(() => {
+      cy.get('.rbt-input-hint-container > input').click({force: true});
+      cy.screenshot('tag input ', {capture: 'viewport'});
+    });
+
 
   });
 
