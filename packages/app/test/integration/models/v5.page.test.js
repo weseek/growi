@@ -320,7 +320,7 @@ describe('Page', () => {
         await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
 
         const pageAF = await Page.findOne({ path: '/mup9_pub/mup10_pub/mup11_awl' });
-        const page1AF = await Page.findOne({ path: '/mup9_pub/' });
+        const page1AF = await Page.findOne({ path: '/mup9_pub' });
         const page2AF = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
         expectAllToBeTruthy([pageAF, page1AF, page2AF]);
 
