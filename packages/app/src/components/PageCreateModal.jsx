@@ -88,7 +88,6 @@ const PageCreateModal = (props) => {
    * @param {string} value
    */
   function onChangePageNameInputHandler(value) {
-    isUsersHomePage(value);
     setPageNameInput(value);
   }
 
