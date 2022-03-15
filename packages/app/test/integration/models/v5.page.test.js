@@ -102,8 +102,6 @@ describe('Page', () => {
     const pageIdUpd3 = new mongoose.Types.ObjectId();
     const pageIdUpd4 = new mongoose.Types.ObjectId();
 
-    const revisionIdUpd2 = new mongoose.Types.ObjectId();
-
     await Page.insertMany([
       {
         _id: pageIdUpd1,
@@ -119,7 +117,6 @@ describe('Page', () => {
         parent: pageIdUpd1._id,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        revision: revisionIdUpd2,
         isEmpty: false,
       },
       {
@@ -136,13 +133,12 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
-    ]);
-    await Revision.insertMany([
       {
-        _id: revisionIdUpd2,
-        pageId: pageIdUpd2,
-        format: 'markdown',
-        body: '/mup1_empty/mup2_public',
+        path: '/mup6_public/mup7_public',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdUpd4,
       },
     ]);
 
@@ -231,21 +227,38 @@ describe('Page', () => {
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
         const page1 = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
-        const page2 = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
-        const revision = page2.revision;
-        const newBody = 'newBody';
-        const options = { isSyncRevisionToHackmd: false, grant: 2, grantUserGroupId: null };
-        expectAllToBeTruthy([page1, page2, revision]);
+        const page2 = await Page.findOne({ path: '/mup1_empty/mup2_public' });
+        const options = { grant: 2, grantUserGroupId: null };
+        expectAllToBeTruthy([page1, page2]);
 
-        await Page.updatePage(page2, newBody, revision.body, dummyUser1, options);
+        await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
         // AU => After Update
         const page1AU = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
-        const page2AU = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
+        const page2AU = await Page.findOne({ path: '/mup1_empty/mup2_public' });
 
         expect(page2AU).toBeTruthy();
         expect(page1AU).toBeNull();
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
+        const page1 = await Page.findOne({ path: '/mup6_public', grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: '/mup6_public/mup7_public', grant: Page.GRANT_PUBLIC });
+        const count = await Page.count({ path: '/mup6_public' });
+        const options = { grant: 2, grantUserGroupId: null };
+        expectAllToBeTruthy([page1, page2]);
+        expect(count).toBe(1);
+
+        await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
+
+        // AU => After Update
+        const page1AF = await Page.findOne({ path: '/mup6_public', grant: Page.GRANT_RESTRICTED });
+        const page2AF = await Page.findOne({ path: '/mup6_public/mup7_public', grant: Page.GRANT_PUBLIC });
+        const newlyCreatedPage = await Page.findOne({ path: '/mup6_public', grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const countAF = await Page.count({ path: '/mup6_public' });
+        expectAllToBeTruthy([page1AF, page2AF, newlyCreatedPage]);
+        expect(countAF).toBe(2);
+
+        expect(page1AF.parent).toBeNull();
+        expect(page2AF.parent).toStrictEqual(newlyCreatedPage._id);
 
       });
       test('of a leaf page will NOT have empty page with the same path', async() => {});
