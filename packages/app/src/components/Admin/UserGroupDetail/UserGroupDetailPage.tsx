@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupTable from '../UserGroup/UserGroupTable';
-import UserGroupCreateModal from '../UserGroup/UserGroupCreateModal';
+import UserGroupModal from '../UserGroup/UserGroupModal';
 import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
@@ -39,6 +39,7 @@ const UserGroupDetailPage: FC = () => {
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
+  const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
@@ -112,6 +113,31 @@ const UserGroupDetailPage: FC = () => {
     await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
+
+  const showUpdateModal = useCallback((group: IUserGroupHasId) => {
+    setUpdateModalShown(true);
+    setSelectedUserGroup(group);
+  }, [setUpdateModalShown]);
+
+  const hideUpdateModal = useCallback(() => {
+    setUpdateModalShown(false);
+    setSelectedUserGroup(undefined);
+  }, [setUpdateModalShown]);
+
+  const updateChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${userGroupData._id}`, {
+        name: userGroupData.name,
+        description: userGroupData.description,
+        parentId: userGroupData.parent,
+      });
+      mutateChildUserGroups();
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, mutateChildUserGroups]);
 
   const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
     try {
@@ -228,8 +254,18 @@ const UserGroupDetailPage: FC = () => {
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
         onClickCreateUserGroupButtonHandler={showCreateModal}
       />
-      <UserGroupCreateModal
-        onClickCreateButton={createChildUserGroup}
+
+      <UserGroupModal
+        userGroup={selectedUserGroup}
+        buttonLabel={t('Update')}
+        onClickButton={updateChildUserGroup}
+        isShow={isUpdateModalShown}
+        onHide={hideUpdateModal}
+      />
+
+      <UserGroupModal
+        buttonLabel={t('Create')}
+        onClickButton={createChildUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
@@ -238,9 +274,11 @@ const UserGroupDetailPage: FC = () => {
         userGroups={childUserGroups}
         childUserGroups={grandChildUserGroups}
         isAclEnabled={isAclEnabled ?? false}
+        onEdit={showUpdateModal}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
       />
+
       <UserGroupDeleteModal
         userGroups={childUserGroups}
         deleteUserGroup={selectedUserGroup}

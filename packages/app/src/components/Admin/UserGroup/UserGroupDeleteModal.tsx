@@ -196,6 +196,9 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         </div>
         <div className="text-danger mt-5">
           {t('admin:user_group_management.delete_modal.desc')}
+
+          {/* TODO 85462: Add a note: "All child groups will disappear */}
+
         </div>
       </ModalBody>
       <ModalFooter>
