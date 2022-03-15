@@ -504,10 +504,7 @@ describe('V5 page migration', () => {
     });
 
 
-    test('1', async() => {
-      /*
-       * 1
-       */
+    test('Should normalize pages one by one without including other pages', async() => {
       const _owned13 = await Page.findOne(owned({ path: '/normalize_13_owned', ...notNormalized }));
       const _owned14 = await Page.findOne(owned({ path: '/normalize_13_owned/normalize_14_owned', ...notNormalized }));
       const _owned15 = await Page.findOne(owned({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned', ...notNormalized }));
@@ -553,10 +550,7 @@ describe('V5 page migration', () => {
       expect(owned14.isEmpty).toBe(false);
     });
 
-    test('2', async() => {
-      /*
-       * 2
-       */
+    test('Should normalize pages recursively excluding the pages not selected', async() => {
       const _owned17 = await Page.findOne(owned({ path: '/normalize_17_owned', ...normalized }));
       const _owned18 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned', ...normalized }));
       const _owned19 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned', ...notNormalized }));
@@ -604,10 +598,7 @@ describe('V5 page migration', () => {
       expect(owned18.isEmpty).toBe(false);
     });
 
-    test('3', async() => {
-      /*
-       * 3
-       */
+    test('Should normalize pages recursively excluding the pages of not user\'s & Should delete unnecessary empty pages', async() => {
       const _owned21 = await Page.findOne(owned({ path: '/normalize_21_owned', ...normalized }));
       const _owned22 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned', ...normalized }));
       const _owned23 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned', ...notNormalized }));
