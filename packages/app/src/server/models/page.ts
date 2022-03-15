@@ -451,8 +451,8 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: a
   // Run aggregation
   const existingPages = await this.aggregate(aggregationPipeline);
 
-  const existingPagePaths = existingPages.map(page => page.path);
 
+  const existingPagePaths = existingPages.map(page => page.path);
   // paths to create empty pages
   const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
 
