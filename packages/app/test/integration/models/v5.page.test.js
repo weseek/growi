@@ -111,6 +111,7 @@ describe('Page', () => {
     const pageIdUpd9 = new mongoose.Types.ObjectId();
     const pageIdUpd10 = new mongoose.Types.ObjectId();
     const pageIdUpd11 = new mongoose.Types.ObjectId();
+    const pageIdUpd12 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -165,7 +166,7 @@ describe('Page', () => {
       },
       {
         _id: pageIdUpd6,
-        path: '/mup9_pub/mup10_pub/mup11_awl',
+        path: '/mup16_top/mup9_pub/mup10_pub/mup11_awl',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -217,6 +218,16 @@ describe('Page', () => {
         isEmpty: false,
         parent: rootPage._id,
         descendantCount: 1,
+      },
+      {
+        _id: pageIdUpd12,
+        path: '/mup16_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
       },
     ]);
 
@@ -375,28 +386,32 @@ describe('Page', () => {
     });
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
       test('a page will create ancestors if they do not exist', async() => {
-        const page = await Page.findOne({ path: '/mup9_pub/mup10_pub/mup11_awl', grant: Page.GRANT_RESTRICTED });
-        const page1 = await Page.findOne({ path: '/mup9_pub/' });
-        const page2 = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
+        const top = await Page.findOne({ path: '/mup16_top' });
+        const page = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub/mup11_awl', grant: Page.GRANT_RESTRICTED });
+        const page1 = await Page.findOne({ path: '/mup16_top/mup9_pub' });
+        const page2 = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
         expectAllToBeTruthy([page]);
         expect(page1).toBeNull();
         expect(page2).toBeNull();
 
         await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
 
-        const pageAF = await Page.findOne({ path: '/mup9_pub/mup10_pub/mup11_awl' });
-        const page1AF = await Page.findOne({ path: '/mup9_pub' });
-        const page2AF = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
+        const topAF = await Page.findOne({ path: '/mup16_top' });
+        const pageAF = await Page.findOne({ _id: page._id });
+        const page1AF = await Page.findOne({ path: '/mup16_top/mup9_pub' });
+        const page2AF = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
         expectAllToBeTruthy([pageAF, page1AF, page2AF]);
 
         expect(pageAF.grant).toBe(Page.GRANT_PUBLIC);
         expect(pageAF.parent).toStrictEqual(page2AF._id);
 
         expect(page1AF.isEmpty).toBe(true);
-        expect(page1AF.parent).toStrictEqual(rootPage._id);
+        expect(page1AF.parent).toStrictEqual(top._id);
 
         expect(page2AF.isEmpty).toBe(true);
         expect(page2AF.parent).toStrictEqual(page1AF._id);
+
+        expect(topAF.descendantCount).toBe(1);
       });
       test('a page will replace an empty page with the same path if any', async() => {
         const page1 = await Page.findOne({ path: '/mup12_emp', grant: Page.GRANT_PUBLIC, isEmpty: true });
