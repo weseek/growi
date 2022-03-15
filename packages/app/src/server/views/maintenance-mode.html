@@ -1,0 +1,56 @@
+{% extends './layout/layout.html' %}
+
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('maintenance_mode.maintenance_mode')) }}{% endblock %}
+
+
+{#
+  # Remove default contents
+  #}
+ {% block html_head_loading_legacy %}
+ {% endblock %}
+ {% block html_head_loading_app %}
+ {% endblock %}
+ {% block layout_head_nav %}
+ {% endblock %}
+ {% block sidebar %}
+ {% endblock %}
+ {% block head_warn_alert_siteurl_undefined %}
+ {% endblock %}
+ {% block fixed-controls %}
+ {% endblock %}
+
+{% block layout_main %}
+<div id="main" class="main">
+  <div id="content-main" class="content-main container-lg">
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <div class="col-md-6 mt-5">
+          <div class="text-center">
+            <h1><i class="icon-exclamation large"></i></h1>
+            <h1 class="text-center">{{ t('maintenance_mode.maintenance_mode') }}</h1>
+            <h3>{{ t('maintenance_mode.growi_is_under_maintenance') }}</h3>
+            <hr />
+            <div class="text-left">
+              <p>
+                <i class="icon-arrow-right"></i>
+                <a href="/admin">{{ t('maintenance_mode.admin_page') }}</a>
+              </p>
+              {% if not user %}
+                <p>
+                  <i class="icon-arrow-right"></i>
+                  <a href="/login">{{ t('maintenance_mode.login') }}</a>
+                </p>
+              {% else %}
+                <p>
+                  <i class="icon-arrow-right"></i>
+                  <a href="/logout">{{ t('maintenance_mode.logout') }}</a>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

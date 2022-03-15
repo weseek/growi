@@ -44,8 +44,8 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
     }
 
     // is api path
-    const path = req.path || '';
-    if (path.match(/^\/_api\/.+$/)) {
+    const baseUrl = req.baseUrl || '';
+    if (baseUrl.match(/^\/_api\/.+$/)) {
       if (fallback != null) {
         return fallback(req, res, next);
       }
