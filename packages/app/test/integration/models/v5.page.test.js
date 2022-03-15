@@ -429,8 +429,8 @@ describe('Page', () => {
 
         const topAF = await Page.findOne({ _id: top._id });
         const pageAF = await Page.findOne({ _id: page._id });
-        const page1AF = await Page.findOne({ _id: page1._id });
-        const page2AF = await Page.findOne({ _id: page2._id });
+        const page1AF = await Page.findOne({ path: '/mup16_top/mup9_pub' });
+        const page2AF = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
         expectAllToBeTruthy([pageAF, page1AF, page2AF]);
 
         expect(pageAF.grant).toBe(Page.GRANT_PUBLIC);
