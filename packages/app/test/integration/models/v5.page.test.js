@@ -136,6 +136,7 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        isEmpty: false,
       },
       {
         path: '/mup6_pub/mup7_pub',
@@ -143,6 +144,7 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdUpd4,
+        isEmpty: false,
       },
       {
         _id: pageIdUpd5,
@@ -151,6 +153,7 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        isEmpty: false,
       },
     ]);
 
@@ -255,26 +258,46 @@ describe('Page', () => {
         const page1 = await Page.findOne({ path: '/mup6_pub', grant: Page.GRANT_PUBLIC });
         const page2 = await Page.findOne({ path: '/mup6_pub/mup7_pub', grant: Page.GRANT_PUBLIC });
         const count = await Page.count({ path: '/mup6_pub' });
-        const options = { grant: 2, grantUserGroupId: null };
         expectAllToBeTruthy([page1, page2]);
         expect(count).toBe(1);
 
-        await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
+        await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 2 });
 
         // AU => After Update
-        const page1AF = await Page.findOne({ path: '/mup6_pub', grant: Page.GRANT_RESTRICTED });
-        const page2AF = await Page.findOne({ path: '/mup6_pub/mup7_pub', grant: Page.GRANT_PUBLIC });
-        const newlyCreatedPage = await Page.findOne({ path: '/mup6_pub', grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const page1AF = await Page.findOne({ _id: page1._id });
+        const page2AF = await Page.findOne({ _id: page2._id });
+        const newlyCreatedPage = await Page.findOne({ _id: { $ne: page1._id }, path: '/mup6_pub' });
         const countAF = await Page.count({ path: '/mup6_pub' });
         expectAllToBeTruthy([page1AF, page2AF, newlyCreatedPage]);
         expect(countAF).toBe(2);
 
+        expect(page1AF.grant).toBe(Page.GRANT_RESTRICTED);
         expect(page1AF.parent).toBeNull();
-        expect(page2AF.parent).toStrictEqual(newlyCreatedPage._id);
-        expect(newlyCreatedPage.parent).toStrictEqual(rootPage._id);
 
+        expect(page2AF.grant).toBe(Page.GRANT_PUBLIC);
+        expect(page2AF.parent).toStrictEqual(newlyCreatedPage._id);
+
+        expect(newlyCreatedPage.isEmpty).toBe(true);
+        expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
+        expect(newlyCreatedPage.parent).toStrictEqual(rootPage._id);
       });
       test('of a leaf page will NOT have empty page with the same path', async() => {
+        const page = await Page.findOne({ path: '/mup8_pub', grant: Page.GRANT_PUBLIC });
+        const count = await Page.count({ path: '/mup8_pub' });
+        expectAllToBeTruthy([page]);
+        expect(count).toBe(1);
+
+        await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 2 });
+        // AU => After Update
+        const pageAF = await Page.findOne({ _id: page });
+        const emptyPage = await Page.findOne({ path: '/mup8_pub', isEmpty: true });
+        const countAF = await Page.count({ path: '/mup8_pub' });
+        expectAllToBeTruthy([pageAF]);
+        expect(countAF).toBe(1);
+
+        expect(emptyPage).toBeNull();
+        expect(pageAF.grant).toBe(Page.GRANT_RESTRICTED);
+
 
       });
     });
