@@ -70,6 +70,7 @@ describe('Page', () => {
      */
     const pageIdUpd1 = new mongoose.Types.ObjectId();
     const pageIdUpd2 = new mongoose.Types.ObjectId();
+    const pageIdUpd3 = new mongoose.Types.ObjectId();
 
     const revisionIdUpd2 = new mongoose.Types.ObjectId();
 
@@ -90,6 +91,12 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         revision: revisionIdUpd2,
         isEmpty: false,
+      },
+      {
+        _id: pageIdUpd3,
+        path: '/mup3_empty/mup4_empty/mup5_link',
+        grant: Page.GRANT_RESTRICTED,
+        isEmpty: true,
       },
     ]);
     await Revision.insertMany([
@@ -140,8 +147,8 @@ describe('Page', () => {
 
   describe('update', () => {
 
-    describe('change grant to Anyone with the link', () => {
-      test('change grant of only child of empty parent should delete empty page', async() => {
+    describe('change grant', () => {
+      test('Changing grant of only-child page to RESTRICTED will delete its empty parent page', async() => {
         const page1 = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
         const page2 = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
         const revision = page2.revision;
@@ -156,6 +163,9 @@ describe('Page', () => {
 
         expect(page2AU).toBeTruthy();
         expect(page1AU).toBeNull();
+      });
+      test('remove page with GRANT_RESTRICTED will create empty ancestors', async() => {
+
       });
     });
   });
