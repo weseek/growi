@@ -30,7 +30,8 @@ context('Open Page Delete Modal', () => {
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
 
-
+     // eslint-disable-next-line cypress/no-unnecessary-waiting
+     cy.wait(1500);
      cy.screenshot(`${ssPrefix}-bootstrap4`,{ capture: 'viewport' });
   });
 
