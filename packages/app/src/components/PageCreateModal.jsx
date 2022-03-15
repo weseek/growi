@@ -42,7 +42,7 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
-  const [isUsersHomePageHoge, setIsUsersHomePageHoge] = useState(false);
+  const [matchesUserHomePagePath, setMatchesUserHomePagePath] = useState(false);
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
@@ -51,7 +51,7 @@ const PageCreateModal = (props) => {
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
-      setIsUsersHomePageHoge(isUsersHomePage(pageNameInput));
+      setMatchesUserHomePagePath(isUsersHomePage(pageNameInput));
     };
 
     return debounce(1000, checkIsUsersHomePage);
@@ -236,14 +236,14 @@ const PageCreateModal = (props) => {
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
-                disabled={isUsersHomePageHoge}
+                disabled={matchesUserHomePagePath}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
 
           </div>
-          { isUsersHomePageHoge && (
+          { matchesUserHomePagePath && (
             <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
           ) }
 
