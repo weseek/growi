@@ -99,6 +99,11 @@ const UserGroupModal: FC<Props> = (props: Props) => {
           </label>
           <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
         </div>
+
+        {/* TODO 90732: Add a drop-down to show selectable parents */}
+
+        {/* TODO 85462: Add a note that "if you change the parent, the offspring will also be moved together */}
+
       </ModalBody>
 
       <ModalFooter>
