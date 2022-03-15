@@ -454,7 +454,7 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroup: rootUserGroupId,
         },
 
         // 3
@@ -500,19 +500,11 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: rootUserGroupId,
         },
-        {
-          path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_testGroup',
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
-        },
       ]);
     });
 
 
-    test('1', async() => {
-      /*
-       * 1
-       */
+    test('Should normalize pages one by one without including other pages', async() => {
       const _owned13 = await Page.findOne(owned({ path: '/normalize_13_owned', ...notNormalized }));
       const _owned14 = await Page.findOne(owned({ path: '/normalize_13_owned/normalize_14_owned', ...notNormalized }));
       const _owned15 = await Page.findOne(owned({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned', ...notNormalized }));
@@ -536,7 +528,7 @@ describe('V5 page migration', () => {
       const owned15 = await Page.findOne({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned' });
       const owned16 = await Page.findOne({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_owned' });
       const root16 = await Page.findOne(root({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_root' }));
-      const group16 = await Page.findOne(rootUserGroup({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_group' }));
+      const group16 = await Page.findOne(testUser1Group({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_group' }));
 
       expect(owned13).not.toBeNull();
       expect(owned14).not.toBeNull();
@@ -558,16 +550,13 @@ describe('V5 page migration', () => {
       expect(owned14.isEmpty).toBe(false);
     });
 
-    test('2', async() => {
-      /*
-       * 2
-       */
+    test('Should normalize pages recursively excluding the pages not selected', async() => {
       const _owned17 = await Page.findOne(owned({ path: '/normalize_17_owned', ...normalized }));
       const _owned18 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned', ...normalized }));
       const _owned19 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned', ...notNormalized }));
       const _owned20 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_owned', ...notNormalized }));
       const _root20 = await Page.findOne(root({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_root', ...notNormalized }));
-      const _group20 = await Page.findOne(testUser1Group({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group', ...notNormalized }));
+      const _group20 = await Page.findOne(rootUserGroup({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group', ...notNormalized }));
 
       expect(_owned17).not.toBeNull();
       expect(_owned18).not.toBeNull();
@@ -609,10 +598,7 @@ describe('V5 page migration', () => {
       expect(owned18.isEmpty).toBe(false);
     });
 
-    test('3', async() => {
-      /*
-       * 3
-       */
+    test('Should normalize pages recursively excluding the pages of not user\'s', async() => {
       const _owned21 = await Page.findOne(owned({ path: '/normalize_21_owned', ...normalized }));
       const _owned22 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned', ...normalized }));
       const _owned23 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned', ...notNormalized }));
@@ -620,7 +606,6 @@ describe('V5 page migration', () => {
       const _owned24 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_owned', ...normalized }));
       const _root24 = await Page.findOne(root({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_root', ...notNormalized }));
       const _rootGroup24 = await Page.findOne(rootUserGroup({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_rootGroup', ...notNormalized }));
-      const _testGroup24 = await Page.findOne(testUser1Group({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_testGroup', ...notNormalized }));
 
       expect(_owned21).not.toBeNull();
       expect(_owned22).not.toBeNull();
@@ -629,7 +614,6 @@ describe('V5 page migration', () => {
       expect(_owned24).not.toBeNull();
       expect(_root24).not.toBeNull();
       expect(_rootGroup24).not.toBeNull();
-      expect(_testGroup24).not.toBeNull();
 
       // Normalize
       await normalizeParentRecursivelyByPages([_owned23], testUser1);
@@ -641,7 +625,6 @@ describe('V5 page migration', () => {
       const owned24 = await Page.findOne({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_owned' });
       const root24 = await Page.findOne(root({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_root' }));
       const rootGroup24 = await Page.findOne(rootUserGroup({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_rootGroup' }));
-      const testGroup24 = await Page.findOne(testUser1Group({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_testGroup' }));
 
       expect(owned21).not.toBeNull();
       expect(owned22).not.toBeNull();
@@ -650,7 +633,6 @@ describe('V5 page migration', () => {
       expect(owned24).not.toBeNull();
       expect(root24).not.toBeNull();
       expect(rootGroup24).not.toBeNull();
-      expect(testGroup24).not.toBeNull();
 
       // Check parent
       expect(owned21.parent).toStrictEqual(rootPage._id);
@@ -659,7 +641,6 @@ describe('V5 page migration', () => {
       expect(owned24.parent).toStrictEqual(owned23._id); // not empty23._id
       expect(root24.parent).toBeNull();
       expect(rootGroup24.parent).toBeNull(); // excluded from the pages to be normalized
-      expect(testGroup24.parent).toStrictEqual(owned23._id); // included in the pages to be normalized
 
       // Check isEmpty
       expect(owned21.isEmpty).toBe(false);
