@@ -29,10 +29,13 @@ context('Tag', () => {
     cy.screenshot(`${ssPrefix}click-add-tag`, {capture: 'viewport'});
 
     cy.get('#edit-tag-modal').within(() => {
-      cy.get('.rbt-input-hint-container > input').click({force: true});
-      cy.screenshot('tag input ', {capture: 'viewport'});
+      cy.get('.rbt-input-main').type(tag, {force: true});
+      cy.wait(1500)
+      cy.get('#rbt-menu-item-0 > a').should('be.visible');
+      cy.get('#rbt-menu-item-0 > a').click({force: true});
     });
-
+    cy.wait(1000);
+    cy.screenshot(`${ssPrefix}insert-tag-name`, {capture: 'viewport'});
 
   });
 
