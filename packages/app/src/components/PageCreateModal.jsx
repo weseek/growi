@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -13,7 +13,8 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { usePageCreateModalOpened } from '~/stores/ui';
+
+import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -24,11 +25,12 @@ const {
 const PageCreateModal = (props) => {
   const { t, appContainer } = props;
 
-  const { data: isPageCreateModalOpened, mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
+  const { isOpened, path } = pageCreateModalData;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const pathname = decodeURI(window.location.pathname);
+  const pathname = path || '';
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -37,6 +39,11 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
+
+  // ensure pageNameInput is synced with selectedPagePath || currentPagePath
+  useEffect(() => {
+    setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
+  }, [pathname]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -158,7 +165,12 @@ const PageCreateModal = (props) => {
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
-              <button type="button" className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3" onClick={createTodayPage}>
+              <button
+                type="button"
+                data-testid="btn-create-memo"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                onClick={createTodayPage}
+              >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
@@ -172,7 +184,7 @@ const PageCreateModal = (props) => {
 
   function renderInputPageForm() {
     return (
-      <div className="row">
+      <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
           <h3 className="grw-modal-head pb-2">{t('Create under')}</h3>
 
@@ -204,7 +216,12 @@ const PageCreateModal = (props) => {
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
-              <button type="button" className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3" onClick={createInputPage}>
+              <button
+                type="button"
+                data-testid="btn-create-page-under-below"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                onClick={createInputPage}
+              >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
@@ -266,12 +283,13 @@ const PageCreateModal = (props) => {
   return (
     <Modal
       size="lg"
-      isOpen={isPageCreateModalOpened}
-      toggle={() => mutatePageCreateModalOpened(false)}
+      isOpen={isOpened}
+      toggle={() => closeCreateModal()}
+      data-testid="page-create-modal"
       className="grw-create-page"
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={() => mutatePageCreateModalOpened(false)} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => closeCreateModal()} className="bg-primary text-light">
         {t('New Page')}
       </ModalHeader>
       <ModalBody>

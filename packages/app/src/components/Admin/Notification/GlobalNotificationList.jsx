@@ -116,7 +116,7 @@ class GlobalNotificationList extends React.Component {
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
                     <li className="list-inline-item badge badge-pill badge-info">
-                      <i className="icon-like"></i> LIKE
+                      <i className="fa fa-heart-o"></i> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (

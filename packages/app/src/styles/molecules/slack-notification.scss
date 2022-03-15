@@ -20,9 +20,6 @@
   // in the input and form-control element
   .grw-form-control-slack-notification.form-control {
     height: $input-height-slack;
-    &:focus {
-      box-shadow: none;
-    }
   }
   .grw-input-group-slack-notification {
     height: $input-height-slack;

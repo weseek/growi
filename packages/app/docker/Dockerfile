@@ -6,7 +6,7 @@ ARG flavor=default
 ##
 ## packages-json-picker
 ##
-FROM node:14-slim AS packages-json-picker
+FROM node:16-slim AS packages-json-picker
 
 ENV optDir /opt
 
@@ -20,7 +20,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 ##
 ## deps-resolver
 ##
-FROM node:14-slim AS deps-resolver
+FROM node:16-slim AS deps-resolver
 
 ENV optDir /opt
 
@@ -31,7 +31,7 @@ COPY --from=packages-json-picker ${optDir} .
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN npx lerna bootstrap -- --frozen-lockfile
+RUN npx -y lerna bootstrap -- --frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -48,7 +48,7 @@ FROM deps-resolver AS deps-resolver-prod
 # remove unnecessary packages
 RUN rm -rf packages/slackbot-proxy
 
-RUN npx lerna bootstrap -- --production
+RUN npx -y lerna bootstrap -- --production
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
@@ -59,7 +59,7 @@ RUN tar -cf node_modules.tar \
 ##
 ## prebuilder-default
 ##
-FROM node:14-slim AS prebuilder-default
+FROM node:16-slim AS prebuilder-default
 
 ENV optDir /opt
 
@@ -128,7 +128,7 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:14-slim
+FROM node:16-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production

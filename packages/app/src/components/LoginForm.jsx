@@ -297,7 +297,7 @@ class LoginForm extends React.Component {
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-                {isPasswordResetEnabled && (
+                {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="text-right mb-2">
                     <a href="/forgot-password" className="d-block link-switch">
                       <i className="icon-key"></i> {t('forgot_password.forgot_password')}

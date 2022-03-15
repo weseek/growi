@@ -10,7 +10,7 @@ import { blinkElem } from '~/client/util/blink-section-header';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import StickyStretchableScroller from './StickyStretchableScroller';
+import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -34,8 +34,8 @@ const TableOfContents = (props) => {
     const containerComputedStyle = getComputedStyle(containerElem);
     const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // get smaller bottom line of window height - the height of ContentLinkButtons and .system-version height) and containerTop
-    let bottom = Math.min(window.innerHeight - 41 - 20, parentBottom);
+    // get smaller bottom line of window height - .system-version height - margin 5px) and containerTop
+    let bottom = Math.min(window.innerHeight - 20 - 5, parentBottom);
 
     if (isUserPage) {
       // raise the bottom line by the height and margin-top of UserContentLinks
@@ -56,9 +56,8 @@ const TableOfContents = (props) => {
 
   return (
     <StickyStretchableScroller
-      contentsElemSelector=".revision-toc .markdownIt-TOC"
       stickyElemSelector=".grw-side-contents-sticky-container"
-      calcViewHeightFunc={calcViewHeight}
+      calcViewHeight={calcViewHeight}
     >
       { tocHtml !== ''
         ? (
@@ -74,7 +73,6 @@ const TableOfContents = (props) => {
             id="revision-toc-content"
             className="revision-toc-content mb-2"
           >
-            <span className="text-muted">({t('page_table_of_contents.empty')})</span>
           </div>
         ) }
 

@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '~/client/services/PageContainer';
+import { usePutBackPageModal } from '~/stores/modal';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-const PutBackPageModal = (props) => {
-  const {
-    t, isOpen, onClose, pageContainer, path,
-  } = props;
+const PutBackPageModal = () => {
+  const { t } = useTranslation();
+
+  const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
+  const { isOpened, page } = pageDataToRevert;
+  const { pageId, path } = page;
+  const onPutBacked = pageDataToRevert.opts?.onPutBacked;
 
   const [errs, setErrs] = useState(null);
 
@@ -26,26 +27,33 @@ const PutBackPageModal = (props) => {
     setIsPutbackRecursively(!isPutbackRecursively);
   }
 
-  async function putbackPage() {
+  async function putbackPageButtonHandler() {
     setErrs(null);
 
     try {
-      const response = await pageContainer.revertRemove(isPutbackRecursively);
-      const putbackPagePath = response.page.path;
-      window.location.href = encodeURI(putbackPagePath);
+      // control flag
+      // If is it not true, Request value must be `null`.
+      const recursively = isPutbackRecursively ? true : null;
+
+      const response = await apiPost('/pages.revertRemove', {
+        page_id: pageId,
+        recursively,
+      });
+
+      if (onPutBacked != null) {
+        onPutBacked(response.page.path);
+      }
+      closePutBackPageModal();
     }
     catch (err) {
       setErrs(err);
     }
   }
 
-  async function putbackPageButtonHandler() {
-    putbackPage();
-  }
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
+    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </ModalHeader>
       <ModalBody>
@@ -80,20 +88,4 @@ const PutBackPageModal = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PutBackPageModalWrapper = withUnstatedContainers(PutBackPageModal, [PageContainer]);
-
-PutBackPageModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
-  path: PropTypes.string.isRequired,
-};
-
-
-export default withTranslation()(PutBackPageModalWrapper);
+export default PutBackPageModal;
