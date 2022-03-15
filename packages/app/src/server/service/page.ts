@@ -2664,17 +2664,19 @@ class PageService {
 
         // 2. Create lacking parents as empty pages
         const orFilters = [
+          { path: '/' },
           { path: { $in: publicPathsToNormalize }, grant: Page.GRANT_PUBLIC, status: Page.STATUS_PUBLISHED },
           { path: { $in: publicPathsToNormalize }, parent: { $ne: null }, status: Page.STATUS_PUBLISHED },
           { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
         ];
-        const filterForEmptyPagesToCreate = { $or: orFilters };
-        await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForEmptyPagesToCreate);
+        const filterForApplicableAncestors = { $or: orFilters };
+        await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForApplicableAncestors);
 
         // 3. Find parents
         const builder2 = new PageQueryBuilder(Page.find(), true);
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
+          .addCustomAndCondition(filterForApplicableAncestors)
           .addCustomAndCondition(grantFiltersByUser) // use addCustomAndCondition instead of addConditionToFilteringByViewerToEdit to reduce the num of queries
           .query
           .lean()
@@ -2691,6 +2693,7 @@ class PageService {
               {
                 path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
               },
+              filterForApplicableAncestors,
               grantFiltersByUser,
             ],
           };

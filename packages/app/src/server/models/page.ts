@@ -44,7 +44,7 @@ type TargetAndAncestorsResult = {
 export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean, andFilter?): Promise<void>
+  createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, andFilter?): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
@@ -436,9 +436,9 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: a
     });
   }
   // 3. Add custom pipeline
-  // if (filter != null) {
-  //   aggregationPipeline.push({ $match: filter });
-  // }
+  if (filter != null) {
+    aggregationPipeline.push({ $match: filter });
+  }
   // 4. Add grant conditions
   let userGroups = null;
   if (user != null) {

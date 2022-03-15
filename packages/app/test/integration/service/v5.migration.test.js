@@ -454,7 +454,7 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroup: rootUserGroupId,
         },
 
         // 3
@@ -567,7 +567,7 @@ describe('V5 page migration', () => {
       const _owned19 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned', ...notNormalized }));
       const _owned20 = await Page.findOne(owned({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_owned', ...notNormalized }));
       const _root20 = await Page.findOne(root({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_root', ...notNormalized }));
-      const _group20 = await Page.findOne(testUser1Group({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group', ...notNormalized }));
+      const _group20 = await Page.findOne(rootUserGroup({ path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group', ...notNormalized }));
 
       expect(_owned17).not.toBeNull();
       expect(_owned18).not.toBeNull();
