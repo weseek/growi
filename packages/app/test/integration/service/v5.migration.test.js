@@ -598,7 +598,7 @@ describe('V5 page migration', () => {
       expect(owned18.isEmpty).toBe(false);
     });
 
-    test('Should normalize pages recursively excluding the pages of not user\'s', async() => {
+    test('Should normalize pages recursively excluding the pages of not user\'s & Should delete unnecessary empty pages', async() => {
       const _owned21 = await Page.findOne(owned({ path: '/normalize_21_owned', ...normalized }));
       const _owned22 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned', ...normalized }));
       const _owned23 = await Page.findOne(owned({ path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned', ...notNormalized }));
