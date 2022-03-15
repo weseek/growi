@@ -115,14 +115,13 @@ describe('Page', () => {
     const pageIdUpd10 = new mongoose.Types.ObjectId();
     const pageIdUpd11 = new mongoose.Types.ObjectId();
     const pageIdUpd12 = new mongoose.Types.ObjectId();
-    const pageIdUpd13 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
         _id: pageIdUpd1,
         path: '/mup13_top/mup1_emp',
         grant: Page.GRANT_PUBLIC,
-        parent: pageIdUpd9._id,
+        parent: pageIdUpd8._id,
         isEmpty: true,
       },
       {
@@ -135,12 +134,12 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdUpd4,
+        _id: pageIdUpd3,
         path: '/mup14_top/mup6_pub',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdUpd10,
+        parent: pageIdUpd9,
         isEmpty: false,
         descendantCount: 1,
       },
@@ -149,21 +148,21 @@ describe('Page', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdUpd4,
+        parent: pageIdUpd3,
         isEmpty: false,
         descendantCount: 0,
       },
       {
-        _id: pageIdUpd5,
+        _id: pageIdUpd4,
         path: '/mup15_top/mup8_pub',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdUpd11._id,
+        parent: pageIdUpd10._id,
         isEmpty: false,
       },
       {
-        _id: pageIdUpd6,
+        _id: pageIdUpd5,
         path: '/mup16_top/mup9_pub/mup10_pub/mup11_awl',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
@@ -171,13 +170,13 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdUpd7,
+        _id: pageIdUpd6,
         path: '/mup17_top/mup12_emp',
         isEmpty: true,
-        parent: pageIdUpd13._id,
+        parent: pageIdUpd12._id,
       },
       {
-        _id: pageIdUpd8,
+        _id: pageIdUpd7,
         path: '/mup17_top/mup12_emp',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
@@ -185,7 +184,7 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdUpd9,
+        _id: pageIdUpd8,
         path: '/mup13_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -195,7 +194,7 @@ describe('Page', () => {
         descendantCount: 2,
       },
       {
-        _id: pageIdUpd10,
+        _id: pageIdUpd9,
         path: '/mup14_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -205,7 +204,7 @@ describe('Page', () => {
         descendantCount: 2,
       },
       {
-        _id: pageIdUpd11,
+        _id: pageIdUpd10,
         path: '/mup15_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -215,7 +214,7 @@ describe('Page', () => {
         descendantCount: 1,
       },
       {
-        _id: pageIdUpd12,
+        _id: pageIdUpd11,
         path: '/mup16_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -225,7 +224,7 @@ describe('Page', () => {
         descendantCount: 0,
       },
       {
-        _id: pageIdUpd13,
+        _id: pageIdUpd12,
         path: '/mup17_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
