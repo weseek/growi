@@ -48,6 +48,7 @@ describe('Page', () => {
     const pageIdCreate1 = new mongoose.Types.ObjectId();
     const pageIdCreate2 = new mongoose.Types.ObjectId();
     const pageIdCreate3 = new mongoose.Types.ObjectId();
+    const pageIdCreate4 = new mongoose.Types.ObjectId();
 
     /**
      * create
@@ -73,7 +74,7 @@ describe('Page', () => {
       },
       {
         _id: pageIdCreate2,
-        path: '/mc1_emp',
+        path: '/mc4_top/mc1_emp',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -81,7 +82,7 @@ describe('Page', () => {
         isEmpty: true,
       },
       {
-        path: '/mc1_emp/mc2_pub',
+        path: '/mc4_top/mc1_emp/mc2_pub',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -97,6 +98,16 @@ describe('Page', () => {
       },
       {
         _id: pageIdCreate3,
+        path: '/mc4_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdCreate4,
         path: '/mc5_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -283,22 +294,24 @@ describe('Page', () => {
 
     describe('Creating a page using existing path', () => {
       test('with grant RESTRICTED should only create the page and change nothing else', async() => {
-        const page1 = await Page.findOne({ path: '/mc1_emp' });
-        const page2 = await Page.findOne({ path: '/mc1_emp/mc2_pub' });
-        const count = await Page.count({ path: '/mc1_emp' });
-        expectAllToBeTruthy([page1, page2]);
+        const top = await Page.findOne({ path: '/mc4_top', descendantCount: 1 });
+        const page1 = await Page.findOne({ path: '/mc4_top/mc1_emp' });
+        const page2 = await Page.findOne({ path: '/mc4_top/mc1_emp/mc2_pub' });
+        const count = await Page.count({ path: '/mc4_top/mc1_emp' });
+        expectAllToBeTruthy([top, page1, page2]);
         expect(count).toBe(1);
 
-        await Page.create('/mc1_emp', 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await Page.create('/mc4_top/mc1_emp', 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         // AF => After Create
+        const topAF = await Page.findOne({ _id: top._id });
         const page1AF = await Page.findOne({ _id: page1._id });
         const page2AF = await Page.findOne({ _id: page2._id });
-        const countAF = await Page.count({ path: '/mc1_emp' });
-        const newPage = await Page.find({ path: '/mc1_emp', grant: Page.GRANT_RESTRICTED });
-        expectAllToBeTruthy([page1AF, page2AF, newPage]);
+        const countAF = await Page.count({ path: '/mc4_top/mc1_emp' });
+        const newPage = await Page.find({ path: '/mc4_top/mc1_emp', grant: Page.GRANT_RESTRICTED });
+        expectAllToBeTruthy([topAF, page1AF, page2AF, newPage]);
         expect(countAF).toBe(2);
-
+        expect(topAF.descendantCount).toBe(1);
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
