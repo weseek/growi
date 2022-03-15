@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { describe } from 'yargs';
 
 import { getInstance } from '../setup-crowi';
 
@@ -46,11 +45,18 @@ describe('Page', () => {
 
     rootPage = await Page.findOne({ path: '/' });
 
-    const createPageId1 = new mongoose.Types.ObjectId();
+    const pageIdCreate1 = new mongoose.Types.ObjectId();
+    const pageIdCreate2 = new mongoose.Types.ObjectId();
 
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
     await Page.insertMany([
       {
-        _id: createPageId1,
+        _id: pageIdCreate1,
         path: '/v5_empty_create_4',
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
@@ -61,7 +67,23 @@ describe('Page', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: createPageId1,
+        parent: pageIdCreate1,
+      },
+      {
+        _id: pageIdCreate2,
+        path: '/mc_emp',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/mc_emp/mc_pub2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreate2,
       },
     ]);
 
@@ -145,7 +167,21 @@ describe('Page', () => {
     });
 
     describe('Creating a page using existing path', () => {
-      test('with grant RESTRICTED should only create the page and change nothing else', () => {
+      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+        const page1 = await Page.findOne({ path: '/mc_emp' });
+        const page2 = await Page.findOne({ path: '/mc_emp/mc_pub2' });
+        const count = await Page.count({ path: '/mc_emp' });
+        expectAllToBeTruthy([page1, page2]);
+        expect(count).toBe(1);
+
+        await Page.create('/mc_emp', 'create1', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+
+        const page1AF = await Page.findOne({ _id: page1._id });
+        const page2AF = await Page.findOne({ _id: page2._id });
+        const countAF = await Page.count({ path: '/mc_emp' });
+        const newPage = await Page.find({ path: '/mc_emp', grant: Page.GRANT_RESTRICTED });
+        expectAllToBeTruthy([page1AF, page2AF, newPage]);
+        expect(countAF).toBe(2);
 
       });
     });
