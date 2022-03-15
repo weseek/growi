@@ -68,6 +68,7 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdCreate1,
+        isEmpty: false,
       },
       {
         _id: pageIdCreate2,
@@ -84,12 +85,14 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdCreate2,
+        isEmpty: false,
       },
       {
         path: '/mc3_awl',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
       },
     ]);
 
@@ -112,6 +115,7 @@ describe('Page', () => {
     const pageIdUpd10 = new mongoose.Types.ObjectId();
     const pageIdUpd11 = new mongoose.Types.ObjectId();
     const pageIdUpd12 = new mongoose.Types.ObjectId();
+    const pageIdUpd13 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -129,12 +133,6 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
-      },
-      {
-        _id: pageIdUpd3,
-        path: '/mup3_emp/mup4_emp/mup5_awl',
-        grant: Page.GRANT_RESTRICTED,
-        isEmpty: true,
       },
       {
         _id: pageIdUpd4,
@@ -174,16 +172,13 @@ describe('Page', () => {
       },
       {
         _id: pageIdUpd7,
-        path: '/mup12_emp',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
+        path: '/mup17_top/mup12_emp',
         isEmpty: true,
-        parent: rootPage._id,
+        parent: pageIdUpd13._id,
       },
       {
         _id: pageIdUpd8,
-        path: '/mup12_emp',
+        path: '/mup17_top/mup12_emp',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -222,6 +217,16 @@ describe('Page', () => {
       {
         _id: pageIdUpd12,
         path: '/mup16_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdUpd13,
+        path: '/mup17_top',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -390,7 +395,7 @@ describe('Page', () => {
         const page = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub/mup11_awl', grant: Page.GRANT_RESTRICTED });
         const page1 = await Page.findOne({ path: '/mup16_top/mup9_pub' });
         const page2 = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
-        expectAllToBeTruthy([page]);
+        expectAllToBeTruthy([top, page]);
         expect(page1).toBeNull();
         expect(page2).toBeNull();
 
@@ -414,22 +419,25 @@ describe('Page', () => {
         expect(topAF.descendantCount).toBe(1);
       });
       test('a page will replace an empty page with the same path if any', async() => {
-        const page1 = await Page.findOne({ path: '/mup12_emp', grant: Page.GRANT_PUBLIC, isEmpty: true });
-        const page2 = await Page.findOne({ path: '/mup12_emp', grant: Page.GRANT_RESTRICTED, isEmpty: false });
-        expectAllToBeTruthy([page1, page2]);
+        const top = await Page.findOne({ path: '/mup17_top', descendantCount: 0 });
+        const page1 = await Page.findOne({ path: '/mup17_top/mup12_emp', isEmpty: true });
+        const page2 = await Page.findOne({ path: '/mup17_top/mup12_emp', grant: Page.GRANT_RESTRICTED, isEmpty: false });
+        expectAllToBeTruthy([top, page1, page2]);
 
         await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
 
+        const topAF = await Page.findOne({ _id: top._id });
         const page1AF = await Page.findOne({ _id: page1._id });
         const page2AF = await Page.findOne({ _id: page2._id });
         expect(page1AF).toBeNull();
         expect(page2AF).toBeTruthy();
 
         expect(page2AF.grant).toBe(Page.GRANT_PUBLIC);
-        expect(page2AF.parent).toStrictEqual(rootPage._id);
+        expect(page2AF.parent).toStrictEqual(topAF._id);
+
+        expect(topAF.descendantCount).toBe(1);
       });
     });
-
 
   });
 });
