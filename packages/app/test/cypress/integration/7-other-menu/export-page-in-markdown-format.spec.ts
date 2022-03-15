@@ -22,8 +22,8 @@ context('Export page in markdown format', () => {
 
   it('Presentation Page', () => {
     cy.visit('/Sandbox/Math');
-    cy.get('#grw-subnav-container .grw-btn-page-management').click();
-    cy.get('#grw-subnav-container .dropdown-menu-right > button:eq(3)').click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).find('.dropdown-menu > button:eq(3)');
   });
 
 });

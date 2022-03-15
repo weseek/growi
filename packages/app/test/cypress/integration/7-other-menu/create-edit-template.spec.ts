@@ -20,23 +20,29 @@ context('Create - Edit Template Page', () => {
     }
 
     cy.visit('/Sandbox/Math');
-    cy.get('#grw-subnav-container .grw-btn-page-management').click();
-    cy.get('#grw-subnav-container .dropdown-menu-right > button:eq(4)').click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).find('.dropdown-menu > button:eq(7)').click();
     cy.wait(500);
   });
 
+
   it('Create edit template for children', () => {
-    cy.screenshot(`${ssPrefix}-modal-popup`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-1-modal-popup`, { capture: 'viewport' });
     cy.get('.card-deck > .card:eq(0) .card-footer > a').click();
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-edit-template-for-children`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-2-edit-template-for-children`, { capture: 'viewport' });
+    cy.get('#caret').click();
+    cy.wait(1500);
+    cy.screenshot(`${ssPrefix}-3-edit-template-finished`, { capture: 'viewport' });
   });
 
   it('Create edit template for descendants', () => {
-    cy.screenshot(`${ssPrefix}-modal-popup`, { capture: 'viewport' });
     cy.get('.card-deck > .card:eq(1) .card-footer > a').click();
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-edit-template-for-descendants`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-4-edit-template-for-descendants`, { capture: 'viewport' });
+    cy.get('#caret').click();
+    cy.wait(1500);
+    cy.screenshot(`${ssPrefix}-5-edit-template-for-descendants-finished`, { capture: 'viewport' });
   });
 
 });

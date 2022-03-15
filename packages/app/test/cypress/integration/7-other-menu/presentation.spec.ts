@@ -22,8 +22,8 @@ context('Presentation Page', () => {
 
   it('Presentation Page', () => {
     cy.visit('/Sandbox/Math');
-    cy.get('#grw-subnav-container .grw-btn-page-management').click();
-    cy.get('#grw-subnav-container .dropdown-menu-right > button:eq(2)').click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).find('.dropdown-menu > button:eq(2)').click();
     cy.wait(500);
     cy.screenshot(`${ssPrefix}-presentation-page`, { capture: 'viewport' });
   });

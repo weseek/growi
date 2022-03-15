@@ -22,16 +22,17 @@ context('Duplicate page', () => {
 
   it('Duplicate Page', () => {
     cy.visit('/Sandbox/Math');
-    cy.get('#grw-subnav-container .grw-btn-page-management').click();
-    cy.get('#grw-subnav-container .dropdown-menu-right > button:eq(1)').click();
-    cy.wait(300);
-    cy.get('.search-clear').click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).click();
+    cy.getByTestid('open-page-item-control-btn').eq(0).find('.dropdown-menu > button:eq(0)').click();
+    cy.wait(500);
+    cy.screenshot(`${ssPrefix}-1-modal`, { capture: 'viewport' });
 
-    cy.get('[name="new_path"]').type('test');
+    const randomInt = Math.floor(Math.random() * 99999);
+    cy.get('[name="new_path"]').type('test ' + randomInt);
     cy.get('.modal-footer .btn-primary').click();
 
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-duplicate-page`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-2-layout`, { capture: 'viewport' });
   });
 
 });
