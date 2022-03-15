@@ -1,6 +1,6 @@
 
 import React, {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -49,13 +49,13 @@ const PageCreateModal = (props) => {
     setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
   }, [pathname]);
 
-  const checkIsUsersHomePage = useCallback(() => {
-    setIsUsersHomePageHoge(isUsersHomePage(pageNameInput));
-  }, [pageNameInput]);
-
   const checkIsUsersHomePageDebounce = useMemo(() => {
+    const checkIsUsersHomePage = () => {
+      setIsUsersHomePageHoge(isUsersHomePage(pageNameInput));
+    };
+
     return debounce(1000, checkIsUsersHomePage);
-  }, [checkIsUsersHomePage]);
+  }, [pageNameInput]);
 
   useEffect(() => {
     checkIsUsersHomePageDebounce(pageNameInput);
