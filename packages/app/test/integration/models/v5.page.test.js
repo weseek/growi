@@ -105,6 +105,7 @@ describe('Page', () => {
     const pageIdUpd3 = new mongoose.Types.ObjectId();
     const pageIdUpd4 = new mongoose.Types.ObjectId();
     const pageIdUpd5 = new mongoose.Types.ObjectId();
+    const pageIdUpd6 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -153,6 +154,14 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdUpd6,
+        path: '/mup9_pub/mup10_pub/mup11_awl',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
         isEmpty: false,
       },
     ]);
@@ -300,7 +309,30 @@ describe('Page', () => {
       });
     });
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
-      test('a page with no ancestors will create ancestors with isEmpty: true', async() => {});
+      test('a page will create ancestors if they do not exist', async() => {
+        const page = await Page.findOne({ path: '/mup9_pub/mup10_pub/mup11_awl', grant: Page.GRANT_RESTRICTED });
+        const page1 = await Page.findOne({ path: '/mup9_pub/' });
+        const page2 = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
+        expectAllToBeTruthy([page]);
+        expect(page1).tobeNull();
+        expect(page2).tobeNull();
+
+        await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
+
+        const pageAF = await Page.findOne({ path: '/mup9_pub/mup10_pub/mup11_awl' });
+        const page1AF = await Page.findOne({ path: '/mup9_pub/' });
+        const page2AF = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
+        expectAllToBeTruthy([pageAF, page1AF, page2AF]);
+
+        expect(pageAF.grant).toBe(Page.GRANT_PUBLIC);
+        expect(pageAF.parent).toStrictEqual(page2AF._id);
+
+        expect(page1AF.isEmpty).toBe(true);
+        expect(page1AF.parent).toStrictEqual(rootPage._id);
+
+        expect(page2AF.isEmpty).toBe(true);
+        expect(page2AF.parent).toStrictEqual(page1AF._id);
+      });
       test('a page will replace an empty page with the same path if any', async() => {});
     });
 
