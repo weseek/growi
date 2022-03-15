@@ -259,6 +259,7 @@ describe('Page', () => {
 
         expect(page1AF.parent).toBeNull();
         expect(page2AF.parent).toStrictEqual(newlyCreatedPage._id);
+        expect(newlyCreatedPage.parent).toStrictEqual(rootPage._id);
 
       });
       test('of a leaf page will NOT have empty page with the same path', async() => {});
