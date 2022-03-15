@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { describe } from 'yargs';
 
 import { getInstance } from '../setup-crowi';
 
@@ -143,12 +144,23 @@ describe('Page', () => {
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
     });
 
+    describe('Creating a page using existing path', () => {
+      test('with grant RESTRICTED should only create the page and change nothing else', () => {
+
+      });
+    });
+    describe('Creating a page under a page with grant RESTRICTED', () => {
+      test('should create an new empty page with the same path as the grant RESTRECTED page', async() => {
+
+      });
+    });
+
   });
 
   describe('update', () => {
 
-    describe('change grant', () => {
-      test('Changing grant from PUBLIC to RESTRICTED of an only-child page will delete its empty parent page', async() => {
+    describe('Changing grant from PUBLIC to RESTRICTED of', () => {
+      test('an only-child page will delete its empty parent page', async() => {
         const page1 = await Page.findOne({ path: '/mup1_empty', isEmpty: true });
         const page2 = await Page.findOne({ path: '/mup1_empty/mup2_public' }).populate({ path: 'revision', model: 'Revision' });
         const revision = page2.revision;
@@ -164,9 +176,14 @@ describe('Page', () => {
         expect(page2AU).toBeTruthy();
         expect(page1AU).toBeNull();
       });
-      test('Changing grant from RESTRICTED to PUBLIC of a page with no ancestors will create ancestors with isEmpty: true', async() => {
-
-      });
+      test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {});
+      test('of a leaf page will NOT have empty page with the same path', async() => {});
     });
+    describe('Changing grant from RESTRICTED to PUBLIC of', () => {
+      test('a page with no ancestors will create ancestors with isEmpty: true', async() => {});
+      test('a page will replace an empty page with the same path if any', async() => {});
+    });
+
+
   });
 });
