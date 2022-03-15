@@ -314,8 +314,8 @@ describe('Page', () => {
         const page1 = await Page.findOne({ path: '/mup9_pub/' });
         const page2 = await Page.findOne({ path: '/mup9_pub/mup10_pub' });
         expectAllToBeTruthy([page]);
-        expect(page1).tobeNull();
-        expect(page2).tobeNull();
+        expect(page1).toBeNull();
+        expect(page2).toBeNull();
 
         await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
 
