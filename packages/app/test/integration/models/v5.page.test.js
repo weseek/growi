@@ -196,6 +196,7 @@ describe('Page', () => {
         path: '/mup17_top/mup12_emp',
         isEmpty: true,
         parent: pageIdUpd12._id,
+        descendantCount: 1,
       },
       {
         _id: pageIdUpd7,
@@ -204,6 +205,13 @@ describe('Page', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
+      },
+      {
+        path: '/mup17_top/mup12_emp/mup18_pub',
+        isEmpty: false,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdUpd6._id,
       },
       {
         _id: pageIdUpd8,
@@ -253,7 +261,7 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
         parent: rootPage._id,
-        descendantCount: 0,
+        descendantCount: 1,
       },
     ]);
 
@@ -445,23 +453,30 @@ describe('Page', () => {
         expect(topAF.descendantCount).toBe(1);
       });
       test('a page will replace an empty page with the same path if any', async() => {
-        const top = await Page.findOne({ path: '/mup17_top', descendantCount: 0 });
+        const top = await Page.findOne({ path: '/mup17_top', descendantCount: 1 });
         const page1 = await Page.findOne({ path: '/mup17_top/mup12_emp', isEmpty: true });
         const page2 = await Page.findOne({ path: '/mup17_top/mup12_emp', grant: Page.GRANT_RESTRICTED, isEmpty: false });
-        expectAllToBeTruthy([top, page1, page2]);
+        const page3 = await Page.findOne({ path: '/mup17_top/mup12_emp/mup18_pub' });
+        expect(top).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
+        expect(page3).toBeTruthy();
 
-        await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 1 });
+        await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const topAF = await Page.findOne({ _id: top._id });
         const page1AF = await Page.findOne({ _id: page1._id });
         const page2AF = await Page.findOne({ _id: page2._id });
+        const page3AF = await Page.findOne({ _id: page3._id });
         expect(page1AF).toBeNull();
         expect(page2AF).toBeTruthy();
+        expect(page3AF).toBeTruthy();
 
         expect(page2AF.grant).toBe(Page.GRANT_PUBLIC);
         expect(page2AF.parent).toStrictEqual(topAF._id);
+        expect(page3AF.parent).toStrictEqual(page2AF._id);
 
-        expect(topAF.descendantCount).toBe(1);
+        expect(topAF.descendantCount).toBe(2);
       });
     });
 
