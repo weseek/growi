@@ -302,24 +302,30 @@ describe('Page', () => {
 
     describe('Creating a page using existing path', () => {
       test('with grant RESTRICTED should only create the page and change nothing else', async() => {
-        const top = await Page.findOne({ path: '/mc4_top', descendantCount: 1 });
-        const page1 = await Page.findOne({ path: '/mc4_top/mc1_emp' });
-        const page2 = await Page.findOne({ path: '/mc4_top/mc1_emp/mc2_pub' });
-        const count = await Page.count({ path: '/mc4_top/mc1_emp' });
-        expectAllToBeTruthy([top, page1, page2]);
-        expect(count).toBe(1);
+        const pathT = '/mc4_top';
+        const path1 = '/mc4_top/mc1_emp';
+        const path2 = '/mc4_top/mc1_emp/mc2_pub';
+        const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: path2 });
+        const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
+        expect(page3).toBeNull();
 
-        await Page.create('/mc4_top/mc1_emp', 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        // use existing path
+        await Page.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
-        // AF => After Create
-        const topAF = await Page.findOne({ _id: top._id });
-        const page1AF = await Page.findOne({ _id: page1._id });
-        const page2AF = await Page.findOne({ _id: page2._id });
-        const countAF = await Page.count({ path: '/mc4_top/mc1_emp' });
-        const newPage = await Page.find({ path: '/mc4_top/mc1_emp', grant: Page.GRANT_RESTRICTED });
-        expectAllToBeTruthy([topAF, page1AF, page2AF, newPage]);
-        expect(countAF).toBe(2);
-        expect(topAF.descendantCount).toBe(1);
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const _page2 = await Page.findOne({ path: path2 });
+        const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_page3).toBeTruthy();
+        expect(_pageT.descendantCount).toBe(1);
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
@@ -332,19 +338,18 @@ describe('Page', () => {
 
         await Page.create('/mc5_top/mc3_awl/mc4_pub', 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
-        // AF => After Create
-        const topAF = await Page.findOne({ _id: top._id });
-        const page1AF = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
-        const countAF = await Page.count({ path: '/mc5_top/mc3_awl' });
+        const _top = await Page.findOne({ _id: top._id });
+        const _page1 = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
+        const _count = await Page.count({ path: '/mc5_top/mc3_awl' });
 
         const createdPage = await Page.findOne({ path: '/mc5_top/mc3_awl/mc4_pub', grant: Page.GRANT_PUBLIC });
         const createdPageParent = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_PUBLIC, isEmpty: true });
-        expectAllToBeTruthy([page1AF, createdPageParent, createdPage]);
-        expect(countAF).toBe(2);
+        expectAllToBeTruthy([_page1, createdPageParent, createdPage]);
+        expect(_count).toBe(2);
 
         expect(createdPage.parent).toStrictEqual(createdPageParent._id);
-        expect(createdPageParent.parent).toStrictEqual(topAF._id);
-        expect(topAF.descendantCount).toStrictEqual(1);
+        expect(createdPageParent.parent).toStrictEqual(_top._id);
+        expect(_top.descendantCount).toStrictEqual(1);
       });
     });
 
@@ -371,35 +376,41 @@ describe('Page', () => {
         expect(topAF.descendantCount).toBe(1);
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
-        const top = await Page.findOne({ path: '/mup14_top', descendantCount: 2 });
-        const page1 = await Page.findOne({ path: '/mup14_top/mup6_pub', grant: Page.GRANT_PUBLIC });
-        const page2 = await Page.findOne({ path: '/mup14_top/mup6_pub/mup7_pub', grant: Page.GRANT_PUBLIC });
-        const count = await Page.count({ path: '/mup14_top/mup6_pub' });
-        expectAllToBeTruthy([top, page1, page2]);
+        const pathT = '/mup14_top';
+        const path1 = '/mup14_top/mup6_pub';
+        const path2 = '/mup14_top/mup6_pub/mup7_pub';
+        const top = await Page.findOne({ path: pathT, descendantCount: 2 });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC });
+        const count = await Page.count({ path: path1 });
+        expect(top).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
         expect(count).toBe(1);
 
-        await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 2 });
+        await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
-        // AU => After Update
-        const topAF = await Page.findOne({ _id: top._id });
-        const page1AF = await Page.findOne({ _id: page1._id });
-        const page2AF = await Page.findOne({ _id: page2._id });
-        const newlyCreatedPage = await Page.findOne({ _id: { $ne: page1._id }, path: '/mup14_top/mup6_pub' });
-        const countAF = await Page.count({ path: '/mup14_top/mup6_pub' });
-        expectAllToBeTruthy([page1AF, page2AF, newlyCreatedPage]);
-        expect(countAF).toBe(2);
+        const _top = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const _page2 = await Page.findOne({ path: path2 });
+        const newlyCreatedPage = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const _count = await Page.count({ path: path1 });
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(newlyCreatedPage).toBeTruthy();
+        expect(_count).toBe(2);
 
-        expect(page1AF.grant).toBe(Page.GRANT_RESTRICTED);
-        expect(page1AF.parent).toBeNull();
+        expect(_page1.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(_page1.parent).toBeNull();
 
-        expect(page2AF.grant).toBe(Page.GRANT_PUBLIC);
-        expect(page2AF.parent).toStrictEqual(newlyCreatedPage._id);
+        expect(_page2.grant).toBe(Page.GRANT_PUBLIC);
+        expect(_page2.parent).toStrictEqual(newlyCreatedPage._id);
 
         expect(newlyCreatedPage.isEmpty).toBe(true);
-        expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
         expect(newlyCreatedPage.parent).toStrictEqual(top._id);
+        expect(newlyCreatedPage.descendantCount).toBe(1);
 
-        expect(topAF.descendantCount).toBe(1);
+        expect(_top.descendantCount).toBe(1);
       });
       test('of a leaf page will NOT have an empty page with the same path', async() => {
         const path1 = '/mup15_top';
