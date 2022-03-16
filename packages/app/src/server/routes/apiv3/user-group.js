@@ -241,7 +241,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/selectable-parent-groups', async(req, res) => {
+  router.get('/selectable-parent-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
     try {
