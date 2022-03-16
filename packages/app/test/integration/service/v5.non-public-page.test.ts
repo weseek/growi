@@ -321,9 +321,39 @@ describe('PageService page operations with non-public pages', () => {
     // });
   });
   describe('Delete', () => {
-    // test('', async() => {
-    //   // write test code
-    // });
+
+    const deletePage = async(page, user, options, isRecursively) => {
+      const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+
+      const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
+
+      mockedDeleteRecursivelyMainOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
+      }
+
+      return deletedPage;
+    };
+    describe('Delete single page with grant RESTRICTED', () => {
+      test('should be able to delete', async() => {});
+    });
+    describe('Delete multiple pages with grant RESTRICTED', () => {
+      test('should be able to delete', async() => {});
+    });
+    describe('Delete single page with grant USER_GROUP', () => {
+      test('should NOT be able to delete by a user who does NOT belong to the group', async() => {});
+      test('should be able to delete by a user who belongs to the group', async() => {});
+    });
+    describe('Delete multiple pages with grant USER_GROUP', () => {
+      test('should NOT be able to delete by a user who does NOT belong to the group', async() => {});
+      test('should be able to delete by a user who belongs to the group', async() => {});
+    });
+
   });
   describe('Delete completely', () => {
     // test('', async() => {
