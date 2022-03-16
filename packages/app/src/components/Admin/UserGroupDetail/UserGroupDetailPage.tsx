@@ -59,7 +59,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: selectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
   const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(userGroup._id);
 
-  const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -89,12 +89,13 @@ const UserGroupDetailPage: FC = () => {
       });
       const { userGroup: newUserGroup } = res.data;
       setUserGroup(newUserGroup);
+      mutateAncestorUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, userGroup._id, setUserGroup]);
+  }, [t, userGroup._id, setUserGroup, mutateAncestorUserGroups]);
 
   const fetchApplicableUsers = useCallback(async(searchWord) => {
     const res = await apiv3Get(`/user-groups/${userGroup._id}/unrelated-users`, {
