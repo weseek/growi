@@ -309,6 +309,20 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+    const { id: groupId } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+      return res.apiv3({ userGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred while getting user group';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-get-failed'));
+    }
+  });
+
   /**
    * @swagger
    *

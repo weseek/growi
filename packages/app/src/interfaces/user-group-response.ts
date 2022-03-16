@@ -1,6 +1,10 @@
 import { IUserGroupHasId, IUserGroupRelationHasId } from './user';
 import { IPageHasId } from './page';
 
+export type UserGroupResult = {
+  userGroup: IUserGroupHasId,
+}
+
 export type UserGroupListResult = {
   userGroups: IUserGroupHasId[],
 };

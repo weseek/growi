@@ -6,10 +6,16 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
-  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult,
+  UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult,
   UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
+export const useSWRxUserGroup = (groupId: string | undefined): SWRResponse<IUserGroupHasId, Error> => {
+  return useSWRImmutable(
+    groupId != null ? [`/user-groups/${groupId}`] : null,
+    endpoint => apiv3Get<UserGroupResult>(endpoint).then(result => result.data.userGroup),
+  );
+};
 
 export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable<IUserGroupHasId[], Error>(
