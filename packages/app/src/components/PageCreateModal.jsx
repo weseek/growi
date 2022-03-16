@@ -1,8 +1,11 @@
 
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useState, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
@@ -19,7 +22,7 @@ import { usePageCreateModal } from '~/stores/modal';
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 const {
-  userPageRoot, isCreatablePage, generateEditorPath,
+  userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
@@ -39,11 +42,24 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
+  const [isMatchedWithUserHomePagePath, setIsMatchedWithUserHomePagePath] = useState(false);
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
     setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
   }, [pathname]);
+
+  const checkIsUsersHomePageDebounce = useMemo(() => {
+    const checkIsUsersHomePage = () => {
+      setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
+    };
+
+    return debounce(1000, checkIsUsersHomePage);
+  }, [pageNameInput]);
+
+  useEffect(() => {
+    checkIsUsersHomePageDebounce(pageNameInput);
+  }, [checkIsUsersHomePageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -189,7 +205,6 @@ const PageCreateModal = (props) => {
           <h3 className="grw-modal-head pb-2">{t('Create under')}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
-
             <div className="flex-fill">
               {isReachable
                 ? (
@@ -221,12 +236,16 @@ const PageCreateModal = (props) => {
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
+                disabled={isMatchedWithUserHomePagePath}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
 
           </div>
+          { isMatchedWithUserHomePagePath && (
+            <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
+          ) }
 
         </fieldset>
       </div>

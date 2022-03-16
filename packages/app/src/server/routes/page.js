@@ -1262,7 +1262,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to revert deleted page.'));
+      return res.json(ApiResponse.error(err));
     }
 
     const result = {};
