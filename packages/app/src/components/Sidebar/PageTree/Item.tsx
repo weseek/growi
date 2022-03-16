@@ -81,7 +81,7 @@ const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string
  * @param printLog
  * @returns
  */
-const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
+const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
   if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
     if (printLog) {
       logger.warn('Any of page, page.path or droppedPage.path is null');
@@ -90,7 +90,7 @@ const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: P
   }
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
-  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved);
+  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
 };
 
 
@@ -174,7 +174,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pageItemDropHandler = async(item: ItemNode) => {
     const { page: droppedPage } = item;
 
-    if (!canMoveUnderNewParent(droppedPage, page, true)) {
+    if (!isDroppable(droppedPage, page, true)) {
       return;
     }
 
@@ -226,10 +226,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     canDrop: (item) => {
       const { page: droppedPage } = item;
-      if (page.path == null) {
-        return false;
-      }
-      return canMoveUnderNewParent(droppedPage, page) && !pagePathUtils.isUsersTopPage(page.path);
+      return isDroppable(droppedPage, page);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
