@@ -55,6 +55,7 @@ const PageRenameModal = (): JSX.Element => {
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
+  const [isMatchedWithUserHomePagePath, setIsMatchedWithUserHomePagePath] = useState(false);
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -133,21 +134,17 @@ const PageRenameModal = (): JSX.Element => {
     }
   }, [page, t]);
 
-  const checkIsPagePathRenameable = useCallback((pageNameInput) => {
-    if (page == null) {
-      return;
-    }
-    return isUsersHomePage(pageNameInput);
-
-  }, [isUsersHomePage, page]);
-
   const checkExistPathsDebounce = useMemo(() => {
     return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
+    const checkIsPagePathRenameable = () => {
+      setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
+    };
+
     return debounce(1000, checkIsPagePathRenameable);
-  }, [checkIsPagePathRenameable]);
+  }, [isUsersHomePage, pageNameInput]);
 
   useEffect(() => {
     if (page != null && pageNameInput !== page.data.path) {
@@ -191,11 +188,10 @@ const PageRenameModal = (): JSX.Element => {
 
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
-  const isDirectoryUnderUserPage = isUsersHomePage(pageNameInput);
 
   let isSubmitButtonDisabled = false;
 
-  if (isDirectoryUnderUserPage) {
+  if (isMatchedWithUserHomePagePath) {
     isSubmitButtonDisabled = true;
   }
   else if (isV5Compatible(page.meta)) {
@@ -238,7 +234,7 @@ const PageRenameModal = (): JSX.Element => {
         { isTargetPageDuplicate && (
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
-        { isDirectoryUnderUserPage && (
+        { isMatchedWithUserHomePagePath && (
           <p className="text-danger">Error: Cannot move to directory under /user page.</p>
         ) }
 
