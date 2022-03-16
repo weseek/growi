@@ -141,12 +141,22 @@ class PageQueryBuilder {
   }
 
   /**
-   * Do not use this method if any substitutional method exists
-   * Or, instead, create another method on PageQueryBuilder and use it.
+   * Used for filtering the pages at specified paths not to include unintentional pages.
+   * @param pathsToFilter The paths to have additional filters as to be applicable
+   * @returns PageQueryBuilder
    */
-  addCustomAndCondition(condition) {
+  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]) {
     this.query = this.query
-      .and(condition);
+      .and(
+        {
+          $or: [
+            { path: '/' },
+            { path: { $in: pathsToFilter }, grant: GRANT_PUBLIC, status: STATUS_PUBLISHED },
+            { path: { $in: pathsToFilter }, parent: { $ne: null }, status: STATUS_PUBLISHED },
+            { path: { $nin: pathsToFilter }, status: STATUS_PUBLISHED },
+          ],
+        },
+      );
 
     return this;
   }

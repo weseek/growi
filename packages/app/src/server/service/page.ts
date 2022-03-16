@@ -2669,11 +2669,16 @@ class PageService {
         await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForApplicableAncestors);
 
         // 3. Find parents
+        const addGrantCondition = (builder) => {
+          builder.query = builder.query.and(grantFiltersByUser);
+
+          return builder;
+        };
         const builder2 = new PageQueryBuilder(Page.find(), true);
+        addGrantCondition(builder2);
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
-          .addCustomAndCondition(filterForApplicableAncestors)
-          .addCustomAndCondition(grantFiltersByUser) // use addCustomAndCondition instead of addConditionToFilteringByViewerToEdit to reduce the num of queries
+          .addConditionToFilterByApplicableAncestors(publicPathsToNormalize)
           .query
           .lean()
           .exec();
