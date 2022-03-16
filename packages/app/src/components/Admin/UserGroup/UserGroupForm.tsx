@@ -127,7 +127,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                         <button
                           key={userGroup._id}
                           type="button"
-                          className="dropdown-item"
+                          className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
                           onClick={() => onChangeParerentButtonHandler(userGroup)}
                         >
                           {userGroup.name}
