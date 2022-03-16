@@ -330,26 +330,30 @@ describe('Page', () => {
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
       test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
-        const top = await Page.findOne({ path: '/mc5_top' });
-        const page1 = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
-        const count = await Page.count({ path: '/mc5_top/mc3_awl' });
-        expectAllToBeTruthy([top, page1]);
-        expect(count).toBe(1);
+        const pathT = '/mc5_top';
+        const path1 = '/mc5_top/mc3_awl';
+        const pathN = '/mc5_top/mc3_awl/mc4_pub'; // used to create
+        const pageT = await Page.findOne({ path: pathT });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeNull();
 
-        await Page.create('/mc5_top/mc3_awl/mc4_pub', 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await Page.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
-        const _top = await Page.findOne({ _id: top._id });
-        const _page1 = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_RESTRICTED });
-        const _count = await Page.count({ path: '/mc5_top/mc3_awl' });
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
 
-        const createdPage = await Page.findOne({ path: '/mc5_top/mc3_awl/mc4_pub', grant: Page.GRANT_PUBLIC });
-        const createdPageParent = await Page.findOne({ path: '/mc5_top/mc3_awl', grant: Page.GRANT_PUBLIC, isEmpty: true });
-        expectAllToBeTruthy([_page1, createdPageParent, createdPage]);
-        expect(_count).toBe(2);
+        const createdPage = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC });
+        expect(createdPage).toBeTruthy();
+        expect(createdPage.parent).toStrictEqual(_page2._id);
 
-        expect(createdPage.parent).toStrictEqual(createdPageParent._id);
-        expect(createdPageParent.parent).toStrictEqual(_top._id);
-        expect(_top.descendantCount).toStrictEqual(1);
+        expect(_pageT.descendantCount).toStrictEqual(1);
       });
     });
 
