@@ -80,9 +80,13 @@ const UserGroupDetailPage: FC = () => {
     setSearchType(searchType);
   }, []);
 
-  const updateUserGroup = useCallback(async(param: Partial<IUserGroup>) => {
+  const updateUserGroup = useCallback(async(UserGroupData: Partial<IUserGroup>) => {
     try {
-      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
+      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+        name: UserGroupData.name,
+        description: UserGroupData.description,
+        parentId: UserGroupData.parent,
+      });
       const { userGroup: newUserGroup } = res.data;
       setUserGroup(newUserGroup);
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
@@ -242,6 +246,7 @@ const UserGroupDetailPage: FC = () => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
+          parentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={updateUserGroup}
         />
