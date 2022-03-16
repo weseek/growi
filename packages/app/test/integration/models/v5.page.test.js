@@ -391,34 +391,27 @@ describe('Page', () => {
         const top = await Page.findOne({ path: pathT, descendantCount: 2 });
         const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
         const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC });
-        const count = await Page.count({ path: path1 });
         expect(top).toBeTruthy();
         expect(page1).toBeTruthy();
         expect(page2).toBeTruthy();
-        expect(count).toBe(1);
 
         await Page.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _top = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
         const _page2 = await Page.findOne({ path: path2 });
-        const newlyCreatedPage = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const _count = await Page.count({ path: path1 });
+        const _pageN = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
         expect(_page1).toBeTruthy();
         expect(_page2).toBeTruthy();
-        expect(newlyCreatedPage).toBeTruthy();
-        expect(_count).toBe(2);
+        expect(_pageN).toBeTruthy();
 
-        expect(_page1.grant).toBe(Page.GRANT_RESTRICTED);
         expect(_page1.parent).toBeNull();
+        expect(_page2.parent).toStrictEqual(_pageN._id);
+        expect(_pageN.parent).toStrictEqual(top._id);
 
-        expect(_page2.grant).toBe(Page.GRANT_PUBLIC);
-        expect(_page2.parent).toStrictEqual(newlyCreatedPage._id);
+        expect(_pageN.isEmpty).toBe(true);
 
-        expect(newlyCreatedPage.isEmpty).toBe(true);
-        expect(newlyCreatedPage.parent).toStrictEqual(top._id);
-        expect(newlyCreatedPage.descendantCount).toBe(1);
-
+        expect(_pageN.descendantCount).toBe(1);
         expect(_top.descendantCount).toBe(1);
       });
       test('of a leaf page will NOT have an empty page with the same path', async() => {
