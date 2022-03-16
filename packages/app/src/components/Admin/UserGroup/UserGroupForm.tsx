@@ -1,8 +1,11 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useState, useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 
+import { useSWRxUserGroup } from '~/stores/user-group';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
@@ -28,7 +31,12 @@ const UserGroupForm: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [currentParent, setParent] = useState(userGroup != null ? userGroup.parent : '');
+  const [selectedParent, setSelectedSelectedParent] = useState<IUserGroupHasId | null>(null);
+
+  /*
+   * Fetch
+   */
+  const { data: parentUserGroup } = useSWRxUserGroup(userGroup?.parent as string);
 
   /*
    * Function
@@ -41,6 +49,12 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
+  const onChangeParerentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
+    if (userGroup._id !== selectedParent?._id) {
+      setSelectedSelectedParent(userGroup);
+    }
+  }, [selectedParent, setSelectedSelectedParent]);
+
   const onSubmitHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
 
@@ -48,8 +62,12 @@ const UserGroupForm: FC<Props> = (props: Props) => {
       return;
     }
 
-    await onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
-  }, [currentName, currentDescription, currentParent, onSubmit]);
+    await onSubmit({ name: currentName, description: currentDescription, parent: selectedParent?._id });
+  }, [currentName, currentDescription, selectedParent, onSubmit]);
+
+  useEffect(() => {
+    setSelectedSelectedParent(parentUserGroup ?? null);
+  }, [parentUserGroup]);
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -57,7 +75,6 @@ const UserGroupForm: FC<Props> = (props: Props) => {
       <fieldset>
         <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
 
-        {/* TODO 85062: improve style */}
         {
           userGroup?.createdAt != null && (
             <div className="form-group row">
@@ -95,11 +112,11 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
         <div className="form-group row">
           <label htmlFor="parent" className="col-md-2 col-form-label">
-            親グループ
+            {t('admin:user_group_management.parent_group')}
           </label>
           <div className="dropdown col-md-4">
             <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-              {t('admin:user_group_management.add_child_group')}
+              {selectedParent?.name ?? t('admin:user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
@@ -111,6 +128,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                           key={userGroup._id}
                           type="button"
                           className="dropdown-item"
+                          onClick={() => onChangeParerentButtonHandler(userGroup)}
                         >
                           {userGroup.name}
                         </button>
