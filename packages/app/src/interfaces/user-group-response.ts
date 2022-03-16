@@ -18,6 +18,10 @@ export type UserGroupPagesResult = {
   pages: IPageHasId[],
 }
 
+export type SelectableParentUserGroupsResult = {
+  selectableParentGroups: IUserGroupHasId[],
+}
+
 export type SelectableUserGroupsResult = {
   selectableUserGroups: IUserGroupHasId[],
 }

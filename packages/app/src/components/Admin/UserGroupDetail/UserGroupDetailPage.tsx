@@ -21,7 +21,8 @@ import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -55,6 +56,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
+  const { data: selectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
