@@ -363,21 +363,25 @@ describe('Page', () => {
 
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
-        const top = await Page.findOne({ path: '/mup13_top', descendantCount: 2 });
-        const page1 = await Page.findOne({ path: '/mup13_top/mup1_emp', isEmpty: true });
-        const page2 = await Page.findOne({ path: '/mup13_top/mup1_emp/mup2_pub' });
-        const options = { grant: 2, grantUserGroupId: null };
-        expectAllToBeTruthy([top, page1, page2]);
+        const pathT = '/mup13_top';
+        const path1 = '/mup13_top/mup1_emp';
+        const path2 = '/mup13_top/mup1_emp/mup2_pub';
+        const pageT = await Page.findOne({ path: pathT, descendantCount: 2 });
+        const page1 = await Page.findOne({ path: path1 });
+        const page2 = await Page.findOne({ path: path2 });
+
+        const options = { grant: Page.GRANT_RESTRICTED, grantUserGroupId: null };
+        expectAllToBeTruthy([pageT, page1, page2]);
 
         await Page.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
-        // AU => After Update
-        const topAF = await Page.findOne({ _id: top._id });
-        const page1AU = await Page.findOne({ _id: page1._id });
-        const page2AU = await Page.findOne({ _id: page2._id });
 
-        expect(page2AU).toBeTruthy();
-        expect(page1AU).toBeNull();
-        expect(topAF.descendantCount).toBe(1);
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1 });
+        const _page2 = await Page.findOne({ path: path2 });
+        expect(_page2).toBeTruthy();
+        expect(_page1).toBeNull();
+
+        expect(_pageT.descendantCount).toBe(1);
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
         const pathT = '/mup14_top';
