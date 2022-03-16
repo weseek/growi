@@ -192,11 +192,19 @@ const PageRenameModal = (): JSX.Element => {
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
   const isDirectoryUnderUserPage = isUsersHomePage(pageNameInput);
-  const isSubmitButtonDisabledV4orV5 = isV5Compatible(page.meta)
-    ? existingPaths.length !== 0 // v5 data
-    : !isRenameRecursively; // v4 data
 
-  const isSubmitButtonDisabled = isDirectoryUnderUserPage || isSubmitButtonDisabledV4orV5;
+  let isSubmitButtonDisabled = false;
+
+  if (isDirectoryUnderUserPage) {
+    isSubmitButtonDisabled = true;
+  }
+  else if (isV5Compatible(page.meta)) {
+    isSubmitButtonDisabled = existingPaths.length !== 0; // v5 data
+  }
+  else {
+    isSubmitButtonDisabled = !isRenameRecursively; // v4 data
+  }
+
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
