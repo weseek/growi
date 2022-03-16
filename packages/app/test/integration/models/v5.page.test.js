@@ -368,7 +368,7 @@ describe('Page', () => {
         const path2 = '/mup13_top/mup1_emp/mup2_pub';
         const pageT = await Page.findOne({ path: pathT, descendantCount: 2 });
         const page1 = await Page.findOne({ path: path1 });
-        const page2 = await Page.findOne({ path: path2 });
+        const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC });
 
         const options = { grant: Page.GRANT_RESTRICTED, grantUserGroupId: null };
         expectAllToBeTruthy([pageT, page1, page2]);
@@ -381,6 +381,7 @@ describe('Page', () => {
         expect(_page2).toBeTruthy();
         expect(_page1).toBeNull();
 
+        expect(_page2.grant).toBe(Page.GRANT_RESTRICTED);
         expect(_pageT.descendantCount).toBe(1);
       });
       test('a page that has children will create an empty page with the same path and it becomes a new parent', async() => {
