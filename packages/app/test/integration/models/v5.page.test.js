@@ -429,7 +429,8 @@ describe('Page', () => {
         const page = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub/mup11_awl', grant: Page.GRANT_RESTRICTED });
         const page1 = await Page.findOne({ path: '/mup16_top/mup9_pub' });
         const page2 = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
-        expectAllToBeTruthy([top, page]);
+        expect(top).toBeTruthy();
+        expect(page).toBeTruthy();
         expect(page1).toBeNull();
         expect(page2).toBeNull();
 
@@ -439,7 +440,9 @@ describe('Page', () => {
         const pageAF = await Page.findOne({ _id: page._id });
         const page1AF = await Page.findOne({ path: '/mup16_top/mup9_pub' });
         const page2AF = await Page.findOne({ path: '/mup16_top/mup9_pub/mup10_pub' });
-        expectAllToBeTruthy([pageAF, page1AF, page2AF]);
+        expect(pageAF).toBeTruthy();
+        expect(page1AF).toBeTruthy();
+        expect(page2AF).toBeTruthy();
 
         expect(pageAF.grant).toBe(Page.GRANT_PUBLIC);
         expect(pageAF.parent).toStrictEqual(page2AF._id);
