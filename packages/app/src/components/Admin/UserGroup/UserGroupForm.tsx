@@ -9,6 +9,7 @@ import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
+  parentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: TFunctionResult;
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
 };
@@ -18,7 +19,9 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const { userGroup, submitButtonLabel, onSubmit } = props;
+  const {
+    userGroup, parentUserGroups, submitButtonLabel, onSubmit,
+  } = props;
 
   /*
    * State
@@ -53,6 +56,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
       <fieldset>
         <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+
         {/* TODO 85062: improve style */}
         {
           userGroup?.createdAt != null && (
@@ -62,6 +66,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
             </div>
           )
         }
+
         <div className="form-group row">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('admin:user_group_management.group_name')}
@@ -78,6 +83,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
             />
           </div>
         </div>
+
         <div className="form-group row">
           <label htmlFor="description" className="col-md-2 col-form-label">
             {t('Description')}
@@ -87,7 +93,35 @@ const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        {/* TODO 88238: select parent dropdown */}
+        <div className="form-group row">
+          <label htmlFor="parent" className="col-md-2 col-form-label">
+            親グループ
+          </label>
+          <div className="dropdown col-md-4">
+            <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+              {t('admin:user_group_management.add_child_group')}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {
+                (parentUserGroups != null && parentUserGroups.length > 0) && (
+                  <>
+                    {
+                      parentUserGroups.map(userGroup => (
+                        <button
+                          key={userGroup._id}
+                          type="button"
+                          className="dropdown-item"
+                        >
+                          {userGroup.name}
+                        </button>
+                      ))
+                    }
+                  </>
+                )
+              }
+            </div>
+          </div>
+        </div>
 
         <div className="form-group row">
           <div className="offset-md-2 col-md-10">
