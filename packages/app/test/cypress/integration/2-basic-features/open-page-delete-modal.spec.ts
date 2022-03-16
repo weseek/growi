@@ -27,11 +27,13 @@ context('Open Page Delete Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
+      //  cy.getByTestid('open-page-delete-modal-btn').should('be.visible');
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
 
      // eslint-disable-next-line cypress/no-unnecessary-waiting
-     cy.wait(1500);
+    //  cy.wait(1500);
+     cy.getByTestid('page-delete-modal').should('be.visible');
      cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
   });
 
