@@ -190,6 +190,16 @@ describe('PageService page operations with non-public pages', () => {
     /**
      * Delete
      */
+    const pageIdDelete1 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdDelete1,
+        path: '/npdel_awl1',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+    ]);
 
     /**
      * Delete completely
@@ -340,7 +350,14 @@ describe('PageService page operations with non-public pages', () => {
       return deletedPage;
     };
     describe('Delete single page with grant RESTRICTED', () => {
-      test('should be able to delete', async() => {});
+      test('should be able to delete', async() => {
+        const pathT = '/npdel_awl1';
+        const pageT = await Page.findOne({ path: pathT });
+        expect(pageT).toBeTruthy();
+
+        const isRecursively = false;
+        await deletePage(pageT, dummyUser1, {}, isRecursively);
+      });
     });
     describe('Delete multiple pages with grant RESTRICTED', () => {
       test('should be able to delete', async() => {});
