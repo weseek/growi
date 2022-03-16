@@ -402,25 +402,28 @@ describe('Page', () => {
         expect(topAF.descendantCount).toBe(1);
       });
       test('of a leaf page will NOT have an empty page with the same path', async() => {
-        const top = await Page.findOne({ path: '/mup15_top', descendantCount: 1 });
-        const page = await Page.findOne({ path: '/mup15_top/mup8_pub', grant: Page.GRANT_PUBLIC });
-        const count = await Page.count({ path: '/mup15_top/mup8_pub' });
-        expectAllToBeTruthy([top, page]);
+        const path1 = '/mup15_top';
+        const path2 = '/mup15_top/mup8_pub';
+        const top = await Page.findOne({ path: path1, descendantCount: 1 });
+        const page = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC });
+        const count = await Page.count({ path: path2 });
+        expect(top).toBeTruthy();
+        expect(page).toBeTruthy();
         expect(count).toBe(1);
 
         await Page.updatePage(page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: 2 });
         // AU => After Update
-        const topAF = await Page.findOne({ _id: top._id });
-        const pageAF = await Page.findOne({ _id: page._id });
-        const notExistantPage = await Page.findOne({ path: '/mup15_top/mup8_pub', isEmpty: true });
-        const countAF = await Page.count({ path: '/mup15_top/mup8_pub' });
-        expectAllToBeTruthy([pageAF]);
-        expect(countAF).toBe(1);
+        const _top = await Page.findOne({ path: path1 });
+        const _page = await Page.findOne({ path: path2 });
+        const notExistantPage = await Page.findOne({ path: path2, isEmpty: true });
+        const _count = await Page.count({ path: path2 });
+        expect(_page).toBeTruthy();
+        expect(_count).toBe(1);
 
         expect(notExistantPage).toBeNull();
-        expect(pageAF.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(_page.grant).toBe(Page.GRANT_RESTRICTED);
 
-        expect(topAF.descendantCount).toBe(0);
+        expect(_top.descendantCount).toBe(0);
       });
     });
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
