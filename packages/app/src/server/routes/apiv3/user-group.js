@@ -261,12 +261,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /selectable-groups:
+   *    /selectable-child-groups:
    *      get:
    *        tags: [UserGroup]
-   *        operationId: getSelectableGroups
+   *        operationId: getSelectableChildGroups
    *        summary: /selectable-groups
-   *        description: Get selectable user groups.
+   *        description: Get selectable child user groups
    *        parameters:
    *          - name: groupId
    *            in: query
@@ -287,7 +287,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/selectable-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/selectable-child-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
     try {
@@ -299,8 +299,8 @@ module.exports = (crowi) => {
       ]);
 
       const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
-      const selectableUserGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
-      return res.apiv3({ selectableUserGroups });
+      const selectableChildGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ selectableChildGroups });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';

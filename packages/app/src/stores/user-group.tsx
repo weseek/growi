@@ -7,7 +7,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
   UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult,
-  UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserGroupsResult, AncestorUserGroupsResult,
+  UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
 
@@ -68,10 +68,10 @@ export const useSWRxSelectableParentUserGroups = (groupId: string | undefined): 
   );
 };
 
-export const useSWRxSelectableUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
+export const useSWRxSelectableChildUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
-    groupId != null ? ['/user-groups/selectable-groups'] : null,
-    endpoint => apiv3Get<SelectableUserGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableUserGroups),
+    groupId != null ? ['/user-groups/selectable-child-groups'] : null,
+    endpoint => apiv3Get<SelectableUserChildGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableChildGroups),
   );
 };
 

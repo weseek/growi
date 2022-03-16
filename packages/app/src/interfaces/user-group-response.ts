@@ -22,8 +22,8 @@ export type SelectableParentUserGroupsResult = {
   selectableParentGroups: IUserGroupHasId[],
 }
 
-export type SelectableUserGroupsResult = {
-  selectableUserGroups: IUserGroupHasId[],
+export type SelectableUserChildGroupsResult = {
+  selectableChildGroups: IUserGroupHasId[],
 }
 
 export type AncestorUserGroupsResult = {

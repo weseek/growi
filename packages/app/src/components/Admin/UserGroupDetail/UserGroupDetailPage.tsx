@@ -22,7 +22,7 @@ import {
 } from '~/interfaces/user';
 import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -57,7 +57,7 @@ const UserGroupDetailPage: FC = () => {
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
-  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
 
@@ -149,7 +149,7 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
         forceUpdateParents: false,
       });
-      mutateSelectableUserGroups();
+      mutateSelectableChildUserGroups();
       mutateChildUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
@@ -252,7 +252,7 @@ const UserGroupDetailPage: FC = () => {
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
-        selectableUserGroups={selectableUserGroups}
+        selectableUserGroups={selectableChildUserGroups}
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
         onClickCreateUserGroupButtonHandler={showCreateModal}
       />
