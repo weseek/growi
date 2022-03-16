@@ -241,6 +241,22 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/selectable-parent-groups', async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const childGroups = await UserGroup.findChildUserGroupsByParentIds([groupId], false);
+      const childGroupIds = childGroups.childUserGroups.map(userGroups => userGroups._id.toString());
+      const selectableParentGroups = await UserGroup.find({ _id: { $nin: [groupId, ...childGroupIds] } });
+      return res.apiv3({ selectableParentGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
+
   /**
    * @swagger
    *
