@@ -134,7 +134,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Bookmark */}
         { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
-          <DropdownItem onClick={bookmarkItemClickedHandler}>
+          <DropdownItem onClick={bookmarkItemClickedHandler} data-testid="add-bookmark">
             <i className="fa fa-fw fa-bookmark-o"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
@@ -142,7 +142,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Duplicate */}
         { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
-          <DropdownItem onClick={duplicateItemClickedHandler}>
+          <DropdownItem onClick={duplicateItemClickedHandler} data-testid="duplicate-page">
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
           </DropdownItem>
@@ -150,7 +150,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Move/Rename */}
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
-          <DropdownItem onClick={renameItemClickedHandler}>
+          <DropdownItem onClick={renameItemClickedHandler} data-testid="move-page">
             <i className="icon-fw  icon-action-redo"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
@@ -158,7 +158,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Revert */}
         { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
-          <DropdownItem onClick={revertItemClickedHandler}>
+          <DropdownItem onClick={revertItemClickedHandler} data-testid="revert-page">
             <i className="icon-fw  icon-action-undo"></i>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
@@ -180,6 +180,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
+              data-testid="delete-page"
             >
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
