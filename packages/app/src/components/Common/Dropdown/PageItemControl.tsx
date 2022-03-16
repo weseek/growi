@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -40,6 +40,7 @@ type CommonProps = {
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
+  isInstantRename?: boolean,
 }
 
 
@@ -55,7 +56,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
-    additionalMenuItemRenderer: AdditionalMenuItems,
+    additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
 
 
@@ -151,7 +152,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
           <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
+            {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
 
@@ -179,6 +180,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
+              data-testid="open-page-delete-modal-btn"
             >
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
@@ -212,12 +214,19 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
 
-  const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
-  const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
+  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
-  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(shouldMutate ? pageId : null);
+  // update shouldFetch (and will never be false)
+  useEffect(() => {
+    if (shouldFetch) {
+      return;
+    }
+    if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
+      setShouldFetch(true);
+    }
+  }, [isOpen, presetPageInfo, shouldFetch]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -225,10 +234,10 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       await onClickBookmarkMenuItem(_pageId, _newValue);
     }
 
-    if (shouldMutate) {
+    if (shouldFetch) {
       mutatePageInfo();
     }
-  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldMutate]);
+  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
 
   const isLoading = shouldFetch && fetchedPageInfo == null;
 

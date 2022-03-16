@@ -2,16 +2,17 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupCreateModal from './UserGroupCreateModal';
+import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
-import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
+import userGroup from '~/server/models/user-group';
 
 const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
@@ -37,6 +38,7 @@ const UserGroupPage: FC = () => {
    */
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
+  const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
@@ -49,6 +51,16 @@ const UserGroupPage: FC = () => {
   const hideCreateModal = useCallback(() => {
     setCreateModalShown(false);
   }, [setCreateModalShown]);
+
+  const showUpdateModal = useCallback((group: IUserGroupHasId) => {
+    setUpdateModalShown(true);
+    setSelectedUserGroup(group);
+  }, [setUpdateModalShown]);
+
+  const hideUpdateModal = useCallback(() => {
+    setUpdateModalShown(false);
+    setSelectedUserGroup(undefined);
+  }, [setUpdateModalShown]);
 
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
@@ -90,6 +102,20 @@ const UserGroupPage: FC = () => {
     }
   }, [t, mutateUserGroups]);
 
+  const updateUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${userGroupData._id}`, {
+        name: userGroupData.name,
+        description: userGroupData.description,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      await mutateUserGroups();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, mutateUserGroups]);
+
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
       const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
@@ -114,7 +140,7 @@ const UserGroupPage: FC = () => {
     <div data-testid="admin-user-groups">
       {
         isAclEnabled ? (
-          <div className="mb-2">
+          <div className="mb-3">
             <button type="button" className="btn btn-outline-secondary" onClick={showCreateModal}>
               {t('admin:user_group_management.create_group')}
             </button>
@@ -123,19 +149,32 @@ const UserGroupPage: FC = () => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-      <UserGroupCreateModal
-        onClickCreateButton={createUserGroup}
+
+      <UserGroupModal
+        buttonLabel={t('Create')}
+        onClickButton={createUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
+
+      <UserGroupModal
+        userGroup={selectedUserGroup}
+        buttonLabel={t('Update')}
+        onClickButton={updateUserGroup}
+        isShow={isUpdateModalShown}
+        onHide={hideUpdateModal}
+      />
+
       <UserGroupTable
         headerLabel={t('admin:user_group_management.group_list')}
         userGroups={userGroups}
         childUserGroups={childUserGroups}
         isAclEnabled={isAclEnabled ?? false}
+        onEdit={showUpdateModal}
         onDelete={showDeleteModal}
         userGroupRelations={userGroupRelations}
       />
+
       <UserGroupDeleteModal
         userGroups={userGroups}
         deleteUserGroup={selectedUserGroup}
