@@ -371,7 +371,6 @@ class Editor extends AbstractEditor {
           { this.renderCheatsheetModal() }
 
         </div>
-
       </>
     );
   }
