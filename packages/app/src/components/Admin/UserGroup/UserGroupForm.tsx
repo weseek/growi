@@ -106,7 +106,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
             {t('Description')}
           </label>
           <div className="col-md-4">
-            <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} required />
+            <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
           </div>
         </div>
 
