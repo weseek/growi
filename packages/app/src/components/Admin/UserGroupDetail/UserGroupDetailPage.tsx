@@ -56,7 +56,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
   const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(userGroup._id);
 
   const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
@@ -89,7 +89,12 @@ const UserGroupDetailPage: FC = () => {
       });
       const { userGroup: newUserGroup } = res.data;
       setUserGroup(newUserGroup);
+
+      // mutate
       mutateAncestorUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -154,8 +159,12 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
         forceUpdateParents: false,
       });
-      mutateSelectableChildUserGroups();
+
+      // mutate
       mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -178,7 +187,12 @@ const UserGroupDetailPage: FC = () => {
         description: userGroupData.description,
         parentId: userGroup._id,
       });
+
+      // mutate
       mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
