@@ -241,6 +241,36 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /selectable-parent-groups:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getSelectableParentGroups
+   *        summary: /selectable-parent-groups
+   *        description: Get selectable parent UserGroups
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
   router.get('/selectable-parent-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
@@ -265,8 +295,8 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        operationId: getSelectableChildGroups
-   *        summary: /selectable-groups
-   *        description: Get selectable child user groups
+   *        summary: /selectable-child-groups
+   *        description: Get selectable child UserGroups
    *        parameters:
    *          - name: groupId
    *            in: query
@@ -309,6 +339,34 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /user-groups/{id}:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getUserGroupFromGroupId
+   *        summary: /user-groups/{id}
+   *        description: Get UserGroup from Group ID
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroup are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroup:
+   *                      type: objedct
+   *                      description: userGroup object
+   */
   router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { id: groupId } = req.params;
 
