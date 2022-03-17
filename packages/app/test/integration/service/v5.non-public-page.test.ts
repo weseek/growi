@@ -352,11 +352,18 @@ describe('PageService page operations with non-public pages', () => {
     describe('Delete single page with grant RESTRICTED', () => {
       test('should be able to delete', async() => {
         const pathT = '/npdel_awl1';
-        const pageT = await Page.findOne({ path: pathT });
+        const pageT = await Page.findOne({ path: pathT, grant: Page.GRANT_RESTRICTED });
         expect(pageT).toBeTruthy();
 
         const isRecursively = false;
         await deletePage(pageT, dummyUser1, {}, isRecursively);
+
+        const _pageT = await Page.findOne({ path: `/trash${pathT}` });
+        const _pageN = await Page.findOne({ path: pathT }); // should not exist
+        expect(_pageT).toBeTruthy();
+        expect(_pageN).toBeNull();
+        expect(_pageT.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(_pageT.status).toBe(Page.STATUS_DELETED);
       });
     });
     describe('Delete multiple pages with grant RESTRICTED', () => {
