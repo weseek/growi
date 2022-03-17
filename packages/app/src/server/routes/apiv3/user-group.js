@@ -367,7 +367,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userGroup:
-   *                      type: objedct
+   *                      type: object
    *                      description: userGroup object
    */
   router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
