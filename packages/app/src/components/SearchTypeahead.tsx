@@ -39,6 +39,7 @@ type Props = TypeaheadProps & {
   onSubmit?: (input: string) => void,
   inputName?: string,
   keywordOnInit?: string,
+  disableIncrementalSearch?: boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpElement?: any,
 };
@@ -56,7 +57,7 @@ type TypeaheadInstanceFactory = {
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
     onSearchSuccess, onSearchError, onInputChange, onSubmit,
-    emptyLabel, helpElement, keywordOnInit,
+    emptyLabel, helpElement, keywordOnInit, disableIncrementalSearch,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -126,7 +127,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   }, [onSearchError]);
 
   const search = useCallback(async(keyword: string) => {
-    if (keyword === '') {
+    if (disableIncrementalSearch || keyword === '') {
       return;
     }
 
@@ -143,7 +144,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       setLoading(false);
     }
 
-  }, [searchErrorHandler, searchSuccessHandler]);
+  }, [disableIncrementalSearch, searchErrorHandler, searchSuccessHandler]);
 
   const inputChangeHandler = useCallback((text: string) => {
     setInput(text);
@@ -176,7 +177,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       return emptyLabel;
     }
 
-    return false;
+    return <></>;
   };
 
   const defaultSelected = (keywordOnInit !== '')
@@ -189,11 +190,11 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   }
 
   const renderMenuItemChildren = (option: IPageWithMeta<IPageSearchMeta>) => {
-    const { pageData } = option;
+    const { data: pageData } = option;
     return (
       <span>
         <UserPicture user={pageData.lastUpdateUser} size="sm" noLink />
-        <span className="ml-1 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
+        <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
         <PageListMeta page={pageData} />
       </span>
     );
@@ -211,7 +212,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         minLength={0}
         options={pages} // Search result (Some page names)
         promptText={props.helpElement}
-        emptyLabel={getEmptyLabel()}
+        emptyLabel={disableIncrementalSearch ? null : getEmptyLabel()}
         align="left"
         onSearch={search}
         onInputChange={inputChangeHandler}

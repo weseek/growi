@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
@@ -9,6 +9,7 @@ import MailSetting from './MailSetting';
 import PluginSetting from './PluginSetting';
 import FileUploadSetting from './FileUploadSetting';
 import V5PageMigration from './V5PageMigration';
+import MaintenanceMode from './MaintenanceMode';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
@@ -19,7 +20,25 @@ class AppSettingsPageContents extends React.Component {
     const { isV5Compatible } = adminAppContainer.state;
 
     return (
-      <Fragment>
+      <div data-testid="admin-app-settings">
+        {
+          // Alert message will be displayed in case that the GROWI is under maintenance
+          adminAppContainer.state.isMaintenanceMode && (
+            <div className="alert alert-danger alert-link" role="alert">
+              <h3 className="alert-heading">
+                {t('admin:maintenance_mode.maintenance_mode')}
+              </h3>
+              <p>
+                {t('admin:maintenance_mode.description')}
+              </p>
+              <hr />
+              <a className="btn-link" href="#maintenance-mode" rel="noopener noreferrer">
+                <i className="fa fa-fw fa-arrow-down ml-1" aria-hidden="true"></i>
+                <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
+              </a>
+            </div>
+          )
+        }
         {
           !isV5Compatible
           && (
@@ -66,7 +85,16 @@ class AppSettingsPageContents extends React.Component {
             <PluginSetting />
           </div>
         </div>
-      </Fragment>
+
+        <div className="row">
+          <div className="col-lg-12">
+            <h2 className="admin-setting-header" id="maintenance-mode">{t('admin:maintenance_mode.maintenance_mode')}</h2>
+            <MaintenanceMode />
+          </div>
+        </div>
+
+      </div>
+
     );
   }
 

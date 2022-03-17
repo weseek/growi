@@ -7,8 +7,9 @@ import LinkedPagePath from '../models/linked-page-path';
 
 
 const PagePathHierarchicalLink = (props) => {
-  const { linkedPagePath, basePath, isInTrash } = props;
-
+  const {
+    linkedPagePath, basePath, isInTrash, shouldDangerouslySetInnerHTML,
+  } = props;
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
@@ -52,13 +53,24 @@ const PagePathHierarchicalLink = (props) => {
   return (
     <RootElm>
       { isParentExists && (
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} isInTrash={isInTrash || linkedPagePath.isInTrash} isInnerElem />
+        <PagePathHierarchicalLink
+          linkedPagePath={linkedPagePath.parent}
+          basePath={basePath}
+          isInTrash={isInTrash || linkedPagePath.isInTrash}
+          isInnerElem
+          shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTML}
+        />
       ) }
       { isSeparatorRequired && (
         <span className="separator">/</span>
       ) }
 
-      <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
+      {
+        shouldDangerouslySetInnerHTML
+          ? <a className="page-segment" href={href} dangerouslySetInnerHTML={{ __html: linkedPagePath.pathName }}></a>
+          : <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
+      }
+
     </RootElm>
   );
 };
@@ -67,6 +79,7 @@ PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
   basePath: PropTypes.string,
   isInTrash: PropTypes.bool,
+  shouldDangerouslySetInnerHTML: PropTypes.bool,
 
   // !!INTERNAL USE ONLY!!
   isInnerElem: PropTypes.bool,

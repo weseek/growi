@@ -6,9 +6,8 @@
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "noEmit": false,
-    "inlineSources": true,
     "baseUrl": "./src",
     "paths": {
       "~/*": ["./*"]

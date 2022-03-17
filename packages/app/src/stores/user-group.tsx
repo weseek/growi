@@ -6,7 +6,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
-  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupPagesResult, SelectableUserGroupsResult,
+  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupPagesResult, SelectableUserGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
 
@@ -21,17 +21,14 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRRespon
 };
 
 export const useSWRxChildUserGroupList = (
-    parentIds?: string[], includeGrandChildren?: boolean, initialData?: IUserGroupHasId[],
-): SWRResponse<IUserGroupHasId[], Error> => {
+    parentIds?: string[], includeGrandChildren?: boolean,
+): SWRResponse<ChildUserGroupListResult, Error> => {
   const shouldFetch = parentIds != null && parentIds.length > 0;
-  return useSWRImmutable<IUserGroupHasId[], Error>(
+  return useSWRImmutable<ChildUserGroupListResult, Error>(
     shouldFetch ? ['/user-groups/children', parentIds, includeGrandChildren] : null,
     (endpoint, parentIds, includeGrandChildren) => apiv3Get<ChildUserGroupListResult>(
       endpoint, { parentIds, includeGrandChildren },
-    ).then(result => result.data.childUserGroups),
-    {
-      fallbackData: initialData,
-    },
+    ).then((result => result.data)),
   );
 };
 
@@ -67,5 +64,12 @@ export const useSWRxSelectableUserGroups = (groupId: string | undefined): SWRRes
   return useSWRImmutable(
     groupId != null ? ['/user-groups/selectable-groups'] : null,
     endpoint => apiv3Get<SelectableUserGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableUserGroups),
+  );
+};
+
+export const useSWRxAncestorUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
+  return useSWRImmutable(
+    groupId != null ? ['/user-groups/ancestors'] : null,
+    endpoint => apiv3Get<AncestorUserGroupsResult>(endpoint, { groupId }).then(result => result.data.ancestorUserGroups),
   );
 };

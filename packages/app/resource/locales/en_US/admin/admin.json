@@ -22,13 +22,27 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature",
-    "migration_desc": "Some of the public pages have the old schema. To take advantage of new features such as page trees and easy renaming, please upgrade the schema of all your pages.",
+    "migration_desc": "There are some pages with old v4 compatibility. To take advantage of new features such as page trees and easy renaming, please convert all your pages to v5 compatibility.",
     "migration_note": "Note: You will lose unique constraints from the page paths.",
-    "upgrade_to_v5": "Upgrade to V5",
-    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during migration.",
-    "start_upgrading": "Start upgrading",
-    "successfully_started": "Succeeded to start migration",
-    "already_upgraded": "You have already completed upgrading"
+    "upgrade_to_v5": "Convert to v5 compatibility",
+    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during the conversion.",
+    "start_upgrading": "Start converting to v5 compatibility",
+    "successfully_started": "Succeeded to start the conversion",
+    "already_upgraded": "You have already completed the conversion to v5 compatibility"
+  },
+  "maintenance_mode": {
+    "maintenance_mode": "Maintenance Mode",
+    "under_maintenance_mode": "Under Maintenance Mode",
+    "failed_to_start_maintenance_mode": "Failed to start maintenance mode",
+    "failed_to_end_maintenance_mode": "Failed to end maintenance mode",
+    "successfully_started_maintenance_mode": "Succussfully started maintenance mode",
+    "successfully_ended_maintenance_mode": "Succussfully ended maintenance mode",
+    "warning_message_to_start": "You will NOT able to access other than admin settings page. General users will NOT able to access to any contents until maintenance mode ends manually.",
+    "warning_message_to_end": "Please make sure that \"data importing\" or \"upgrading to v5\" is already done or not. If not, it is highly recommended to keep maintenance mode on.",
+    "supplymentary_message_to_start": "As for the API, only the administrator API will be functional.",
+    "start_maintenance_mode": "Start maintenance mode",
+    "end_maintenance_mode": "End maintenance mode",
+    "description": "Maintenance mode restricts all user operations. Always start the maintenance mode before \"importing data\" and \"upgrading to V5\". To exit, go to \"Security Settings\" > \"Maintenance Mode\"."
   },
   "app_setting": {
     "site_name": "Site name",
@@ -469,6 +483,7 @@
     "group_list": "Group list",
     "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
+    "back_to_ancestors_group": "Go back to ancestors group",
     "basic_info": "Basic info",
     "user_list": "User list",
     "created_group": "Group was created",

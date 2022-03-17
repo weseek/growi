@@ -85,6 +85,7 @@ type Props = {
 
   dropup?: boolean,
   keyword?: string,
+  disableIncrementalSearch?: boolean,
   onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
   onBlur?: () => void,
   onFocus?: () => void,
@@ -97,6 +98,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   const { t } = useTranslation();
   const {
     isSearchServiceReachable, dropup,
+    disableIncrementalSearch,
     onChange, onBlur, onFocus, onSubmit, onInputChange,
   } = props;
 
@@ -129,6 +131,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
+      disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
       onInputChange={onInputChange}

@@ -1,47 +1,67 @@
-import React, {
-  FC, Fragment, useState, useCallback,
-} from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupForm from './UserGroupForm';
+import UserGroupModal from './UserGroupModal';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
-import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { useIsAclEnabled } from '~/stores/context';
+import userGroup from '~/server/models/user-group';
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const UserGroupPage: FC<Props> = (props: Props) => {
+const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
-  const { isAclEnabled } = props.appContainer.config;
+
+  const { data: isAclEnabled } = useIsAclEnabled();
 
   /*
    * Fetch
    */
-  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
-  const userGroupIds = userGroups?.map(group => group._id);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: childUserGroups } = useSWRxChildUserGroupList(userGroupIds);
+  const { data: userGroupList, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroups = userGroupList != null ? userGroupList : [];
+  const userGroupIds = userGroups.map(group => group._id);
+
+  const { data: userGroupRelationList } = useSWRxUserGroupRelationList(userGroupIds);
+  const userGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
+
+  const { data: childUserGroupsList } = useSWRxChildUserGroupList(userGroupIds);
+  const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
 
   /*
    * State
    */
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
+  const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
    * Functions
    */
+  const showCreateModal = useCallback(() => {
+    setCreateModalShown(true);
+  }, [setCreateModalShown]);
+
+  const hideCreateModal = useCallback(() => {
+    setCreateModalShown(false);
+  }, [setCreateModalShown]);
+
+  const showUpdateModal = useCallback((group: IUserGroupHasId) => {
+    setUpdateModalShown(true);
+    setSelectedUserGroup(group);
+  }, [setUpdateModalShown]);
+
+  const hideUpdateModal = useCallback(() => {
+    setUpdateModalShown(false);
+    setSelectedUserGroup(undefined);
+  }, [setUpdateModalShown]);
+
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
       await mutateUserGroups();
@@ -68,21 +88,33 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setDeleteModalShown(false);
   }, []);
 
-  const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
+  const createUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
-        parent: userGroupData.parent,
       });
-
-      // sync
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
       await mutateUserGroups();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateUserGroups]);
+  }, [t, mutateUserGroups]);
+
+  const updateUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${userGroupData._id}`, {
+        name: userGroupData.name,
+        description: userGroupData.description,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      await mutateUserGroups();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, mutateUserGroups]);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -102,43 +134,48 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateUserGroups, mutateUserGroupRelations]);
-
-  if (userGroups == null || userGroupRelations == null || childUserGroups == null) {
-    return <></>;
-  }
+  }, [mutateUserGroups]);
 
   return (
-    <Fragment>
+    <div data-testid="admin-user-groups">
       {
         isAclEnabled ? (
-          <div className="mb-2">
-            <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createGroupForm">
+          <div className="mb-3">
+            <button type="button" className="btn btn-outline-secondary" onClick={showCreateModal}>
               {t('admin:user_group_management.create_group')}
             </button>
-            <div id="createGroupForm" className="collapse">
-              <UserGroupForm
-                successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
-                failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
-                submitButtonLabel={t('Create')}
-                onSubmit={addUserGroup}
-              />
-            </div>
           </div>
         ) : (
           t('admin:user_group_management.deny_create_group')
         )
       }
+
+      <UserGroupModal
+        buttonLabel={t('Create')}
+        onClickButton={createUserGroup}
+        isShow={isCreateModalShown}
+        onHide={hideCreateModal}
+      />
+
+      <UserGroupModal
+        userGroup={selectedUserGroup}
+        buttonLabel={t('Update')}
+        onClickButton={updateUserGroup}
+        isShow={isUpdateModalShown}
+        onHide={hideUpdateModal}
+      />
+
       <UserGroupTable
-        appContainer={props.appContainer}
+        headerLabel={t('admin:user_group_management.group_list')}
         userGroups={userGroups}
         childUserGroups={childUserGroups}
-        isAclEnabled={isAclEnabled}
+        isAclEnabled={isAclEnabled ?? false}
+        onEdit={showUpdateModal}
         onDelete={showDeleteModal}
         userGroupRelations={userGroupRelations}
       />
+
       <UserGroupDeleteModal
-        appContainer={props.appContainer}
         userGroups={userGroups}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
@@ -146,13 +183,8 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         onShow={showDeleteModal}
         onHide={hideDeleteModal}
       />
-    </Fragment>
+    </div>
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
-
-export default UserGroupPageWrapper;
+export default UserGroupPage;

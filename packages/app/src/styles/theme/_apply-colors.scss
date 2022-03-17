@@ -638,7 +638,7 @@ body.pathname-sidebar {
 /*
  * GROWI search result
  */
-.search-result {
+.search-result-base {
   .grw-search-page-nav {
     background-color: $bgcolor-subnav;
   }
@@ -647,7 +647,7 @@ body.pathname-sidebar {
   }
   .page-list {
     .highlighted-keyword {
-      background-color: $bgcolor-keyword-highlighted;
+      background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
     }
   }
 }
@@ -707,17 +707,6 @@ mark.rbt-highlight-text {
 
   .btn-scroll-to-top {
     fill: $gray-900;
-  }
-}
-
-// Page Management Dropdown icon
-.btn-page-item-control {
-  &:hover,
-  &:focus {
-    background-color: rgba($color-link, 0.15);
-  }
-  &:active {
-    background-color: rgba($color-link, 0.2);
   }
 }
 

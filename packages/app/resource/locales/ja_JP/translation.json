@@ -13,7 +13,6 @@
   "Click to copy": "クリックでコピー",
   "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
-  "Moved": "移動しました",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -112,7 +111,7 @@
   "Create under": "ページを以下に作成",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
-  "V5 Page Migration": "V5 ページマイグレーション",
+  "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
   "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
@@ -125,6 +124,7 @@
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
+  "ChildUserGroup": "子グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
@@ -368,21 +368,14 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは",
-      "moved_period":"から移動しました。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
-      "duplicated": "このページは",
-      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
       "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
       "no_deadline": "このページに有効期限は設定されていません。"
     }
-  },
-  "page_table_of_contents": {
-    "empty": "目次は空です"
   },
   "page_edit": {
     "Show active line": "アクティブ行をハイライト",
@@ -399,7 +392,7 @@
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "新しいページが既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
-    "user_not_admin": "権限のあるユーザーのみが完全削除できます"
+    "user_not_admin": "権限のあるユーザーのみが削除できます"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -414,11 +407,12 @@
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
-      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
-      "Fail to get exist path": "存在するパスの取得に失敗しました",
-      "Rename without exist path": "存在するパス以外を名前変更する",
+      "Failed to get subordinated pages": "配下ページの取得に失敗しました",
+      "Failed to get exist path": "存在するパスの取得に失敗しました",
       "Current page name": "現在のページ名",
-      "Recursively": "再帰的に移動/名前変更",
+      "Rename this page only": "このページのみを移動/名前変更",
+      "Force rename all child pages": "全ての配下のページを移動/名前変更する",
+      "Other options": "その他のオプション",
       "Do not update metadata": "メタデータを更新しない",
       "Redirect": "リダイレクトする"
     },
@@ -430,6 +424,7 @@
   },
   "Put Back": "元に戻す",
   "Delete Completely": "完全削除",
+  "page_has_been_reverted": "{{path}} を元に戻しました",
   "modal_delete": {
     "delete_page": "ページを削除する",
     "deleting_page": "ページパス",
@@ -439,6 +434,9 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_pages": "{{path}} をゴミ箱に入れました",
+  "deleted_pages_completely": "{{path}} を完全に削除しました",
+  "renamed_pages": "{{path}} を移動/名前変更しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
@@ -447,7 +445,7 @@
     "label": {
       "Duplicate page": "ページを複製する",
       "New page name": "複製後のページ名",
-      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Failed to get subordinated pages": "配下ページの取得に失敗しました",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に複製",
       "Duplicate without exist path": "存在するパス以外を複製する",
@@ -457,6 +455,7 @@
       "recursive": "配下のページも複製します"
     }
   },
+  "duplicated_pages": "{{fromPath}} を複製しました",
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
@@ -634,6 +633,22 @@
       "updatedAt": "更新日時"
     }
   },
+  "private_legacy_pages": {
+    "bulk_operation": "一括操作",
+    "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
+    "alert_title": "古い v4 互換形式のプライベートページを表示しています",
+    "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
+    "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
+    "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード  <i class='icon-share-alt'></i></a> を参照ください。",
+    "modal": {
+      "title": "新しい v5 互換形式への変換",
+      "converting_pages": "以下のページを変換します",
+      "convert_recursively_label": "再起的に変換",
+      "convert_recursively_desc": "このページの配下のページを再起的に変換します",
+      "button_label": "変換"
+    }
+  },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
@@ -652,8 +667,15 @@
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_access_and_delete_rights": "ページの閲覧・削除権限",
-    "complete_deletion": "ページの完全削除",
-    "complete_deletion_explain": "ページを完全に削除できるユーザーを制限します。",
+    "deletion": "ページをゴミ箱に入れる(単体のみの操作)",
+    "deletion_explain": "ページをゴミ箱に入れることができるユーザーを制限します。",
+    "complete_deletion": "ページを完全削除する(単体のみの操作)",
+    "complete_deletion_explain": "ページを完全削除することができるユーザーを制限します。",
+    "recursive_deletion": "ページをゴミ箱に入れる(子孫を含む操作)",
+    "recursive_deletion_explain": "子孫を含めたページをゴミ箱に入れることができるユーザーを制限します。",
+    "recursive_complete_deletion": "ページを完全削除する(子孫を含む操作)",
+    "recursive_complete_deletion_explain": "子孫を含めたページを完全削除することができるユーザーを制限します。",
+    "inherit": "単体のみと同じ",
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
@@ -968,9 +990,18 @@
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
+  "maintenance_mode":{
+    "maintenance_mode": "メンテナンスモード",
+    "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
+    "admin_page": "管理画面へ",
+    "login": "ログイン",
+    "logout": "ログアウト"
+  },
   "pagetree": {
-    "private_legacy_pages": "待避所",
-    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません"
+    "private_legacy_pages": "旧形式のプライベートページ",
+    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
+    "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
+    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
