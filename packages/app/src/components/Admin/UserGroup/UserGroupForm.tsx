@@ -31,7 +31,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedSelectedParent] = useState<IUserGroupHasId | null>(null);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | null>(null);
 
   /*
    * Fetch
@@ -51,9 +51,9 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
   const onChangeParerentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
     if (userGroup._id !== selectedParent?._id) {
-      setSelectedSelectedParent(userGroup);
+      setSelectedParent(userGroup);
     }
-  }, [selectedParent, setSelectedSelectedParent]);
+  }, [selectedParent, setSelectedParent]);
 
   const onSubmitHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
@@ -66,7 +66,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
   }, [currentName, currentDescription, selectedParent, onSubmit]);
 
   useEffect(() => {
-    setSelectedSelectedParent(parentUserGroup ?? null);
+    setSelectedParent(parentUserGroup ?? null);
   }, [parentUserGroup]);
 
   return (
