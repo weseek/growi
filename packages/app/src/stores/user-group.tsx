@@ -76,14 +76,14 @@ export const useSWRxSelectableParentUserGroups = (groupId: string | undefined): 
 
 export const useSWRxSelectableChildUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
-    groupId != null ? ['/user-groups/selectable-child-groups'] : null,
+    groupId != null ? ['/user-groups/selectable-child-groups', groupId] : null,
     endpoint => apiv3Get<SelectableUserChildGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableChildGroups),
   );
 };
 
 export const useSWRxAncestorUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
-    groupId != null ? ['/user-groups/ancestors'] : null,
+    groupId != null ? ['/user-groups/ancestors', groupId] : null,
     endpoint => apiv3Get<AncestorUserGroupsResult>(endpoint, { groupId }).then(result => result.data.ancestorUserGroups),
   );
 };
