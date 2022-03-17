@@ -13,6 +13,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+
 import EditorContainer from '~/client/services/EditorContainer';
 
 import { getOptionsToSave } from '~/client/util/editor';
@@ -329,34 +331,43 @@ class PageEditor extends React.Component {
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
-      <div className="d-flex flex-wrap">
-        <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-          <Editor
-            ref={(c) => { this.editor = c }}
-            value={this.state.markdown}
-            noCdn={noCdn}
-            isMobile={this.props.appContainer.isMobile}
-            isUploadable={this.state.isUploadable}
-            isUploadableFile={this.state.isUploadableFile}
-            emojiStrategy={emojiStrategy}
-            onScroll={this.onEditorScroll}
-            onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
-            onChange={this.onMarkdownChanged}
-            onUpload={this.onUpload}
-            onSave={this.onSaveWithShortcut}
-          />
+      <>
+        <div className="d-flex flex-wrap">
+          <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
+            <Editor
+              ref={(c) => { this.editor = c }}
+              value={this.state.markdown}
+              noCdn={noCdn}
+              isMobile={this.props.appContainer.isMobile}
+              isUploadable={this.state.isUploadable}
+              isUploadableFile={this.state.isUploadableFile}
+              emojiStrategy={emojiStrategy}
+              onScroll={this.onEditorScroll}
+              onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+              onChange={this.onMarkdownChanged}
+              onUpload={this.onUpload}
+              onSave={this.onSaveWithShortcut}
+            />
+          </div>
+          <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+            <Preview
+              markdown={this.state.markdown}
+              // eslint-disable-next-line no-return-assign
+              inputRef={(el) => { return this.previewElement = el }}
+              isMathJaxEnabled={this.state.isMathJaxEnabled}
+              renderMathJaxOnInit={false}
+              onScroll={this.onPreviewScroll}
+            />
+          </div>
         </div>
-        <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
-          <Preview
-            markdown={this.state.markdown}
-            // eslint-disable-next-line no-return-assign
-            inputRef={(el) => { return this.previewElement = el }}
-            isMathJaxEnabled={this.state.isMathJaxEnabled}
-            renderMathJaxOnInit={false}
-            onScroll={this.onPreviewScroll}
-          />
-        </div>
-      </div>
+        <ConflictDiffModal
+          isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
+          onClose={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          appContainer={this.props.appContainer}
+          pageContainer={this.props.pageContainer}
+          markdownOnEdit={this.state.markdown}
+        />
+      </>
     );
   }
 
