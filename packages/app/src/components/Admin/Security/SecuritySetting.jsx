@@ -226,12 +226,18 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
+        <h4>{t('security_setting.page_access_and_delete_rights')}</h4>
+        <div className="row mb-4"></div>
         {/* Render PageDeletePermissionDropdown */}
         {
           [
             [currentPageDeletionAuthority, adminGeneralSecurityContainer.changePageDeletionAuthority, DeletionType.Deletion],
-            [currentPageCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageCompleteDeletionAuthority, DeletionType.CompleteDeletion],
             [currentPageRecursiveDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveDeletionAuthority, DeletionType.RecursiveDeletion],
+          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], t))
+        }
+        {
+          [
+            [currentPageCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageCompleteDeletionAuthority, DeletionType.CompleteDeletion],
             // eslint-disable-next-line max-len
             [currentPageRecursiveCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveCompleteDeletionAuthority, DeletionType.RecursiveCompleteDeletion],
           ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], t))
