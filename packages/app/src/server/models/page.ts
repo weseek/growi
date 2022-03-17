@@ -1057,11 +1057,9 @@ export default (crowi: Crowi): any => {
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const exParent = pageData.parent;
-
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
     const shouldUseV4Process = shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
-
     if (shouldUseV4Process) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
