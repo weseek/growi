@@ -142,7 +142,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Duplicate */}
         { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
-          <DropdownItem onClick={duplicateItemClickedHandler}>
+          <DropdownItem onClick={duplicateItemClickedHandler} data testid="open-page-duplicate-modal-btn">
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
           </DropdownItem>
