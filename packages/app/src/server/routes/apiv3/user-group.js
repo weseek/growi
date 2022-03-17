@@ -275,9 +275,12 @@ module.exports = (crowi) => {
     const { groupId } = req.query;
 
     try {
-      const childGroups = await UserGroup.findChildUserGroupsByParentIds([groupId], false);
-      const childGroupIds = childGroups.childUserGroups.map(userGroups => userGroups._id.toString());
-      const selectableParentGroups = await UserGroup.find({ _id: { $nin: [groupId, ...childGroupIds] } });
+      const userGroup = await UserGroup.findById(groupId);
+
+      const descendantGroups = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
+      const descendantGroupIds = descendantGroups.map(userGroups => userGroups._id.toString());
+
+      const selectableParentGroups = await UserGroup.find({ _id: { $nin: [groupId, ...descendantGroupIds] } });
       return res.apiv3({ selectableParentGroups });
     }
     catch (err) {
