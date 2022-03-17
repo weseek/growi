@@ -10,6 +10,7 @@ describe('SearchService test', () => {
   let searchService;
 
   const DEFAULT = 'FullTextSearch';
+  const PRIVATE_LEGACY_PAGES = 'PrivateLegacyPages';
 
   // let NamedQuery;
 
@@ -35,6 +36,7 @@ describe('SearchService test', () => {
     dummyAliasOf = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
 
     await NamedQuery.insertMany([
+      { name: 'named_query1', delegatorName: PRIVATE_LEGACY_PAGES },
       { name: 'named_query2', aliasOf: dummyAliasOf },
     ]);
 
@@ -64,6 +66,18 @@ describe('SearchService test', () => {
   });
 
   describe('parseSearchQuery()', () => {
+
+    test('should return result with delegatorName', async() => {
+      const queryString = '[nq:named_query1]';
+      const parsedQuery = await searchService.parseSearchQuery(queryString);
+
+      const expected = {
+        queryString,
+        delegatorName: PRIVATE_LEGACY_PAGES,
+      };
+
+      expect(parsedQuery).toStrictEqual(expected);
+    });
 
     test('should return result with expanded aliasOf value', async() => {
       const queryString = '[nq:named_query2]';
@@ -108,6 +122,79 @@ describe('SearchService test', () => {
 
       expect(data).toStrictEqual(expectedData);
       expect(typeof delegator.search).toBe('function');
+    });
+
+    test('should resolve as custom search delegator', async() => {
+      const queryString = '[nq:named_query1]';
+      const parsedQuery = {
+        queryString,
+        delegatorName: PRIVATE_LEGACY_PAGES,
+      };
+
+      const [delegator, data] = await searchService.resolve(parsedQuery);
+
+      const expectedData = null;
+
+      expect(data).toBe(expectedData);
+      expect(typeof delegator.search).toBe('function');
+    });
+  });
+
+  describe('searchKeyword()', () => {
+    test('should search with custom search delegator', async() => {
+      const Page = mongoose.model('Page');
+      const User = mongoose.model('User');
+      await User.insertMany([
+        { name: 'dummyuser1', username: 'dummyuser1', email: 'dummyuser1@example.com' },
+        { name: 'dummyuser2', username: 'dummyuser2', email: 'dummyuser2@example.com' },
+      ]);
+
+      const testUser1 = await User.findOne({ username: 'dummyuser1' });
+      const testUser2 = await User.findOne({ username: 'dummyuser2' });
+
+      await Page.insertMany([
+        {
+          path: '/user1',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/user1_owner',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          path: '/user2_public',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser2,
+          lastUpdateUser: testUser2,
+        },
+      ]);
+
+      const page1 = await Page.findOne({ path: '/user1' });
+
+      await Page.insertMany([
+        {
+          path: '/user1/hasParent',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          parent: page1,
+        },
+      ]);
+
+      const queryString = '[nq:named_query1]';
+
+      const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 100 });
+
+      const resultPaths = result.data.map(page => page.path);
+      const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
+
+      expect(flag).toBe(true);
+      expect(delegatorName).toBe(PRIVATE_LEGACY_PAGES);
     });
   });
 

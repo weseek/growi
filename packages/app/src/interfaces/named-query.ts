@@ -1,11 +1,10 @@
 import { IUser } from './user';
 
 
-export const SearchDelegatorName = {
-  DEFAULT: 'FullTextSearch',
-} as const;
-export type SearchDelegatorName = typeof SearchDelegatorName[keyof typeof SearchDelegatorName];
-
+export enum SearchDelegatorName {
+  DEFAULT = 'FullTextSearch',
+  PRIVATE_LEGACY_PAGES = 'PrivateLegacyPages',
+}
 export interface INamedQuery {
   name: string
   aliasOf?: string
