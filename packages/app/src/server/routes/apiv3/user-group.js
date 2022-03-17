@@ -353,12 +353,12 @@ module.exports = (crowi) => {
    *        summary: /user-groups/{id}
    *        description: Get UserGroup from Group ID
    *        parameters:
-   *          - name: groupId
-   *            in: query
+   *          - name: id
+   *            in: path
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: string
+   *             type: string
    *        responses:
    *          200:
    *            description: userGroup are fetched
