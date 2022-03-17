@@ -30,6 +30,9 @@ const PagePathAutoComplete = (props) => {
   }
 
   function getKeywordOnInit(path) {
+    if (path == null) {
+      return;
+    }
     return addTrailingSlash
       ? pathUtils.addTrailingSlash(path)
       : pathUtils.removeTrailingSlash(path);

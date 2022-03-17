@@ -14,3 +14,7 @@ export type IRevisionOnConflict = {
   createdAt: Date,
   user: IUser
 }
+
+export type HasRevisionShortbody = {
+  revisionShortBody?: string,
+}

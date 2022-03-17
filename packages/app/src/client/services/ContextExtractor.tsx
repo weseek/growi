@@ -2,17 +2,20 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
-  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
-  useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
-  useSlackChannels,
-} from '~/stores/context';
+  useSiteUrl,
+  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
+  useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
+} from '../../stores/context';
 import {
-  useIsDeviceSmallerThanMd,
+  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
   useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
+import { useSetupGlobalSocket } from '~/stores/websocket';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -22,11 +25,19 @@ const jsonNull = 'null';
 const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
+  const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
+  const notFoundContent = document.getElementById('growi-not-found-context');
+  const forbiddenContent = document.getElementById('forbidden-page');
 
   /*
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * Settings from context-hydrate DOM
+   */
+  const configByContextHydrate = JSON.parse(document.getElementById('growi-context-hydrate')?.textContent || jsonNull);
 
   /*
    * UserUISettings from DOM
@@ -49,13 +60,12 @@ const ContextExtractorOnce: FC = () => {
   const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
 
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
-  const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
+  const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
+  const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
-  const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull);
-  const isDeletable = JSON.parse(mainContent?.getAttribute('data-page-is-deletable') || jsonNull);
-  const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull);
-  const isAbleToDeleteCompletely = JSON.parse(mainContent?.getAttribute('data-page-is-able-to-delete-completely') || jsonNull);
-  const isPageExist = mainContent?.getAttribute('data-page-id') != null;
+  const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
+  const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull) ?? false;
+  const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
   const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
@@ -68,10 +78,16 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
+  const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
+  const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
+  const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
+  const isSearchPage = document.getElementById('search-page') != null;
+
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
   const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
+
   /*
    * use static swr
    */
@@ -85,21 +101,28 @@ const ContextExtractorOnce: FC = () => {
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
+  // hydrated config
+  useSiteUrl(configByContextHydrate.crowi.url);
+  useIsAclEnabled(configByContextHydrate.isAclEnabled);
+  useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
+  useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
+  useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
+
+
   // Page
   useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
-  useIsAbleToDeleteCompletely(isAbleToDeleteCompletely);
-  useIsDeletable(isDeletable);
+  useIsIdenticalPath(isIdenticalPath);
   useIsDeleted(isDeleted);
   useIsNotCreatable(isNotCreatable);
-  useIsPageExist(isPageExist);
+  useIsForbidden(isForbidden);
   useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
-  usePageId(pageId);
+  useCurrentPageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);
@@ -112,6 +135,15 @@ const ContextExtractorOnce: FC = () => {
   useCurrentUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
+  useTargetAndAncestors(targetAndAncestors);
+  useNotFoundTargetPathOrId(notFoundTargetPathOrId);
+  useIsNotFoundPermalink(isNotFoundPermalink);
+  useIsSearchPage(isSearchPage);
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   // Navigation
   usePreferDrawerModeByUser();
@@ -123,6 +155,12 @@ const ContextExtractorOnce: FC = () => {
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);
+
+  // SearchResult
+  useIsDeviceSmallerThanLg();
+
+  // Global Socket
+  useSetupGlobalSocket();
 
   return null;
 };

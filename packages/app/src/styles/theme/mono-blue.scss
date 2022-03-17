@@ -32,7 +32,7 @@ html[light] {
   // $color-list: $color-global;
   $bgcolor-list: transparent;
   $color-list-hover: $color-search;
-  $bgcolor-list-hover: darken($bgcolor-global, 3%);
+  $bgcolor-list-hover: lighten($primary, 70%);
   // $color-list-active: $color-reversal;
   // $bgcolor-list-active: $primary;
 

@@ -34,7 +34,12 @@ export class InstallerService {
       return;
     }
 
-    await searchService.rebuildIndex();
+    try {
+      await searchService.rebuildIndex();
+    }
+    catch (err) {
+      logger.error('Rebuild index failed', err);
+    }
   }
 
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
@@ -53,21 +58,31 @@ export class InstallerService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async createInitialPages(owner, lang: Lang): Promise<any> {
+  private async createInitialPages(owner, lang: Lang, initialPagesCreatedAt?: Date): Promise<any> {
     const { localeDir } = this.crowi;
-
-    const promises: Promise<IPage|undefined>[] = [];
-
-    // create portal page for '/'
-    promises.push(this.createPage(path.join(localeDir, lang, 'welcome.md'), '/', owner));
-
     // create /Sandbox/*
-    promises.push(this.createPage(path.join(localeDir, lang, 'sandbox.md'), '/Sandbox', owner));
-    promises.push(this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner));
-    promises.push(this.createPage(path.join(localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner));
-    promises.push(this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner));
+    /*
+     * Keep in this order to
+     *   1. avoid creating the same pages
+     *   2. avoid difference for order in VRT
+     */
+    await this.createPage(path.join(localeDir, lang, 'sandbox.md'), '/Sandbox', owner);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner);
 
-    await Promise.all(promises);
+    // update createdAt and updatedAt fields of all pages
+    if (initialPagesCreatedAt != null) {
+      try {
+        // TODO typescriptize models/user.js and remove eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const Page = mongoose.model('Page') as any;
+        await Page.updateMany({}, { createdAt: initialPagesCreatedAt, updatedAt: initialPagesCreatedAt });
+      }
+      catch (err) {
+        logger.error('Failed to update createdAt', err);
+      }
+    }
 
     try {
       await this.initSearchIndex();
@@ -88,12 +103,20 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang): Promise<IUser> {
+  async install(firstAdminUserToSave: IUser, globalLang: Lang, initialPagesCreatedAt?: Date): Promise<IUser> {
     await this.initDB(globalLang);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const User = mongoose.model('User') as any;
+    const Page = mongoose.model('Page') as any;
+
+    // create portal page for '/' before creating admin user
+    await this.createPage(
+      path.join(this.crowi.localeDir, globalLang, 'welcome.md'),
+      '/',
+      { _id: '000000000000000000000000' }, // use 0 as a mock user id
+    );
 
     // create first admin user
     // TODO: with transaction
@@ -109,8 +132,17 @@ export class InstallerService {
       throw new FailedToCreateAdminUserError(err);
     }
 
+    // add owner after creating admin user
+    const Revision = this.crowi.model('Revision');
+    const rootPage = await Page.findOne({ path: '/' });
+    const rootRevision = await Revision.findOne({ path: '/' });
+    rootPage.creator = adminUser._id;
+    rootPage.lastUpdateUser = adminUser._id;
+    rootRevision.creator = adminUser._id;
+    await Promise.all([rootPage.save(), rootRevision.save()]);
+
     // create initial pages
-    await this.createInitialPages(adminUser, globalLang);
+    await this.createInitialPages(adminUser, globalLang, initialPagesCreatedAt);
 
     return adminUser;
   }

@@ -2,8 +2,6 @@ import React, {
   FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
   KeyboardEvent, useCallback, useRef, useState, MouseEvent,
 } from 'react';
-// eslint-disable-next-line no-restricted-imports
-import { AxiosResponse } from 'axios';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
@@ -12,7 +10,8 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { apiGet } from '~/client/util/apiv1-client';
-import { IPage } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
 
 
 type ResetFormButtonProps = {
@@ -27,7 +26,7 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
   return isHidden ? (
     <span />
   ) : (
-    <button type="button" className="btn btn-link search-clear" onMouseDown={props.onReset}>
+    <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={props.onReset}>
       <i className="icon-close" />
     </button>
   );
@@ -35,11 +34,12 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 
 
 type Props = TypeaheadProps & {
-  onSearchSuccess?: (res: IPage[]) => void,
+  onSearchSuccess?: (res: IPageWithMeta<IPageSearchMeta>[]) => void,
   onSearchError?: (err: Error) => void,
   onSubmit?: (input: string) => void,
   inputName?: string,
   keywordOnInit?: string,
+  disableIncrementalSearch?: boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpElement?: any,
 };
@@ -57,12 +57,12 @@ type TypeaheadInstanceFactory = {
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
     onSearchSuccess, onSearchError, onInputChange, onSubmit,
-    emptyLabel, helpElement,
+    emptyLabel, helpElement, keywordOnInit, disableIncrementalSearch,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
-  const [pages, setPages] = useState<IPage[]>();
+  const [pages, setPages] = useState<IPageWithMeta<IPageSearchMeta>[]>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoading] = useState(false);
@@ -106,11 +106,12 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   /**
    * Callback function which is occured when search is exit successfully
    */
-  const searchSuccessHandler = useCallback((res: AxiosResponse<IPage[]>) => {
-    setPages(res.data);
+  const searchSuccessHandler = useCallback((result: IFormattedSearchResult) => {
+    const searchResultData = result.data;
+    setPages(searchResultData);
 
     if (onSearchSuccess != null) {
-      onSearchSuccess(res.data);
+      onSearchSuccess(searchResultData);
     }
   }, [onSearchSuccess]);
 
@@ -126,15 +127,15 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   }, [onSearchError]);
 
   const search = useCallback(async(keyword: string) => {
-    if (keyword === '') {
+    if (disableIncrementalSearch || keyword === '') {
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await apiGet('/search', { q: keyword }) as AxiosResponse<IPage[]>;
-      searchSuccessHandler(res);
+      const result = await apiGet('/search', { q: keyword }) as IFormattedSearchResult;
+      searchSuccessHandler(result);
     }
     catch (err) {
       searchErrorHandler(err);
@@ -143,7 +144,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       setLoading(false);
     }
 
-  }, [searchErrorHandler, searchSuccessHandler]);
+  }, [disableIncrementalSearch, searchErrorHandler, searchSuccessHandler]);
 
   const inputChangeHandler = useCallback((text: string) => {
     setInput(text);
@@ -176,11 +177,11 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       return emptyLabel;
     }
 
-    return false;
+    return <></>;
   };
 
-  const defaultSelected = (props.keywordOnInit !== '')
-    ? [{ path: props.keywordOnInit }]
+  const defaultSelected = (keywordOnInit !== '')
+    ? [{ path: keywordOnInit }]
     : [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputProps: any = { autoComplete: 'off' };
@@ -188,13 +189,16 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     inputProps.name = props.inputName;
   }
 
-  const renderMenuItemChildren = (page: IPage) => (
-    <span>
-      <UserPicture user={page.lastUpdateUser} size="sm" noLink />
-      <span className="ml-1 text-break text-wrap"><PagePathLabel page={page} /></span>
-      <PageListMeta page={page} />
-    </span>
-  );
+  const renderMenuItemChildren = (option: IPageWithMeta<IPageSearchMeta>) => {
+    const { data: pageData } = option;
+    return (
+      <span>
+        <UserPicture user={pageData.lastUpdateUser} size="sm" noLink />
+        <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
+        <PageListMeta page={pageData} />
+      </span>
+    );
+  };
 
   return (
     <div className="search-typeahead">
@@ -204,11 +208,11 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         ref={typeaheadRef}
         inputProps={inputProps}
         isLoading={isLoading}
-        labelKey="path"
+        labelKey={data => data?.pageData?.path || keywordOnInit || ''} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
         minLength={0}
         options={pages} // Search result (Some page names)
         promptText={props.helpElement}
-        emptyLabel={getEmptyLabel()}
+        emptyLabel={disableIncrementalSearch ? null : getEmptyLabel()}
         align="left"
         onSearch={search}
         onInputChange={inputChangeHandler}
