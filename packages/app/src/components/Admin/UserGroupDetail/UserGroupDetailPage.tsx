@@ -261,7 +261,7 @@ const UserGroupDetailPage: FC = () => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
-          parentUserGroups={selectableParentUserGroups}
+          selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={updateUserGroup}
         />

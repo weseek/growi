@@ -12,7 +12,7 @@ import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  parentUserGroups?: IUserGroupHasId[],
+  selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: TFunctionResult;
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
 };
@@ -23,7 +23,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, parentUserGroups, submitButtonLabel, onSubmit,
+    userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
   } = props;
 
   /*
@@ -115,15 +115,22 @@ const UserGroupForm: FC<Props> = (props: Props) => {
             {t('admin:user_group_management.parent_group')}
           </label>
           <div className="dropdown col-md-4">
-            <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+            <button
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              className={`
+                btn btn-outline-secondary dropdown-toggle ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
+              `}
+            >
               {selectedParent?.name ?? t('admin:user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (parentUserGroups != null && parentUserGroups.length > 0) && (
+                (selectableParentUserGroups != null && selectableParentUserGroups.length > 0) && (
                   <>
                     {
-                      parentUserGroups.map(userGroup => (
+                      selectableParentUserGroups.map(userGroup => (
                         <button
                           key={userGroup._id}
                           type="button"
