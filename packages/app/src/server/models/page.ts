@@ -1045,7 +1045,7 @@ export default (crowi: Crowi): any => {
     return savedPage;
   };
 
-  const shouldUseUpdatePageV4 = (grant, isV5Compatible, isOnTree) => {
+  const shouldUseUpdatePageV4 = (grant:number, isV5Compatible:boolean, isOnTree:boolean): boolean => {
     const isRestricted = grant === GRANT_RESTRICTED;
     return !isRestricted && (!isV5Compatible || !isOnTree);
   };
