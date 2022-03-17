@@ -7,6 +7,7 @@ export type UserGroupListResult = {
 
 export type ChildUserGroupListResult = {
   childUserGroups: IUserGroupHasId[],
+  grandChildUserGroups: IUserGroupHasId[],
 };
 
 export type UserGroupRelationListResult = {
@@ -19,4 +20,8 @@ export type UserGroupPagesResult = {
 
 export type SelectableUserGroupsResult = {
   selectableUserGroups: IUserGroupHasId[],
+}
+
+export type AncestorUserGroupsResult = {
+  ancestorUserGroups: IUserGroupHasId[],
 }

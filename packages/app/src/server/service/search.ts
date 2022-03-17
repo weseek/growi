@@ -1,7 +1,8 @@
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult, ISearchResult, ISearchResultMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
@@ -16,6 +17,8 @@ import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
 const filterXssOptions = {
@@ -350,10 +353,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
    */
   async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
-      const data = searchResult.data.map((page) => {
+      const data: IPageWithMeta<IPageSearchMeta>[] = searchResult.data.map((page) => {
         return {
-          pageData: page,
-          pageMeta: {},
+          data: page,
         };
       });
 
@@ -378,10 +380,14 @@ class SearchService implements SearchQueryParser, SearchResolver {
     result.meta = searchResult.meta;
 
     // set search result page data
-    result.data = searchResult.data.map((data) => {
+    const pages: (IPageWithMeta<IPageSearchMeta> | null)[] = searchResult.data.map((data) => {
       const pageData = findPageResult.pages.find((pageData) => {
         return pageData.id === data._id;
       });
+
+      if (pageData == null) {
+        return null;
+      }
 
       // add tags and seenUserCount to pageData
       pageData._doc.tags = data._source.tag_names;
@@ -417,9 +423,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
         elasticSearchResult,
       };
 
-      return { pageData, pageMeta };
+      return { data: pageData, meta: pageMeta };
     });
 
+    result.data = pages.filter(nonNullable);
     return result;
   }
 

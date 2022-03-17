@@ -16,7 +16,6 @@ export type AlertInfo = {
 }
 
 type ClosableTextInputProps = {
-  isShown: boolean
   value?: string
   placeholder?: string
   inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
@@ -30,6 +29,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
   const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
+  const [isAbleToShowAlert, setIsAbleToShowAlert] = useState<boolean>(false);
 
   const createValidation = async(inputText: string) => {
     if (props.inputValidator != null) {
@@ -42,6 +42,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     const inputText = e.target.value;
     createValidation(inputText);
     setInputText(inputText);
+    setIsAbleToShowAlert(true);
   };
 
   const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +106,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
 
   return (
-    <div className={props.isShown ? 'd-block' : 'd-none'}>
+    <div className="d-block flex-fill">
       <input
         value={inputText || ''}
         ref={inputRef}
@@ -119,7 +120,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         onBlur={onBlurHandler}
         autoFocus={false}
       />
-      <AlertInfo />
+      {isAbleToShowAlert && <AlertInfo />}
     </div>
   );
 });

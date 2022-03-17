@@ -149,10 +149,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init() {
+  async init(): Promise<void> {
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
-      return this.rebuildIndex();
+      try {
+        await this.rebuildIndex();
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
     }
     return normalizeIndices;
   }
@@ -284,7 +290,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+      logger.error('An error occured while \'rebuildIndex\'.', error);
+      logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -292,6 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
+      logger.warn('Normalize indices anyway.');
       await this.normalizeIndices();
     }
 
@@ -325,8 +333,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
-    return this.client.indices.create({ index, body });
+    let mappings = this.isElasticsearchV6
+      ? require('^/resource/search/mappings-es6.json')
+      : require('^/resource/search/mappings-es7.json');
+
+    if (process.env.CI) {
+      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+    }
+
+    return this.client.indices.create({
+      index,
+      body: mappings,
+    });
   }
 
   /**
@@ -368,7 +386,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
-    const seenUsersCount = page.seenUsers.length || 0;
+    const seenUsersCount = page.seenUsers?.length || 0;
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -378,7 +396,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
-      like_count: page.liker.length || 0,
+      like_count: page.liker?.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,
@@ -614,21 +632,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
    * }
    */
   async searchKeyword(query): Promise<IFormattedSearchResult> {
+
     // for debug
     if (process.env.NODE_ENV === 'development') {
+      logger.debug('query: ', JSON.stringify(query, null, 2));
+
       const { body: result } = await this.client.indices.validateQuery({
+        index: query.index,
+        type: query.type,
         explain: true,
         body: {
           query: query.body.query,
         },
       });
-      logger.debug('ES returns explanations: ', result.explanations);
+      // for debug
+      logger.debug('ES result: ', result);
     }
 
     const { body: result } = await this.client.search(query);
-
-    // for debug
-    logger.debug('ES result: ', result);
 
     const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
 
@@ -665,9 +686,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // eslint-disable-next-line prefer-const
     let query = {
       index: this.aliasName,
+      _source: fields,
       body: {
         query: {}, // query
-        _source: fields,
       },
     };
 
@@ -688,13 +709,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
     query.body.sort = { [sort]: { order } };
-  }
-
-  convertSortQuery(sortAxis) {
-    switch (sortAxis) {
-      case RELATION_SCORE:
-        return '_score';
-    }
   }
 
   initializeBoolQuery(query) {
@@ -957,8 +971,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendResultSize(query, from, size);
 
     this.appendSortOrder(query, sort, order);
-
     await this.appendFunctionScore(query, queryString);
+
     this.appendHighlight(query);
 
     return this.searchKeyword(query);

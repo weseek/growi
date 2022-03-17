@@ -2,21 +2,20 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import Xss from '~/services/xss';
-import AppContainer from '~/client/services/AppContainer';
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 
-
 type Props = {
-  appContainer: AppContainer,
-
+  headerLabel?: TFunctionResult,
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
   childUserGroups: IUserGroupHasId[],
   isAclEnabled: boolean,
+  onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
 };
 
@@ -67,22 +66,38 @@ const UserGroupTable: FC<Props> = (props: Props) => {
   /*
    * Function
    */
-  const onClickDelete = useCallback((e) => { // no preventDefault
+  const findUserGroup = (e: React.ChangeEvent<HTMLInputElement>): IUserGroupHasId | undefined => {
+    const groupId = e.target.getAttribute('data-user-group-id');
+    return props.userGroups.find((group) => {
+      return group._id === groupId;
+    });
+  };
+
+  const onClickEdit = (e) => {
+    if (props.onEdit == null) {
+      return;
+    }
+
+    const userGroup = findUserGroup(e);
+    if (userGroup == null) {
+      return;
+    }
+
+    props.onEdit(userGroup);
+  };
+
+  const onClickDelete = (e) => { // no preventDefault
     if (props.onDelete == null) {
       return;
     }
 
-    const groupId = e.target.getAttribute('data-user-group-id');
-    const group = props.userGroups.find((group) => {
-      return group._id === groupId;
-    });
-
-    if (group == null) {
+    const userGroup = findUserGroup(e);
+    if (userGroup == null) {
       return;
     }
 
-    props.onDelete(group);
-  }, [props.userGroups, props.onDelete]);
+    props.onDelete(userGroup);
+  };
 
   /*
    * useEffect
@@ -94,7 +109,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h2>{t('admin:user_group_management.group_list')}</h2>
+      <h2>{props.headerLabel}</h2>
 
       <table className="table table-bordered table-user-list">
         <thead>
@@ -102,7 +117,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('Child groups')}</th>
+            <th>{t('ChildUserGroup')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>
@@ -161,9 +176,9 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                           <i className="icon-settings"></i>
                         </button>
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
-                          <a className="dropdown-item" href={`/admin/user-group-detail/${group._id}`}>
+                          <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
                             <i className="icon-fw icon-note"></i> {t('Edit')}
-                          </a>
+                          </button>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
                             <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                           </button>

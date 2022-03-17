@@ -1,9 +1,12 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
+
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -12,7 +15,7 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
-  usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 
@@ -26,7 +29,6 @@ import { useSWRTagsInfo } from '~/stores/page';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { IPageHasId } from '~/interfaces/page';
 
 import HistoryIcon from '../Icons/HistoryIcon';
 import AttachmentIcon from '../Icons/AttachmentIcon';
@@ -65,12 +67,15 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = '?presentation=1';
+  const hrefForPresentationModal = `${pageId}/?presentation=1`;
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
+      <DropdownItem
+        onClick={() => openPresentationModal(hrefForPresentationModal)}
+        data-testid="open-presentation-modal-btn"
+      >
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -178,17 +183,39 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      window.location.href = toPath;
+    };
+    openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
+    const renamedHandler: OnRenamedFunction = () => {
+      window.location.reload();
+    };
+    openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      // redirect to NotFound Page
+      window.location.href = path;
+    }
+    else {
+      window.location.reload();
+    }
+  }, []);
+
+  const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
+    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
@@ -200,9 +227,11 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
+    const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
+
     return (
       <>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={className}>
           { pageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
@@ -227,7 +256,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           ) }
         </div>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={`${className} ${isCompactMode ? '' : 'mt-2'}`}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
@@ -282,6 +311,7 @@ const GrowiContextualSubNavigation = (props) => {
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
+      additionalClasses={['container-fluid']}
     />
   );
 };

@@ -1,5 +1,7 @@
-import { templateChecker, pagePathUtils } from '@growi/core';
+import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
+
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
@@ -12,10 +14,9 @@ const urljoin = require('url-join');
 const mongoose = require('mongoose');
 const differenceInYears = require('date-fns/differenceInYears');
 
-const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
-const { isTopPage, isTrashPage, isUserNamePage } = pagePathUtils;
+const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
@@ -44,7 +45,7 @@ const pageSchema = {
  * @param {string} pagePath
  * @return {string[]} ancestors paths
  */
-const extractToAncestorsPaths = (pagePath) => {
+export const extractToAncestorsPaths = (pagePath) => {
   const ancestorsPaths = [];
 
   let parentPath;
@@ -62,7 +63,7 @@ const extractToAncestorsPaths = (pagePath) => {
  * @param {string} userPublicFields string to set to select
  */
 /* eslint-disable object-curly-newline, object-property-newline */
-const populateDataToShowRevision = (page, userPublicFields) => {
+export const populateDataToShowRevision = (page, userPublicFields) => {
   return page
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
@@ -76,291 +77,6 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 };
 /* eslint-enable object-curly-newline, object-property-newline */
 
-
-export class PageQueryBuilder {
-
-  constructor(query, includeEmpty = false) {
-    this.query = query;
-    if (!includeEmpty) {
-      this.query = this.query
-        .and({
-          $or: [
-            { isEmpty: false },
-            { isEmpty: null }, // for v4 compatibility
-          ],
-        });
-    }
-  }
-
-  addConditionToExcludeTrashed() {
-    this.query = this.query
-      .and({
-        $or: [
-          { status: null },
-          { status: STATUS_PUBLISHED },
-        ],
-      });
-
-    return this;
-  }
-
-  /**
-   * generate the query to find the pages '{path}/*' and '{path}' self.
-   * If top page, return without doing anything.
-   */
-  addConditionToListWithDescendants(path, option) {
-    // No request is set for the top page
-    if (isTopPage(path)) {
-      return this;
-    }
-
-    const pathNormalized = pathUtils.normalizePath(path);
-    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
-
-    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
-
-    this.query = this.query
-      .and({
-        $or: [
-          { path: pathNormalized },
-          { path: new RegExp(`^${startsPattern}`) },
-        ],
-      });
-
-    return this;
-  }
-
-  /**
-   * generate the query to find the pages '{path}/*' (exclude '{path}' self).
-   * If top page, return without doing anything.
-   */
-  addConditionToListOnlyDescendants(path, option) {
-    // No request is set for the top page
-    if (isTopPage(path)) {
-      return this;
-    }
-
-    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
-
-    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
-
-    this.query = this.query
-      .and({ path: new RegExp(`^${startsPattern}`) });
-
-    return this;
-
-  }
-
-  addConditionToListOnlyAncestors(path) {
-    const pathNormalized = pathUtils.normalizePath(path);
-    const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
-
-    this.query = this.query
-      .and({
-        path: {
-          $in: ancestorsPaths,
-        },
-      });
-
-    return this;
-
-  }
-
-  /**
-   * generate the query to find pages that start with `path`
-   *
-   * In normal case, returns '{path}/*' and '{path}' self.
-   * If top page, return without doing anything.
-   *
-   * *option*
-   *   Left for backward compatibility
-   */
-  addConditionToListByStartWith(path, option) {
-    // No request is set for the top page
-    if (isTopPage(path)) {
-      return this;
-    }
-
-    const startsPattern = escapeStringRegexp(path);
-
-    this.query = this.query
-      .and({ path: new RegExp(`^${startsPattern}`) });
-
-    return this;
-  }
-
-  async addConditionForParentNormalization(user) {
-    // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
-    const grantConditions = [
-      { grant: null },
-      { grant: GRANT_PUBLIC },
-    ];
-
-    if (user != null) {
-      grantConditions.push(
-        { grant: GRANT_OWNER, grantedUsers: user._id },
-      );
-    }
-
-    if (userGroups != null && userGroups.length > 0) {
-      grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
-      );
-    }
-
-    this.query = this.query
-      .and({
-        $or: grantConditions,
-      });
-
-    return this;
-  }
-
-  addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const grantConditions = [
-      { grant: null },
-      { grant: GRANT_PUBLIC },
-    ];
-
-    if (showAnyoneKnowsLink) {
-      grantConditions.push({ grant: GRANT_RESTRICTED });
-    }
-
-    if (showPagesRestrictedByOwner) {
-      grantConditions.push(
-        { grant: GRANT_SPECIFIED },
-        { grant: GRANT_OWNER },
-      );
-    }
-    else if (user != null) {
-      grantConditions.push(
-        { grant: GRANT_SPECIFIED, grantedUsers: user._id },
-        { grant: GRANT_OWNER, grantedUsers: user._id },
-      );
-    }
-
-    if (showPagesRestrictedByGroup) {
-      grantConditions.push(
-        { grant: GRANT_USER_GROUP },
-      );
-    }
-    else if (userGroups != null && userGroups.length > 0) {
-      grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
-      );
-    }
-
-    this.query = this.query
-      .and({
-        $or: grantConditions,
-      });
-
-    return this;
-  }
-
-  addConditionToPagenate(offset, limit, sortOpt) {
-    this.query = this.query
-      .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
-
-    return this;
-  }
-
-  addConditionAsNonRootPage() {
-    this.query = this.query.and({ path: { $ne: '/' } });
-
-    return this;
-  }
-
-  addConditionAsNotMigrated() {
-    this.query = this.query
-      .and({ parent: null });
-
-    return this;
-  }
-
-  addConditionAsMigrated() {
-    this.query = this.query
-      .and(
-        {
-          $or: [
-            { parent: { $ne: null } },
-            { path: '/' },
-          ],
-        },
-      );
-
-    return this;
-  }
-
-  /*
-   * Add this condition when get any ancestor pages including the target's parent
-   */
-  addConditionToSortPagesByDescPath() {
-    this.query = this.query.sort('-path');
-
-    return this;
-  }
-
-  addConditionToSortPagesByAscPath() {
-    this.query = this.query.sort('path');
-
-    return this;
-  }
-
-  addConditionToMinimizeDataForRendering() {
-    this.query = this.query.select('_id path isEmpty grant revision');
-
-    return this;
-  }
-
-  addConditionToListByPathsArray(paths) {
-    this.query = this.query
-      .and({
-        path: {
-          $in: paths,
-        },
-      });
-
-    return this;
-  }
-
-  addConditionToListByPageIdsArray(pageIds) {
-    this.query = this.query
-      .and({
-        _id: {
-          $in: pageIds,
-        },
-      });
-
-    return this;
-  }
-
-  populateDataToList(userPublicFields) {
-    this.query = this.query
-      .populate({
-        path: 'lastUpdateUser',
-        select: userPublicFields,
-      });
-    return this;
-  }
-
-  populateDataToShowRevision(userPublicFields) {
-    this.query = populateDataToShowRevision(this.query, userPublicFields);
-    return this;
-  }
-
-  addConditionToFilteringByParentId(parentId) {
-    this.query = this.query.and({ parent: parentId });
-    return this;
-  }
-
-}
 
 export const getPageSchema = (crowi) => {
   let pageEvent;
@@ -596,10 +312,6 @@ export const getPageSchema = (crowi) => {
     return path.replace('/trash', '');
   };
 
-  pageSchema.statics.isDeletableName = function(path) {
-    return !isTopPage(path) && !isUserNamePage(path);
-  };
-
   pageSchema.statics.fixToCreatableName = function(path) {
     return path
       .replace(/\/\//g, '/');
@@ -626,7 +338,7 @@ export const getPageSchema = (crowi) => {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery);
+    const queryBuilder = new this.PageQueryBuilder(baseQuery);
     queryBuilder.addConditionToFilteringByViewer(user, userGroups, true);
 
     const count = await queryBuilder.query.exec();
@@ -648,18 +360,8 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+    const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
-
-    return queryBuilder.query.exec();
-  };
-
-  pageSchema.statics.findByIdAndViewerToEdit = async function(id, user, includeEmpty = false) {
-    const baseQuery = this.findOne({ _id: id });
-    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
-
-    // add grant conditions
-    await addConditionToFilteringByViewerToEdit(queryBuilder, user);
 
     return queryBuilder.query.exec();
   };
@@ -670,7 +372,7 @@ export const getPageSchema = (crowi) => {
       return null;
     }
 
-    const builder = new PageQueryBuilder(this.findOne({ path }), includeEmpty);
+    const builder = new this.PageQueryBuilder(this.findOne({ path }), includeEmpty);
 
     return builder.query.exec();
   };
@@ -701,7 +403,7 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+    const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
     return queryBuilder.query.exec();
@@ -711,7 +413,7 @@ export const getPageSchema = (crowi) => {
    * find pages that is match with `path` and its descendants
    */
   pageSchema.statics.findListWithDescendants = async function(path, user, option = {}, includeEmpty = false) {
-    const builder = new PageQueryBuilder(this.find(), includeEmpty);
+    const builder = new this.PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(path, option);
 
     return findListFromBuilderAndViewer(builder, user, false, option);
@@ -725,7 +427,7 @@ export const getPageSchema = (crowi) => {
       return null;
     }
 
-    const builder = new PageQueryBuilder(this.find(), includeEmpty);
+    const builder = new this.PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(page.path, option);
 
     // add grant conditions
@@ -746,7 +448,7 @@ export const getPageSchema = (crowi) => {
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option, includeEmpty = false) {
-    const builder = new PageQueryBuilder(this.find(), includeEmpty);
+    const builder = new this.PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListByStartWith(path, option);
 
     return findListFromBuilderAndViewer(builder, user, false, option);
@@ -761,7 +463,7 @@ export const getPageSchema = (crowi) => {
    */
   pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
     const opt = Object.assign({ sort: 'createdAt', desc: -1 }, option);
-    const builder = new PageQueryBuilder(this.find({ creator: targetUser._id }));
+    const builder = new this.PageQueryBuilder(this.find({ creator: targetUser._id }));
 
     let showAnyoneKnowsLink = null;
     if (targetUser != null && currentUser != null) {
@@ -775,7 +477,7 @@ export const getPageSchema = (crowi) => {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
-    const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
+    const builder = new this.PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
 
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
@@ -1077,7 +779,7 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
-    const builder = new PageQueryBuilder(this.find());
+    const builder = new this.PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(parentPage.path);
 
     // add grant conditions
@@ -1105,7 +807,7 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
-    const queryBuilder = new PageQueryBuilder(this.find(), includeEmpty);
+    const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
@@ -1202,8 +904,6 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.GRANT_OWNER = GRANT_OWNER;
   pageSchema.statics.GRANT_USER_GROUP = GRANT_USER_GROUP;
   pageSchema.statics.PAGE_GRANT_ERROR = PAGE_GRANT_ERROR;
-
-  pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
 
   return pageSchema;
 };

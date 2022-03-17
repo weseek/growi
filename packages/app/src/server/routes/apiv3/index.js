@@ -9,6 +9,7 @@ const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-un
 const express = require('express');
 
 const router = express.Router();
+const routerForAdmin = express.Router();
 
 module.exports = (crowi) => {
 
@@ -18,16 +19,16 @@ module.exports = (crowi) => {
   router.use('/healthcheck', require('./healthcheck')(crowi));
 
   // admin
-  router.use('/admin-home', require('./admin-home')(crowi));
-  router.use('/markdown-setting', require('./markdown-setting')(crowi));
-  router.use('/app-settings', require('./app-settings')(crowi));
-  router.use('/customize-setting', require('./customize-setting')(crowi));
-  router.use('/notification-setting', require('./notification-setting')(crowi));
-  router.use('/users', require('./users')(crowi));
-  router.use('/user-groups', require('./user-group')(crowi));
-  router.use('/export', require('./export')(crowi));
-  router.use('/import', require('./import')(crowi));
-  router.use('/search', require('./search')(crowi));
+  routerForAdmin.use('/admin-home', require('./admin-home')(crowi));
+  routerForAdmin.use('/markdown-setting', require('./markdown-setting')(crowi));
+  routerForAdmin.use('/app-settings', require('./app-settings')(crowi));
+  routerForAdmin.use('/customize-setting', require('./customize-setting')(crowi));
+  routerForAdmin.use('/notification-setting', require('./notification-setting')(crowi));
+  routerForAdmin.use('/users', require('./users')(crowi));
+  routerForAdmin.use('/user-groups', require('./user-group')(crowi));
+  routerForAdmin.use('/export', require('./export')(crowi));
+  routerForAdmin.use('/import', require('./import')(crowi));
+  routerForAdmin.use('/search', require('./search')(crowi));
 
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
@@ -74,5 +75,5 @@ module.exports = (crowi) => {
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
 
-  return router;
+  return [router, routerForAdmin];
 };

@@ -1,4 +1,4 @@
-import { IPageInfoAll, IPageWithMeta } from './page';
+import { IPageWithMeta } from './page';
 
 export type IPageSearchMeta = {
   bookmarkCount?: number,
@@ -9,7 +9,8 @@ export type IPageSearchMeta = {
   };
 }
 
-export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSearchMeta) | undefined): meta is IPageInfoAll & IPageSearchMeta => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
   return meta != null && 'elasticSearchResult' in meta;
 };
 

@@ -10,28 +10,37 @@ import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
 
+import loggerFactory from '~/utils/logger';
+
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
-import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useShareLinkId } from '~/stores/context';
-import { IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
+import { usePageTreeDescCountMap } from '~/stores/ui';
+import {
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
+} from '~/interfaces/page';
+
+
+const logger = loggerFactory('growi:cli:Item');
+
 
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  onClickDuplicateMenuItem?(pageId: string, path: string): void
-  onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
+  isEnabledAttachTitleHeader?: boolean
+  onRenamed?(): void
+  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
@@ -54,6 +63,36 @@ const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean):
   await bookmarkOperation(_pageId);
 };
 
+/**
+ * Return new page path after the droppedPagePath is moved under the newParentPagePath
+ * @param droppedPagePath
+ * @param newParentPagePath
+ * @returns
+ */
+const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
+  const pageTitle = nodePath.basename(droppedPagePath);
+  return nodePath.join(newParentPagePath, pageTitle);
+};
+
+/**
+ * Return whether the fromPage could be moved under the newParentPage
+ * @param fromPage
+ * @param newParentPage
+ * @param printLog
+ * @returns
+ */
+const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
+  if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
+    if (printLog) {
+      logger.warn('Any of page, page.path or droppedPage.path is null');
+    }
+    return false;
+  }
+
+  const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
+  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
+};
+
 
 type ItemCountProps = {
   descendantCount: number
@@ -62,7 +101,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count badge badge-pill badge-light text-muted">
+      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
@@ -72,25 +111,30 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
 
-  const [pageTitle, setPageTitle] = useState(page.path);
-  const { data: shareLinkId } = useShareLinkId();
-  const { data: pageInfo } = useSWRxPageInfo(page._id ?? null, shareLinkId);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  // const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenaming, setRenaming] = useState(false);
+  const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  // descendantCount
+  const { getDescCount } = usePageTreeDescCountMap();
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
-  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
+  const hasDescendants = descendantCount > 0 || isChildrenLoaded;
 
   // to re-show hidden item when useDrag end() callback
   const displayDroppedItemByPageId = useCallback((pageId) => {
@@ -105,28 +149,40 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }, 500);
   }, []);
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
-    end: () => {
+    canDrag: () => {
+      if (page.path == null) {
+        return false;
+      }
+      return !pagePathUtils.isUsersProtectedPages(page.path);
+    },
+    end: (item, monitor) => {
       // in order to set d-none to dropped Item
-      setShouldHide(true);
+      const dropResult = monitor.getDropResult();
+      if (dropResult != null) {
+        setShouldHide(true);
+      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
     }),
-  }));
+  });
 
-  const pageItemDropHandler = async(item, monitor) => {
-    if (page == null || page.path == null) {
+  const pageItemDropHandler = async(item: ItemNode) => {
+    const { page: droppedPage } = item;
+
+    if (!isDroppable(droppedPage, page, true)) {
       return;
     }
 
-    const { page: droppedPage } = item;
+    if (droppedPage.path == null || page.path == null) {
+      return;
+    }
 
-    const pageTitle = nodePath.basename(droppedPage.path);
-    const newParentPath = page.path;
-    const newPagePath = nodePath.join(newParentPath, pageTitle);
+    const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
 
     try {
       await apiv3Put('/pages/rename', {
@@ -134,30 +190,28 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         revisionId: droppedPage.revision,
         newPagePath,
         isRenameRedirect: false,
-        isRemainMetadata: false,
+        updateMetadata: true,
       });
 
       await mutateChildren();
 
       // force open
       setIsOpen(true);
-
-      toastSuccess('TODO: i18n Successfully moved pages.');
     }
     catch (err) {
       // display the dropped item
       displayDroppedItemByPageId(droppedPage._id);
 
       if (err.code === 'operation__blocked') {
-        toastWarning('TODO: i18n You cannot move this page now.');
+        toastWarning(t('pagetree.you_cannot_move_this_page_now'));
       }
       else {
-        toastError('TODO: i18n Something went wrong with moving page.');
+        toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
     hover: (item, monitor) => {
@@ -167,8 +221,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           if (monitor.isOver()) {
             setIsOpen(true);
           }
-        }, 1000);
+        }, 600);
       }
+    },
+    canDrop: (item) => {
+      const { page: droppedPage } = item;
+      return isDroppable(droppedPage, page);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -185,7 +243,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
-  }, []);
+
+    if (hasDescendants) {
+      setIsOpen(true);
+    }
+  }, [hasDescendants]);
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
@@ -198,74 +260,75 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and path must not be null.');
     }
 
-    onClickDuplicateMenuItem(pageId, path);
+    const pageToDuplicate = { pageId, path };
+
+    onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
+  const renameMenuItemClickHandler = useCallback(() => {
+    setRenameInputShown(true);
+  }, []);
 
-  /*
-  * Rename: TODO: rename page title on input form by #87757
-  */
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
 
-  // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
-  //   setRenameInputShown(true);
-  // }, []);
-
-  // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   const parentPath = getParentPagePath(page.path as string)
-  //   const newPagePath = `${parentPath}/${inputText}`;
-
-  //   try {
-  //     setPageTitle(inputText);
-  //     setRenameInputShown(false);
-  //     await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
-  //   }
-  //   catch (err) {
-  //     // open ClosableInput and set pageTitle back to the previous title
-  //     setPageTitle(nodePath.basename(pageTitle as string));
-  //     setRenameInputShown(true);
-  //     toastError(err);
-  //   }
-  // };
-
-  const renameMenuItemClickHandler = useCallback((): void => {
-    if (onClickRenameMenuItem == null) {
+    if (newPagePath === page.path) {
+      setRenameInputShown(false);
       return;
     }
 
-    const { _id: pageId, revision: revisionId, path } = page;
+    try {
+      setRenameInputShown(false);
+      setRenaming(true);
+      await apiv3Put('/pages/rename', {
+        pageId: page._id,
+        revisionId: page.revision,
+        newPagePath,
+      });
 
-    if (pageId == null || revisionId == null || path == null) {
-      throw Error('Any of _id and revisionId and path must not be null.');
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
+      toastSuccess(t('renamed_pages', { path: page.path }));
     }
+    catch (err) {
+      setRenameInputShown(true);
+      toastError(err);
+    }
+    finally {
+      setTimeout(() => {
+        setRenaming(false);
+      }, 1000);
+    }
+  };
 
-    onClickRenameMenuItem(pageId, revisionId as string, path);
-  }, [onClickRenameMenuItem, page]);
-
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
       return;
     }
 
-    const { _id: pageId, revision: revisionId, path } = page;
-
-    if (pageId == null || revisionId == null || path == null) {
+    if (page._id == null || page.revision == null || page.path == null) {
       throw Error('Any of _id, revision, and path must not be null.');
     }
 
-    const pageToDelete: IPageForPageDeleteModal = {
-      pageId,
-      revisionId: revisionId as string,
-      path,
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
     };
-    const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely);
-  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = `${parentPath}${inputText}`;
+    const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (!isCreatable) {
@@ -273,26 +336,36 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
-    // const initBody = '';
-    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
-    // if (isEnabledAttachTitleHeader) {
-    //   initBody = pathUtils.attachTitleHeader(newPagePath);
-    // }
+    let initBody = '';
+    if (isEnabledAttachTitleHeader) {
+      const pageTitle = nodePath.basename(newPagePath);
+      initBody = pathUtils.attachTitleHeader(pageTitle);
+    }
 
     try {
+      setCreating(true);
+
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: '',
+        body: initBody,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
       });
+
       mutateChildren();
+
+      if (!hasDescendants) {
+        setIsOpen(true);
+      }
+
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
       toastError(err);
+    }
+    finally {
+      setCreating(false);
     }
   };
 
@@ -313,6 +386,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     return null;
   };
+
 
   // didMount
   useEffect(() => {
@@ -341,72 +415,84 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   return (
-    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
+    <div
+      id={`pagetree-item-${page._id}`}
+      className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
+    ${shouldHide ? 'd-none' : ''}`}
+    >
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
+        ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
-              <div className="grw-triangle-icon d-flex justify-content-center">
+              <div className="d-flex justify-content-center">
                 <TriangleIcon />
               </div>
             </button>
           )}
         </div>
-        {/* TODO: rename page title on input form by 87757 */}
-        {/* { isRenameInputShown && (
-          <ClosableTextInput
-            isShown
-            value={nodePath.basename(pageTitle as string)}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={onPressEnterForRenameHandler}
-            inputValidator={inputValidator}
-          />
-        )}
-        { !isRenameInputShown && ( */}
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
-        </a>
-        {/* )} */}
-        {(page.descendantCount != null && page.descendantCount > 0) && (
+        { isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={nodePath.basename(page.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={onPressEnterForRenameHandler}
+              inputValidator={inputValidator}
+            />
+          )
+          : (
+            <>
+              { isRenaming && (
+                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              )}
+              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
+                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+              </a>
+            </>
+          )}
+        {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
-            <ItemCount descendantCount={page.descendantCount} />
+            <ItemCount descendantCount={descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-none">
+        <div className="grw-pagetree-control d-flex">
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
-            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            isInstantRename
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
-              <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
+            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
-          <button
-            type="button"
-            className="border-0 rounded btn-page-item-control p-0"
-            onClick={onClickPlusButton}
-          >
-            <i className="icon-plus text-muted d-block p-1" />
-          </button>
+          {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+            <button
+              type="button"
+              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              onClick={onClickPlusButton}
+            >
+              <i className="icon-plus d-block p-0" />
+            </button>
+          )}
         </div>
       </li>
 
-      {isEnableActions && (
+      {isEnableActions && isNewPageInputShown && (
         <ClosableTextInput
-          isShown={isNewPageInputShown}
           placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
           onPressEnter={onPressEnterForCreateHandler}
@@ -414,17 +500,23 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         />
       )}
       {
-        isOpen && hasChildren() && currentChildren.map(node => (
+        isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
+              onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-              onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
+            { isCreating && (currentChildren.length - 1 === index) && (
+              <div className="text-muted text-center">
+                <i className="fa fa-spinner fa-pulse mr-1"></i>
+              </div>
+            )}
           </div>
         ))
       }

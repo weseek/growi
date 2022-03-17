@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import UserGroup from '~/server/models/user-group';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -31,7 +33,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     UserGroupRelation,
@@ -59,6 +60,9 @@ module.exports = (crowi) => {
     listChildren: [
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+    ],
+    ancestorGroup: [
+      query('groupId', 'groupId must be a string').optional().isString(),
     ],
     selectableGroups: [
       query('groupId', 'groupId must be a string').optional().isString(),
@@ -123,6 +127,51 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /ancestors:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getAncestorUserGroups
+   *        summary: /ancestors
+   *        description: Get ancestor user groups.
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+      const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      return res.apiv3({ ancestorUserGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
     }
   });
 

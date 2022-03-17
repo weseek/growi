@@ -1,6 +1,7 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+import { addTrailingSlash } from './path-utils';
 
 /**
  * Whether path is the top page
@@ -11,16 +12,39 @@ export const isTopPage = (path: string): boolean => {
 };
 
 /**
- * Whether path belongs to the trash page
+ * Whether path is the top page of users
  * @param path
  */
-export const isTrashPage = (path: string): boolean => {
-  // https://regex101.com/r/BSDdRr/1
-  if (path.match(/^\/trash(\/.*)?$/)) {
+export const isUsersTopPage = (path: string): boolean => {
+  return path === '/user';
+};
+
+/**
+ * Whether path is user's home page
+ * @param path
+ */
+export const isUsersHomePage = (path: string): boolean => {
+  // https://regex101.com/r/utVQct/1
+  if (path.match(/^\/user\/[^/]+$/)) {
     return true;
   }
-
   return false;
+};
+
+/**
+ * Whether path is the protected pages for systems
+ * @param path
+ */
+export const isUsersProtectedPages = (path: string): boolean => {
+  return isUsersTopPage(path) || isUsersHomePage(path);
+};
+
+/**
+ * Whether path is movable
+ * @param path
+ */
+export const isMovablePage = (path: string): boolean => {
+  return !isTopPage(path) && !isUsersProtectedPages(path);
 };
 
 /**
@@ -28,7 +52,7 @@ export const isTrashPage = (path: string): boolean => {
  * @param path
  */
 export const isUserPage = (path: string): boolean => {
-  // https://regex101.com/r/SxPejV/1
+  // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/user(\/.*)?$/)) {
     return true;
   }
@@ -37,12 +61,12 @@ export const isUserPage = (path: string): boolean => {
 };
 
 /**
- * Whether path is right under the path '/user'
+ * Whether path belongs to the trash page
  * @param path
  */
-export const isUserNamePage = (path: string): boolean => {
-  // https://regex101.com/r/GUZntH/1
-  if (path.match(/^\/user\/[^/]+$/)) {
+export const isTrashPage = (path: string): boolean => {
+  // https://regex101.com/r/BSDdRr/1
+  if (path.match(/^\/trash(\/.*)?$/)) {
     return true;
   }
 
@@ -62,13 +86,6 @@ export const isSharedPage = (path: string): boolean => {
   return false;
 };
 
-const restrictedPatternsToDelete: Array<RegExp> = [
-  /^\/user\/[^/]+$/, // user page
-];
-export const isDeletablePage = (path: string): boolean => {
-  return !restrictedPatternsToDelete.some(pattern => path.match(pattern));
-};
-
 const restrictedPatternsToCreate: Array<RegExp> = [
   /\^|\$|\*|\+|#|%|\?/,
   /^\/-\/.*/,
@@ -81,7 +98,9 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /.+\.md$/,
   /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
   /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
+  /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
+  /^\/user\/[^/]+$/, // see: https://regex101.com/r/utVQct/1
 ];
 export const isCreatablePage = (path: string): boolean => {
   return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
@@ -106,7 +125,7 @@ export const userPageRoot = (user: any): string => {
  * @param newPath
  */
 export const convertToNewAffiliationPath = (oldPath: string, newPath: string, childPath: string): string => {
-  if (newPath === null) {
+  if (newPath == null) {
     throw new Error('Please input the new page path');
   }
   const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
@@ -189,4 +208,61 @@ export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
 
     return !isDuplicate;
   });
+};
+
+/**
+ * Check if the area of either path1 or path2 includes the area of the other path
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isEitherOfPathAreaOverlap = (path1: string, path2: string): boolean => {
+  if (path1 === path2) {
+    return true;
+  }
+
+  const path1WithSlash = addTrailingSlash(path1);
+  const path2WithSlash = addTrailingSlash(path2);
+
+  const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`, 'i');
+  const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`, 'i');
+
+  if (path1Area.test(path2) || path2Area.test(path1)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Check if the area of pathToTest includes the area of pathToBeTested
+ * The area of path is the same as /^\/hoge\//i
+ * @param pathToTest string
+ * @param pathToBeTested string
+ * @returns boolean
+ */
+export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): boolean => {
+  if (pathToTest === pathToBeTested) {
+    return true;
+  }
+
+  const pathWithSlash = addTrailingSlash(pathToTest);
+
+  const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`, 'i');
+  if (pathAreaToTest.test(pathToBeTested)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Determine whether can move by fromPath and toPath
+ * @param fromPath string
+ * @param toPath string
+ * @returns boolean
+ */
+export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
+  return !isPathAreaOverlap(fromPath, toPath);
 };

@@ -7,7 +7,7 @@ import {
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
-import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
+import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -16,10 +16,10 @@ const PageTree: FC = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
-  const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
+  const targetPathOrId = targetId || notFoundTargetPathOrId;
 
   if (migrationStatus == null) {
     return (
@@ -27,8 +27,8 @@ const PageTree: FC = memo(() => {
         <div className="grw-sidebar-content-header p-3">
           <h3 className="mb-0">{t('Page Tree')}</h3>
         </div>
-        <div className="mt-5 mx-2 text-center">
-          <h3 className="text-gray">Page Tree now loading...</h3>
+        <div className="text-muted text-center mt-3">
+          <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
         </div>
       </>
     );
@@ -65,18 +65,18 @@ const PageTree: FC = memo(() => {
         <h3 className="mb-0">{t('Page Tree')}</h3>
       </div>
 
-      <div className="grw-sidebar-content-body">
-        <ItemsTree
-          isEnableActions={!isGuestUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-        />
-      </div>
+      <ItemsTree
+        isEnableActions={!isGuestUser}
+        targetPath={path}
+        targetPathOrId={targetPathOrId}
+        targetAndAncestorsData={targetAndAncestorsData}
+      />
 
       {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
         <div className="grw-pagetree-footer border-top p-3 w-100">
-          <PrivateLegacyPages />
+          <div className="private-legacy-pages-link px-3 py-2">
+            <PrivateLegacyPagesLink />
+          </div>
         </div>
       )}
     </>
