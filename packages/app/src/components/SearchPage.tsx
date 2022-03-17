@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { parse as parseQuerystring } from 'querystring';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IPageWithMeta } from '~/interfaces/page';
-import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
@@ -114,7 +113,6 @@ export const SearchPage = (props: Props): JSX.Element => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-  const [searchResultPages, setSearchResultPages] = useState<IPageWithMeta<IPageSearchMeta>[] | undefined>(undefined);
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
@@ -169,11 +167,6 @@ export const SearchPage = (props: Props): JSX.Element => {
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
     setOffset(0);
     setLimit(pagingSize);
-    mutate();
-  }, [mutate]);
-
-  const hoge = useCallback(() => {
-    setSearchResultPages(data?.data);
     mutate();
   }, [mutate]);
 
@@ -275,14 +268,13 @@ export const SearchPage = (props: Props): JSX.Element => {
     <SearchPageBase
       ref={searchPageBaseRef}
       appContainer={appContainer}
-      pages={searchResultPages}
+      pages={data?.data}
       searchingKeyword={keyword}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
       // Components
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      hoge={hoge}
     />
   );
 };

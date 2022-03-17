@@ -55,7 +55,6 @@ type Props ={
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
-  hoge?: () => void,
 }
 
 const scrollTo = (scrollElement:HTMLElement) => {
@@ -108,7 +107,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     highlightKeywords,
     showPageControlDropdown,
     forceHideMenuItems,
-    hoge,
   } = props;
 
   const { t } = useTranslation();
@@ -188,7 +186,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
-            hoge={hoge}
           />
         </div>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
