@@ -1,11 +1,8 @@
-import React, {
-  FC, useCallback, useState, useEffect,
-} from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 
-import { useSWRxUserGroup } from '~/stores/user-group';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
@@ -31,12 +28,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | null>(null);
-
-  /*
-   * Fetch
-   */
-  const { data: parentUserGroup } = useSWRxUserGroup(userGroup?.parent as string);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(userGroup?.parent as IUserGroupHasId);
 
   /*
    * Function
@@ -64,10 +56,6 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
     await onSubmit({ name: currentName, description: currentDescription, parent: selectedParent?._id });
   }, [currentName, currentDescription, selectedParent, onSubmit]);
-
-  useEffect(() => {
-    setSelectedParent(parentUserGroup ?? null);
-  }, [parentUserGroup]);
 
   return (
     <form onSubmit={onSubmitHandler}>
