@@ -27,7 +27,7 @@ context('Open Page Duplicate Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
-      //  cy.getByTestid('open-page-duplicate-modal-btn').click();
+       cy.getByTestid('open-page-duplicate-modal-btn').click();
     });
 
      cy.getByTestid('page-duplicate-modal').should('be.visible');
