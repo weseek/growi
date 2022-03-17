@@ -1,6 +1,6 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 context('Duplicate page by generated tag', () => {
-  const ssPrefix = 'tag-duplicate-page-';
+  const ssPrefix = 'duplicate-page-';
 
   let connectSid: string | undefined;
 
