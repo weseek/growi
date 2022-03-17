@@ -10,10 +10,12 @@ type Props = {
 
 const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
 
-  const growiRenderer = props.appContainer.getRenderer('comment');
+  const { appContainer } = props;
+  const growiRenderer = appContainer.getRenderer('comment');
 
   return (
     <CommentEditor
+      appContainer={appContainer}
       growiRenderer={growiRenderer}
       replyTo={undefined}
       isForNewComment

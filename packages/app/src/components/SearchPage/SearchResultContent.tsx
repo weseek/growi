@@ -17,6 +17,7 @@ import { toastSuccess } from '~/client/util/apiNotification';
 
 import PageContentFooter from '../PageContentFooter';
 import PageCommentList from '../PageCommentList';
+import CommentEditorLazyRenderer from '../PageComment/CommentEditorLazyRenderer';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -220,7 +221,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           isRenderable
         />
         <PageCommentList appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} />
-        {/* todo: insert adding comment feature by CommentEditorLazyRenderer */}
+        {/* todo: will be enable to run add comment feature */}
+        <CommentEditorLazyRenderer appContainer={appContainer} />
         <PageContentFooter
           createdAt={new Date(pageWithMeta.data.createdAt)}
           updatedAt={new Date(pageWithMeta.data.updatedAt)}

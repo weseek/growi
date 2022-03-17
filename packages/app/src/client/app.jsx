@@ -18,8 +18,8 @@ import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
 import Page from '../components/Page';
-import PageComments from '../components/PageComments';
 import PageContentFooter from '../components/PageContentFooter';
+import PageCommentList from '../components/PageCommentList';
 import PageTimeline from '../components/PageTimeline';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
@@ -120,8 +120,7 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
-    // todo: replace PageComments by commonalizing PageComments and PageCommentList
-    'page-comments-list': <PageComments />,
+    'page-comments-list': <PageCommentList appContainer={appContainer} pageId={pageContainer.state.pageId} />,
     'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
     'page-content-footer': <PageContentFooter
       createdAt={new Date(pageContainer.state.createdAt)}
