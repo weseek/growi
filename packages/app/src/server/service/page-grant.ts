@@ -259,21 +259,40 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns ComparableDescendants
    */
-  private async generateComparableDescendants(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableDescendants> {
+  private async generateComparableDescendants(targetPath: string, user, includeNotMigratedPages: boolean): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-    /*
-     * make granted users list of descendant's
-     */
-    const pathWithTrailingSlash = addTrailingSlash(targetPath);
-    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
-
-    const $match: any = {
-      path: new RegExp(`^${startsPattern}`),
-      isEmpty: { $ne: true },
+    // Build conditions
+    const $match: {$or: any} = {
+      $or: [],
     };
+
+    const commonCondition = {
+      path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(targetPath))}`, 'i'),
+      isEmpty: false,
+    };
+
+    const conditionForNormalizedPages: any = {
+      ...commonCondition,
+      parent: { $ne: null },
+    };
+    $match.$or.push(conditionForNormalizedPages);
+
     if (includeNotMigratedPages) {
-      $match.parent = { $ne: null };
+      // Add grantCondition for not normalized pages
+      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      const grantCondition = Page.generateGrantCondition(user, userGroups);
+      const conditionForNotNormalizedPages = {
+        $and: [
+          {
+            ...commonCondition,
+            parent: null,
+          },
+          grantCondition,
+        ],
+      };
+      $match.$or.push(conditionForNotNormalizedPages);
     }
 
     const result = await Page.aggregate([
@@ -327,7 +346,7 @@ class PageGrantService {
    */
   async isGrantNormalized(
       // eslint-disable-next-line max-len
-      targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
+      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
@@ -341,7 +360,7 @@ class PageGrantService {
     }
 
     const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
-    const comparableDescendants = await this.generateComparableDescendants(targetPath, includeNotMigratedPages);
+    const comparableDescendants = await this.generateComparableDescendants(targetPath, user, includeNotMigratedPages);
 
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
   }
@@ -352,12 +371,10 @@ class PageGrantService {
    * @param pageIds pageIds to be tested
    * @returns a tuple with the first element of normalizable pages and the second element of NOT normalizable pages
    */
-  async separateNormalizableAndNotNormalizablePages(pages): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+  async separateNormalizableAndNotNormalizablePages(user, pages): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
     if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
-
-    const Page = mongoose.model('Page') as unknown as PageModel;
 
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
@@ -375,7 +392,7 @@ class PageGrantService {
         continue;
       }
 
-      if (await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
+      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {

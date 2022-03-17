@@ -44,7 +44,7 @@ type TargetAndAncestorsResult = {
 export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], onlyMigratedAsExistingPages?: boolean, publicOnly?: boolean): Promise<void>
+  createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, andFilter?): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
@@ -138,6 +138,27 @@ class PageQueryBuilder {
           ],
         });
     }
+  }
+
+  /**
+   * Used for filtering the pages at specified paths not to include unintentional pages.
+   * @param pathsToFilter The paths to have additional filters as to be applicable
+   * @returns PageQueryBuilder
+   */
+  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]) {
+    this.query = this.query
+      .and(
+        {
+          $or: [
+            { path: '/' },
+            { path: { $in: pathsToFilter }, grant: GRANT_PUBLIC, status: STATUS_PUBLISHED },
+            { path: { $in: pathsToFilter }, parent: { $ne: null }, status: STATUS_PUBLISHED },
+            { path: { $nin: pathsToFilter }, status: STATUS_PUBLISHED },
+          ],
+        },
+      );
+
+    return this;
   }
 
   addConditionToExcludeTrashed() {
@@ -409,23 +430,39 @@ class PageQueryBuilder {
  * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
  * an empty page will not be created at that page's path.
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true): Promise<void> {
-  // find existing parents
-  const builder = new PageQueryBuilder(this.find({}, { _id: 0, path: 1 }), true);
-
-  await this.addConditionToFilteringByViewerToEdit(builder, user);
-
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true, filter?): Promise<void> {
+  const aggregationPipeline: any[] = [];
+  // 1. Filter by paths
+  aggregationPipeline.push({ $match: { path: { $in: paths } } });
+  // 2. Normalized condition
   if (onlyMigratedAsExistingPages) {
-    builder.addConditionAsMigrated();
+    aggregationPipeline.push({
+      $match: {
+        $or: [
+          { parent: { $ne: null } },
+          { path: '/' },
+        ],
+      },
+    });
   }
+  // 3. Add custom pipeline
+  if (filter != null) {
+    aggregationPipeline.push({ $match: filter });
+  }
+  // 4. Add grant conditions
+  let userGroups = null;
+  if (user != null) {
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+  const grantCondition = this.generateGrantCondition(user, userGroups);
+  aggregationPipeline.push({ $match: grantCondition });
 
-  const existingPages = await builder
-    .addConditionToListByPathsArray(paths)
-    .query
-    .lean()
-    .exec();
+  // Run aggregation
+  const existingPages = await this.aggregate(aggregationPipeline);
+
+
   const existingPagePaths = existingPages.map(page => page.path);
-
   // paths to create empty pages
   const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
 
@@ -973,7 +1010,7 @@ export default (crowi: Crowi): any => {
         const shouldCheckDescendants = emptyPage != null;
         const newGrantedUserIds = grant === GRANT_OWNER ? [user._id] as IObjectId[] : undefined;
 
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -1091,9 +1128,7 @@ export default (crowi: Crowi): any => {
        */
       let isGrantNormalized = false;
       try {
-        const shouldCheckDescendants = true;
-
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, true);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
