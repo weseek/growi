@@ -29,7 +29,7 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
-  onMutatePageInfo?: () => void,
+  hoge?: () => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -45,7 +45,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     pageInfo,
     pageId, revisionId, path, shareLinkId,
     isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onMutatePageInfo,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, hoge,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -83,7 +83,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
 
     await toggleLike(pageId, pageInfo.isLiked);
-    onMutatePageInfo?.();
+    hoge?.();
     mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 

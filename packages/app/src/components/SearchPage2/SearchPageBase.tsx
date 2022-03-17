@@ -35,7 +35,7 @@ type Props = {
   forceHideMenuItems?: ForceHideMenuItems,
 
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
-  mutatePageInfo?: () => void,
+  hoge?: () => void,
   searchControl: React.ReactNode,
   searchResultListHead: React.ReactElement,
   searchPager: React.ReactNode,
@@ -48,7 +48,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     searchingKeyword,
     forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
-    mutatePageInfo,
+    hoge,
     searchControl, searchResultListHead, searchPager,
   } = props;
 
@@ -209,7 +209,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
               highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}
               forceHideMenuItems={forceHideMenuItems}
-              mutatePageInfo={mutatePageInfo}
+              hoge={hoge}
             />
           )}
         </div>

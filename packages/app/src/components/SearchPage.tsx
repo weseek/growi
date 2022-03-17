@@ -172,7 +172,7 @@ export const SearchPage = (props: Props): JSX.Element => {
     mutate();
   }, [mutate]);
 
-  const mutatePageInfo = useCallback(() => {
+  const hoge = useCallback(() => {
     setSearchResultPages(data?.data);
     mutate();
   }, [mutate]);
@@ -282,7 +282,7 @@ export const SearchPage = (props: Props): JSX.Element => {
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      mutatePageInfo={mutatePageInfo}
+      hoge={hoge}
     />
   );
 };
