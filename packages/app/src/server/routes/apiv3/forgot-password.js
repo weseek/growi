@@ -5,6 +5,10 @@ import ErrorV3 from '~/server/models/vo/error-apiv3';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
 
+import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
+import httpErrorHandler from '../../middlewares/http-error-handler';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -18,7 +22,6 @@ module.exports = (crowi) => {
   const User = crowi.model('User');
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
     password: [
@@ -40,6 +43,8 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
+  const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
+
   async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
@@ -53,7 +58,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
@@ -81,7 +86,8 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', apiLimiter, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/', apiLimiter, checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -109,6 +115,7 @@ module.exports = (crowi) => {
   });
 
   // middleware to handle error
+  router.use(httpErrorHandler);
   router.use((error, req, res, next) => {
     if (error != null) {
       return res.apiv3Err(new ErrorV3(error.message, error.code));

@@ -19,6 +19,31 @@
     "bug_report": "バグを報告する",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "go_to_settings": "設定する",
+    "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
+    "migration_note": "注意: ページパスからユニーク制約が失われます。",
+    "upgrade_to_v5": "v5 互換形式 へ変換",
+    "modal_migration_warning": "管理者はユーザーに、v5 互換形式への変換中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
+    "start_upgrading": "v5 互換形式への変換を開始",
+    "successfully_started": "正常に v5 互換形式への変換が開始されました",
+    "already_upgraded": "v5 互換形式への変換は既に完了しています"
+  },
+  "maintenance_mode": {
+    "maintenance_mode": "メンテナンスモード",
+    "under_maintenance_mode": "メンテナンスモード中",
+    "failed_to_start_maintenance_mode": "メンテナンスモードを開始できませんでした",
+    "failed_to_end_maintenance_mode": "メンテナンスモードを終了できませんでした",
+    "successfully_started_maintenance_mode": "メンテナンスモードを開始しました",
+    "successfully_ended_maintenance_mode": "メンテナンスモードを終了しました",
+    "warning_message_to_start": "メンテナンスモード中は管理画面にしかアクセスできなくなり、一般ユーザーは全ての操作が不能になります。",
+    "warning_message_to_end": "「データのインポート」および「V5 へのアップグレード」が進行中の場合は、処理が終了するまでメンテナンスモードを終了しないようにすることを推奨します。",
+    "supplymentary_message_to_start": "API についても管理者用 API しか機能しなくなります。",
+    "start_maintenance_mode": "メンテナンスモードを開始する",
+    "end_maintenance_mode": "メンテナンスモードを終了する",
+    "description": "メンテナンスモードでは、ユーザーのあらゆる操作を制限します。「データのインポート」および「V5 へのアップグレード」の際には必ずメンテナンスモードを開始してから行ってください。終了するには「セキュリティ設定」>「メンテナンスモード」から操作してください。"
+  },
   "app_setting": {
     "site_name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
@@ -196,6 +221,9 @@
     "beta_warning": "この機能はベータ版です",
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
+    "error": {
+      "only_upsert_available": "pages コレクションには 'Upsert' オプションのみ対応しています"
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "既存のデータと同名であるデータをインポートする際の挙動は以下の3つのモードから選べます。",
@@ -439,6 +467,7 @@
   },
   "user_group_management": {
     "create_group": "新規グループの作成",
+    "add_child_group": "子グループの追加",
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",
@@ -451,7 +480,9 @@
       "backward_match": "後方一致"
     },
     "group_list": "グループ一覧",
+    "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
+    "back_to_ancestors_group": "祖先グループに戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",
     "created_group": "グループを作成しました",

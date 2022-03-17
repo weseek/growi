@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
@@ -59,7 +61,6 @@ module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     Revision,
@@ -124,7 +125,7 @@ module.exports = (crowi) => {
       const page = await Page.findOne({ _id: pageId });
 
       const paginateResult = await Revision.paginate(
-        { path: page.path },
+        { pageId: page._id },
         {
           page: selectedPage,
           limit,
