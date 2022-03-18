@@ -1,6 +1,6 @@
 import React, {
   forwardRef,
-  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useState,
 } from 'react';
 
 import { CustomInput } from 'reactstrap';
@@ -12,6 +12,7 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
+import { useSWRxPageInfo } from '../../stores/page';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -78,6 +79,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
+  const shouldFetch = isSelected && (pageData != null || pageMeta != null);
+  const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
+
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
@@ -136,6 +140,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
+
+  const likerCount = isSelected ? pageInfo?.likerIds.length : pageData.liker.length;
+  const bookmarkCount = isSelected ? pageInfo?.bookmarkCount : pageMeta?.bookmarkCount;
 
   return (
     <li
@@ -199,7 +206,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* page meta */}
               <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
+                <PageListMeta page={pageData} likerCount={likerCount} bookmarkCount={bookmarkCount} shouldSpaceOutIcon />
               </div>
 
               {/* doropdown icon includes page control buttons */}

@@ -29,8 +29,8 @@ export class PageListMeta extends React.Component {
     }
 
     let likerCount;
-    if (page.liker != null && page.liker.length > 0) {
-      likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-heart-o" />{page.liker.length}</span>;
+    if (this.props.likerCount > 0) {
+      likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-heart-o" />{this.props.likerCount}</span>;
     }
 
     let locked;
@@ -70,6 +70,7 @@ export class PageListMeta extends React.Component {
 
 PageListMeta.propTypes = {
   page: PropTypes.object.isRequired,
+  likerCount: PropTypes.number,
   bookmarkCount: PropTypes.number,
   shouldSpaceOutIcon: PropTypes.bool,
 };
