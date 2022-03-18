@@ -23,8 +23,8 @@ export interface TargetAndAncestors {
 }
 
 
-export interface NotFoundTargetPathOrId {
-  notFoundTargetPathOrId: string
+export interface IsNotFoundPermalink {
+  isNotFoundPermalink: boolean
 }
 
 

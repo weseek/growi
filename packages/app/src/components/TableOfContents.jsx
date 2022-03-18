@@ -10,7 +10,7 @@ import { blinkElem } from '~/client/util/blink-section-header';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import StickyStretchableScroller from './StickyStretchableScroller';
+import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -56,9 +56,8 @@ const TableOfContents = (props) => {
 
   return (
     <StickyStretchableScroller
-      contentsElemSelector=".revision-toc .markdownIt-TOC"
       stickyElemSelector=".grw-side-contents-sticky-container"
-      calcViewHeightFunc={calcViewHeight}
+      calcViewHeight={calcViewHeight}
     >
       { tocHtml !== ''
         ? (
@@ -74,7 +73,6 @@ const TableOfContents = (props) => {
             id="revision-toc-content"
             className="revision-toc-content mb-2"
           >
-            <span className="text-muted">({t('page_table_of_contents.empty')})</span>
           </div>
         ) }
 

@@ -1,8 +1,8 @@
 import React, { FC, memo, useCallback } from 'react';
 
-import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCurrentUser, useIsSharedUser } from '~/stores/context';
+import { useCurrentUser, useIsGuestUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 
@@ -15,10 +15,11 @@ type PrimaryItemProps = {
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
-    contents, iconName, onItemSelected,
+    contents, label, iconName, onItemSelected,
   } = props;
 
   const { data: currentContents, mutate } = useCurrentSidebarContents();
+  const { scheduleToPut } = useUserUISettings();
 
   const isSelected = contents === currentContents;
 
@@ -28,12 +29,16 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     }
 
     mutate(contents, false);
-    scheduleToPutUserUISettings({ currentSidebarContents: contents });
-  }, [contents, mutate, onItemSelected]);
+
+    scheduleToPut({ currentSidebarContents: contents });
+  }, [contents, mutate, onItemSelected, scheduleToPut]);
+
+  const labelForTestId = label.toLowerCase().replace(' ', '-');
 
   return (
     <button
       type="button"
+      data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
       className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
       onClick={itemSelectedHandler}
     >
@@ -66,28 +71,28 @@ type Props = {
 
 const SidebarNav: FC<Props> = (props: Props) => {
 
-  const { data: isSharedUser } = useIsSharedUser();
   const { data: currentUser } = useCurrentUser();
 
   const isAdmin = currentUser?.admin;
-  const isLoggedIn = currentUser != null;
 
   const { onItemSelected } = props;
 
   return (
     <div className="grw-sidebar-nav">
       <div className="grw-sidebar-nav-primary-container">
-        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
-        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
-        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />}
+        {/* eslint-disable max-len */}
+        <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
+        <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />
+        <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
-        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="tag" onItemSelected={onItemSelected} /> }
+        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="tag" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
+        {/* eslint-enable max-len */}
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
-        {isLoggedIn && <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />}
+        <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />
         <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
         <SecondaryItem label="Trash" iconName="delete" href="/trash" />
       </div>

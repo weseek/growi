@@ -11,6 +11,13 @@
   data-target="#search-result-list"
 {% endblock %}
 
+<!-- add .on-search to body tag class in layout -->
+{% set additionalBodyClass = 'on-search' %}
+
 {% block layout_main %}
-<p>This page is not implemented.</p>
+<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
+
+<div id="main" class="main search-page mt-0">
+  <div id="private-regacy-pages"></div>
+</div>
 {% endblock %} {# layout_main #}

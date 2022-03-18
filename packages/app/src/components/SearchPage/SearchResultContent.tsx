@@ -1,23 +1,30 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
-
-import { DropdownItem } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { DropdownItem } from 'reactstrap';
+
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+} from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -31,15 +38,11 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { pageId, revisionId } = props;
 
   return (
-    <>
-      <DropdownItem divider />
-
-      {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
-        {t('export_bulk.export_page_markdown')}
-      </DropdownItem>
-    </>
+    // Export markdown
+    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
+      <i className="icon-fw icon-cloud-download"></i>
+      {t('export_bulk.export_page_markdown')}
+    </DropdownItem>
   );
 };
 
@@ -51,6 +54,7 @@ type Props ={
   pageWithMeta : IPageWithMeta<IPageSearchMeta>,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
 }
 
 const scrollTo = (scrollElement:HTMLElement) => {
@@ -75,6 +79,11 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
@@ -97,28 +106,62 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     pageWithMeta,
     highlightKeywords,
     showPageControlDropdown,
+    forceHideMenuItems,
   } = props;
 
+  const { t } = useTranslation();
+
+  const page = pageWithMeta?.data;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const page = pageWithMeta?.pageData;
-
   const growiRenderer = appContainer.getRenderer('searchresult');
 
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
-  }, [openDuplicateModal]);
+  const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+      toastSuccess(t('duplicated_pages', { fromPath }));
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
-  }, [openRenameModal]);
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
+    const renamedHandler: OnRenamedFunction = (path) => {
+      toastSuccess(t('renamed_pages', { path }));
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
+    };
+    openRenameModal(pageToRename, { onRenamed: renamedHandler });
+  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
+    }
+    else {
+      toastSuccess(t('deleted_pages', { path }));
+    }
+    advancePt();
+    advanceFts();
+    advanceDpl();
+  }, [advanceDpl, advanceFts, advancePt, t]);
+
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
@@ -137,6 +180,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             revisionId={revisionId}
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
+            forceHideMenuItems={forceHideMenuItems}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
             isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
@@ -148,7 +192,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;

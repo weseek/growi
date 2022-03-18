@@ -15,9 +15,20 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import './screenshot'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// Ignore 'ResizeObserver loop limit exceeded' exception
+// https://github.com/cypress-io/cypress/issues/8418
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/
+Cypress.on('uncaught:exception', (err) => {
+    /* returning false here prevents Cypress from failing the test */
+    if (resizeObserverLoopErrRe.test(err.message)) {
+        return false
+    }
+})
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -25,6 +36,7 @@ declare global {
     interface Chainable {
        getByTestid(selector: string, options?: Partial<Loggable & Timeoutable & Withinable & Shadow>): Chainable<JQuery<Element>>,
        login(username: string, password: string): Chainable<void>,
+       collapseSidebar(isCollapsed: boolean): Chainable<void>,
     }
   }
 }

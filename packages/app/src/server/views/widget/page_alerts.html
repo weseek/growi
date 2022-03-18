@@ -28,15 +28,12 @@
       {% endif %}
     {% endif %}
 
-    {% if redirectFrom or req.query.renamedFrom or req.query.redirectFrom %}
+    {% if redirectFrom or req.query.redirectFrom %}
     <div class="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
-        {% set fromPath = req.query.renamedFrom or req.query.redirectFrom %}
+        {% set fromPath = req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
         <div id="redirected-alert"></div>
-        {% endif %}
-        {% if req.query.renamedFrom %}
-        <div id="renamed-alert"></div>
         {% endif %}
       </span>
       {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
@@ -47,10 +44,6 @@
         </button>
       {% endif %}
     </div>
-    {% endif %}
-
-    {% if req.query.duplicated and not page.isDeleted() %}
-    <div id="duplicated-alert"></div>
     {% endif %}
 
     {% if req.query.unlinked %}

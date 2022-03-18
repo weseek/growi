@@ -1,6 +1,6 @@
 body {
   overflow-y: scroll !important;
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 body:not(.growi-layout-fluid) .grw-container-convertible {

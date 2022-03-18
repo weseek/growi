@@ -38,8 +38,9 @@ $border-color: $border-color-global;
   */
 input.form-control,
 select.form-control,
+select.custom-select,
 textarea.form-control {
-  color: lighten($color-global, 30%);
+  color: $color-global;
   background-color: darken($bgcolor-global, 5%);
   border-color: $border-color-global;
   &:focus {
@@ -67,6 +68,10 @@ textarea.form-control {
 
 .input-group input {
   border-color: $border-color-global;
+}
+
+label.custom-control-label::before {
+  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
@@ -276,10 +281,33 @@ ul.pagination {
       $color-list-hover,
       $bgcolor-list-hover,
       $color-list-active,
-      lighten($bgcolor-list-hover, 5%),
-      $gray-500
+      lighten($bgcolor-list-hover, 5%)
     );
+    .grw-pagetree-triangle-btn {
+      @include button-outline-svg-icon-variant($secondary, $gray-200);
+    }
+    .grw-pagetree-count {
+      color: $gray-400;
+      background: $gray-700;
+    }
   }
+  .private-legacy-pages-link {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+  }
+}
+
+.btn.btn-page-item-control {
+  @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+  @include hover() {
+    background-color: $gray-600;
+  }
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: $gray-200;
+  }
+  box-shadow: none !important;
 }
 
 /*

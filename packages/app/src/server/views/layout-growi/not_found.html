@@ -8,6 +8,11 @@
     data-not-found-target-path-or-id="{% if notFoundTargetPathOrId %}{{notFoundTargetPathOrId|json}}{% endif %}"
   >
   </div>
+  <div
+    id="growi-not-found-context"
+    data-is-not-found-permalink="{% if isNotFoundPermalink %}{{isNotFoundPermalink|json}}{% endif %}"
+  >
+  </div>
   <div class="grw-container-convertible">
     {% include '../widget/page_alerts.html' %}
     <div id="not-found-alert"></div>

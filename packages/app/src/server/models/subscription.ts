@@ -22,7 +22,7 @@ export interface ISubscription {
 export interface SubscriptionDocument extends ISubscription, Document {}
 
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
-  findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
+  findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
   upsertSubscription(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>

@@ -299,7 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
-      logger.warn('Normalize indices anyway.');
+      logger.info('Normalize indices.');
       await this.normalizeIndices();
     }
 
@@ -386,7 +386,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
-    const seenUsersCount = page.seenUsers.length || 0;
+    const seenUsersCount = page.seenUsers?.length || 0;
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -396,7 +396,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
-      like_count: page.liker.length || 0,
+      like_count: page.liker?.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,
@@ -635,7 +635,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     // for debug
     if (process.env.NODE_ENV === 'development') {
-      logger.debug('query: ', { query });
+      logger.debug('query: ', JSON.stringify(query, null, 2));
 
       const { body: result } = await this.client.indices.validateQuery({
         index: query.index,
@@ -708,14 +708,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
-    query.sort = { [sort]: { order } };
-  }
-
-  convertSortQuery(sortAxis) {
-    switch (sortAxis) {
-      case RELATION_SCORE:
-        return '_score';
-    }
+    query.body.sort = { [sort]: { order } };
   }
 
   initializeBoolQuery(query) {
@@ -978,8 +971,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendResultSize(query, from, size);
 
     this.appendSortOrder(query, sort, order);
-
     await this.appendFunctionScore(query, queryString);
+
     this.appendHighlight(query);
 
     return this.searchKeyword(query);
