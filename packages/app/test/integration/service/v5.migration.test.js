@@ -260,8 +260,8 @@ describe('V5 page migration', () => {
     return crowi.pageService.normalizeParentRecursivelyByPages(pages, user);
   };
 
-  const normalizeParentByPageId = async(page, user) => {
-    return crowi.pageService.normalizeParentByPageId(page, user);
+  const normalizeParentByPage = async(page, user) => {
+    return crowi.pageService.normalizeParentByPage(page, user);
   };
 
   describe('normalizeParentRecursivelyByPages()', () => {
@@ -520,10 +520,10 @@ describe('V5 page migration', () => {
       expect(_group16).not.toBeNull();
 
       // Normalize
-      await normalizeParentByPageId(_owned13, testUser1);
-      await normalizeParentByPageId(_owned14, testUser1);
+      await normalizeParentByPage(_owned14, testUser1);
 
       const owned13 = await Page.findOne({ path: '/normalize_13_owned' });
+      const empty13 = await Page.findOne({ path: '/normalize_13_owned', ...empty });
       const owned14 = await Page.findOne({ path: '/normalize_13_owned/normalize_14_owned' });
       const owned15 = await Page.findOne({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned' });
       const owned16 = await Page.findOne({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_owned' });
@@ -531,6 +531,7 @@ describe('V5 page migration', () => {
       const group16 = await Page.findOne(testUser1Group({ path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_group' }));
 
       expect(owned13).not.toBeNull();
+      expect(empty13).not.toBeNull();
       expect(owned14).not.toBeNull();
       expect(owned15).not.toBeNull();
       expect(owned16).not.toBeNull();
@@ -538,16 +539,18 @@ describe('V5 page migration', () => {
       expect(group16).not.toBeNull();
 
       // Check parent
-      expect(owned13.parent).toStrictEqual(rootPage._id);
-      expect(owned14.parent).toStrictEqual(owned13._id);
+      expect(owned13.parent).toBeNull();
+      expect(empty13.parent).toStrictEqual(rootPage._id);
+      expect(owned14.parent).toStrictEqual(empty13._id);
       expect(owned15.parent).toBeNull();
       expect(owned16.parent).toBeNull();
       expect(root16.parent).toBeNull();
       expect(group16.parent).toBeNull();
 
-      // Check isEmpty
-      expect(owned13.isEmpty).toBe(false);
-      expect(owned14.isEmpty).toBe(false);
+      // Check descendantCount
+      expect(owned13.descendantCount).toBe(0);
+      expect(empty13.descendantCount).toBe(1);
+      expect(owned14.descendantCount).toBe(0);
     });
 
     test('Should normalize pages recursively excluding the pages not selected', async() => {
@@ -746,14 +749,14 @@ describe('V5 page migration', () => {
     });
   });
 
-  describe('normalizeParentByPageId()', () => {
+  describe('normalizeParentByPage()', () => {
     test('it should normalize not v5 page with usergroup that has parent group', async() => {
       const page1 = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
       const page2 = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page1._id });
       const page3 = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // NOT v5
       expectAllToBeTruthy([page1, page2, page3]);
 
-      await normalizeParentByPageId(page3, testUser1);
+      await normalizeParentByPage(page3, testUser1);
 
       // AM => After Migration
       const page1AM = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
@@ -775,7 +778,7 @@ describe('V5 page migration', () => {
 
       let isThrown;
       try {
-        await normalizeParentByPageId(page6, testUser1);
+        await normalizeParentByPage(page6, testUser1);
       }
       catch (err) {
         isThrown = true;

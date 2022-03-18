@@ -2253,23 +2253,20 @@ class PageService {
           throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
-        const normalizedPage = await this.normalizeParentByPageId(pageId, user);
+        const normalizedPage = await this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
         }
-        else {
-          // update descendantCount of ancestors'
-          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount, false);
-        }
       }
       catch (err) {
+        logger.error('Something went wrong while normalizing parent.', err);
         // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
       }
     }
   }
 
-  private async normalizeParentByPageId(page, user) {
+  private async normalizeParentByPage(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const {
@@ -2313,9 +2310,14 @@ class PageService {
     }
     else {
       // getParentAndFillAncestors
-      const parent = await Page.getParentAndFillAncestors(page.path, user);
+      const pathsToExcludeNotNormalizedPages = collectAncestorPaths(page.path);
+      const parent = await Page.getParentAndFillAncestors(page.path, user, pathsToExcludeNotNormalizedPages);
       updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
+
+    // Update descendantCount
+    const inc = updatedPage.descendantCount + 1;
+    await this.updateDescendantCountOfAncestors(updatedPage.parent, inc, true);
 
     return updatedPage;
   }
@@ -2420,7 +2422,7 @@ class PageService {
 
       const exDescendantCount = page.descendantCount;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = newDescendantCount - exDescendantCount;
+      const inc = (newDescendantCount - exDescendantCount) + 1;
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
