@@ -2385,13 +2385,6 @@ class PageService {
   }
 
   async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
-    // Save exDescendantCount for sub-operation
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
-    const builder = new PageQueryBuilder(Page.findOne(), true);
-    builder.addConditionAsMigrated();
-    const exPage = await builder.query.exec();
-    const options = { exDescendantCount: exPage?.descendantCount ?? 0 };
 
     try {
       await this.normalizeParentRecursively([page.path], user);
@@ -2409,10 +2402,10 @@ class PageService {
       throw Error('PageOperation document not found');
     }
 
-    await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id, options);
+    await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id);
   }
 
-  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike, options: {exDescendantCount: number}): Promise<void> {
+  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     try {
@@ -2426,7 +2419,7 @@ class PageService {
         throw Error('Page not found after updating descendantCount');
       }
 
-      const { exDescendantCount } = options;
+      const exDescendantCount = page.descendantCount;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
       const inc = (newDescendantCount - exDescendantCount) + 1;
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
