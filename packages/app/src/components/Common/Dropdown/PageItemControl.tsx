@@ -150,7 +150,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Move/Rename */}
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
-          <DropdownItem onClick={renameItemClickedHandler}>
+          <DropdownItem onClick={renameItemClickedHandler} data-testid="open-page-move-rename-modal-btn">
             <i className="icon-fw  icon-action-redo"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>

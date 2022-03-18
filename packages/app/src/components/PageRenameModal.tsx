@@ -181,7 +181,7 @@ const PageRenameModal = (): JSX.Element => {
     : !isRenameRecursively; // v4 data
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" className="grw-pagerename-page" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
