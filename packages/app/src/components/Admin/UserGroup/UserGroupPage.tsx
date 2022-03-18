@@ -12,7 +12,6 @@ import { CustomWindow } from '~/interfaces/global';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
-import userGroup from '~/server/models/user-group';
 
 const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
