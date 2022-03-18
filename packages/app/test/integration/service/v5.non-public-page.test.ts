@@ -191,13 +191,33 @@ describe('PageService page operations with non-public pages', () => {
      * Delete
      */
     const pageIdDelete1 = new mongoose.Types.ObjectId();
+    const pageIdDelete2 = new mongoose.Types.ObjectId();
+    const pageIdDelete3 = new mongoose.Types.ObjectId();
     await Page.insertMany([
       {
         _id: pageIdDelete1,
-        path: '/npdel_awl1',
+        path: '/npdel1_awl',
         grant: Page.GRANT_RESTRICTED,
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
+      },
+      {
+        _id: pageIdDelete2,
+        path: '/npdel2_ug1',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdDelete3,
+        path: '/npdel3_ug1',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
       },
     ]);
 
@@ -351,7 +371,7 @@ describe('PageService page operations with non-public pages', () => {
     };
     describe('Delete single page with grant RESTRICTED', () => {
       test('should be able to delete', async() => {
-        const pathT = '/npdel_awl1';
+        const pathT = '/npdel1_awl';
         const pageT = await Page.findOne({ path: pathT, grant: Page.GRANT_RESTRICTED });
         expect(pageT).toBeTruthy();
 
@@ -370,8 +390,19 @@ describe('PageService page operations with non-public pages', () => {
       test('should be able to delete', async() => {});
     });
     describe('Delete single page with grant USER_GROUP', () => {
-      test('should NOT be able to delete by a user who does NOT belong to the group', async() => {});
-      test('should be able to delete by a user who belongs to the group', async() => {});
+      test('should be able to delete by a user who belongs to the group', async() => {
+        const path = '/npdel2_ug1';
+        const page = await Page.findOne({ path, grantedGroup: groupIdA });
+        expect(page).toBeTruthy();
+
+        const isRecursively = false;
+        await deletePage(page, npDummyUser1, {}, isRecursively);
+
+        const _page = await Page.findOne({ path: `/trash${path}`, grantedGroup: groupIdA });
+        const _pageN = await Page.findOne({ path, grantedGroup: groupIdA });
+        expect(_page).toBeTruthy();
+        expect(_pageN).toBeNull();
+      });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
       test('should NOT be able to delete by a user who does NOT belong to the group', async() => {});
