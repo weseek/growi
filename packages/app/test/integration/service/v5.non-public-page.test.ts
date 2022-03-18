@@ -416,13 +416,13 @@ describe('PageService page operations with non-public pages', () => {
 
     test('Should rename/move with descendants with grant normalized pages', async() => {
       // BR => Before Rename
-      const path1BR = '/np_rename1_destination';
-      const path2BR = '/np_rename2';
-      const path3BR = '/np_rename2/np_rename3';
-      const page1 = await Page.findOne({ path: path1BR, grant: Page.GRANT_PUBLIC });
-      const page2 = await Page.findOne({ path: path2BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
+      const path1 = '/np_rename1_destination';
+      const path2 = '/np_rename2';
+      const path3 = '/np_rename2/np_rename3';
+      const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+      const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
       const page3 = await Page.findOne({
-        path: path3BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC, parent: page2._id,
+        path: path3, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC, parent: page2._id,
       });
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
@@ -432,19 +432,19 @@ describe('PageService page operations with non-public pages', () => {
       const newPathForGrandchild = '/np_rename1_destination/np_rename2/np_rename3';
       await renamePage(page2, newPathForChild, npDummyUser2, {});
 
-      const renamedPage = await Page.findOne({ path: newPathForChild });
-      const renamedGrandchild = await Page.findOne({ path: newPathForGrandchild });
-      const childPageBR = await Page.findOne({ path: path2BR });
-      const grandchildBR = await Page.findOne({ path: path3BR });
-      expect(renamedPage).toBeTruthy();
-      expect(renamedGrandchild).toBeTruthy();
-      expect(childPageBR).toBeNull();
-      expect(grandchildBR).toBeNull();
+      const _page2 = await Page.findOne({ path: path2 }); // not exist
+      const _page3 = await Page.findOne({ path: path3 }); // not exist
+      const _page2R = await Page.findOne({ path: newPathForChild }); // renamed
+      const _page3R = await Page.findOne({ path: newPathForGrandchild }); // renamed
       expect(xssSpy).toHaveBeenCalled();
-      expect(renamedPage.parent).toStrictEqual(page1._id);
-      expect(renamedGrandchild.parent).toStrictEqual(renamedPage._id);
-      expect(renamedPage.grantedGroup).toStrictEqual(page2.grantedGroup);
-      expect(renamedGrandchild.grantedGroup).toStrictEqual(page3.grantedGroup);
+      expect(_page2).toBeNull();
+      expect(_page3).toBeNull();
+      expect(_page2R).toBeTruthy();
+      expect(_page3R).toBeTruthy();
+      expect(_page2R.parent).toStrictEqual(page1._id);
+      expect(_page3R.parent).toStrictEqual(_page2R._id);
+      expect(_page2R.grantedGroup).toStrictEqual(page2.grantedGroup);
+      expect(_page3R.grantedGroup).toStrictEqual(page3.grantedGroup);
     });
     test('Should throw with NOT grant normalized pages', async() => {
       // BR => Before Rename
