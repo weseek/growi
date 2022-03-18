@@ -299,7 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
-      logger.warn('Normalize indices anyway.');
+      logger.info('Normalize indices.');
       await this.normalizeIndices();
     }
 
