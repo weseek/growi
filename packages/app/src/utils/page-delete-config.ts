@@ -1,14 +1,17 @@
-import { PageDeleteConfigValue as Value, PageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
+import {
+  PageDeleteConfigValue as Value, IPageDeleteConfigValueToProcessValidation,
+  IPageDeleteConfigValue,
+} from '~/interfaces/page-delete-config';
 
 /**
  * Return true if "configForRecursive" is stronger than "configForSingle"
  * Strength: "Admin" > "Admin and author" > "Anyone"
- * @param configForSingle PageDeleteConfigValueToProcessValidation
- * @param configForRecursive PageDeleteConfigValueToProcessValidation
+ * @param configForSingle IPageDeleteConfigValueToProcessValidation
+ * @param configForRecursive IPageDeleteConfigValueToProcessValidation
  * @returns boolean
  */
 export const validateDeleteConfigs = (
-    configForSingle: PageDeleteConfigValueToProcessValidation, configForRecursive: PageDeleteConfigValueToProcessValidation,
+    configForSingle: IPageDeleteConfigValueToProcessValidation, configForRecursive: IPageDeleteConfigValueToProcessValidation,
 ): boolean => {
   if (configForSingle === Value.Anyone) {
     switch (configForRecursive) {
@@ -40,4 +43,20 @@ export const validateDeleteConfigs = (
   }
 
   return false;
+};
+
+/**
+ * Convert IPageDeleteConfigValue.Inherit to the calculable value
+ * @param confForSingle IPageDeleteConfigValueToProcessValidation
+ * @param confForRecursive IPageDeleteConfigValue
+ * @returns IPageDeleteConfigValueToProcessValidation
+ */
+export const calcRecursiveDeleteConfigValue = (
+    confForSingle: IPageDeleteConfigValueToProcessValidation, confForRecursive: IPageDeleteConfigValue,
+): IPageDeleteConfigValueToProcessValidation => {
+  if (confForRecursive === Value.Inherit) {
+    return confForSingle;
+  }
+
+  return confForRecursive;
 };
