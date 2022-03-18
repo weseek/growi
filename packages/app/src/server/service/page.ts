@@ -2309,9 +2309,7 @@ class PageService {
       updatedPage = await Page.findById(page._id);
     }
     else {
-      // getParentAndFillAncestors
-      const pathsToExcludeNotNormalizedPages = collectAncestorPaths(page.path);
-      const parent = await Page.getParentAndFillAncestors(page.path, user, pathsToExcludeNotNormalizedPages);
+      const parent = await Page.getParentAndFillAncestors(page.path, user);
       updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
 
