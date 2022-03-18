@@ -39,7 +39,22 @@ class SecuritySetting extends React.Component {
   }
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled, t) {
+    const { adminGeneralSecurityContainer } = this.props;
+
     const isRecursiveDeletion = deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
+
+    const forceCahge = isRecursiveDeletion && isButtonDisabled && currentState === PageDeleteConfigValue.AdminAndAuthor;
+    if (forceCahge) {
+      switch (deletionType) {
+        case DeletionType.RecursiveDeletion:
+          setState(adminGeneralSecurityContainer.state.currentPageDeletionAuthority);
+          break;
+        case DeletionType.RecursiveCompleteDeletion:
+          setState(adminGeneralSecurityContainer.state.currentPageCompleteDeletionAuthority);
+          break;
+      }
+    }
+
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row mb-4">
         <div className="col-md-3 text-md-right mb-2">
