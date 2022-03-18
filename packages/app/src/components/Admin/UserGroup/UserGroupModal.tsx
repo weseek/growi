@@ -15,7 +15,7 @@ import Xss from '~/services/xss';
 type Props = {
   userGroup?: IUserGroupHasId,
   buttonLabel?: TFunctionResult,
-  onClickButton?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
+  onClickSubmit?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
 };
@@ -26,7 +26,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    userGroup, buttonLabel, onClickButton, isShow, onHide,
+    userGroup, buttonLabel, onClickSubmit, isShow, onHide,
   } = props;
 
   /*
@@ -47,20 +47,20 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onClickButtonHandler = useCallback(async(e) => {
+  const onSubmitHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
 
-    if (onClickButton == null) {
+    if (onClickSubmit == null) {
       return;
     }
 
-    await onClickButton({
+    await onClickSubmit({
       _id: userGroup?._id,
       name: currentName,
       description: currentDescription,
       parent: currentParent,
     });
-  }, [userGroup, currentName, currentDescription, currentParent, onClickButton]);
+  }, [userGroup, currentName, currentDescription, currentParent, onClickSubmit]);
 
   // componentDidMount
   useEffect(() => {
@@ -73,46 +73,48 @@ const UserGroupModal: FC<Props> = (props: Props) => {
 
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
-      <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
-        {t('admin:user_group_management.basic_info')}
-      </ModalHeader>
+      <form onSubmit={onSubmitHandler}>
+        <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
+          {t('admin:user_group_management.basic_info')}
+        </ModalHeader>
 
-      <ModalBody>
-        <div className="form-group">
-          <label htmlFor="name">
-            {t('admin:user_group_management.group_name')}
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="name"
-            placeholder={t('admin:user_group_management.group_example')}
-            value={currentName}
-            onChange={onChangeNameHandler}
-            required
-          />
-        </div>
+        <ModalBody>
+          <div className="form-group">
+            <label htmlFor="name">
+              {t('admin:user_group_management.group_name')}
+            </label>
+            <input
+              className="form-control"
+              type="text"
+              name="name"
+              placeholder={t('admin:user_group_management.group_example')}
+              value={currentName}
+              onChange={onChangeNameHandler}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="description">
-            {t('Description')}
-          </label>
-          <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
-        </div>
+          <div className="form-group">
+            <label htmlFor="description">
+              {t('Description')}
+            </label>
+            <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
+          </div>
 
-        {/* TODO 90732: Add a drop-down to show selectable parents */}
+          {/* TODO 90732: Add a drop-down to show selectable parents */}
 
-        {/* TODO 85462: Add a note that "if you change the parent, the offspring will also be moved together */}
+          {/* TODO 85462: Add a note that "if you change the parent, the offspring will also be moved together */}
 
-      </ModalBody>
+        </ModalBody>
 
-      <ModalFooter>
-        <div className="form-group">
-          <button type="button" className="btn btn-primary" onClick={onClickButtonHandler}>
-            {buttonLabel}
-          </button>
-        </div>
-      </ModalFooter>
+        <ModalFooter>
+          <div className="form-group">
+            <button type="submit" className="btn btn-primary">
+              {buttonLabel}
+            </button>
+          </div>
+        </ModalFooter>
+      </form>
     </Modal>
   );
 };
