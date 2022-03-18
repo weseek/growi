@@ -46,7 +46,7 @@ export type CreateMethod = (path: string, body: string, user, options) => Promis
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, andFilter?): Promise<void>
-  getParentAndFillAncestors(path: string, user, pathsToExcludeNotNormalizedPages?: string[]): Promise<PageDocument & { _id: any }>
+  getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -550,7 +550,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
  * @param path string
  * @returns Promise<PageDocument>
  */
-schema.statics.getParentAndFillAncestors = async function(path: string, user, pathsToExcludeNotNormalizedPages: string[]): Promise<PageDocument> {
+schema.statics.getParentAndFillAncestors = async function(path: string, user): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
 
   const builder1 = new PageQueryBuilder(this.find({ path: parentPath }), true);
@@ -573,13 +573,10 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user, pa
 
   // find ancestors
   const builder2 = new PageQueryBuilder(this.find(), true);
+
   // avoid including not normalized pages
-  if (pathsToExcludeNotNormalizedPages != null) {
-    builder2.addConditionToFilterByApplicableAncestors(pathsToExcludeNotNormalizedPages);
-  }
-  else {
-    builder2.addConditionToFilterByApplicableAncestors(ancestorPaths);
-  }
+  builder2.addConditionToFilterByApplicableAncestors(ancestorPaths);
+
   const ancestors = await builder2
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortPagesByDescPath()
