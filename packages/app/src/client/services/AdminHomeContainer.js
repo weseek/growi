@@ -25,13 +25,14 @@ export default class AdminHomeContainer extends Container {
     this.timer = null;
 
     this.state = {
-      growiVersion: '',
-      nodeVersion: '',
-      npmVersion: '',
-      yarnVersion: '',
+      growiVersion: null,
+      nodeVersion: null,
+      npmVersion: null,
+      yarnVersion: null,
       copyState: this.copyStateValues.DEFAULT,
-      installedPlugins: [],
+      installedPlugins: null,
       isV5Compatible: null,
+      isMaintenanceMode: null,
     };
 
   }
@@ -64,6 +65,7 @@ export default class AdminHomeContainer extends Container {
         installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
         isV5Compatible: adminHomeParams.isV5Compatible,
+        isMaintenanceMode: adminHomeParams.isMaintenanceMode,
       }));
     }
     catch (err) {

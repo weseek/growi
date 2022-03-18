@@ -121,7 +121,7 @@ SmallPageItem.propTypes = {
 };
 
 
-const RecentChanges: FC<void> = () => {
+const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: pages, mutate } = useSWRxRecentlyUpdated();
@@ -165,7 +165,7 @@ const RecentChanges: FC<void> = () => {
           </div>
         </div>
       </div>
-      <div className="grw-sidebar-content-body grw-recent-changes p-3">
+      <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
           {(pages || []).map(page => (isRecentChangesSidebarSmall
             ? <SmallPageItem key={page._id} page={page} />

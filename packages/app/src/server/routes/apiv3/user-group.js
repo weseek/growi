@@ -2,6 +2,8 @@ import loggerFactory from '~/utils/logger';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import UserGroup from '~/server/models/user-group';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -31,7 +33,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     UserGroupRelation,
@@ -59,6 +60,9 @@ module.exports = (crowi) => {
     listChildren: [
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+    ],
+    ancestorGroup: [
+      query('groupId', 'groupId must be a string').optional().isString(),
     ],
     selectableGroups: [
       query('groupId', 'groupId must be a string').optional().isString(),
@@ -123,6 +127,51 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /ancestors:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getAncestorUserGroups
+   *        summary: /ancestors
+   *        description: Get ancestor user groups.
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+      const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      return res.apiv3({ ancestorUserGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
     }
   });
 
@@ -196,12 +245,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /selectable-groups:
+   *    /selectable-parent-groups:
    *      get:
    *        tags: [UserGroup]
-   *        operationId: getSelectableGroups
-   *        summary: /selectable-groups
-   *        description: Get selectable user groups.
+   *        operationId: getSelectableParentGroups
+   *        summary: /selectable-parent-groups
+   *        description: Get selectable parent UserGroups
    *        parameters:
    *          - name: groupId
    *            in: query
@@ -222,7 +271,56 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/selectable-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/selectable-parent-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+
+      const descendantGroups = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
+      const descendantGroupIds = descendantGroups.map(userGroups => userGroups._id.toString());
+
+      const selectableParentGroups = await UserGroup.find({ _id: { $nin: [groupId, ...descendantGroupIds] } });
+      return res.apiv3({ selectableParentGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /selectable-child-groups:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getSelectableChildGroups
+   *        summary: /selectable-child-groups
+   *        description: Get selectable child UserGroups
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
+  router.get('/selectable-child-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
     try {
@@ -234,13 +332,55 @@ module.exports = (crowi) => {
       ]);
 
       const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
-      const selectableUserGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
-      return res.apiv3({ selectableUserGroups });
+      const selectableChildGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ selectableChildGroups });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /user-groups/{id}:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getUserGroupFromGroupId
+   *        summary: /user-groups/{id}
+   *        description: Get UserGroup from Group ID
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *             type: string
+   *        responses:
+   *          200:
+   *            description: userGroup are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroup:
+   *                      type: object
+   *                      description: userGroup object
+   */
+  router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+    const { id: groupId } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+      return res.apiv3({ userGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred while getting user group';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-get-failed'));
     }
   });
 

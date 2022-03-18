@@ -1,5 +1,3 @@
-const ssPrefix = 'access-to-admin-page-';
-
 const adminMenues = [
   'app', // App
   'security', // Security
@@ -15,6 +13,7 @@ const adminMenues = [
 ];
 
 context('Access to Admin page', () => {
+  const ssPrefix = 'access-to-admin-page-';
 
   let connectSid: string | undefined;
 
@@ -37,67 +36,87 @@ context('Access to Admin page', () => {
 
   it('/admin is successfully loaded', () => {
     cy.visit('/admin');
-    cy.screenshot(`${ssPrefix}-admin`, { capture: 'viewport' });
+    cy.getByTestid('admin-home').should('be.visible');
+    cy.getByTestid('admin-system-information-table').should('be.visible');
+    cy.getByTestid('admin-installed-plugin-table').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin`);
   });
 
   it('/admin/app is successfully loaded', () => {
     cy.visit('/admin/app');
-    cy.screenshot(`${ssPrefix}-admin-app`, { capture: 'viewport' });
+    cy.getByTestid('admin-app-settings').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-app`);
   });
 
   it('/admin/security is successfully loaded', () => {
     cy.visit('/admin/security');
-    cy.screenshot(`${ssPrefix}-admin-security`, { capture: 'viewport' });
+    cy.getByTestid('admin-security').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-security`);
   });
 
   it('/admin/markdown is successfully loaded', () => {
     cy.visit('/admin/markdown');
-    cy.screenshot(`${ssPrefix}-admin-markdown`, { capture: 'viewport' });
+    cy.getByTestid('admin-markdown').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-markdown`);
   });
 
   it('/admin/customize is successfully loaded', () => {
     cy.visit('/admin/customize');
-    cy.screenshot(`${ssPrefix}-admin-customize`, { capture: 'viewport' });
+    cy.getByTestid('admin-customize').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-customize`);
   });
 
   it('/admin/importer is successfully loaded', () => {
     cy.visit('/admin/importer');
-    cy.screenshot(`${ssPrefix}-admin-importer`, { capture: 'viewport' });
+    cy.getByTestid('admin-import-data').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-importer`);
   });
 
   it('/admin/export is successfully loaded', () => {
     cy.visit('/admin/export');
-    cy.screenshot(`${ssPrefix}-admin-export`, { capture: 'viewport' });
+    cy.getByTestid('admin-export-archive-data').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-export`);
   });
 
   it('/admin/notification is successfully loaded', () => {
     cy.visit('/admin/notification');
-    cy.screenshot(`${ssPrefix}-admin-notification`, { capture: 'viewport' });
+    cy.getByTestid('admin-notification').should('be.visible');
+    // wait for retrieving slack integration status
+    cy.getByTestid('slack-integration-list-item').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-notification`);
   });
 
   it('/admin/slack-integration is successfully loaded', () => {
     cy.visit('/admin/slack-integration');
-    cy.screenshot(`${ssPrefix}-admin-slack-integration`, { capture: 'viewport' });
+    cy.getByTestid('admin-slack-integration').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-slack-integration`);
   });
 
   it('/admin/slack-integration-legacy is successfully loaded', () => {
     cy.visit('/admin/slack-integration-legacy');
-    cy.screenshot(`${ssPrefix}-admin-slack-integration-legacy`, { capture: 'viewport' });
+    cy.getByTestid('admin-slack-integration-legacy').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-slack-integration-legacy`);
   });
 
   it('/admin/users is successfully loaded', () => {
     cy.visit('/admin/users');
-    cy.screenshot(`${ssPrefix}-admin-users`, { capture: 'viewport' });
+    cy.getByTestid('admin-users').should('be.visible');
+    cy.getByTestid('user-table-tr').first().should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-users`);
   });
 
   it('/admin/user-groups is successfully loaded', () => {
     cy.visit('/admin/user-groups');
-    cy.screenshot(`${ssPrefix}-admin-user-groups`, { capture: 'viewport' });
+    cy.getByTestid('admin-user-groups').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-user-groups`);
   });
 
   it('/admin/search is successfully loaded', () => {
     cy.visit('/admin/search');
-    cy.screenshot(`${ssPrefix}-admin-search`, { capture: 'viewport' });
+    cy.getByTestid('admin-full-text-search').should('be.visible');
+    // wait for connected
+    cy.getByTestid('connection-status-badge-connected').should('be.visible');
+    cy.screenshot(`${ssPrefix}-admin-search`);
   });
 
 });

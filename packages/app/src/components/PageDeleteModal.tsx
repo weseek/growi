@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useMemo } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -7,10 +7,19 @@ import { useTranslation } from 'react-i18next';
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePageDeleteModal } from '~/stores/modal';
+import loggerFactory from '~/utils/logger';
 
-import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
+import {
+  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
+} from '~/interfaces/page';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
+import { useSWRxPageInfoForList } from '~/stores/page';
+
+
+const logger = loggerFactory('growi:cli:PageDeleteModal');
 
 
 const deleteIconAndKey = {
@@ -32,12 +41,40 @@ const PageDeleteModal: FC = () => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
-  const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely ?? false;
-  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal ?? false;
+
+  const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
+    .filter(p => !isIPageInfoForEntity(p.meta));
+  const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
+
+  const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
+
+  // inject IPageInfo to operate
+  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
+  if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
+    injectedPages = injectTo(deleteModalData?.pages);
+  }
+
+  // calculate conditions to delete
+  const [isDeletable, isAbleToDeleteCompletely] = useMemo(() => {
+    if (injectedPages != null && injectedPages.length > 0) {
+      const isDeletable = injectedPages.every(pageWithMeta => pageWithMeta.meta?.isDeletable);
+      const isAbleToDeleteCompletely = injectedPages.every(pageWithMeta => pageWithMeta.meta?.isAbleToDeleteCompletely);
+      return [isDeletable, isAbleToDeleteCompletely];
+    }
+    return [true, true];
+  }, [injectedPages]);
+
+  // calculate condition to determine modal status
+  const forceDeleteCompletelyMode = useMemo(() => {
+    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+      return deleteModalData.pages.every(pageWithMeta => isTrashPage(pageWithMeta.data?.path ?? ''));
+    }
+    return false;
+  }, [deleteModalData]);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
-  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
-  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+  const [isDeleteCompletely, setIsDeleteCompletely] = useState(forceDeleteCompletelyMode);
+  const deleteMode = forceDeleteCompletelyMode || isDeleteCompletely ? 'completely' : 'temporary';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
@@ -47,7 +84,7 @@ const PageDeleteModal: FC = () => {
   }
 
   function changeIsDeleteCompletelyHandler() {
-    if (!isAbleToDeleteCompletely) {
+    if (forceDeleteCompletelyMode) {
       return;
     }
     setIsDeleteCompletely(!isDeleteCompletely);
@@ -55,6 +92,11 @@ const PageDeleteModal: FC = () => {
 
   async function deletePage() {
     if (deleteModalData == null || deleteModalData.pages == null) {
+      return;
+    }
+
+    if (!isDeletable) {
+      logger.error('At least one page is not deletable.');
       return;
     }
 
@@ -67,7 +109,7 @@ const PageDeleteModal: FC = () => {
         const isCompletely = isDeleteCompletely === true ? true : undefined;
 
         const pageIdToRevisionIdMap = {};
-        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
+        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
 
         const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
@@ -75,9 +117,12 @@ const PageDeleteModal: FC = () => {
           isCompletely,
         });
 
-        if (deleteModalData.onDeleted != null) {
-          deleteModalData.onDeleted(data.paths, data.isRecursively, data.isCompletely);
+        const onDeleted = deleteModalData.opts?.onDeleted;
+        if (onDeleted != null) {
+          onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
+
+        closeDeleteModal();
       }
       catch (err) {
         setErrs([err]);
@@ -89,20 +134,23 @@ const PageDeleteModal: FC = () => {
     else {
       try {
         const recursively = isDeleteRecursively === true ? true : undefined;
-        const completely = isDeleteCompletely === true ? true : undefined;
+        const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
-        const page = deleteModalData.pages[0];
+        const page = deleteModalData.pages[0].data;
 
         const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
-          page_id: page.pageId,
-          revision_id: page.revisionId,
+          page_id: page._id,
+          revision_id: page.revision,
           recursively,
           completely,
         }) as IDeleteSinglePageApiv1Result;
 
-        if (deleteModalData.onDeleted != null) {
-          deleteModalData.onDeleted(path, isRecursively, isCompletely);
+        const onDeleted = deleteModalData.opts?.onDeleted;
+        if (onDeleted != null) {
+          onDeleted(path, isRecursively, isCompletely);
         }
+
+        closeDeleteModal();
       }
       catch (err) {
         setErrs([err]);
@@ -111,7 +159,6 @@ const PageDeleteModal: FC = () => {
   }
 
   async function deleteButtonHandler() {
-    await closeDeleteModal();
     await deletePage();
   }
 
@@ -128,16 +175,12 @@ const PageDeleteModal: FC = () => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
   }
 
-  // DeleteCompletely is currently disabled
-  // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
-  // Story: https://redmine.weseek.co.jp/issues/82222
-  // TODO2 : use toaster
-  // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-danger">
@@ -165,14 +208,21 @@ const PageDeleteModal: FC = () => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (deleteModalData != null && deleteModalData.pages != null) {
-      return deleteModalData.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
+
+    if (pages != null) {
+      return pages.map(page => (
+        <p key={page.data._id} className="mb-1">
+          <code>{ page.data.path }</code>
+          { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
+        </p>
+      ));
     }
     return <></>;
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -184,12 +234,17 @@ const PageDeleteModal: FC = () => {
           {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
-        {renderDeleteRecursivelyForm()}
-        {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
+        { isDeletable && renderDeleteRecursivelyForm()}
+        { isDeletable && !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
-        <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
+        <button
+          type="button"
+          className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
+          disabled={!isDeletable}
+          onClick={deleteButtonHandler}
+        >
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>

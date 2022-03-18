@@ -1,6 +1,9 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { Nullable } from '~/interfaces/common';
+import {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+} from '~/interfaces/ui';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 
 
 /*
@@ -27,33 +30,20 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   };
 };
 
-/*
-* PageDeleteModal
-*/
-export type IPageForPageDeleteModal = {
-  pageId: string,
-  revisionId?: string,
-  path: string
-  isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
+export type IDeleteModalOption = {
+  onDeleted?: OnDeletedFunction,
 }
-
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
-  pages?: IPageForPageDeleteModal[],
-  onDeleted?: OnDeletedFunction,
-  isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
+  pages?: IPageToDeleteWithMeta[],
+  opts?: IDeleteModalOption,
 }
 
 type DeleteModalStatusUtils = {
   open(
-    pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
-    isAbleToDeleteCompletely?: boolean,
-    isDeleteCompletelyModal?: boolean,
+    pages?: IPageToDeleteWithMeta[],
+    opts?: IDeleteModalOption,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
@@ -62,21 +52,16 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   const initialData: DeleteModalStatus = {
     isOpened: false,
     pages: [],
-    onDeleted: () => {},
-    isAbleToDeleteCompletely: false,
-    isDeleteCompletelyModal: false,
   };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
     open: (
-        pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
-        isAbleToDeleteCompletely?: boolean,
-        isDeleteCompletelyModal?: boolean,
+        pages?: IPageToDeleteWithMeta[],
+        opts?: IDeleteModalOption,
     ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isAbleToDeleteCompletely, isDeleteCompletelyModal,
+      isOpened: true, pages, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
@@ -90,64 +75,121 @@ export type IPageForPageDuplicateModal = {
   path: string
 }
 
+export type IDuplicateModalOption = {
+  onDuplicated?: OnDuplicatedFunction,
+}
+
 type DuplicateModalStatus = {
   isOpened: boolean,
-  pageId?: string,
-  path?: string,
+  page?: IPageForPageDuplicateModal,
+  opts?: IDuplicateModalOption,
 }
 
 type DuplicateModalStatusUtils = {
-  open(pageId: string, path: string): Promise<DuplicateModalStatus | undefined>
+  open(
+    page?: IPageForPageDuplicateModal,
+    opts?: IDuplicateModalOption
+  ): Promise<DuplicateModalStatus | undefined>
   close(): Promise<DuplicateModalStatus | undefined>
 }
 
 export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
-  const initialData: DuplicateModalStatus = { isOpened: false, pageId: '', path: '' };
+  const initialData: DuplicateModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pageId: string, path: string) => swrResponse.mutate({ isOpened: true, pageId, path }),
+    open: (
+        page?: IPageForPageDuplicateModal,
+        opts?: IDuplicateModalOption,
+    ) => swrResponse.mutate({ isOpened: true, page, opts }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
 
 /*
-* PageRenameModal
-*/
-export type IPageForPageRenameModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
+ * PageRenameModal
+ */
+export type IRenameModalOption = {
+  onRenamed?: OnRenamedFunction,
 }
 
 type RenameModalStatus = {
   isOpened: boolean,
-  pageId?: string,
-  revisionId?: string
-  path?: string,
+  page?: IPageToRenameWithMeta,
+  opts?: IRenameModalOption
 }
 
 type RenameModalStatusUtils = {
-  open(pageId: string, revisionId: string, path: string): Promise<RenameModalStatus | undefined>
+  open(
+    page?: IPageToRenameWithMeta,
+    opts?: IRenameModalOption
+    ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
 export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
-  const initialData: RenameModalStatus = {
-    isOpened: false, pageId: '', revisionId: '', path: '',
-  };
+  const initialData: RenameModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pageId: string, revisionId: string, path: string) => swrResponse.mutate({
-      isOpened: true, pageId, revisionId, path,
+    open: (
+        page?: IPageToRenameWithMeta,
+        opts?: IRenameModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, page, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+
+/*
+* PutBackPageModal
+*/
+export type IPageForPagePutBackModal = {
+  pageId: string,
+  path: string
+}
+
+export type IPutBackPageModalOption = {
+  onPutBacked?: OnPutBackedFunction,
+}
+
+type PutBackPageModalStatus = {
+  isOpened: boolean,
+  page?: IPageForPagePutBackModal,
+  opts?: IPutBackPageModalOption,
+}
+
+type PutBackPageModalUtils = {
+  open(
+    page?: IPageForPagePutBackModal,
+    opts?: IPutBackPageModalOption,
+    ): Promise<PutBackPageModalStatus | undefined>
+  close():Promise<PutBackPageModalStatus | undefined>
+}
+
+export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
+  const initialData: PutBackPageModalStatus = {
+    isOpened: false,
+    page: { pageId: '', path: '' },
+  };
+  const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        page: IPageForPagePutBackModal, opts?: IPutBackPageModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, page, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '' } }),
+  };
+};
+
 
 /*
 * PagePresentationModal
@@ -176,6 +218,45 @@ export const usePagePresentationModal = (
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+
+/*
+ * LegacyPrivatePagesMigrationModal
+ */
+
+export type ILegacyPrivatePage = { pageId: string, path: string };
+
+export type LegacyPrivatePagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
+
+type LegacyPrivatePagesMigrationModalStatus = {
+  isOpened: boolean,
+  pages?: ILegacyPrivatePage[],
+  onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler,
+}
+
+type LegacyPrivatePagesMigrationModalStatusUtils = {
+  open(pages: ILegacyPrivatePage[], onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+  close(): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+}
+
+export const useLegacyPrivatePagesMigrationModal = (
+    status?: LegacyPrivatePagesMigrationModalStatus,
+): SWRResponse<LegacyPrivatePagesMigrationModalStatus, Error> & LegacyPrivatePagesMigrationModalStatusUtils => {
+  const initialData: LegacyPrivatePagesMigrationModalStatus = {
+    isOpened: false,
+    pages: [],
+  };
+  const swrResponse = useStaticSWR<LegacyPrivatePagesMigrationModalStatus, Error>('legacyPrivatePagesMigrationModal', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pages, onSubmited?) => swrResponse.mutate({
+      isOpened: true, pages, onSubmited,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false, pages: [], onSubmited: undefined }),
+  };
+};
+
 
 /*
 * DescendantsPageListModal

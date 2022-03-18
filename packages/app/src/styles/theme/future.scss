@@ -122,8 +122,7 @@ html[dark] {
         $color-list-hover,
         $bgcolor-list-hover,
         $color-list-active,
-        lighten($bgcolor-list-hover, 5%),
-        $gray-600
+        lighten($bgcolor-list-hover, 5%)
       );
     }
   }

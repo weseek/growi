@@ -1,22 +1,25 @@
-import useSWR, {
+import { RefObject } from 'react';
+import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import SimpleBar from 'simplebar-react';
+
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import { pagePathUtils } from '@growi/core';
 
-import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { Nullable } from '~/interfaces/common';
+import { UpdateDescCountData } from '~/interfaces/websocket';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -35,6 +38,15 @@ export const EditorMode = {
   HackMD: 'hackmd',
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
+
+
+/** **********************************************************
+ *                     Storing RefObjects
+ *********************************************************** */
+
+export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
+  return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
+};
 
 
 /** **********************************************************
@@ -211,7 +223,7 @@ export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean,
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
@@ -299,7 +311,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
@@ -311,12 +323,13 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isNotFoundPermalink } = useIsNotFoundPermalink();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFoundPermalink].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFoundPermalink,
   );
 };
 
@@ -332,4 +345,21 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : key,
     () => isPageExist && !isUserPage,
   );
+};
+
+type PageTreeDescCountMapUtils = {
+  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
+  getDescCount(pageId?: string): number | null | undefined
+}
+
+export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
+  const key = 'pageTreeDescCountMap';
+
+  const swrResponse = useStaticSWR<UpdateDescCountData, Error>(key, initialData, { fallbackData: new Map() });
+
+  return {
+    ...swrResponse,
+    getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
+    update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
+  };
 };
