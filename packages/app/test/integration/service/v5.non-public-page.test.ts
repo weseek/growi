@@ -649,89 +649,102 @@ describe('PageService page operations with non-public pages', () => {
       return duplicatedPage;
     };
     test('Duplicate single page with GRANT_RESTRICTED', async() => {
-      const basePage = await Page.findOne({ path: '/np_duplicate1', grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
-      const baseRevision = basePage.revision;
-      expectAllToBeTruthy([basePage, baseRevision]);
+      const _page = await Page.findOne({ path: '/np_duplicate1', grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
+      const _revision = _page.revision;
+      expect(_page).toBeTruthy();
+      expect(_revision).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate1';
-      await duplicate(basePage, newPagePath, npDummyUser1, false);
+      await duplicate(_page, newPagePath, npDummyUser1, false);
 
       const duplicatedPage = await Page.findOne({ path: newPagePath });
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
-      expectAllToBeTruthy([duplicatedPage]);
+      expect(duplicatedPage).toBeTruthy();
 
 
       expect(xssSpy).toHaveBeenCalled();
-      expect(duplicatedPage._id).not.toStrictEqual(basePage._id);
-      expect(duplicatedPage.grant).toBe(basePage.grant);
+      expect(duplicatedPage._id).not.toStrictEqual(_page._id);
+      expect(duplicatedPage.grant).toBe(_page.grant);
       expect(duplicatedPage.parent).toBeNull();
-      expect(duplicatedPage.parent).toStrictEqual(basePage.parent);
+      expect(duplicatedPage.parent).toStrictEqual(_page.parent);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
 
-      expect(duplicatedRevision.body).toBe(baseRevision.body);
+      expect(duplicatedRevision.body).toBe(_revision.body);
     });
 
     test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
-      const basePath1 = '/np_duplicate2';
-      const basePath2 = '/np_duplicate2/np_duplicate3';
-      const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id, grantedGroup: groupIdA })
+      const _path1 = '/np_duplicate2';
+      const _path2 = '/np_duplicate2/np_duplicate3';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroup: groupIdA })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
-      const basePage2 = await Page.findOne({ path: basePath2, parent: basePage1._id, grantedGroup: groupIdB })
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroup: groupIdB })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
-      const baseRevision1 = basePage1.revision;
-      const baseRevision2 = basePage2.revision;
-      expectAllToBeTruthy([basePage1, basePage2, baseRevision1, baseRevision2]);
+      const _revision1 = _page1.revision;
+      const _revision2 = _page2.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_revision1).toBeTruthy();
+      expect(_revision2).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate2';
-      await duplicate(basePage1, newPagePath, npDummyUser2, true);
+      await duplicate(_page1, newPagePath, npDummyUser2, true);
 
       const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedRevision1 = duplicatedPage1.revision;
       const duplicatedRevision2 = duplicatedPage2.revision;
-      expectAllToBeTruthy([duplicatedPage1, duplicatedPage2, duplicatedRevision1, duplicatedRevision2]);
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage2).toBeTruthy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(duplicatedRevision2).toBeTruthy();
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage1.grantedGroup).toStrictEqual(groupIdA._id);
       expect(duplicatedPage2.grantedGroup).toStrictEqual(groupIdB._id);
-      expect(duplicatedPage1.parent).toStrictEqual(basePage1.parent);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
 
-      expect(duplicatedRevision1.body).toBe(baseRevision1.body);
-      expect(duplicatedRevision2.body).toBe(baseRevision2.body);
+      expect(duplicatedRevision1.body).toBe(_revision1.body);
+      expect(duplicatedRevision2.body).toBe(_revision2.body);
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
     });
     test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async() => {
-      const basePath1 = '/np_duplicate4';
-      const basePath2 = '/np_duplicate4/np_duplicate5';
-      const basePath3 = '/np_duplicate4/np_duplicate6';
-      const basePage1 = await Page.findOne({ path: basePath1, parent: rootPage._id, grant: Page.GRANT_PUBLIC })
+      const _path1 = '/np_duplicate4';
+      const _path2 = '/np_duplicate4/np_duplicate5';
+      const _path3 = '/np_duplicate4/np_duplicate6';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grant: Page.GRANT_PUBLIC })
         .populate({ path: 'revision', model: 'Revision' });
-      const basePage2 = await Page.findOne({ path: basePath2, grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
-      const basePage3 = await Page.findOne({ path: basePath3, grant: Page.GRANT_PUBLIC }).populate({ path: 'revision', model: 'Revision' });
-      const baseRevision1 = basePage1.revision;
-      const baseRevision2 = basePage2.revision;
-      const baseRevision3 = basePage3.revision;
-      expectAllToBeTruthy([basePage1, basePage2, basePage3, baseRevision1, baseRevision2]);
+      const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
+      const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_PUBLIC }).populate({ path: 'revision', model: 'Revision' });
+      const baseRevision1 = _page1.revision;
+      const baseRevision2 = _page2.revision;
+      const baseRevision3 = _page3.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(baseRevision1).toBeTruthy();
+      expect(baseRevision2).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate4';
-      await duplicate(basePage1, newPagePath, npDummyUser1, true);
+      await duplicate(_page1, newPagePath, npDummyUser1, true);
 
       const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate5' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage3 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate6' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedRevision1 = duplicatedPage1.revision;
       const duplicatedRevision3 = duplicatedPage3.revision;
-      // AD => After Duplicate
-      expectAllToBeTruthy([duplicatedPage1, duplicatedPage3, duplicatedRevision1, duplicatedRevision3]);
       expect(duplicatedPage2).toBeNull();
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage3).toBeTruthy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(duplicatedRevision3).toBeTruthy();
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage1.grant).toStrictEqual(Page.GRANT_PUBLIC);
       expect(duplicatedPage3.grant).toStrictEqual(Page.GRANT_PUBLIC);
 
-      expect(duplicatedPage1.parent).toStrictEqual(basePage1.parent);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
 
       expect(duplicatedRevision1.body).toBe(baseRevision1.body);
