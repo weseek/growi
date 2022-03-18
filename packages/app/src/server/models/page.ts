@@ -573,6 +573,10 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
 
   // find ancestors
   const builder2 = new PageQueryBuilder(this.find(), true);
+
+  // avoid including not normalized pages
+  builder2.addConditionToFilterByApplicableAncestors(ancestorPaths);
+
   const ancestors = await builder2
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortPagesByDescPath()
