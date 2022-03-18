@@ -143,13 +143,18 @@ const UserGroupDetailPage: FC = () => {
         description: userGroupData.description,
         parentId: userGroupData.parent,
       });
-      mutateChildUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+
+      // mutate
+      mutateChildUserGroups();
+
+      hideUpdateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateChildUserGroups]);
+  }, [t, mutateChildUserGroups, hideUpdateModal]);
 
   const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
     try {
@@ -188,17 +193,19 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
       });
 
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+
       // mutate
       mutateChildUserGroups();
       mutateSelectableChildUserGroups();
       mutateSelectableParentUserGroups();
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      hideCreateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, userGroup, mutateChildUserGroups]);
+  }, [t, userGroup, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
@@ -280,14 +287,14 @@ const UserGroupDetailPage: FC = () => {
       <UserGroupModal
         userGroup={selectedUserGroup}
         buttonLabel={t('Update')}
-        onClickButton={updateChildUserGroup}
+        onClickSubmit={updateChildUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
       />
 
       <UserGroupModal
         buttonLabel={t('Create')}
-        onClickButton={createChildUserGroup}
+        onClickSubmit={createChildUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
