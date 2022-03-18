@@ -2,6 +2,9 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { UncontrolledTooltip } from 'reactstrap';
+import { useTranslation } from 'react-i18next';
+
 import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
 
@@ -16,6 +19,7 @@ import { useSWRxPageComment } from '../stores/comment';
 
 import MathJaxConfigurer from '~/client/util/markdown-it/mathjax';
 
+const COMMENT_BOTTOM_MARGIN = 'mb-5';
 
 type Props = {
   appContainer: AppContainer,
@@ -28,6 +32,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
   const { appContainer, pageId, highlightKeywords } = props;
 
+  const { t } = useTranslation();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
 
@@ -122,31 +127,37 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   };
 
   const generateCommentInnerElement = (comment: ICommentHasId) => {
+    const revisionHref = `/${comment.page}?revision=${comment.revision}`;
     const commentBody: string = comment.comment;
     const formatedCommentBody = comment.isMarkdown ? generateMarkdownBody(commentBody) : generateBodyFromPlainText(commentBody);
 
     return (
-      <>
-        <div className="flex-shrink-0">
-          <UserPicture user={comment.creator} size="md" noLink noTooltip />
+      <div key={comment._id} className="page-comment flex-column">
+        <div className="page-comment-writer">
+          <UserPicture user={comment.creator} />
         </div>
-        <div className="flex-grow-1 ml-3">
-          <div className="d-flex">
-            <div className="flex-shrink-0">
-              <Username user={comment.creator} />
-            </div>
-            <div className="flex-grow-1 ml-3 text-right">
-              <div className="page-comment-meta">
-                <HistoryIcon />
-                <a href={`#${comment._id}`}>
-                  <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
-                </a>
-              </div>
-            </div>
+        <div className="page-comment-main">
+          <div className="page-comment-creator">
+            <Username user={comment.creator} />
           </div>
-          <div className="page-comment-body">{formatedCommentBody}</div>
+          <div className="page-comment-body">
+            {formatedCommentBody}
+          </div>
+          <div className="page-comment-meta">
+            <a href={`/${comment.page}#${comment._id}`}>
+              <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
+            </a>
+            <span className="ml-2">
+              <a id={`page-comment-revision-${comment._id}`} className="page-comment-revision" href={revisionHref}>
+                <HistoryIcon />
+              </a>
+              <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${comment._id}`}>
+                {t('page_comment.display_the_page_when_posting_this_comment')}
+              </UncontrolledTooltip>
+            </span>
+          </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -155,9 +166,11 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
       replyComments.map((comment: ICommentHasId, index: number) => {
         const lastIndex: number = replyComments.length - 1;
         const isLastIndex: boolean = index === lastIndex;
+        const defaultReplyClasses = 'page-comment-reply ml-4 ml-sm-5 mr-3';
+        const replyClasses: string = isLastIndex ? `${defaultReplyClasses} ${COMMENT_BOTTOM_MARGIN}` : defaultReplyClasses;
 
         return (
-          <div key={comment._id} className={`d-flex ml-4 ${isLastIndex ? 'mb-5' : 'mb-3'}`}>
+          <div key={comment._id} className={replyClasses}>
             {generateCommentInnerElement(comment)}
           </div>
         );
@@ -170,24 +183,32 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
   return (
-    <div className="comment-list border border-top mt-5 px-2">
-      <h2 className="my-3 text-center"><i className="icon-fw icon-bubbles"></i>Comments</h2>
+    <div className="page-comments-row comment-list border border-top mt-5 px-2">
+      <div className="page-comments">
+        <h2 className="text-center border-bottom my-4 pb-2"><i className="icon-fw icon-bubbles"></i>Comments</h2>
+        <div className="page-comments-list" id="page-comments-list">
+          { commentsExceptReply.map((comment, index) => {
 
-      { commentsExceptReply.map((comment) => {
+            const defaultCommentThreadClasses = 'page-comment-thread';
+            const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+            const isLastComment: boolean = index === commentsExceptReply.length - 1;
 
-        const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+            let commentThreadClasses = '';
+            commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+            commentThreadClasses = isLastComment ? `${commentThreadClasses} ${COMMENT_BOTTOM_MARGIN}` : commentThreadClasses;
 
-        return (
-          <div key={comment._id} className="age-comment-main">
-            {/* display comment */}
-            <div className={`d-flex ${hasReply ? 'mb-3' : 'mb-5'}`}>
-              {generateCommentInnerElement(comment)}
-            </div>
-            {/* display reply comment */}
-            {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-          </div>
-        );
-      })}
+            return (
+              <div key={comment._id} className={commentThreadClasses}>
+                {/* display comment */}
+                {generateCommentInnerElement(comment)}
+                {/* display reply comment */}
+                {hasReply && generateAllRepliesElement(allReplies[comment._id])}
+              </div>
+            );
+
+          })}
+        </div>
+      </div>
 
     </div>
   );
