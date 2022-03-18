@@ -27,7 +27,7 @@ import {
 } from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
-import { calcRecursiveDeleteConfigValue } from '~/utils/page-delete-config';
+import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 const debug = require('debug')('growi:services:page');
 
@@ -216,7 +216,7 @@ class PageService {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
-    const recursiveAuthority = calcRecursiveDeleteConfigValue(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+    const recursiveAuthority = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
     return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, recursiveAuthority);
   }
@@ -225,7 +225,7 @@ class PageService {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
-    const recursiveAuthority = calcRecursiveDeleteConfigValue(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+    const recursiveAuthority = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
     return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, recursiveAuthority);
   }
