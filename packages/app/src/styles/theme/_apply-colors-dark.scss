@@ -281,9 +281,11 @@ ul.pagination {
       $color-list-hover,
       $bgcolor-list-hover,
       $color-list-active,
-      lighten($bgcolor-list-hover, 5%),
-      $gray-500
+      lighten($bgcolor-list-hover, 5%)
     );
+    .grw-pagetree-triangle-btn {
+      @include button-outline-svg-icon-variant($secondary, $gray-200);
+    }
     .grw-pagetree-count {
       color: $gray-400;
       background: $gray-700;
@@ -294,6 +296,18 @@ ul.pagination {
       background: $bgcolor-list-hover;
     }
   }
+}
+
+.btn.btn-page-item-control {
+  @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+  @include hover() {
+    background-color: $gray-600;
+  }
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: $gray-200;
+  }
+  box-shadow: none !important;
 }
 
 /*

@@ -20,6 +20,16 @@ import './screenshot'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+// Ignore 'ResizeObserver loop limit exceeded' exception
+// https://github.com/cypress-io/cypress/issues/8418
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/
+Cypress.on('uncaught:exception', (err) => {
+    /* returning false here prevents Cypress from failing the test */
+    if (resizeObserverLoopErrRe.test(err.message)) {
+        return false
+    }
+})
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {

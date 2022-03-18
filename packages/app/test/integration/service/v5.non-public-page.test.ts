@@ -851,8 +851,8 @@ describe('PageService page operations with non-public pages', () => {
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
       const beforeRevertPath3 = '/trash/np_revert5/middle';
-      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
-      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
+      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grantedGroup: groupIdA });
+      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grantedGroup: groupIdB });
       const nonExistantPage3 = await Page.findOne({ path: beforeRevertPath3 }); // not exist
       const revision1 = await Revision.findOne({ pageId: trashedPage1._id });
       const revision2 = await Revision.findOne({ pageId: trashedPage2._id });
@@ -881,8 +881,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
       expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
 
-      expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
-      expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
+      expect(revertedPage1.grantedGroup).toStrictEqual(groupIdA);
+      expect(revertedPage2.grantedGroup).toStrictEqual(groupIdB);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
     });

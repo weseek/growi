@@ -1,8 +1,14 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, {
+  useEffect, useRef, useState, useMemo, useCallback,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { debounce } from 'throttle-debounce';
+
+import loggerFactory from '~/utils/logger';
+
 import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
-import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
@@ -10,17 +16,17 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { useGlobalSocket } from '~/stores/websocket';
-import { usePageTreeDescCountMap } from '~/stores/ui';
+import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 
+const logger = loggerFactory('growi:cli:ItemsTree');
 
 /*
  * Utility to generate initial node
@@ -61,6 +67,20 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
+// user defined typeguard to assert the arg is not null
+type RenderingCondition = {
+  ancestorsChildrenResult: AncestorsChildrenResult | undefined,
+  rootPageResult: RootPageResult | undefined,
+}
+type SecondStageRenderingCondition = {
+  ancestorsChildrenResult: AncestorsChildrenResult,
+  rootPageResult: RootPageResult,
+}
+const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondStageRenderingCondition): condition is SecondStageRenderingCondition => {
+  return condition.ancestorsChildrenResult != null && condition.rootPageResult != null;
+};
+
+
 type ItemsTreeProps = {
   isEnableActions: boolean
   targetPath: string
@@ -68,86 +88,41 @@ type ItemsTreeProps = {
   targetAndAncestorsData?: TargetAndAncestors
 }
 
-const renderByInitialNode = (
-    initialNode: ItemNode,
-    isEnableActions: boolean,
-    isScrolled: boolean,
-    targetPathOrId?: string,
-    isEnabledAttachTitleHeader?: boolean,
-    onRenamed?: () => void,
-    onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
-): JSX.Element => {
-
-  return (
-    <ul className="grw-pagetree list-group p-3">
-      <Item
-        key={initialNode.page.path}
-        targetPathOrId={targetPathOrId}
-        itemNode={initialNode}
-        isOpen
-        isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
-        isEnableActions={isEnableActions}
-        onRenamed={onRenamed}
-        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-        onClickDeleteMenuItem={onClickDeleteMenuItem}
-        isScrolled={isScrolled}
-      />
-    </ul>
-  );
-};
-
-// --- Auto scroll related vars and util ---
-
-const SCROLL_OFFSET_TOP = window.innerHeight / 2;
-
-const scrollTargetItem = () => {
-  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  const target = document.getElementById('grw-pagetree-is-target');
-  if (scrollElement != null && target != null) {
-    smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
-  }
-};
-// --- end ---
-
-
 /*
  * ItemsTree
  */
-const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
+const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
   const { t } = useTranslation();
 
-  const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
+  const { data: rootPageResult, error: error2 } = useSWRxRootPage();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { data: sidebarScrollerRef } = useSidebarScrollerRef();
 
   const { data: socket } = useGlobalSocket();
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
-
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
-  const scrollItem = () => {
-    scrollTargetItem();
-    setIsScrolled(true);
-  };
+  const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
 
-  useEffect(() => {
-    document.addEventListener('targetItemRendered', scrollItem);
-    return () => {
-      document.removeEventListener('targetItemRendered', scrollItem);
+  const rootElemRef = useRef(null);
+
+  const renderingCondition = useMemo(() => {
+    return {
+      ancestorsChildrenResult,
+      rootPageResult,
     };
-  }, []);
+  }, [ancestorsChildrenResult, rootPageResult]);
 
   useEffect(() => {
     if (socket == null) {
@@ -207,35 +182,98 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   };
 
+  // ***************************  Scroll on init ***************************
+  const scrollOnInit = useCallback(() => {
+    const scrollTargetElement = document.getElementById('grw-pagetree-current-page-item');
+
+    if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
+      return;
+    }
+
+    logger.debug('scrollOnInit has invoked');
+
+    const scrollElement = sidebarScrollerRef.current.getScrollElement();
+
+    // NOTE: could not use scrollIntoView
+    //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
+
+    // calculate the center point
+    const scrollTop = scrollTargetElement.offsetTop - scrollElement.getBoundingClientRect().height / 2;
+    scrollElement.scrollTo({ top: scrollTop });
+
+    setIsInitialScrollCompleted(true);
+  }, [sidebarScrollerRef]);
+
+  const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
+
+  useEffect(() => {
+    if (!isSecondStageRenderingCondition(renderingCondition) || isInitialScrollCompleted) {
+      return;
+    }
+
+    const rootElement = rootElemRef.current as HTMLElement | null;
+    if (rootElement == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach(() => scrollOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(rootElement, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    scrollOnInitDebounced();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isInitialScrollCompleted, renderingCondition, scrollOnInitDebounced]);
+  // *******************************  end  *******************************
+
   if (error1 != null || error2 != null) {
     // TODO: improve message
     toastError('Error occurred while fetching pages to render PageTree');
-    return null;
+    return <></>;
   }
 
+  let initialItemNode;
   /*
-   * Render completely
+   * Render second stage
    */
-  if (ancestorsChildrenData != null && rootPageData != null) {
-    const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(
-      // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+  if (isSecondStageRenderingCondition(renderingCondition)) {
+    initialItemNode = generateInitialNodeAfterResponse(
+      renderingCondition.ancestorsChildrenResult.ancestorsChildren,
+      new ItemNode(renderingCondition.rootPageResult.rootPage),
     );
   }
-
   /*
    * Before swr response comes back
    */
-  if (targetAndAncestorsData != null) {
-    const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(
-      // eslint-disable-next-line max-len
-      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+  else if (targetAndAncestorsData != null) {
+    initialItemNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
+  }
+
+  if (initialItemNode != null) {
+    return (
+      <ul className="grw-pagetree list-group p-3" ref={rootElemRef}>
+        <Item
+          key={initialItemNode.page.path}
+          targetPathOrId={targetPathOrId}
+          itemNode={initialItemNode}
+          isOpen
+          isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
+          isEnableActions={isEnableActions}
+          onRenamed={onRenamed}
+          onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+          onClickDeleteMenuItem={onClickDeleteMenuItem}
+        />
+      </ul>
     );
   }
 
-  return null;
+  return <></>;
 };
 
 export default ItemsTree;

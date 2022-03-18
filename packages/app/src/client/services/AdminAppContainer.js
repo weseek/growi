@@ -58,6 +58,8 @@ export default class AdminAppContainer extends Container {
       s3ReferenceFileWithRelayMode: false,
 
       isEnabledPlugins: true,
+
+      isMaintenanceMode: false,
     };
 
   }
@@ -116,6 +118,7 @@ export default class AdminAppContainer extends Container {
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+      isMaintenanceMode: appSettingsParams.isMaintenanceMode,
     });
 
     // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
@@ -454,9 +457,17 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async v5PageMigrationHandler() {
-    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration');
+    const response = await this.appContainer.apiv3.post('/app-settings/v5-schema-migration');
     const { isV5Compatible } = response.data;
     return { isV5Compatible };
+  }
+
+  async startMaintenanceMode() {
+    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: true });
+  }
+
+  async endMaintenanceMode() {
+    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: false });
   }
 
 }

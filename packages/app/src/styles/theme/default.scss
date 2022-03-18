@@ -172,7 +172,7 @@ html[dark] {
   $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: #111d2f;
+  $bgcolor-sidebar-context: lighten($bgcolor-global, 10%);
   $color-sidebar-context: $color-global;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
