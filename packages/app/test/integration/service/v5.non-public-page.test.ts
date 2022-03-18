@@ -204,7 +204,6 @@ describe('PageService page operations with non-public pages', () => {
       },
       {
         _id: pageIdDelete2,
-        _id: pageIdDelete4,
         path: '/npdel2_ug',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
@@ -416,7 +415,6 @@ describe('PageService page operations with non-public pages', () => {
     });
     describe('Delete single page with grant USER_GROUP', () => {
       test('should be able to delete', async() => {
-        _id: pageIdDelete4,
         const path = '/npdel2_ug';
         const page = await Page.findOne({ path, grantedGroup: groupIdA });
         expect(page).toBeTruthy();
