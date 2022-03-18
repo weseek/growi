@@ -29,7 +29,7 @@ const SortControl: FC <Props> = (props: Props) => {
 
   return (
     <>
-      <div className="input-group">
+      <div className="input-group flex-nowrap">
         <div className="input-group-prepend">
           <div className="input-group-text border text-muted" id="btnGroupAddon">
             {renderOrderIcon()}
@@ -38,10 +38,10 @@ const SortControl: FC <Props> = (props: Props) => {
         <div className="border rounded-right">
           <button
             type="button"
-            className="btn dropdown-toggle search-sort-option-btn"
+            className="btn dropdown-toggle search-sort-option-btn py-1"
             data-toggle="dropdown"
           >
-            <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
+            <span className="mr-2 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             {Object.values(SORT_AXIS).map((sortAxis) => {

@@ -2,14 +2,17 @@ import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
-
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
+
+import { useCurrentPagePath } from './context';
+import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
@@ -32,15 +35,15 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
   const key = path != null
-    ? `/pages/list?path=${path}&page=${pageNumber ?? 1}`
+    ? [`/pages/list?path=${path}&page=${pageNumber ?? 1}`, termNumber]
     : null;
 
   return useSWR(
     key,
-    endpoint => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
+    (endpoint: string) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
@@ -48,6 +51,21 @@ export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRRe
       };
     }),
   );
+};
+
+export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
+};
+
+export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
+
+  const path = currentPagePath == null || termNumber == null
+    ? null
+    : currentPagePath;
+
+  return useSWRxPageList(path, pageNumber, termNumber);
 };
 
 export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
@@ -65,18 +83,53 @@ export const useSWRxPageInfo = (
     shareLinkId?: string | null,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
+  // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
+  const fixedShareLinkId = shareLinkId ?? null;
+
   return useSWRImmutable(
-    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
 
-export const useSWRxPageInfoForList = (pageIds: string[] | null | undefined): SWRResponse<Record<string, IPageInfo | IPageInfoForListing>, Error> => {
+type PageInfoInjector = {
+  injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => IDataWithMeta<D, IPageInfoForOperation>[],
+}
+
+const isIDataWithMeta = (item: HasObjectId | IDataWithMeta): item is IDataWithMeta => {
+  return 'data' in item;
+};
+
+export const useSWRxPageInfoForList = (
+    pageIds: string[] | null | undefined,
+    attachBookmarkCount = false,
+    attachShortBody = false,
+): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
 
   const shouldFetch = pageIds != null && pageIds.length > 0;
 
-  return useSWRImmutable(
-    shouldFetch ? ['/page-listing/info', pageIds] : null,
-    (endpoint, pageIds) => apiv3Get(endpoint, { pageIds }).then(response => response.data),
+  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
+    shouldFetch ? ['/page-listing/info', pageIds, attachBookmarkCount, attachShortBody] : null,
+    (endpoint, pageIds, attachBookmarkCount, attachShortBody) => {
+      return apiv3Get(endpoint, { pageIds, attachBookmarkCount, attachShortBody }).then(response => response.data);
+    },
   );
+
+  return {
+    ...swrResult,
+    injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => {
+      return pages.map((item) => {
+        const page = isIDataWithMeta(item) ? item.data : item;
+        const orgPageMeta = isIDataWithMeta(item) ? item.meta : undefined;
+
+        // get an applicable IPageInfo
+        const applicablePageInfo = (swrResult.data ?? {})[page._id];
+
+        return {
+          data: page,
+          meta: applicablePageInfo ?? orgPageMeta,
+        };
+      });
+    },
+  };
 };
