@@ -21,7 +21,8 @@ import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups, useSWRxAncestorUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
@@ -55,9 +56,10 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(userGroup._id);
 
-  const { data: ancestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -78,17 +80,27 @@ const UserGroupDetailPage: FC = () => {
     setSearchType(searchType);
   }, []);
 
-  const updateUserGroup = useCallback(async(param: Partial<IUserGroup>) => {
+  const updateUserGroup = useCallback(async(UserGroupData: Partial<IUserGroup>) => {
     try {
-      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
+      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+        name: UserGroupData.name,
+        description: UserGroupData.description,
+        parentId: UserGroupData.parent,
+      });
       const { userGroup: newUserGroup } = res.data;
       setUserGroup(newUserGroup);
+
+      // mutate
+      mutateAncestorUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, userGroup._id, setUserGroup]);
+  }, [t, userGroup._id, setUserGroup, mutateAncestorUserGroups]);
 
   const fetchApplicableUsers = useCallback(async(searchWord) => {
     const res = await apiv3Get(`/user-groups/${userGroup._id}/unrelated-users`, {
@@ -147,8 +159,12 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
         forceUpdateParents: false,
       });
-      mutateSelectableUserGroups();
+
+      // mutate
       mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -171,7 +187,12 @@ const UserGroupDetailPage: FC = () => {
         description: userGroupData.description,
         parentId: userGroup._id,
       });
+
+      // mutate
       mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
+      mutateSelectableParentUserGroups();
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -240,6 +261,7 @@ const UserGroupDetailPage: FC = () => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
+          selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={updateUserGroup}
         />
@@ -250,7 +272,7 @@ const UserGroupDetailPage: FC = () => {
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
-        selectableUserGroups={selectableUserGroups}
+        selectableUserGroups={selectableChildUserGroups}
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
         onClickCreateUserGroupButtonHandler={showCreateModal}
       />
