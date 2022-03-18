@@ -132,7 +132,7 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     const formatedCommentBody = comment.isMarkdown ? generateMarkdownBody(commentBody) : generateBodyFromPlainText(commentBody);
 
     return (
-      <div key={comment._id} className="page-comment flex-column page-comment-current page-comment-me">
+      <div key={comment._id} className="page-comment flex-column">
         <div className="page-comment-writer">
           <UserPicture user={comment.creator} />
         </div>
@@ -143,7 +143,6 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
           <div className="page-comment-body">
             {formatedCommentBody}
           </div>
-
           <div className="page-comment-meta">
             <a href={`/${comment.page}#${comment._id}`}>
               <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
@@ -190,16 +189,16 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
         <div className="page-comments-list" id="page-comments-list">
           { commentsExceptReply.map((comment, index) => {
 
-            const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
             const defaultCommentThreadClasses = 'page-comment-thread';
+            const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
             const isLastComment: boolean = index === commentsExceptReply.length - 1;
 
-            let commentThreadClass = '';
-            commentThreadClass = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
-            commentThreadClass = isLastComment ? `${commentThreadClass} ${COMMENT_BOTTOM_MARGIN}` : commentThreadClass;
+            let commentThreadClasses = '';
+            commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+            commentThreadClasses = isLastComment ? `${commentThreadClasses} ${COMMENT_BOTTOM_MARGIN}` : commentThreadClasses;
 
             return (
-              <div key={comment._id} className={commentThreadClass}>
+              <div key={comment._id} className={commentThreadClasses}>
                 {/* display comment */}
                 {generateCommentInnerElement(comment)}
                 {/* display reply comment */}
