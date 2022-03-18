@@ -193,6 +193,7 @@ describe('PageService page operations with non-public pages', () => {
     const pageIdDelete1 = new mongoose.Types.ObjectId();
     const pageIdDelete2 = new mongoose.Types.ObjectId();
     const pageIdDelete3 = new mongoose.Types.ObjectId();
+    const pageIdDelete4 = new mongoose.Types.ObjectId();
     await Page.insertMany([
       {
         _id: pageIdDelete1,
@@ -203,7 +204,7 @@ describe('PageService page operations with non-public pages', () => {
       },
       {
         _id: pageIdDelete2,
-        path: '/npdel2_ug1',
+        path: '/npdel2_ug',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
         status: Page.STATUS_PUBLISHED,
@@ -212,12 +213,35 @@ describe('PageService page operations with non-public pages', () => {
       },
       {
         _id: pageIdDelete3,
-        path: '/npdel3_ug1',
+        path: '/npdel3_top',
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: groupIdA,
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
+      },
+      {
+        _id: pageIdDelete4,
+        path: '/npdel3_top/npdel4_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDelete3._id,
+      },
+      {
+        path: '/npdel3_top/npdel4_ug',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+      {
+        path: '/npdel3_top/npdel4_ug/npdel5_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDelete4._id,
       },
     ]);
 
@@ -390,8 +414,8 @@ describe('PageService page operations with non-public pages', () => {
       test('should be able to delete', async() => {});
     });
     describe('Delete single page with grant USER_GROUP', () => {
-      test('should be able to delete by a user who belongs to the group', async() => {
-        const path = '/npdel2_ug1';
+      test('should be able to delete', async() => {
+        const path = '/npdel2_ug';
         const page = await Page.findOne({ path, grantedGroup: groupIdA });
         expect(page).toBeTruthy();
 
@@ -405,8 +429,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
-      test('should NOT be able to delete by a user who does NOT belong to the group', async() => {});
-      test('should be able to delete by a user who belongs to the group', async() => {});
+      test('should be able to delete all descendants except page with GRANT_RESTRICTED', async() => {});
     });
 
   });
