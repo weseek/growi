@@ -600,7 +600,7 @@ module.exports = (crowi) => {
     // Validate delete config
     const [singleAuthority1, recursiveAuthority1] = prepareDeleteConfigValuesForCalc(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority);
     // eslint-disable-next-line max-len
-    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(req.body.pageCompleteDeletionAuthority, req.body.req.body.pageRecursiveCompleteDeletionAuthority);
+    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(req.body.pageCompleteDeletionAuthority, req.body.pageRecursiveCompleteDeletionAuthority);
     const isDeleteConfigNormalized = !validateDeleteConfigs(singleAuthority1, recursiveAuthority1)
       && !validateDeleteConfigs(singleAuthority2, recursiveAuthority2);
     if (!isDeleteConfigNormalized) {
