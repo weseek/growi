@@ -3,6 +3,7 @@ import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { validateDeleteConfigs } from '~/utils/page-delete-config';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -589,12 +590,20 @@ module.exports = (crowi) => {
       'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageDeletionAuthority': req.body.pageDeletionAuthority,
-      'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:pageRecursiveDeletionAuthority': req.body.pageRecursiveDeletionAuthority,
+      'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
+
+    // Validate delete config
+    const isDeleteConfigNormalized = !validateDeleteConfigs(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority)
+      && validateDeleteConfigs(req.body.pageCompleteDeletionAuthority, req.body.pageRecursiveCompleteDeletionAuthority);
+    if (!isDeleteConfigNormalized) {
+      return res.apiv3Err(new ErrorV3('Delete config values are not correct.', 'delete_config_not_normalized'));
+    }
+
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
     if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
