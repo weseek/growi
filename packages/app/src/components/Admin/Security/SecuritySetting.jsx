@@ -87,16 +87,16 @@ class SecuritySetting extends React.Component {
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { setState(PageDeleteConfigValue.AdminOnly) }}
+                onClick={() => { setState(PageDeleteConfigValue.AdminAndAuthor) }}
               >
-                {t('security_setting.admin_only')}
+                {t('security_setting.admin_and_author')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { setState(PageDeleteConfigValue.AdminAndAuthor) }}
+                onClick={() => { setState(PageDeleteConfigValue.AdminOnly) }}
               >
-                {t('security_setting.admin_and_author')}
+                {t('security_setting.admin_only')}
               </button>
             </div>
             <p className="form-text text-muted small">
