@@ -84,6 +84,4 @@ context('Rename page from generated tag', () => {
     cy.screenshot(`${ssPrefix}visit-ourus-page`, {capture: 'viewport'});
   });
 
-
-
 });
