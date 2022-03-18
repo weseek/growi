@@ -42,7 +42,7 @@ function LegacySlackIntegration(props) {
   const isDisabled = adminSlackIntegrationLegacyContainer.state.isSlackbotConfigured;
 
   return (
-    <>
+    <div data-testid="admin-slack-integration-legacy">
       { isDisabled && (
         <div className="alert alert-danger">
           <i className="icon-minus icon-fw"></i>
@@ -58,7 +58,7 @@ function LegacySlackIntegration(props) {
       </div>
 
       <SlackConfiguration />
-    </>
+    </div>
   );
 }
 

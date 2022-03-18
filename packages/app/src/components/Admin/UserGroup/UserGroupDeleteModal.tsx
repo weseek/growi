@@ -7,7 +7,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
@@ -20,8 +19,6 @@ import Xss from '~/services/xss';
  * @extends {React.Component}
  */
 type Props = {
-  appContainer: AppContainer,
-
   userGroups: IUserGroupHasId[],
   deleteUserGroup?: IUserGroupHasId,
   onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
@@ -199,6 +196,9 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         </div>
         <div className="text-danger mt-5">
           {t('admin:user_group_management.delete_modal.desc')}
+
+          {/* TODO 85462: Add a note: "All child groups will disappear */}
+
         </div>
       </ModalBody>
       <ModalFooter>

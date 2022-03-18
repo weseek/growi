@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchPageForm from './SearchPageForm';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
+import SearchForm from '../SearchForm';
 
 type Props = {
+  isSearchServiceReachable: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
   onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
@@ -21,6 +22,7 @@ type Props = {
 const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
+    isSearchServiceReachable,
     initialSearchConditions,
     onSearchInvoked,
     deleteAllControl,
@@ -45,8 +47,8 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     });
   }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
 
-  const searchFormChangedHandler = useCallback(({ keyword }) => {
-    setKeyword(keyword as string);
+  const searchFormSubmittedHandler = useCallback((input: string) => {
+    setKeyword(input);
   }, []);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
@@ -59,12 +61,14 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
   }, [invokeSearch]);
 
   return (
-    <div className="position-sticky fixed-top shadow-sm">
+    <div className="position-sticky sticky-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchPageForm
+          <SearchForm
+            isSearchServiceReachable={isSearchServiceReachable}
             keyword={keyword}
-            onSearchFormChanged={searchFormChangedHandler}
+            disableIncrementalSearch
+            onSubmit={searchFormSubmittedHandler}
           />
         </div>
 
@@ -79,7 +83,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-        <div className="d-flex pl-md-2">
+        <div className="d-flex">
           {deleteAllControl}
         </div>
         {/* sort option: show when screen is smaller than lg */}
@@ -101,30 +105,34 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
           </button>
         </div>
         <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
-          <div className="card mr-3 mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckDefault"
-                  defaultChecked={includeUserPages}
-                  onChange={e => setIncludeUserPages(e.target.checked)}
-                />
+          <div className="border rounded px-2 py-1 mr-3">
+            <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <input
+                className="custom-control-input mr-2"
+                type="checkbox"
+                id="flexCheckDefault"
+                defaultChecked={includeUserPages}
+                onChange={e => setIncludeUserPages(e.target.checked)}
+              />
+              <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                 {t('Include Subordinated Target Page', { target: '/user' })}
               </label>
             </div>
           </div>
-          <div className="card mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckChecked"
-                  defaultChecked={includeTrashPages}
-                  onChange={e => setIncludeTrashPages(e.target.checked)}
-                />
+          <div className="border rounded px-2 py-1">
+            <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <input
+                className="custom-control-input mr-2"
+                type="checkbox"
+                id="flexCheckChecked"
+                checked={includeTrashPages}
+                onChange={e => setIncludeTrashPages(e.target.checked)}
+              />
+              <label
+                className="custom-control-label
+              d-flex align-items-center text-secondary with-no-font-weight"
+                htmlFor="flexCheckChecked"
+              >
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
             </div>

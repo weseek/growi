@@ -113,7 +113,7 @@ module.exports = function(crowi, app) {
   api.search = async function(req, res) {
     const user = req.user;
     const {
-      q: keyword = null, type = null, sort = null, order = null,
+      q = null, type = null, sort = null, order = null,
     } = req.query;
     let paginateOpts;
 
@@ -124,8 +124,8 @@ module.exports = function(crowi, app) {
       res.json(ApiResponse.error(e));
     }
 
-    if (keyword === null || keyword === '') {
-      return res.json(ApiResponse.error('keyword should not empty.'));
+    if (q === null || q === '') {
+      return res.json(ApiResponse.error('The param "q" should not empty.'));
     }
 
     const { searchService } = crowi;
@@ -146,6 +146,7 @@ module.exports = function(crowi, app) {
     let searchResult;
     let delegatorName;
     try {
+      const keyword = decodeURIComponent(q);
       [searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
