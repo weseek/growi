@@ -2316,7 +2316,7 @@ class PageService {
     }
 
     // Update descendantCount
-    const inc = updatedPage.descendantCount + 1;
+    const inc = 1;
     await this.updateDescendantCountOfAncestors(updatedPage.parent, inc, true);
 
     return updatedPage;
