@@ -49,7 +49,7 @@ export const validateDeleteConfigs = (
  * Convert IPageDeleteConfigValue.Inherit to the calculable value
  * @param confForSingle IPageDeleteConfigValueToProcessValidation
  * @param confForRecursive IPageDeleteConfigValue
- * @returns IPageDeleteConfigValueToProcessValidation
+ * @returns [(value for single), (value for recursive)]
  */
 export const prepareDeleteConfigValuesForCalc = (
     confForSingle: IPageDeleteConfigValueToProcessValidation, confForRecursive: IPageDeleteConfigValue,
