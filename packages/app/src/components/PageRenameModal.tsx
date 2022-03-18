@@ -252,6 +252,7 @@ const PageRenameModal = (): JSX.Element => {
                     onChange={e => inputChangeHandler(e.target.value)}
                     required
                     autoFocus
+                    data-testid="new-page-name-input"
                   />
                 )}
             </form>
@@ -347,6 +348,7 @@ const PageRenameModal = (): JSX.Element => {
           className="btn btn-primary"
           onClick={rename}
           disabled={submitButtonDisabled}
+          data-testid="rename-page-button"
         >Rename
         </button>
       </ModalFooter>
