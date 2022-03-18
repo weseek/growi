@@ -410,9 +410,6 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageT.status).toBe(Page.STATUS_DELETED);
       });
     });
-    describe('Delete multiple pages with grant RESTRICTED', () => {
-      test('should be able to delete', async() => {});
-    });
     describe('Delete single page with grant USER_GROUP', () => {
       test('should be able to delete', async() => {
         const path = '/npdel2_ug';
@@ -426,6 +423,7 @@ describe('PageService page operations with non-public pages', () => {
         const _page1 = await Page.findOne({ path: `/trash${path}`, grantedGroup: groupIdA });
         expect(_pageN).toBeNull();
         expect(_page1).toBeTruthy();
+        expect(_page1.status).toBe(Page.STATUS_DELETED);
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
