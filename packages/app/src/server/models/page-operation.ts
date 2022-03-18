@@ -72,7 +72,7 @@ const userSchemaForResuming = new Schema<IUserForResuming>({
 const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   createRedirectPage: { type: Boolean },
   updateMetadata: { type: Boolean },
-  exDescendantCount: { type: Number },
+  prevDescendantCount: { type: Number },
 }, { _id: false });
 
 const schema = new Schema<PageOperationDocument, PageOperationModel>({

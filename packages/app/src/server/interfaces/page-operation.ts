@@ -22,5 +22,5 @@ export type IUserForResuming = {
 export type IOptionsForResuming = {
   updateMetadata?: boolean,
   createRedirectPage?: boolean,
-  exDescendantCount?: number,
+  prevDescendantCount?: number,
 };
