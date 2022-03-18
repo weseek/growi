@@ -256,7 +256,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           ) }
         </div>
-        <div className={className}>
+        <div className={`${className} ${isCompactMode ? '' : 'mt-2'}`}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
