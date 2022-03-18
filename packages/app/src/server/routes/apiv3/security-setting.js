@@ -3,7 +3,7 @@ import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { validateDeleteConfigs } from '~/utils/page-delete-config';
+import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -598,8 +598,11 @@ module.exports = (crowi) => {
     };
 
     // Validate delete config
-    const isDeleteConfigNormalized = !validateDeleteConfigs(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority)
-      && validateDeleteConfigs(req.body.pageCompleteDeletionAuthority, req.body.pageRecursiveCompleteDeletionAuthority);
+    const [singleAuthority1, recursiveAuthority1] = prepareDeleteConfigValuesForCalc(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority);
+    // eslint-disable-next-line max-len
+    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(req.body.pageCompleteDeletionAuthority, req.body.req.body.pageRecursiveCompleteDeletionAuthority);
+    const isDeleteConfigNormalized = !validateDeleteConfigs(singleAuthority1, recursiveAuthority1)
+      && !validateDeleteConfigs(singleAuthority2, recursiveAuthority2);
     if (!isDeleteConfigNormalized) {
       return res.apiv3Err(new ErrorV3('Delete config values are not correct.', 'delete_config_not_normalized'));
     }
