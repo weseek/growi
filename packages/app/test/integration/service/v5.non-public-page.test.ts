@@ -480,32 +480,31 @@ describe('PageService page operations with non-public pages', () => {
     });
     test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async() => {
       // BR => Before Rename
-      const path1BR = '/np_rename7_destination';
-      const path2BR = '/np_rename8';
-      const path3BR = '/np_rename8/np_rename9';
-      const destinationPage = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
-      const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_RESTRICTED });
-      const grandchild = await Page.findOne({ path: path3BR, grant: Page.GRANT_RESTRICTED });
+      const pathD = '/np_rename7_destination';
+      const path2 = '/np_rename8';
+      const path3 = '/np_rename8/np_rename9';
+      const pageD = await Page.findOne({ path: pathD, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
+      const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_RESTRICTED });
+      const page3 = await Page.findOne({ path: path3, grant: Page.GRANT_RESTRICTED });
 
-      expect(destinationPage).toBeTruthy();
-      expect(childPage).toBeTruthy();
-      expect(grandchild).toBeTruthy();
+      expect(pageD).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
 
-      const newPathForChild = '/np_rename7_destination/np_rename8';
-      const newPathForGrandchild = '/np_rename7_destination/np_rename8/np_rename9';
-      await renamePage(childPage, newPathForChild, npDummyUser1, { isRecursively: true });
+      const newPathForPage2 = '/np_rename7_destination/np_rename8';
+      const newpathForPage3 = '/np_rename7_destination/np_rename8/np_rename9';
+      await renamePage(page2, newPathForPage2, npDummyUser1, { isRecursively: true });
 
-      const renamedChildPage = await Page.findOne({ path: newPathForChild });
-      const renamedGrandChild = await Page.findOne({ path: newPathForGrandchild });
-      const childPageBeforeRename = await Page.findOne({ path: path2BR });
-      const grandchildBeforeRename = await Page.findOne({ path: path3BR });
-      expect(renamedChildPage).toBeTruthy();
-      expect(grandchildBeforeRename).toBeTruthy();
-      expect(renamedGrandChild).toBeNull();
-      expect(childPageBeforeRename).toBeNull();
-
+      const _page2 = await Page.findOne({ path: path2 }); // not exist
+      const _page3 = await Page.findOne({ path: path3 }); // not renamed thus exist
+      const _page2R = await Page.findOne({ path: newPathForPage2 }); // exist
+      const _page3R = await Page.findOne({ path: newpathForPage3 }); // not exist
+      expect(_page2).toBeNull();
+      expect(_page3).toBeTruthy();
+      expect(_page2R).toBeTruthy();
+      expect(_page3R).toBeNull();
+      expect(_page2R.parent).toBeNull();
       expect(xssSpy).toHaveBeenCalled();
-      expect(renamedChildPage.parent).toBeNull();
     });
   });
   describe('Duplicate', () => {
