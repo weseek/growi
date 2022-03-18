@@ -41,7 +41,7 @@ class SecuritySetting extends React.Component {
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled, t) {
     const isRecursiveDeletion = deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
     return (
-      <div className="row mb-4">
+      <div key={`page-delete-permission-dropdown-${deletionType}`} className="row mb-4">
         <div className="col-md-3 text-md-right mb-2">
           <strong>{t(`security_setting.${deletionType}`)}</strong>
         </div>
