@@ -36,7 +36,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
   const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
     assert(data.length > 0);
 
-    const page = data[0].pageData; // should be single page selected
+    const page = data[0].data; // should be single page selected
 
     // navigate to page
     if (page != null) {

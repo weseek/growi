@@ -4,11 +4,9 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import { PageQueryBuilder } from '../models/obsolete-page';
 import UpdatePost from '../models/update-post';
-import { PageRedirectModel } from '../models/page-redirect';
 
-const { isCreatablePage, isTopPage } = pagePathUtils;
+const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -142,11 +140,12 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');
+
+  const { PageQueryBuilder } = Page;
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -171,14 +170,6 @@ module.exports = function(crowi, app) {
 
   function getPathFromRequest(req) {
     return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
-  }
-
-  function isUserPage(path) {
-    if (path.match(/^\/user\/[^/]+\/?$/)) {
-      return true;
-    }
-
-    return false;
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -276,12 +267,15 @@ module.exports = function(crowi, app) {
     renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
   }
 
-  function addRenderVarsWhenNotFound(renderVars, pathOrId) {
+  async function addRenderVarsWhenNotFound(renderVars, pathOrId) {
     if (pathOrId == null) {
       return;
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
+
+    const isPath = pathOrId.includes('/');
+    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -339,7 +333,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
 
-    addRenderVarsWhenNotFound(renderVars, pathOrId);
+    await addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
   }
@@ -354,9 +348,16 @@ module.exports = function(crowi, app) {
       next();
     }
 
+    // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return next();
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
+
     }
 
     const renderVars = {};
@@ -419,8 +420,13 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return _notFound(req, res);
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
     const { path } = page; // this must exist
@@ -450,7 +456,7 @@ module.exports = function(crowi, app) {
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
 
-    if (isUserPage(path)) {
+    if (isUsersHomePage(path)) {
       // change template
       view = 'layout-growi/user_page';
       await addRenderVarsForUserPage(renderVars, page);
@@ -494,8 +500,8 @@ module.exports = function(crowi, app) {
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
-    if (shareLink == null || shareLink.relatedPage == null) {
-      // page or sharelink are not found
+    if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+      // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
@@ -593,7 +599,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     const builder = new PageQueryBuilder(Page.find({ path }));
-    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
@@ -611,10 +617,6 @@ module.exports = function(crowi, app) {
     }
 
     if (pages.length === 1) {
-      if (pages[0].isEmpty) {
-        return _notFound(req, res);
-      }
-
       const url = new URL('https://dummy.origin');
       url.pathname = `/${pages[0]._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
@@ -623,7 +625,8 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    const isForbidden = await Page.exists({ path });
+    // Exclude isEmpty page to handle _notFound or forbidden
+    const isForbidden = await Page.exists({ path, isEmpty: false });
     if (isForbidden) {
       req.isForbidden = true;
       return _notFound(req, res);
@@ -890,7 +893,7 @@ module.exports = function(crowi, app) {
    * - If revision_id is not specified => force update by the new contents.
    */
   api.update = async function(req, res) {
-    const pageBody = body ?? null;
+    const pageBody = req.body.body ?? null;
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
@@ -1174,7 +1177,7 @@ module.exports = function(crowi, app) {
 
     const options = {};
 
-    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
@@ -1184,8 +1187,8 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user)) {
-          return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
+        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
@@ -1198,6 +1201,10 @@ module.exports = function(crowi, app) {
 
         if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
+        }
+
+        if (!crowi.pageService.canDelete(page.creator, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively);
@@ -1227,7 +1234,8 @@ module.exports = function(crowi, app) {
 
   validator.revertRemove = [
     body('recursively')
-      .custom(v => v === 'true' || v === true || null)
+      .optional()
+      .custom(v => v === 'true' || v === true || v == null)
       .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
@@ -1254,7 +1262,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to revert deleted page.'));
+      return res.json(ApiResponse.error(err));
     }
 
     const result = {};

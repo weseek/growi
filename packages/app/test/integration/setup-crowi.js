@@ -1,3 +1,5 @@
+import { Server } from 'http';
+
 import Crowi from '~/server/crowi';
 
 let _instance = null;
@@ -7,6 +9,7 @@ const initCrowi = async(crowi) => {
   await crowi.setupConfigManager();
 
   await crowi.setupSocketIoService();
+  await crowi.socketIoService.attachServer(new Server()); // attach dummy server
 
   await Promise.all([
     crowi.setUpApp(),

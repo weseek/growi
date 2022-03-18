@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
 import { PageDocument, PageModel } from '~/server/models/page';
-import { PageQueryBuilder } from '../models/obsolete-page';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
@@ -216,6 +215,7 @@ class PageGrantService {
    */
   private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     let applicableUserIds: ObjectIdLike[] | undefined;
@@ -352,31 +352,30 @@ class PageGrantService {
    * @param pageIds pageIds to be tested
    * @returns a tuple with the first element of normalizable pages and the second element of NOT normalizable pages
    */
-  async separateNormalizableAndNotNormalizablePages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
-    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+  async separateNormalizableAndNotNormalizablePages(pages): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
+
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
     const normalizable: (PageDocument & { _id: any })[] = [];
     const nonNormalizable: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
 
-    const builder = new PageQueryBuilder(Page.find());
-    builder.addConditionToListByPageIdsArray(pageIds);
-
-    const pages = await builder.query.exec();
-
     for await (const page of pages) {
       const {
         path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
-      const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
-      if (isNormalized) {
+      if (!pageUtils.isPageNormalized(page)) {
+        nonNormalizable.push(page);
+        continue;
+      }
+
+      if (await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {

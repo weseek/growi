@@ -54,7 +54,7 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
   const isCautionVisible = currentBotType === SlackbotType.OFFICIAL || currentBotType === SlackbotType.CUSTOM_WITH_PROXY;
 
   return (
-    <li className="list-group-item">
+    <li data-testid="slack-integration-list-item" className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
         <a href="/admin/slack-integration" className="ml-2">{t('slack_integration')}</a>

@@ -4,13 +4,15 @@ import loggerFactory from '~/utils/logger';
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
+const { convertToNewAffiliationPath } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -158,7 +160,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -239,33 +240,36 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
     }
 
-    let result = {};
+    let page;
     try {
-      result = await pageService.findPageAndMetaDataByViewer({ pageId, path, user: req.user });
+      if (pageId != null) { // prioritized
+        page = await Page.findByIdAndViewer(pageId, req.user);
+      }
+      else {
+        page = await Page.findByPathAndViewer(path, req.user);
+      }
     }
     catch (err) {
       logger.error('get-page-failed', err);
       return res.apiv3Err(err, 500);
     }
 
-    const page = result.page;
-
     if (page == null) {
-      return res.apiv3(result);
+      return res.apiv3Err('Page is not found', 404);
     }
 
     try {
       page.initLatestRevisionField();
 
       // populate
-      result.page = await page.populateDataToShowRevision();
+      page = await page.populateDataToShowRevision();
     }
     catch (err) {
       logger.error('populate-page-failed', err);
       return res.apiv3Err(err, 500);
     }
 
-    return res.apiv3(result);
+    return res.apiv3({ page });
   });
 
   /**
@@ -360,52 +364,13 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findByIdAndViewer(pageId, user, null, true);
+      const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true, isSharedPage);
 
-      if (page == null) {
+      if (pageWithMeta == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      if (isSharedPage) {
-        return {
-          isEmpty: page.isEmpty,
-          isMovable: false,
-          isDeletable: false,
-          isAbleToDeleteCompletely: false,
-        };
-      }
-
-      const isGuestUser = !req.user;
-      const pageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
-
-      const bookmarkCount = await Bookmark.countByPageId(pageId);
-
-      const responseBodyForGuest = {
-        ...pageInfo,
-        bookmarkCount,
-      };
-
-      if (isGuestUser) {
-        return res.apiv3(responseBodyForGuest);
-      }
-
-      const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
-      const isLiked = page.isLiked(user);
-      const isMovable = !isTopPage(page.path);
-      const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
-
-      const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
-
-      const responseBody = {
-        ...responseBodyForGuest,
-        isMovable,
-        isAbleToDeleteCompletely,
-        isBookmarked,
-        isLiked,
-        subscriptionStatus: subscription?.status,
-      };
-
-      return res.apiv3(responseBody);
+      return res.apiv3(pageWithMeta.meta);
     }
     catch (err) {
       logger.error('get-page-info', err);

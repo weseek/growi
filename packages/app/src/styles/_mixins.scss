@@ -206,7 +206,7 @@
   }
   @include hover() {
     svg {
-      fill: $value;
+      fill: $color-hover;
     }
   }
   &.disabled,
@@ -219,7 +219,7 @@
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
     svg {
-      fill: $value;
+      fill: $color-hover;
     }
   }
 }
