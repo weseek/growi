@@ -4,10 +4,12 @@ export type TypeaheadProps = {
   emptyLabel?: string,
   placeholder?: string,
   autoFocus?: boolean,
+  inputProps?: unknown,
 
   onChange?: (data: unknown[]) => void,
   onBlur?: () => void,
   onFocus?: () => void,
-  onIncrementalSearch?: (text: string) => void,
+  onSearch?: (text: string) => void,
+  onInputChange?: (text: string) => void,
   onKeyDown?: (input: string) => void,
 };

@@ -43,7 +43,7 @@ const PagePathAutoComplete = (props) => {
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
-      inputName="new_path"
+      inputProps={{ name: 'new_path' }}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={props.autoFocus}

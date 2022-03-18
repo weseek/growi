@@ -3,7 +3,7 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
@@ -15,18 +15,19 @@ import { useSWRxFullTextSearch } from '~/stores/search';
 
 
 type ResetFormButtonProps = {
-  keywordOnInit: string,
-  input: string,
+  input?: string,
   onReset: (e: MouseEvent<HTMLButtonElement>) => void,
 }
 
 const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) => {
-  const isHidden = props.input.length === 0;
+  const { input, onReset } = props;
+
+  const isHidden = input == null || input.length === 0;
 
   return isHidden ? (
     <span />
   ) : (
-    <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={props.onReset}>
+    <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={onReset}>
       <i className="icon-close" />
     </button>
   );
@@ -36,43 +37,48 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 type Props = TypeaheadProps & {
   onSearchError?: (err: Error) => void,
   onSubmit?: (input: string) => void,
-  inputName?: string,
   keywordOnInit?: string,
   disableIncrementalSearch?: boolean,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  helpElement?: any,
+  helpElement?: React.ReactNode,
 };
 
 // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
 type TypeaheadInstance = {
   clear: () => void,
   focus: () => void,
-  setState: ({ text: string }) => void,
-}
-type TypeaheadInstanceFactory = {
-  getInstance: () => TypeaheadInstance,
+  toggleMenu: () => void,
 }
 
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
-    onSearchError, onIncrementalSearch, onSubmit,
-    emptyLabel, helpElement, keywordOnInit, disableIncrementalSearch,
+    onSearchError, onSearch, onInputChange, onSubmit,
+    inputProps, keywordOnInit, disableIncrementalSearch, helpElement,
   } = props;
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const [input, setInput] = useState(props.keywordOnInit!);
+  const [input, setInput] = useState(keywordOnInit);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
-  const keyword = disableIncrementalSearch ? null : input;
-  const { data: searchResult, error: searchError } = useSWRxFullTextSearch(keyword, { limit: 10 });
+  const { data: searchResult, error: searchError } = useSWRxFullTextSearch(
+    disableIncrementalSearch ? null : searchKeyword,
+    { limit: 10 },
+  );
 
   const isLoading = searchResult == null && searchError == null;
+  const showHelp = input == null || input.length === 0;
 
-  const typeaheadRef = useRef<TypeaheadInstanceFactory>(null);
+  const typeaheadRef = useRef<TypeaheadInstance>(null);
 
   const focusToTypeahead = () => {
-    const instance = typeaheadRef.current?.getInstance();
+    const instance = typeaheadRef.current;
     if (instance != null) {
       instance.focus();
+    }
+  };
+
+  const clearTypeahead = () => {
+    const instance = typeaheadRef.current;
+    if (instance != null) {
+      instance.clear();
     }
   };
 
@@ -81,56 +87,43 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     focus: focusToTypeahead,
   }));
 
-  const changeKeyword = (text: string | undefined) => {
-    const instance = typeaheadRef.current?.getInstance();
-    if (instance != null) {
-      instance.clear();
-      instance.setState({ text });
-    }
-  };
-
-  const resetForm = (e: MouseEvent<HTMLButtonElement>) => {
+  const resetForm = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     setInput('');
-    changeKeyword('');
+    setSearchKeyword('');
 
+    clearTypeahead();
     focusToTypeahead();
 
-    if (onIncrementalSearch != null) {
-      onIncrementalSearch('');
+    if (onSearch != null) {
+      onSearch('');
     }
-  };
+  }, [onSearch]);
 
   const searchHandler = useCallback((text: string) => {
+    setSearchKeyword(text);
+
+    if (onSearch != null) {
+      onSearch(text);
+    }
+  }, [onSearch]);
+
+  const inputChangeHandler = useCallback((text: string) => {
     setInput(text);
 
-    if (onIncrementalSearch != null) {
-      onIncrementalSearch(text);
+    if (onInputChange != null) {
+      onInputChange(text);
     }
-  }, [onIncrementalSearch]);
+  }, [onInputChange]);
 
   const keyDownHandler = useCallback((event: KeyboardEvent) => {
     if (event.keyCode === 13) { // Enter key
-      if (onSubmit != null) {
+      if (onSubmit != null && input != null && input.length > 0) {
         onSubmit(input);
       }
     }
   }, [input, onSubmit]);
-
-  const getEmptyLabel = () => {
-    // show help element if empty
-    if (input.length === 0) {
-      return helpElement;
-    }
-
-    // use props.emptyLabel as is if defined
-    if (emptyLabel !== undefined) {
-      return emptyLabel;
-    }
-
-    return <></>;
-  };
 
   useEffect(() => {
     if (onSearchError != null && searchError != null) {
@@ -141,13 +134,16 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const defaultSelected = (keywordOnInit !== '')
     ? [{ path: keywordOnInit }]
     : [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const inputProps: any = { autoComplete: 'off' };
-  if (props.inputName != null) {
-    inputProps.name = props.inputName;
-  }
 
-  const renderMenuItemChildren = (option: IPageWithMeta<IPageSearchMeta>) => {
+  const renderHelp = useCallback((results, menuProps) => {
+    return (
+      <Menu {...menuProps}>
+        {helpElement}
+      </Menu>
+    );
+  }, [helpElement]);
+
+  const renderMenuItemChildren = useCallback((option: IPageWithMeta<IPageSearchMeta>) => {
     const { data: pageData } = option;
     return (
       <span>
@@ -156,7 +152,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         <PageListMeta page={pageData} />
       </span>
     );
-  };
+  }, []);
 
   return (
     <div className="search-typeahead">
@@ -164,26 +160,26 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         {...props}
         id="search-typeahead-asynctypeahead"
         ref={typeaheadRef}
-        // inputProps={inputProps}
+        delay={400}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        inputProps={{ autoComplete: 'off', ...(inputProps as any ?? {}) }}
         isLoading={isLoading}
         labelKey={data => data?.pageData?.path || keywordOnInit || ''} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
         options={searchResult?.data} // Search result (Some page names)
         filterBy={() => true}
-        promptText={props.helpElement}
-        emptyLabel={disableIncrementalSearch ? null : getEmptyLabel()}
         align="left"
-        onSearch={searchHandler}
-        onKeyDown={keyDownHandler}
-        renderMenuItemChildren={renderMenuItemChildren}
+        open
+        renderMenu={renderHelp}
+        // renderMenuItemChildren={renderMenuItemChildren}
         defaultSelected={defaultSelected}
         autoFocus={props.autoFocus}
+        onSearch={searchHandler}
+        onInputChange={inputChangeHandler}
+        onKeyDown={keyDownHandler}
         onBlur={props.onBlur}
         onFocus={props.onFocus}
       />
       <ResetFormButton
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        keywordOnInit={props.keywordOnInit!}
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         input={input}
         onReset={resetForm}
       />

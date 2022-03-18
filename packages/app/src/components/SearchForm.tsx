@@ -17,7 +17,7 @@ type SearchFormHelpProps = {
   isShownHelp: boolean,
 }
 
-const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => {
+const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHelpProps) => {
   const { t } = useTranslation();
 
   const { isReachable, isShownHelp } = props;
@@ -78,7 +78,7 @@ const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => 
       </tbody>
     </table>
   );
-};
+});
 
 
 type Props = TypeaheadProps & {
@@ -97,7 +97,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
     isSearchServiceReachable,
     keywordOnInit,
     disableIncrementalSearch,
-    dropup, onChange, onBlur, onFocus, onSubmit, onIncrementalSearch,
+    dropup, onChange, onBlur, onFocus, onSubmit, onInputChange,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
@@ -132,7 +132,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
-      onIncrementalSearch={onIncrementalSearch}
+      onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}
       onBlur={() => {
         setShownHelp(false);
