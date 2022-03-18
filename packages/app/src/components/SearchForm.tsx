@@ -5,6 +5,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
+import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
@@ -80,26 +81,23 @@ const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => 
 };
 
 
-type Props = {
+type Props = TypeaheadProps & {
   isSearchServiceReachable: boolean,
 
-  dropup?: boolean,
-  keyword?: string,
+  keywordOnInit?: string,
   disableIncrementalSearch?: boolean,
   onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
-  onBlur?: () => void,
-  onFocus?: () => void,
   onSubmit?: (input: string) => void,
-  onInputChange?: (text: string) => void,
 };
 
 
 const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const { t } = useTranslation();
   const {
-    isSearchServiceReachable, dropup,
+    isSearchServiceReachable,
+    keywordOnInit,
     disableIncrementalSearch,
-    onChange, onBlur, onFocus, onSubmit, onInputChange,
+    dropup, onChange, onBlur, onFocus, onSubmit, onIncrementalSearch,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
@@ -134,7 +132,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
-      onInputChange={onInputChange}
+      onIncrementalSearch={onIncrementalSearch}
       onSearchError={err => setSearchError(err)}
       onBlur={() => {
         setShownHelp(false);
@@ -149,7 +147,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
         }
       }}
       helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
-      keywordOnInit={props.keyword}
+      keywordOnInit={keywordOnInit}
     />
   );
 };

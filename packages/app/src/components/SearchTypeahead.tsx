@@ -1,6 +1,6 @@
 import React, {
   FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
-  KeyboardEvent, useCallback, useRef, useState, MouseEvent,
+  KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -9,9 +9,9 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { apiGet } from '~/client/util/apiv1-client';
-import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta } from '~/interfaces/search';
 import { IPageWithMeta } from '~/interfaces/page';
+import { useSWRxFullTextSearch } from '~/stores/search';
 
 
 type ResetFormButtonProps = {
@@ -34,7 +34,6 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 
 
 type Props = TypeaheadProps & {
-  onSearchSuccess?: (res: IPageWithMeta<IPageSearchMeta>[]) => void,
   onSearchError?: (err: Error) => void,
   onSubmit?: (input: string) => void,
   inputName?: string,
@@ -56,16 +55,17 @@ type TypeaheadInstanceFactory = {
 
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
-    onSearchSuccess, onSearchError, onInputChange, onSubmit,
+    onSearchError, onIncrementalSearch, onSubmit,
     emptyLabel, helpElement, keywordOnInit, disableIncrementalSearch,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
-  const [pages, setPages] = useState<IPageWithMeta<IPageSearchMeta>[]>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchError, setSearchError] = useState<Error | null>(null);
-  const [isLoading, setLoading] = useState(false);
+
+  const keyword = disableIncrementalSearch ? null : input;
+  const { data: searchResult, error: searchError } = useSWRxFullTextSearch(keyword, { limit: 10 });
+
+  const isLoading = searchResult == null && searchError == null;
 
   const typeaheadRef = useRef<TypeaheadInstanceFactory>(null);
 
@@ -94,69 +94,21 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
 
     setInput('');
     changeKeyword('');
-    setPages([]);
 
     focusToTypeahead();
 
-    if (onInputChange != null) {
-      onInputChange('');
+    if (onIncrementalSearch != null) {
+      onIncrementalSearch('');
     }
   };
 
-  /**
-   * Callback function which is occured when search is exit successfully
-   */
-  const searchSuccessHandler = useCallback((result: IFormattedSearchResult) => {
-    const searchResultData = result.data;
-    setPages(searchResultData);
-
-    if (onSearchSuccess != null) {
-      onSearchSuccess(searchResultData);
-    }
-  }, [onSearchSuccess]);
-
-  /**
-   * Callback function which is occured when search is exit abnormaly
-   */
-  const searchErrorHandler = useCallback((err: Error) => {
-    setSearchError(err);
-
-    if (onSearchError != null) {
-      onSearchError(err);
-    }
-  }, [onSearchError]);
-
-  const search = useCallback(async(keyword: string) => {
-    if (disableIncrementalSearch || keyword === '') {
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const result = await apiGet('/search', { q: keyword }) as IFormattedSearchResult;
-      searchSuccessHandler(result);
-    }
-    catch (err) {
-      searchErrorHandler(err);
-    }
-    finally {
-      setLoading(false);
-    }
-
-  }, [disableIncrementalSearch, searchErrorHandler, searchSuccessHandler]);
-
-  const inputChangeHandler = useCallback((text: string) => {
+  const searchHandler = useCallback((text: string) => {
     setInput(text);
 
-    if (onInputChange != null) {
-      onInputChange(text);
+    if (onIncrementalSearch != null) {
+      onIncrementalSearch(text);
     }
-
-    if (text === '') {
-      setPages([]);
-    }
-  }, [onInputChange]);
+  }, [onIncrementalSearch]);
 
   const keyDownHandler = useCallback((event: KeyboardEvent) => {
     if (event.keyCode === 13) { // Enter key
@@ -179,6 +131,12 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
 
     return <></>;
   };
+
+  useEffect(() => {
+    if (onSearchError != null && searchError != null) {
+      onSearchError(searchError);
+    }
+  }, [onSearchError, searchError]);
 
   const defaultSelected = (keywordOnInit !== '')
     ? [{ path: keywordOnInit }]
@@ -206,19 +164,17 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         {...props}
         id="search-typeahead-asynctypeahead"
         ref={typeaheadRef}
-        inputProps={inputProps}
+        // inputProps={inputProps}
         isLoading={isLoading}
         labelKey={data => data?.pageData?.path || keywordOnInit || ''} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
-        minLength={0}
-        options={pages} // Search result (Some page names)
+        options={searchResult?.data} // Search result (Some page names)
+        filterBy={() => true}
         promptText={props.helpElement}
         emptyLabel={disableIncrementalSearch ? null : getEmptyLabel()}
         align="left"
-        onSearch={search}
-        onInputChange={inputChangeHandler}
+        onSearch={searchHandler}
         onKeyDown={keyDownHandler}
         renderMenuItemChildren={renderMenuItemChildren}
-        caseSensitive={false}
         defaultSelected={defaultSelected}
         autoFocus={props.autoFocus}
         onBlur={props.onBlur}

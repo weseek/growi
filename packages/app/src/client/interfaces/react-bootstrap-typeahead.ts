@@ -1,4 +1,4 @@
-// https://github.com/ericgio/react-bootstrap-typeahead/blob/3.x/docs/Props.md
+// https://github.com/ericgio/react-bootstrap-typeahead/blob/5.x/docs/API.md
 export type TypeaheadProps = {
   dropup?: boolean,
   emptyLabel?: string,
@@ -8,6 +8,6 @@ export type TypeaheadProps = {
   onChange?: (data: unknown[]) => void,
   onBlur?: () => void,
   onFocus?: () => void,
-  onInputChange?: (text: string) => void,
+  onIncrementalSearch?: (text: string) => void,
   onKeyDown?: (input: string) => void,
 };

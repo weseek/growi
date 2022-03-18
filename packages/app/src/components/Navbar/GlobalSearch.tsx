@@ -103,7 +103,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
           onChange={gotoPage}
           onBlur={() => setFocused(false)}
           onFocus={() => setFocused(true)}
-          onInputChange={text => setText(text)}
+          onIncrementalSearch={text => setText(text)}
           onSubmit={search}
         />
         { isIndicatorShown && (
