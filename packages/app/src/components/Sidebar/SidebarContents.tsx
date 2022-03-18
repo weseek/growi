@@ -18,14 +18,14 @@ const SidebarContents: FC<Props> = (props: Props) => {
     case SidebarContentsType.RECENT:
       Contents = RecentChanges;
       break;
-    case SidebarContentsType.TREE:
-      Contents = PageTree;
+    case SidebarContentsType.CUSTOM:
+      Contents = CustomSidebar;
       break;
     case SidebarContentsType.TAG:
       Contents = Tag;
       break;
     default:
-      Contents = CustomSidebar;
+      Contents = PageTree;
   }
 
   return (
