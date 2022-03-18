@@ -431,6 +431,7 @@ describe('PageService page operations with non-public pages', () => {
       const newPathForChild = '/np_rename1_destination/np_rename2';
       const newPathForGrandchild = '/np_rename1_destination/np_rename2/np_rename3';
       await renamePage(page2, newPathForChild, npDummyUser2, {});
+
       const _pageD = await Page.findOne({ path: pathD, ...propertiesD });
       const _page2 = await Page.findOne({ path: path2, ...properties2 }); // not exist
       const _page3 = await Page.findOne({ path: path3, ...properties3, parent: page2._id }); // not exist
@@ -488,7 +489,6 @@ describe('PageService page operations with non-public pages', () => {
       const pageD = await Page.findOne({ path: pathD, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
       const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_RESTRICTED });
       const page3 = await Page.findOne({ path: path3, grant: Page.GRANT_RESTRICTED });
-
       expect(pageD).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
