@@ -2253,14 +2253,14 @@ class PageService {
           throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
-        const normalizedPage = await this.normalizeParentByPageId(page, user);
+        const normalizedPage = await this.normalizeParentByPageId(pageId, user);
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
         }
         else {
           // update descendantCount of ancestors'
-          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount + 1, false);
+          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount, false);
         }
       }
       catch (err) {
@@ -2420,7 +2420,7 @@ class PageService {
 
       const exDescendantCount = page.descendantCount;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = (newDescendantCount - exDescendantCount) + 1;
+      const inc = newDescendantCount - exDescendantCount;
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
