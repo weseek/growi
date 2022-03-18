@@ -415,7 +415,6 @@ describe('PageService page operations with non-public pages', () => {
     };
 
     test('Should rename/move with descendants with grant normalized pages', async() => {
-      // BR => Before Rename
       const path1 = '/np_rename1_destination';
       const path2 = '/np_rename2';
       const path3 = '/np_rename2/np_rename3';
@@ -447,41 +446,37 @@ describe('PageService page operations with non-public pages', () => {
       expect(_page3R.grantedGroup).toStrictEqual(page3.grantedGroup);
     });
     test('Should throw with NOT grant normalized pages', async() => {
-      // BR => Before Rename
-      const path1BR = '/np_rename4_destination';
-      const path2BR = '/np_rename5';
-      const path3BR = '/np_rename5/np_rename6';
-      const page1 = await Page.findOne({ path: path1BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });// isolate
-      const childPage = await Page.findOne({ path: path2BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });// groupIdB
-      const grandchildPage = await Page.findOne({
-        parent: childPage._id, path: path3BR, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB, // groupIdB
-      });
-      expect(page1).toBeTruthy();
-      expect(childPage).toBeTruthy();
-      expect(grandchildPage).toBeTruthy();
+      const pathD = '/np_rename4_destination';
+      const path2 = '/np_rename5';
+      const path3 = '/np_rename5/np_rename6';
+      const propatiesD = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate };
+      const propaties2 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const propaties3 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const pageD = await Page.findOne({ path: pathD, ...propatiesD });// isolate
+      const page2 = await Page.findOne({ path: path2, ...propaties2 });// groupIdB
+      const page3 = await Page.findOne({ path: path3, ...propaties3, parent: page2 });// groupIdB
+      expect(pageD).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
 
       const newPath1 = '/np_rename4_destination/np_rename5';
       const newPath2 = '/np_rename4_destination/np_rename5/np_rename6';
-
       let isThrown = false;
       try {
-        await renamePage(childPage, newPath1, dummyUser1, {});
+        await renamePage(page2, newPath1, dummyUser1, {});
       }
       catch (err) {
         isThrown = true;
       }
-
       expect(isThrown).toBe(true);
-
-      const childPageBR = await Page.findOne({ path: path2BR });
-      const grandChildPageBR = await Page.findOne({ path: path3BR });
-      const renamedChildPage = await Page.findOne({ path: newPath1 });
-      const renamedGrandchildPage = await Page.findOne({ path: newPath2 });
-      expect(childPageBR).toBeTruthy();
-      expect(grandChildPageBR).toBeTruthy();
-      expect(renamedChildPage).toBeNull();
-      expect(renamedGrandchildPage).toBeNull();
-
+      const _page2 = await Page.findOne({ path: path2 }); // not renamed thus exist
+      const _page3 = await Page.findOne({ path: path3 }); // not renamed thus exist
+      const _page2R = await Page.findOne({ path: newPath1 }); // not exist
+      const _page3R = await Page.findOne({ path: newPath2 }); // not exist
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_page2R).toBeNull();
+      expect(_page3R).toBeNull();
     });
     test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async() => {
       // BR => Before Rename
