@@ -43,8 +43,8 @@ class SecuritySetting extends React.Component {
 
     const isRecursiveDeletion = deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
 
-    const forceCahge = isRecursiveDeletion && isButtonDisabled && currentState === PageDeleteConfigValue.AdminAndAuthor;
-    if (forceCahge) {
+    const forceChange = isRecursiveDeletion && isButtonDisabled && currentState === PageDeleteConfigValue.AdminAndAuthor;
+    if (forceChange) {
       switch (deletionType) {
         case DeletionType.RecursiveDeletion:
           setState(adminGeneralSecurityContainer.state.currentPageDeletionAuthority);
