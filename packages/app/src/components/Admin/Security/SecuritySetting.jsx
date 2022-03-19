@@ -11,12 +11,50 @@ import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 
 // used as the prefix of translation
-const DeletionType = Object.freeze({
+const DeletionTypeForT = Object.freeze({
   Deletion: 'deletion',
   CompleteDeletion: 'complete_deletion',
   RecursiveDeletion: 'recursive_deletion',
   RecursiveCompleteDeletion: 'recursive_complete_deletion',
 });
+
+const DeletionType = Object.freeze({
+  Deletion: 'deletion',
+  CompleteDeletion: 'completeDeletion',
+  RecursiveDeletion: 'recursiveDeletion',
+  RecursiveCompleteDeletion: 'recursiveCompleteDeletion',
+});
+
+const getDeletionTypeForT = (deletionType) => {
+  switch (deletionType) {
+    case DeletionType.Deletion:
+      return DeletionTypeForT.Deletion;
+    case DeletionType.RecursiveDeletion:
+      return DeletionTypeForT.RecursiveDeletion;
+    case DeletionType.CompleteDeletion:
+      return DeletionTypeForT.CompleteDeletion;
+    case DeletionType.RecursiveCompleteDeletion:
+      return DeletionTypeForT.RecursiveCompleteDeletion;
+  }
+};
+
+/**
+ * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
+ * @param deletionType Deletion type
+ * @returns boolean
+ */
+const isRecursiveDeletion = (deletionType) => {
+  return deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
+};
+
+/**
+ * Return true if "deletionType" is DeletionType.Deletion or DeletionType.RecursiveDeletion.
+ * @param deletionType Deletion type
+ * @returns boolean
+ */
+const isTypeDeletion = (deletionType) => {
+  return deletionType === DeletionType.Deletion || deletionType === DeletionType.RecursiveDeletion;
+};
 
 class SecuritySetting extends React.Component {
 
@@ -24,6 +62,8 @@ class SecuritySetting extends React.Component {
     super(props);
 
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
+    this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
+    this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
   }
 
@@ -38,12 +78,53 @@ class SecuritySetting extends React.Component {
     }
   }
 
-  renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled, t) {
-    const isRecursiveDeletion = deletionType === DeletionType.RecursiveDeletion || deletionType === DeletionType.RecursiveCompleteDeletion;
+  getRecursiveDeletionConfigState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    if (isTypeDeletion(deletionType)) {
+      return [
+        adminGeneralSecurityContainer.state.currentPageRecursiveDeletionAuthority,
+        adminGeneralSecurityContainer.changePageRecursiveDeletionAuthority,
+      ];
+    }
+
+    return [
+      adminGeneralSecurityContainer.state.currentPageRecursiveCompleteDeletionAuthority,
+      adminGeneralSecurityContainer.changePageRecursiveCompleteDeletionAuthority,
+    ];
+  }
+
+  /**
+   * Force update deletion config for recursive operation when the deletion config for general operation is updated.
+   * @param deletionType Deletion type
+   */
+  setDeletionConfigState(newState, setState, deletionType) {
+    if (isRecursiveDeletion(deletionType)) {
+      setState(newState);
+
+      return;
+    }
+
+    const [recursiveState, setRecursiveState] = this.getRecursiveDeletionConfigState(deletionType);
+    const shouldForceUpdate = !validateDeleteConfigs(newState, recursiveState);
+    if (shouldForceUpdate) {
+      setState(newState);
+      setRecursiveState(newState);
+    }
+    else {
+      setState(newState);
+    }
+
+    return;
+  }
+
+  renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
+    const { t } = this.props;
+
     return (
-      <div className="row mb-4">
+      <div key={`page-delete-permission-dropdown-${deletionType}`} className="row mb-4">
         <div className="col-md-3 text-md-right mb-2">
-          <strong>{t(`security_setting.${deletionType}`)}</strong>
+          <strong>{t(`security_setting.${getDeletionTypeForT(deletionType)}`)}</strong>
         </div>
         <div className="col-md-6">
           <div className="dropdown">
@@ -64,12 +145,12 @@ class SecuritySetting extends React.Component {
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                isRecursiveDeletion
+                isRecursiveDeletion(deletionType)
                   ? (
                     <button
                       className="dropdown-item"
                       type="button"
-                      onClick={() => { setState(PageDeleteConfigValue.Inherit) }}
+                      onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Inherit, setState, deletionType) }}
                     >
                       {t('security_setting.inherit')}
                     </button>
@@ -78,7 +159,7 @@ class SecuritySetting extends React.Component {
                     <button
                       className="dropdown-item"
                       type="button"
-                      onClick={() => { setState(PageDeleteConfigValue.Anyone) }}
+                      onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Anyone, setState, deletionType) }}
                     >
                       {t('security_setting.anyone')}
                     </button>
@@ -87,20 +168,20 @@ class SecuritySetting extends React.Component {
               <button
                 className={`dropdown-item ${isButtonDisabled ? 'disabled' : ''}`}
                 type="button"
-                onClick={() => { setState(PageDeleteConfigValue.AdminAndAuthor) }}
+                onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminAndAuthor, setState, deletionType) }}
               >
                 {t('security_setting.admin_and_author')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { setState(PageDeleteConfigValue.AdminOnly) }}
+                onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminOnly, setState, deletionType) }}
               >
                 {t('security_setting.admin_only')}
               </button>
             </div>
             <p className="form-text text-muted small">
-              {t(`security_setting.${deletionType}_explain`)}
+              {t(`security_setting.${getDeletionTypeForT(deletionType)}_explain`)}
             </p>
           </div>
         </div>
@@ -249,14 +330,14 @@ class SecuritySetting extends React.Component {
             [currentPageDeletionAuthority, adminGeneralSecurityContainer.changePageDeletionAuthority, DeletionType.Deletion, false],
             // eslint-disable-next-line max-len
             [currentPageRecursiveDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveDeletionAuthority, DeletionType.RecursiveDeletion, isButtonDisabledForDeletion],
-          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3], t))
+          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3]))
         }
         {
           [
             [currentPageCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageCompleteDeletionAuthority, DeletionType.CompleteDeletion, false],
             // eslint-disable-next-line max-len
             [currentPageRecursiveCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveCompleteDeletionAuthority, DeletionType.RecursiveCompleteDeletion, isButtonDisabledForCompleteDeletion],
-          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3], t))
+          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3]))
         }
 
         <h4>{t('security_setting.session')}</h4>
