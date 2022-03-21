@@ -135,23 +135,26 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   }, []);
 
   const renderMenu = useCallback((options: IPageWithMeta<IPageSearchMeta>[], menuProps) => {
-    const isEmptyInput = input == null || input.length === 0;
-
     if (!isForcused) {
       return <></>;
     }
 
+    const isEmptyInput = input == null || input.length === 0;
     if (isEmptyInput) {
-      if (helpElement != null) {
-        return (
-          <Menu {...menuProps}>
-            <div className="p-3">
-              {helpElement}
-            </div>
-          </Menu>
-        );
+      if (helpElement == null) {
+        return <></>;
       }
 
+      return (
+        <Menu {...menuProps}>
+          <div className="p-3">
+            {helpElement}
+          </div>
+        </Menu>
+      );
+    }
+
+    if (disableIncrementalSearch) {
       return <></>;
     }
 
@@ -168,7 +171,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         ))}
       </Menu>
     );
-  }, [helpElement, input, isForcused]);
+  }, [disableIncrementalSearch, helpElement, input, isForcused]);
 
   const isLoading = searchResult == null && searchError == null;
   const isOpenAlways = helpElement != null;
