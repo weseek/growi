@@ -65,8 +65,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     { limit: 10 },
   );
 
-  const isLoading = searchResult == null && searchError == null;
-
   const typeaheadRef = useRef<TypeaheadInstance>(null);
 
   const focusToTypeahead = () => {
@@ -172,6 +170,9 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     );
   }, [helpElement, input, isForcused]);
 
+  const isLoading = searchResult == null && searchError == null;
+  const isOpenAlways = helpElement != null;
+
   return (
     <div className="search-typeahead">
       <AsyncTypeahead
@@ -185,9 +186,8 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         labelKey={labelKey}
         defaultInputValue={keywordOnInit}
         options={searchResult?.data} // Search result (Some page names)
-        filterBy={() => true}
         align="left"
-        open
+        open={isOpenAlways || undefined}
         renderMenu={renderMenu}
         autoFocus={props.autoFocus}
         onSearch={searchHandler}
