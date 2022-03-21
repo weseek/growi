@@ -123,15 +123,15 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
-      disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
       onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}
       onBlur={onBlur}
       onFocus={onFocus}
-      helpElement={<SearchFormHelp isReachable={isSearchServiceReachable} />}
       keywordOnInit={keywordOnInit}
+      disableIncrementalSearch={disableIncrementalSearch}
+      helpElement={<SearchFormHelp isReachable={isSearchServiceReachable} />}
     />
   );
 };
