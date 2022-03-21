@@ -132,9 +132,9 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     }
   }, [onSearchError, searchError]);
 
-  const defaultSelected = (keywordOnInit !== '')
-    ? [{ path: keywordOnInit }]
-    : [];
+  const labelKey = useCallback((option?: IPageWithMeta<IPageSearchMeta>) => {
+    return option?.data.path ?? '';
+  }, []);
 
   const renderMenu = useCallback((options: IPageWithMeta<IPageSearchMeta>[], menuProps) => {
     const isEmptyInput = input == null || input.length === 0;
@@ -182,13 +182,13 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inputProps={{ autoComplete: 'off', ...(inputProps as any ?? {}) }}
         isLoading={isLoading}
-        labelKey={data => data?.pageData?.path || keywordOnInit || ''} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
+        labelKey={labelKey}
+        defaultInputValue={keywordOnInit}
         options={searchResult?.data} // Search result (Some page names)
         filterBy={() => true}
         align="left"
         open
         renderMenu={renderMenu}
-        defaultSelected={defaultSelected}
         autoFocus={props.autoFocus}
         onSearch={searchHandler}
         onInputChange={inputChangeHandler}
