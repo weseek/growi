@@ -53,10 +53,12 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const {
     onSearchError, onSearch, onInputChange, onSubmit,
     inputProps, keywordOnInit, disableIncrementalSearch, helpElement,
+    onBlur, onFocus,
   } = props;
 
   const [input, setInput] = useState(keywordOnInit);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isForcused, setFocused] = useState(false);
 
   const { data: searchResult, error: searchError } = useSWRxFullTextSearch(
     disableIncrementalSearch ? null : searchKeyword,
@@ -64,7 +66,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   );
 
   const isLoading = searchResult == null && searchError == null;
-  const showHelp = input == null || input.length === 0;
 
   const typeaheadRef = useRef<TypeaheadInstance>(null);
 
@@ -135,24 +136,41 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     ? [{ path: keywordOnInit }]
     : [];
 
-  const renderHelp = useCallback((results, menuProps) => {
+  const renderMenu = useCallback((options: IPageWithMeta<IPageSearchMeta>[], menuProps) => {
+    const isEmptyInput = input == null || input.length === 0;
+
+    if (!isForcused) {
+      return <></>;
+    }
+
+    if (isEmptyInput) {
+      if (helpElement != null) {
+        return (
+          <Menu {...menuProps}>
+            <div className="p-3">
+              {helpElement}
+            </div>
+          </Menu>
+        );
+      }
+
+      return <></>;
+    }
+
     return (
       <Menu {...menuProps}>
-        {helpElement}
+        {options.map((pageWithMeta, index) => (
+          <MenuItem key={pageWithMeta.data._id} option={pageWithMeta} position={index}>
+            <span>
+              <UserPicture user={pageWithMeta.data.lastUpdateUser} size="sm" noLink />
+              <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
+              <PageListMeta page={pageWithMeta.data} />
+            </span>
+          </MenuItem>
+        ))}
       </Menu>
     );
-  }, [helpElement]);
-
-  const renderMenuItemChildren = useCallback((option: IPageWithMeta<IPageSearchMeta>) => {
-    const { data: pageData } = option;
-    return (
-      <span>
-        <UserPicture user={pageData.lastUpdateUser} size="sm" noLink />
-        <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageData.path} /></span>
-        <PageListMeta page={pageData} />
-      </span>
-    );
-  }, []);
+  }, [helpElement, input, isForcused]);
 
   return (
     <div className="search-typeahead">
@@ -169,15 +187,24 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         filterBy={() => true}
         align="left"
         open
-        renderMenu={renderHelp}
-        // renderMenuItemChildren={renderMenuItemChildren}
+        renderMenu={renderMenu}
         defaultSelected={defaultSelected}
         autoFocus={props.autoFocus}
         onSearch={searchHandler}
         onInputChange={inputChangeHandler}
         onKeyDown={keyDownHandler}
-        onBlur={props.onBlur}
-        onFocus={props.onFocus}
+        onBlur={() => {
+          setFocused(false);
+          if (onBlur != null) {
+            onBlur();
+          }
+        }}
+        onFocus={() => {
+          setFocused(true);
+          if (onFocus != null) {
+            onFocus();
+          }
+        }}
       />
       <ResetFormButton
         input={input}

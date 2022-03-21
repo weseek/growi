@@ -14,13 +14,12 @@ import SearchTypeahead from './SearchTypeahead';
 
 type SearchFormHelpProps = {
   isReachable: boolean,
-  isShownHelp: boolean,
 }
 
 const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHelpProps) => {
   const { t } = useTranslation();
 
-  const { isReachable, isShownHelp } = props;
+  const { isReachable } = props;
 
   if (!isReachable) {
     return (
@@ -29,10 +28,6 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
         Try to reconnect from management page.
       </>
     );
-  }
-
-  if (!isShownHelp) {
-    return <></>;
   }
 
   return (
@@ -101,7 +96,6 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
-  const [isShownHelp, setShownHelp] = useState(false);
 
   const searchTyheaheadRef = useRef<IFocusable>(null);
 
@@ -134,19 +128,9 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       onSubmit={onSubmit}
       onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}
-      onBlur={() => {
-        setShownHelp(false);
-        if (onBlur != null) {
-          onBlur();
-        }
-      }}
-      onFocus={() => {
-        setShownHelp(true);
-        if (onFocus != null) {
-          onFocus();
-        }
-      }}
-      helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
+      onBlur={onBlur}
+      onFocus={onFocus}
+      helpElement={<SearchFormHelp isReachable={isSearchServiceReachable} />}
       keywordOnInit={keywordOnInit}
     />
   );
