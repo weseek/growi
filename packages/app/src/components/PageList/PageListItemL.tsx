@@ -1,6 +1,6 @@
 import React, {
   forwardRef,
-  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useState,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
 import { CustomInput } from 'reactstrap';
