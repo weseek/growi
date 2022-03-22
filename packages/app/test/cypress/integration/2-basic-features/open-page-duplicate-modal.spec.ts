@@ -1,7 +1,5 @@
 context('Open Page Duplicate Modal', () => {
 
-  const ssPrefix = 'access-to-page-duplicate-modal-';
-
   let connectSid: string | undefined;
 
   before(() => {

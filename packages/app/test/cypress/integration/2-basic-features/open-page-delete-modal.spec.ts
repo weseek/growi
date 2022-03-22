@@ -1,7 +1,5 @@
 context('Open Page Delete Modal', () => {
 
-  const ssPrefix = 'access-to-page-delete-modal-';
-
   let connectSid: string | undefined;
 
   before(() => {
