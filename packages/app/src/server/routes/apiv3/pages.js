@@ -197,7 +197,9 @@ module.exports = (crowi) => {
     ],
     legacyPagesMigration: [
       body('pageIds').isArray().withMessage('pageIds is required'),
-      body('isRecursively').isBoolean().withMessage('isRecursively is required'),
+      body('isRecursively')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
   };
 
