@@ -1,5 +1,7 @@
 context('Open Page Delete Modal', () => {
 
+  const ssPrefix = 'access-to-page-delete-modal-';
+
   let connectSid: string | undefined;
 
   before(() => {
@@ -28,7 +30,7 @@ context('Open Page Delete Modal', () => {
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
 
-     cy.getByTestid('page-delete-modal').should('be.visible').first().screenshot();
+     cy.getByTestid('page-delete-modal').should('be.visible').first().screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
   });
 
 });

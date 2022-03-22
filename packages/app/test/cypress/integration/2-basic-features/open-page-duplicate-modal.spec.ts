@@ -1,5 +1,7 @@
 context('Open Page Duplicate Modal', () => {
 
+  const ssPrefix = 'access-to-page-duplicate-modal-';
+
   let connectSid: string | undefined;
 
   before(() => {
@@ -27,7 +29,7 @@ context('Open Page Duplicate Modal', () => {
        cy.getByTestid('open-page-item-control-btn').click();
        cy.getByTestid('open-page-duplicate-modal-btn').click();
     });
-     cy.getByTestid('page-duplicate-modal').should('be.visible').first().screenshot();
+     cy.getByTestid('page-duplicate-modal').should('be.visible').first().screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
   });
 
 });
