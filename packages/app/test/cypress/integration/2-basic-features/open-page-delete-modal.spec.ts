@@ -30,8 +30,7 @@ context('Open Page Delete Modal', () => {
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
 
-     cy.getByTestid('page-delete-modal').should('be.visible');
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
+     cy.getByTestid('page-delete-modal').should('be.visible').first().screenshot();
   });
 
 });
