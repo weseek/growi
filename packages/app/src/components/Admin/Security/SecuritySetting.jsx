@@ -125,10 +125,10 @@ class SecuritySetting extends React.Component {
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row mb-4">
 
         <div className="col-md-3 text-md-right">
-          {deletionType === DeletionType.Deletion && (
+          {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>ゴミ箱に入れる</strong>
           )}
-          {deletionType === DeletionType.CompleteDeletion && (
+          {!isRecursiveDeletion(deletionType) && !isTypeDeletion(deletionType) && (
             <strong>完全に削除する</strong>
           )}
         </div>
