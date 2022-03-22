@@ -67,10 +67,6 @@ html[light] {
   $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
-  // Dropdown colors
-  $bgcolor-dropdown-link-active: $primary;
-  $color-dropdown-link-active: $color-reversal;
-
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
@@ -167,11 +163,6 @@ html[dark] {
   // Border colors
   $border-color-theme: #146aa0;
   $bordercolor-inline-code: #4d4d4d; // optional
-
-  // Dropdown colors
-  $bgcolor-dropdown-link-active: $primary;
-  $color-dropdown-link-active: $color-global;
-  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: $primary;
