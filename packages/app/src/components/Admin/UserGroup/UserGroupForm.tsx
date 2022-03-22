@@ -132,6 +132,14 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                   </>
                 )
               }
+              <div className="dropdown-divider" />
+
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { setSelectedParent(undefined) }}
+              >親を解除する
+              </button>
             </div>
           </div>
         </div>
