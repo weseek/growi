@@ -56,7 +56,8 @@ schema.statics.createUserRegistrationOrder = async function(email) {
 };
 
 schema.methods.isExpired = function() {
-  return this.expiredAt.getTime() < Date.now();
+  const now = new Date();
+  return this.expiredAt.getTime() < now.getTime();
 };
 
 schema.methods.revokeOneTimeToken = async function() {
