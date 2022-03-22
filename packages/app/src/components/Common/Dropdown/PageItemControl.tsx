@@ -180,6 +180,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
+              data-testid="open-page-delete-modal-btn"
             >
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
