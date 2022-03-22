@@ -821,35 +821,35 @@ describe('PageService page operations with non-public pages', () => {
     };
     describe('Delete single page with grant RESTRICTED', () => {
       test('should be able to delete', async() => {
-        const pathT = '/npdel1_awl';
-        const pageT = await Page.findOne({ path: pathT, grant: Page.GRANT_RESTRICTED });
-        expect(pageT).toBeTruthy();
+        const _pathT = '/npdel1_awl';
+        const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_RESTRICTED });
+        expect(_pageT).toBeTruthy();
 
         const isRecursively = false;
-        await deletePage(pageT, dummyUser1, {}, isRecursively);
+        await deletePage(_pageT, dummyUser1, {}, isRecursively);
 
-        const _pageT = await Page.findOne({ path: `/trash${pathT}` });
-        const _pageN = await Page.findOne({ path: pathT }); // should not exist
-        expect(_pageT).toBeTruthy();
-        expect(_pageN).toBeNull();
-        expect(_pageT.grant).toBe(Page.GRANT_RESTRICTED);
-        expect(_pageT.status).toBe(Page.STATUS_DELETED);
+        const pageT = await Page.findOne({ path: `/trash${_pathT}` });
+        const pageN = await Page.findOne({ path: _pathT }); // should not exist
+        expect(pageT).toBeTruthy();
+        expect(pageN).toBeNull();
+        expect(pageT.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(pageT.status).toBe(Page.STATUS_DELETED);
       });
     });
     describe('Delete single page with grant USER_GROUP', () => {
       test('should be able to delete', async() => {
-        const path = '/npdel2_ug';
-        const page1 = await Page.findOne({ path, grantedGroup: groupIdA });
-        expect(page1).toBeTruthy();
+        const _path = '/npdel2_ug';
+        const _page1 = await Page.findOne({ path: _path, grantedGroup: groupIdA });
+        expect(_page1).toBeTruthy();
 
         const isRecursively = false;
-        await deletePage(page1, npDummyUser1, {}, isRecursively);
+        await deletePage(_page1, npDummyUser1, {}, isRecursively);
 
-        const _pageN = await Page.findOne({ path, grantedGroup: groupIdA });
-        const _page1 = await Page.findOne({ path: `/trash${path}`, grantedGroup: groupIdA });
-        expect(_pageN).toBeNull();
-        expect(_page1).toBeTruthy();
-        expect(_page1.status).toBe(Page.STATUS_DELETED);
+        const pageN = await Page.findOne({ path: _path, grantedGroup: groupIdA });
+        const page1 = await Page.findOne({ path: `/trash${_path}`, grantedGroup: groupIdA });
+        expect(pageN).toBeNull();
+        expect(page1).toBeTruthy();
+        expect(page1.status).toBe(Page.STATUS_DELETED);
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
