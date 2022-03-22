@@ -111,7 +111,7 @@
   "Create under": "Create page under below:",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
-  "V5 Page Migration": "V5 Page Migration",
+  "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
@@ -165,7 +165,7 @@
   "Page Tree": "Page Tree",
   "original_path":"Original path",
   "new_path":"New path",
-  "duplicated_path":"duplicated_path",
+  "duplicated_path":"Duplicated path",
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
@@ -393,7 +393,7 @@
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
     "outdated": "Page is updated someone and now outdated.",
-    "user_not_admin": "Only admin user can delete completely"
+    "user_not_admin": "Only admin user can delete"
   },
   "page_history": {
     "revision_list": "Revision list",
@@ -410,15 +410,16 @@
       "New page name": "New page name",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
       "Current page name": "Current page name",
-      "Recursively": "Recursively",
+      "Rename this page only": "Rename this page only",
+      "Force rename all child pages": "Force rename all pages",
+      "Other options": "Other options",
       "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses under this path",
-      "metadata": "Remains last update user and updated date as is",
+      "metadata": "Last update user and updated date will remain the same",
       "recursive": "Move/Rename children of under this path recursively"
     }
   },
@@ -667,8 +668,15 @@
     "page_listing_2": "Page listing/searching<br>restricted by User group",
     "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
     "page_access_and_delete_rights": "Page access / Delete rights",
-    "complete_deletion": "Restrict complete deletion of pages",
-    "complete_deletion_explain": "Restricts users who can completely delete pages.",
+    "deletion": "Restrict trashing of a selected single page",
+    "deletion_explain": "Restricts users who can trash a selected single page.",
+    "complete_deletion": "Restrict complete deletion of a selected single page",
+    "complete_deletion_explain": "Restricts users who can completely delete a selected single page.",
+    "recursive_deletion": "Restrict trashing of pages including descendants",
+    "recursive_deletion_explain": "Restricts users who can trash pages including descendants.",
+    "recursive_complete_deletion": "Restrict complete deletion of pages including descendants",
+    "recursive_complete_deletion_explain": "Restricts users who can completely delete pages including descendants.",
+    "inherit": "Inherit(Use the same setting as for a single page)",
     "admin_only": "Admin only",
     "admin_and_author": "Admin and author",
     "anyone": "Anyone",
@@ -989,6 +997,13 @@
     "success_to_send_email": "Success to send email",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
+  },
+  "maintenance_mode":{
+    "maintenance_mode": "Maintenance Mode",
+    "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",
+    "admin_page": "Admin Page",
+    "login": "Login",
+    "logout": "Logout"
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",

@@ -61,7 +61,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
   }, [invokeSearch]);
 
   return (
-    <div className="position-sticky fixed-top shadow-sm">
+    <div className="position-sticky sticky-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchForm
@@ -83,7 +83,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-        <div className="d-flex pl-md-2">
+        <div className="d-flex">
           {deleteAllControl}
         </div>
         {/* sort option: show when screen is smaller than lg */}

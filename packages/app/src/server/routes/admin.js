@@ -284,7 +284,7 @@ module.exports = function(crowi, app) {
   // グループ詳細
   actions.userGroup.detail = async function(req, res) {
     const userGroupId = req.params.id;
-    const userGroup = await UserGroup.findOne({ _id: userGroupId });
+    const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
 
     if (userGroup == null) {
       logger.error('no userGroup is exists. ', userGroupId);

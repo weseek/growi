@@ -48,7 +48,7 @@ services:
       context: ../../growi-docker-compose/elasticsearch
       dockerfile: ./Dockerfile
       args:
-        - version=6.8.22
+        - version=7.16.1
     container_name: elasticsearch
     restart: unless-stopped
     ports:
@@ -56,6 +56,7 @@ services:
     environment:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - LOG4J_FORMAT_MSG_NO_LOOKUPS=true # CVE-2021-44228 mitigation for Elasticsearch <= 6.8.20/7.16.0
     ulimits:
       memlock:
         soft: -1
@@ -66,7 +67,7 @@ services:
 
   #need to adjust kibana version based on elasticsearch version
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.8.22
+    image: docker.elastic.co/kibana/kibana:7.17.1
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'

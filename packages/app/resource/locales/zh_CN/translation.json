@@ -119,7 +119,7 @@
 	"Create under": "Create page under below:",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
-  "V5 Page Migration": "V5 Page Migration",
+  "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
@@ -173,7 +173,7 @@
   "Page Tree": "页面树",
   "original_path":"Original path",
   "new_path":"New path",
-  "duplicated_path":"duplicated_path",
+  "duplicated_path":"Duplicated path",
   "Link sharing is disabled": "你不允许分享该链接",
   "successfully_saved_the_page": "成功地保存了该页面",
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
@@ -371,7 +371,7 @@
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "新建页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
-		"user_not_admin": "仅管理员用户可以完全删除"
+		"user_not_admin": "仅管理员用户可以删除"
   },
   "page_history": {
     "revision_list": "修订清单",
@@ -384,20 +384,21 @@
   },
 	"modal_rename": {
 		"label": {
-			"Move/Rename page": "页面 移动/重命名",
+      "Move/Rename page": "页面 移动/重命名",
       "New page name": "新建页面名称",
       "Failed to get subordinated pages": "Failed to get subordinated pages",
       "Failed to get exist path": "Failed to get exist path",
-      "Rename without exist path": "Rename without exist path",
-			"Current page name": "当前页面名称",
-			"Recursively": "递归地",
-			"Do not update metadata": "不更新元数据",
-			"Redirect": "重定向"
+      "Current page name": "当前页面名称",
+      "Rename this page only": "仅重命名此页面",
+      "Force rename all child pages": "强制重命名所有子页面 ",
+      "Other options": "其他选项",
+      "Do not update metadata": "不更新元数据",
+      "Redirect": "重定向"
 		},
 		"help": {
-			"redirect": "Redirect to new page if someone accesses <code>%s</code>",
-			"metadata": "Remains last update user and updated date as is",
-			"recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "metadata": "Remains last update user and updated date as is",
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
 		}
 	},
 	"Put Back": "Put back",
@@ -625,8 +626,15 @@
 		"page_listing_2": "页面列表/搜索<br>受用户组限制",
 		"page_listing_2_desc": "显示列出/搜索时受用户组限制的页面",
     "page_access_and_delete_rights": "页面访问/删除权限",
-		"complete_deletion": "限制完全删除页面",
-		"complete_deletion_explain": "限制可以完全删除页面的用户。",
+    "deletion": "限制捣毁一个选定的单一页面",
+    "deletion_explain": "限制用户对选定的单一页面进行垃圾处理。",
+    "complete_deletion": "限制完全删除一个选定的单页",
+    "complete_deletion_explain": "限制可以完全删除所选单页的用户。",
+    "recursive_deletion": "限制捣毁包括子孙在内的网页",
+    "recursive_deletion_explain": "限制用户可以捣毁包括子孙在内的页面。",
+    "recursive_complete_deletion": "限制完全删除包括子孙在内的页面",
+    "recursive_complete_deletion_explain": "限制可以完全删除页面的用户，包括子孙。",
+    "inherit": "继承（使用与单页相同的设置）。",
 		"admin_only": "仅管理员",
 		"admin_and_author": "管理员|作者",
 		"anyone": "任何人",
@@ -911,19 +919,19 @@
     }
 	},
   "private_legacy_pages": {
-    "bulk_operation": "Bulk operation",
-    "convert_all_selected_pages": "Convert all to new v5 compatible format",
-    "alert_title": "You are viewing old v4 compatible private pages.",
-    "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
-    "nopages_title": "Congratulations. Ready to use GROWI v5!",
-    "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
-    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <i class='icon-share-alt'></i></a>.",
+    "bulk_operation": "批量操作",
+    "convert_all_selected_pages": "全部转换为新的v5兼容格式",
+    "alert_title": "你正在查看旧的v4兼容的私人网页。",
+    "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
+    "nopages_title": "恭喜你。准备使用GROWI v5!",
+    "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",
+    "detail_info": "请参见 <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>升级GROWI到v5.0.x <i class='icon-share-alt'></i></a>.的详细内容。",
     "modal": {
-      "title": "Convert to new v5 compatible format",
-      "converting_pages": "Converting pages",
-      "convert_recursively_label": "Convert child pages recursively.",
-      "convert_recursively_desc": "Convert pages under this path recursively.",
-      "button_label": "Convert"
+      "title": "转换为新的v5兼容格式",
+      "converting_pages": "转换页面",
+      "convert_recursively_label": "递归地转换子页面。",
+      "convert_recursively_desc": "递归地转换该路径下的页面。",
+      "button_label": "转换"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
@@ -991,6 +999,13 @@
     "success_to_send_email": "我发了一封电子邮件",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+  },
+  "maintenance_mode":{
+    "maintenance_mode": "维护模式",
+    "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
+    "admin_page": "管理员页",
+    "login": "登录",
+    "logout": "登出"
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",

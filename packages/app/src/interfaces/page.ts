@@ -37,6 +37,7 @@ export type IPageHasId = IPage & HasObjectId;
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
 export type IPageInfo = {
+  isV5Compatible: boolean,
   isEmpty: boolean,
   isMovable: boolean,
   isDeletable: boolean,
@@ -104,7 +105,8 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
 
 export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForOperation | unknown>;
+export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
+export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

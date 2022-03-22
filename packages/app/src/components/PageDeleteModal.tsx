@@ -10,7 +10,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, isIPageInfoForOperation, IPageToDeleteWithMeta, IDataWithMeta, IPageInfoForOperation,
+  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
@@ -43,13 +43,13 @@ const PageDeleteModal: FC = () => {
   const isOpened = deleteModalData?.isOpened ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForOperation(p.meta));
+    .filter(p => !isIPageInfoForEntity(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
 
   // inject IPageInfo to operate
-  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForOperation>[] | null = null;
+  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
   if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
     injectedPages = injectTo(deleteModalData?.pages);
   }
@@ -212,17 +212,17 @@ const PageDeleteModal: FC = () => {
 
     if (pages != null) {
       return pages.map(page => (
-        <div key={page.data._id}>
+        <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
           { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
-        </div>
+        </p>
       ));
     }
     return <></>;
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }

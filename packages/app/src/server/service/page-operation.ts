@@ -10,9 +10,11 @@ class PageOperationService {
 
   constructor(crowi) {
     this.crowi = crowi;
+  }
 
-    // TODO: Remove this code when resuming feature is implemented
-    PageOperation.deleteMany({});
+  // TODO: Remove this code when resuming feature is implemented
+  async init():Promise<void> {
+    await PageOperation.deleteMany({});
   }
 
   /**
