@@ -738,3 +738,20 @@ mark.rbt-highlight-text {
   height: 7px;
   background-color: $primary;
 }
+
+/**
+  Emoji mart style
+*/
+.emoji-mart {
+  .emoji-mart-anchor-selected {
+    .emoji-mart-anchor-bar {
+      height: 3px;
+    }
+    svg {
+       fill: $purple;
+    }
+  }
+  .emoji-mart-anchor-bar {
+    height: 0px;
+  }
+}
