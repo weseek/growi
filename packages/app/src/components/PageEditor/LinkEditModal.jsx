@@ -204,7 +204,7 @@ class LinkEditModal extends React.PureComponent {
   handleChangeTypeahead(selected) {
     const pageWithMeta = selected[0];
     if (pageWithMeta != null) {
-      const page = pageWithMeta.pageData;
+      const page = pageWithMeta.data;
       const permalink = `${window.location.origin}/${page.id}`;
       this.setState({ linkInputValue: page.path, permalink });
     }
