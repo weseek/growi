@@ -132,6 +132,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                   </>
                 )
               }
+
               <div className="dropdown-divider" />
 
               <button
