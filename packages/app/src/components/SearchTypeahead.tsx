@@ -47,11 +47,12 @@ type TypeaheadInstance = {
   clear: () => void,
   focus: () => void,
   toggleMenu: () => void,
+  state: { selected: IPageWithMeta<IPageSearchMeta>[] }
 }
 
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
-    onSearchError, onSearch, onInputChange, onSubmit,
+    onSearchError, onSearch, onInputChange, onChange, onSubmit,
     inputProps, keywordOnInit, disableIncrementalSearch, helpElement,
     onBlur, onFocus,
   } = props;
@@ -116,13 +117,39 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     }
   }, [onInputChange]);
 
+  /* -------------------------------------------------------------------------------------------------------
+   *
+   * Dirty hack for https://github.com/ericgio/react-bootstrap-typeahead/issues/492 -- 2022.03.22 Yuki Takei
+   *
+   * 1. Schedule to submit with delay when Enter key downed
+   * 2. Fire onChange and cancel the schedule to submit if change event occured
+   * 3. Fire onSubmit if the schedule is not canceled
+   *
+   */
+  const DELAY_FOR_SUBMISSION = 100;
+  const timeoutIdRef = useRef<NodeJS.Timeout>();
+
+  const changeHandler = useCallback((selectedItems: IPageWithMeta<IPageSearchMeta>[]) => {
+    if (onChange != null && selectedItems.length > 0) {
+      // cancel schedule to submit
+      if (timeoutIdRef.current != null) {
+        clearTimeout(timeoutIdRef.current);
+      }
+      onChange(selectedItems);
+    }
+  }, [onChange]);
+
   const keyDownHandler = useCallback((event: KeyboardEvent) => {
     if (event.keyCode === 13) { // Enter key
       if (onSubmit != null && input != null && input.length > 0) {
-        onSubmit(input);
+        // schedule to submit with 100ms delay
+        timeoutIdRef.current = setTimeout(() => onSubmit(input), DELAY_FOR_SUBMISSION);
       }
     }
   }, [input, onSubmit]);
+  /*
+   * -------------------------------------------------------------------------------------------------------
+   */
 
   useEffect(() => {
     if (onSearchError != null && searchError != null) {
@@ -193,6 +220,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         open={isOpenAlways || undefined}
         renderMenu={renderMenu}
         autoFocus={props.autoFocus}
+        onChange={changeHandler}
         onSearch={searchHandler}
         onInputChange={inputChangeHandler}
         onKeyDown={keyDownHandler}

@@ -1,6 +1,7 @@
 import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
+import assert from 'assert';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -81,6 +82,17 @@ const PageDuplicateModal = (): JSX.Element => {
       checkExistPathsDebounce(page.path, pageNameInput);
     }
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
+
+  const ppacChangeHandler = useCallback((data) => {
+    assert(data.length > 0);
+
+    const page = data[0].data; // should be single page selected
+
+    // navigate to page
+    if (page != null) {
+      window.location.href = `/${page._id}`;
+    }
+  }, []);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -182,6 +194,7 @@ const PageDuplicateModal = (): JSX.Element => {
                 ? (
                   <PagePathAutoComplete
                     initializedPath={path}
+                    onChange={ppacChangeHandler}
                     onSubmit={duplicate}
                     onInputChange={ppacInputChangeHandler}
                     autoFocus
