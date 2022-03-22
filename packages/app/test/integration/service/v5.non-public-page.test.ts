@@ -12,6 +12,7 @@ describe('PageService page operations with non-public pages', () => {
   let npDummyUser1;
   let npDummyUser2;
   let npDummyUser3;
+  let groupIdIsolate;
   let groupIdA;
   let groupIdB;
   let groupIdC;
@@ -31,13 +32,36 @@ describe('PageService page operations with non-public pages', () => {
 
   let rootPage;
 
-  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
-  const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data, i) => {
-      if (data == null) { console.log(`index: ${i}`) }
-      expect(data).toBeTruthy();
-    });
-  };
+  /**
+   * Rename
+   */
+  const pageIdRename1 = new mongoose.Types.ObjectId();
+  const pageIdRename2 = new mongoose.Types.ObjectId();
+  const pageIdRename3 = new mongoose.Types.ObjectId();
+  const pageIdRename4 = new mongoose.Types.ObjectId();
+  const pageIdRename5 = new mongoose.Types.ObjectId();
+  const pageIdRename6 = new mongoose.Types.ObjectId();
+  const pageIdRename7 = new mongoose.Types.ObjectId();
+  const pageIdRename8 = new mongoose.Types.ObjectId();
+  const pageIdRename9 = new mongoose.Types.ObjectId();
+
+  /**
+   * Duplicate
+   */
+  // page id
+  const pageIdDuplicate1 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate2 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate3 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate4 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate5 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate6 = new mongoose.Types.ObjectId();
+  // revision id
+  const revisionIdDuplicate1 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate2 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate3 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate4 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate5 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate6 = new mongoose.Types.ObjectId();
 
   /**
    * Revert
@@ -97,7 +121,7 @@ describe('PageService page operations with non-public pages', () => {
       },
     ]);
 
-    const groupIdIsolate = new mongoose.Types.ObjectId();
+    groupIdIsolate = new mongoose.Types.ObjectId();
     groupIdA = new mongoose.Types.ObjectId();
     groupIdB = new mongoose.Types.ObjectId();
     groupIdC = new mongoose.Types.ObjectId();
@@ -182,10 +206,187 @@ describe('PageService page operations with non-public pages', () => {
     /*
      * Rename
      */
-
+    await Page.insertMany([
+      {
+        _id: pageIdRename1,
+        path: '/np_rename1_destination',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename2,
+        path: '/np_rename2',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename3,
+        path: '/np_rename2/np_rename3',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        creator: npDummyUser3._id,
+        lastUpdateUser: npDummyUser3._id,
+        parent: pageIdRename2._id,
+      },
+      {
+        _id: pageIdRename4,
+        path: '/np_rename4_destination',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdIsolate,
+        creator: npDummyUser3._id,
+        lastUpdateUser: npDummyUser3._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename5,
+        path: '/np_rename5',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdRename6,
+        path: '/np_rename5/np_rename6',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: pageIdRename5,
+      },
+      {
+        _id: pageIdRename7,
+        path: '/np_rename7_destination',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdIsolate,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: pageIdRename5,
+      },
+      {
+        _id: pageIdRename8,
+        path: '/np_rename8',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+      },
+      {
+        _id: pageIdRename9,
+        path: '/np_rename8/np_rename9',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser2._id,
+        lastUpdateUser: dummyUser2._id,
+      },
+    ]);
     /*
      * Duplicate
      */
+    await Page.insertMany([
+      {
+        _id: pageIdDuplicate1,
+        path: '/np_duplicate1',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdDuplicate1,
+      },
+      {
+        _id: pageIdDuplicate2,
+        path: '/np_duplicate2',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        creator: npDummyUser1._id,
+        lastUpdateUser: npDummyUser1._id,
+        revision: revisionIdDuplicate2,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdDuplicate3,
+        path: '/np_duplicate2/np_duplicate3',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        revision: revisionIdDuplicate3,
+        parent: pageIdDuplicate2,
+      },
+      {
+        _id: pageIdDuplicate4,
+        path: '/np_duplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: npDummyUser1._id,
+        lastUpdateUser: npDummyUser1._id,
+        revision: revisionIdDuplicate4,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdDuplicate5,
+        path: '/np_duplicate4/np_duplicate5',
+        grant: Page.GRANT_RESTRICTED,
+        creator: npDummyUser1._id,
+        lastUpdateUser: npDummyUser1._id,
+        revision: revisionIdDuplicate5,
+      },
+      {
+        _id: pageIdDuplicate6,
+        path: '/np_duplicate4/np_duplicate6',
+        grant: Page.GRANT_PUBLIC,
+        creator: npDummyUser1._id,
+        lastUpdateUser: npDummyUser1._id,
+        parent: pageIdDuplicate4,
+        revision: revisionIdDuplicate6,
+      },
+    ]);
+    await Revision.insertMany([
+      {
+        _id: revisionIdDuplicate1,
+        body: 'np_duplicate1',
+        format: 'markdown',
+        pageId: pageIdDuplicate1,
+        author: npDummyUser1._id,
+      },
+      {
+        _id: revisionIdDuplicate2,
+        body: 'np_duplicate2',
+        format: 'markdown',
+        pageId: pageIdDuplicate2,
+        author: npDummyUser2._id,
+      },
+      {
+        _id: revisionIdDuplicate3,
+        body: 'np_duplicate3',
+        format: 'markdown',
+        pageId: pageIdDuplicate3,
+        author: npDummyUser2._id,
+      },
+      {
+        _id: revisionIdDuplicate4,
+        body: 'np_duplicate4',
+        format: 'markdown',
+        pageId: pageIdDuplicate4,
+        author: npDummyUser2._id,
+      },
+      {
+        _id: revisionIdDuplicate5,
+        body: 'np_duplicate5',
+        format: 'markdown',
+        pageId: pageIdDuplicate5,
+        author: npDummyUser2._id,
+      },
+      {
+        _id: revisionIdDuplicate6,
+        body: 'np_duplicate6',
+        format: 'markdown',
+        pageId: pageIdDuplicate6,
+        author: npDummyUser1._id,
+      },
+    ]);
 
     /**
      * Delete
@@ -310,15 +511,240 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('Rename', () => {
-    test('dummy test to avoid test failure', async() => {
-      // write test code
-      expect(true).toBe(true);
+    const renamePage = async(page, newPagePath, user, options) => {
+      // mock return value
+      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+
+      // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
+      const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
+
+      // restores the original implementation
+      mockedRenameSubOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      // rename descendants
+      if (page.grant !== Page.GRANT_RESTRICTED) {
+        await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+      }
+
+      return renamedPage;
+    };
+
+    test('Should rename/move with descendants with grant normalized pages', async() => {
+      const _pathD = '/np_rename1_destination';
+      const _path2 = '/np_rename2';
+      const _path3 = '/np_rename2/np_rename3';
+      const _propertiesD = { grant: Page.GRANT_PUBLIC };
+      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC };
+      const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
+      const _page2 = await Page.findOne({ path: _path2, ..._properties2 });
+      const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2._id });
+      expect(_pageD).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+
+      const newPathForPage2 = '/np_rename1_destination/np_rename2';
+      const newPathForPage3 = '/np_rename1_destination/np_rename2/np_rename3';
+      await renamePage(_page2, newPathForPage2, npDummyUser2, {});
+
+      const pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
+      const page2 = await Page.findOne({ path: _path2, ..._properties2 }); // not exist
+      const page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2._id }); // not exist
+      const page2Renamed = await Page.findOne({ path: newPathForPage2 }); // renamed
+      const page3Renamed = await Page.findOne({ path: newPathForPage3 }); // renamed
+      expect(pageD).toBeTruthy();
+      expect(page2).toBeNull();
+      expect(page3).toBeNull();
+      expect(page2Renamed).toBeTruthy();
+      expect(page3Renamed).toBeTruthy();
+      expect(page2Renamed.parent).toStrictEqual(_pageD._id);
+      expect(page3Renamed.parent).toStrictEqual(page2Renamed._id);
+      expect(page2Renamed.grantedGroup).toStrictEqual(_page2.grantedGroup);
+      expect(page3Renamed.grantedGroup).toStrictEqual(_page3.grantedGroup);
+      expect(xssSpy).toHaveBeenCalled();
+    });
+    test('Should throw with NOT grant normalized pages', async() => {
+      const _pathD = '/np_rename4_destination';
+      const _path2 = '/np_rename5';
+      const _path3 = '/np_rename5/np_rename6';
+      const _propertiesD = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate };
+      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD });// isolate
+      const _page2 = await Page.findOne({ path: _path2, ..._properties2 });// groupIdB
+      const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2 });// groupIdB
+      expect(_pageD).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+
+      const newPathForPage2 = '/np_rename4_destination/np_rename5';
+      const newPathForPage3 = '/np_rename4_destination/np_rename5/np_rename6';
+      let isThrown = false;
+      try {
+        await renamePage(_page2, newPathForPage2, dummyUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
+      expect(isThrown).toBe(true);
+      const page2 = await Page.findOne({ path: _path2 }); // not renamed thus exist
+      const page3 = await Page.findOne({ path: _path3 }); // not renamed thus exist
+      const page2Renamed = await Page.findOne({ path: newPathForPage2 }); // not exist
+      const page3Renamed = await Page.findOne({ path: newPathForPage3 }); // not exist
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+      expect(page2Renamed).toBeNull();
+      expect(page3Renamed).toBeNull();
+    });
+    test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async() => {
+      const _pathD = '/np_rename7_destination';
+      const _path2 = '/np_rename8';
+      const _path3 = '/np_rename8/np_rename9';
+      const _pageD = await Page.findOne({ path: _pathD, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
+      const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
+      const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_RESTRICTED });
+      expect(_pageD).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+
+      const newPathForPage2 = '/np_rename7_destination/np_rename8';
+      const newpathForPage3 = '/np_rename7_destination/np_rename8/np_rename9';
+      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true });
+
+      const page2 = await Page.findOne({ path: _path2 }); // not exist
+      const page3 = await Page.findOne({ path: _path3 }); // not renamed thus exist
+      const page2Renamed = await Page.findOne({ path: newPathForPage2 }); // exist
+      const page3Renamed = await Page.findOne({ path: newpathForPage3 }); // not exist
+      expect(page2).toBeNull();
+      expect(page3).toBeTruthy();
+      expect(page2Renamed).toBeTruthy();
+      expect(page3Renamed).toBeNull();
+      expect(page2Renamed.parent).toBeNull();
+      expect(xssSpy).toHaveBeenCalled();
     });
   });
   describe('Duplicate', () => {
-    // test('', async() => {
-    //   // write test code
-    // });
+
+    const duplicate = async(page, newPagePath, user, isRecursively) => {
+      // mock return value
+      const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
+
+      // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
+      const argsForDuplicateRecursivelyMainOperation = mockedDuplicateRecursivelyMainOperation.mock.calls[0];
+
+      // restores the original implementation
+      mockedDuplicateRecursivelyMainOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      // duplicate descendants
+      if (page.grant !== Page.GRANT_RESTRICTED && isRecursively) {
+        await crowi.pageService.duplicateRecursivelyMainOperation(...argsForDuplicateRecursivelyMainOperation);
+      }
+
+      return duplicatedPage;
+    };
+    test('Duplicate single page with GRANT_RESTRICTED', async() => {
+      const _page = await Page.findOne({ path: '/np_duplicate1', grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
+      const _revision = _page.revision;
+      expect(_page).toBeTruthy();
+      expect(_revision).toBeTruthy();
+
+      const newPagePath = '/dup_np_duplicate1';
+      await duplicate(_page, newPagePath, npDummyUser1, false);
+
+      const duplicatedPage = await Page.findOne({ path: newPagePath });
+      const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage).toBeTruthy();
+      expect(duplicatedPage._id).not.toStrictEqual(_page._id);
+      expect(duplicatedPage.grant).toBe(_page.grant);
+      expect(duplicatedPage.parent).toBeNull();
+      expect(duplicatedPage.parent).toStrictEqual(_page.parent);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
+      expect(duplicatedRevision.body).toBe(_revision.body);
+    });
+
+    test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
+      const _path1 = '/np_duplicate2';
+      const _path2 = '/np_duplicate2/np_duplicate3';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroup: groupIdA })
+        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroup: groupIdB })
+        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
+      const _revision1 = _page1.revision;
+      const _revision2 = _page2.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_revision1).toBeTruthy();
+      expect(_revision2).toBeTruthy();
+
+      const newPagePath = '/dup_np_duplicate2';
+      await duplicate(_page1, newPagePath, npDummyUser2, true);
+
+      const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedRevision1 = duplicatedPage1.revision;
+      const duplicatedRevision2 = duplicatedPage2.revision;
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage2).toBeTruthy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(duplicatedRevision2).toBeTruthy();
+      expect(duplicatedPage1.grantedGroup).toStrictEqual(groupIdA._id);
+      expect(duplicatedPage2.grantedGroup).toStrictEqual(groupIdB._id);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
+      expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision1.body).toBe(_revision1.body);
+      expect(duplicatedRevision2.body).toBe(_revision2.body);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+    });
+    test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async() => {
+      const _path1 = '/np_duplicate4';
+      const _path2 = '/np_duplicate4/np_duplicate5';
+      const _path3 = '/np_duplicate4/np_duplicate6';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grant: Page.GRANT_PUBLIC })
+        .populate({ path: 'revision', model: 'Revision' });
+      const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
+      const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_PUBLIC }).populate({ path: 'revision', model: 'Revision' });
+      const baseRevision1 = _page1.revision;
+      const baseRevision2 = _page2.revision;
+      const baseRevision3 = _page3.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(baseRevision1).toBeTruthy();
+      expect(baseRevision2).toBeTruthy();
+
+      const newPagePath = '/dup_np_duplicate4';
+      await duplicate(_page1, newPagePath, npDummyUser1, true);
+
+      const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate5' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage3 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate6' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedRevision1 = duplicatedPage1.revision;
+      const duplicatedRevision3 = duplicatedPage3.revision;
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage2).toBeNull();
+      expect(duplicatedPage3).toBeTruthy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(duplicatedRevision3).toBeTruthy();
+      expect(duplicatedPage1.grant).toStrictEqual(Page.GRANT_PUBLIC);
+      expect(duplicatedPage3.grant).toStrictEqual(Page.GRANT_PUBLIC);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
+      expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision1.body).toBe(baseRevision1.body);
+      expect(duplicatedRevision3.body).toBe(baseRevision3.body);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
+    });
+
   });
   describe('Delete', () => {
     // test('', async() => {
@@ -352,14 +778,18 @@ describe('PageService page operations with non-public pages', () => {
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag1' });
       const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
-      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation]);
+      expect(trashedPage).toBeTruthy();
+      expect(revision).toBeTruthy();
+      expect(tag).toBeTruthy();
+      expect(deletedPageTagRelation).toBeTruthy();
 
       await revertDeletedPage(trashedPage, dummyUser1, {}, false);
+
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
-      expectAllToBeTruthy([revertedPage, pageTagRelation]);
-
+      expect(revertedPage).toBeTruthy();
+      expect(pageTagRelation).toBeTruthy();
       expect(deltedPageBeforeRevert).toBeNull();
 
       // page with GRANT_RESTRICTED does not have parent
@@ -375,13 +805,18 @@ describe('PageService page operations with non-public pages', () => {
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag2' });
       const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
-      expectAllToBeTruthy([trashedPage, revision, tag, deletedPageTagRelation]);
+      expect(trashedPage).toBeTruthy();
+      expect(revision).toBeTruthy();
+      expect(tag).toBeTruthy();
+      expect(deletedPageTagRelation).toBeTruthy();
 
       await revertDeletedPage(trashedPage, user1, {}, false);
+
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
       const trashedPageBR = await Page.findOne({ path: beforeRevertPath });
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
-      expectAllToBeTruthy([revertedPage, pageTagRelation]);
+      expect(revertedPage).toBeTruthy();
+      expect(pageTagRelation).toBeTruthy();
       expect(trashedPageBR).toBeNull();
 
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
@@ -398,9 +833,13 @@ describe('PageService page operations with non-public pages', () => {
       const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
       const revision1 = await Revision.findOne({ pageId: trashedPage1._id });
       const revision2 = await Revision.findOne({ pageId: trashedPage2._id });
-      expectAllToBeTruthy([trashedPage1, trashedPage2, revision1, revision2]);
+      expect(trashedPage1).toBeTruthy();
+      expect(trashedPage2).toBeTruthy();
+      expect(revision1).toBeTruthy();
+      expect(revision2).toBeTruthy();
 
       await revertDeletedPage(trashedPage1, npDummyUser2, {}, true);
+
       const revertedPage = await Page.findOne({ path: '/np_revert3' });
       const middlePage = await Page.findOne({ path: '/np_revert3/middle' });
       const notRestrictedPage = await Page.findOne({ path: '/np_revert3/middle/np_revert4' });
@@ -409,11 +848,14 @@ describe('PageService page operations with non-public pages', () => {
       const trashedPage2AR = await Page.findOne({ path: beforeRevertPath2 });
       const revision1AR = await Revision.findOne({ pageId: revertedPage._id });
       const revision2AR = await Revision.findOne({ pageId: trashedPage2AR._id });
-      expectAllToBeTruthy([revertedPage, trashedPage2AR, revision1AR, revision2AR]);
+
+      expect(revertedPage).toBeTruthy();
+      expect(trashedPage2AR).toBeTruthy();
+      expect(revision1AR).toBeTruthy();
+      expect(revision2AR).toBeTruthy();
       expect(trashedPage1AR).toBeNull();
       expect(notRestrictedPage).toBeNull();
       expect(middlePage).toBeNull();
-
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_PUBLIC);
@@ -423,12 +865,16 @@ describe('PageService page operations with non-public pages', () => {
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
       const beforeRevertPath3 = '/trash/np_revert5/middle';
-      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
-      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
+      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grantedGroup: groupIdA });
+      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grantedGroup: groupIdB });
       const nonExistantPage3 = await Page.findOne({ path: beforeRevertPath3 }); // not exist
       const revision1 = await Revision.findOne({ pageId: trashedPage1._id });
       const revision2 = await Revision.findOne({ pageId: trashedPage2._id });
-      expectAllToBeTruthy([trashedPage1, trashedPage2, revision1, revision2, user]);
+      expect(trashedPage1).toBeTruthy();
+      expect(trashedPage2).toBeTruthy();
+      expect(revision1).toBeTruthy();
+      expect(revision2).toBeTruthy();
+      expect(user).toBeTruthy();
       expect(nonExistantPage3).toBeNull();
 
       await revertDeletedPage(trashedPage1, user, {}, true);
@@ -439,22 +885,21 @@ describe('PageService page operations with non-public pages', () => {
       // // AR => After Revert
       const trashedPage1AR = await Page.findOne({ path: beforeRevertPath1 });
       const trashedPage2AR = await Page.findOne({ path: beforeRevertPath2 });
-      expectAllToBeTruthy([revertedPage1, newlyCreatedPage, revertedPage2]);
+      expect(revertedPage1).toBeTruthy();
+      expect(newlyCreatedPage).toBeTruthy();
+      expect(revertedPage2).toBeTruthy();
       expect(trashedPage1AR).toBeNull();
       expect(trashedPage2AR).toBeNull();
 
       expect(newlyCreatedPage.isEmpty).toBe(true);
-
       expect(revertedPage1.parent).toStrictEqual(rootPage._id);
       expect(revertedPage2.parent).toStrictEqual(newlyCreatedPage._id);
       expect(newlyCreatedPage.parent).toStrictEqual(revertedPage1._id);
-
       expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
       expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
-
-      expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
-      expect(revertedPage1.grant).toBe(Page.GRANT_USER_GROUP);
+      expect(revertedPage1.grantedGroup).toStrictEqual(groupIdA);
+      expect(revertedPage2.grantedGroup).toStrictEqual(groupIdB);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
     });
