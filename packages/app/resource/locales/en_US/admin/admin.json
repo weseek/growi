@@ -474,6 +474,7 @@
     "group_example": "e.g. : Group1",
     "parent_group": "Parent Group",
     "select_parent_group": "Select Parent Group",
+    "release_parent_group": "Release parent group",
     "add_modal": {
       "add_user": "Add a user to the created group",
       "search_option": "Search option",

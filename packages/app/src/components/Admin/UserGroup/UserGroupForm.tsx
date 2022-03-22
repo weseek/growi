@@ -138,7 +138,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                 className="dropdown-item"
                 type="button"
                 onClick={() => { setSelectedParent(undefined) }}
-              >親を解除する
+              >{t('admin:user_group_management.release_parent_group')}
               </button>
             </div>
           </div>
