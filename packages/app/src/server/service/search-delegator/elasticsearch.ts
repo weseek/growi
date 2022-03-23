@@ -520,9 +520,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const res = await bulkWrite({
+          const { body: res } = await bulkWrite({
             body,
-            requestTimeout: Infinity,
           });
 
           count += (res.items || []).length;
