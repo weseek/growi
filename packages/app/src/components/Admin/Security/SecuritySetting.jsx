@@ -186,6 +186,17 @@ class SecuritySetting extends React.Component {
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
     const { t, adminGeneralSecurityContainer } = this.props;
 
+    const expandOtherOptions = isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
+      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
+
+    const setExpantOtherOptions = () => {
+      // eslint-disable-next-line no-unused-expressions
+      isTypeDeletion(deletionType)
+        ? adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion()
+        : adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
+    };
+
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
@@ -210,12 +221,12 @@ class SecuritySetting extends React.Component {
                     type="button"
                     className="btn btn-link p-0 mb-4"
                     aria-expanded="false"
-                    onClick={() => adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion()}
+                    onClick={() => setExpantOtherOptions()}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion ? 'fa-rotate-90' : ''}`}></i>
+                    <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
                     { t('modal_rename.label.Other options') }
                   </button>
-                  <Collapse isOpen={adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion}>
+                  <Collapse isOpen={expandOtherOptions}>
                     <div className="pb-4">
                       {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
                     </div>
