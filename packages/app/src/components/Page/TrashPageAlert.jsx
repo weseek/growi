@@ -66,13 +66,7 @@ const TrashPageAlert = (props) => {
       },
       meta: pageInfo,
     };
-    openDeleteModal(
-      [pageToDelete],
-      {
-        isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
-        onDeleted: onDeletedHandler,
-      },
-    );
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }
 
   function renderEmptyButton() {
