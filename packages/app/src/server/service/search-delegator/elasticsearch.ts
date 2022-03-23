@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch6 from 'elasticsearch6';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -90,10 +90,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   initClient() {
-    const { host, httpAuth, indexName } = this.getConnectionInfo();
-    this.client = new elasticsearch.Client({
-      host,
-      httpAuth,
+    const { host, auth, indexName } = this.getConnectionInfo();
+    this.client = new elasticsearch6.Client({
+      node: host,
+      auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
@@ -107,7 +107,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   getConnectionInfo() {
     let indexName = 'crowi';
     let host = this.esUri;
-    let httpAuth = '';
+    let auth;
 
     const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
 
@@ -117,13 +117,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       indexName = url.pathname.substring(1); // omit heading slash
 
       if (url.username != null && url.password != null) {
-        httpAuth = `${url.username}:${url.password}`;
+        auth = `${url.username}:${url.password}`;
       }
     }
 
     return {
       host,
-      httpAuth,
+      auth,
       indexName,
     };
   }
