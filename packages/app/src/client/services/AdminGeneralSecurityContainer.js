@@ -27,8 +27,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
       currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
-      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
+      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
