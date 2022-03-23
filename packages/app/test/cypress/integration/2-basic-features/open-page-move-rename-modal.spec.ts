@@ -23,15 +23,14 @@ context('Open Page Move Rename Modal', () => {
     }
   });
 
-  it('PageDuplicateModal is shown successfully', () => {
+  it('PageMoveRenameModal is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
        cy.getByTestid('open-page-move-rename-modal-btn').click();
     });
 
-     cy.getByTestid('page-rename-modal').should('be.visible');
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
+     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
