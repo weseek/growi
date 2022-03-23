@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Collapse } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { validateDeleteConfigs } from '~/utils/page-delete-config';
@@ -64,6 +65,7 @@ class SecuritySetting extends React.Component {
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
+    this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
   }
 
@@ -120,70 +122,120 @@ class SecuritySetting extends React.Component {
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
     const { t } = this.props;
+    return (
+      <div className="dropdown">
+        <button
+          className="btn btn-outline-secondary dropdown-toggle text-right"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="true"
+        >
+          <span className="float-left">
+            {currentState === PageDeleteConfigValue.Inherit && t('security_setting.inherit')}
+            {(currentState === PageDeleteConfigValue.Anyone || currentState == null) && t('security_setting.anyone')}
+            {currentState === PageDeleteConfigValue.AdminOnly && t('security_setting.admin_only')}
+            {currentState === PageDeleteConfigValue.AdminAndAuthor && t('security_setting.admin_and_author')}
+          </span>
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {
+            isRecursiveDeletion(deletionType)
+              ? (
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Inherit, setState, deletionType) }}
+                >
+                  {t('security_setting.inherit')}
+                </button>
+              )
+              : (
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Anyone, setState, deletionType) }}
+                >
+                  {t('security_setting.anyone')}
+                </button>
+              )
+          }
+          <button
+            className={`dropdown-item ${isButtonDisabled ? 'disabled' : ''}`}
+            type="button"
+            onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminAndAuthor, setState, deletionType) }}
+          >
+            {t('security_setting.admin_and_author')}
+          </button>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminOnly, setState, deletionType) }}
+          >
+            {t('security_setting.admin_only')}
+          </button>
+        </div>
+        <p className="form-text text-muted small">
+          {t(`security_setting.${getDeletionTypeForT(deletionType)}_explain`)}
+        </p>
+      </div>
+    );
+  }
+
+  renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
+    const { t, adminGeneralSecurityContainer } = this.props;
+
+    const expandOtherOptions = isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
+      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
+
+    const setExpantOtherOptions = () => {
+      if (isTypeDeletion(deletionType)) {
+        adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion();
+        return;
+      }
+      adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
+      return;
+    };
 
     return (
-      <div key={`page-delete-permission-dropdown-${deletionType}`} className="row mb-4">
-        <div className="col-md-3 text-md-right mb-2">
-          <strong>{t(`security_setting.${getDeletionTypeForT(deletionType)}`)}</strong>
+      <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
+
+        <div className="col-md-3 text-md-right">
+          {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
+            <strong>{t('security_setting.page_delete')}</strong>
+          )}
+          {!isRecursiveDeletion(deletionType) && !isTypeDeletion(deletionType) && (
+            <strong>{t('security_setting.page_delete_completely')}</strong>
+          )}
         </div>
+
         <div className="col-md-6">
-          <div className="dropdown">
-            <button
-              className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <span className="float-left">
-                {currentState === PageDeleteConfigValue.Inherit && t('security_setting.inherit')}
-                {(currentState === PageDeleteConfigValue.Anyone || currentState == null) && t('security_setting.anyone')}
-                {currentState === PageDeleteConfigValue.AdminOnly && t('security_setting.admin_only')}
-                {currentState === PageDeleteConfigValue.AdminAndAuthor && t('security_setting.admin_and_author')}
-              </span>
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {
-                isRecursiveDeletion(deletionType)
-                  ? (
-                    <button
-                      className="dropdown-item"
-                      type="button"
-                      onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Inherit, setState, deletionType) }}
-                    >
-                      {t('security_setting.inherit')}
-                    </button>
-                  )
-                  : (
-                    <button
-                      className="dropdown-item"
-                      type="button"
-                      onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Anyone, setState, deletionType) }}
-                    >
-                      {t('security_setting.anyone')}
-                    </button>
-                  )
-              }
-              <button
-                className={`dropdown-item ${isButtonDisabled ? 'disabled' : ''}`}
-                type="button"
-                onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminAndAuthor, setState, deletionType) }}
-              >
-                {t('security_setting.admin_and_author')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminOnly, setState, deletionType) }}
-              >
-                {t('security_setting.admin_only')}
-              </button>
-            </div>
-            <p className="form-text text-muted small">
-              {t(`security_setting.${getDeletionTypeForT(deletionType)}_explain`)}
-            </p>
-          </div>
+          {
+            !isRecursiveDeletion(deletionType)
+              ? (
+                <>{this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}</>
+              )
+              : (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 mb-4"
+                    aria-expanded="false"
+                    onClick={() => setExpantOtherOptions()}
+                  >
+                    <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
+                    { t('security_setting.other_options') }
+                  </button>
+                  <Collapse isOpen={expandOtherOptions}>
+                    <div className="pb-4">
+                      {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
+                    </div>
+                  </Collapse>
+                </>
+              )
+          }
         </div>
       </div>
     );
@@ -316,13 +368,6 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_setting.page_delete_rights')}</h4>
-        <div className="row">
-          <p className="card well col-9">
-            <span className="text-warning">
-              <i className="icon-info"></i> {t('security_setting.page_delete_rights_caution')}
-            </span>
-          </p>
-        </div>
         <div className="row mb-4"></div>
         {/* Render PageDeletePermissionDropdown */}
         {
@@ -330,14 +375,14 @@ class SecuritySetting extends React.Component {
             [currentPageDeletionAuthority, adminGeneralSecurityContainer.changePageDeletionAuthority, DeletionType.Deletion, false],
             // eslint-disable-next-line max-len
             [currentPageRecursiveDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveDeletionAuthority, DeletionType.RecursiveDeletion, isButtonDisabledForDeletion],
-          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3]))
+          ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
         {
           [
             [currentPageCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageCompleteDeletionAuthority, DeletionType.CompleteDeletion, false],
             // eslint-disable-next-line max-len
             [currentPageRecursiveCompleteDeletionAuthority, adminGeneralSecurityContainer.changePageRecursiveCompleteDeletionAuthority, DeletionType.RecursiveCompleteDeletion, isButtonDisabledForCompleteDeletion],
-          ].map(arr => this.renderPageDeletePermissionDropdown(arr[0], arr[1], arr[2], arr[3]))
+          ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
         <h4>{t('security_setting.session')}</h4>
