@@ -130,11 +130,12 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const timeoutIdRef = useRef<NodeJS.Timeout>();
 
   const changeHandler = useCallback((selectedItems: IPageWithMeta<IPageSearchMeta>[]) => {
+    // cancel schedule to submit
+    if (timeoutIdRef.current != null) {
+      clearTimeout(timeoutIdRef.current);
+    }
+
     if (onChange != null && selectedItems.length > 0) {
-      // cancel schedule to submit
-      if (timeoutIdRef.current != null) {
-        clearTimeout(timeoutIdRef.current);
-      }
       onChange(selectedItems);
     }
   }, [onChange]);

@@ -3,7 +3,6 @@ import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import assert from 'assert';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
@@ -132,17 +131,6 @@ const PageCreateModal = (props) => {
     redirectToEditor(pageNameInput);
   }
 
-  const ppacChangeHandler = useCallback((data) => {
-    assert(data.length > 0);
-
-    const page = data[0].data; // should be single page selected
-
-    // navigate to page
-    if (page != null) {
-      window.location.href = `/${page._id}`;
-    }
-  }, []);
-
   function ppacInputChangeHandler(value) {
     setPageNameInput(value);
   }
@@ -223,7 +211,6 @@ const PageCreateModal = (props) => {
                   <PagePathAutoComplete
                     initializedPath={pageNameInput}
                     addTrailingSlash
-                    onChange={ppacChangeHandler}
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
                     autoFocus
