@@ -64,6 +64,7 @@ const TrashPageAlert = (props) => {
         revision: revisionId,
         path,
       },
+      meta: pageInfo,
     };
     openDeleteModal(
       [pageToDelete],
