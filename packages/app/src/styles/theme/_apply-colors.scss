@@ -45,7 +45,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
-@import '~emoji-mart/css/emoji-mart.css'; // Emoji-mart style
+@import '~emoji-mart/css/emoji-mart'; // Emoji-mart style
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
