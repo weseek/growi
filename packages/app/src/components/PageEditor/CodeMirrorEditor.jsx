@@ -139,7 +139,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
-    this.keyUpHandler = this.keyUpHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -567,14 +566,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
+    this.emojiPickerHandler();
 
   }
 
-  keyUpHandler(editor, event) {
-    if (event.key !== 'Backspace') {
-      this.emojiPickerHandler();
-    }
-  }
 
   /**
    * CodeMirror paste event handler
@@ -609,10 +604,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
     else {
       this.setState({ emojiSearchText: emoji });
-      // Show emoji picker after user stop typing
-      setTimeout(() => {
-        this.setState({ isEmojiPickerShown: true });
-      }, 700);
+      this.setState({ isEmojiPickerShown: true });
     }
   }
 
@@ -1026,7 +1018,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
-          onKeyUp={this.keyUpHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
