@@ -191,10 +191,12 @@ class SecuritySetting extends React.Component {
       : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
 
     const setExpantOtherOptions = () => {
-      // eslint-disable-next-line no-unused-expressions
-      isTypeDeletion(deletionType)
-        ? adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion()
-        : adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
+      if (isTypeDeletion(deletionType)) {
+        adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion();
+        return;
+      }
+      adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
+      return;
     };
 
     return (
