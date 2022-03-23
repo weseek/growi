@@ -19,18 +19,17 @@ context('Open Page History Modal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 
   it('PageHistoryModal is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
-      //  cy.getByTestid('open-page-item-control-btn').click();
-      //  cy.getByTestid('open-page-move-rename-modal-btn').click();
+       cy.getByTestid('open-page-item-control-btn').click();
+       cy.getByTestid('open-page-history-modal-btn').click();
     });
 
-     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
+     cy.getByTestid('page-history-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
