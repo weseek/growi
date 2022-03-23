@@ -43,15 +43,15 @@ const AdminHome = (props) => {
         adminHomeContainer.state.isMaintenanceMode && (
           <div className="alert alert-danger alert-link" role="alert">
             <h3 className="alert-heading">
-              {t('maintenance_mode.maintenance_mode')}
+              {t('admin:maintenance_mode.maintenance_mode')}
             </h3>
             <p>
-              {t('maintenance_mode.description')}
+              {t('admin:maintenance_mode.description')}
             </p>
             <hr />
-            <a className="btn-link" href="#maintenance-mode" rel="noopener noreferrer">
+            <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
               <i className="fa fa-link ml-1" aria-hidden="true"></i>
-              <strong>{t('maintenance_mode.end_maintenance_mode')}</strong>
+              <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
             </a>
           </div>
         )
