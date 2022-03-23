@@ -43,6 +43,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   socketIoService!: any
 
+  isElasticsearchReindexOnBoot: boolean
+
   client: any
 
   queries: any
@@ -55,7 +57,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.name = SearchDelegatorName.DEFAULT;
     this.configManager = configManager;
     this.socketIoService = socketIoService;
-
+    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -128,8 +130,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init() {
-    return this.normalizeIndices();
+  async init(): Promise<void> {
+    await this.normalizeIndices();
+    if (this.isElasticsearchReindexOnBoot) {
+      try {
+        await this.rebuildIndex();
+        logger.info('Rebuild index succeeded');
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
+    }
+    return;
   }
 
   /**
