@@ -481,6 +481,9 @@
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
+    "parent_group": "父母组",
+    "select_parent_group": "选择父组",
+    "release_parent_group": "Release parent group",
     "add_modal": {
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",

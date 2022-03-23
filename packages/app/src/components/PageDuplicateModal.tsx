@@ -163,7 +163,7 @@ const PageDuplicateModal = (): JSX.Element => {
     || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} className="grw-duplicate-page" autoFocus={false}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>

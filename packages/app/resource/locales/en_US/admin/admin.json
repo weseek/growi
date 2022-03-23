@@ -472,6 +472,9 @@
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
+    "parent_group": "Parent Group",
+    "select_parent_group": "Select Parent Group",
+    "release_parent_group": "Release parent group",
     "add_modal": {
       "add_user": "Add a user to the created group",
       "search_option": "Search option",
