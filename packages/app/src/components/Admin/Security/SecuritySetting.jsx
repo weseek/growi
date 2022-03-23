@@ -202,10 +202,10 @@ class SecuritySetting extends React.Component {
 
         <div className="col-md-3 text-md-right">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
-            <strong>ゴミ箱に入れる</strong>
+            <strong>{t('security_setting.page_delete')}</strong>
           )}
           {!isRecursiveDeletion(deletionType) && !isTypeDeletion(deletionType) && (
-            <strong>完全に削除する</strong>
+            <strong>{t('security_setting.page_delete_completely')}</strong>
           )}
         </div>
 
@@ -224,7 +224,7 @@ class SecuritySetting extends React.Component {
                     onClick={() => setExpantOtherOptions()}
                   >
                     <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
-                    { t('modal_rename.label.Other options') }
+                    { t('security_setting.other_options') }
                   </button>
                   <Collapse isOpen={expandOtherOptions}>
                     <div className="pb-4">
