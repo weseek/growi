@@ -323,13 +323,6 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_setting.page_delete_rights')}</h4>
-        <div className="row">
-          <p className="card well col-9">
-            <span className="text-warning">
-              <i className="icon-info"></i> {t('security_setting.page_delete_rights_caution')}
-            </span>
-          </p>
-        </div>
         <div className="row mb-4"></div>
         {/* Render PageDeletePermissionDropdown */}
         {
