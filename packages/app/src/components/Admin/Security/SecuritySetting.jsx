@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Collapse } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { validateDeleteConfigs } from '~/utils/page-delete-config';
@@ -183,7 +184,7 @@ class SecuritySetting extends React.Component {
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
@@ -204,10 +205,22 @@ class SecuritySetting extends React.Component {
                 <>{this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}</>
               )
               : (
-                <button type="button" className="btn btn-link p-0 mb-5" aria-expanded="false">
-                  <i className={`fa fa-fw fa-arrow-right ${false ? 'fa-rotate-90' : ''}`}></i>
-                  { t('modal_rename.label.Other options') }
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 mb-4"
+                    aria-expanded="false"
+                    onClick={() => adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion()}
+                  >
+                    <i className={`fa fa-fw fa-arrow-right ${adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion ? 'fa-rotate-90' : ''}`}></i>
+                    { t('modal_rename.label.Other options') }
+                  </button>
+                  <Collapse isOpen={adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion}>
+                    <div className="pb-4">
+                      {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
+                    </div>
+                  </Collapse>
+                </>
               )
           }
         </div>

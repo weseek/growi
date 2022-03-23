@@ -30,6 +30,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
+      expandOtherOptionsForDeletion: false,
+      expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
       appSiteUrl: appContainer.config.crowi.url || '',
@@ -145,6 +147,20 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   changePageRecursiveCompleteDeletionAuthority(val) {
     this.setState({ currentPageRecursiveCompleteDeletionAuthority: val });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForDeletion() {
+    this.setState({ expandOtherOptionsForDeletion:  !this.state.expandOtherOptionsForDeletion });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForCompleteDeletion() {
+    this.setState({ expandOtherOptionsForCompleteDeletion:  !this.state.expandOtherOptionsForCompleteDeletion });
   }
 
   /**
