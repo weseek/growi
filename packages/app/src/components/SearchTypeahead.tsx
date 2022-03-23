@@ -135,8 +135,12 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       clearTimeout(timeoutIdRef.current);
     }
 
-    if (onChange != null && selectedItems.length > 0) {
-      onChange(selectedItems);
+    if (selectedItems.length > 0) {
+      setInput(selectedItems[0].data.path);
+
+      if (onChange != null) {
+        onChange(selectedItems);
+      }
     }
   }, [onChange]);
 

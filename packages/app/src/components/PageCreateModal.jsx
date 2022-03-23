@@ -135,8 +135,8 @@ const PageCreateModal = (props) => {
     setPageNameInput(value);
   }
 
-  function ppacSubmitHandler() {
-    createInputPage();
+  function ppacSubmitHandler(input) {
+    redirectToEditor(input);
   }
 
   /**
