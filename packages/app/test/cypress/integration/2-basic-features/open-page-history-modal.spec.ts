@@ -30,7 +30,7 @@ context('Open Page History Modal', () => {
       //  cy.getByTestid('open-page-move-rename-modal-btn').click();
     });
 
-    //  cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
+     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
