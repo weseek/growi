@@ -344,7 +344,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       : require('^/resource/search/mappings-es7.json');
 
     if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+      mappings = require('^/resource/search/mappings-es7-for-ci.json');
     }
 
     return this.client.indices.create({
