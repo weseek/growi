@@ -53,7 +53,7 @@ context('Installing', () => {
     cy.getByTestid('btnSubmit').click();
 
     cy.screenshot(`${ssPrefix}-installed`, {
-      blackout: ['.grw-sidebar-content-container'],
+      blackout: ['#grw-sidebar-contents-wrapper'],
     });
   });
 

@@ -1,12 +1,14 @@
-import useSWR, {
+import { RefObject } from 'react';
+import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import SimpleBar from 'simplebar-react';
+
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import { pagePathUtils } from '@growi/core';
 
-import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -36,6 +38,15 @@ export const EditorMode = {
   HackMD: 'hackmd',
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
+
+
+/** **********************************************************
+ *                     Storing RefObjects
+ *********************************************************** */
+
+export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
+  return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
+};
 
 
 /** **********************************************************
@@ -212,7 +223,7 @@ export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean,
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {

@@ -96,7 +96,7 @@ jobs:
         ports:
         - 27017/tcp
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
         ports:
         - 9200/tcp
         env:
@@ -185,7 +185,7 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['1', '2', '3', '4', '5', '6']
+        spec-group: ['1', '2', '3']
 
     services:
       mongodb:
@@ -193,7 +193,7 @@ jobs:
         ports:
         - 27017/tcp
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
         ports:
         - 9200/tcp
         env:

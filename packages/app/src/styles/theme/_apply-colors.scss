@@ -77,39 +77,12 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 // Dropdown
-.dropdown-menu {
-  color: $color-global;
-}
-
 .grw-personal-dropdown {
   .grw-icon-container svg {
     fill: $color-global;
   }
   .grw-icon-container-muted svg {
     fill: $secondary;
-  }
-}
-
-.dropdown-item {
-  color: $color-global;
-
-  svg {
-    fill: $color-global;
-  }
-
-  &:active,
-  &.active,
-  &:active:hover,
-  &.active:hover {
-    color: $color-dropdown-link-active;
-    background-color: $bgcolor-dropdown-link-active;
-
-    svg {
-      fill: $color-dropdown-link-active;
-    }
-  }
-  &:hover {
-    background-color: $light;
   }
 }
 
@@ -707,17 +680,6 @@ mark.rbt-highlight-text {
 
   .btn-scroll-to-top {
     fill: $gray-900;
-  }
-}
-
-// Page Management Dropdown icon
-.btn-page-item-control {
-  &:hover,
-  &:focus {
-    background-color: rgba($color-link, 0.15);
-  }
-  &:active {
-    background-color: rgba($color-link, 0.2);
   }
 }
 

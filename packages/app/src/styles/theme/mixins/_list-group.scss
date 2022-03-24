@@ -24,8 +24,7 @@
   $color-hover: $color,
   $bgcolor-hover: $bgcolor,
   $color-active: $color,
-  $bgcolor-active: $bgcolor,
-  $button-color
+  $bgcolor-active: $bgcolor
 ) {
   .grw-pagetree-is-over {
     background: $bgcolor-hover;
@@ -35,18 +34,8 @@
     background-color: transparent;
     border-color: $border-color-global;
 
-    &.grw-pagetree-is-target {
-      background: $bgcolor-active;
-    }
-    .grw-pagetree-count {
-      background: $bgcolor;
-    }
-    .grw-pagetree-button {
-      &:not(:hover) {
-        svg {
-          fill: $button-color;
-        }
-      }
+    &.grw-pagetree-current-page-item {
+      background: $bgcolor-hover;
     }
 
     &.list-group-item-action {

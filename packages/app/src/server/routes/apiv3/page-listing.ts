@@ -139,7 +139,7 @@ export default (crowi: Crowi): Router => {
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user),
+            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;

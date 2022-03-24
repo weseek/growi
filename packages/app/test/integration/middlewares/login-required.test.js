@@ -98,8 +98,8 @@ describe('loginRequired', () => {
       isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
     });
 
-    test('send status 403 when \'req.path\' starts with \'_api\'', () => {
-      req.path = '/_api/someapi';
+    test('send status 403 when \'req.baseUrl\' starts with \'_api\'', () => {
+      req.baseUrl = '/_api/someapi';
 
       const result = loginRequiredStrictly(req, res, next);
 
@@ -113,7 +113,7 @@ describe('loginRequired', () => {
     });
 
     test('redirect to \'/login\' when the user does not loggedin', () => {
-      req.path = '/path/that/requires/loggedin';
+      req.baseUrl = '/path/that/requires/loggedin';
 
       const result = loginRequiredStrictly(req, res, next);
 
@@ -174,7 +174,7 @@ describe('loginRequired', () => {
     test('redirect to \'/login\' when user.status is \'STATUS_DELETED\'', () => {
       const User = crowi.model('User');
 
-      req.path = '/path/that/requires/loggedin';
+      req.baseUrl = '/path/that/requires/loggedin';
       req.user = {
         _id: 'user id',
         status: User.STATUS_DELETED,
