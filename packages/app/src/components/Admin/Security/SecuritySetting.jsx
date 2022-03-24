@@ -64,6 +64,7 @@ class SecuritySetting extends React.Component {
 
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
+    this.expantDeleteOptionsState = this.expantDeleteOptionsState.bind(this);
     this.setExpantOtherDeleteOptionsState = this.setExpantOtherDeleteOptionsState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
@@ -95,6 +96,14 @@ class SecuritySetting extends React.Component {
       adminGeneralSecurityContainer.state.currentPageRecursiveCompleteDeletionAuthority,
       adminGeneralSecurityContainer.changePageRecursiveCompleteDeletionAuthority,
     ];
+  }
+
+  expantDeleteOptionsState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    return isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
+      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
   }
 
   setExpantOtherDeleteOptionsState(deletionType) {
@@ -197,11 +206,7 @@ class SecuritySetting extends React.Component {
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t, adminGeneralSecurityContainer } = this.props;
-
-    const expandOtherOptions = isTypeDeletion(deletionType)
-      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
-      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
+    const { t } = this.props;
 
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
@@ -229,10 +234,10 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
+                    <i className={`fa fa-fw fa-arrow-right ${this.expantDeleteOptionsState(deletionType) ? 'fa-rotate-90' : ''}`}></i>
                     { t('security_setting.other_options') }
                   </button>
-                  <Collapse isOpen={expandOtherOptions}>
+                  <Collapse isOpen={this.expantDeleteOptionsState(deletionType)}>
                     <div className="pb-4">
                       {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
                     </div>
