@@ -203,15 +203,6 @@ class SecuritySetting extends React.Component {
       ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
       : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
 
-    const setExpantOtherOptions = () => {
-      if (isTypeDeletion(deletionType)) {
-        adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion();
-        return;
-      }
-      adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
-      return;
-    };
-
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
@@ -236,7 +227,7 @@ class SecuritySetting extends React.Component {
                     type="button"
                     className="btn btn-link p-0 mb-4"
                     aria-expanded="false"
-                    onClick={() => setExpantOtherOptions()}
+                    onClick={() => this.setExpantOtherDeleteOptionsState(deletionType)}
                   >
                     <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
                     { t('security_setting.other_options') }
