@@ -473,6 +473,7 @@
     "group_example": "例: Group1",
     "parent_group": "親グループ",
     "select_parent_group": "親グループを選択",
+    "release_parent_group": "親グループの解除",
     "add_modal": {
       "add_user": "グループへのユーザー追加",
       "search_option": "検索オプション",

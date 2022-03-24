@@ -66,7 +66,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
         <div className="flex-grow-1 mx-4">
           <SearchForm
             isSearchServiceReachable={isSearchServiceReachable}
-            keyword={keyword}
+            keywordOnInit={keyword}
             disableIncrementalSearch
             onSubmit={searchFormSubmittedHandler}
           />
