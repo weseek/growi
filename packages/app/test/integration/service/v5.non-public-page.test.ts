@@ -411,6 +411,7 @@ describe('PageService page operations with non-public pages', () => {
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
+        descendantCount: 0,
       },
       {
         _id: pageIdDelete3,
@@ -420,6 +421,7 @@ describe('PageService page operations with non-public pages', () => {
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
+        descendantCount: 2,
       },
       {
         _id: pageIdDelete4,
@@ -429,6 +431,7 @@ describe('PageService page operations with non-public pages', () => {
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete3._id,
+        descendantCount: 1,
       },
       {
         path: '/npdel3_top/npdel4_ug',
@@ -443,6 +446,7 @@ describe('PageService page operations with non-public pages', () => {
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete4._id,
+        descendantCount: 0,
       },
     ]);
 
@@ -850,6 +854,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(pageN).toBeNull();
         expect(page1).toBeTruthy();
         expect(page1.status).toBe(Page.STATUS_DELETED);
+        expect(page1.descendantCount).toBe(0);
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
@@ -884,8 +889,11 @@ describe('PageService page operations with non-public pages', () => {
         expect(page2).toBeTruthy();
         expect(pageR).toBeTruthy();
         expect(pageT.status).toBe(Page.STATUS_DELETED);
+        expect(pageT.status).toBe(Page.STATUS_DELETED);
         expect(page1.status).toBe(Page.STATUS_DELETED);
-        expect(page2.status).toBe(Page.STATUS_DELETED);
+        expect(page1.descendantCount).toBe(0);
+        expect(page2.descendantCount).toBe(0);
+        expect(page2.descendantCount).toBe(0);
       });
     });
 
