@@ -1,4 +1,4 @@
-context('Open Page History Modal', () => {
+context('Open Page Accessories Modal', () => {
 
   const ssPrefix = 'access-to-page-history-modal';
 
@@ -26,10 +26,10 @@ context('Open Page History Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-history-modal-btn').click();
+       cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click();
     });
 
-     cy.getByTestid('page-history-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
+     cy.getByTestid('page-accessories-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });

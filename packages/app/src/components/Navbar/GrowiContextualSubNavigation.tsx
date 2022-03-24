@@ -95,7 +95,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
-        data-testid="open-page-history-modal-btn"
+        data-testid="open-page-accessories-modal-btn-with-history-tab"
       >
         <span className="mr-1"><HistoryIcon /></span>
         {t('History')}
