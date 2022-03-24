@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch6 from 'elasticsearch6';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -43,6 +43,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   socketIoService!: any
 
+  isElasticsearchReindexOnBoot: boolean
+
   client: any
 
   queries: any
@@ -55,7 +57,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.name = SearchDelegatorName.DEFAULT;
     this.configManager = configManager;
     this.socketIoService = socketIoService;
-
+    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -90,10 +92,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   initClient() {
-    const { host, httpAuth, indexName } = this.getConnectionInfo();
-    this.client = new elasticsearch.Client({
-      host,
-      httpAuth,
+    const { host, auth, indexName } = this.getConnectionInfo();
+    this.client = new elasticsearch6.Client({
+      node: host,
+      auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
@@ -107,7 +109,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   getConnectionInfo() {
     let indexName = 'crowi';
     let host = this.esUri;
-    let httpAuth = '';
+    let auth;
 
     const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
 
@@ -117,19 +119,30 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       indexName = url.pathname.substring(1); // omit heading slash
 
       if (url.username != null && url.password != null) {
-        httpAuth = `${url.username}:${url.password}`;
+        auth = `${url.username}:${url.password}`;
       }
     }
 
     return {
       host,
-      httpAuth,
+      auth,
       indexName,
     };
   }
 
-  async init() {
-    return this.normalizeIndices();
+  async init(): Promise<void> {
+    await this.normalizeIndices();
+    if (this.isElasticsearchReindexOnBoot) {
+      try {
+        await this.rebuildIndex();
+        logger.info('Rebuild index succeeded');
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
+    }
+    return;
   }
 
   /**
@@ -189,8 +202,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const isExistsMainIndex = await client.indices.exists({ index: indexName });
-    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+    const { body: isExistsMainIndex } = await client.indices.exists({ index: indexName });
+    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -206,8 +219,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       };
     }
 
-    const { indices } = await client.indices.stats({ index: existingIndices, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
-    const aliases = await client.indices.getAlias({ index: existingIndices });
+    const { body: indicesBody } = await client.indices.stats({ index: existingIndices, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
+    const { indices } = indicesBody;
+    const { body: aliases } = await client.indices.getAlias({ index: existingIndices });
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -277,19 +291,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const isExistsIndex = await client.indices.exists({ index: indexName });
+    const { body: isExistsIndex } = await client.indices.exists({ index: indexName });
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
 
     // create alias
-    const isExistsAlias = await client.indices.existsAlias({ name: aliasName, index: indexName });
+    const { body: isExistsAlias } = await client.indices.existsAlias({ name: aliasName, index: indexName });
     if (!isExistsAlias) {
       await client.indices.putAlias({
         name: aliasName,
@@ -519,9 +533,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const res = await bulkWrite({
+          const { body: res } = await bulkWrite({
             body,
-            requestTimeout: Infinity,
           });
 
           count += (res.items || []).length;
@@ -590,7 +603,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   async searchKeyword(query) {
     // for debug
     if (process.env.NODE_ENV === 'development') {
-      const result = await this.client.indices.validateQuery({
+      const { body: result } = await this.client.indices.validateQuery({
         explain: true,
         body: {
           query: query.body.query,
@@ -599,7 +612,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       logger.debug('ES returns explanations: ', result.explanations);
     }
 
-    const result = await this.client.search(query);
+    const { body: result } = await this.client.search(query);
 
     // for debug
     logger.debug('ES result: ', result);
