@@ -3,14 +3,16 @@ name: Node CI for app production
 on:
   push:
     branches:
-      - master
+      - dev/4.5.x
   pull_request:
-    types: [opened, reopened, synchronize, closed]
+    branches:
+        - dev/4.5.x
+    types: [opened, reopened, synchronize]
 
 jobs:
 
   test-prod-node12:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@dev/4.5.x
     with:
       node-version: 12.x
       skip-cypress: true
@@ -19,7 +21,7 @@ jobs:
 
 
   test-prod-node14:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@dev/4.5.x
     with:
       node-version: 14.x
       cypress-report-artifact-name: Cypress report
@@ -30,7 +32,7 @@ jobs:
   run-reg-suit-node14:
     needs: [test-prod-node14]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@dev/4.5.x
 
     if: always()
 
