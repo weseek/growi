@@ -696,10 +696,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const cursor = cm.cursorCoords(null, 'local');
     const scroll = cm.getScrollInfo();
     const bottom = scroll.top + scroll.clientHeight;
+    const center = Math.round(scroll.clientHeight / 2);
     // Scroll to bottom of editor
     if (cursor.top < scroll.top || cursor.bottom > bottom) {
-      this.props.onScrollCursorIntoView(bottom);
-      cm.scrollTo(null, cursor.bottom - bottom);
+      cm.scrollTo(null, cursor.top - center);
     }
 
     this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });

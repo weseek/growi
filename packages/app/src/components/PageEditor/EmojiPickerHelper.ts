@@ -37,8 +37,8 @@ addEmojiOnSearch = (emoji) => {
 getCursorCoords = ():CSSProperties => {
   const coord = this.editor.cursorCoords(true);
   return {
-    top: coord.top - 20,
-    left: coord.left + 20,
+    top: coord.top + 30,
+    left: coord.left + 30,
     position: 'fixed',
   };
 }
