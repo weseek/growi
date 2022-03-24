@@ -692,6 +692,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   toggleEmojiPicker() {
+    const cm = this.getCodeMirror();
+    const cursor = cm.cursorCoords(null, 'local');
+    const scroll = cm.getScrollInfo();
+    const bottom = scroll.top + scroll.clientHeight;
+    // Scroll to bottom of editor
+    if (cursor.top < scroll.top || cursor.bottom > bottom) {
+      this.props.onScrollCursorIntoView(bottom);
+      cm.scrollTo(null, cursor.bottom - bottom);
+    }
+
     this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
 

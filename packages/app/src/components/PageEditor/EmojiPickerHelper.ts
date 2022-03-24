@@ -1,4 +1,5 @@
 import i18n from 'i18next';
+import { CSSProperties } from 'react';
 
 export default class EmojiPickerHelper {
 
@@ -29,6 +30,18 @@ addEmojiOnSearch = (emoji) => {
   }
 }
 
+/**
+ * TODO
+ * Fix function
+ */
+getCursorCoords = ():CSSProperties => {
+  const coord = this.editor.cursorCoords(true);
+  return {
+    top: coord.top - 20,
+    left: coord.left + 20,
+    position: 'fixed',
+  };
+}
 
 // Add emoji when triggered by click emoji icon on top of editor
 addEmoji = (emoji) => {

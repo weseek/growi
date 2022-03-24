@@ -41,7 +41,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   }, [emojiPickerContainer, close, emojiSearchText]);
 
   const emojiPickerHelper = new EmojiPickerHelper(editor);
-
+  const style = emojiPickerHelper.getCursorCoords();
   const selectEmoji = (emoji) => {
     if (emojiSearchText !== null) {
       emojiPickerHelper.addEmojiOnSearch(emoji);
@@ -52,10 +52,9 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   };
 
   const translation = getEmojiTranslation();
-
   return (
     <div className="overlay">
-      <div ref={emojiPickerContainer}>
+      <div ref={emojiPickerContainer} style={style}>
         <Picker set="apple" autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} />
       </div>
     </div>
