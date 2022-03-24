@@ -148,6 +148,7 @@ const UserGroupDetailPage: FC = () => {
 
       // mutate
       mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
 
       hideUpdateModal();
     }
@@ -304,6 +305,7 @@ const UserGroupDetailPage: FC = () => {
         childUserGroups={grandChildUserGroups}
         isAclEnabled={isAclEnabled ?? false}
         onEdit={showUpdateModal}
+        onRemove={updateChildUserGroup}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
       />

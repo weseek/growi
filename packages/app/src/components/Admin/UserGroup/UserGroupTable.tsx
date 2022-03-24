@@ -97,6 +97,8 @@ const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
+    userGroup.parent = null;
+
     props.onRemove(userGroup);
   };
 
