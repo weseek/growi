@@ -62,11 +62,14 @@ class SecuritySetting extends React.Component {
   constructor(props) {
     super(props);
 
+    // functions
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
     this.expantDeleteOptionsState = this.expantDeleteOptionsState.bind(this);
     this.setExpantOtherDeleteOptionsState = this.setExpantOtherDeleteOptionsState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
+
+    // render
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
   }
