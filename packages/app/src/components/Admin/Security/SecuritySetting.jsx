@@ -64,6 +64,7 @@ class SecuritySetting extends React.Component {
 
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
+    this.setExpantOtherDeleteOptionsState = this.setExpantOtherDeleteOptionsState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
@@ -96,6 +97,17 @@ class SecuritySetting extends React.Component {
     ];
   }
 
+  setExpantOtherDeleteOptionsState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    if (isTypeDeletion(deletionType)) {
+      adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion();
+      return;
+    }
+    adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
+    return;
+  }
+
   /**
    * Force update deletion config for recursive operation when the deletion config for general operation is updated.
    * @param deletionType Deletion type
@@ -112,6 +124,7 @@ class SecuritySetting extends React.Component {
     if (shouldForceUpdate) {
       setState(newState);
       setRecursiveState(newState);
+      this.setExpantOtherDeleteOptionsState(deletionType);
     }
     else {
       setState(newState);
