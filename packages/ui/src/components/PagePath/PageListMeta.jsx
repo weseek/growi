@@ -28,9 +28,18 @@ export class PageListMeta extends React.Component {
       commentCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
-    let likerCount;
+    // liker count section
+    let likedCount;
     if (this.props.likerCount > 0) {
-      likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-heart-o" />{this.props.likerCount}</span>;
+      likedCount = this.props.likerCount;
+    }
+    else if (page.liker != null && page.liker.length > 0) {
+      likedCount = page.liker.length;
+    }
+
+    let likerCount;
+    if (likedCount > 0) {
+      likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-heart-o" />{likedCount}</span>;
     }
 
     let locked;
