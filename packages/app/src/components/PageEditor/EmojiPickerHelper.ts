@@ -30,17 +30,26 @@ addEmojiOnSearch = (emoji) => {
   }
 }
 
-/**
- * TODO
- * Fix function
- */
-getCursorCoords = ():CSSProperties => {
-  const coord = this.editor.cursorCoords(true);
+// Set custom position of emoji picker relative to cursor position in the editor
+getCursorCoords = (emojiPickerHeight):CSSProperties => {
+  const offset = 30;
+  const cursorPos = this.editor.cursorCoords(true);
+  const editorPos = this.editor.getWrapperElement().getBoundingClientRect();
+  this.editor.focus();
+  // Emoji Picker bottom position exceed editor's bottom position
+  if (cursorPos.bottom + emojiPickerHeight > editorPos.bottom) {
+    return {
+      top: editorPos.bottom - emojiPickerHeight,
+      left: cursorPos.left,
+      position: 'fixed',
+    };
+  }
   return {
-    top: coord.top + 30,
-    left: coord.left + 30,
+    top: cursorPos.top + offset,
+    left: cursorPos.left,
     position: 'fixed',
   };
+
 }
 
 // Add emoji when triggered by click emoji icon on top of editor
