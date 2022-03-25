@@ -142,13 +142,21 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
 
   let likerCount;
+  if (isSelected && pageInfo != null && 'likerIds' in pageInfo) {
+    likerCount = pageInfo?.likerIds?.length;
+  }
+  else {
+    likerCount = pageData.liker.length;
+  }
+
   let bookmarkCount;
-  if (pageInfo != null && 'likerIds' in pageInfo) {
-    likerCount = isSelected ? pageInfo?.likerIds?.length : pageData.liker.length;
+  if (isSelected && pageInfo != null && 'bookmarkCount' in pageInfo) {
+    bookmarkCount = pageInfo?.bookmarkCount;
   }
-  if (pageInfo != null && 'bookmarkCount' in pageInfo) {
-    bookmarkCount = isSelected ? pageInfo?.bookmarkCount : pageMeta?.bookmarkCount;
+  else {
+    bookmarkCount = pageMeta?.bookmarkCount;
   }
+
   return (
     <li
       key={pageData._id}
