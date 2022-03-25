@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   // add custom functions to express response
   require('./response')(express, crowi);
 
-  router.use('/healthcheck', require('./healthcheck')(crowi));
+  routerForAdmin.use('/healthcheck', require('./healthcheck')(crowi));
 
   // admin
   routerForAdmin.use('/admin-home', require('./admin-home')(crowi));
