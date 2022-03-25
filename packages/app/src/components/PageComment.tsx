@@ -117,7 +117,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       growiRenderer={appContainer.getRenderer('comment')}
       deleteBtnClicked={onClickDeleteButton}
       comment={comment}
-      onUpdate={mutate}
+      onComment={mutate}
       isReadOnly={isReadOnly}
     />
   );

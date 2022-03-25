@@ -176,7 +176,7 @@ class Comment extends React.PureComponent {
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
             onCommentButtonClicked={() => {
               this.setState({ isReEdit: false });
-              if (this.props.onUpdate != null) this.props.onUpdate();
+              if (this.props.onComment != null) this.props.onComment();
             }}
           />
         ) : (
@@ -238,7 +238,7 @@ Comment.propTypes = {
   isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func,
+  onComment: PropTypes.func,
 };
 
 export default withTranslation()(CommentWrapper);
