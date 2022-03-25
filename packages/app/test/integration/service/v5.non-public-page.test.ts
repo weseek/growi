@@ -855,6 +855,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(page1).toBeTruthy();
         expect(page1.status).toBe(Page.STATUS_DELETED);
         expect(page1.descendantCount).toBe(0);
+        expect(page1.parent).toBeNull();
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
@@ -894,6 +895,9 @@ describe('PageService page operations with non-public pages', () => {
         expect(page1.descendantCount).toBe(0);
         expect(page2.descendantCount).toBe(0);
         expect(page2.descendantCount).toBe(0);
+        expect(pageT.parent).toBeNull();
+        expect(page1.parent).toBeNull();
+        expect(page2.parent).toBeNull();
       });
     });
 
