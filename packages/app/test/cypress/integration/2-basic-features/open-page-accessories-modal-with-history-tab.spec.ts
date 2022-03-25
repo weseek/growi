@@ -1,6 +1,6 @@
 context('Open Page Accessories Modal', () => {
 
-  const ssPrefix = 'access-to-page-history-modal';
+  const ssPrefix = 'access-to-page-accessories-modal-with-history-tab';
 
   let connectSid: string | undefined;
 
@@ -22,7 +22,7 @@ context('Open Page Accessories Modal', () => {
     }
   });
 
-  it('PageHistoryModal is shown successfully', () => {
+  it('PageAccessoriesModal is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
