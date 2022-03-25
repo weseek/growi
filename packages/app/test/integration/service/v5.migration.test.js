@@ -247,15 +247,6 @@ describe('V5 page migration', () => {
 
   });
 
-  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
-  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
-  const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data, i) => {
-      if (data == null) { console.log(`index: ${i}`) }
-      expect(data).toBeTruthy();
-    });
-  };
-
   const normalizeParentRecursivelyByPages = async(pages, user) => {
     return crowi.pageService.normalizeParentRecursivelyByPages(pages, user);
   };
@@ -290,7 +281,9 @@ describe('V5 page migration', () => {
       const page9 = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
       const page10 = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
       const page11 = await Page.findOne({ path: '/normalize_7' });
-      expectAllToBeTruthy([page8, page9, page10]);
+      expect(page8).toBeTruthy();
+      expect(page9).toBeTruthy();
+      expect(page10).toBeTruthy();
       expect(page11).toBeNull();
       await normalizeParentRecursivelyByPages([page8, page9, page10], testUser1);
 
@@ -299,7 +292,10 @@ describe('V5 page migration', () => {
       const page8AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA' });
       const page9AM = await Page.findOne({ path: '/normalize_7/normalize_8_gA/normalize_9_gB' });
       const page10AM = await Page.findOne({ path: '/normalize_7/normalize_8_gC' });
-      expectAllToBeTruthy([page7, page8AM, page9AM, page10AM]);
+      expect(page7).toBeTruthy();
+      expect(page8AM).toBeTruthy();
+      expect(page9AM).toBeTruthy();
+      expect(page10AM).toBeTruthy();
 
       expect(page7.isEmpty).toBe(true);
 
@@ -317,8 +313,11 @@ describe('V5 page migration', () => {
       const page3 = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9, parent: null }); // not v5
       const page4 = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB', parent: { $ne: null } });
       const page5 = await Page.findOne({ path: '/normalize_10/normalize_12_gC', parent: { $ne: null } });
-      expectAllToBeTruthy([page1, page2, page3, page4, page5]);
-
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+      expect(page4).toBeTruthy();
+      expect(page5).toBeTruthy();
       await normalizeParentRecursivelyByPages([page3], testUser1);
 
       // AM => After Migration
@@ -327,7 +326,10 @@ describe('V5 page migration', () => {
       const page3AM = await Page.findOne({ path: '/normalize_10/normalize_11_gA', _id: pageId9 });
       const page4AM = await Page.findOne({ path: '/normalize_10/normalize_11_gA/normalize_11_gB' });
       const page5AM = await Page.findOne({ path: '/normalize_10/normalize_12_gC' });
-      expectAllToBeTruthy([page1AM, page3AM, page4AM, page5AM]);
+      expect(page1AM).toBeTruthy();
+      expect(page3AM).toBeTruthy();
+      expect(page4AM).toBeTruthy();
+      expect(page5AM).toBeTruthy();
       expect(page2AM).toBeNull();
 
       expect(page1AM.isEmpty).toBeTruthy();
@@ -754,7 +756,9 @@ describe('V5 page migration', () => {
       const page1 = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
       const page2 = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2', parent: page1._id });
       const page3 = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // NOT v5
-      expectAllToBeTruthy([page1, page2, page3]);
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
 
       await normalizeParentByPage(page3, testUser1);
 
@@ -762,7 +766,8 @@ describe('V5 page migration', () => {
       const page1AM = await Page.findOne({ _id: pageId1, path: '/normalize_1', isEmpty: true });
       const page2AM = await Page.findOne({ _id: pageId2, path: '/normalize_1/normalize_2' });
       const page3AM = await Page.findOne({ _id: pageId3, path: '/normalize_1' }); // v5 compatible
-      expectAllToBeTruthy([page2AM, page3AM]);
+      expect(page2AM).toBeTruthy();
+      expect(page3AM).toBeTruthy();
       expect(page1AM).toBeNull();
 
       expect(page2AM.parent).toStrictEqual(page3AM._id);
@@ -773,8 +778,9 @@ describe('V5 page migration', () => {
       const page4 = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
       const page5 = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
       const page6 = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
-
-      expectAllToBeTruthy([page4, page5, page6]);
+      expect(page4).toBeTruthy();
+      expect(page5).toBeTruthy();
+      expect(page6).toBeTruthy();
 
       let isThrown;
       try {
@@ -788,9 +794,10 @@ describe('V5 page migration', () => {
       const page4AM = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
       const page5AM = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
       const page6AM = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5
-      expectAllToBeTruthy([page4AM, page5AM, page6AM]);
-
       expect(isThrown).toBe(true);
+      expect(page4AM).toBeTruthy();
+      expect(page5AM).toBeTruthy();
+      expect(page6AM).toBeTruthy();
       expect(page4AM).toStrictEqual(page4);
       expect(page5AM).toStrictEqual(page5);
       expect(page6AM).toStrictEqual(page6);
