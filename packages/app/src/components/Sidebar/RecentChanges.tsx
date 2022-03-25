@@ -10,7 +10,7 @@ import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRxRecentlyUpdated } from '~/stores/page';
+import { useSWRxRecentlyUpdated, useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
@@ -124,8 +124,7 @@ SmallPageItem.propTypes = {
 const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: pages, mutate } = useSWRxRecentlyUpdated();
-
+  const { data: pages, mutate } = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
@@ -167,7 +166,7 @@ const RecentChanges = (): JSX.Element => {
       </div>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
-          {(pages || []).map(page => (isRecentChangesSidebarSmall
+          {(pages ? pages[0] : []).map(page => (isRecentChangesSidebarSmall
             ? <SmallPageItem key={page._id} page={page} />
             : <LargePageItem key={page._id} page={page} />))}
         </ul>

@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -33,7 +34,12 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
     endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
-
+export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
+  return useSWRInfinite(
+    (offset: number) => `/pages/recent?offset=${offset + 1}&limit=20`,
+    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[], offset: number, limit: number }>(endpoint).then(response => response.data?.pages),
+  );
+};
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
