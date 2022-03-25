@@ -29,7 +29,7 @@ type Props = {
 }
 
 
-const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
+const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
     appContainer, pageId, highlightKeywords, isReadOnly, titleAlign,
@@ -218,4 +218,4 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 });
 
 
-export default PageCommentList;
+export default PageComment;
