@@ -2,38 +2,44 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { UncontrolledTooltip } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+import { Button } from 'reactstrap';
 
-import { UserPicture } from '@growi/ui';
+import CommentEditor from './PageComment/CommentEditor';
+import CommentAny from './PageComment/Comment';
+import ReplayComments from './PageComment/ReplayComments';
+import DeleteCommentModal from './PageComment/DeleteCommentModal';
+
 import AppContainer from '~/client/services/AppContainer';
-
-import RevisionBody from './Page/RevisionBody';
-import Username from './User/Username';
-import FormattedDistanceDate from './FormattedDistanceDate';
-import HistoryIcon from './Icons/HistoryIcon';
-
-import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
+import { toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageComment } from '../stores/comment';
 
-import MathJaxConfigurer from '~/client/util/markdown-it/mathjax';
+import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 
-const COMMENT_BOTTOM_MARGIN = 'mb-5';
+// todo: Comment component will be updated to typescript
+// the below any is workaround to avoid WithTranslation IntrinsicAttributes & Omit error
+const Comment = CommentAny as any;
 
 type Props = {
   appContainer: AppContainer,
   pageId: string,
+  isReadOnly : boolean,
+  titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
 }
 
-// todo: update this component to shared PageComment component
+
 const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
 
-  const { appContainer, pageId, highlightKeywords } = props;
+  const {
+    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign,
+  } = props;
 
-  const { t } = useTranslation();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
+
+  const [commentToBeDeleted, setCommentToBeDeleted] = useState<null | ICommentHasId>(null);
+  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
+  const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
 
   const commentsFromOldest = useMemo(() => (formatedComments != null ? [...formatedComments].reverse() : null), [formatedComments]);
@@ -41,34 +47,6 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
   );
   const allReplies = {};
-
-  /**
-   * preprocess:
-   * parse, sanitize, convert markdown to html
-   */
-  const preprocessComment = useCallback(async(comment:string):Promise<string> => {
-
-    const { interceptorManager } = appContainer;
-    const growiRenderer = appContainer.getRenderer('comment');
-
-    const context: {markdown: string, parsedHTML: string} = { markdown: comment, parsedHTML: '' };
-
-    if (interceptorManager != null) {
-      await interceptorManager.process('preRenderComment', context);
-      await interceptorManager.process('prePreProcess', context);
-      context.markdown = await growiRenderer.preProcess(context.markdown);
-      await interceptorManager.process('postPreProcess', context);
-      context.parsedHTML = await growiRenderer.process(context.markdown);
-      await interceptorManager.process('prePostProcess', context);
-      context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
-      await interceptorManager.process('postPostProcess', context);
-      await interceptorManager.process('preRenderCommentHtml', context);
-      await interceptorManager.process('postRenderCommentHtml', context);
-    }
-
-    return context.parsedHTML;
-
-  }, [appContainer]);
 
   const highlightComment = useCallback((comment: string):string => {
     if (highlightKeywords == null) return comment;
@@ -83,24 +61,21 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
   useEffect(() => { mutate() }, [pageId, mutate]);
 
   useEffect(() => {
-    const formatAndHighlightComments = async() => {
 
-      if (comments != null) {
-        const preprocessedCommentList: string[] = await Promise.all(comments.map((comment) => {
-          const highlightedComment: string = highlightComment(comment.comment);
-          return preprocessComment(highlightedComment);
-        }));
-        const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
-          return { ...comment, comment: preprocessedCommentList[index] };
-        });
-        setFormatedComments(preprocessedComments);
-      }
+    if (comments != null) {
+      const preprocessedCommentList: string[] = comments.map((comment) => {
+        const highlightedComment: string = highlightComment(comment.comment);
 
-    };
+        return highlightedComment;
+      });
+      const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
+        return { ...comment, comment: preprocessedCommentList[index] };
+      });
+      setFormatedComments(preprocessedComments);
+    }
 
-    formatAndHighlightComments();
 
-  }, [comments, highlightComment, preprocessComment]);
+  }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
     commentsFromOldest.forEach((comment) => {
@@ -110,107 +85,135 @@ const PageCommentList:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }
 
-  const generateMarkdownBody = (comment: string): JSX.Element => {
-    const isMathJaxEnabled: boolean = (new MathJaxConfigurer(appContainer)).isEnabled;
-    return (
-      <RevisionBody
-        html={comment}
-        isMathJaxEnabled={isMathJaxEnabled}
-        renderMathJaxOnInit
-        additionalClassName="comment"
-      />
-    );
-  };
+  const onClickDeleteButton = useCallback((comment: ICommentHasId) => {
+    setCommentToBeDeleted(comment);
+    setIsDeleteConfirmModalShown(true);
+  }, []);
 
-  const generateBodyFromPlainText = (comment: string): JSX.Element => {
-    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
-  };
+  const onCancelDeleteComment = useCallback(() => {
+    setCommentToBeDeleted(null);
+    setIsDeleteConfirmModalShown(false);
+  }, []);
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => {
-    const revisionHref = `/${comment.page}?revision=${comment.revision}`;
-    const commentBody: string = comment.comment;
-    const formatedCommentBody = comment.isMarkdown ? generateMarkdownBody(commentBody) : generateBodyFromPlainText(commentBody);
+  const onDeleteCommentAfterOperation = useCallback(() => {
+    onCancelDeleteComment();
+    mutate();
+  }, [mutate, onCancelDeleteComment]);
 
-    return (
-      <div key={comment._id} className="page-comment flex-column">
-        <div className="page-comment-writer">
-          <UserPicture user={comment.creator} />
-        </div>
-        <div className="page-comment-main">
-          <div className="page-comment-creator">
-            <Username user={comment.creator} />
-          </div>
-          <div className="page-comment-body">
-            {formatedCommentBody}
-          </div>
-          <div className="page-comment-meta">
-            <a href={`/${comment.page}#${comment._id}`}>
-              <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
-            </a>
-            <span className="ml-2">
-              <a id={`page-comment-revision-${comment._id}`} className="page-comment-revision" href={revisionHref}>
-                <HistoryIcon />
-              </a>
-              <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${comment._id}`}>
-                {t('page_comment.display_the_page_when_posting_this_comment')}
-              </UncontrolledTooltip>
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const onDeleteComment = useCallback(async() => {
+    if (commentToBeDeleted == null) return;
+    try {
+      await appContainer.apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
+      onDeleteCommentAfterOperation();
+    }
+    catch (error:unknown) {
+      toastError(`error: ${error}`);
+    }
+  }, [appContainer, commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => {
-    return (
-      replyComments.map((comment: ICommentHasId, index: number) => {
-        const lastIndex: number = replyComments.length - 1;
-        const isLastIndex: boolean = index === lastIndex;
-        const defaultReplyClasses = 'page-comment-reply ml-4 ml-sm-5 mr-3';
-        const replyClasses: string = isLastIndex ? `${defaultReplyClasses} ${COMMENT_BOTTOM_MARGIN}` : defaultReplyClasses;
 
-        return (
-          <div key={comment._id} className={replyClasses}>
-            {generateCommentInnerElement(comment)}
-          </div>
-        );
+  const generateCommentInnerElement = (comment: ICommentHasId) => (
+    <Comment
+      growiRenderer={appContainer.getRenderer('comment')}
+      deleteBtnClicked={onClickDeleteButton}
+      comment={comment}
+      onUpdate={mutate}
+      isReadOnly={isReadOnly}
+    />
+  );
 
-      })
-    );
-  };
+  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+    <ReplayComments
+      replyList={replyComments}
+      deleteBtnClicked={onClickDeleteButton}
+      growiRenderer={appContainer.getRenderer('comment')}
+      isReadOnly={isReadOnly}
+    />
+  );
 
 
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
+  let commentTitleClasses = 'border-bottom py-3 mb-3';
+  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
+
   return (
-    <div className="page-comments-row comment-list border border-top mt-5 px-2">
-      <div className="page-comments">
-        <h2 className="text-center border-bottom my-4 pb-2"><i className="icon-fw icon-bubbles"></i>Comments</h2>
-        <div className="page-comments-list" id="page-comments-list">
-          { commentsExceptReply.map((comment, index) => {
+    <>
+      <div className="page-comments-row comment-list">
+        <div className="container-lg">
+          <div className="page-comments">
+            <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+            <div className="page-comments-list" id="page-comments-list">
+              { commentsExceptReply.map((comment) => {
 
-            const defaultCommentThreadClasses = 'page-comment-thread';
-            const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
-            const isLastComment: boolean = index === commentsExceptReply.length - 1;
+                const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+                const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
-            let commentThreadClasses = '';
-            commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
-            commentThreadClasses = isLastComment ? `${commentThreadClasses} ${COMMENT_BOTTOM_MARGIN}` : commentThreadClasses;
+                let commentThreadClasses = '';
+                commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+                return (
+                  <div key={comment._id} className={commentThreadClasses}>
+                    {/* display comment */}
+                    {generateCommentInnerElement(comment)}
+                    {/* display reply comment */}
+                    {hasReply && generateAllRepliesElement(allReplies[comment._id])}
+                    {/* display reply button */}
+                    {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                      <div className="text-right">
+                        <Button
+                          outline
+                          color="secondary"
+                          size="sm"
+                          className="btn-comment-reply"
+                          onClick={() => {
+                            setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
+                          }}
+                        >
+                          <i className="icon-fw icon-action-undo"></i> Reply
+                        </Button>
+                      </div>
+                    )}
+                    {/* display reply editor */}
+                    {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                      <CommentEditor
+                        growiRenderer={appContainer.getRenderer('comment')}
+                        replyTo={comment._id}
+                        onCancelButtonClicked={() => {
+                          setShowEditorIds((previousState) => {
+                            const tmp = new Set(...previousState);
+                            tmp.delete(comment._id);
+                            return tmp;
+                          });
+                        }}
+                        onCommentButtonClicked={() => {
+                          setShowEditorIds((previousState) => {
+                            const tmp = new Set(...previousState);
+                            tmp.delete(comment._id);
+                            return tmp;
+                          });
+                          mutate();
 
-            return (
-              <div key={comment._id} className={commentThreadClasses}>
-                {/* display comment */}
-                {generateCommentInnerElement(comment)}
-                {/* display reply comment */}
-                {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-              </div>
-            );
+                        }}
+                      />
+                    )}
+                  </div>
+                );
 
-          })}
+              })}
+            </div>
+          </div>
         </div>
       </div>
-
-    </div>
+      {(!isReadOnly && commentToBeDeleted != null) && (
+        <DeleteCommentModal
+          isShown={isDeleteConfirmModalShown}
+          comment={commentToBeDeleted}
+          errorMessage=""
+          cancel={onCancelDeleteComment}
+          confirmedToDelete={onDeleteComment}
+        />
+      )}
+    </>
   );
 });
 

@@ -171,7 +171,7 @@ class CommentEditor extends React.Component {
       this.initializeEditor();
 
       if (onCommentButtonClicked != null) {
-        onCommentButtonClicked(replyTo || currentCommentId);
+        onCommentButtonClicked();
       }
     }
     catch (err) {

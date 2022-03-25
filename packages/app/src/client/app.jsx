@@ -120,8 +120,8 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
-    'page-comments-list': <PageCommentList appContainer={appContainer} pageId={pageContainer.state.pageId} />,
-    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} />,
+    'page-comments-list': <PageCommentList appContainer={appContainer} pageId={pageContainer.state.pageId} isReadOnly={false} titleAlign="left" />,
+    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} pageId={pageContainer.state.pageId} />,
     'page-content-footer': <PageContentFooter
       createdAt={new Date(pageContainer.state.createdAt)}
       updatedAt={new Date(pageContainer.state.updatedAt)}

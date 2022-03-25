@@ -147,8 +147,7 @@ class Comment extends React.PureComponent {
   }
 
   render() {
-    const { t } = this.props;
-    const comment = this.props.comment;
+    const { t, comment, isReadOnly } = this.props;
     const commentId = comment._id;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
@@ -167,7 +166,7 @@ class Comment extends React.PureComponent {
 
     return (
       <React.Fragment>
-        {this.state.isReEdit ? (
+        {(this.state.isReEdit && !isReadOnly) ? (
           <CommentEditor
             growiRenderer={this.props.growiRenderer}
             currentCommentId={commentId}
@@ -175,7 +174,10 @@ class Comment extends React.PureComponent {
             replyTo={undefined}
             commentCreator={creator?.username}
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
-            onCommentButtonClicked={() => this.setState({ isReEdit: false })}
+            onCommentButtonClicked={() => {
+              this.setState({ isReEdit: false });
+              if (this.props.onUpdate != null) this.props.onUpdate();
+            }}
           />
         ) : (
           <div id={commentId} className={rootClassName}>
@@ -206,7 +208,7 @@ class Comment extends React.PureComponent {
                   </UncontrolledTooltip>
                 </span>
               </div>
-              {this.isCurrentUserEqualsToAuthor() && (
+              {(this.isCurrentUserEqualsToAuthor() && !isReadOnly) && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
@@ -233,8 +235,10 @@ Comment.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
+  isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func,
 };
 
 export default withTranslation()(CommentWrapper);

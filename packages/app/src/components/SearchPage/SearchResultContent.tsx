@@ -218,7 +218,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageCommentList appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} />
+        <PageCommentList appContainer={appContainer} pageId={page._id} isReadOnly highlightKeywords={highlightKeywords} />
         <PageContentFooter
           createdAt={new Date(pageWithMeta.data.createdAt)}
           updatedAt={new Date(pageWithMeta.data.updatedAt)}
