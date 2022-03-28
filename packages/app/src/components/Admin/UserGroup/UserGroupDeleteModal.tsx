@@ -23,7 +23,6 @@ type Props = {
   deleteUserGroup?: IUserGroupHasId,
   onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
-  onShow?: (group: IUserGroupHasId) => Promise<void> | void,
   onHide?: () => Promise<void> | void,
 };
 

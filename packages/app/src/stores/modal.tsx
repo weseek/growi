@@ -4,6 +4,7 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
+import { IUserGroupHasId } from '~/interfaces/user';
 
 
 /*
@@ -327,6 +328,39 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
         return;
       }
       swrResponse.mutate({ isOpened: false });
+    },
+  };
+};
+
+/*
+ * PageAccessoriesModal
+ */
+type UpdateUserGroupConfirmModalStatus = {
+  isOpened: boolean,
+  targetGroup?: IUserGroupHasId,
+  updateData?: Partial<IUserGroupHasId>,
+  onConfirm?: (targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => any,
+}
+
+type UpdateUserGroupConfirmModalUtils = {
+  open(targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, onConfirm?: (...args: any[]) => any): Promise<void>,
+  close(): Promise<void>,
+}
+
+export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupConfirmModalStatus, Error> & UpdateUserGroupConfirmModalUtils => {
+
+  const initialStatus: UpdateUserGroupConfirmModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<UpdateUserGroupConfirmModalStatus, Error>('updateParentConfirmModal', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    async open(targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, onConfirm?: (...args: any[]) => any) {
+      await swrResponse.mutate({
+        isOpened: true, targetGroup, updateData, onConfirm,
+      });
+    },
+    async close() {
+      await swrResponse.mutate({ isOpened: false });
     },
   };
 };

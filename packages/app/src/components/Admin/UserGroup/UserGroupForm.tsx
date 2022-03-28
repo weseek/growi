@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
-  userGroup?: IUserGroupHasId,
+  userGroup: IUserGroupHasId,
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: TFunctionResult;
-  onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
+  onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
 };
 
 const UserGroupForm: FC<Props> = (props: Props) => {
@@ -47,18 +47,16 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     }
   }, [selectedParent, setSelectedParent]);
 
-  const onSubmitHandler = useCallback(async(e) => {
-    e.preventDefault(); // no reload
-
-    if (onSubmit == null) {
-      return;
-    }
-
-    await onSubmit({ name: currentName, description: currentDescription, parent: selectedParent?._id });
-  }, [currentName, currentDescription, selectedParent, onSubmit]);
-
   return (
-    <form onSubmit={onSubmitHandler}>
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      onSubmit?.(props.userGroup, {
+        name: currentName,
+        description: currentDescription,
+        parent: selectedParent,
+      });
+    }}
+    >
 
       <fieldset>
         <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
@@ -108,7 +106,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
               id="dropdownMenuButton"
               data-toggle="dropdown"
               className={`
-                btn btn-outline-secondary dropdown-toggle ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
+                btn btn-outline-secondary dropdown-toggle mb-3 ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
               `}
             >
               {selectedParent?.name ?? t('admin:user_group_management.select_parent_group')}
