@@ -152,15 +152,15 @@ export default class AdminGeneralSecurityContainer extends Container {
   /**
    * Switch ExpandOtherOptionsForDeletion
    */
-  switchExpandOtherOptionsForDeletion() {
-    this.setState({ expandOtherOptionsForDeletion:  !this.state.expandOtherOptionsForDeletion });
+  switchExpandOtherOptionsForDeletion(bool) {
+    this.setState({ expandOtherOptionsForDeletion: bool });
   }
 
   /**
    * Switch ExpandOtherOptionsForDeletion
    */
-  switchExpandOtherOptionsForCompleteDeletion() {
-    this.setState({ expandOtherOptionsForCompleteDeletion:  !this.state.expandOtherOptionsForCompleteDeletion });
+  switchExpandOtherOptionsForCompleteDeletion(bool) {
+    this.setState({ expandOtherOptionsForCompleteDeletion: bool });
   }
 
   /**
