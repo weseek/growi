@@ -278,7 +278,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:elasticsearchVersion',
     type:    ValueType.NUMBER,
-    default: 7,
+    default: 6,
   },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
