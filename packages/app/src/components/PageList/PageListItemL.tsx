@@ -12,6 +12,7 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
+import { useSWRxPageInfo } from '../../stores/page';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -20,7 +21,7 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
+  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
@@ -77,6 +78,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
+
+  const shouldFetch = isSelected && (pageData != null || pageMeta != null);
+  const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -136,6 +140,22 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
+
+  let likerCount;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    likerCount = pageInfo.likerIds?.length;
+  }
+  else {
+    likerCount = pageData.liker.length;
+  }
+
+  let bookmarkCount;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    bookmarkCount = pageInfo.bookmarkCount;
+  }
+  else {
+    bookmarkCount = pageMeta?.bookmarkCount;
+  }
 
   return (
     <li
@@ -199,7 +219,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* page meta */}
               <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
+                <PageListMeta page={pageData} likerCount={likerCount} bookmarkCount={bookmarkCount} shouldSpaceOutIcon />
               </div>
 
               {/* doropdown icon includes page control buttons */}
