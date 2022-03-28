@@ -34,19 +34,17 @@ const UpdateParentConfirmModal: FC = () => {
         canRenderCorrectly ? (
           <>
             <ModalBody>
-              <div className="mb-1">
+              <div className="mb-2">
                 <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{targetGroup.name}&quot;
                 <hr />
-                {/* {updateData != null ? `It will change the parent of "${targetGroup.name}".` : `It will reset the parent of "${targetGroup.name}".`} */}
                 {t('admin:user_group_management.update_parent_confirm_modal.caution_change_parent', { groupName: targetGroup.name })}
               </div>
               <div className="text-danger mb-3">
                 <i className="icon-exclamation"></i>
-                {/* It will affect all pages related to the group. */}
                 {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-primary">
+              <div className="custom-control custom-checkbox custom-checkbox-primary pl-5">
                 <input
                   className="custom-control-input"
                   name="forceUpdateParents"
@@ -64,7 +62,7 @@ const UpdateParentConfirmModal: FC = () => {
             <ModalFooter>
               <button
                 type="button"
-                className="btn btn-sm btn-warning"
+                className="btn btn-warning"
                 onClick={() => {
                   onConfirm?.(targetGroup, updateData, isForceUpdate);
                   closeModal();
