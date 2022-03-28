@@ -485,7 +485,7 @@
     "select_parent_group": "选择父组",
     "release_parent_group": "Release parent group",
     "add_modal": {
-      "description": "添加的用户也将被添加到所有祖先组。",
+      "description": "添加的用户也将被添加到所有的父组。",
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",
       "enable_option": "启用{{option}",
@@ -496,7 +496,6 @@
     "group_list": "组列表",
     "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
-    "back_to_ancestors_group": "返回到祖先组",
     "basic_info": "基本信息",
     "user_list": "用户列表",
     "created_group": "已创建组",

@@ -475,7 +475,7 @@
     "select_parent_group": "親グループを選択",
     "release_parent_group": "親グループの解除",
     "add_modal": {
-      "description": "追加したユーザーは、祖先全てのグループにも追加されます。",
+      "description": "追加したユーザーは、親グループにも追加されます。",
       "add_user": "グループへのユーザー追加",
       "search_option": "検索オプション",
       "enable_option": "{{option}}を有効にする",
@@ -486,7 +486,6 @@
     "group_list": "グループ一覧",
     "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
-    "back_to_ancestors_group": "祖先グループに戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",
     "created_group": "グループを作成しました",

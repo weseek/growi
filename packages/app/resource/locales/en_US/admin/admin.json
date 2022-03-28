@@ -476,7 +476,7 @@
     "select_parent_group": "Select Parent Group",
     "release_parent_group": "Release parent group",
     "add_modal": {
-      "description": "The added user will also be added to all ancestor groups.",
+      "description": "The added user will also be added to all parent groups.",
       "add_user": "Add a user to the created group",
       "search_option": "Search option",
       "enable_option": "Enable {{option}}",
@@ -487,7 +487,6 @@
     "group_list": "Group list",
     "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
-    "back_to_ancestors_group": "Go back to ancestors group",
     "basic_info": "Basic info",
     "user_list": "User list",
     "created_group": "Group was created",
