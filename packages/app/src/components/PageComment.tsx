@@ -41,6 +41,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
+  const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
 
   const commentsFromOldest = useMemo(() => (formatedComments != null ? [...formatedComments].reverse() : null), [formatedComments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -105,6 +106,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       onDeleteCommentAfterOperation();
     }
     catch (error:unknown) {
+      setErrorMessageOnDelete(error as string);
       toastError(`error: ${error}`);
     }
   }, [appContainer, commentToBeDeleted, onDeleteCommentAfterOperation]);
@@ -205,7 +207,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
-          errorMessage=""
+          errorMessage={errorMessageOnDelete}
           cancel={onCancelDeleteComment}
           confirmedToDelete={onDeleteComment}
         />
