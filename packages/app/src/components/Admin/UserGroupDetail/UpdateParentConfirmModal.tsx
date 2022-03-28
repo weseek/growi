@@ -23,15 +23,13 @@ const UpdateParentConfirmModal: FC = () => {
     isOpened, targetGroup, updateData, onConfirm,
   } = modalStatus;
 
-  const canRenderCorrectly = targetGroup != null && updateData != null && updateData?.parent !== undefined;
-
   return (
     <Modal className="modal-md" isOpen={isOpened} toggle={closeModal}>
       <ModalHeader tag="h4" toggle={closeModal} className="bg-warning text-light">
         <i className="icon icon-warning"></i> {t('admin:user_group_management.update_parent_confirm_modal.header')}
       </ModalHeader>
       {
-        canRenderCorrectly ? (
+        targetGroup != null && updateData != null && updateData?.parent !== undefined ? (
           <>
             <ModalBody>
               <div className="mb-2">
