@@ -1,12 +1,4 @@
-const Reveal = require('reveal.js');
-
-require('reveal.js/lib/js/head.min');
-require('reveal.js/lib/js/html5shiv');
-
-if (!window) {
-  window = {};
-}
-window.Reveal = Reveal;
+import Reveal from 'reveal.js';
 
 Reveal.initialize({
   controls: true,
@@ -30,8 +22,7 @@ Reveal.initialize({
 });
 
 require.ensure([], () => {
-  require('reveal.js/lib/js/classList');
-  require('reveal.js/plugin/zoom-js/zoom');
+  require('reveal.js/plugin/zoom/zoom');
   require('reveal.js/plugin/notes/notes');
   require('../util/reveal/plugins/growi-renderer');
 
