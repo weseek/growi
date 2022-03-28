@@ -511,6 +511,13 @@
       "publish_pages": "全部发布",
       "delete_pages": "全部删除",
       "transfer_pages": "转移到另一组"
+    },
+    "update_parent_confirm_modal": {
+      "header": "该组的父组被改变",
+      "caution_change_parent": "该操作改变了组的父级，即 \"{{groupName}}\" 。",
+      "danger_message": "注意，查看与该组相关的所有页面的权限会受到影响。",
+      "force_update_parents_label": "强行添加失踪的用户",
+      "force_update_parents_description": "激活这个选项，如果在父组改变后，在祖先组中有缺失的用户，可以强制添加这些用户"
     }
   }
 }
