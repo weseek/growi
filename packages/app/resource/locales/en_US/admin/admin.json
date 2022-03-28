@@ -502,6 +502,9 @@
       "publish_pages": "Publish all",
       "delete_pages": "Delete all",
       "transfer_pages": "Transfer to another group"
+    },
+    "update_parent_confirm_modal": {
+      "header": "グループの親が変更されます"
     }
   }
 }

@@ -34,14 +34,16 @@ const UpdateParentConfirmModal: FC = () => {
         canRenderCorrectly ? (
           <>
             <ModalBody>
-              <div>
+              <div className="mb-1">
                 <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{targetGroup.name}&quot;
                 <hr />
-                {updateData != null ? `It will change the parent of "${targetGroup.name}".` : `It will reset the parent of "${targetGroup.name}".`}
+                {/* {updateData != null ? `It will change the parent of "${targetGroup.name}".` : `It will reset the parent of "${targetGroup.name}".`} */}
+                {t('admin:user_group_management.update_parent_confirm_modal.caution_change_parent', { groupName: targetGroup.name })}
               </div>
-              <div className="text-danger mt-5">
+              <div className="text-danger mb-3">
                 <i className="icon-exclamation"></i>
-                {t('admin:user_group_management.update_parent_confirm_modal.desc')}(It will affect all pages related to the group.)
+                {/* It will affect all pages related to the group. */}
+                {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
               <div className="custom-control custom-checkbox custom-checkbox-primary">
@@ -54,8 +56,8 @@ const UpdateParentConfirmModal: FC = () => {
                   onChange={() => setForceUpdate(!isForceUpdate)}
                 />
                 <label className="custom-control-label" htmlFor="forceUpdateParents">
-                  { t('forceUpdateParents') }
-                  <p className="form-text text-muted mt-0">{ t('forceUpdateParentsDescription') }</p>
+                  {t('admin:user_group_management.update_parent_confirm_modal.force_update_parents_label')}
+                  <p className="form-text text-muted mt-0">{t('admin:user_group_management.update_parent_confirm_modal.force_update_parents_description')}</p>
                 </label>
               </div>
             </ModalBody>
