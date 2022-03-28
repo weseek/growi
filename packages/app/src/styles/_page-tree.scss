@@ -5,6 +5,12 @@ $grw-pagetree-item-padding-left: 10px;
 .grw-pagetree {
   min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
+  .btn-page-item-control {
+    .icon-plus::before {
+      font-size: 18px;
+    }
+  }
+
   .list-group-item {
     .grw-visible-on-hover {
       display: none;
@@ -20,7 +26,7 @@ $grw-pagetree-item-padding-left: 10px;
       }
     }
 
-    .grw-pagetree-button {
+    .grw-pagetree-triangle-btn {
       background-color: transparent;
       transition: all 0.2s ease-out;
       transform: rotate(0deg);
@@ -44,7 +50,9 @@ $grw-pagetree-item-padding-left: 10px;
       }
 
       .grw-pagetree-count {
-        padding: 0.1rem 0.3rem;
+        width: 26px;
+        padding: 0.1rem 0;
+        font-size: 12px;
       }
     }
   }

@@ -12,6 +12,7 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
+import { useSWRxPageInfo } from '../../stores/page';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -20,10 +21,12 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
+  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+} from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -40,6 +43,7 @@ type Props = {
   onPageDuplicated?: OnDuplicatedFunction,
   onPageRenamed?: OnRenamedFunction,
   onPageDeleted?: OnDeletedFunction,
+  onPagePutBacked?: OnPutBackedFunction,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -48,7 +52,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted,
+    onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,6 +78,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
+
+  const shouldFetch = isSelected && (pageData != null || pageMeta != null);
+  const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -110,14 +117,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDuplicateModal(page, { onDuplicated: onPageDuplicated });
   }, [onPageDuplicated, openDuplicateModal, pageData._id, pageData.path]);
 
-  const renameMenuItemClickHandler = useCallback(() => {
-    const page = {
-      pageId: pageData._id,
-      revisionId: pageData.revision as string,
-      path: pageData.path,
-    };
+  const renameMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
+    const page = { data: pageData, meta: pageInfo };
     openRenameModal(page, { onRenamed: onPageRenamed });
-  }, [onPageRenamed, openRenameModal, pageData._id, pageData.path, pageData.revision]);
+  }, [pageData, onPageRenamed, openRenameModal]);
 
 
   const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
@@ -129,8 +132,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const revertMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, path } = pageData;
-    openPutBackPageModal(pageId, path);
-  }, [openPutBackPageModal, pageData]);
+    openPutBackPageModal({ pageId, path }, { onPutBacked: onPagePutBacked });
+  }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -138,19 +141,35 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
 
+  let likerCount;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    likerCount = pageInfo.likerIds?.length;
+  }
+  else {
+    likerCount = pageData.liker.length;
+  }
+
+  let bookmarkCount;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    bookmarkCount = pageInfo.bookmarkCount;
+  }
+  else {
+    bookmarkCount = pageMeta?.bookmarkCount;
+  }
+
   return (
     <li
       key={pageData._id}
-      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive}`}
+      className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
     >
       <div
-        className="text-break"
+        className="text-break w-100"
         onClick={clickHandler}
       >
         <div className="d-flex">
           {/* checkbox */}
           {onCheckboxChanged != null && (
-            <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
+            <div className="d-flex align-items-center justify-content-center">
               <CustomInput
                 type="checkbox"
                 id={`cbSelect-${pageData._id}`}
@@ -161,7 +180,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
           )}
 
-          <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
+          <div className="flex-grow-1 px-2 px-md-4">
             <div className="d-flex justify-content-between">
               {/* page path */}
               <PagePathHierarchicalLink
@@ -199,12 +218,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
+              <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
+                <PageListMeta page={pageData} likerCount={likerCount} bookmarkCount={bookmarkCount} shouldSpaceOutIcon />
               </div>
 
               {/* doropdown icon includes page control buttons */}
-              <div className="item-control ml-auto">
+              <div className="ml-auto">
                 <PageItemControl
                   pageId={pageData._id}
                   pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}

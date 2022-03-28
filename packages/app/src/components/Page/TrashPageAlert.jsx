@@ -51,7 +51,10 @@ const TrashPageAlert = (props) => {
   }
 
   function openPutbackPageModalHandler() {
-    openPutBackPageModal(pageId, path);
+    const putBackedHandler = (path) => {
+      window.location.reload();
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }
 
   function openPageDeleteModalHandler() {
@@ -61,14 +64,9 @@ const TrashPageAlert = (props) => {
         revision: revisionId,
         path,
       },
+      meta: pageInfo,
     };
-    openDeleteModal(
-      [pageToDelete],
-      {
-        isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
-        onDeleted: onDeletedHandler,
-      },
-    );
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }
 
   function renderEmptyButton() {

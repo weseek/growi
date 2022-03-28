@@ -22,13 +22,27 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する",
-    "migration_desc": "公開されているページに古いスキーマのものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページのスキーマをアップグレードしてください。",
+    "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
-    "upgrade_to_v5": "V5 にアップグレード",
-    "modal_migration_warning": "管理者はユーザーに、マイグレーション中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
-    "start_upgrading": "アップグレードを開始",
-    "successfully_started": "正常にマイグレーションが開始されました",
-    "already_upgraded": "アップグレードは既に完了しています"
+    "upgrade_to_v5": "v5 互換形式 へ変換",
+    "modal_migration_warning": "管理者はユーザーに、v5 互換形式への変換中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
+    "start_upgrading": "v5 互換形式への変換を開始",
+    "successfully_started": "正常に v5 互換形式への変換が開始されました",
+    "already_upgraded": "v5 互換形式への変換は既に完了しています"
+  },
+  "maintenance_mode": {
+    "maintenance_mode": "メンテナンスモード",
+    "under_maintenance_mode": "メンテナンスモード中",
+    "failed_to_start_maintenance_mode": "メンテナンスモードを開始できませんでした",
+    "failed_to_end_maintenance_mode": "メンテナンスモードを終了できませんでした",
+    "successfully_started_maintenance_mode": "メンテナンスモードを開始しました",
+    "successfully_ended_maintenance_mode": "メンテナンスモードを終了しました",
+    "warning_message_to_start": "メンテナンスモード中は管理画面にしかアクセスできなくなり、一般ユーザーは全ての操作が不能になります。",
+    "warning_message_to_end": "「データのインポート」および「V5 へのアップグレード」が進行中の場合は、処理が終了するまでメンテナンスモードを終了しないようにすることを推奨します。",
+    "supplymentary_message_to_start": "API についても管理者用 API しか機能しなくなります。",
+    "start_maintenance_mode": "メンテナンスモードを開始する",
+    "end_maintenance_mode": "メンテナンスモードを終了する",
+    "description": "メンテナンスモードでは、ユーザーのあらゆる操作を制限します。「データのインポート」および「V5 へのアップグレード」の際には必ずメンテナンスモードを開始してから行ってください。終了するには「セキュリティ設定」>「メンテナンスモード」から操作してください。"
   },
   "app_setting": {
     "site_name": "サイト名",
@@ -457,6 +471,9 @@
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",
+    "parent_group": "親グループ",
+    "select_parent_group": "親グループを選択",
+    "release_parent_group": "親グループの解除",
     "add_modal": {
       "add_user": "グループへのユーザー追加",
       "search_option": "検索オプション",
@@ -468,6 +485,7 @@
     "group_list": "グループ一覧",
     "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
+    "back_to_ancestors_group": "祖先グループに戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",
     "created_group": "グループを作成しました",
@@ -476,7 +494,7 @@
     "remove_from_group": "グループから外す",
     "delete_modal": {
       "header": "グループの削除",
-      "desc": "グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
+      "desc": "当該グループ配下に存在する子グループも全て削除されます。また、グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
       "dropdown_desc": "削除するグループの限定公開ページの処理を選択してください",
       "select_group": "グループを選択してください",
       "no_groups": "グループがありません",

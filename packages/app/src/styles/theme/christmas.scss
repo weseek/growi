@@ -97,9 +97,7 @@ html[dark] {
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $primary;
-  $color-dropdown-link-active: $color-global;
-  $color-dropdown-link-hover: $color-reversal;
+  $bgcolor-dropdown-link-active: $themecolor;
 
   // admin theme box
   $color-theme-color-box: lighten($themecolor, 20%);
@@ -194,8 +192,7 @@ html[dark] {
         $color-list-hover,
         $bgcolor-list-hover,
         $color-list-active,
-        $bgcolor-list-hover,
-        $gray-400
+        $bgcolor-list-hover
       );
     }
   }

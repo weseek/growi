@@ -599,7 +599,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     const builder = new PageQueryBuilder(Page.find({ path }));
-    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
@@ -1177,7 +1177,7 @@ module.exports = function(crowi, app) {
 
     const options = {};
 
-    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
@@ -1187,8 +1187,8 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user)) {
-          return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
+        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
@@ -1201,6 +1201,10 @@ module.exports = function(crowi, app) {
 
         if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
+        }
+
+        if (!crowi.pageService.canDelete(page.creator, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively);
@@ -1258,7 +1262,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to revert deleted page.'));
+      return res.json(ApiResponse.error(err));
     }
 
     const result = {};

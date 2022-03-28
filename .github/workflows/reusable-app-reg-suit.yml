@@ -57,7 +57,7 @@ jobs:
         cache-dependency-path: '**/yarn.lock'
 
     - name: Cache/Restore node_modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules

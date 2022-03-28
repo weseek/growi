@@ -22,8 +22,12 @@ import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import {
+  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
+} from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
+import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 const debug = require('debug')('growi:services:page');
 
@@ -107,7 +111,6 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -209,24 +212,62 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId, operator) {
+  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (operator.admin) {
+    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
+
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
+    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
+
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  private canDeleteLogic(
+      creatorId: ObjectIdLike,
+      operator,
+      isRecursively: boolean,
+      authority: IPageDeleteConfigValueToProcessValidation | null,
+      recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
+  ): boolean {
+    const isAdmin = operator.admin;
+    const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
+
+    if (isRecursively) {
+      return this.compareDeleteConfig(isAdmin, isOperator, recursiveAuthority);
+    }
+
+    return this.compareDeleteConfig(isAdmin, isOperator, authority);
+  }
+
+  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
+    if (isAdmin) {
       return true;
     }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
+
+    if (authority === PageDeleteConfigValue.Anyone || authority == null) {
       return true;
     }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      const operatorId = operator?._id;
-      return (operatorId != null && operatorId.equals(creatorId));
+    if (authority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+      return true;
     }
 
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
+  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user, isRecursively));
+  }
+
+  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDelete(p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -250,6 +291,7 @@ class PageService {
       return {
         data: page,
         meta: {
+          isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
           isMovable: false,
           isDeletable: false,
@@ -279,7 +321,7 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
+    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
@@ -304,7 +346,7 @@ class PageService {
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || isTrashPage);
+    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
 
     return shouldUseV4Process;
   }
@@ -315,7 +357,7 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
+    const shouldUseV4Process = !isV5Compatible || isPageRestricted;
 
     return shouldUseV4Process;
   }
@@ -437,9 +479,7 @@ class PageService {
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        const shouldCheckDescendants = false;
-
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
@@ -533,18 +573,15 @@ class PageService {
     const newParentPath = pathlib.dirname(toPath);
 
     // local util
-    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = [path]): string[] => {
-      const nextPath = pathlib.dirname(path);
-      if (nextPath === fromPath) {
-        return [...paths, nextPath];
-      }
+    const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = []): string[] => {
+      if (path === fromPath) return paths;
 
-      paths.push(nextPath);
-
-      return collectAncestorPathsUntilFromPath(nextPath, paths);
+      const parentPath = pathlib.dirname(path);
+      paths.push(parentPath);
+      return collectAncestorPathsUntilFromPath(parentPath, paths);
     };
 
-    const pathsToInsert = collectAncestorPathsUntilFromPath(newParentPath);
+    const pathsToInsert = collectAncestorPathsUntilFromPath(toPath);
     const originalParent = await Page.findById(originalPage.parent);
     if (originalParent == null) {
       throw Error('Original parent not found');
@@ -585,17 +622,22 @@ class PageService {
     return newParent;
   }
 
-  // !!renaming always include descendant pages!!
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const updateMetadata = options.updateMetadata || false;
+    const {
+      isRecursively = false,
+      createRedirectPage = false,
+      updateMetadata = false,
+    } = options;
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
 
 
     const update: any = {};
@@ -610,11 +652,15 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
+    if (createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
+
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
-
 
   private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
     // v4 compatible process
@@ -887,9 +933,7 @@ class PageService {
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        const shouldCheckDescendants = false;
-
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when duplicating`, err);
@@ -2056,6 +2100,7 @@ class PageService {
 
     if (page.isEmpty) {
       return {
+        isV5Compatible: true,
         isEmpty: true,
         isMovable,
         isDeletable: false,
@@ -2068,6 +2113,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     return {
+      isV5Compatible: isTopPage(page.path) || page.parent != null,
       isEmpty: false,
       sumOfLikers: page.liker.length,
       likerIds: this.extractStringIds(likers),
@@ -2180,7 +2226,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (isRecursively) {
-      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
       this.normalizeParentRecursivelyByPages(pages, user);
@@ -2200,23 +2246,20 @@ class PageService {
           throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
-        const normalizedPage = await this.normalizeParentByPageId(pageId, user);
+        const normalizedPage = await this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
         }
-        else {
-          // update descendantCount of ancestors'
-          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount, false);
-        }
       }
       catch (err) {
+        logger.error('Something went wrong while normalizing parent.', err);
         // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
       }
     }
   }
 
-  private async normalizeParentByPageId(page, user) {
+  private async normalizeParentByPage(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const {
@@ -2224,7 +2267,7 @@ class PageService {
     } = page;
 
     // check if any page exists at target path already
-    const existingPage = await Page.findOne({ path });
+    const existingPage = await Page.findOne({ path, parent: { $ne: null } });
     if (existingPage != null && !existingPage.isEmpty) {
       throw Error('Page already exists. Please rename the page to continue.');
     }
@@ -2237,7 +2280,7 @@ class PageService {
       try {
         const shouldCheckDescendants = true;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}"`, err);
@@ -2259,10 +2302,13 @@ class PageService {
       updatedPage = await Page.findById(page._id);
     }
     else {
-      // getParentAndFillAncestors
       const parent = await Page.getParentAndFillAncestors(page.path, user);
       updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
+
+    // Update descendantCount
+    const inc = 1;
+    await this.updateDescendantCountOfAncestors(updatedPage.parent, inc, true);
 
     return updatedPage;
   }
@@ -2285,7 +2331,7 @@ class PageService {
     let normalizablePages;
     let nonNormalizablePages;
     try {
-      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pagesToNormalize);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(user, pagesToNormalize);
     }
     catch (err) {
       throw err;
@@ -2330,7 +2376,13 @@ class PageService {
   }
 
   async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
-    // TODO: insertOne PageOperationBlock
+    // Save prevDescendantCount for sub-operation
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+    const builder = new PageQueryBuilder(Page.findOne(), true);
+    builder.addConditionAsMigrated();
+    const exPage = await builder.query.exec();
+    const options = { prevDescendantCount: exPage?.descendantCount ?? 0 };
 
     try {
       await this.normalizeParentRecursively([page.path], user);
@@ -2348,10 +2400,10 @@ class PageService {
       throw Error('PageOperation document not found');
     }
 
-    await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id);
+    await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id, options);
   }
 
-  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
+  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike, options: {prevDescendantCount: number}): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     try {
@@ -2361,10 +2413,13 @@ class PageService {
       // find pages again to get updated descendantCount
       // then calculate inc
       const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
+      if (pageAfterUpdatingDescendantCount == null) {
+        throw Error('Page not found after updating descendantCount');
+      }
 
-      const exDescendantCount = page.descendantCount;
+      const { prevDescendantCount } = options;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = newDescendantCount - exDescendantCount;
+      const inc = (newDescendantCount - prevDescendantCount) + 1;
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
@@ -2483,8 +2538,12 @@ class PageService {
   async normalizeParentRecursively(paths: string[], user: any | null): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, [p]));
-    const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
+    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
+    // targets' descendants
+    const pathAndRegExpsToNormalize: (RegExp | string)[] = paths
+      .map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
+    // include targets' path
+    pathAndRegExpsToNormalize.push(...paths);
 
     // determine UserGroup condition
     let userGroups = null;
@@ -2495,11 +2554,13 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(regexps, ancestorPaths, grantFiltersByUser, user);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
   // TODO: use websocket to show progress
-  private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], grantFiltersByUser: { $or: any[] }, user): Promise<void> {
+  private async _normalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user,
+  ): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
@@ -2507,7 +2568,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     // Build filter
-    const filter: any = {
+    const andFilter: any = {
       $and: [
         {
           parent: null,
@@ -2516,25 +2577,36 @@ class PageService {
         },
       ],
     };
-    let pathCondition: (RegExp | string)[] = [];
-    if (regexps.length > 0) {
-      pathCondition = [...regexps];
+    const orFilter: any = { $or: [] };
+    // specified pathOrRegExps
+    if (pathOrRegExps.length > 0) {
+      orFilter.$or.push(
+        {
+          path: { $in: pathOrRegExps },
+        },
+      );
     }
-    if (pathsToInclude.length > 0) {
-      pathCondition = [...pathCondition, ...pathsToInclude];
+    // not specified but ancestors of specified pathOrRegExps
+    if (publicPathsToNormalize.length > 0) {
+      orFilter.$or.push(
+        {
+          path: { $in: publicPathsToNormalize },
+          grant: Page.GRANT_PUBLIC, // use only public pages to complete the tree
+        },
+      );
     }
-    if (pathCondition.length > 0) {
-      filter.$and.push({
-        parent: null,
-        status: Page.STATUS_PUBLISHED,
-        path: { $in: pathCondition },
-      });
-    }
+
+    // Merge filters
+    const mergedFilter = {
+      $and: [
+        { $and: [grantFiltersByUser, ...andFilter.$and] },
+        { $or: orFilter.$or },
+      ],
+    };
 
     let baseAggregation = Page
       .aggregate([
-        { $match: grantFiltersByUser },
-        { $match: filter },
+        { $match: mergedFilter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -2543,15 +2615,13 @@ class PageService {
         },
       ]);
 
-    // limit pages to get
-    const total = await Page.countDocuments(filter);
+    // Limit pages to get
+    const total = await Page.countDocuments(mergedFilter);
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
-
-    // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
 
     let countPages = 0;
@@ -2562,13 +2632,52 @@ class PageService {
       async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
-        // Fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths, user, false);
+        // 1. Remove unnecessary empty pages & reset parent for pages which had had those empty pages
+        const pageIdsToNotDelete = pages.map(p => p._id);
+        const emptyPagePathsToDelete = pages.map(p => p.path);
 
-        // Find parents
-        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
-        const parents = await builder
+        const builder1 = new PageQueryBuilder(Page.find({ isEmpty: true }, { _id: 1 }), true);
+        builder1.addConditionToListByPathsArray(emptyPagePathsToDelete);
+        builder1.addConditionToExcludeByPageIdsArray(pageIdsToNotDelete);
+
+        const emptyPagesToDelete = await builder1.query.lean().exec();
+        const resetParentOperations = emptyPagesToDelete.map((p) => {
+          return {
+            updateOne: {
+              filter: {
+                parent: p._id,
+              },
+              update: {
+                parent: null,
+              },
+            },
+          };
+        });
+
+        await Page.bulkWrite(resetParentOperations);
+        await Page.removeEmptyPages(pageIdsToNotDelete, emptyPagePathsToDelete);
+
+        // 2. Create lacking parents as empty pages
+        const orFilters = [
+          { path: '/' },
+          { path: { $in: publicPathsToNormalize }, grant: Page.GRANT_PUBLIC, status: Page.STATUS_PUBLISHED },
+          { path: { $in: publicPathsToNormalize }, parent: { $ne: null }, status: Page.STATUS_PUBLISHED },
+          { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
+        ];
+        const filterForApplicableAncestors = { $or: orFilters };
+        await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForApplicableAncestors);
+
+        // 3. Find parents
+        const addGrantCondition = (builder) => {
+          builder.query = builder.query.and(grantFiltersByUser);
+
+          return builder;
+        };
+        const builder2 = new PageQueryBuilder(Page.find(), true);
+        addGrantCondition(builder2);
+        const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
+          .addConditionToFilterByApplicableAncestors(publicPathsToNormalize)
           .query
           .lean()
           .exec();
@@ -2584,6 +2693,7 @@ class PageService {
               {
                 path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
               },
+              filterForApplicableAncestors,
               grantFiltersByUser,
             ],
           };
@@ -2620,9 +2730,6 @@ class PageService {
           throw err;
         }
 
-        // Remove unnecessary empty pages
-        await Page.removeEmptyPages(pages.map(p => p._id), pages.map(p => p.path));
-
         callback();
       },
       final(callback) {
@@ -2636,9 +2743,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    const existsFilter = { $and: [grantFiltersByUser, ...filter.$and] };
-    if (await Page.exists(existsFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(regexps, pathsToInclude, grantFiltersByUser, user);
+    if (await Page.exists(mergedFilter) && shouldContinue) {
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user);
     }
 
   }

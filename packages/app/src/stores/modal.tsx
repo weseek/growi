@@ -1,7 +1,9 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+} from '~/interfaces/ui';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 
 
 /*
@@ -92,7 +94,7 @@ type DuplicateModalStatusUtils = {
 }
 
 export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
-  const initialData: DuplicateModalStatus = { isOpened: false, page: { pageId: '', path: '/' } };
+  const initialData: DuplicateModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
   return {
@@ -101,53 +103,45 @@ export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRRespons
         page?: IPageForPageDuplicateModal,
         opts?: IDuplicateModalOption,
     ) => swrResponse.mutate({ isOpened: true, page, opts }),
-    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '/' } }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
 
 /*
-* PageRenameModal
-*/
-export type IPageForPageRenameModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
-}
-
+ * PageRenameModal
+ */
 export type IRenameModalOption = {
   onRenamed?: OnRenamedFunction,
 }
 
 type RenameModalStatus = {
   isOpened: boolean,
-  page?: IPageForPageRenameModal,
+  page?: IPageToRenameWithMeta,
   opts?: IRenameModalOption
 }
 
 type RenameModalStatusUtils = {
   open(
-    page?: IPageForPageRenameModal,
+    page?: IPageToRenameWithMeta,
     opts?: IRenameModalOption
     ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
 export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
-  const initialData: RenameModalStatus = {
-    isOpened: false, page: { pageId: '', revisionId: '', path: '' },
-  };
+  const initialData: RenameModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
     open: (
-        page?: IPageForPageRenameModal,
+        page?: IPageToRenameWithMeta,
         opts?: IRenameModalOption,
     ) => swrResponse.mutate({
       isOpened: true, page, opts,
     }),
-    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', revisionId: '', path: '' } }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
@@ -155,27 +149,44 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
 /*
 * PutBackPageModal
 */
+export type IPageForPagePutBackModal = {
+  pageId: string,
+  path: string
+}
+
+export type IPutBackPageModalOption = {
+  onPutBacked?: OnPutBackedFunction,
+}
+
 type PutBackPageModalStatus = {
   isOpened: boolean,
-  pageId?: string,
-  path?: string,
+  page?: IPageForPagePutBackModal,
+  opts?: IPutBackPageModalOption,
 }
 
 type PutBackPageModalUtils = {
-  open(pageId: string, path: string): Promise<PutBackPageModalStatus | undefined>
+  open(
+    page?: IPageForPagePutBackModal,
+    opts?: IPutBackPageModalOption,
+    ): Promise<PutBackPageModalStatus | undefined>
   close():Promise<PutBackPageModalStatus | undefined>
 }
 
 export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
-  const initialData = { isOpened: false, pageId: '', path: '' };
+  const initialData: PutBackPageModalStatus = {
+    isOpened: false,
+    page: { pageId: '', path: '' },
+  };
   const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pageId: string, path: string) => swrResponse.mutate({
-      isOpened: true, pageId, path,
+    open: (
+        page: IPageForPagePutBackModal, opts?: IPutBackPageModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, page, opts,
     }),
-    close: () => swrResponse.mutate({ isOpened: false }),
+    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '' } }),
   };
 };
 

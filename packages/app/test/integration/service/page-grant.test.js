@@ -220,7 +220,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -232,7 +232,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = groupParent._id;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -244,7 +244,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -256,7 +256,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = groupParent._id;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -268,7 +268,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -280,7 +280,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -292,7 +292,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(false);
     });
@@ -304,7 +304,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = groupParent._id;
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(false);
     });
@@ -318,7 +318,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = true;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -330,7 +330,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = true;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -342,7 +342,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = groupParent._id;
       const shouldCheckDescendants = true;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -354,7 +354,7 @@ describe('PageGrantService', () => {
       const grantedGroupId = null;
       const shouldCheckDescendants = true;
 
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(false);
     });

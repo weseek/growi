@@ -39,6 +39,24 @@ const AdminHome = (props) => {
   return (
     <div data-testid="admin-home">
       {
+        // Alert message will be displayed in case that the GROWI is under maintenance
+        adminHomeContainer.state.isMaintenanceMode && (
+          <div className="alert alert-danger alert-link" role="alert">
+            <h3 className="alert-heading">
+              {t('admin:maintenance_mode.maintenance_mode')}
+            </h3>
+            <p>
+              {t('admin:maintenance_mode.description')}
+            </p>
+            <hr />
+            <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
+              <i className="fa fa-link ml-1" aria-hidden="true"></i>
+              <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
+            </a>
+          </div>
+        )
+      }
+      {
       // Alert message will be displayed in case that V5 migration has not been compleated
         (migrationStatus != null && !migrationStatus.isV5Compatible)
         && (

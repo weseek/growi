@@ -40,7 +40,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
 
     // navigate to page
     if (page != null) {
-      window.location.href = page._id;
+      window.location.href = `/${page._id}`;
     }
   }, []);
 
