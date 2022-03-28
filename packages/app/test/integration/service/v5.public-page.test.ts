@@ -24,15 +24,6 @@ describe('PageService page operations with only public pages', () => {
 
   let rootPage;
 
-
-  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
-  const expectAllToBeTruthy = (dataList) => {
-    dataList.forEach((data, i) => {
-      if (data == null) { console.log(`index: ${i}`) }
-      expect(data).toBeTruthy();
-    });
-  };
-
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -918,7 +909,7 @@ describe('PageService page operations with only public pages', () => {
     };
 
     test('Should NOT rename top page', async() => {
-      expectAllToBeTruthy([rootPage]);
+      expect(rootPage).toBeTruthy();
       let isThrown = false;
       try {
         await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
@@ -933,7 +924,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move to under non-empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename1' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename1' });
-      expectAllToBeTruthy([childPage, parentPage]);
+      expect(childPage).toBeTruthy();
+      expect(parentPage).toBeTruthy();
 
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
@@ -949,7 +941,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move to under empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename2' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename2' });
-      expectAllToBeTruthy([childPage, parentPage]);
+      expect(childPage).toBeTruthy();
+      expect(parentPage).toBeTruthy();
       expect(parentPage.isEmpty).toBe(true);
 
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
@@ -966,7 +959,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move with option updateMetadata: true', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename3' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename3' });
-      expectAllToBeTruthy([childPage, parentPage]);
+      expect(childPage).toBeTruthy();
+      expect(parentPage).toBeTruthy();
       expect(childPage.lastUpdateUser).toStrictEqual(dummyUser1._id);
 
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
@@ -983,7 +977,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should move with option createRedirectPage: true', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename4' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename4' });
-      expectAllToBeTruthy([parentPage, childPage]);
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
 
       const oldPath = childPage.path;
       const newPath = '/v5_ParentForRename4/renamedChildForRename4';
@@ -1001,7 +996,9 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
       const grandchild = await Page.findOne({ parent: childPage._id, path: '/v5_ChildForRename5/v5_GrandchildForRename5' });
 
-      expectAllToBeTruthy([parentPage, childPage, grandchild]);
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
@@ -1025,7 +1022,9 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename7', isEmpty: true });
       const grandchild = await Page.findOne({ parent: childPage._id, path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
-      expectAllToBeTruthy([parentPage, childPage, grandchild]);
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
@@ -1043,7 +1042,7 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should NOT rename/move with existing path', async() => {
       const page = await Page.findOne({ path: '/v5_ParentForRename8' });
-      expectAllToBeTruthy([page]);
+      expect(page).toBeTruthy();
 
       const newPath = '/v5_ParentForRename9';
       let isThrown;
@@ -1062,7 +1061,8 @@ describe('PageService page operations with only public pages', () => {
       const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: false });
       const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
 
-      expectAllToBeTruthy([page1, page2]);
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
 
       const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
       const newPath = newParentalPath + page1.path;
@@ -1073,7 +1073,10 @@ describe('PageService page operations with only public pages', () => {
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename17' });
       const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename17/v5_pageForRename18' });
 
-      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+      expect(renamedPage).toBeTruthy();
+      expect(renamedPageChild).toBeTruthy();
+      expect(newlyCreatedEmptyPage1).toBeTruthy();
+      expect(newlyCreatedEmptyPage2).toBeTruthy();
 
       // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
@@ -1095,7 +1098,8 @@ describe('PageService page operations with only public pages', () => {
       const page1 = await Page.findOne({ path: initialPathForPage1, isEmpty: true });
       const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: false, parent: page1._id });
 
-      expectAllToBeTruthy([page1, page2]);
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
 
       const newParentalPath = '/v5_pageForRename19/v5_pageForRename20';
       const newPath = newParentalPath + page1.path;
@@ -1106,7 +1110,10 @@ describe('PageService page operations with only public pages', () => {
       const newlyCreatedEmptyPage1 = await Page.findOne({ path: '/v5_pageForRename19' });
       const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename19/v5_pageForRename20' });
 
-      expectAllToBeTruthy([renamedPage, renamedPageChild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2]);
+      expect(renamedPage).toBeTruthy();
+      expect(renamedPageChild).toBeTruthy();
+      expect(newlyCreatedEmptyPage1).toBeTruthy();
+      expect(newlyCreatedEmptyPage2).toBeTruthy();
 
       // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
@@ -1130,7 +1137,9 @@ describe('PageService page operations with only public pages', () => {
       const page2 = await Page.findOne({ path: initialPathForPage2, isEmpty: true, parent: page1._id });
       const page3 = await Page.findOne({ path: initialPathForPage3, isEmpty: false, parent: page2._id });
 
-      expectAllToBeTruthy([page1, page2, page3]);
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
 
       const newParentalPath = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
       const newPath = newParentalPath + page1.path;
@@ -1145,7 +1154,12 @@ describe('PageService page operations with only public pages', () => {
       const newlyCreatedEmptyPage2 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22' });
       const newlyCreatedEmptyPage3 = await Page.findOne({ path: '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23' });
 
-      expectAllToBeTruthy([renamedPage, renamedPageChild, renamedPageGrandchild, newlyCreatedEmptyPage1, newlyCreatedEmptyPage2, newlyCreatedEmptyPage3]);
+      expect(renamedPage).toBeTruthy();
+      expect(renamedPageChild).toBeTruthy();
+      expect(renamedPageGrandchild).toBeTruthy();
+      expect(newlyCreatedEmptyPage1).toBeTruthy();
+      expect(newlyCreatedEmptyPage2).toBeTruthy();
+      expect(newlyCreatedEmptyPage3).toBeTruthy();
 
       // check parent
       expect(newlyCreatedEmptyPage1.parent).toStrictEqual(rootPage._id);
@@ -1189,7 +1203,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should duplicate single page', async() => {
       const page = await Page.findOne({ path: '/v5_PageForDuplicate1' });
-      expectAllToBeTruthy([page]);
+      expect(page).toBeTruthy();
 
       const newPagePath = '/duplicatedv5PageForDuplicate1';
       const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
@@ -1207,7 +1221,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should NOT duplicate single empty page', async() => {
       const page = await Page.findOne({ path: '/v5_PageForDuplicate2' });
-      expectAllToBeTruthy([page]);
+      expect(page).toBeTruthy();
 
       let isThrown;
       let duplicatedPage;
@@ -1230,7 +1244,12 @@ describe('PageService page operations with only public pages', () => {
       const childPage2 = await Page.findOne({ path: '/v5_PageForDuplicate3/v5_Child_2_ForDuplicate3' }).populate({ path: 'revision', model: 'Revision' });
       const revisionForChild1 = childPage1.revision;
       const revisionForChild2 = childPage2.revision;
-      expectAllToBeTruthy([basePage, revision, childPage1, childPage2, revisionForChild1, revisionForChild2]);
+      expect(basePage).toBeTruthy();
+      expect(revision).toBeTruthy();
+      expect(childPage1).toBeTruthy();
+      expect(childPage2).toBeTruthy();
+      expect(revisionForChild1).toBeTruthy();
+      expect(revisionForChild2).toBeTruthy();
 
       const newPagePath = '/duplicatedv5PageForDuplicate3';
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
@@ -1242,8 +1261,13 @@ describe('PageService page operations with only public pages', () => {
       const revisionBodyForDupChild1 = duplicatedChildPage1.revision;
       const revisionBodyForDupChild2 = duplicatedChildPage2.revision;
 
-      expectAllToBeTruthy([duplicatedPage, duplicatedChildPage1, duplicatedChildPage2,
-                           revisionForDuplicatedPage, revisionBodyForDupChild1, revisionBodyForDupChild2]);
+      expect(duplicatedPage).toBeTruthy();
+      expect(duplicatedChildPage1).toBeTruthy();
+      expect(duplicatedChildPage2).toBeTruthy();
+      expect(revisionForDuplicatedPage).toBeTruthy();
+      expect(revisionBodyForDupChild1).toBeTruthy();
+      expect(revisionBodyForDupChild2).toBeTruthy();
+
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChildPage1.path).toBe('/duplicatedv5PageForDuplicate3/v5_Child_1_ForDuplicate3');
@@ -1255,7 +1279,9 @@ describe('PageService page operations with only public pages', () => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate4' });
       const baseChild = await Page.findOne({ parent: basePage._id, isEmpty: true });
       const baseGrandchild = await Page.findOne({ parent: baseChild._id });
-      expectAllToBeTruthy([basePage, baseChild, baseGrandchild]);
+      expect(basePage).toBeTruthy();
+      expect(baseChild).toBeTruthy();
+      expect(baseGrandchild).toBeTruthy();
 
       const newPagePath = '/duplicatedv5PageForDuplicate4';
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
@@ -1263,7 +1289,8 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id });
 
       expect(xssSpy).toHaveBeenCalled();
-      expectAllToBeTruthy([duplicatedPage, duplicatedGrandchild]);
+      expect(duplicatedPage).toBeTruthy();
+      expect(duplicatedGrandchild).toBeTruthy();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChild.path).toBe('/duplicatedv5PageForDuplicate4/v5_empty_PageForDuplicate4');
       expect(duplicatedGrandchild.path).toBe('/duplicatedv5PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4');
@@ -1279,7 +1306,11 @@ describe('PageService page operations with only public pages', () => {
       const tag2 = await Tag.findOne({ name:  'duplicate_Tag2' });
       const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
       const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
-      expectAllToBeTruthy([basePage, tag1, tag2, basePageTagRelation1, basePageTagRelation2]);
+      expect(basePage).toBeTruthy();
+      expect(tag1).toBeTruthy();
+      expect(tag2).toBeTruthy();
+      expect(basePageTagRelation1).toBeTruthy();
+      expect(basePageTagRelation2).toBeTruthy();
 
       const newPagePath = '/duplicatedv5PageForDuplicate5';
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
@@ -1293,7 +1324,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT duplicate comments', async() => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate6' });
       const basePageComments = await Comment.find({ page: basePage._id });
-      expectAllToBeTruthy([basePage, ...basePageComments]);
+      expect(basePage).toBeTruthy();
+      expect(basePageComments.length).toBeGreaterThan(0); // length > 0
 
       const newPagePath = '/duplicatedv5PageForDuplicate6';
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
@@ -1308,14 +1340,21 @@ describe('PageService page operations with only public pages', () => {
       const basePage = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
       const basePageChild = await Page.findOne({ parent: basePage._id }).populate({ path: 'revision', model: 'Revision' });
       const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
-      expectAllToBeTruthy([basePage, basePageChild, basePageGrandhild, basePageChild.revision, basePageGrandhild.revision]);
-
+      expect(basePage).toBeTruthy();
+      expect(basePageChild).toBeTruthy();
+      expect(basePageGrandhild).toBeTruthy();
+      expect(basePageChild.revision).toBeTruthy();
+      expect(basePageGrandhild.revision).toBeTruthy();
       const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id }).populate({ path: 'revision', model: 'Revision' });
 
-      expectAllToBeTruthy([duplicatedPage, duplicatedChild, duplicatedGrandchild, duplicatedChild.revision, duplicatedGrandchild.revision]);
+      expect(duplicatedPage).toBeTruthy();
+      expect(duplicatedChild).toBeTruthy();
+      expect(duplicatedGrandchild).toBeTruthy();
+      expect(duplicatedChild.revision).toBeTruthy();
+      expect(duplicatedGrandchild.revision).toBeTruthy();
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage.isEmpty).toBe(true);
@@ -1348,8 +1387,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should NOT delete root page', async() => {
       let isThrown;
-      expectAllToBeTruthy([rootPage]);
-
+      expect(rootPage).toBeTruthy();
       try { await deletePage(rootPage, dummyUser1, {}, false) }
       catch (err) { isThrown = true }
 
@@ -1361,7 +1399,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should NOT delete trashed page', async() => {
       const trashedPage = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
-      expectAllToBeTruthy([trashedPage]);
+      expect(trashedPage).toBeTruthy();
 
       let isThrown;
       try { await deletePage(trashedPage, dummyUser1, {}, false) }
@@ -1375,8 +1413,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should NOT delete /user/hoge page', async() => {
       const dummyUser1Page = await Page.findOne({ path: '/user/v5DummyUser1' });
-      expectAllToBeTruthy([dummyUser1Page]);
-
+      expect(dummyUser1Page).toBeTruthy();
       let isThrown;
       try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
       catch (err) { isThrown = true }
@@ -1389,8 +1426,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should delete single page', async() => {
       const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete2' });
-      expectAllToBeTruthy([pageToDelete]);
-
+      expect(pageToDelete).toBeTruthy();
       const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
       const page = await Page.findOne({ path: '/v5_PageForDelete2' });
 
@@ -1404,8 +1440,9 @@ describe('PageService page operations with only public pages', () => {
       const parentPage = await Page.findOne({ path: '/v5_PageForDelete3' });
       const childPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
       const grandchildPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
-      expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
-
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(grandchildPage).toBeTruthy();
       const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
       const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
       const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
@@ -1428,8 +1465,11 @@ describe('PageService page operations with only public pages', () => {
       const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
       const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
       const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
-      expectAllToBeTruthy([pageToDelete, tag1, tag2, pageRelation1, pageRelation2]);
-
+      expect(pageToDelete).toBeTruthy();
+      expect(tag1).toBeTruthy();
+      expect(tag2).toBeTruthy();
+      expect(pageRelation1).toBeTruthy();
+      expect(pageRelation2).toBeTruthy();
       const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
@@ -1461,7 +1501,7 @@ describe('PageService page operations with only public pages', () => {
     };
 
     test('Should NOT completely delete root page', async() => {
-      expectAllToBeTruthy([rootPage]);
+      expect(rootPage).toBeTruthy();
       let isThrown;
       try { await deleteCompletely(rootPage, dummyUser1, {}, false) }
       catch (err) { isThrown = true }
@@ -1471,7 +1511,7 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should completely delete single page', async() => {
       const page = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
-      expectAllToBeTruthy([page]);
+      expect(page).toBeTruthy();
 
       await deleteCompletely(page, dummyUser1, {}, false);
       const deletedPage = await Page.findOne({ _id: page._id, path: '/v5_PageForDeleteCompletely1' });
@@ -1492,12 +1532,19 @@ describe('PageService page operations with only public pages', () => {
       const pageRedirect2 = await PageRedirect.findOne({ toPath: grandchildPage.path });
       const shareLink1 = await ShareLink.findOne({ relatedPage: parentPage._id });
       const shareLink2 = await ShareLink.findOne({ relatedPage: grandchildPage._id });
-
-      expectAllToBeTruthy(
-        [parentPage, childPage, grandchildPage, tag1, tag2,
-         pageTagRelation1, pageTagRelation2, bookmark, comment,
-         pageRedirect1, pageRedirect2, shareLink1, shareLink2],
-      );
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(grandchildPage).toBeTruthy();
+      expect(tag1).toBeTruthy();
+      expect(tag2).toBeTruthy();
+      expect(pageTagRelation1).toBeTruthy();
+      expect(pageTagRelation2).toBeTruthy();
+      expect(bookmark).toBeTruthy();
+      expect(comment).toBeTruthy();
+      expect(pageRedirect1).toBeTruthy();
+      expect(pageRedirect2).toBeTruthy();
+      expect(shareLink1).toBeTruthy();
+      expect(shareLink2).toBeTruthy();
 
       await deleteCompletely(parentPage, dummyUser1, {}, true);
       const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
@@ -1514,7 +1561,7 @@ describe('PageService page operations with only public pages', () => {
       // revision should be null
       expect(deletedRevisions.length).toBe(0);
       // tag should be Truthy
-      expectAllToBeTruthy(tags);
+      expect(tags).toBeTruthy();
       // pageTagRelation should be null
       expect(deletedPageTagRelations.length).toBe(0);
       // bookmark should be null
@@ -1529,8 +1576,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should completely delete trashed page', async() => {
       const page = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
       const revision = await Revision.findOne({ pageId: page._id });
-      expectAllToBeTruthy([page, revision]);
-
+      expect(page).toBeTruthy();
+      expect(revision).toBeTruthy();
       await deleteCompletely(page, dummyUser1, {}, false);
       const deltedPage = await Page.findOne({ _id: page._id });
       const deltedRevision = await Revision.findOne({ _id: revision._id });
@@ -1542,7 +1589,9 @@ describe('PageService page operations with only public pages', () => {
       const parentPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
       const childPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
       const grandchildPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
-      expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
+      expect(parentPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(grandchildPage).toBeTruthy();
 
       await deleteCompletely(childPage, dummyUser1, {}, false);
       const parentPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
@@ -1550,7 +1599,10 @@ describe('PageService page operations with only public pages', () => {
       const grandchildPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
       const childOfDeletedPage = await Page.findOne({ parent: childPageAfterDelete._id });
 
-      expectAllToBeTruthy([parentPageAfterDelete, childPageAfterDelete, grandchildPageAfterDelete]);
+      expect(parentPageAfterDelete).toBeTruthy();
+      expect(childPageAfterDelete).toBeTruthy();
+      expect(grandchildPageAfterDelete).toBeTruthy();
+
       expect(childPageAfterDelete._id).not.toStrictEqual(childPage._id);
       expect(childPageAfterDelete.isEmpty).toBe(true);
       expect(childPageAfterDelete.parent).toStrictEqual(parentPage._id);
@@ -1581,7 +1633,10 @@ describe('PageService page operations with only public pages', () => {
       const revision = await Revision.findOne({ pageId: deletedPage._id });
       const tag = await Tag.findOne({ name: 'revertTag1' });
       const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id, isPageTrashed: true });
-      expectAllToBeTruthy([deletedPage, revision, tag, deletedPageTagRelation]);
+      expect(deletedPage).toBeTruthy();
+      expect(revision).toBeTruthy();
+      expect(tag).toBeTruthy();
+      expect(deletedPageTagRelation).toBeTruthy();
 
       const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
@@ -1598,13 +1653,19 @@ describe('PageService page operations with only public pages', () => {
       const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4', status: Page.STATUS_DELETED });
       const revision1 = await Revision.findOne({ pageId: deletedPage1._id });
       const revision2 = await Revision.findOne({ pageId: deletedPage2._id });
-      expectAllToBeTruthy([deletedPage1, deletedPage2, revision1, revision2]);
+      expect(deletedPage1).toBeTruthy();
+      expect(deletedPage2).toBeTruthy();
+      expect(revision1).toBeTruthy();
+      expect(revision2).toBeTruthy();
 
       const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
       const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
       const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
 
-      expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
+      expect(revertedPage1).toBeTruthy();
+      expect(revertedPage2).toBeTruthy();
+      expect(newlyCreatedPage).toBeTruthy();
+
       expect(revertedPage1.parent).toStrictEqual(rootPage._id);
       expect(revertedPage1.path).toBe('/v5_revert2');
       expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');

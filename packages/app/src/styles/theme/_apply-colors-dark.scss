@@ -16,6 +16,13 @@ $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
+$color-dropdown: $color-global !default;
+$bgcolor-dropdown: $bgcolor-global !default;
+$color-dropdown-link: $color-global !default;
+$color-dropdown-link-hover: $light !default;
+$bgcolor-dropdown-link-hover: lighten($bgcolor-global, 15%) !default;
+$color-dropdown-link-active: $light !default;
+$bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
 $text-muted: $gray-550;
@@ -25,10 +32,18 @@ $table-dark-border-color: $border-color-table;
 $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
+$dropdown-color: $color-dropdown;
+$dropdown-bg: $bgcolor-dropdown;
+$dropdown-link-color: $color-dropdown-link;
+$dropdown-link-hover-color: $color-dropdown-link-hover;
+$dropdown-link-hover-bg: $bgcolor-dropdown-link-hover;
+$dropdown-link-active-color: $color-dropdown-link-active;
+$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 @import 'reboot-bootstrap-text';
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
+@import 'reboot-bootstrap-dropdown';
 
 // List Group
 @include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
@@ -72,20 +87,6 @@ textarea.form-control {
 
 label.custom-control-label::before {
   background-color: darken($bgcolor-global, 5%);
-}
-
-/*
- * Dropdown
- */
-.dropdown-menu {
-  background-color: $bgcolor-global;
-}
-
-.dropdown-item {
-  &:hover {
-    color: $light;
-    background-color: lighten($bgcolor-global, 15%);
-  }
 }
 
 /*
