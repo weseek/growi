@@ -130,6 +130,15 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                   </>
                 )
               }
+
+              <div className="dropdown-divider" />
+
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { setSelectedParent(undefined) }}
+              >{t('admin:user_group_management.release_parent_group')}
+              </button>
             </div>
           </div>
         </div>
