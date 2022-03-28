@@ -684,7 +684,7 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
-    "page_delete_rights_caution": "The \"operation including the descendants\" setting is forced to be stronger than the \"operation for only the selected page\" setting.",
+    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Anyone > Admin and autor > Admin only",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",

@@ -642,7 +642,7 @@
     "max_age": "有效期间  (msec)",
     "max_age_desc": "指定使用户会话过期的数量(以毫秒为单位)。<br>默认值: 2592000000 (30天)",
     "max_age_caution": "修改该值后需要重启服务器。",
-    "page_delete_rights_caution": "\"包括后代的操作\" 的设置被迫强于 \"只对选定的页面进行操作\" 的设置。",
+    "page_delete_rights_caution": "\"删除/全部删除\"权限（包括后代页面）被强制强于\"删除/完全删除\"权限。 <br> <br> 任何人 > 管理员|作者 > 仅管理员",
 		"Authentication mechanism settings": "身份验证机制设置",
 		"setup_is_not_yet_complete": "安装尚未完成",
 		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
