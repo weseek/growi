@@ -333,7 +333,7 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
 };
 
 /*
- * PageAccessoriesModal
+ * UpdateUserGroupConfirmModal
  */
 type UpdateUserGroupConfirmModalStatus = {
   isOpened: boolean,
