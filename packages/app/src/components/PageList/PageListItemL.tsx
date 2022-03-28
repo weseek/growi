@@ -21,7 +21,7 @@ import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, IPageInfoForOperation,
+  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
@@ -142,16 +142,16 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
 
   let likerCount;
-  if (isSelected && pageInfo != null && 'likerIds' in pageInfo) {
-    likerCount = pageInfo?.likerIds?.length;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    likerCount = pageInfo.likerIds?.length;
   }
   else {
     likerCount = pageData.liker.length;
   }
 
   let bookmarkCount;
-  if (isSelected && pageInfo != null && 'bookmarkCount' in pageInfo) {
-    bookmarkCount = pageInfo?.bookmarkCount;
+  if (isSelected && isIPageInfoForEntity(pageInfo)) {
+    bookmarkCount = pageInfo.bookmarkCount;
   }
   else {
     bookmarkCount = pageMeta?.bookmarkCount;
