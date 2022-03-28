@@ -292,6 +292,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 8000, // msec
   },
+  ELASTICSEARCH_REJECT_UNAUTHORIZED: {
+    ns:      'crowi',
+    key:     'app:elasticsearchRejectUnauthorized',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   ELASTICSEARCH_REINDEX_ON_BOOT: {
     ns:      'crowi',
     key:     'app:elasticsearchReindexOnBoot',

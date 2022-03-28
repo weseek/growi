@@ -110,6 +110,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const { host, auth, indexName } = this.getConnectionInfo();
     this.client = new elasticsearch6.Client({
       node: host,
+      ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
