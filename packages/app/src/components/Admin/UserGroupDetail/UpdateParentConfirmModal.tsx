@@ -60,7 +60,14 @@ const UpdateParentConfirmModal: FC = () => {
               </div>
             </ModalBody>
             <ModalFooter>
-              <button type="submit" onClick={() => onConfirm?.(targetGroup, updateData, isForceUpdate)} className="btn btn-sm btn-warning">
+              <button
+                type="button"
+                className="btn btn-sm btn-warning"
+                onClick={() => {
+                  onConfirm?.(targetGroup, updateData, isForceUpdate);
+                  closeModal();
+                }}
+              >
                 {t('Confirm')}
               </button>
             </ModalFooter>

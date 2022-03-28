@@ -41,7 +41,6 @@ const UserGroupDetailPage: FC = () => {
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
-  const [isUpdateParentModalShown, setUpdateParentModalShown] = useState<boolean>(false);
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
@@ -66,7 +65,7 @@ const UserGroupDetailPage: FC = () => {
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
-  const { open: openUpdateParentConfirmModal, close: closeUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
+  const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
   /*
    * Function
@@ -105,7 +104,7 @@ const UserGroupDetailPage: FC = () => {
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [t, setUserGroup, mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [setUserGroup, mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
@@ -116,10 +115,8 @@ const UserGroupDetailPage: FC = () => {
       catch {
         toastError(t('toaster.update_failed', { target: t('UserGroup') }));
       }
-
-      await closeUpdateParentConfirmModal();
     },
-    [t, closeUpdateParentConfirmModal, updateUserGroup],
+    [t, updateUserGroup],
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
