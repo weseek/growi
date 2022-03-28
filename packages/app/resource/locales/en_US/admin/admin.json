@@ -504,7 +504,11 @@
       "transfer_pages": "Transfer to another group"
     },
     "update_parent_confirm_modal": {
-      "header": "グループの親が変更されます"
+      "header": "The parent of the group will be changed",
+      "caution_change_parent": "This operation will change the parent of the group \"{{groupName}}\".",
+      "danger_message": "Note that this affects the permissions to view all pages associated with this group.",
+      "force_update_parents_label": "Forcibly add missing users",
+      "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
   }
 }
