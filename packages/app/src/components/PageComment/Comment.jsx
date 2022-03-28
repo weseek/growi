@@ -147,7 +147,9 @@ class Comment extends React.PureComponent {
   }
 
   render() {
-    const { t, comment, isReadOnly } = this.props;
+    const {
+      t, comment, isReadOnly, onComment,
+    } = this.props;
     const commentId = comment._id;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
@@ -176,7 +178,7 @@ class Comment extends React.PureComponent {
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
             onCommentButtonClicked={() => {
               this.setState({ isReEdit: false });
-              if (this.props.onComment != null) this.props.onComment();
+              if (onComment != null) onComment();
             }}
           />
         ) : (

@@ -37,7 +37,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
 
-  const [commentToBeDeleted, setCommentToBeDeleted] = useState<null | ICommentHasId>(null);
+  const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
@@ -65,7 +65,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     if (comments != null) {
       const preprocessedCommentList: string[] = comments.map((comment) => {
         const highlightedComment: string = highlightComment(comment.comment);
-
         return highlightedComment;
       });
       const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
@@ -73,7 +72,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       });
       setFormatedComments(preprocessedComments);
     }
-
 
   }, [comments, highlightComment]);
 
@@ -110,7 +108,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       toastError(`error: ${error}`);
     }
   }, [appContainer, commentToBeDeleted, onDeleteCommentAfterOperation]);
-
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
