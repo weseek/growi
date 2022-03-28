@@ -274,6 +274,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: '/growi-internal/',
   },
+  ELASTICSEARCH_VERSION: {
+    ns:      'crowi',
+    key:     'app:elasticsearchVersion',
+    type:    ValueType.NUMBER,
+    default: 7,
+  },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',
