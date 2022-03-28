@@ -232,7 +232,7 @@
     "react-hotkeys": "^2.0.0",
     "react-i18next": "^11.1.0",
     "react-waypoint": "^10.1.0",
-    "reactstrap": "^8.9.0",
+    "reactstrap": "^9.0.1",
     "replacestream": "^4.0.3",
     "reveal.js": "^4.3.1",
     "sass": "^1.43.4",
