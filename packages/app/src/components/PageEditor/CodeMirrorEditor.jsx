@@ -117,8 +117,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: null,
-      isInputtingEmoji: false,
-      searchEmojiTimeout: 0,
     };
 
     this.gridEditModal = React.createRef();
@@ -603,19 +601,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (!emoji) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
-      this.setState({ isInputtingEmoji: false });
     }
     else {
-      this.setState({ isInputtingEmoji: true });
-      if (this.state.searchEmojiTimeout) {
-        clearTimeout(this.state.searchEmojiTimeout);
-      }
-      // Show emoji picker after user stop typing
-      const timeout = setTimeout(() => {
-        this.setState({ isEmojiPickerShown: true });
-        this.setState({ emojiSearchText: emoji });
-      }, 700);
-      this.setState({ searchEmojiTimeout: timeout });
+      this.setState({ emojiSearchText: emoji });
+      this.setState({ isEmojiPickerShown: true });
     }
   }
 

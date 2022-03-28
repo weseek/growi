@@ -56,7 +56,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   return (
     <div className="overlay">
       <div ref={emojiPickerContainer}>
-        <Picker set="apple" autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} />
+        <Picker set="apple" onSelect={selectEmoji} i18n={translation} title={translation.title} />
       </div>
     </div>
   );
