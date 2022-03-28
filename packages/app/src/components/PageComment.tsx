@@ -128,6 +128,14 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     />
   );
 
+  const removeShowEditorId = useCallback((commentId: string) => {
+    setShowEditorIds((previousState) => {
+      const previousShowEditorIds = new Set(...previousState);
+      previousShowEditorIds.delete(commentId);
+      return previousShowEditorIds;
+    });
+  }, []);
+
 
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
@@ -148,6 +156,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
                 let commentThreadClasses = '';
                 commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
                     {/* display comment */}
@@ -176,20 +185,11 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                         growiRenderer={appContainer.getRenderer('comment')}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
-                          setShowEditorIds((previousState) => {
-                            const tmp = new Set(...previousState);
-                            tmp.delete(comment._id);
-                            return tmp;
-                          });
+                          removeShowEditorId(comment._id);
                         }}
                         onCommentButtonClicked={() => {
-                          setShowEditorIds((previousState) => {
-                            const tmp = new Set(...previousState);
-                            tmp.delete(comment._id);
-                            return tmp;
-                          });
+                          removeShowEditorId(comment._id);
                           mutate();
-
                         }}
                       />
                     )}
