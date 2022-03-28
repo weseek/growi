@@ -14,6 +14,7 @@ import { useSWRxRecentlyUpdated, useSWRInifinitexRecentlyUpdated } from '~/store
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
+import InfiniteScroll from './InfiniteScroll';
 
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -124,7 +125,7 @@ SmallPageItem.propTypes = {
 const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: pages, mutate } = useSWRInifinitexRecentlyUpdated();
+  const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
@@ -147,7 +148,7 @@ const RecentChanges = (): JSX.Element => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
           <i className="icon icon-reload"></i>
         </button>
         <div className="d-flex align-items-center">
@@ -166,9 +167,32 @@ const RecentChanges = (): JSX.Element => {
       </div>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
-          {(pages ? pages[0] : []).map(page => (isRecentChangesSidebarSmall
-            ? <SmallPageItem key={page._id} page={page} />
-            : <LargePageItem key={page._id} page={page} />))}
+          {/* <InfiniteScroll
+            swr={swr}
+            isReachingEnd={swr => swr.data?.[0]?.items.length === 0 || (swr.data?.[swr.data?.length - 1]?.items.length ?? 0) < 20
+            }
+          >
+            {(response) => {
+              response?.items.map((item) => {
+                isRecentChangesSidebarSmall
+                  ? <SmallPageItem key={page._id} page={page} />
+                  : <LargePageItem key={page._id} page={page} />;
+              });
+            }}
+          </InfiniteScroll> */}
+          <InfiniteScroll
+            swr={swr}
+            // TODO detect reaching ends
+            isReachingEnd={swr => swr.data?.[0]?.items.length === 0 || 20 * swr.size > 177
+            }
+          >
+            {response => response?.items.map(page => (
+              isRecentChangesSidebarSmall
+                ? <SmallPageItem key={page._id} page={page} />
+                : <LargePageItem key={page._id} page={page} />
+            ))
+            }
+          </InfiniteScroll>
         </ul>
       </div>
     </>

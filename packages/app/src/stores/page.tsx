@@ -34,10 +34,16 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
     endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
-export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
+export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<IPagingResult<IPageHasId>, Error> => {
   return useSWRInfinite(
-    (offset: number) => `/pages/recent?offset=${offset + 1}&limit=20`,
-    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[], offset: number, limit: number }>(endpoint).then(response => response.data?.pages),
+    (offset: number) => `/pages/recent?offset=${offset}`,
+    (endpoint: string) => apiv3Get<{ pages:IPageHasId[], totalCount: number, limit: number }>(endpoint).then((response) => {
+      return {
+        items: response.data.pages,
+        totalCount: response.data.totalCount,
+        limit: response.data.limit,
+      };
+    }),
   );
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
