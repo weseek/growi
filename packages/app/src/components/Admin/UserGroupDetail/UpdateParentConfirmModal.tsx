@@ -23,7 +23,7 @@ const UpdateParentConfirmModal: FC = () => {
     isOpened, targetGroup, updateData, onConfirm,
   } = modalStatus;
 
-  const canRenderCorrectly = targetGroup != null && updateData?.parent !== undefined;
+  const canRenderCorrectly = targetGroup != null && updateData != null && updateData?.parent !== undefined;
 
   return (
     <Modal className="modal-md" isOpen={isOpened} toggle={closeModal}>
