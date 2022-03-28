@@ -118,6 +118,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.indexName = indexName;
   }
 
+  getType() {
+    return this.isElasticsearchV6 ? 'pages' : '_doc';
+  }
+
   /**
    * return information object to connect to ES
    * @return {object} { host, httpAuth, indexName}
@@ -367,7 +371,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
@@ -403,7 +407,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
@@ -669,9 +673,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // eslint-disable-next-line prefer-const
     let query = {
       index: this.aliasName,
+      _source: fields,
       body: {
         query: {}, // query
-        _source: fields,
       },
     };
 
