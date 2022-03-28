@@ -1,9 +1,7 @@
-import React, {
-  FC, useRef, useEffect, useState,
-} from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import { Picker } from 'emoji-mart';
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
-import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
+import { isDarkMode } from '~/client/util/color-scheme';
 
 type Props = {
   close: () => void,
@@ -16,9 +14,8 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const { close, emojiSearchText, editor } = props;
 
   const emojiPickerContainer = useRef<HTMLDivElement>(null);
-  const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+
   useEffect(() => {
-    setIsDarkMode(isDarkModeByUtil());
     if (emojiSearchText != null) {
       // Get input element of emoji picker search
       const input = document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
@@ -55,7 +52,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   };
 
   const translation = getEmojiTranslation();
-  const theme = isDarkMode ? 'dark' : 'light';
+  const theme = isDarkMode() ? 'dark' : 'light';
   return (
     <div className="overlay">
       <div ref={emojiPickerContainer}>
