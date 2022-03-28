@@ -27,9 +27,11 @@ export default class AdminGeneralSecurityContainer extends Container {
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
       currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
-      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
+      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
+      expandOtherOptionsForDeletion: false,
+      expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
       appSiteUrl: appContainer.config.crowi.url || '',
@@ -145,6 +147,20 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   changePageRecursiveCompleteDeletionAuthority(val) {
     this.setState({ currentPageRecursiveCompleteDeletionAuthority: val });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForDeletion() {
+    this.setState({ expandOtherOptionsForDeletion:  !this.state.expandOtherOptionsForDeletion });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForCompleteDeletion() {
+    this.setState({ expandOtherOptionsForCompleteDeletion:  !this.state.expandOtherOptionsForCompleteDeletion });
   }
 
   /**

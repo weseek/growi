@@ -32,7 +32,7 @@ type ISearchConfigurationsFixed = {
 }
 
 export type ISearchConditions = ISearchConfigurationsFixed & {
-  keyword: string,
+  keyword: string | null,
   rawQuery: string,
 }
 
@@ -51,7 +51,7 @@ const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeU
 };
 
 export const useSWRxFullTextSearch = (
-    keyword: string, configurations: ISearchConfigurations, disableTermManager = false,
+    keyword: string | null, configurations: ISearchConfigurations, disableTermManager = false,
 ): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
   const { data: termNumber } = useFullTextSearchTermManager(disableTermManager);
 
@@ -67,10 +67,10 @@ export const useSWRxFullTextSearch = (
     includeTrashPages: includeTrashPages ?? false,
     includeUserPages: includeUserPages ?? false,
   };
-  const rawQuery = createSearchQuery(keyword, fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
+  const rawQuery = createSearchQuery(keyword ?? '', fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
 
   const swrResult = useSWRImmutable(
-    ['/search', keyword, fixedConfigurations, termNumber],
+    keyword == null ? null : ['/search', keyword, fixedConfigurations, termNumber],
     (endpoint, keyword, fixedConfigurations) => {
       const {
         limit, offset, sort, order,
