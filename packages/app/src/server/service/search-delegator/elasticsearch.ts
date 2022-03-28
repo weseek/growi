@@ -1,4 +1,5 @@
-import elasticsearch6 from 'elasticsearch6';
+import elasticsearch6 from '@elastic/elasticsearch6';
+import elasticsearch7 from '@elastic/elasticsearch7';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -43,6 +44,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   socketIoService!: any
 
+  isElasticsearchV6: boolean
+
+  elasticsearch: any
+
   isElasticsearchReindexOnBoot: boolean
 
   client: any
@@ -57,6 +62,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.name = SearchDelegatorName.DEFAULT;
     this.configManager = configManager;
     this.socketIoService = socketIoService;
+
+    const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
+
+    if (elasticsearchVersion !== 6 && elasticsearchVersion !== 7) {
+      throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
+    }
+
+    this.isElasticsearchV6 = elasticsearchVersion === 6;
+
+    this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -95,11 +110,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const { host, auth, indexName } = this.getConnectionInfo();
     this.client = new elasticsearch6.Client({
       node: host,
+      ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
     this.indexName = indexName;
+  }
+
+  getType() {
+    return this.isElasticsearchV6 ? 'pages' : '_doc';
   }
 
   /**
@@ -273,6 +293,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     }
     catch (error) {
       logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+      logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -313,7 +334,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = require('^/resource/search/mappings.json');
+    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
     return this.client.indices.create({ index, body });
   }
 
@@ -350,7 +371,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: 'pages',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
@@ -386,7 +407,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: 'pages',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
@@ -617,10 +638,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // for debug
     logger.debug('ES result: ', result);
 
+    const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+
     return {
       meta: {
         took: result.took,
-        total: result.hits.total,
+        total: totalValue,
         results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
@@ -647,14 +670,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     }
 
     // sort by score
-    const query = {
+    // eslint-disable-next-line prefer-const
+    let query = {
       index: this.aliasName,
-      type: 'pages',
+      _source: fields,
       body: {
         query: {}, // query
-        _source: fields,
       },
     };
+
+    if (this.isElasticsearchV6) {
+      Object.assign(query, { type: 'pages' });
+    }
 
     return query;
   }
@@ -726,7 +753,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     if (parsedKeywords.phrase.length > 0) {
       const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
-        phraseQueries.push({
+        const phraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
@@ -737,16 +764,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'comments',
             ],
           },
-        });
+        };
+        if (this.isElasticsearchV6) {
+          phraseQueries.push(phraseQuery);
+        }
+        else {
+          query.body.query.bool.must.push(phraseQuery);
+        }
       });
 
-      query.body.query.bool.must.push(phraseQueries);
+      if (this.isElasticsearchV6) {
+        query.body.query.bool.must.push(phraseQueries);
+      }
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
       const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
-        notPhraseQueries.push({
+        const notPhraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words
             type: 'phrase',
@@ -756,10 +791,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'body',
             ],
           },
-        });
+        };
+        if (this.isElasticsearchV6) {
+          notPhraseQueries.push(notPhraseQuery);
+        }
+        else {
+          query.body.query.bool.must_not.push(notPhraseQuery);
+        }
       });
 
-      query.body.query.bool.must_not.push(notPhraseQueries);
+      if (this.isElasticsearchV6) {
+        query.body.query.bool.must_not.push(notPhraseQueries);
+      }
     }
 
     if (parsedKeywords.prefix.length > 0) {
