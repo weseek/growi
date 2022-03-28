@@ -391,10 +391,118 @@ describe('PageService page operations with non-public pages', () => {
     /**
      * Delete
      */
+    const pageIdDelete1 = new mongoose.Types.ObjectId();
+    const pageIdDelete2 = new mongoose.Types.ObjectId();
+    const pageIdDelete3 = new mongoose.Types.ObjectId();
+    const pageIdDelete4 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdDelete1,
+        path: '/npdel1_awl',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdDelete2,
+        path: '/npdel2_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdDelete3,
+        path: '/npdel3_top',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 2,
+      },
+      {
+        _id: pageIdDelete4,
+        path: '/npdel3_top/npdel4_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDelete3._id,
+        descendantCount: 1,
+      },
+      {
+        path: '/npdel3_top/npdel4_ug',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+      {
+        path: '/npdel3_top/npdel4_ug/npdel5_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDelete4._id,
+        descendantCount: 0,
+      },
+    ]);
 
     /**
      * Delete completely
      */
+    const pageIdDeleteComp1 = new mongoose.Types.ObjectId();
+    const pageIdDeleteComp2 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        path: '/npdc1_awl',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+      {
+        path: '/npdc2_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdDeleteComp1,
+        path: '/npdc3_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdDeleteComp2,
+        path: '/npdc3_ug/npdc4_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdB,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDeleteComp1,
+      },
+      {
+        path: '/npdc3_ug/npdc4_ug/npdc5_ug',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+        parent: pageIdDeleteComp2,
+      },
+      {
+        path: '/npdc3_ug/npdc4_ug',
+        grant: Page.GRANT_RESTRICTED,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: false,
+      },
+    ]);
 
     /**
      * Revert
@@ -747,14 +855,173 @@ describe('PageService page operations with non-public pages', () => {
 
   });
   describe('Delete', () => {
-    // test('', async() => {
-    //   // write test code
-    // });
+
+    const deletePage = async(page, user, options, isRecursively) => {
+      const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+
+      const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
+
+      mockedDeleteRecursivelyMainOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
+      }
+
+      return deletedPage;
+    };
+    describe('Delete single page with grant RESTRICTED', () => {
+      test('should be able to delete', async() => {
+        const _pathT = '/npdel1_awl';
+        const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_RESTRICTED });
+        expect(_pageT).toBeTruthy();
+
+        const isRecursively = false;
+        await deletePage(_pageT, dummyUser1, {}, isRecursively);
+
+        const pageT = await Page.findOne({ path: `/trash${_pathT}` });
+        const pageN = await Page.findOne({ path: _pathT }); // should not exist
+        expect(pageT).toBeTruthy();
+        expect(pageN).toBeNull();
+        expect(pageT.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(pageT.status).toBe(Page.STATUS_DELETED);
+      });
+    });
+    describe('Delete single page with grant USER_GROUP', () => {
+      test('should be able to delete', async() => {
+        const _path = '/npdel2_ug';
+        const _page1 = await Page.findOne({ path: _path, grantedGroup: groupIdA });
+        expect(_page1).toBeTruthy();
+
+        const isRecursively = false;
+        await deletePage(_page1, npDummyUser1, {}, isRecursively);
+
+        const pageN = await Page.findOne({ path: _path, grantedGroup: groupIdA });
+        const page1 = await Page.findOne({ path: `/trash${_path}`, grantedGroup: groupIdA });
+        expect(pageN).toBeNull();
+        expect(page1).toBeTruthy();
+        expect(page1.status).toBe(Page.STATUS_DELETED);
+        expect(page1.descendantCount).toBe(0);
+        expect(page1.parent).toBeNull();
+      });
+    });
+    describe('Delete multiple pages with grant USER_GROUP', () => {
+      test('should be able to delete all descendants except page with GRANT_RESTRICTED', async() => {
+        const _pathT = '/npdel3_top';
+        const _path1 = '/npdel3_top/npdel4_ug';
+        const _path2 = '/npdel3_top/npdel4_ug/npdel5_ug';
+        const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A
+        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B
+        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C
+        const _pageR = await Page.findOne({ path: _path1, grant: Page.GRANT_RESTRICTED }); // Restricted
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_pageR).toBeTruthy();
+
+        const isRecursively = true;
+        await deletePage(_pageT, npDummyUser1, {}, isRecursively);
+
+        const pageTNotExist = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A should not exist
+        const page1NotExist = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B should not exist
+        const page2NotExist = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C should not exist
+        const pageT = await Page.findOne({ path: `/trash${_pathT}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A
+        const page1 = await Page.findOne({ path: `/trash${_path1}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B
+        const page2 = await Page.findOne({ path: `/trash${_path2}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C
+        const pageR = await Page.findOne({ path: _path1, grant: Page.GRANT_RESTRICTED }); // Restricted
+        expect(page1NotExist).toBeNull();
+        expect(pageTNotExist).toBeNull();
+        expect(page2NotExist).toBeNull();
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
+        expect(pageR).toBeTruthy();
+        expect(pageT.status).toBe(Page.STATUS_DELETED);
+        expect(pageT.status).toBe(Page.STATUS_DELETED);
+        expect(page1.status).toBe(Page.STATUS_DELETED);
+        expect(page1.descendantCount).toBe(0);
+        expect(page2.descendantCount).toBe(0);
+        expect(page2.descendantCount).toBe(0);
+        expect(pageT.parent).toBeNull();
+        expect(page1.parent).toBeNull();
+        expect(page2.parent).toBeNull();
+      });
+    });
+
   });
   describe('Delete completely', () => {
-    // test('', async() => {
-    //   // write test code
-    // });
+    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
+      const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
+      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
+
+      const argsForDeleteCompletelyRecursivelyMainOperation = mockedDeleteCompletelyRecursivelyMainOperation.mock.calls[0];
+
+      mockedDeleteCompletelyRecursivelyMainOperation.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.deleteCompletelyRecursivelyMainOperation(...argsForDeleteCompletelyRecursivelyMainOperation);
+      }
+
+      return;
+    };
+
+    describe('Delete single page with grant RESTRICTED', () => {
+      test('should be able to delete completely', async() => {
+        const _path = '/npdc1_awl';
+        const _page = await Page.findOne({ path: _path, grant: Page.GRANT_RESTRICTED });
+        expect(_page).toBeTruthy();
+
+        await deleteCompletely(_page, dummyUser1, {}, false);
+
+        const page = await Page.findOne({ path: _path, grant: Page.GRANT_RESTRICTED });
+        expect(page).toBeNull();
+      });
+    });
+    describe('Delete single page with grant USER_GROUP', () => {
+      test('should be able to delete completely', async() => {
+        const _path = '/npdc2_ug';
+        const _page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        expect(_page).toBeTruthy();
+
+        await deleteCompletely(_page, npDummyUser1, {}, false);
+
+        const page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        expect(page).toBeNull();
+      });
+    });
+    describe('Delete multiple pages with grant USER_GROUP', () => {
+      test('should be able to delete all descendants completely except page with GRANT_RESTRICTED', async() => {
+        const _path1 = '/npdc3_ug';
+        const _path2 = '/npdc3_ug/npdc4_ug';
+        const _path3 = '/npdc3_ug/npdc4_ug/npdc5_ug';
+        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
+        const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+        const _page4 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_page3).toBeTruthy();
+        expect(_page4).toBeTruthy();
+
+        await deleteCompletely(_page1, npDummyUser1, {}, true);
+
+        const page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        const page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
+        const page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+        const page4 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
+
+        expect(page1).toBeNull();
+        expect(page2).toBeNull();
+        expect(page3).toBeNull();
+        expect(page4).toBeTruthy();
+      });
+    });
   });
   describe('revert', () => {
     const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
