@@ -146,11 +146,14 @@ class Page extends React.Component {
     const { appContainer, pageContainer } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
-    const { markdown } = pageContainer.state;
+    const { markdown, revisionId } = pageContainer.state;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+
+        { revisionId != null && (
+          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+        )}
 
         { isLoggedIn && (
           <>
@@ -187,7 +190,6 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
-
 
   if (editorMode == null) {
     return null;

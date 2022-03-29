@@ -17,9 +17,9 @@
 
     {% if getConfig('crowi', 'customize:isEnabledAttachTitleHeader') %}
     {% if template %}
-    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}&NewLine;{{ template }}</script>
+    <script type="text/template" id="raw-text-original">{{ attachTitleHeader(path | path2name | preventXss) }}&NewLine;{{ template }}</script>
     {% else %}
-    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}</script>
+    <script type="text/template" id="raw-text-original">{{ attachTitleHeader(path | path2name | preventXss) }}</script>
     {% endif %}
     {% else %}
     {% if template %}

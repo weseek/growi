@@ -37,7 +37,7 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: '',
+      markdown: null,
       previewError: '',
       permalink: '',
       isPreviewOpen: false,
@@ -152,7 +152,7 @@ class LinkEditModal extends React.PureComponent {
   async setMarkdown() {
     const { t } = this.props;
     const path = this.state.linkInputValue;
-    let markdown = '';
+    let markdown = null;
     let permalink = '';
     let previewError = '';
 
@@ -202,8 +202,9 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleChangeTypeahead(selected) {
-    const page = selected[0];
-    if (page != null) {
+    const pageWithMeta = selected[0];
+    if (pageWithMeta != null) {
+      const page = pageWithMeta.data;
       const permalink = `${window.location.origin}/${page.id}`;
       this.setState({ linkInputValue: page.path, permalink });
     }
