@@ -28,7 +28,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
-      currentPagePath: decodeURIComponent(window.location.pathname),
+      pagePath: this.props.pagePath,
+      currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
 
@@ -169,6 +170,7 @@ LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
 };
@@ -187,6 +189,7 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
