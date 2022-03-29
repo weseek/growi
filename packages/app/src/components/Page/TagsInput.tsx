@@ -1,5 +1,5 @@
 import React, {
-  FC, useRef, useState,
+  FC, useRef, useState, useCallback,
 } from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
@@ -8,7 +8,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { ITagsSearchApiv1Result } from '~/interfaces/tag';
 
 type TypeaheadInstance = {
-  _handleMenuItemSelect: (activeItem: string, e: React.KeyboardEvent) => void,
+  _handleMenuItemSelect: (activeItem: string, event: React.KeyboardEvent) => void,
   state: {
     initialItem: string,
   },
@@ -26,13 +26,13 @@ const TagsInput: FC<Props> = (props: Props) => {
   const [resultTags, setResultTags] = useState<string[]>([]);
   const [isLoading, setLoading] = useState(false);
 
-  const handleChange = (selected: string[]) => {
+  const changeHandler = useCallback((selected: string[]) => {
     if (props.onTagsUpdated != null) {
       props.onTagsUpdated(selected);
     }
-  };
+  }, [props]);
 
-  const handleSearch = async(query: string) => {
+  const searchHandler = useCallback(async(query: string) => {
     setLoading(true);
     try {
       // TODO: 91698 SWRize
@@ -46,20 +46,20 @@ const TagsInput: FC<Props> = (props: Props) => {
     finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSelect = (e: React.KeyboardEvent) => {
-    if (e.key === ' ') {
-      e.preventDefault();
+  const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === ' ') {
+      event.preventDefault();
 
       const initialItem = tagsInputRef?.current?.state?.initialItem;
       const handleMenuItemSelect = tagsInputRef?.current?._handleMenuItemSelect;
 
       if (initialItem != null && handleMenuItemSelect != null) {
-        handleMenuItemSelect(initialItem, e);
+        handleMenuItemSelect(initialItem, event);
       }
     }
-  };
+  }, []);
 
   return (
     <div className="tag-typeahead">
@@ -72,9 +72,9 @@ const TagsInput: FC<Props> = (props: Props) => {
         minLength={1}
         multiple
         newSelectionPrefix=""
-        onChange={handleChange}
-        onSearch={handleSearch}
-        onKeyDown={handleSelect}
+        onChange={changeHandler}
+        onSearch={searchHandler}
+        onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
         placeholder="tag name"
         autoFocus={props.autoFocus}
