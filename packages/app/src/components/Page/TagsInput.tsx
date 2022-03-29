@@ -49,7 +49,7 @@ const TagsInput: FC<Props> = (props: Props) => {
   };
 
   const handleSelect = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === ' ') {
       e.preventDefault();
 
       const initialItem = tagsInputRef?.current?.state?.initialItem;
