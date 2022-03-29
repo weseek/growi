@@ -26,13 +26,15 @@ class TagsInput extends React.Component {
       defaultPageTags: this.props.tags,
     };
 
+    this.tagsInput = React.createRef();
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
-    this.typeahead.getInstance().focus();
+    this.tagsInput.current.focus();
   }
 
   handleChange(selected) {
@@ -69,7 +71,7 @@ class TagsInput extends React.Component {
       <div className="tag-typeahead">
         <AsyncTypeahead
           id="tag-typeahead-asynctypeahead"
-          ref={(typeahead) => { this.typeahead = typeahead }}
+          ref={this.tagsInput}
           caseSensitive={false}
           defaultSelected={this.state.defaultPageTags}
           isLoading={this.state.isLoading}
