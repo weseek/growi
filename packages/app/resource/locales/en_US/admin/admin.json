@@ -28,7 +28,10 @@
     "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during the conversion.",
     "start_upgrading": "Start converting to v5 compatibility",
     "successfully_started": "Succeeded to start the conversion",
-    "already_upgraded": "You have already completed the conversion to v5 compatibility"
+    "already_upgraded": "You have already completed the conversion to v5 compatibility",
+    "header_upgrading_progress": "Upgrade Progress",
+    "migration_succeeded": "Your upgrade has been successfully completed! Exit maintenance mode and GROWI can be used.",
+    "migration_failed": "Upgrade failed. Please refer to the GROWI docs for information on what to do in the event of failure."
   },
   "maintenance_mode": {
     "maintenance_mode": "Maintenance Mode",

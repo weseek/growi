@@ -28,7 +28,10 @@
     "modal_migration_warning": "这个过程可能需要很长时间。强烈建议管理员告诉用户在转换期间不要创建、修改或删除页面。",
     "start_upgrading": "开始转换为v5兼容性",
     "successfully_started": "成功开始转换",
-    "already_upgraded": "你已经完成了向v5兼容性的转换"
+    "already_upgraded": "你已经完成了向v5兼容性的转换",
+    "header_upgrading_progress": "升级进度",
+    "migration_succeeded": "您的升级已经成功完成! 退出维护模式，可以使用GROWI。",
+    "migration_failed": "升级失败。请参考GROWI的文档，了解在失败情况下该如何处理。"
   },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",
