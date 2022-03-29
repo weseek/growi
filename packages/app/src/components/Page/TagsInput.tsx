@@ -8,7 +8,6 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { ITagsSearchApiv1Result } from '~/interfaces/tag';
 
 type TypeaheadInstance = {
-  focus: () => void,
   _handleMenuItemSelect: (activeItem: string, e: React.KeyboardEvent) => void,
   state: {
     initialItem: string,
@@ -17,8 +16,8 @@ type TypeaheadInstance = {
 
 type Props = {
   tags: string[],
+  autoFocus: boolean,
   onTagsUpdated: (tags: string[]) => void,
-  autoFocus: boolean
 }
 
 const TagsInput: FC<Props> = (props: Props) => {
