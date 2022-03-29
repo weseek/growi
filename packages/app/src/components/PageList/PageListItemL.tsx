@@ -3,6 +3,7 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { CustomInput } from 'reactstrap';
 
 import Clamp from 'react-multiline-clamp';
@@ -54,6 +55,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const { t } = useTranslation();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -139,7 +142,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
-  const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
+  const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 
   let likerCount;
   if (isSelected && isIPageInfoForEntity(pageInfo)) {
@@ -156,6 +159,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   else {
     bookmarkCount = pageMeta?.bookmarkCount;
   }
+
+  const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
+  const canRenderRevisionSnippet = revisionShortBody != null;
 
   return (
     <li
@@ -239,13 +245,21 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
-                { elasticSearchResult != null && elasticSearchResult?.snippet.length > 0 && (
+                { elasticSearchResult != null && elasticSearchResult.snippet != null && (
                   // eslint-disable-next-line react/no-danger
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 ) }
                 { revisionShortBody != null && (
                   <div>{revisionShortBody}</div>
                 ) }
+                {
+                  !canRenderESSnippet && !canRenderRevisionSnippet && (
+                    <>
+                      <i className="icon-exclamation p-1"></i>
+                      {t('not_allowed_to_see_this_page')}
+                    </>
+                  )
+                }
               </Clamp>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -23,7 +24,8 @@ class LegacyRevisionLoader extends React.Component {
       markdown: '',
       isLoading: false,
       isLoaded: false,
-      errors: null,
+      error: null,
+      isForbidden: null,
     };
 
     this.loadData = this.loadData.bind(this);
@@ -49,16 +51,17 @@ class LegacyRevisionLoader extends React.Component {
       const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
-        markdown: res.data.revision.body,
-        errors: null,
+        markdown: res.data?.revision?.body,
+        error: null,
+        isForbidden: res.data.isForbidden,
       });
 
       if (this.props.onRevisionLoaded != null) {
         this.props.onRevisionLoaded(res.data.revision);
       }
     }
-    catch (errors) {
-      this.setState({ errors });
+    catch (error) {
+      this.setState({ error });
     }
     finally {
       this.setState({ isLoaded: true, isLoading: false });
@@ -95,11 +98,11 @@ class LegacyRevisionLoader extends React.Component {
 
     // ----- after load -----
     let markdown = this.state.markdown;
-    if (this.state.errors != null) {
-      const errorMessages = this.state.errors.map((error) => {
-        return `<span class="text-muted"><em>${error.message}</em></span>`;
-      });
-      markdown = errorMessages.join('');
+    if (this.state.error != null) {
+      markdown = `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${this.state.error.message}</em></span>`;
+    }
+    else if (this.state.isForbidden) {
+      markdown = `<i class="icon-exclamation p-1"></i>${this.props.t('not_allowed_to_see_this_page')}`;
     }
 
     return (
@@ -116,10 +119,11 @@ class LegacyRevisionLoader extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LegacyRevisionLoaderWrapper = withUnstatedContainers(LegacyRevisionLoader, [AppContainer]);
+const LegacyRevisionLoaderWrapper = withTranslation()(withUnstatedContainers(LegacyRevisionLoader, [AppContainer]));
 
 LegacyRevisionLoader.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  t: PropTypes.func.isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
