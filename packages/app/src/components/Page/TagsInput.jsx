@@ -57,11 +57,10 @@ class TagsInput extends React.Component {
   handleSelect(e) {
     if (e.keyCode === 32) { // '32' means ASCII code of 'space'
       e.preventDefault();
-      const instance = this.typeahead.getInstance();
-      const { initialItem } = instance.state;
+      const { initialItem } = this.tagsInput.state;
 
       if (initialItem) {
-        instance._handleMenuItemSelect(initialItem, e);
+        this.tagsInput._handleMenuItemSelect(initialItem, e);
       }
     }
   }
