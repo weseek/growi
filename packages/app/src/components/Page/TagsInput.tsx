@@ -5,36 +5,34 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { apiGet } from '~/client/util/apiv1-client';
 
+type tag = string
+
 type ITagsSearch = {
   ok: boolean,
-  tags: string[]
+  tags: tag[]
 }
 
 type TypeaheadInstance = {
   focus: () => void,
-  _handleMenuItemSelect: (activeItem: string, e: React.KeyboardEvent) => void,
+  _handleMenuItemSelect: (activeItem: tag, e: React.KeyboardEvent) => void,
   state: {
-    initialItem: string,
+    initialItem: tag,
   },
 }
 
 type Props = {
-  tags: string[],
-  onTagsUpdated: (tags: string[]) => void,
+  tags: tag[],
+  onTagsUpdated: (tags: tag[]) => void,
   autoFocus: boolean
 }
 
 const TagsInput: FC<Props> = (props: Props) => {
-
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
-  const [resultTags, setResultTags] = useState<string[]>([]);
+  const [resultTags, setResultTags] = useState<tag[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const [selected, setSelected] = useState(props.tags);
 
   const handleChange = (selected: string[]) => {
-    setSelected(selected);
-
     if (props.onTagsUpdated != null) {
       props.onTagsUpdated(selected);
     }
@@ -43,6 +41,7 @@ const TagsInput: FC<Props> = (props: Props) => {
   const handleSearch = async(query: string) => {
     setLoading(true);
     try {
+      // TODO: SWRize
       const res = await apiGet('/tags.search', { q: query }) as ITagsSearch;
       res.tags.unshift(query);
       setResultTags(Array.from(new Set(res.tags)));
@@ -56,7 +55,7 @@ const TagsInput: FC<Props> = (props: Props) => {
   };
 
   const handleSelect = (e: React.KeyboardEvent) => {
-    if (e.keyCode === 32 || e.keyCode === 13) { // '32' means ASCII code of 'space'
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
 
       const initialItem = tagsInputRef?.current?.state?.initialItem;
