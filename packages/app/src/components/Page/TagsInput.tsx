@@ -12,7 +12,7 @@ type ITagsSearch = {
 
 type TypeaheadInstance = {
   focus: () => void,
-  _handleMenuItemSelect: (activeItem: string, e: React.ChangeEvent<HTMLInputElement>) => void,
+  _handleMenuItemSelect: (activeItem: string, e: React.KeyboardEvent) => void,
   state: {
     initialItem: string,
   },
@@ -32,7 +32,7 @@ const TagsInput: FC<Props> = (props: Props) => {
   const [isLoading, setLoading] = useState(false);
   const [selected, setSelected] = useState(props.tags);
 
-  const handleChange = (selected) => {
+  const handleChange = (selected: string[]) => {
     setSelected(selected);
 
     if (props.onTagsUpdated != null) {
@@ -40,7 +40,7 @@ const TagsInput: FC<Props> = (props: Props) => {
     }
   };
 
-  const handleSearch = async(query) => {
+  const handleSearch = async(query: string) => {
     setLoading(true);
     try {
       const res = await apiGet('/tags.search', { q: query }) as ITagsSearch;
@@ -55,7 +55,7 @@ const TagsInput: FC<Props> = (props: Props) => {
     }
   };
 
-  const handleSelect = (e) => {
+  const handleSelect = (e: React.KeyboardEvent) => {
     if (e.keyCode === 32 || e.keyCode === 13) { // '32' means ASCII code of 'space'
       e.preventDefault();
 
