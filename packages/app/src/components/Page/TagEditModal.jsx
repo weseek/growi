@@ -11,7 +11,6 @@ function TagEditModal(props) {
   const [tags, setTags] = useState([]);
 
   function onTagsUpdatedByTagsInput(tags) {
-    console.log('モーダル ok');
     setTags(tags);
   }
 
