@@ -1,6 +1,6 @@
 context('Open Page Accessories Modal', () => {
 
-  const ssPrefix = 'access-to-page-accessories-modal-with-history-tab';
+  const ssPrefix = 'access-to-page-accessories-modal';
 
   let connectSid: string | undefined;
 
@@ -31,7 +31,7 @@ context('Open Page Accessories Modal', () => {
 
      cy.getByTestid('page-accessories-modal').should('be.visible')
      cy.getByTestid('page-history').should('be.visible')
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`);
+     cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });
 
 });
