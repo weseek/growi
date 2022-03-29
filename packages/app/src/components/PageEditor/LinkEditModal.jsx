@@ -282,8 +282,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderLinkAndLabelForm() {
-    const { t, pageContainer } = this.props;
-    const pagePath = pageContainer.state.path;
+    const { t } = this.props;
+    const { pagePath } = this.state;
 
     return (
       <>
