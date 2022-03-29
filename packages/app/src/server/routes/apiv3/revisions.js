@@ -182,7 +182,7 @@ module.exports = (crowi) => {
 
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
-      return res.apiv3({ isForbidden: true });
+      return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
     }
 
     try {
@@ -192,7 +192,7 @@ module.exports = (crowi) => {
         revision.author = serializeUserSecurely(revision.author);
       }
 
-      return res.apiv3({ revision, isForbidden: false });
+      return res.apiv3({ revision });
     }
     catch (err) {
       const msg = 'Error occurred in getting revision data by id';

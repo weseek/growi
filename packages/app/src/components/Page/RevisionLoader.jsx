@@ -24,8 +24,7 @@ class LegacyRevisionLoader extends React.Component {
       markdown: '',
       isLoading: false,
       isLoaded: false,
-      error: null,
-      isForbidden: null,
+      errors: null,
     };
 
     this.loadData = this.loadData.bind(this);
@@ -52,16 +51,15 @@ class LegacyRevisionLoader extends React.Component {
 
       this.setState({
         markdown: res.data?.revision?.body,
-        error: null,
-        isForbidden: res.data.isForbidden,
+        errors: null,
       });
 
       if (this.props.onRevisionLoaded != null) {
         this.props.onRevisionLoaded(res.data.revision);
       }
     }
-    catch (error) {
-      this.setState({ error });
+    catch (errors) {
+      this.setState({ errors });
     }
     finally {
       this.setState({ isLoaded: true, isLoading: false });
@@ -97,12 +95,16 @@ class LegacyRevisionLoader extends React.Component {
     }
 
     // ----- after load -----
+    const isForbidden = this.state.errors != null && this.state.errors[0].code === 'forbidden-page';
     let markdown = this.state.markdown;
-    if (this.state.error != null) {
-      markdown = `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${this.state.error.message}</em></span>`;
-    }
-    else if (this.state.isForbidden) {
+    if (isForbidden) {
       markdown = `<i class="icon-exclamation p-1"></i>${this.props.t('not_allowed_to_see_this_page')}`;
+    }
+    else if (this.state.errors != null) {
+      const errorMessages = this.state.errors.map((error) => {
+        return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
+      });
+      markdown = errorMessages.join('\n');
     }
 
     return (
