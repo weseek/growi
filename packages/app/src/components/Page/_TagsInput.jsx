@@ -55,15 +55,16 @@ class TagsInput extends React.Component {
   }
 
   handleSelect(e) {
-    if (e.keyCode === 32) { // '32' means ASCII code of 'space'
+    if (e.keyCode === 32 || e.keyCode === 13) { // '32' means ASCII code of 'space'
       e.preventDefault();
-      const { initialItem } = this.tagsInput.state;
-
-      if (initialItem) {
-        this.tagsInput._handleMenuItemSelect(initialItem, e);
+      const { initialItem, selected } = this.tagsInput.current.state;
+      if (initialItem != null) {
+        this.handleChange([...selected, initialItem]);
+        this.forceUpdate();
       }
     }
   }
+
 
   render() {
     return (
@@ -82,7 +83,7 @@ class TagsInput extends React.Component {
           onKeyDown={this.handleSelect}
           options={this.state.resultTags} // Search result (Some tag names)
           placeholder="tag name"
-          selectHintOnEnter
+          inputProps={this.inputProps}
           autoFocus={this.props.autoFocus}
         />
       </div>
