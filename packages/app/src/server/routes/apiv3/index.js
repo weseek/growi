@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   // add custom functions to express response
   require('./response')(express, crowi);
 
-  router.use('/healthcheck', require('./healthcheck')(crowi));
+  routerForAdmin.use('/healthcheck', require('./healthcheck')(crowi));
 
   // admin
   routerForAdmin.use('/admin-home', require('./admin-home')(crowi));
@@ -29,6 +29,10 @@ module.exports = (crowi) => {
   routerForAdmin.use('/export', require('./export')(crowi));
   routerForAdmin.use('/import', require('./import')(crowi));
   routerForAdmin.use('/search', require('./search')(crowi));
+  routerForAdmin.use('/security-setting', require('./security-setting')(crowi));
+  routerForAdmin.use('/mongo', require('./mongo')(crowi));
+  routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
+  routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
 
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
@@ -37,11 +41,8 @@ module.exports = (crowi) => {
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
 
-  router.use('/mongo', require('./mongo')(crowi));
-
   router.use('/statistics', require('./statistics')(crowi));
 
-  router.use('/security-setting', require('./security-setting')(crowi));
 
   router.use('/search', require('./search')(crowi));
 
@@ -57,8 +58,7 @@ module.exports = (crowi) => {
   router.use('/attachment', require('./attachment')(crowi));
 
   router.use('/slack-integration', require('./slack-integration')(crowi));
-  router.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
-  router.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
+
   router.use('/staffs', require('./staffs')(crowi));
 
   router.use('/forgot-password', require('./forgot-password')(crowi));

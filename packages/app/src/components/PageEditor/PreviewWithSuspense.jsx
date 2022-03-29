@@ -5,7 +5,7 @@ import Preview from './Preview';
 import { withLoadingSppiner } from '../SuspenseUtils';
 
 function PagePreview(props) {
-  if (props.markdown === '') {
+  if (props.markdown == null) {
     if (props.error !== '') {
       return props.error;
     }
