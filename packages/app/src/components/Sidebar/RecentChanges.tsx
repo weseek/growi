@@ -127,7 +127,14 @@ const RecentChanges = (): JSX.Element => {
   const { t } = useTranslation();
   const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-
+  const ending = swr.data && swr.data[swr.data.length - 1]?.length < 20;
+  const pagiateResponse = (response) => {
+    console.log(response?.flat());
+    return Array.from(new Set(response?.flat().map(page => page._id)))
+      .map((id) => {
+        return response?.find(page => page._id === id);
+      });
+  };
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -183,10 +190,9 @@ const RecentChanges = (): JSX.Element => {
           <InfiniteScroll
             swr={swr}
             // TODO detect reaching ends
-            isReachingEnd={swr => swr.data?.[0]?.items.length === 0 || 20 * swr.size > 177
-            }
+            isReachingEnd={ending}
           >
-            {response => response?.items.map(page => (
+            {response => pagiateResponse(response).map(page => (
               isRecentChangesSidebarSmall
                 ? <SmallPageItem key={page._id} page={page} />
                 : <LargePageItem key={page._id} page={page} />
