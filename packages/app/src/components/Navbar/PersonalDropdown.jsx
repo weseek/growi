@@ -44,10 +44,7 @@ const PersonalDropdown = (props) => {
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
 
-    const context = {
-      user,
-      currentPagePath: decodeURIComponent(window.location.pathname),
-    };
+    const context = {};
     interceptorManager.process('logout', context);
 
     window.location.href = '/logout';

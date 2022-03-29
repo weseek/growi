@@ -20,7 +20,7 @@ class LegacyRevisionLoader extends React.Component {
     this.logger = loggerFactory('growi:Page:RevisionLoader');
 
     this.state = {
-      markdown: '',
+      markdown: null,
       isLoading: false,
       isLoaded: false,
       errors: null,
@@ -106,6 +106,7 @@ class LegacyRevisionLoader extends React.Component {
       <RevisionRenderer
         growiRenderer={this.props.growiRenderer}
         markdown={markdown}
+        pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
       />
     );
@@ -123,6 +124,7 @@ LegacyRevisionLoader.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   onRevisionLoaded: PropTypes.func,
