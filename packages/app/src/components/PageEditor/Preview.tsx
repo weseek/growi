@@ -1,5 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  UIEventHandler, useCallback, useEffect, useMemo, useState,
+} from 'react';
 
 import { Subscribe } from 'unstated';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -9,115 +10,103 @@ import RevisionBody from '../Page/RevisionBody';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 
-/**
- * Wrapper component for Page/RevisionBody
- */
-class Preview extends React.PureComponent {
 
-  constructor(props) {
-    super(props);
+type Props = {
+  appContainer: AppContainer,
+  editorContainer: EditorContainer,
 
-    this.state = {
-      html: '',
+  markdown?: string,
+  pagePath?: string,
+  inputRef?: React.RefObject<HTMLDivElement>,
+  isMathJaxEnabled?: boolean,
+  renderMathJaxOnInit?: boolean,
+  onScroll?: UIEventHandler<HTMLDivElement>,
+}
+
+
+const Preview = (props: Props): JSX.Element => {
+
+  const {
+    appContainer,
+    markdown, pagePath,
+    inputRef,
+    onScroll,
+  } = props;
+
+  const [html, setHtml] = useState('');
+
+  const { interceptorManager } = appContainer;
+  const growiRenderer = props.appContainer.getRenderer('editor');
+
+  const context = useMemo(() => {
+    return {
+      markdown,
+      pagePath,
+      currentPathname: decodeURIComponent(window.location.pathname),
+      parsedHTML: null,
     };
+  }, [markdown, pagePath]);
 
-    // get renderer
-    this.growiRenderer = props.appContainer.getRenderer('editor');
-  }
+  const renderPreview = useCallback(async() => {
+    if (interceptorManager != null) {
+      await interceptorManager.process('preRenderPreview', context);
+      await interceptorManager.process('prePreProcess', context);
+      context.markdown = growiRenderer.preProcess(context.markdown);
+      await interceptorManager.process('postPreProcess', context);
+      context.parsedHTML = growiRenderer.process(context.markdown);
+      await interceptorManager.process('prePostProcess', context);
+      context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+      await interceptorManager.process('postPostProcess', context);
+      await interceptorManager.process('preRenderPreviewHtml', context);
+    }
 
-  componentDidMount() {
-    this.initCurrentRenderingContext();
-    this.renderPreview();
-  }
+    setHtml(context.parsedHTML ?? '');
+  }, [interceptorManager, context, growiRenderer]);
 
-  componentDidUpdate(prevProps) {
-    const { markdown: prevMarkdown } = prevProps;
-    const { markdown } = this.props;
+  useEffect(() => {
+    if (markdown == null) {
+      setHtml('');
+    }
 
-    // render only when props.markdown is updated
-    if (markdown !== prevMarkdown) {
-      this.initCurrentRenderingContext();
-      this.renderPreview();
+    renderPreview();
+  }, [markdown, renderPreview]);
+
+  useEffect(() => {
+    if (html == null) {
       return;
     }
 
-    const { interceptorManager } = this.props.appContainer;
+    if (interceptorManager != null) {
+      interceptorManager.process('postRenderPreviewHtml', {
+        ...context,
+        parsedHTML: html,
+      });
+    }
+  }, [context, html, interceptorManager]);
 
-    interceptorManager.process('postRenderPreviewHtml', this.currentRenderingContext);
-  }
+  return (
+    <Subscribe to={[EditorContainer]}>
+      { editorContainer => (
+        <div
+          className="page-editor-preview-body"
+          ref={inputRef}
+          onScroll={onScroll}
+        >
+          <RevisionBody
+            {...props}
+            html={html}
+            renderMathJaxInRealtime={editorContainer.state.previewOptions.renderMathJaxInRealtime}
+          />
+        </div>
+      ) }
+    </Subscribe>
+  );
 
-  initCurrentRenderingContext() {
-    this.currentRenderingContext = {
-      markdown: this.props.markdown,
-      currentPagePath: decodeURIComponent(window.location.pathname),
-    };
-  }
-
-  async renderPreview() {
-    const { appContainer } = this.props;
-    const { growiRenderer } = this;
-
-    const { interceptorManager } = appContainer;
-    const context = this.currentRenderingContext;
-
-    await interceptorManager.process('preRenderPreview', context);
-    await interceptorManager.process('prePreProcess', context);
-    context.markdown = growiRenderer.preProcess(context.markdown);
-    await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = growiRenderer.process(context.markdown);
-    await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-    await interceptorManager.process('postPostProcess', context);
-    await interceptorManager.process('preRenderPreviewHtml', context);
-
-    this.setState({ html: context.parsedHTML });
-  }
-
-  render() {
-    return (
-      <Subscribe to={[EditorContainer]}>
-        { editorContainer => (
-          // eslint-disable-next-line arrow-body-style
-          <div
-            className="page-editor-preview-body"
-            ref={(elm) => {
-              this.previewElement = elm;
-              if (this.props.inputRef != null) {
-                this.props.inputRef(elm);
-              }
-            }}
-            onScroll={(event) => {
-              if (this.props.onScroll != null) {
-                this.props.onScroll(event.target.scrollTop);
-              }
-            }}
-          >
-            <RevisionBody
-              {...this.props}
-              html={this.state.html}
-              renderMathJaxInRealtime={editorContainer.state.previewOptions.renderMathJaxInRealtime}
-            />
-          </div>
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
-
-Preview.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  markdown: PropTypes.string,
-  inputRef: PropTypes.func,
-  isMathJaxEnabled: PropTypes.bool,
-  renderMathJaxOnInit: PropTypes.bool,
-  onScroll: PropTypes.func,
-};
 
 export default PreviewWrapper;
