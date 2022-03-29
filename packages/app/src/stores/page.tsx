@@ -44,6 +44,10 @@ export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<IPagingR
         limit: response.data.limit,
       };
     }),
+    {
+      initialSize: 1,
+      revalidateFirstPage: false,
+    },
   );
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
