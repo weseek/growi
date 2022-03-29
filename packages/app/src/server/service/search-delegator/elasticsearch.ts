@@ -67,7 +67,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 
-    this.isElasticsearchV6 = this.configManager.getConfig('crowi', 'app:useElasticsearchV6');
+    const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
+
+    if (elasticsearchVersion !== 6 && elasticsearchVersion !== 7) {
+      throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
+    }
+
+    this.isElasticsearchV6 = elasticsearchVersion === 6;
 
     this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
@@ -299,7 +305,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
-      logger.warn('Normalize indices anyway.');
+      logger.info('Normalize indices.');
       await this.normalizeIndices();
     }
 
@@ -338,7 +344,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       : require('^/resource/search/mappings-es7.json');
 
     if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+      mappings = require('^/resource/search/mappings-es7-for-ci.json');
     }
 
     return this.client.indices.create({

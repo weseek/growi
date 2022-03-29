@@ -481,6 +481,9 @@
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
+    "parent_group": "父母组",
+    "select_parent_group": "选择父组",
+    "release_parent_group": "Release parent group",
     "add_modal": {
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",
@@ -501,7 +504,7 @@
     "remove_from_group": "删除此用户",
     "delete_modal": {
       "header": "删除组",
-      "desc": "删除后，将无法检索已删除的组及其私人页。",
+      "desc": "该组下的所有子组也将被删除。删除后，将无法检索已删除的组及其私人页。",
       "dropdown_desc": "为私人页选择操作",
       "select_group": "选择组",
       "no_groups": "没有可选择的组",

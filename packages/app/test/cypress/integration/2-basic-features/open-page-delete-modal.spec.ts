@@ -1,6 +1,6 @@
-context('Open Page Duplicate Modal', () => {
+context('Open Page Delete Modal', () => {
 
-  const ssPrefix = 'access-to-page-duplicate-modal-';
+  const ssPrefix = 'access-to-page-delete-modal-';
 
   let connectSid: string | undefined;
 
@@ -19,16 +19,19 @@ context('Open Page Duplicate Modal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
+      cy.visit('/');
     }
   });
 
-  it('PageDuplicateModal is shown successfully', () => {
+  it('PageDeleteModal is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-duplicate-modal-btn').click();
+       cy.getByTestid('open-page-delete-modal-btn').click();
     });
-     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
+
+     cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
+
