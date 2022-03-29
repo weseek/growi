@@ -485,6 +485,7 @@
     "select_parent_group": "选择父组",
     "release_parent_group": "Release parent group",
     "add_modal": {
+      "description": "添加的用户也将被添加到所有的父组。",
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",
       "enable_option": "启用{{option}",
@@ -495,7 +496,6 @@
     "group_list": "组列表",
     "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
-    "back_to_ancestors_group": "返回到祖先组",
     "basic_info": "基本信息",
     "user_list": "用户列表",
     "created_group": "已创建组",
@@ -511,6 +511,13 @@
       "publish_pages": "全部发布",
       "delete_pages": "全部删除",
       "transfer_pages": "转移到另一组"
+    },
+    "update_parent_confirm_modal": {
+      "header": "该组的父组被改变",
+      "caution_change_parent": "该操作改变了组的父级，即 \"{{groupName}}\" 。",
+      "danger_message": "注意，查看与该组相关的所有页面的权限会受到影响。",
+      "force_update_parents_label": "强行添加失踪的用户",
+      "force_update_parents_description": "激活这个选项，如果在父组改变后，在祖先组中有缺失的用户，可以强制添加这些用户"
     }
   }
 }
