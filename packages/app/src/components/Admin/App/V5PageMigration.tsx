@@ -34,7 +34,7 @@ const V5PageMigration: FC<Props> = (props: Props) => {
   /*
    * Local components
    */
-  const renderProgressMessage = useCallback((isSucceeded: boolean) => {
+  const renderResultMessage = useCallback((isSucceeded: boolean) => {
     return (
       <>
         {
@@ -54,7 +54,7 @@ const V5PageMigration: FC<Props> = (props: Props) => {
     return (
       <>
         {
-          isSucceeded != null && renderProgressMessage(isSucceeded)
+          isSucceeded != null && renderResultMessage(isSucceeded)
         }
         <LabeledProgressBar
           header={t('admin:v5_page_migration.header_upgrading_progress')}

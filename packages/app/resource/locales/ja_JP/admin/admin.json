@@ -28,7 +28,10 @@
     "modal_migration_warning": "管理者はユーザーに、v5 互換形式への変換中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
     "start_upgrading": "v5 互換形式への変換を開始",
     "successfully_started": "正常に v5 互換形式への変換が開始されました",
-    "already_upgraded": "v5 互換形式への変換は既に完了しています"
+    "already_upgraded": "v5 互換形式への変換は既に完了しています",
+    "header_upgrading_progress": "アップグレード進行度",
+    "migration_succeeded": "アップグレードが正常に完了しました！メンテナンスモードを終了して、GROWI を使用することができます。",
+    "migration_failed": "アップグレードが失敗しました。失敗した場合の対処法は GROWI docs を参照してください。"
   },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
