@@ -4,7 +4,7 @@ import React, {
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { apiGet } from '~/client/util/apiv1-client';
-
+import { toastError } from '~/client/util/apiNotification';
 import { ITagsSearchApiv1Result } from '~/interfaces/tag';
 
 type TypeaheadInstance = {
@@ -41,7 +41,7 @@ const TagsInput: FC<Props> = (props: Props) => {
       setResultTags(Array.from(new Set(res.tags)));
     }
     catch (err) {
-      //
+      toastError(err);
     }
     finally {
       setLoading(false);
