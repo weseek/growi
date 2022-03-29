@@ -134,11 +134,11 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
     await interceptorManager.process('preRender', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = growiRenderer.preProcess(context.markdown);
+    context.markdown = growiRenderer.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = growiRenderer.process(context.markdown);
+    context.parsedHTML = growiRenderer.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
 
     const isMarkdownEmpty = context.markdown.trim().length === 0;
     if (highlightKeywords != null && highlightKeywords.length > 0 && !isMarkdownEmpty) {

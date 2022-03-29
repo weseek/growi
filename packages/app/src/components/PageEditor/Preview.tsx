@@ -51,11 +51,11 @@ const Preview = (props: Props): JSX.Element => {
     if (interceptorManager != null) {
       await interceptorManager.process('preRenderPreview', context);
       await interceptorManager.process('prePreProcess', context);
-      context.markdown = growiRenderer.preProcess(context.markdown);
+      context.markdown = growiRenderer.preProcess(context.markdown, context);
       await interceptorManager.process('postPreProcess', context);
-      context.parsedHTML = growiRenderer.process(context.markdown);
+      context.parsedHTML = growiRenderer.process(context.markdown, context);
       await interceptorManager.process('prePostProcess', context);
-      context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+      context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
       await interceptorManager.process('postPostProcess', context);
       await interceptorManager.process('preRenderPreviewHtml', context);
     }
