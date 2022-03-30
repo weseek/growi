@@ -2,8 +2,16 @@ import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
+import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import {
+  generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
+} from '../middlewares/unavailable-when-maintenance-mode';
+
+import * as loginFormValidator from '../middlewares/login-form-validator';
+import * as registerFormValidator from '../middlewares/register-form-validator';
 
 import * as forgotPassword from './forgot-password';
+import * as privateLegacyPages from './private-legacy-pages';
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
@@ -33,7 +41,6 @@ module.exports = function(crowi, app) {
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
-  const form = require('../form');
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
@@ -46,24 +53,31 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
+  const ogp = require('./ogp')(crowi);
+
+  const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
+  const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  // API v3
-  app.use('/api-docs', require('./apiv3/docs')(crowi));
-  app.use('/_api/v3', require('./apiv3')(crowi));
+  const [apiV3Router, apiV3AdminRouter] = require('./apiv3')(crowi);
 
-  app.get('/'                         , applicationInstalled, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.use('/api-docs', require('./apiv3/docs')(crowi));
+
+  // API v3 for admin
+  app.use('/_api/v3', apiV3AdminRouter);
+
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
-  app.post('/login'                   , apiLimiter, applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
+  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
+  app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
   app.get('/logout'                   , applicationInstalled, logout.logout);
 
@@ -74,7 +88,7 @@ module.exports = function(crowi, app) {
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , applicationNotInstalled , form.register , csrf, installer.install);
+    app.post('/installer'             , apiLimiter , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, installer.install);
     return;
   }
 
@@ -91,7 +105,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    , apiLimiter , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // security admin
   app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
@@ -137,6 +151,51 @@ module.exports = function(crowi, app) {
 
   app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
+  /*
+   * Routes below are unavailable when maintenance mode
+   */
+
+  // API v3
+  app.use('/_api/v3', unavailableWhenMaintenanceModeForApi, apiV3Router);
+
+  const apiV1Router = express.Router();
+
+  apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
+
+  apiV1Router.get('/check_username'           , user.api.checkUsername);
+  apiV1Router.get('/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
+
+  // HTTP RPC Styled API (に徐々に移行していいこうと思う)
+  apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
+  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
+  apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
+  apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
+  apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
+  // allow posting to guests because the client doesn't know whether the user logged in
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
+  apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
+  apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
+  apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
+  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
+  apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
+  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
+  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
+  apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
+
+  // API v1
+  app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
+
+  app.use(unavailableWhenMaintenanceMode);
+
+  app.get('/tags'                     , loginRequired, tag.showPage);
+
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
   // my in-app-notifications
@@ -145,47 +204,15 @@ module.exports = function(crowi, app) {
   // my drafts
   app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'                  , loginRequired , page.redirector);
-  app.get('/_r/:id([0-9a-z]{24})'               , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})'       , certifySharedFile , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, injectUserUISettings, search.searchPage);
-  app.get('/_api/search'                        , accessTokenParser , loginRequired , search.api.search);
-
-  app.get('/_api/check_username'           , user.api.checkUsername);
-  app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
-
-  // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
-  app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
-  app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
-  app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
-  app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
-  // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
-  app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
-  app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
-  app.get('/tags'                     , loginRequired, tag.showPage);
-  app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
-  app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
-  app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
-  app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
-  app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
-  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
-  app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
-  app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
-  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
-  app.get('/trash/$'                  , loginRequired, injectUserUISettings, page.trashPageListShowWrapper);
+  app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
@@ -195,10 +222,13 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
+    .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
     .get('/', forgotPassword.forgotPassword)
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
-    .use(forgotPassword.handleHttpErrosMiddleware));
+    .use(forgotPassword.handleErrosMiddleware));
 
+  app.use('/_private-legacy-pages', express.Router()
+    .get('/', injectUserUISettings, privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
@@ -206,7 +236,11 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired, injectUserUISettings, page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired, autoReconnectToSearch, injectUserUISettings, page.showPage, page.notFound);
+  app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
+
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
+
+  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
 
 };

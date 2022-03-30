@@ -156,16 +156,6 @@ describe('Page', () => {
     });
   });
 
-  describe('.isDeletableName', () => {
-    test('should decide deletable or not', () => {
-      expect(Page.isDeletableName('/hoge')).toBeTruthy();
-      expect(Page.isDeletableName('/user/xxx')).toBeFalsy();
-      expect(Page.isDeletableName('/user/xxx123')).toBeFalsy();
-      expect(Page.isDeletableName('/user/xxx/')).toBeTruthy();
-      expect(Page.isDeletableName('/user/xxx/hoge')).toBeTruthy();
-    });
-  });
-
   describe('.isAccessiblePageByViewer', () => {
     describe('with a granted page', () => {
       test('should return true with granted user', async() => {

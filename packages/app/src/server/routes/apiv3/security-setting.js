@@ -1,6 +1,10 @@
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
+import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
 const express = require('express');
@@ -16,9 +20,7 @@ const validator = {
     body('restrictGuestMode').if(value => value != null).isString().isIn([
       'Deny', 'Readonly',
     ]),
-    body('pageCompleteDeletionAuthority').if(value => value != null).isString().isIn([
-      'anyOne', 'adminOnly', 'adminAndAuthor',
-    ]),
+    body('pageCompleteDeletionAuthority').if(value => value != null).isString().isIn(Object.values(PageDeleteConfigValue)),
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
   ],
@@ -332,7 +334,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
@@ -367,7 +368,10 @@ module.exports = (crowi) => {
     const securityParams = {
       generalSetting: {
         restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        pageDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
+        pageRecursiveDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
+        pageRecursiveCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
@@ -585,10 +589,24 @@ module.exports = (crowi) => {
     const updateData = {
       'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
+      'security:pageDeletionAuthority': req.body.pageDeletionAuthority,
+      'security:pageRecursiveDeletionAuthority': req.body.pageRecursiveDeletionAuthority,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
+      'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
+
+    // Validate delete config
+    const [singleAuthority1, recursiveAuthority1] = prepareDeleteConfigValuesForCalc(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority);
+    // eslint-disable-next-line max-len
+    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(req.body.pageCompleteDeletionAuthority, req.body.pageRecursiveCompleteDeletionAuthority);
+    const isDeleteConfigNormalized = validateDeleteConfigs(singleAuthority1, recursiveAuthority1)
+      && validateDeleteConfigs(singleAuthority2, recursiveAuthority2);
+    if (!isDeleteConfigNormalized) {
+      return res.apiv3Err(new ErrorV3('Delete config values are not correct.', 'delete_config_not_normalized'));
+    }
+
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
     if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
@@ -599,7 +617,10 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
         restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        pageDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
+        pageRecursiveDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
+        pageRecursiveCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };

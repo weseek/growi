@@ -45,25 +45,26 @@ jobs:
       EXPECTED_IMAGES_EXIST: ${{ steps.check-expected-images.outputs.EXPECTED_IMAGES_EXIST }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ inputs.checkout-ref }}
         fetch-depth: 0
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Cache/Restore node_modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: lerna bootstrap
       run: |

@@ -4,6 +4,8 @@ import { AllSidebarContentsType } from '~/interfaces/ui';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 import UserUISettings from '../../models/user-ui-settings';
 import ErrorV3 from '../../models/vo/error-apiv3';
 
@@ -14,7 +16,6 @@ const router = express.Router();
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
