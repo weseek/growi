@@ -92,7 +92,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
-  const dPagePathForHref: DevidedPagePath = new DevidedPagePath(pageData.path, true);
+  const dPagePathForHref: DevidedPagePath = new DevidedPagePath(pageData.path, false);
   const linkedPagePathFormerForHref = new LinkedPagePath(dPagePathForHref.former);
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');

@@ -41,7 +41,7 @@ const PagePathHierarchicalLink = (props) => {
   const isParentRoot = linkedPagePath.parent?.isRoot;
   const isSeparatorRequired = isParentExists && !isParentRoot;
 
-  const href = encodeURI(urljoin(basePath || '/', linkedPagePathForHref.href));
+  const href = encodeURI(urljoin(basePath || '/', linkedPagePathForHref.href ?? linkedPagePath.href));
 
   // eslint-disable-next-line react/prop-types
   const RootElm = ({ children }) => {
