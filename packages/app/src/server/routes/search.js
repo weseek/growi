@@ -159,6 +159,7 @@ module.exports = function(crowi, app) {
       result = await searchService.formatSearchResult(searchResult, delegatorName, user, userGroups);
     }
     catch (err) {
+      logger.error(err);
       return res.json(ApiResponse.error(err));
     }
     return res.json(ApiResponse.success(result));
