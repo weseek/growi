@@ -447,7 +447,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     if (testGrant === Page.GRANT_USER_GROUP) {
       if (userGroups == null) return false;
 
-      return userGroups.map(id => id.toString()).include(testGrantedGroup.toString());
+      return userGroups.map(id => id.toString()).includes(testGrantedGroup.toString());
     }
 
     return true;
