@@ -1,6 +1,6 @@
 context('Open Page Accessories Modal', () => {
 
-  const ssPrefix = 'access-to-page-accessories-modal-with-history-tab';
+  const ssPrefix = 'access-to-page-accessories-modal';
 
   let connectSid: string | undefined;
 
@@ -33,7 +33,7 @@ context('Open Page Accessories Modal', () => {
      cy.getByTestid('page-history').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-bootstrap4`);
   });
-  it('Page History is shown successfully', () => {
+  it('Page Attachment Data is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
@@ -42,7 +42,7 @@ context('Open Page Accessories Modal', () => {
 
      cy.getByTestid('page-accessories-modal').should('be.visible')
      cy.getByTestid('page-history').should('be.visible')
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`);
+     cy.screenshot(`${ssPrefix}-open-attachment-data-bootstrap4`);
   });
 
 });
