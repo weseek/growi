@@ -23,9 +23,9 @@ jobs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -103,9 +103,9 @@ jobs:
           discovery.type: single-node
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -200,7 +200,7 @@ jobs:
           discovery.type: single-node
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Get yarn cache dir
       id: yarn-cache-dir
