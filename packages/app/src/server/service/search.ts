@@ -1,4 +1,5 @@
 import xss from 'xss';
+import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageWithMeta } from '~/interfaces/page';
@@ -351,7 +352,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
+  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName: SearchDelegatorName, user, userGroups): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
       const data: IPageWithMeta<IPageSearchMeta>[] = searchResult.data.map((page) => {
         return {
@@ -398,21 +399,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
         pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
       }
 
-      // const data = searchResult.data.find((data) => {
-      //   return pageData.id === data._id;
-      // });
-
       // increment elasticSearchResult
       let elasticSearchResult;
       const highlightData = data._highlight;
       if (highlightData != null) {
-        const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
-        const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+        const snippet = this.canShowSnippet(pageData, user, userGroups) ? highlightData['body.en'] || highlightData['body.ja'] : null;
+        const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
-          snippet: filterXss.process(snippet),
-          highlightedPath: filterXss.process(pathMatch),
+          snippet: typeof snippet === 'string' ? filterXss.process(snippet) : null,
+          highlightedPath: typeof pathMatch === 'string' ? filterXss.process(pathMatch) : null,
           isHtmlInPath,
         };
       }
@@ -428,6 +425,28 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     result.data = pages.filter(nonNullable);
     return result;
+  }
+
+  canShowSnippet(pageData, user, userGroups): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const testGrant = pageData.grant;
+    const testGrantedUser = pageData.grantedUsers?.[0];
+    const testGrantedGroup = pageData.grantedGroup;
+
+    if (testGrant === Page.GRANT_RESTRICTED) {
+      return false;
+    }
+
+    if (testGrant === Page.GRANT_OWNER) {
+      return user._id.toString() === testGrantedUser.toString();
+    }
+
+    if (testGrant === Page.GRANT_USER_GROUP) {
+      return userGroups.map(d => d.toString()).include(testGrantedGroup.toString());
+    }
+
+    return true;
   }
 
 }
