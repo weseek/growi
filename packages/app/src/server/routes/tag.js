@@ -136,15 +136,27 @@ module.exports = function(crowi, app) {
    */
   api.update = async function(req, res) {
     const Page = crowi.model('Page');
+    const User = crowi.model('User');
     const PageTagRelation = crowi.model('PageTagRelation');
+    const Revision = crowi.model('Revision');
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;
     const tags = req.body.tags;
+    const userId = req.user._id;
+    const revisionId = req.body.revisionId;
 
     const result = {};
     try {
       // TODO GC-1921 consider permission
       const page = await Page.findById(pageId);
+      const user = await User.findById(userId);
+
+      if (!await Page.isAccessiblePageByViewer(page._id, user)) {
+        return res.json(ApiResponse.error("You don't have permission to update this page."));
+      }
+
+      const previousRevision = await Revision.findById(revisionId);
+      result.savedPage = await Page.updatePage(page, previousRevision.body, previousRevision.body, req.user);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 
@@ -203,32 +215,14 @@ module.exports = function(crowi, app) {
   api.list = async function(req, res) {
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
-    const sortOpt = { count: -1 };
+    const sortOpt = { count: -1, _id: -1 };
     const queryOptions = { offset, limit, sortOpt };
-    const result = {};
 
     try {
-      // get tag list contains id and count properties
-      const listData = await PageTagRelation.createTagListWithCount(queryOptions);
-      const ids = listData.list.map((obj) => { return obj._id });
+      // get tag list contains id name and count properties
+      const tagsWithCount = await PageTagRelation.createTagListWithCount(queryOptions);
 
-      // get tag documents for add name data to the list
-      const tags = await Tag.find({ _id: { $in: ids } });
-
-      // add name property
-      result.data = listData.list.map((elm) => {
-        const data = {};
-        const tag = tags.find((tag) => { return (tag.id === elm._id.toString()) });
-
-        data._id = elm._id;
-        data.name = tag.name;
-        data.count = elm.count; // the number of related pages
-        return data;
-      });
-
-      result.totalCount = listData.totalCount;
-
-      return res.json(ApiResponse.success(result));
+      return res.json(ApiResponse.success(tagsWithCount));
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

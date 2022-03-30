@@ -16,8 +16,6 @@
 # GROWI
 
 [![Actions Status](https://github.com/weseek/growi/workflows/Node%20CI/badge.svg)](https://github.com/weseek/growi/actions)
-[![dependencies status](https://david-dm.org/weseek/growi.svg)](https://david-dm.org/weseek/growi)
-[![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
 |                                                　デモンストレーション                                                 |
@@ -38,15 +36,15 @@
 # 機能紹介
 
 - **主な機能**
-  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html))。
-  - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html)。
+  - [HackMD(CodiMd)](https://hackmd.io/) と連携することで同時多人数編集が可能です。
     - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
   - Slack / Mattermost, IFTTT と連携することが可能です。
   - [GROWI Docs: 機能紹介](https://docs.growi.org/ja/guide/features/page_layout.html)
 - **プラグイン**
-  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
+  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [GitHub](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
 - **[Docker の準備][dockerhub]**
 - **[Docker Compose の準備][docker-compose]**
   - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/ja/admin-guide/admin-cookbook/multi-app.html)
@@ -81,7 +79,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## 依存関係
 
-- Node.js v12.x or v14.x
+- Node.js v14.x or v16.x
 - npm 6.x
 - yarn
 - MongoDB 4.x
@@ -89,7 +87,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 ### オプションの依存関係
 
 - Redis 3.x
-- ElasticSearch 6.x (needed when using Full-text search)
+- ElasticSearch 6.x or 7.x (needed when using Full-text search)
   - **注意: 次のプラグインが必要です**
     - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
     - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)

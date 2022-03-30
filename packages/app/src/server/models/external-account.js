@@ -71,7 +71,7 @@ class ExternalAccount {
    * @memberof ExternalAccount
    */
   getPopulatedUser() {
-    return this.populate('user').execPopulate()
+    return this.populate('user')
       .then((account) => {
         return account.user;
       });

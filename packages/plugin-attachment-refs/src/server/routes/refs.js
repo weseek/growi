@@ -1,6 +1,6 @@
 import loggerFactory from '../../utils/logger';
 
-const { customTagUtils } = require('growi-commons');
+const { customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
@@ -166,8 +166,7 @@ module.exports = (crowi) => {
     if (prefix != null) {
       builder = new PageQueryBuilder(Page.find())
         .addConditionToListWithDescendants(prefix)
-        .addConditionToExcludeTrashed()
-        .addConditionToExcludeRedirect();
+        .addConditionToExcludeTrashed();
     }
     // builder to get single page
     else {

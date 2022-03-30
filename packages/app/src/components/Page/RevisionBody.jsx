@@ -42,7 +42,7 @@ export default class RevisionBody extends React.PureComponent {
     //   So, before MathJax is initialized, execute renderMathJaxWithDebounce again.
     //   Avoiding initialization of MathJax of draw.io solves the problem.
     //   refs: https://github.com/jgraph/drawio/pull/831
-    if (MathJax != null) {
+    if (MathJax != null && this.element != null) {
       MathJax.typesetPromise([this.element]);
     }
     else {
@@ -64,6 +64,7 @@ export default class RevisionBody extends React.PureComponent {
             this.props.inputRef(elm);
           }
         }}
+        id="wiki"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}

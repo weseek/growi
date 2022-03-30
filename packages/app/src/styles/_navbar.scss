@@ -1,6 +1,7 @@
 .grw-navbar {
   top: -$grw-navbar-height !important;
 
+  z-index: $grw-navbar-z-index !important;
   max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
@@ -100,4 +101,10 @@
     border-bottom: 3px solid;
     transition: 0.3s ease-in-out;
   }
+}
+
+.grw-notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 3.5px;
 }

@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { Collapse } from 'reactstrap';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
@@ -14,6 +16,10 @@ class SamlSecurityManagementContents extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      isHelpOpened: false,
+    };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
@@ -112,7 +118,7 @@ class SamlSecurityManagementContents extends React.Component {
               Basic Settings
             </h3>
 
-            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className={`table settings-table ${useOnlyEnvVars && 'use-only-env-vars'}`}>
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
@@ -222,7 +228,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping
             </h3>
 
-            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className="table settings-table">
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
@@ -238,7 +244,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
@@ -266,7 +271,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapUsername}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
@@ -292,7 +296,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
@@ -318,7 +321,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
@@ -349,7 +351,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
@@ -433,7 +434,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
             </p>
 
-            <table className={`table settings-table ${useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className="table settings-table">
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
@@ -448,22 +449,51 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     { t('security_setting.form_item_name.ABLCRule') }
                   </th>
                   <td>
-                    <input
+                    <textarea
                       className="form-control"
                       type="text"
                       defaultValue={adminSamlSecurityContainer.state.samlABLCRule || ''}
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
-                      readOnly={useOnlyEnvVars}
                     />
-                    <p className="form-text text-muted">
-                      <small>
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example') }} />
-                      </small>
-                    </p>
+                    <div className="mt-2">
+                      <p>
+                        See&nbsp;
+                        <a
+                          href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html"
+                          target="_blank"
+                          rel="noreferer noreferrer"
+                        >
+                          Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
+                        </a>.
+                      </p>
+                      <div className="accordion" id="accordionExample">
+                        <div className="card">
+                          <div className="card-header p-1">
+                            <h2 className="mb-0">
+                              <button
+                                className="btn btn-link btn-block text-left"
+                                type="button"
+                                onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
+                                aria-expanded="true"
+                                aria-controls="ablchelp"
+                              >
+                                <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                              </button>
+                            </h2>
+                          </div>
+                          <Collapse isOpen={this.state.isHelpOpened}>
+                            <div className="card-body">
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                            </div>
+                          </Collapse>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                   <td>
-                    <input
+                    <textarea
                       className="form-control"
                       type="text"
                       value={adminSamlSecurityContainer.state.envABLCRule || ''}

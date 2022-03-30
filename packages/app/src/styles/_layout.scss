@@ -1,5 +1,6 @@
 body {
   overflow-y: scroll !important;
+  overscroll-behavior-y: none;
 }
 
 body:not(.growi-layout-fluid) .grw-container-convertible {
@@ -29,6 +30,11 @@ body.growi-layout-fluid .grw-container-convertible {
 .grw-modal-head {
   font-size: 1em;
   border-bottom: 1px solid transparent;
+}
+
+.grw-scrollable-modal-body {
+  max-height: calc(100vh - 330px);
+  overflow-y: scroll;
 }
 
 // padding settings for GrowiNavbarBottom
@@ -99,11 +105,14 @@ body.growi-layout-fluid .grw-container-convertible {
 
 // printable style
 @media print {
-  padding: 30px;
+  body {
+    padding: 30px;
+  }
 
   a:after {
     display: none !important;
   }
+
   .main {
     header {
       border-bottom: solid 1px $secondary;

@@ -17,6 +17,15 @@ import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
+import { getOptionsToSave } from '~/client/util/editor';
+
+// TODO: remove this when omitting unstated is completed
+import {
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath, useSlackChannels } from '~/stores/context';
+
 const logger = loggerFactory('growi:Page');
 
 class Page extends React.Component {
@@ -70,8 +79,10 @@ class Page extends React.Component {
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -85,7 +96,7 @@ class Page extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -100,8 +111,10 @@ class Page extends React.Component {
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -115,7 +128,7 @@ class Page extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -130,14 +143,17 @@ class Page extends React.Component {
   }
 
   render() {
-    const { appContainer, pageContainer } = this.props;
+    const { appContainer, pageContainer, pagePath } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
-    const { markdown } = pageContainer.state;
+    const { markdown, revisionId } = pageContainer.state;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+
+        { revisionId != null && (
+          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
+        )}
 
         { isLoggedIn && (
           <>
@@ -154,9 +170,45 @@ class Page extends React.Component {
 }
 
 Page.propTypes = {
+  // TODO: remove this when omitting unstated is completed
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  pagePath: PropTypes.string.isRequired,
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
 };
 
-export default withUnstatedContainers(Page, [AppContainer, PageContainer, EditorContainer]);
+const PageWrapper = (props) => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
+  const { data: grant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
+
+  if (currentPagePath == null || editorMode == null) {
+    return null;
+  }
+
+  return (
+    <Page
+      {...props}
+      pagePath={currentPagePath}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+    />
+  );
+};
+
+export default withUnstatedContainers(PageWrapper, [AppContainer, PageContainer, EditorContainer]);

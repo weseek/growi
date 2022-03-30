@@ -7,6 +7,7 @@ import SwitchToMirrorMode from './Subscribers/SwitchToMirrorMode';
 import ShowShortcutsModal from './Subscribers/ShowShortcutsModal';
 import CreatePage from './Subscribers/CreatePage';
 import EditPage from './Subscribers/EditPage';
+import FocusToGlobalSearch from './Subscribers/FocusToGlobalSearch';
 
 // define supported components list
 const SUPPORTED_COMPONENTS = [
@@ -15,6 +16,7 @@ const SUPPORTED_COMPONENTS = [
   ShowShortcutsModal,
   CreatePage,
   EditPage,
+  FocusToGlobalSearch,
 ];
 
 const KEY_SET = new Set();

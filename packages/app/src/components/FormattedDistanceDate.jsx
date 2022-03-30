@@ -23,7 +23,7 @@ const FormattedDistanceDate = (props) => {
   return (
     <>
       <span id={elemId}>{formatDistanceStrict(date, baseDate)}</span>
-      <UncontrolledTooltip placement="bottom" fade={false} target={elemId}>{dateFormatted}</UncontrolledTooltip>
+      {props.isShowTooltip && <UncontrolledTooltip placement="bottom" fade={false} target={elemId}>{dateFormatted}</UncontrolledTooltip>}
     </>
   );
 };
@@ -34,9 +34,11 @@ FormattedDistanceDate.propTypes = {
   baseDate: PropTypes.instanceOf(Date),
   // the number(sec) from 'baseDate' to avoid format
   differenceForAvoidingFormat: PropTypes.number,
+  isShowTooltip: PropTypes.bool,
 };
 FormattedDistanceDate.defaultProps = {
   differenceForAvoidingFormat: 86400 * 3,
+  isShowTooltip: true,
 };
 
 export default FormattedDistanceDate;

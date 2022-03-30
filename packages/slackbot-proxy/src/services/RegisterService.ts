@@ -167,7 +167,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
       blocks.push(markdownSectionBlock('The request has been successfully accepted. However, registration has *NOT been completed* yet.'));
       blocks.push(markdownHeaderBlock(':arrow_right: 3. Test Connection'));
       blocks.push(markdownSectionBlock('*Test Connection* to complete the registration in your GROWI.'));
-      blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage GROWI commands'));
+      blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage Permission'));
       blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
       await respond(responseUrl, {
         text: 'Proxy URL',
@@ -186,7 +186,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
     blocks.push(markdownSectionBlock(`Proxy URL: ${serverUri}`));
     blocks.push(markdownHeaderBlock(':arrow_right: 5. Test Connection'));
     blocks.push(markdownSectionBlock('And *Test Connection* to complete the registration in your GROWI.'));
-    blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage GROWI commands'));
+    blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage Permission'));
     blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
     await respond(responseUrl, {
       text: 'Proxy URL',

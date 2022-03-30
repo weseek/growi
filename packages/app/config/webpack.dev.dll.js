@@ -10,8 +10,6 @@ module.exports = {
   entry: {
     dlls: [
       // Libraries
-      '@atlaskit/drawer',
-      '@atlaskit/navigation-next',
       'axios',
       'browser-bunyan', 'bunyan-format',
       'codemirror', 'react-codemirror2',
@@ -19,7 +17,6 @@ module.exports = {
       'diff2html',
       'debug',
       'entities',
-      'growi-commons',
       'i18next', 'i18next-browser-languagedetector',
       'jquery-slimscroll',
       'lodash', 'pako',

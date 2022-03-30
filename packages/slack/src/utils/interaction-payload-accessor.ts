@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
+import { IChannel } from '../interfaces/channel';
 import loggerFactory from './logger';
 
 const logger = loggerFactory('@growi/slack:utils:interaction-payload-accessor');
@@ -68,16 +69,15 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
     return { actionId, callbackId };
   }
 
-  getChannelName(): string | null {
+  getChannel(): IChannel | null {
     // private_metadata should have the channelName parameter when view_submission
     const privateMetadata = this.getViewPrivateMetaData();
     if (privateMetadata != null && privateMetadata.channelName != null) {
-      return privateMetadata.channelName;
+      throw new Error('PrivateMetaDatas are not implemented after removal of modal from slash commands. Use payload instead.');
     }
-
     const channel = this.payload.channel;
     if (channel != null) {
-      return this.payload.channel.name;
+      return channel;
     }
 
     return null;
