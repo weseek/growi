@@ -5,6 +5,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
+import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
@@ -13,13 +14,12 @@ import SearchTypeahead from './SearchTypeahead';
 
 type SearchFormHelpProps = {
   isReachable: boolean,
-  isShownHelp: boolean,
 }
 
-const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => {
+const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHelpProps) => {
   const { t } = useTranslation();
 
-  const { isReachable, isShownHelp } = props;
+  const { isReachable } = props;
 
   if (!isReachable) {
     return (
@@ -28,10 +28,6 @@ const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => 
         Try to reconnect from management page.
       </>
     );
-  }
-
-  if (!isShownHelp) {
-    return <></>;
   }
 
   return (
@@ -77,33 +73,29 @@ const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => 
       </tbody>
     </table>
   );
-};
+});
 
 
-type Props = {
+type Props = TypeaheadProps & {
   isSearchServiceReachable: boolean,
 
-  dropup?: boolean,
-  keyword?: string,
+  keywordOnInit?: string,
   disableIncrementalSearch?: boolean,
   onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
-  onBlur?: () => void,
-  onFocus?: () => void,
   onSubmit?: (input: string) => void,
-  onInputChange?: (text: string) => void,
 };
 
 
 const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const { t } = useTranslation();
   const {
-    isSearchServiceReachable, dropup,
+    isSearchServiceReachable,
+    keywordOnInit,
     disableIncrementalSearch,
-    onChange, onBlur, onFocus, onSubmit, onInputChange,
+    dropup, onChange, onBlur, onFocus, onSubmit, onInputChange,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
-  const [isShownHelp, setShownHelp] = useState(false);
 
   const searchTyheaheadRef = useRef<IFocusable>(null);
 
@@ -131,25 +123,15 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
-      disableIncrementalSearch={disableIncrementalSearch}
       onChange={onChange}
       onSubmit={onSubmit}
       onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}
-      onBlur={() => {
-        setShownHelp(false);
-        if (onBlur != null) {
-          onBlur();
-        }
-      }}
-      onFocus={() => {
-        setShownHelp(true);
-        if (onFocus != null) {
-          onFocus();
-        }
-      }}
-      helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
-      keywordOnInit={props.keyword}
+      onBlur={onBlur}
+      onFocus={onFocus}
+      keywordOnInit={keywordOnInit}
+      disableIncrementalSearch={disableIncrementalSearch}
+      helpElement={<SearchFormHelp isReachable={isSearchServiceReachable} />}
     />
   );
 };

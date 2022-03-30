@@ -12,7 +12,6 @@ import { CustomWindow } from '~/interfaces/global';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
-import userGroup from '~/server/models/user-group';
 
 const UserGroupPage: FC = () => {
   const xss: Xss = (window as CustomWindow).xss;
@@ -94,13 +93,18 @@ const UserGroupPage: FC = () => {
         name: userGroupData.name,
         description: userGroupData.description,
       });
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+
+      // mutate
       await mutateUserGroups();
+
+      hideCreateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateUserGroups]);
+  }, [t, mutateUserGroups, hideCreateModal]);
 
   const updateUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
@@ -108,13 +112,18 @@ const UserGroupPage: FC = () => {
         name: userGroupData.name,
         description: userGroupData.description,
       });
+
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+
+      // mutate
       await mutateUserGroups();
+
+      hideUpdateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateUserGroups]);
+  }, [t, mutateUserGroups, hideUpdateModal]);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -152,7 +161,7 @@ const UserGroupPage: FC = () => {
 
       <UserGroupModal
         buttonLabel={t('Create')}
-        onClickButton={createUserGroup}
+        onClickSubmit={createUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
@@ -160,7 +169,7 @@ const UserGroupPage: FC = () => {
       <UserGroupModal
         userGroup={selectedUserGroup}
         buttonLabel={t('Update')}
-        onClickButton={updateUserGroup}
+        onClickSubmit={updateUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
       />
@@ -180,7 +189,6 @@ const UserGroupPage: FC = () => {
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}
-        onShow={showDeleteModal}
         onHide={hideDeleteModal}
       />
     </div>

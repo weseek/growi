@@ -163,8 +163,7 @@ const PageDuplicateModal = (): JSX.Element => {
     || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
   return (
-    // eslint-disable-next-line jsx-quotes
-    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid='page-duplicate-modal' className="grw-duplicate-page" autoFocus={false}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>

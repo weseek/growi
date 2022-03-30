@@ -19,7 +19,6 @@ context('Open Page Move Rename Modal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 

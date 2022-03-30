@@ -24,7 +24,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
-import { useSlackChannels } from '~/stores/context';
+import { useCurrentPagePath, useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
 
@@ -143,7 +143,7 @@ class Page extends React.Component {
   }
 
   render() {
-    const { appContainer, pageContainer } = this.props;
+    const { appContainer, pageContainer, pagePath } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
     const { markdown, revisionId } = pageContainer.state;
@@ -152,7 +152,7 @@ class Page extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
         { isLoggedIn && (
@@ -170,11 +170,12 @@ class Page extends React.Component {
 }
 
 Page.propTypes = {
+  // TODO: remove this when omitting unstated is completed
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
-  // TODO: remove this when omitting unstated is completed
+  pagePath: PropTypes.string.isRequired,
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
@@ -184,6 +185,7 @@ Page.propTypes = {
 };
 
 const PageWrapper = (props) => {
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
@@ -191,13 +193,14 @@ const PageWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
-  if (editorMode == null) {
+  if (currentPagePath == null || editorMode == null) {
     return null;
   }
 
   return (
     <Page
       {...props}
+      pagePath={currentPagePath}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}

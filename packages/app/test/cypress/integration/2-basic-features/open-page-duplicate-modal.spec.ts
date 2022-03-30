@@ -19,7 +19,6 @@ context('Open Page Duplicate Modal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 
@@ -29,9 +28,7 @@ context('Open Page Duplicate Modal', () => {
        cy.getByTestid('open-page-item-control-btn').click();
        cy.getByTestid('open-page-duplicate-modal-btn').click();
     });
-
-     cy.getByTestid('page-duplicate-modal').should('be.visible');
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
+     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });

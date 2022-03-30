@@ -81,7 +81,7 @@ const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string
  * @param printLog
  * @returns
  */
-const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
+const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
   if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
     if (printLog) {
       logger.warn('Any of page, page.path or droppedPage.path is null');
@@ -90,7 +90,7 @@ const canMoveUnderNewParent = (fromPage?: Partial<IPageHasId>, newParentPage?: P
   }
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
-  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved);
+  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
 };
 
 
@@ -101,7 +101,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
+      <span className="grw-pagetree-count px-2 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
@@ -174,7 +174,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pageItemDropHandler = async(item: ItemNode) => {
     const { page: droppedPage } = item;
 
-    if (!canMoveUnderNewParent(droppedPage, page, true)) {
+    if (!isDroppable(droppedPage, page, true)) {
       return;
     }
 
@@ -226,7 +226,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     canDrop: (item) => {
       const { page: droppedPage } = item;
-      return canMoveUnderNewParent(droppedPage, page);
+      return isDroppable(droppedPage, page);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
