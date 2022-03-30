@@ -408,8 +408,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
-          snippet: snippet != null ? filterXss.process(snippet) : null,
-          highlightedPath: pathMatch != null ? filterXss.process(pathMatch) : null,
+          snippet: snippet != null && typeof snippet[0] === 'string' ? filterXss.process(snippet) : null,
+          highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' ? filterXss.process(pathMatch) : null,
           isHtmlInPath,
         };
       }
