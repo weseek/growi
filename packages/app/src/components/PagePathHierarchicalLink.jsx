@@ -6,9 +6,10 @@ import urljoin from 'url-join';
 import LinkedPagePath from '../models/linked-page-path';
 
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PagePathHierarchicalLink = (props) => {
   const {
-    linkedPagePath, basePath, isInTrash, shouldDangerouslySetInnerHTML,
+    linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
   } = props;
   // render root element
   if (linkedPagePath.isRoot) {
@@ -41,6 +42,8 @@ const PagePathHierarchicalLink = (props) => {
   const isParentRoot = linkedPagePath.parent?.isRoot;
   const isSeparatorRequired = isParentExists && !isParentRoot;
 
+  const shouldDangerouslySetInnerHTML = linkedPagePathByHtml != null;
+
   const href = encodeURI(urljoin(basePath || '/', linkedPagePath.href));
 
   // eslint-disable-next-line react/prop-types
@@ -55,10 +58,10 @@ const PagePathHierarchicalLink = (props) => {
       { isParentExists && (
         <PagePathHierarchicalLink
           linkedPagePath={linkedPagePath.parent}
+          linkedPagePathByHtml={linkedPagePathByHtml?.parent}
           basePath={basePath}
           isInTrash={isInTrash || linkedPagePath.isInTrash}
           isInnerElem
-          shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTML}
         />
       ) }
       { isSeparatorRequired && (
@@ -67,7 +70,8 @@ const PagePathHierarchicalLink = (props) => {
 
       {
         shouldDangerouslySetInnerHTML
-          ? <a className="page-segment" href={href} dangerouslySetInnerHTML={{ __html: linkedPagePath.pathName }}></a>
+          // eslint-disable-next-line react/no-danger
+          ? <a className="page-segment" href={href} dangerouslySetInnerHTML={{ __html: linkedPagePathByHtml.pathName }}></a>
           : <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
       }
 
@@ -77,9 +81,9 @@ const PagePathHierarchicalLink = (props) => {
 
 PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
+  linkedPagePathByHtml: PropTypes.instanceOf(LinkedPagePath), // Not required
   basePath: PropTypes.string,
   isInTrash: PropTypes.bool,
-  shouldDangerouslySetInnerHTML: PropTypes.bool,
 
   // !!INTERNAL USE ONLY!!
   isInnerElem: PropTypes.bool,
