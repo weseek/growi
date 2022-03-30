@@ -328,6 +328,8 @@ class PageEditor extends React.Component {
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
+    const { path } = this.props.pageContainer.state;
+
     return (
       <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
@@ -349,6 +351,7 @@ class PageEditor extends React.Component {
         <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           <Preview
             markdown={this.state.markdown}
+            pagePath={path}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
