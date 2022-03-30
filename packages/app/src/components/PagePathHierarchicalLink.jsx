@@ -40,8 +40,6 @@ const PagePathHierarchicalLink = (props) => {
   const isParentExists = linkedPagePath.parent != null;
   const isParentRoot = linkedPagePath.parent?.isRoot;
   const isSeparatorRequired = isParentExists && !isParentRoot;
-  console.log('linkedPagePathForHref', linkedPagePathForHref);
-  console.log('linkedPagePath', linkedPagePath);
 
   const href = encodeURI(urljoin(basePath || '/', linkedPagePathForHref?.href ?? linkedPagePath?.href));
 
