@@ -88,12 +88,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
-  const dPagePath: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
+  const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, false);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
-  const dPagePathForHref: DevidedPagePath = new DevidedPagePath(pageData.path, false);
-  const linkedPagePathFormerForHref = new LinkedPagePath(dPagePathForHref.former);
+  const dPagePathHighlighted: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
+  const linkedPagePathHighlightedFormer = new LinkedPagePath(dPagePathHighlighted.former);
+  const linkedPagePathHighlightedLatter = new LinkedPagePath(dPagePathHighlighted.latter);
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
@@ -194,8 +194,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {/* page path */}
               <PagePathHierarchicalLink
                 linkedPagePath={linkedPagePathFormer}
-                shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTMLForPaths}
-                linkedPagePathForHref={linkedPagePathFormerForHref}
+                linkedPagePathByHtml={linkedPagePathHighlightedFormer}
               />
               { showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
@@ -217,11 +216,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                           className="page-segment"
                           href={encodeURI(urljoin('/', pageData._id))}
                           // eslint-disable-next-line react/no-danger
-                          dangerouslySetInnerHTML={{ __html: linkedPagePathLatter.pathName }}
+                          dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
                         >
                         </a>
                       )
-                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathHighlightedLatter.pathName}</a>
                     }
                   </span>
                 </span>
