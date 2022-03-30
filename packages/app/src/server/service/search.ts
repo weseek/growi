@@ -408,8 +408,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
-          snippet: typeof snippet === 'string' ? filterXss.process(snippet) : null,
-          highlightedPath: typeof pathMatch === 'string' ? filterXss.process(pathMatch) : null,
+          snippet: snippet != null ? filterXss.process(snippet) : null,
+          highlightedPath: pathMatch != null ? filterXss.process(pathMatch) : null,
           isHtmlInPath,
         };
       }
@@ -443,7 +443,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     if (testGrant === Page.GRANT_USER_GROUP) {
-      return userGroups.map(d => d.toString()).include(testGrantedGroup.toString());
+      return userGroups.map(id => id.toString()).include(testGrantedGroup.toString());
     }
 
     return true;
