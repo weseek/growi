@@ -35,8 +35,12 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
   );
 };
 export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
+  const getKey = (offset: number, previousData: any) => {
+    if (previousData && !previousData.length) return null;
+    return `/pages/recent?offset=${offset}`;
+  };
   return useSWRInfinite(
-    (offset: number) => `/pages/recent?offset=${offset + 1}`,
+    getKey,
     (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
     {
       initialSize: 1,

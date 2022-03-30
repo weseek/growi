@@ -121,20 +121,22 @@ SmallPageItem.propTypes = {
   page: PropTypes.any,
 };
 
+function LoadingIndicator() {
+  return (
+    <div className="text-muted text-center">
+      <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+    </div>
+  );
+}
 
 const RecentChanges = (): JSX.Element => {
-
+  const PER_PAGE = 20;
   const { t } = useTranslation();
   const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-  const ending = swr.data && swr.data[swr.data.length - 1]?.length < 20;
-  const pagiateResponse = (response) => {
-    console.log(response?.flat());
-    return Array.from(new Set(response?.flat().map(page => page._id)))
-      .map((id) => {
-        return response?.find(page => page._id === id);
-      });
-  };
+  const isReachingEnd = swr.data && swr.data[swr.data.length - 1]?.length < PER_PAGE;
+  const pages = swr.data?.flat()?.filter((item, index) => index === swr.data?.flat().findIndex(page => page._id === item._id));
+
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -174,25 +176,12 @@ const RecentChanges = (): JSX.Element => {
       </div>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
-          {/* <InfiniteScroll
-            swr={swr}
-            isReachingEnd={swr => swr.data?.[0]?.items.length === 0 || (swr.data?.[swr.data?.length - 1]?.items.length ?? 0) < 20
-            }
-          >
-            {(response) => {
-              response?.items.map((item) => {
-                isRecentChangesSidebarSmall
-                  ? <SmallPageItem key={page._id} page={page} />
-                  : <LargePageItem key={page._id} page={page} />;
-              });
-            }}
-          </InfiniteScroll> */}
           <InfiniteScroll
             swr={swr}
-            // TODO detect reaching ends
-            isReachingEnd={ending}
+            loadingIndicator={<LoadingIndicator />}
+            isReachingEnd={isReachingEnd}
           >
-            {response => pagiateResponse(response).map(page => (
+            {pages?.map(page => (
               isRecentChangesSidebarSmall
                 ? <SmallPageItem key={page._id} page={page} />
                 : <LargePageItem key={page._id} page={page} />

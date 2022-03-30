@@ -3,7 +3,7 @@ import type { SWRInfiniteResponse } from 'swr/infinite';
 
 type Props<T> = {
   swr: SWRInfiniteResponse<T>
-  children: React.ReactChild | ((item: T) => React.ReactNode)
+  children:any,
   loadingIndicator?: React.ReactNode
   endingIndicator?: React.ReactNode
   isReachingEnd?: boolean,
