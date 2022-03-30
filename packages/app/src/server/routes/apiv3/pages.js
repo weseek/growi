@@ -366,6 +366,7 @@ module.exports = (crowi) => {
   router.get('/recent', accessTokenParser, loginRequired, async(req, res) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
+    const page = parseInt(req.query.page) || 1;
 
     const queryOptions = {
       offset,
@@ -374,6 +375,7 @@ module.exports = (crowi) => {
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
+      page,
     };
 
     try {

@@ -506,7 +506,7 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const User = crowi.model('User');
-
+    const Page = crowi.model('Page');
     const opt = Object.assign({ sort: 'updatedAt', desc: -1 }, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
@@ -523,14 +523,18 @@ export const getPageSchema = (crowi) => {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().clone().exec('find');
+    // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
 
-    const result = {
-      pages, totalCount, offset: opt.offset, limit: opt.limit,
+
+    const paginationOptions = {
+      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page,
     };
-    return result;
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+    const pages = await Page.paginate(builder, paginationOptions);
+    const results = {
+      pages: pages.docs, totalCount: pages.totalDocs, offset: opt.offset, limit: opt.limit,
+    };
+    return results;
   }
 
   /**
