@@ -92,6 +92,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
+  const dPagePathForHref: DevidedPagePath = new DevidedPagePath(pageData.path, true);
+  const linkedPagePathFormerForHref = new LinkedPagePath(dPagePathForHref.former);
+
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
 
@@ -192,6 +195,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               <PagePathHierarchicalLink
                 linkedPagePath={linkedPagePathFormer}
                 shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTMLForPaths}
+                linkedPagePathForHref={linkedPagePathFormerForHref}
               />
               { showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>

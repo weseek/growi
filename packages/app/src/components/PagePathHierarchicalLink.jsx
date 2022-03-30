@@ -5,13 +5,10 @@ import urljoin from 'url-join';
 
 import LinkedPagePath from '../models/linked-page-path';
 
-const HIGHLIGHT_START_TAG = '<em class="highlighted-keyword">';
-const HIGHLIGHT_END_TAG = '</em>';
-
 
 const PagePathHierarchicalLink = (props) => {
   const {
-    linkedPagePath, basePath, isInTrash, shouldDangerouslySetInnerHTML,
+    linkedPagePath, basePath, isInTrash, shouldDangerouslySetInnerHTML, linkedPagePathForHref,
   } = props;
   // render root element
   if (linkedPagePath.isRoot) {
@@ -40,19 +37,11 @@ const PagePathHierarchicalLink = (props) => {
       );
   }
 
-  const removeHighlightTag = (href) => {
-
-    if (href.includes(HIGHLIGHT_START_TAG) && href.includes(HIGHLIGHT_END_TAG)) {
-      return href.replaceAll(HIGHLIGHT_START_TAG, '').replaceAll(HIGHLIGHT_END_TAG, '');
-    }
-    return href;
-  };
-
   const isParentExists = linkedPagePath.parent != null;
   const isParentRoot = linkedPagePath.parent?.isRoot;
   const isSeparatorRequired = isParentExists && !isParentRoot;
 
-  const href = encodeURI(urljoin(basePath || '/', removeHighlightTag(linkedPagePath.href)));
+  const href = encodeURI(urljoin(basePath || '/', linkedPagePathForHref.href));
 
   // eslint-disable-next-line react/prop-types
   const RootElm = ({ children }) => {
@@ -91,6 +80,7 @@ PagePathHierarchicalLink.propTypes = {
   basePath: PropTypes.string,
   isInTrash: PropTypes.bool,
   shouldDangerouslySetInnerHTML: PropTypes.bool,
+  linkedPagePathForHref: PropTypes.instanceOf(LinkedPagePath), // Not required
 
   // !!INTERNAL USE ONLY!!
   isInnerElem: PropTypes.bool,
