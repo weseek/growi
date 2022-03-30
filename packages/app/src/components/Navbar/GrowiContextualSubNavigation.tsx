@@ -102,6 +102,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
+        data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
