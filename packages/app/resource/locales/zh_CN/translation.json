@@ -177,12 +177,14 @@
   "Link sharing is disabled": "你不允许分享该链接",
   "successfully_saved_the_page": "成功地保存了该页面",
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
+  "not_allowed_to_see_this_page": "你不能看到这个页面",
+  "Confirm": "确定",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
     "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "slashed_are_not_yet_supported": "目前还不支持包含斜线的标题"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -627,13 +629,12 @@
 		"page_listing_2_desc": "显示列出/搜索时受用户组限制的页面",
     "page_access_rights": "页面访问",
     "page_delete_rights": "删除权限",
-    "deletion": "限制捣毁一个选定的单一页面",
+    "page_delete": "删除",
+    "page_delete_completely": "彻底删除",
+    "other_options": "其他选项",
     "deletion_explain": "限制用户对选定的单一页面进行垃圾处理。",
-    "complete_deletion": "限制完全删除一个选定的单页",
     "complete_deletion_explain": "限制可以完全删除所选单页的用户。",
-    "recursive_deletion": "限制捣毁包括子孙在内的网页",
     "recursive_deletion_explain": "限制用户可以捣毁包括子孙在内的页面。",
-    "recursive_complete_deletion": "限制完全删除包括子孙在内的页面",
     "recursive_complete_deletion_explain": "限制可以完全删除页面的用户，包括子孙。",
     "inherit": "继承（使用与单页相同的设置）。",
 		"admin_only": "仅管理员",

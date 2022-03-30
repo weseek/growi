@@ -45,19 +45,19 @@ jobs:
       EXPECTED_IMAGES_EXIST: ${{ steps.check-expected-images.outputs.EXPECTED_IMAGES_EXIST }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ inputs.checkout-ref }}
         fetch-depth: 0
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Cache/Restore node_modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules
