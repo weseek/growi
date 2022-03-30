@@ -439,10 +439,14 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     if (testGrant === Page.GRANT_OWNER) {
+      if (user == null) return false;
+
       return user._id.toString() === testGrantedUser.toString();
     }
 
     if (testGrant === Page.GRANT_USER_GROUP) {
+      if (userGroups == null) return false;
+
       return userGroups.map(id => id.toString()).include(testGrantedGroup.toString());
     }
 
