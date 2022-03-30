@@ -10,7 +10,7 @@ const addCustomFunctionToResponse = (express, crowi) => {
       throw new Error('invalid value supplied to res.apiv3');
     }
 
-    this.status(status).json({ data: obj });
+    this.status(status).json(obj);
   };
 
   express.response.apiv3Err = function(_err, status = 400, info) { // not arrow function

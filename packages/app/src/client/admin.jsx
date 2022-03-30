@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
+import { SWRConfig } from 'swr';
+
 import loggerFactory from '~/utils/logger';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import ErrorBoundary from '../components/ErrorBoudary';
 
@@ -24,8 +27,6 @@ import ImportDataPage from '../components/Admin/ImportDataPage';
 import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
 import AdminNavigation from '../components/Admin/Common/AdminNavigation';
-
-import NavigationContainer from '~/client/services/NavigationContainer';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
@@ -48,6 +49,8 @@ import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurit
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
+import ContextExtractor from '~/client/services/ContextExtractor';
+
 import { appContainer, componentMappings } from './base';
 
 const logger = loggerFactory('growi:admin');
@@ -57,7 +60,6 @@ appContainer.initContents();
 const { i18n } = appContainer;
 
 // create unstated container instance
-const navigationContainer = new NavigationContainer(appContainer);
 const adminAppContainer = new AdminAppContainer(appContainer);
 const adminImportContainer = new AdminImportContainer(appContainer);
 const adminSocketIoContainer = new AdminSocketIoContainer(appContainer);
@@ -69,9 +71,9 @@ const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const injectableContainers = [
   appContainer,
-  navigationContainer,
   adminAppContainer,
   adminImportContainer,
   adminSocketIoContainer,
@@ -83,6 +85,7 @@ const injectableContainers = [
   adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
+  socketIoContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -111,22 +114,38 @@ Object.assign(componentMappings, {
   'admin-navigation': <AdminNavigation />,
 });
 
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <Provider inject={injectableContainers}>
+              {componentMappings[key]}
+            </Provider>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 if (adminSecuritySettingElem != null) {

@@ -19,6 +19,34 @@
     "bug_report": "Submitting a bug report",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature",
+    "migration_desc": "There are some pages with old v4 compatibility. To take advantage of new features such as page trees and easy renaming, please convert all your pages to v5 compatibility.",
+    "migration_note": "Note: You will lose unique constraints from the page paths.",
+    "upgrade_to_v5": "Convert to v5 compatibility",
+    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during the conversion.",
+    "start_upgrading": "Start converting to v5 compatibility",
+    "successfully_started": "Succeeded to start the conversion",
+    "already_upgraded": "You have already completed the conversion to v5 compatibility",
+    "header_upgrading_progress": "Upgrade Progress",
+    "migration_succeeded": "Your upgrade has been successfully completed! Exit maintenance mode and GROWI can be used.",
+    "migration_failed": "Upgrade failed. Please refer to the GROWI docs for information on what to do in the event of failure."
+  },
+  "maintenance_mode": {
+    "maintenance_mode": "Maintenance Mode",
+    "under_maintenance_mode": "Under Maintenance Mode",
+    "failed_to_start_maintenance_mode": "Failed to start maintenance mode",
+    "failed_to_end_maintenance_mode": "Failed to end maintenance mode",
+    "successfully_started_maintenance_mode": "Succussfully started maintenance mode",
+    "successfully_ended_maintenance_mode": "Succussfully ended maintenance mode",
+    "warning_message_to_start": "You will NOT able to access other than admin settings page. General users will NOT able to access to any contents until maintenance mode ends manually.",
+    "warning_message_to_end": "Please make sure that \"data importing\" or \"upgrading to v5\" is already done or not. If not, it is highly recommended to keep maintenance mode on.",
+    "supplymentary_message_to_start": "As for the API, only the administrator API will be functional.",
+    "start_maintenance_mode": "Start maintenance mode",
+    "end_maintenance_mode": "End maintenance mode",
+    "description": "Maintenance mode restricts all user operations. Always start the maintenance mode before \"importing data\" and \"upgrading to V5\". To exit, go to \"Security Settings\" > \"Maintenance Mode\"."
+  },
   "app_setting": {
     "site_name": "Site name",
     "sitename_change": "You can change site name which is used for header and HTML title.",
@@ -178,6 +206,9 @@
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
+    "error": {
+      "only_upsert_available": "Only 'Upsert' option is available for pages collection."
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
@@ -192,7 +223,7 @@
       "upload": "Upload",
       "discard": "Discard uploaded data",
       "errors": {
-        "different_versions": "this growi and the uploarded data versions are not met",
+        "different_versions": "This growi and the uploaded data versions are not met",
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
         "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
@@ -339,16 +370,19 @@
       "install_complete_if_checked": "Confirm that \"Install your app\" is checked.",
       "invite_bot_to_channel": "Invite GROWI bot to channel by calling @example.",
       "register_secret_and_token": "Set Signing Secret and Bot Token",
-      "manage_commands": "Manage GROWI commands",
+      "manage_permission": "Manage Permission",
+      "growi_commands": "GROWI Commands",
       "multiple_growi_command": "Commands that could be sent to multiple GROWI instances at once",
       "single_growi_command": "Commands that could be sent to single GROWI instance at a time",
-      "allowed_channels_description": "Input allowed channels for \"{{commandName}}\" command. Separate each channel with \",\" . Users can will be able to use \"{{commandName}}\" command from channels written here.",
+      "allowed_channels_description": "Input allowed channels for \"{{keyName}}\" command. Separate each channel with \",\" . Users can will be able to use \"{{keyName}}\" command from channels written here.",
+      "unfurl_description": "Show GROWI page contents when page links have been shared on Slack",
+      "unfurl_allowed_channels_description": "Input allowed channel IDs for \"unfurl\" . Separate each channel with \",\" . GROWI public page links or permanent links sent in specified channels will show the content in the message.",
       "allow_all": "Allow all",
       "deny_all": "Deny all",
       "allow_specified": "Allow specified",
-      "allow_all_long": "Allow all (The command is allowed from any channel)",
-      "deny_all_long": "Deny all (The command is denied from any channel)",
-      "allow_specified_long": "Allow specified (The command is allowed from only specified channels)",
+      "allow_all_long": "Allow all (Allowed from any channel)",
+      "deny_all_long": "Deny all (Denied from any channel)",
+      "allow_specified_long": "Allow specified (Allowed from only specified channels)",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
       "test_connection_only_public_channel":"Please test connection in a public channel",
@@ -437,10 +471,15 @@
   },
   "user_group_management": {
     "create_group": "Create new group",
+    "add_child_group": "Add child group",
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
+    "parent_group": "Parent Group",
+    "select_parent_group": "Select Parent Group",
+    "release_parent_group": "Release parent group",
     "add_modal": {
+      "description": "The added user will also be added to all parent groups.",
       "add_user": "Add a user to the created group",
       "search_option": "Search option",
       "enable_option": "Enable {{option}}",
@@ -449,6 +488,7 @@
       "backward_match": "Backward match"
     },
     "group_list": "Group list",
+    "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
     "basic_info": "Basic info",
     "user_list": "User list",
@@ -458,13 +498,20 @@
     "remove_from_group": "Remove this user",
     "delete_modal": {
       "header": "Delete group",
-      "desc": "Once deleted, the deleted group and its private pages cannot be retrieved.",
+      "desc": "All child groups under the group will also be deleted. Once deleted, the deleted group and its private pages cannot be retrieved.",
       "dropdown_desc": "Choose an action for private pages",
       "select_group": "Select a group",
       "no_groups": "No groups to select",
       "publish_pages": "Publish all",
       "delete_pages": "Delete all",
       "transfer_pages": "Transfer to another group"
+    },
+    "update_parent_confirm_modal": {
+      "header": "The parent of the group will be changed",
+      "caution_change_parent": "This operation will change the parent of the group \"{{groupName}}\".",
+      "danger_message": "Note that this affects the permissions to view all pages associated with this group.",
+      "force_update_parents_label": "Forcibly add missing users",
+      "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
   }
 }

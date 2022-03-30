@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { blinkElem } from '~/client/util/blink-section-header';
 
 import RevisionBody from './RevisionBody';
+import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 
-class RevisionRenderer extends React.PureComponent {
+const logger = loggerFactory('components:Page:RevisionRenderer');
+
+class LegacyRevisionRenderer extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -24,7 +28,8 @@ class RevisionRenderer extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
-      currentPagePath: decodeURIComponent(window.location.pathname),
+      pagePath: this.props.pagePath,
+      currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
 
@@ -35,7 +40,7 @@ class RevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords, navigationContainer } = this.props;
+    const { markdown, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -46,7 +51,7 @@ class RevisionRenderer extends React.PureComponent {
 
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
-    navigationContainer.addSmoothScrollEvent(HeaderLinkArray);
+    addSmoothScrollEvent(HeaderLinkArray, blinkElem);
 
     const { interceptorManager } = this.props.appContainer;
 
@@ -59,18 +64,61 @@ class RevisionRenderer extends React.PureComponent {
    * @param {string} keywords
    */
   getHighlightedBody(body, keywords) {
-    let returnBody = body;
-
-    keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
+    const normalizedKeywordsArray = [];
+    // !!TODO!!: add test code refs: https://redmine.weseek.co.jp/issues/86841
+    // Separate keywords
+    // - Surrounded by double quotation
+    // - Split by both full-width and half-width spaces
+    // [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    keywords.forEach((keyword, i) => {
       if (keyword === '') {
         return;
       }
       const k = keyword
-        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // escape regex operators
         .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
-      const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-      returnBody = returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
+      normalizedKeywordsArray.push(k);
     });
+
+    const normalizedKeywords = `(${normalizedKeywordsArray.join('|')})`;
+    const keywordRegxp = new RegExp(`${normalizedKeywords}(?!(.*?"))`, 'ig'); // prior https://regex101.com/r/oX7dq5/1
+    let keywordRegexp2 = keywordRegxp;
+
+    // for non-chrome browsers compatibility
+    try {
+      // eslint-disable-next-line regex/invalid
+      keywordRegexp2 = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // inferior (this doesn't work well when html tags exist a lot) https://regex101.com/r/Dfi61F/1
+    }
+    catch (err) {
+      logger.debug('Failed to initialize regex:', err);
+    }
+
+    const highlighter = (str) => { return str.replace(keywordRegxp, '<em class="highlighted-keyword">$&</em>') }; // prior
+    const highlighter2 = (str) => { return str.replace(keywordRegexp2, '<em class="highlighted-keyword">$&</em>') }; // inferior
+
+    const insideTagRegex = /<[^<>]*>/g;
+    const betweenTagRegex = />([^<>]*)</g; // use (group) to ignore >< around
+
+    const insideTagStrs = body.match(insideTagRegex);
+    const betweenTagMatches = Array.from(body.matchAll(betweenTagRegex));
+
+    let returnBody = body;
+    const isSafeHtml = insideTagStrs.length === betweenTagMatches.length + 1; // to check whether is safe to join
+    if (isSafeHtml) {
+      // highlight
+      const betweenTagStrs = betweenTagMatches.map(match => highlighter(match[1])); // get only grouped part (exclude >< around)
+
+      const arr = [];
+      insideTagStrs.forEach((str, i) => {
+        arr.push(str);
+        arr.push(betweenTagStrs[i]);
+      });
+      returnBody = arr.join('');
+    }
+    else {
+      // inferior highlighter
+      returnBody = highlighter2(body);
+    }
 
     return returnBody;
   }
@@ -86,13 +134,14 @@ class RevisionRenderer extends React.PureComponent {
 
     await interceptorManager.process('preRender', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = growiRenderer.preProcess(context.markdown);
+    context.markdown = growiRenderer.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = growiRenderer.process(context.markdown);
+    context.parsedHTML = growiRenderer.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
 
-    if (this.props.highlightKeywords != null) {
+    const isMarkdownEmpty = context.markdown.trim().length === 0;
+    if (highlightKeywords != null && highlightKeywords.length > 0 && !isMarkdownEmpty) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
@@ -117,18 +166,32 @@ class RevisionRenderer extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, NavigationContainer]);
-
-RevisionRenderer.propTypes = {
+LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  pagePath: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
 };
 
-export default RevisionRendererWrapper;
+/**
+ * Wrapper component for using unstated
+ */
+const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer]);
+
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const RevisionRenderer = (props) => {
+  return <LegacyRevisionRendererWrapper {...props} />;
+};
+
+RevisionRenderer.propTypes = {
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
+  additionalClassName: PropTypes.string,
+};
+
+export default RevisionRenderer;

@@ -36,6 +36,7 @@ export const generateConfigsForInstalling = (): { [key: string]: any } => {
   config['app:installed'] = true;
   config['app:fileUpload'] = true;
   config['customize:isSavedStatesOfTabChanges'] = false;
+  config['app:isV5Compatible'] = true;
 
   return config;
 };
@@ -58,7 +59,11 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'security:list-policy:hideRestrictedByOwner' : false,
   'security:list-policy:hideRestrictedByGroup' : false,
+  // DEPRECATED: 'security:pageCompleteDeletionAuthority' : undefined,
+  'security:pageDeletionAuthority' : undefined,
   'security:pageCompleteDeletionAuthority' : undefined,
+  'security:pageRecursiveDeletionAuthority' : undefined,
+  'security:pageRecursiveCompleteDeletionAuthority' : undefined,
   'security:disableLinkSharing' : false,
 
   'security:passport-local:isEnabled' : true,
@@ -235,6 +240,8 @@ schema.statics.getLocalconfig = function(crowi) {
     isSearchServiceReachable: crowi.searchService.isReachable,
     isMailerSetup: crowi.mailService.isMailerSetup,
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+    pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
+    pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
   };
 
   return localConfig;

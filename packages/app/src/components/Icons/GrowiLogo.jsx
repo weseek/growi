@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const GrowiLogo = () => (
+const GrowiLogo = memo(() => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
@@ -29,6 +29,6 @@ const GrowiLogo = () => (
     >
     </path>
   </svg>
-);
+));
 
 export default GrowiLogo;

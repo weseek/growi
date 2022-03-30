@@ -1,4 +1,6 @@
-import { envUtils } from 'growi-commons';
+import { parseISO } from 'date-fns';
+
+import { envUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
@@ -9,7 +11,7 @@ import ConfigModel, {
 
 const logger = loggerFactory('growi:service:ConfigLoader');
 
-enum ValueType { NUMBER, STRING, BOOLEAN }
+enum ValueType { NUMBER, STRING, BOOLEAN, DATE }
 
 interface ValueParser<T> {
   parse(value: string): T;
@@ -26,10 +28,11 @@ type EnumDictionary<T extends string | symbol | number, U> = {
   [K in T]: U;
 };
 
-const parserDictionary: EnumDictionary<ValueType, ValueParser<number | string | boolean>> = {
+const parserDictionary: EnumDictionary<ValueType, ValueParser<number | string | boolean | Date>> = {
   [ValueType.NUMBER]:  { parse: (v: string) => { return parseInt(v, 10) } },
   [ValueType.STRING]:  { parse: (v: string) => { return v } },
   [ValueType.BOOLEAN]: { parse: (v: string) => { return envUtils.toBoolean(v) } },
+  [ValueType.DATE]:    { parse: (v: string) => { return parseISO(v) } },
 };
 
 /**
@@ -172,6 +175,54 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  IS_V5_COMPATIBLE: {
+    ns:      'crowi',
+    key:     'app:isV5Compatible',
+    type:    ValueType.BOOLEAN,
+    default: undefined,
+  },
+  IS_MAINTENANCE_MODE: {
+    ns:      'crowi',
+    key:     'app:isMaintenanceMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  AUTO_INSTALL_ADMIN_USERNAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminUsername',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_NAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminName',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_EMAIL: {
+    ns:      'crowi',
+    key:     'autoInstall:adminEmail',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_PASSWORD: {
+    ns:      'crowi',
+    key:     'autoInstall:adminPassword',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_GLOBAL_LANG: {
+    ns:      'crowi',
+    key:     'autoInstall:globalLang',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_SERVER_DATE: {
+    ns:      'crowi',
+    key:     'autoInstall:serverDate',
+    type:    ValueType.DATE,
+    default: null,
+  },
   S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:serverType',
@@ -244,6 +295,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: '/growi-internal/',
   },
+  ELASTICSEARCH_VERSION: {
+    ns:      'crowi',
+    key:     'app:elasticsearchVersion',
+    type:    ValueType.NUMBER,
+    default: 7,
+  },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',
@@ -256,11 +313,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 8000, // msec
   },
-  SEARCHBOX_SSL_URL: {
+  ELASTICSEARCH_REJECT_UNAUTHORIZED: {
     ns:      'crowi',
-    key:     'app:searchboxSslUrl',
-    type:    ValueType.STRING,
-    default: null,
+    key:     'app:elasticsearchRejectUnauthorized',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  ELASTICSEARCH_REINDEX_ON_BOOT: {
+    ns:      'crowi',
+    key:     'app:elasticsearchReindexOnBoot',
+    type:    ValueType.BOOLEAN,
+    default: false,
   },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
@@ -312,6 +375,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'security:passport-local:isPasswordResetEnabled',
     type:    ValueType.BOOLEAN,
     default: true,
+  },
+  LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isEmailAuthenticationEnabled',
+    type:    ValueType.BOOLEAN,
+    default: false,
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
@@ -384,6 +453,30 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'security:passport-saml:ABLCRule',
     type:    ValueType.STRING,
     default: null,
+  },
+  OIDC_TIMEOUT_MULTIPLIER: {
+    ns:      'crowi',
+    key:     'security:passport-oidc:timeoutMultiplier',
+    type:    ValueType.NUMBER,
+    default: 1.5,
+  },
+  OIDC_DISCOVERY_RETRIES: {
+    ns:      'crowi',
+    key:     'security:passport-oidc:discoveryRetries',
+    type:    ValueType.NUMBER,
+    default: 3,
+  },
+  OIDC_CLIENT_CLOCK_TOLERANCE: {
+    ns: 'crowi',
+    key: 'security:passport-oidc:oidcClientClockTolerance',
+    type: ValueType.NUMBER,
+    default: 60,
+  },
+  OIDC_ISSUER_TIMEOUT_OPTION: {
+    ns: 'crowi',
+    key: 'security:passport-oidc:oidcIssuerTimeoutOption',
+    type: ValueType.NUMBER,
+    default: 5000,
   },
   S3_REFERENCE_FILE_WITH_RELAY_MODE: {
     ns:      'crowi',
@@ -493,6 +586,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  SLACKBOT_WITHOUT_PROXY_EVENT_ACTIONS_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:eventActionsPermission',
+    type:    ValueType.STRING,
+    default: null,
+  },
   SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
     ns:      'crowi',
     key:     'slackbot:withProxy:saltForGtoP',
@@ -504,6 +603,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'slackbot:withProxy:saltForPtoG',
     type:    ValueType.STRING,
     default: 'ptog',
+  },
+  OGP_URI: {
+    ns:      'crowi',
+    key:     'app:ogpUri',
+    type:    ValueType.STRING,
+    default: null,
   },
 };
 
@@ -566,7 +671,7 @@ export default class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-      config[doc.ns][doc.key] = JSON.parse(doc.value);
+      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);

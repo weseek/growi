@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import UserGroup from '~/server/models/user-group';
 
 const logger = loggerFactory('growi:routes:admin');
 const debug = require('debug')('growi:routes:admin');
@@ -7,7 +8,6 @@ const debug = require('debug')('growi:routes:admin');
 module.exports = function(crowi, app) {
 
   const models = crowi.models;
-  const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
 
@@ -239,12 +239,10 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = aclService.isAclEnabled();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
       pager: null,
-      isAclEnabled,
     };
 
     UserGroup.findUserGroupsWithPagination({ page })
@@ -286,7 +284,7 @@ module.exports = function(crowi, app) {
   // グループ詳細
   actions.userGroup.detail = async function(req, res) {
     const userGroupId = req.params.id;
-    const userGroup = await UserGroup.findOne({ _id: userGroupId });
+    const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
 
     if (userGroup == null) {
       logger.error('no userGroup is exists. ', userGroupId);

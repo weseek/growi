@@ -56,7 +56,7 @@ class AttachmentService {
     }
 
     attachments.forEach((attachment) => {
-      unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
+      unorderAttachmentsBulkOp.find({ _id: attachment._id }).delete();
     });
     await unorderAttachmentsBulkOp.execute();
 

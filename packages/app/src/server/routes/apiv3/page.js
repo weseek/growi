@@ -1,6 +1,10 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import Subscription from '~/server/models/subscription';
+
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -73,10 +77,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: page path
  *            example: /
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: page revision
@@ -117,15 +117,11 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        description: PageInfo
  *        type: object
  *        required:
- *          - isSeen
  *          - sumOfLikers
  *          - likerIds
  *          - sumOfSeenUsers
  *          - seenUserIds
  *        properties:
- *          isSeen:
- *            type: boolean
- *            description: Whether the page has ever been seen
  *          isLiked:
  *            type: boolean
  *            description: Whether the page is liked by the logged in user
@@ -164,17 +160,24 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
-  const { Page, GlobalNotificationSetting } = crowi.models;
-  const { exportService } = crowi;
+  const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
+  const { pageService, exportService } = crowi;
 
   const validator = {
+    getPage: [
+      query('id').if(value => value != null).isMongoId(),
+      query('path').if(value => value != null).isString(),
+    ],
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    info: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -193,7 +196,81 @@ module.exports = (crowi) => {
       query('fromPath').isString(),
       query('toPath').isString(),
     ],
+    subscribe: [
+      body('pageId').isString(),
+      body('status').isIn(AllSubscriptionStatusType),
+    ],
+    subscribeStatus: [
+      query('pageId').isString(),
+    ],
   };
+
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      get:
+   *        tags: [Page]
+   *        operationId: getPage
+   *        summary: /page
+   *        description: get page by pagePath or pageId
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - name: path
+   *            in: query
+   *            description: page path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *        responses:
+   *          200:
+   *            description: Page data
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   */
+  router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+    const { pageId, path } = req.query;
+
+    if (pageId == null && path == null) {
+      return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
+    }
+
+    let page;
+    try {
+      if (pageId != null) { // prioritized
+        page = await Page.findByIdAndViewer(pageId, req.user);
+      }
+      else {
+        page = await Page.findByPathAndViewer(path, req.user);
+      }
+    }
+    catch (err) {
+      logger.error('get-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    if (page == null) {
+      return res.apiv3Err('Page is not found', 404);
+    }
+
+    try {
+      page.initLatestRevisionField();
+
+      // populate
+      page = await page.populateDataToShowRevision();
+    }
+    catch (err) {
+      logger.error('populate-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3({ page });
+  });
 
   /**
    * @swagger
@@ -244,6 +321,10 @@ module.exports = (crowi) => {
     res.apiv3({ result });
 
     if (isLiked) {
+      const pageEvent = crowi.event('page');
+      // in-app notification
+      pageEvent.emit('like', page, req.user);
+
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
@@ -278,29 +359,18 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get(('/info', loginRequired), async(req, res) => {
+  router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    const { user, isSharedPage } = req;
+    const { pageId } = req.query;
 
     try {
-      const pageId = req.query._id;
-      const page = await Page.findById(pageId);
+      const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true, isSharedPage);
 
-      const guestUserResponse = {
-        sumOfLikers: page.liker.length,
-        likerIds: page.liker.slice(0, 15),
-        seenUserIds: page.seenUsers.slice(0, 15),
-        sumOfSeenUsers: page.seenUsers.length,
-        isSeen: page.seenUsers.length > 0,
-      };
-
-      {
-        const isGuestUser = !req.user;
-        if (isGuestUser) {
-          return res.apiv3(guestUserResponse);
-        }
+      if (pageWithMeta == null) {
+        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
-      return res.apiv3(userResponse);
+      return res.apiv3(pageWithMeta.meta);
     }
     catch (err) {
       logger.error('get-page-info', err);
@@ -503,6 +573,46 @@ module.exports = (crowi) => {
   //   const dummy = 6;
   //   return res.apiv3({ dummy });
   // });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      put:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Update subscription status
+   *        operationId: updateSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+    const { pageId, status } = req.body;
+    const userId = req.user._id;
+
+    try {
+      const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+      return res.apiv3({ subscription });
+    }
+    catch (err) {
+      logger.error('Failed to update subscribe status', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   return router;
 };

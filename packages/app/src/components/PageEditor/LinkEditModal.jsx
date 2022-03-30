@@ -37,7 +37,8 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: '',
+      markdown: null,
+      pagePath: null,
       previewError: '',
       permalink: '',
       isPreviewOpen: false,
@@ -152,7 +153,8 @@ class LinkEditModal extends React.PureComponent {
   async setMarkdown() {
     const { t } = this.props;
     const path = this.state.linkInputValue;
-    let markdown = '';
+    let markdown = null;
+    let pagePath = null;
     let permalink = '';
     let previewError = '';
 
@@ -162,8 +164,10 @@ class LinkEditModal extends React.PureComponent {
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
+        const { data } = await this.props.appContainer.apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
+        const { page } = data;
         markdown = page.revision.body;
+        pagePath = page.path;
         permalink = page.id;
       }
       catch (err) {
@@ -173,7 +177,9 @@ class LinkEditModal extends React.PureComponent {
     else {
       previewError = t('link_edit.page_not_found_in_preview', { path });
     }
-    this.setState({ markdown, previewError, permalink });
+    this.setState({
+      markdown, pagePath, previewError, permalink,
+    });
   }
 
   renderLinkPreview() {
@@ -201,8 +207,9 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleChangeTypeahead(selected) {
-    const page = selected[0];
-    if (page != null) {
+    const pageWithMeta = selected[0];
+    if (pageWithMeta != null) {
+      const page = pageWithMeta.data;
       const permalink = `${window.location.origin}/${page.id}`;
       this.setState({ linkInputValue: page.path, permalink });
     }
@@ -276,6 +283,8 @@ class LinkEditModal extends React.PureComponent {
 
   renderLinkAndLabelForm() {
     const { t } = this.props;
+    const { pagePath } = this.state;
+
     return (
       <>
         <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
@@ -291,7 +300,6 @@ class LinkEditModal extends React.PureComponent {
                 inputName="link"
                 placeholder={t('link_edit.placeholder_of_link_input')}
                 keywordOnInit={this.state.linkInputValue}
-                behaviorOfResetBtn="clear"
                 autoFocus
               />
               <div className="d-none d-sm-block input-group-append">
@@ -300,7 +308,7 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} error={this.state.previewError} />
+                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} pagePath={pagePath} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
               </div>

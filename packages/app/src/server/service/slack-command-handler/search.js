@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider,
+  markdownSectionBlock, divider, generateLastUpdateMrkdwn,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 
@@ -36,21 +36,12 @@ module.exports = (crowi) => {
     return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
   }
 
-  function generateLastUpdateMrkdwn(updatedAt, baseDate) {
-    if (updatedAt != null) {
-      // cast to date
-      const date = new Date(updatedAt);
-      return formatDistanceStrict(date, baseDate);
-    }
-    return '';
-  }
-
   async function retrieveSearchResults(growiCommandArgs, offset = 0) {
     const keywords = getKeywords(growiCommandArgs);
 
     const { searchService } = crowi;
     const options = { limit: PAGINGLIMIT, offset };
-    const results = await searchService.searchKeyword(keywords, null, {}, options);
+    const [results] = await searchService.searchKeyword(keywords, null, {}, options);
     const resultsTotal = results.meta.total;
 
     const pages = results.data.map((data) => {

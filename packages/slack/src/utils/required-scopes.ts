@@ -8,4 +8,6 @@ export const requiredScopes: string[] = [
   'groups:history',
   'im:history',
   'mpim:history',
+  'links:read',
+  'links:write',
 ];

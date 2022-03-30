@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
-import { envUtils } from 'growi-commons';
+import { envUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -14,6 +14,15 @@ import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '~/client/services/EditorContainer';
+
+import { getOptionsToSave } from '~/client/util/editor';
+
+// TODO: remove this when omitting unstated is completed
+import {
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -124,15 +133,18 @@ class PageEditor extends React.Component {
    * save and update state of containers
    */
   async onSaveWithShortcut() {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer, pageContainer,
+    } = this.props;
+
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     try {
       // disable unsaved warning
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(this.state.markdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -151,7 +163,9 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
-    const { appContainer, pageContainer, editorContainer } = this.props;
+    const {
+      appContainer, pageContainer, mutateGrant,
+    } = this.props;
 
     try {
       let res = await appContainer.apiGet('/attachments.limit', {
@@ -186,8 +200,8 @@ class PageEditor extends React.Component {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
-        editorContainer.setState({ grant: res.page.grant });
+        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
+        mutateGrant(res.page.grant);
       }
     }
     catch (e) {
@@ -306,6 +320,10 @@ class PageEditor extends React.Component {
   }
 
   render() {
+    if (!this.props.isEditable) {
+      return null;
+    }
+
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
@@ -347,12 +365,51 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  return (
+    <PageEditorHOCWrapper
+      {...props}
+      isEditable={isEditable}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+    />
+  );
+};
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  isEditable: PropTypes.bool.isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
 };
 
 export default PageEditorWrapper;

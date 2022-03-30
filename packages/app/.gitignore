@@ -2,6 +2,11 @@
 /.next/
 /out/
 
+# test
+test/cypress/screenshots
+test/cypress/videos
+.reg
+
 # dist
 /dist/
 /transpiled/
