@@ -189,7 +189,6 @@ const UserGroupPage: FC = () => {
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}
-        onShow={showDeleteModal}
         onHide={hideDeleteModal}
       />
     </div>

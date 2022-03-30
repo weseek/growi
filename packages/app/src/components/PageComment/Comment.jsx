@@ -135,11 +135,11 @@ class Comment extends React.PureComponent {
 
     await interceptorManager.process('preRenderComment', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = await growiRenderer.preProcess(context.markdown);
+    context.markdown = await growiRenderer.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = await growiRenderer.process(context.markdown);
+    context.parsedHTML = await growiRenderer.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
+    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML, context);
     await interceptorManager.process('postPostProcess', context);
     await interceptorManager.process('preRenderCommentHtml', context);
     this.setState({ html: context.parsedHTML });

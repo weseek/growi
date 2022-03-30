@@ -177,12 +177,14 @@
   "Link sharing is disabled": "你不允许分享该链接",
   "successfully_saved_the_page": "成功地保存了该页面",
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
+  "not_allowed_to_see_this_page": "你不能看到这个页面",
+  "Confirm": "确定",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
     "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "slashed_are_not_yet_supported": "目前还不支持包含斜线的标题"
   },
   "not_found_page": {
     "Create Page": "创建页面",

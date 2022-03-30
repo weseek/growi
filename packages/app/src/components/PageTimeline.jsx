@@ -84,6 +84,7 @@ class PageTimeline extends React.Component {
                     lazy
                     growiRenderer={this.growiRenderer}
                     pageId={page._id}
+                    pagePath={page.path}
                     revisionId={page.revision}
                   />
                 </div>

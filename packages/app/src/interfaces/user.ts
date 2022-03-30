@@ -20,7 +20,7 @@ export type IUserGroup = {
   name: string;
   createdAt: Date;
   description: string;
-  parent: Ref<IUserGroup> | null;
+  parent: Ref<IUserGroupHasId> | null;
 }
 
 export type IUserHasId = IUser & HasObjectId;

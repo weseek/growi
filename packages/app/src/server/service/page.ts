@@ -2557,12 +2557,13 @@ class PageService {
     return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
-  // TODO: use websocket to show progress
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user,
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
   ): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
+
+    const socket = this.crowi.socketIoService.getAdminSocket();
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2617,6 +2618,9 @@ class PageService {
 
     // Limit pages to get
     const total = await Page.countDocuments(mergedFilter);
+    if (isFirst) {
+      socket.emit(SocketEventName.PMStarted, { total });
+    }
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
@@ -2624,8 +2628,9 @@ class PageService {
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
 
-    let countPages = 0;
     let shouldContinue = true;
+    let nextCount = count;
+    let nextSkiped = skiped;
 
     const migratePagesStream = new Writable({
       objectMode: true,
@@ -2710,12 +2715,17 @@ class PageService {
         try {
           const res = await Page.bulkWrite(updateManyOperations);
 
-          countPages += res.result.nModified;
-          logger.info(`Page migration processing: (count=${countPages})`);
+          nextCount += res.result.nModified;
+          nextSkiped += res.result.writeErrors.length;
+          logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
+
+          socket.emit(SocketEventName.PMMigrating, { count: nextCount });
+          socket.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
+            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
@@ -2723,6 +2733,7 @@ class PageService {
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
+            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
           }
         }
         catch (err) {
@@ -2744,9 +2755,11 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(mergedFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user);
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
     }
 
+    // End
+    socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
   }
 
   private async _v5NormalizeIndex() {

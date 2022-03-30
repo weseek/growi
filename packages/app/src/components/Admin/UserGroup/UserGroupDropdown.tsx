@@ -5,26 +5,26 @@ import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   selectableUserGroups?: IUserGroupHasId[]
-  onClickAddExistingUserGroupButtonHandler?(userGroup: IUserGroupHasId | null): void
-  onClickCreateUserGroupButtonHandler?(): void
+  onClickAddExistingUserGroupButton?(userGroup: IUserGroupHasId | null): void
+  onClickCreateUserGroupButton?(): void
 };
 
 const UserGroupDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { selectableUserGroups, onClickAddExistingUserGroupButtonHandler, onClickCreateUserGroupButtonHandler } = props;
+  const { selectableUserGroups, onClickAddExistingUserGroupButton, onClickCreateUserGroupButton } = props;
 
-  const onClickAddExistingUserGroupButton = useCallback((userGroup: IUserGroupHasId) => {
-    if (onClickAddExistingUserGroupButtonHandler != null) {
-      onClickAddExistingUserGroupButtonHandler(userGroup);
+  const onClickAddExistingUserGroupButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
+    if (onClickAddExistingUserGroupButton != null) {
+      onClickAddExistingUserGroupButton(userGroup);
     }
-  }, [onClickAddExistingUserGroupButtonHandler]);
+  }, [onClickAddExistingUserGroupButton]);
 
-  const onClickCreateUserGroupButton = useCallback(() => {
-    if (onClickCreateUserGroupButtonHandler != null) {
-      onClickCreateUserGroupButtonHandler();
+  const onClickCreateUserGroupButtonHandler = useCallback(() => {
+    if (onClickCreateUserGroupButton != null) {
+      onClickCreateUserGroupButton();
     }
-  }, [onClickCreateUserGroupButtonHandler]);
+  }, [onClickCreateUserGroupButton]);
 
   return (
     <>
@@ -44,7 +44,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
                       key={userGroup._id}
                       type="button"
                       className="dropdown-item"
-                      onClick={() => onClickAddExistingUserGroupButton(userGroup)}
+                      onClick={() => onClickAddExistingUserGroupButtonHandler(userGroup)}
                     >
                       {userGroup.name}
                     </button>
@@ -58,7 +58,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => onClickCreateUserGroupButton()}
+            onClick={() => onClickCreateUserGroupButtonHandler()}
           >{t('admin:user_group_management.create_group')}
           </button>
         </div>
