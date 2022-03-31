@@ -41,10 +41,11 @@ const getDeletionTypeForT = (deletionType) => {
 
 const getDeleteConfigValueForT = (deleteConfig) => {
   switch (deleteConfig) {
+    case PageDeleteConfigValue.Anyone:
+    case null:
+      return 'security_setting.anyone';
     case PageDeleteConfigValue.Inherit:
       return 'security_setting.inherit';
-    case PageDeleteConfigValue.Anyone || null:
-      return 'security_setting.anyone';
     case PageDeleteConfigValue.AdminOnly:
       return 'security_setting.admin_only';
     case PageDeleteConfigValue.AdminAndAuthor:
@@ -183,6 +184,7 @@ class SecuritySetting extends React.Component {
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
     const { t } = this.props;
+    console.log(currentState);
     return (
       <div className="dropdown">
         <button
