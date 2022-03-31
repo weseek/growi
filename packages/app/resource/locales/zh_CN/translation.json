@@ -1021,5 +1021,10 @@
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
     "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
     "select_page_to_see" : "请在下面选择你想去的页面。"
+  },
+  "user_group": {
+    "select_group": "选择组别",
+    "belonging_to_no_group": "无法找到你所属的团体。",
+    "manage_user_groups": "管理用户组"
   }
 }
