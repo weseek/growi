@@ -7,7 +7,7 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useSlackChannels, useNotFoundTargetPathOrId, useEmptyPagePermalink, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
 } from '../../stores/context';
 import {
@@ -80,6 +80,7 @@ const ContextExtractorOnce: FC = () => {
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
+  const emptyPagePermalink = JSON.parse(notFoundContentForPt?.getAttribute('data-empty-page-permalink') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
@@ -137,6 +138,7 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
+  useEmptyPagePermalink(emptyPagePermalink);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
 

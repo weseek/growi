@@ -278,6 +278,13 @@ module.exports = function(crowi, app) {
     renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
+  async function addRenderVarsWhenEmptyPage(renderVars, emptyPagePermalink) {
+    if (emptyPagePermalink == null) {
+      return;
+    }
+    renderVars.emptyPagePermalink = emptyPagePermalink;
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -332,9 +339,11 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
-
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
-
+    if (req.emptyPagePermalink != null) {
+    // isEmpty かどうかをフロントに伝える
+      await addRenderVarsWhenEmptyPage(renderVars, req.emptyPagePermalink);
+    }
     return res.render(view, renderVars);
   }
 
@@ -598,17 +607,26 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    const builder = new PageQueryBuilder(Page.find({ path }));
+    const includeEmpty = true;
+    const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
     await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
 
     const pages = await builder.query.lean().clone().exec('find');
 
     if (pages.length >= 2) {
 
+
+      // 空ページと まだマイグレートされていない同名パスが存在する場合、重複ページに飛ぶけどemptyは表示する必要ない
+
+      // identicalPathPages から empty page を 取り除く
+
+      // 取り除いた後でも空でないページの数が2以上の場合は処理を続行してよい
+      // そうでない場合は、通常通りの挙動（通常？）
+
       // populate to list
       builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
       const identicalPathPages = await builder.query.lean().exec('find');
-
+      console.log(identicalPathPages);
       return res.render('layout-growi/identical-path-page', {
         identicalPathPages,
         redirectFrom,
@@ -616,19 +634,33 @@ module.exports = function(crowi, app) {
       });
     }
 
+
+    let isEmptyPage = false;
     if (pages.length === 1) {
-      const url = new URL('https://dummy.origin');
-      url.pathname = `/${pages[0]._id}`;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      isEmptyPage = pages[0].isEmpty;
+      // ここで空ページかどうかをチェック
+      // 空の場合 notfoundに飛ばす（ここはスルー）
+      // そうでない場合、続行return res.safeRedirect(urljoin(url.pathname, url.search));
+      if (!isEmptyPage) {
+        const url = new URL('https://dummy.origin');
+        url.pathname = `/${pages[0]._id}`;
+        Object.entries(req.query).forEach(([key, value], i) => {
+          url.searchParams.append(key, value);
+        });
+        return res.safeRedirect(urljoin(url.pathname, url.search));
+      }
     }
 
+    // ここは権限が無い場合 or 空ページのどちらか
     // Exclude isEmpty page to handle _notFound or forbidden
+    // !req.isForbidden;
     const isForbidden = await Page.exists({ path, isEmpty: false });
     if (isForbidden) {
       req.isForbidden = true;
+      return _notFound(req, res);
+    }
+    if (isEmptyPage) {
+      req.emptyPagePermalink = pages[0]._id;
       return _notFound(req, res);
     }
 

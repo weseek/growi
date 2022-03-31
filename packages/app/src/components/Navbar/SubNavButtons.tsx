@@ -212,10 +212,11 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  if (revisionId == null || error != null) {
+  if (pageId == null && (revisionId == null || error != null)) {
     return <></>;
   }
 
+  // it becomes null when opening empty page
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }

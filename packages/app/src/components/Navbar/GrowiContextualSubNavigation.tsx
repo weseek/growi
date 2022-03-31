@@ -22,7 +22,7 @@ import {
 
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPagePermalink,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -141,6 +141,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: emptyPagePermalink } = useEmptyPagePermalink();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -229,13 +230,14 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
+    const displayedPageId = pageId ?? emptyPagePermalink;
     return (
       <>
         <div className={className}>
-          { pageId != null && isViewMode && (
+          { displayedPageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
-              pageId={pageId}
+              pageId={displayedPageId}
               shareLinkId={shareLinkId}
               revisionId={revisionId}
               path={path}
@@ -244,7 +246,7 @@ const GrowiContextualSubNavigation = (props) => {
               additionalMenuItemRenderer={props => (
                 <AdditionalMenuItems
                   {...props}
-                  pageId={pageId}
+                  pageId={displayedPageId}
                   revisionId={revisionId}
                   isLinkSharingDisabled={isLinkSharingDisabled}
                   onClickTemplateMenuItem={templateMenuItemClickHandler}
@@ -280,7 +282,7 @@ const GrowiContextualSubNavigation = (props) => {
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown,
+    path, templateMenuItemClickHandler, isPageTemplateModalShown, emptyPagePermalink,
   ]);
 
 
