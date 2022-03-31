@@ -5968,10 +5968,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@^5.63.0:
-  version "5.63.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.63.0.tgz#070a699108badd9c118b7261ac2e9793acdbb149"
-  integrity sha512-KlLWRPggDg2rBD1Mx7/EqEhaBdy+ybBCVh/efgjBDsPpMeEu6MbTAJzIT4TuCzvmbTEgvKOGzVT6wdBTNusqrg==
+codemirror@^5.64.0:
+  version "5.64.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.64.0.tgz#182eec65b62178e3cd1de8f9d88ab819cfe5f625"
+  integrity sha512-fqr6CtDQdJ6iNMbD8NX2gH2G876nNDk+TO1rrYkgWnqQdO3O1Xa9tK6q+psqhJJgE5SpbaDcgdfLmukoUVE8pg==
 
 collapse-white-space@^1.0.2:
   version "1.0.5"
@@ -15305,10 +15305,6 @@ pacote@^11.2.6:
     ssri "^8.0.1"
     tar "^6.1.0"
 
-pako@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.3.tgz#5f515b0c6722e1982920ae8005eacb0b7ca73ccf"
-
 pako@^1.0.6:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
@@ -15840,11 +15836,9 @@ pkg-up@^2.0.0:
     find-up "^2.1.0"
 
 plantuml-encoder@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/plantuml-encoder/-/plantuml-encoder-1.2.5.tgz#6b8e5b9e1a1dbd88b3fd9fb46f734eec7d44b548"
-  dependencies:
-    pako "1.0.3"
-    utf8-bytes "0.0.1"
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/plantuml-encoder/-/plantuml-encoder-1.4.0.tgz#7899302cf785de956bf1a167e15420feee5975f7"
+  integrity sha512-sxMwpDw/ySY1WB2CE3+IdMuEcWibJ72DDOsXLkSmEaSzwEUaYBT6DWgOfBiHGCux4q433X6+OEFWjlVqp7gL6g==
 
 pluralize@8.0.0, pluralize@^8.0.0:
   version "8.0.0"
