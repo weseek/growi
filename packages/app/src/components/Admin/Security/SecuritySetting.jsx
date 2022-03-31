@@ -184,7 +184,6 @@ class SecuritySetting extends React.Component {
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
     const { t } = this.props;
-    console.log(currentState);
     return (
       <div className="dropdown">
         <button
