@@ -1010,5 +1010,10 @@
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
     "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
     "select_page_to_see" : "以下から遷移するページを選択してください。"
+  },
+  "user_group": {
+    "select_group": "グループを選ぶ",
+    "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
+    "manage_user_groups": "グループ管理"
   }
 }
