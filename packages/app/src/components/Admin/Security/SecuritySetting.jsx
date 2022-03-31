@@ -130,6 +130,7 @@ class SecuritySetting extends React.Component {
 
     if (isTypeDeletion(deletionType)) {
       adminGeneralSecurityContainer.changePreviousPageRecursiveDeletionAuthority(previousState);
+      return;
     }
 
     adminGeneralSecurityContainer.changePreviousPageRecursiveCompleteDeletionAuthority(previousState);
