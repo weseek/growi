@@ -10,6 +10,10 @@ export default async(req, res, next): Promise<void> => {
   }
 
   const userRegistrationOrder = await UserRegistrationOrder.findOne({ token });
+  console.log(userRegistrationOrder);
+  console.log('userRegistrationOrder == null', userRegistrationOrder == null);
+  console.log('userRegistrationOrder.isExpired()', userRegistrationOrder.isExpired());
+  console.log('userRegistrationOrder.isRevoked', userRegistrationOrder.isRevoked);
 
   // check if the token is valid
   if (userRegistrationOrder == null || userRegistrationOrder.isExpired() || userRegistrationOrder.isRevoked) {
