@@ -31,7 +31,7 @@ Cypress.Commands.add('getByTestid', (selector, options?) => {
 
 Cypress.Commands.add('login', (username, password) => {
   cy.session(username, () => {
-    cy.visit('/login');
+    cy.visit('/page-to-return-after-login');
     cy.getByTestid('tiUsernameForLogin').type(username);
     cy.getByTestid('tiPasswordForLogin').type(password);
     cy.getByTestid('btnSubmitForLogin').click();
@@ -39,10 +39,18 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
-  const isGrowiPage = Cypress.$('body.growi').length > 0;
+  const sidebarStatus = window.localStorage.getItem('sidebarStatus');
+  if (sidebarStatus != null) {
+    const { isSidebarCollapsed } = JSON.parse(sidebarStatus);
 
+    if (isSidebarCollapsed === isCollapsed) {
+      return;
+    }
+  }
+
+  const isGrowiPage = Cypress.$('body.growi').length > 0;
   if (!isGrowiPage) {
-    cy.visit('/');
+    cy.visit('/page');
   }
 
   cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
@@ -56,4 +64,8 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
       cy.wait(1500);
     }
   });
+
+  window.localStorage.setItem('sidebarStatus', JSON.stringify({
+    isSidebarCollapsed: isCollapsed,
+  }));
 });
