@@ -194,10 +194,7 @@ class SecuritySetting extends React.Component {
           aria-expanded="true"
         >
           <span className="float-left">
-            {currentState === PageDeleteConfigValue.Inherit && t('security_setting.inherit')}
-            {(currentState === PageDeleteConfigValue.Anyone || currentState == null) && t('security_setting.anyone')}
-            {currentState === PageDeleteConfigValue.AdminOnly && t('security_setting.admin_only')}
-            {currentState === PageDeleteConfigValue.AdminAndAuthor && t('security_setting.admin_and_author')}
+            {t(getDeleteConfigValueForT(currentState))}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
