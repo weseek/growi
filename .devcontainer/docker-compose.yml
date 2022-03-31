@@ -67,7 +67,7 @@ services:
 
   #need to adjust kibana version based on elasticsearch version
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.1
+    image: docker.elastic.co/kibana/kibana:7.16.1
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
