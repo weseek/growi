@@ -65,6 +65,8 @@ class SecuritySetting extends React.Component {
     // functions
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
+    this.previousPageRecursiveAuthorityState = this.previousPageRecursiveAuthorityState.bind(this);
+    this.setPagePreviousRecursiveAuthorityState = this.setPagePreviousRecursiveAuthorityState.bind(this);
     this.expantDeleteOptionsState = this.expantDeleteOptionsState.bind(this);
     this.setExpantOtherDeleteOptionsState = this.setExpantOtherDeleteOptionsState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
@@ -101,6 +103,24 @@ class SecuritySetting extends React.Component {
     ];
   }
 
+  previousPageRecursiveAuthorityState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    return isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.previousPageRecursiveDeletionAuthority
+      : adminGeneralSecurityContainer.state.previousPageRecursiveCompleteDeletionAuthority;
+  }
+
+  setPagePreviousRecursiveAuthorityState(deletionType, previousState) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    if (isTypeDeletion(deletionType)) {
+      adminGeneralSecurityContainer.changePreviousPageRecursiveDeletionAuthority(previousState);
+    }
+
+    adminGeneralSecurityContainer.changePreviousPageRecursiveCompleteDeletionAuthority(previousState);
+  }
+
   expantDeleteOptionsState(deletionType) {
     const { adminGeneralSecurityContainer } = this.props;
 
@@ -126,15 +146,22 @@ class SecuritySetting extends React.Component {
    */
   setDeletionConfigState(newState, setState, deletionType) {
     setState(newState);
+
+    if (this.previousPageRecursiveAuthorityState(deletionType) !== '') {
+      this.setPagePreviousRecursiveAuthorityState(deletionType, '');
+    }
+
     if (isRecursiveDeletion(deletionType)) {
       return;
     }
 
     const [recursiveState, setRecursiveState] = this.getRecursiveDeletionConfigState(deletionType);
+
     const calculableValue = prepareDeleteConfigValuesForCalc(newState, recursiveState);
     const shouldForceUpdate = !validateDeleteConfigs(calculableValue[0], calculableValue[1]);
     if (shouldForceUpdate) {
       setRecursiveState(newState);
+      this.setPagePreviousRecursiveAuthorityState(deletionType, recursiveState);
       this.setExpantOtherDeleteOptionsState(deletionType, true);
     }
 
