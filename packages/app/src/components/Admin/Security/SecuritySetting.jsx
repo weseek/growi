@@ -162,8 +162,8 @@ class SecuritySetting extends React.Component {
   setDeletionConfigState(newState, setState, deletionType) {
     setState(newState);
 
-    if (this.previousPageRecursiveAuthorityState(deletionType) !== '') {
-      this.setPagePreviousRecursiveAuthorityState(deletionType, '');
+    if (this.previousPageRecursiveAuthorityState(deletionType) !== null) {
+      this.setPagePreviousRecursiveAuthorityState(deletionType, null);
     }
 
     if (isRecursiveDeletion(deletionType)) {
@@ -286,7 +286,7 @@ class SecuritySetting extends React.Component {
                           <span dangerouslySetInnerHTML={{ __html: t('security_setting.page_delete_rights_caution') }} />
                         </span>
                       </p>
-                      { this.previousPageRecursiveAuthorityState(deletionType) !== '' && (
+                      { this.previousPageRecursiveAuthorityState(deletionType) !== null && (
                         <div className="mb-3">
                           <strong>
                             {t('security_setting.forced_update_desc')}
