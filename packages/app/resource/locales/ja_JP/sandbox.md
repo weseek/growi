@@ -255,7 +255,7 @@ ___
 Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 ```
 
-[[../Bootstrap4]]  
+[[./Bootstrap4]]  
 Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 
 # :pencil: Lists

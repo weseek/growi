@@ -19,7 +19,6 @@ context('Open Page Delete Modal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 
@@ -30,8 +29,7 @@ context('Open Page Delete Modal', () => {
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
 
-     cy.getByTestid('page-delete-modal').should('be.visible');
-     cy.screenshot(`${ssPrefix}-open-bootstrap4`,{ capture: 'viewport' });
+     cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });

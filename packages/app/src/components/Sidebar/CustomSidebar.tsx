@@ -62,6 +62,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
             <RevisionRenderer
               growiRenderer={renderer}
               markdown={markdown}
+              pagePath="/Sidebar"
               additionalClassName="grw-custom-sidebar-content"
             />
           </div>

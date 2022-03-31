@@ -28,7 +28,10 @@
     "modal_migration_warning": "管理者はユーザーに、v5 互換形式への変換中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
     "start_upgrading": "v5 互換形式への変換を開始",
     "successfully_started": "正常に v5 互換形式への変換が開始されました",
-    "already_upgraded": "v5 互換形式への変換は既に完了しています"
+    "already_upgraded": "v5 互換形式への変換は既に完了しています",
+    "header_upgrading_progress": "アップグレード進行度",
+    "migration_succeeded": "アップグレードが正常に完了しました！メンテナンスモードを終了して、GROWI を使用することができます。",
+    "migration_failed": "アップグレードが失敗しました。失敗した場合の対処法は GROWI docs を参照してください。"
   },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
@@ -473,7 +476,9 @@
     "group_example": "例: Group1",
     "parent_group": "親グループ",
     "select_parent_group": "親グループを選択",
+    "release_parent_group": "親グループの解除",
     "add_modal": {
+      "description": "追加したユーザーは、親グループにも追加されます。",
       "add_user": "グループへのユーザー追加",
       "search_option": "検索オプション",
       "enable_option": "{{option}}を有効にする",
@@ -484,7 +489,6 @@
     "group_list": "グループ一覧",
     "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
-    "back_to_ancestors_group": "祖先グループに戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",
     "created_group": "グループを作成しました",
@@ -493,13 +497,20 @@
     "remove_from_group": "グループから外す",
     "delete_modal": {
       "header": "グループの削除",
-      "desc": "グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
+      "desc": "当該グループ配下に存在する子グループも全て削除されます。また、グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
       "dropdown_desc": "削除するグループの限定公開ページの処理を選択してください",
       "select_group": "グループを選択してください",
       "no_groups": "グループがありません",
       "publish_pages": "全て公開する",
       "delete_pages": "全て削除する",
       "transfer_pages": "全て他のグループに移譲する"
+    },
+    "update_parent_confirm_modal": {
+      "header": "グループの親が変更されます",
+      "caution_change_parent": "この操作はグループ \"{{groupName}}\" の親を変更します。",
+      "danger_message": "このグループに関連する全てのページの閲覧権限に影響があることに注意してください。",
+      "force_update_parents_label": "強制的に足りないユーザーを追加する",
+      "force_update_parents_description": "このオプションを有効化すると、親グループ変更後に祖先グループに足りないユーザーが存在した場合にそれらのユーザーを強制的に追加することができます"
     }
   }
 }
