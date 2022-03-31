@@ -250,7 +250,7 @@ jobs:
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
     - name: Cypress Run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v3
       with:
         working-directory: ./packages/app
         install: false
