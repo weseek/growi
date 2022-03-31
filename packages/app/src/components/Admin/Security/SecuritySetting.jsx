@@ -39,8 +39,8 @@ const getDeletionTypeForT = (deletionType) => {
   }
 };
 
-const getDeleteConfigValueForT = (deleteConfig) => {
-  switch (deleteConfig) {
+const getDeleteConfigValueForT = (DeleteConfigValue) => {
+  switch (DeleteConfigValue) {
     case PageDeleteConfigValue.Anyone:
     case null:
       return 'security_setting.anyone';
