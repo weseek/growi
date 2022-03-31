@@ -1,19 +1,75 @@
-import React, { FC, useState } from 'react';
+import React, {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from './ConfirmModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
+import { useGlobalAdminSocket } from '~/stores/websocket';
+import LabeledProgressBar from '../Common/LabeledProgressBar';
+import {
+  SocketEventName, PMStartedData, PMMigratingData, PMErrorCountData, PMEndedData,
+} from '~/interfaces/websocket';
 
 type Props = {
   adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: () => Promise<{ isV5Compatible: boolean }> },
 }
 
 const V5PageMigration: FC<Props> = (props: Props) => {
+  // Modal
   const [isV5PageMigrationModalShown, setIsV5PageMigrationModalShown] = useState(false);
-  const { adminAppContainer } = props;
+  // Progress bar
+  const [isInProgress, setProgressing] = useState<boolean | undefined>(undefined); // use false as ended
+  const [total, setTotal] = useState<number>(0);
+  const [skip, setSkip] = useState<number>(0);
+  const [current, setCurrent] = useState<number>(0);
+  const [isSucceeded, setSucceeded] = useState<boolean | undefined>(undefined);
+
+  const { data: adminSocket } = useGlobalAdminSocket();
   const { t } = useTranslation();
 
+  const { adminAppContainer } = props;
+
+  /*
+   * Local components
+   */
+  const renderResultMessage = useCallback((isSucceeded: boolean) => {
+    return (
+      <>
+        {
+          isSucceeded
+            ? <p className="text-success p-1">{t('admin:v5_page_migration.migration_succeeded')}</p>
+            : <p className="text-danger p-1">{t('admin:v5_page_migration.migration_failed')}</p>
+        }
+      </>
+    );
+  }, [t]);
+
+  const renderProgressBar = () => {
+    if (isInProgress == null) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {
+          isSucceeded != null && renderResultMessage(isSucceeded)
+        }
+        <LabeledProgressBar
+          header={t('admin:v5_page_migration.header_upgrading_progress')}
+          currentCount={current}
+          errorsCount={skip}
+          totalCount={total}
+          isInProgress={isInProgress}
+        />
+      </>
+    );
+  };
+
+  /*
+   * Functions
+   */
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
     try {
@@ -28,6 +84,39 @@ const V5PageMigration: FC<Props> = (props: Props) => {
       toastError(err);
     }
   };
+
+  /*
+   * Use Effect
+   */
+  // Setup Admin Socket
+  useEffect(() => {
+    adminSocket?.once(SocketEventName.PMStarted, (data: PMStartedData) => {
+      setProgressing(true);
+      setTotal(data.total);
+    });
+
+    adminSocket?.on(SocketEventName.PMMigrating, (data: PMMigratingData) => {
+      setProgressing(true);
+      setCurrent(data.count);
+    });
+
+    adminSocket?.on(SocketEventName.PMErrorCount, (data: PMErrorCountData) => {
+      setProgressing(true);
+      setSkip(data.skip);
+    });
+
+    adminSocket?.once(SocketEventName.PMEnded, (data: PMEndedData) => {
+      setProgressing(false);
+      setSucceeded(data.isSucceeded);
+    });
+
+    return () => {
+      adminSocket?.off(SocketEventName.PMStarted);
+      adminSocket?.off(SocketEventName.PMMigrating);
+      adminSocket?.off(SocketEventName.PMErrorCount);
+      adminSocket?.off(SocketEventName.PMEnded);
+    };
+  }, [adminSocket]);
 
   return (
     <>
@@ -48,9 +137,10 @@ const V5PageMigration: FC<Props> = (props: Props) => {
           {t('admin:v5_page_migration.migration_note')}
         </span>
       </p>
+      {renderProgressBar()}
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>
+          <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)} disabled={isInProgress != null}>
             {t('admin:v5_page_migration.upgrade_to_v5')}
           </button>
         </div>

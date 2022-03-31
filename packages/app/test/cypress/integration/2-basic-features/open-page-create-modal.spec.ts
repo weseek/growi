@@ -19,7 +19,6 @@ context('Open PageCreateModal', () => {
   beforeEach(() => {
     if (connectSid != null) {
       cy.setCookie('connect.sid', connectSid);
-      cy.visit('/');
     }
   });
 
