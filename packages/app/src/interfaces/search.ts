@@ -3,8 +3,8 @@ import { IPageWithMeta } from './page';
 export type IPageSearchMeta = {
   bookmarkCount?: number,
   elasticSearchResult?: {
-    snippet: string;
-    highlightedPath: string;
+    snippet?: string | null;
+    highlightedPath?: string | null;
     isHtmlInPath: boolean;
   };
 }
