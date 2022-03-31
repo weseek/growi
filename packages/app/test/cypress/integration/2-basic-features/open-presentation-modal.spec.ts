@@ -2,22 +2,11 @@ context('Open presentation modal', () => {
 
   const ssPrefix = 'access-to-presentation-modal-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
   });
 
   it('PresentationModal for "/" is shown successfully', () => {
@@ -30,7 +19,7 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-opne-top`);
+    cy.screenshot(`${ssPrefix}-open-top`);
   });
 
   it('PresentationModal for "/Sandbox/Bootstrap4" is shown successfully', () => {

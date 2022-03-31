@@ -2,24 +2,13 @@
 context('Access to page', () => {
   const ssPrefix = 'access-to-page-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
   });
 
   it('/Sandbox is successfully loaded', () => {

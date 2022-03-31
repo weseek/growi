@@ -1,26 +1,15 @@
 context('Access to page', () => {
   const ssPrefix = 'switch-sidebar-content';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
   });
 
   it('PageTree is successfully shown', () => {
-    cy.visit('/');
+    cy.visit('/page');
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
     cy.screenshot(`${ssPrefix}-pagetree-before-load`, { capture: 'viewport' });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
