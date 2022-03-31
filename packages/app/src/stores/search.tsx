@@ -69,8 +69,10 @@ export const useSWRxFullTextSearch = (
   };
   const rawQuery = createSearchQuery(keyword ?? '', fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
 
+  const isKeywordValid = keyword != null && keyword.length > 0;
+
   const swrResult = useSWRImmutable(
-    keyword == null ? null : ['/search', keyword, fixedConfigurations, termNumber],
+    isKeywordValid ? ['/search', keyword, fixedConfigurations, termNumber] : null,
     (endpoint, keyword, fixedConfigurations) => {
       const {
         limit, offset, sort, order,
