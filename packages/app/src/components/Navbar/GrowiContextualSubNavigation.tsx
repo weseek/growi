@@ -118,7 +118,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={openPageTemplateModalHandler}>
+      <DropdownItem onClick={openPageTemplateModalHandler} data-testid="open-page-template-modal-btn">
         <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
       </DropdownItem>
     </>

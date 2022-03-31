@@ -42,7 +42,7 @@ const CreateTemplateModal = (props) => {
   }
 
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} data-testid="page-template-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
