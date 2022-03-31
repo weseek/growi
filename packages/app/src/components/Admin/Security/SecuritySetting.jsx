@@ -434,10 +434,7 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_setting.page_delete_rights')}</h4>
-        {/* <div className="row">
-        </div>
-        <div className="row mb-4"></div> */}
-        {/* Render PageDeletePermissionDropdown */}
+        {/* Render PageDeletePermission */}
         {
           [
             [currentPageDeletionAuthority, adminGeneralSecurityContainer.changePageDeletionAuthority, DeletionType.Deletion, false],
