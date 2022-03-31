@@ -38,19 +38,17 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
-Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
-  const sidebarStatus = window.localStorage.getItem('sidebarStatus');
-  if (sidebarStatus != null) {
-    const { isSidebarCollapsed } = JSON.parse(sidebarStatus);
+let isSidebarCollapsed: boolean | undefined;
 
-    if (isSidebarCollapsed === isCollapsed) {
-      return;
-    }
+Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
+
+  if (isSidebarCollapsed === isCollapsed) {
+    return;
   }
 
   const isGrowiPage = Cypress.$('body.growi').length > 0;
   if (!isGrowiPage) {
-    cy.visit('/page');
+    cy.visit('/page-to-toggle-sidebar-collapsed');
   }
 
   cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
@@ -65,7 +63,5 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
     }
   });
 
-  window.localStorage.setItem('sidebarStatus', JSON.stringify({
-    isSidebarCollapsed: isCollapsed,
-  }));
+  isSidebarCollapsed = isCollapsed;
 });
