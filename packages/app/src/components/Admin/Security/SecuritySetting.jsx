@@ -125,21 +125,16 @@ class SecuritySetting extends React.Component {
    * @param deletionType Deletion type
    */
   setDeletionConfigState(newState, setState, deletionType) {
+    setState(newState);
     if (isRecursiveDeletion(deletionType)) {
-      setState(newState);
-
       return;
     }
 
     const [recursiveState, setRecursiveState] = this.getRecursiveDeletionConfigState(deletionType);
     const shouldForceUpdate = !validateDeleteConfigs(newState, recursiveState);
     if (shouldForceUpdate) {
-      setState(newState);
       setRecursiveState(newState);
       this.setExpantOtherDeleteOptionsState(deletionType, true);
-    }
-    else {
-      setState(newState);
     }
 
     return;
