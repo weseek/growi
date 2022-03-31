@@ -52,11 +52,15 @@ export const validateDeleteConfigs = (
  * @returns [(value for single), (value for recursive)]
  */
 export const prepareDeleteConfigValuesForCalc = (
-    confForSingle: IPageDeleteConfigValueToProcessValidation, confForRecursive: IPageDeleteConfigValue,
+    confForSingle: IPageDeleteConfigValueToProcessValidation | undefined, confForRecursive: IPageDeleteConfigValue | undefined,
 ): [IPageDeleteConfigValueToProcessValidation, IPageDeleteConfigValueToProcessValidation] => {
-  if (confForRecursive === Value.Inherit) {
-    return [confForSingle, confForSingle];
+  // convert undefined to default values
+  const confForSingleToReturn = confForSingle ?? Value.Anyone;
+  const confForRecursiveToReturn = confForRecursive ?? Value.Inherit;
+
+  if (confForRecursiveToReturn === Value.Inherit) {
+    return [confForSingleToReturn, confForSingleToReturn];
   }
 
-  return [confForSingle, confForRecursive];
+  return [confForSingleToReturn, confForRecursiveToReturn];
 };

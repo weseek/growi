@@ -12,6 +12,11 @@
     font-family: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif !important;
   }
 
+  .present {
+    max-height: 100%;
+    overflow-y: scroll;
+  }
+
   .slides > section {
     //text-align: left;
     padding: 0;

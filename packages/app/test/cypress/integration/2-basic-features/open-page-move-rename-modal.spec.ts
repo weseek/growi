@@ -1,6 +1,6 @@
-context('Open Page Duplicate Modal', () => {
+context('Open Page Move Rename Modal', () => {
 
-  const ssPrefix = 'access-to-page-duplicate-modal-';
+  const ssPrefix = 'access-to-page-move-rename-modal';
 
   let connectSid: string | undefined;
 
@@ -22,13 +22,14 @@ context('Open Page Duplicate Modal', () => {
     }
   });
 
-  it('PageDuplicateModal is shown successfully', () => {
+  it('PageMoveRenameModal is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-duplicate-modal-btn').click();
+       cy.getByTestid('open-page-move-rename-modal-btn').click();
     });
-     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
+
+     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
