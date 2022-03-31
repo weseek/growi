@@ -686,7 +686,7 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
-    "forced_update_msg": "Settings have been forcibly changed. Previous setting: ",
+    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
     "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Anyone > Admin and autor > Admin only",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",

@@ -284,18 +284,16 @@ class SecuritySetting extends React.Component {
                           <span dangerouslySetInnerHTML={{ __html: t('security_setting.page_delete_rights_caution') }} />
                         </span>
                       </p>
-
                       { this.previousPageRecursiveAuthorityState(deletionType) !== '' && (
                         <div className="mb-3">
                           <strong>
-                            {t('security_setting.forced_update_msg')}
+                            {t('security_setting.forced_update_desc')}
                           </strong>
                           <code>
                             {t(getDeleteConfigValueForT(this.previousPageRecursiveAuthorityState(deletionType)))}
                           </code>
                         </div>
                       )}
-
                       {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
                     </div>
                   </Collapse>
