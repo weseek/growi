@@ -39,6 +39,19 @@ const getDeletionTypeForT = (deletionType) => {
   }
 };
 
+const getDeleteConfigValueForT = (deleteConfig) => {
+  switch (deleteConfig) {
+    case PageDeleteConfigValue.Inherit:
+      return 'security_setting.inherit';
+    case PageDeleteConfigValue.Anyone || null:
+      return 'security_setting.anyone';
+    case PageDeleteConfigValue.AdminOnly:
+      return 'security_setting.admin_only';
+    case PageDeleteConfigValue.AdminAndAuthor:
+      return 'security_setting.admin_and_author';
+  }
+};
+
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -234,6 +247,8 @@ class SecuritySetting extends React.Component {
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
     const { t } = this.props;
 
+    const expantDeleteOptionsState = this.expantDeleteOptionsState(deletionType);
+
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
@@ -258,12 +273,12 @@ class SecuritySetting extends React.Component {
                     type="button"
                     className="btn btn-link p-0 mb-4"
                     aria-expanded="false"
-                    onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !this.expantDeleteOptionsState(deletionType))}
+                    onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${this.expantDeleteOptionsState(deletionType) ? 'fa-rotate-90' : ''}`}></i>
+                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
                     { t('security_setting.other_options') }
                   </button>
-                  <Collapse isOpen={this.expantDeleteOptionsState(deletionType)}>
+                  <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
                       <p className="card well">
                         <span className="text-warning">
@@ -272,6 +287,18 @@ class SecuritySetting extends React.Component {
                           <span dangerouslySetInnerHTML={{ __html: t('security_setting.page_delete_rights_caution') }} />
                         </span>
                       </p>
+
+                      { this.previousPageRecursiveAuthorityState(deletionType) !== '' && (
+                        <div className="mb-3">
+                          <strong>
+                            {t('security_setting.forced_update_msg')}
+                          </strong>
+                          <code>
+                            {t(getDeleteConfigValueForT(this.previousPageRecursiveAuthorityState(deletionType)))}
+                          </code>
+                        </div>
+                      )}
+
                       {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
                     </div>
                   </Collapse>
