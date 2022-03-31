@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
-import { validateDeleteConfigs } from '~/utils/page-delete-config';
+import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
@@ -131,7 +131,8 @@ class SecuritySetting extends React.Component {
     }
 
     const [recursiveState, setRecursiveState] = this.getRecursiveDeletionConfigState(deletionType);
-    const shouldForceUpdate = !validateDeleteConfigs(newState, recursiveState);
+    const calculableValue = prepareDeleteConfigValuesForCalc(newState, recursiveState);
+    const shouldForceUpdate = !validateDeleteConfigs(calculableValue[0], calculableValue[1]);
     if (shouldForceUpdate) {
       setRecursiveState(newState);
       this.setExpantOtherDeleteOptionsState(deletionType, true);
