@@ -3,6 +3,7 @@ import * as express from 'express';
 import { body, validationResult } from 'express-validator';
 import ErrorV3 from '../../models/vo/error-apiv3';
 
+const PASSOWRD_MINIMUM_NUMBER = 8;
 // validation rules for complete registration form
 export const completeRegistrationRules = () => {
   return [
@@ -17,8 +18,8 @@ export const completeRegistrationRules = () => {
     body('password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('Password has invalid character')
-      .isLength({ min: 6 })
-      .withMessage('Password minimum character should be more than 6 characters')
+      .isLength({ min: PASSOWRD_MINIMUM_NUMBER })
+      .withMessage('Password minimum character should be more than 8 characters')
       .not()
       .isEmpty()
       .withMessage('Password field is required'),
