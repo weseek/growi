@@ -367,9 +367,9 @@ module.exports = (crowi) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
     const page = parseInt(req.query.page) || 1;
-
+    const skip = (+page - 1) * limit;
     const queryOptions = {
-      offset,
+      offset: skip,
       limit,
       includeTrashed: false,
       isRegExpEscapedFromPath: true,

@@ -525,16 +525,25 @@ export const getPageSchema = (crowi) => {
     // find
     // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
 
-
+    const customLabels = {
+      totalDocs: 'totalCount',
+      docs: 'pages',
+      limit: 'limit',
+      page: 'currentPage',
+      nextPage: 'nextPage',
+      prevPage: 'prevPage',
+      totalPages: 'pageCount',
+    };
     const paginationOptions = {
-      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page,
+      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page, customLabels,
     };
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await Page.paginate(builder, paginationOptions);
-    const results = {
-      pages: pages.docs, totalCount: pages.totalDocs, offset: opt.offset, limit: opt.limit,
-    };
-    return results;
+    const pages = await Page.paginate(builder.query, paginationOptions);
+    // const results = {
+    //   pages: pages.docs, totalCount: pages.totalDocs, offset: opt.offset, limit: opt.limit,
+    // };
+    console.log(pages);
+    return pages;
   }
 
   /**

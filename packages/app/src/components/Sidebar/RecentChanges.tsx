@@ -134,8 +134,8 @@ const RecentChanges = (): JSX.Element => {
   const { t } = useTranslation();
   const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-  const isReachingEnd = swr.data && swr.data[swr.data.length - 1]?.length < PER_PAGE;
-  const pages = swr.data?.flat()?.filter((item, index) => index === swr.data?.flat().findIndex(page => page._id === item._id));
+  const isReachingEnd = !swr.data?.[0].hasNextPage;
+  const nextPage = swr.data?.[0].nextPage ?? 1;
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -180,8 +180,9 @@ const RecentChanges = (): JSX.Element => {
             swr={swr}
             loadingIndicator={<LoadingIndicator />}
             isReachingEnd={isReachingEnd}
+            nextPage={nextPage}
           >
-            {pages?.map(page => (
+            {response => response?.items.map(page => (
               isRecentChangesSidebarSmall
                 ? <SmallPageItem key={page._id} page={page} />
                 : <LargePageItem key={page._id} page={page} />

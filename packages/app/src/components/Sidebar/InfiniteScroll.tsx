@@ -3,11 +3,12 @@ import type { SWRInfiniteResponse } from 'swr/infinite';
 
 type Props<T> = {
   swr: SWRInfiniteResponse<T>
-  children:any,
+  children: React.ReactChild | ((item: T) => React.ReactNode),
   loadingIndicator?: React.ReactNode
   endingIndicator?: React.ReactNode
   isReachingEnd?: boolean,
-  offset?: number
+  offset?: number,
+  nextPage: number
 }
 
 const useIntersection = <T extends HTMLElement>(): [boolean, Ref<T>] => {
@@ -33,24 +34,23 @@ const InfiniteScroll = <T, >(props: Props<T>): React.ReactElement<Props<T>> => {
     endingIndicator,
     isReachingEnd,
     offset = 0,
+    nextPage,
   } = props;
 
+  const ending = isReachingEnd;
   const [intersecting, ref] = useIntersection<HTMLDivElement>();
-
-  // const ending = typeof isReachingEnd === 'function' ? isReachingEnd(swr) : isReachingEnd;
-
   useEffect(() => {
-    if (intersecting && !isValidating && !isReachingEnd) {
-      setSize(size => size + 1);
+    if (intersecting && !isValidating && !ending) {
+      setSize(nextPage);
     }
-  }, [intersecting, isValidating, setSize, isReachingEnd]);
+  }, [intersecting, isValidating, setSize, ending, nextPage]);
 
   return (
     <>
       {typeof children === 'function' ? data?.map(item => children(item)) : children}
       <div style={{ position: 'relative' }}>
         <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-        {isReachingEnd ? endingIndicator : loadingIndicator}
+        {ending ? endingIndicator : loadingIndicator}
       </div>
     </>
   );
