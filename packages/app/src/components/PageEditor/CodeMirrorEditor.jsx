@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
-
 import { Button } from 'reactstrap';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
 import { JSHINT } from 'jshint';
 
@@ -13,6 +11,7 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -66,6 +65,7 @@ require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
+require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
 require('codemirror/mode/clike/clike');
@@ -149,6 +149,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
+
+    this.foldDrawioSection = this.foldDrawioSection.bind(this);
+    this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
   }
 
   init() {
@@ -185,6 +188,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = this.props.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // fold drawio section
+    this.foldDrawioSection();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -195,6 +201,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // fold drawio section
+    this.foldDrawioSection();
   }
 
   async initializeTextlint() {
@@ -741,6 +750,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
+  // fold draw.io section (::: drawio ~ :::)
+  foldDrawioSection() {
+    const editor = this.getCodeMirror();
+    const lineNumbers = mdu.findAllDrawioSection(editor);
+    lineNumbers.forEach((lineNumber) => {
+      editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
+    });
+  }
+
+  onSaveForDrawio(drawioData) {
+    const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
+    // Fold the section after the drawio section (:::drawio) has been updated.
+    this.foldDrawioSection();
+    return range;
+  }
+
   getNavbarItems() {
     return [
       <Button
@@ -882,7 +907,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
@@ -898,7 +922,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        <ReactCodeMirror
+        <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"
@@ -909,11 +933,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
-            mode,
-            theme: this.props.editorOptions.theme,
-            styleActiveLine: this.props.editorOptions.styleActiveLine,
-            lineNumbers: this.props.lineNumbers,
-            tabSize: 4,
             indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
@@ -974,7 +993,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         />
         <DrawioModal
           ref={this.drawioModal}
-          onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
+          onSave={this.onSaveForDrawio}
         />
 
       </React.Fragment>

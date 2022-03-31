@@ -63,16 +63,16 @@ class Draft extends React.Component {
     const interceptorManager = this.props.appContainer.interceptorManager;
     await interceptorManager.process('prePreProcess', context)
       .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown, context);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
+        const parsedHTML = growiRenderer.process(context.markdown, context);
         context.parsedHTML = parsedHTML;
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => {

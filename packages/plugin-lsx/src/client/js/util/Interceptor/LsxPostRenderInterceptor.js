@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BasicInterceptor } from 'growi-commons';
+import { BasicInterceptor } from '@growi/core';
 
 import { LsxContext } from '../LsxContext';
 import { Lsx } from '../../components/Lsx';
@@ -43,7 +43,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
       if (elem) {
         // instanciate LsxContext from context
         const lsxContext = new LsxContext(context.lsxContextMap[domId] || {});
-        lsxContext.fromPagePath = context.currentPagePath;
+        lsxContext.fromPagePath = context.pagePath ?? context.currentPathname;
 
         this.renderReactDOM(lsxContext, elem, isPreview);
       }

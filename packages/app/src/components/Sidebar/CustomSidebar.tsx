@@ -6,6 +6,7 @@ import { useSWRxPageByPath } from '~/stores/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionRenderer from '../Page/RevisionRenderer';
+import { IRevision } from '~/interfaces/revision';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -30,10 +31,10 @@ const CustomSidebar: FC<Props> = (props: Props) => {
 
   const renderer = appContainer.getRenderer('sidebar');
 
-  const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
+  const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
 
-  const isLoading = page === undefined;
-  const markdown = page?.revision?.body;
+  const isLoading = page === undefined && error == null;
+  const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
     <>
@@ -46,20 +47,31 @@ const CustomSidebar: FC<Props> = (props: Props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      { !isLoading && markdown == null && <SidebarNotFound /> }
-      {/* eslint-disable-next-line react/no-danger */}
-      { markdown != null && (
-        <div className="p-3">
-          <RevisionRenderer
-            growiRenderer={renderer}
-            markdown={markdown}
-            additionalClassName="grw-custom-sidebar-content"
-          />
-        </div>
-      ) }
+
+      {
+        isLoading && (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        )
+      }
+
+      {
+        !isLoading && markdown != null ? (
+          <div className="p-3">
+            <RevisionRenderer
+              growiRenderer={renderer}
+              markdown={markdown}
+              pagePath="/Sidebar"
+              additionalClassName="grw-custom-sidebar-content"
+            />
+          </div>
+        ) : (
+          <SidebarNotFound />
+        )
+      }
     </>
   );
-
 };
 
 /**

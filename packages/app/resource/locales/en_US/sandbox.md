@@ -237,10 +237,10 @@ You can create links using `[Display text](URL)`.
 
 ```
 [/Sandbox]
-&lt;/user/admin1>
+</user/admin1>
 ```
 
-[/Sandbox]
+[/Sandbox]  
 </user/admin1>
 
 ## Pukiwiki like linker
@@ -253,10 +253,10 @@ Both the page description and link address can be displayed on the page.
 
 ```
 [[./Bootstrap4]]
-Example of Bootstrap4 is[[here>./Bootstrap4]]
+Example of Bootstrap4 is [[here>./Bootstrap4]]
 ```
 
-[[../user]]
+[[./Bootstrap4]]  
 Example of Bootstrap4 is[[here>./Bootstrap4]]
 
 # :pencil: Lists

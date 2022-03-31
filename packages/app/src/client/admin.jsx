@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
+import { SWRConfig } from 'swr';
+
 import loggerFactory from '~/utils/logger';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import ErrorBoundary from '../components/ErrorBoudary';
 
@@ -46,6 +49,8 @@ import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurit
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
+import ContextExtractor from '~/client/services/ContextExtractor';
+
 import { appContainer, componentMappings } from './base';
 
 const logger = loggerFactory('growi:admin');
@@ -66,6 +71,7 @@ const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const injectableContainers = [
   appContainer,
   adminAppContainer,
@@ -79,6 +85,7 @@ const injectableContainers = [
   adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
+  socketIoContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -107,22 +114,38 @@ Object.assign(componentMappings, {
   'admin-navigation': <AdminNavigation />,
 });
 
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <Provider inject={injectableContainers}>
+              {componentMappings[key]}
+            </Provider>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 if (adminSecuritySettingElem != null) {

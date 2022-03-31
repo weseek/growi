@@ -1,4 +1,4 @@
-import { BasicInterceptor } from 'growi-commons';
+import { BasicInterceptor } from '@growi/core';
 
 import mlu from './MarkdownListUtil';
 

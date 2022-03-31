@@ -1,4 +1,4 @@
-import { customTagUtils, BasicInterceptor } from 'growi-commons';
+import { customTagUtils, BasicInterceptor } from '@growi/core';
 
 import TagCacheManagerFactory from '../TagCacheManagerFactory';
 

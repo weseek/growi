@@ -27,13 +27,6 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      isSlackEnabled: false,
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
-
-      grant: 1, // default: public
-      grantGroupId: null,
-      grantGroupName: null,
-
       editorOptions: {},
       previewOptions: {},
 
@@ -46,9 +39,9 @@ export default class EditorContainer extends Container {
 
     this.isSetBeforeunloadEventHandler = false;
 
-    this.initStateGrant();
     this.initDrafts();
 
+    this.editorOptions = null;
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
     this.initEditorOptions('previewOptions', 'previewOptions', defaultPreviewOptions);
   }
@@ -58,26 +51,6 @@ export default class EditorContainer extends Container {
    */
   static getClassName() {
     return 'EditorContainer';
-  }
-
-  /**
-   * initialize state for page permission
-   */
-  initStateGrant() {
-    const mainContent = document.getElementById('content-main');
-
-    if (mainContent == null) {
-      logger.debug('#content-main element is not exists');
-      return;
-    }
-
-    this.state.grant = +mainContent.getAttribute('data-page-grant');
-
-    const grantGroupId = mainContent.getAttribute('data-page-grant-group');
-    if (grantGroupId != null && grantGroupId.length > 0) {
-      this.state.grantGroupId = grantGroupId;
-      this.state.grantGroupName = mainContent.getAttribute('data-page-grant-group-name');
-    }
   }
 
   /**
@@ -143,17 +116,18 @@ export default class EditorContainer extends Container {
     }
   }
 
+  // TODO: Remove when SWR is complete
   getCurrentOptionsToSave() {
     const opt = {
-      isSlackEnabled: this.state.isSlackEnabled,
-      slackChannels: this.state.slackChannels,
-      grant: this.state.grant,
+      // isSlackEnabled: this.state.isSlackEnabled,
+      // slackChannels: this.state.slackChannels,
+      // grant: this.state.grant,
       pageTags: this.state.tags,
     };
 
-    if (this.state.grantGroupId != null) {
-      opt.grantUserGroupId = this.state.grantGroupId;
-    }
+    // if (this.state.grantGroupId != null) {
+    //   opt.grantUserGroupId = this.state.grantGroupId;
+    // }
 
     return opt;
   }

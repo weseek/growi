@@ -23,6 +23,7 @@ export default class AdminLocalSecurityContainer extends Container {
       registrationWhiteList: [],
       useOnlyEnvVars: false,
       isPasswordResetEnabled: false,
+      isEmailAuthenticationEnabled: false,
     };
 
   }
@@ -36,6 +37,7 @@ export default class AdminLocalSecurityContainer extends Container {
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
         isPasswordResetEnabled: localSetting.isPasswordResetEnabled,
+        isEmailAuthenticationEnabled: localSetting.isEmailAuthenticationEnabled,
       });
     }
     catch (err) {
@@ -76,14 +78,22 @@ export default class AdminLocalSecurityContainer extends Container {
   }
 
   /**
+   * Switch email authentication enabled
+   */
+  switchIsEmailAuthenticationEnabled() {
+    this.setState({ isEmailAuthenticationEnabled: !this.state.isEmailAuthenticationEnabled });
+  }
+
+  /**
    * update local security setting
    */
   async updateLocalSecuritySetting() {
-    const { registrationWhiteList, isPasswordResetEnabled } = this.state;
+    const { registrationWhiteList, isPasswordResetEnabled, isEmailAuthenticationEnabled } = this.state;
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
       registrationWhiteList,
       isPasswordResetEnabled,
+      isEmailAuthenticationEnabled,
     });
 
     const { localSettingParams } = response.data;
@@ -92,6 +102,7 @@ export default class AdminLocalSecurityContainer extends Container {
       registrationMode: localSettingParams.registrationMode,
       registrationWhiteList: localSettingParams.registrationWhiteList,
       isPasswordResetEnabled: localSettingParams.isPasswordResetEnabled,
+      isEmailAuthenticationEnabled: localSettingParams.isEmailAuthenticationEnabled,
     });
 
     return localSettingParams;

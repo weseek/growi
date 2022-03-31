@@ -1,4 +1,4 @@
-const { customTagUtils } = require('growi-commons');
+const { customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
@@ -195,8 +195,7 @@ module.exports = (crowi, app) => {
     }
 
     builder
-      .addConditionToExcludeTrashed()
-      .addConditionToExcludeRedirect();
+      .addConditionToExcludeTrashed();
 
     return Page.addConditionToFilteringByViewerForList(builder, user);
   }

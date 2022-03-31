@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
 
-import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -39,14 +39,12 @@ const PersonalDropdown = (props) => {
 
   const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
+  const { scheduleToPut } = useUserUISettings();
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
 
-    const context = {
-      user,
-      currentPagePath: decodeURIComponent(window.location.pathname),
-    };
+    const context = {};
     interceptorManager.process('logout', context);
 
     window.location.href = '/logout';
@@ -54,13 +52,13 @@ const PersonalDropdown = (props) => {
 
   const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
     mutatePreferDrawerMode(bool);
-    scheduleToPutUserUISettings({ preferDrawerModeByUser: bool });
-  }, [mutatePreferDrawerMode]);
+    scheduleToPut({ preferDrawerModeByUser: bool });
+  }, [mutatePreferDrawerMode, scheduleToPut]);
 
   const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
     mutatePreferDrawerModeOnEdit(bool);
-    scheduleToPutUserUISettings({ preferDrawerModeOnEditByUser: bool });
-  }, [mutatePreferDrawerModeOnEdit]);
+    scheduleToPut({ preferDrawerModeOnEditByUser: bool });
+  }, [mutatePreferDrawerModeOnEdit, scheduleToPut]);
 
   const followOsCheckboxModifiedHandler = (bool) => {
     if (bool) {
@@ -101,8 +99,8 @@ const PersonalDropdown = (props) => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <a className="px-md-2 nav-link waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} noLink noTooltip /><span className="d-none d-lg-inline-block">&nbsp;{user.name}</span>
+      <a className="px-md-3 nav-link waves-effect waves-light" data-toggle="dropdown">
+        <UserPicture user={user} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{user.name}</span>
       </a>
 
       {/* Menu */}

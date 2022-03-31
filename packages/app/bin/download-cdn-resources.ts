@@ -3,7 +3,7 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-import { envUtils } from 'growi-commons';
+import { envUtils } from '@growi/core';
 
 import CdnResourcesDownloader from './cdn/cdn-resources-downloader';
 import loggerFactory from '../src/utils/logger';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as url from 'url';
 
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';

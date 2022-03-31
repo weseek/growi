@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 import UpdatePost from '../../models/update-post';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
@@ -90,7 +91,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 

@@ -19,6 +19,10 @@ async function getSettings(userId: string): Promise<Partial<IUserUISettings> | n
 
 module.exports = () => {
   return async(req, res, next) => {
+    if (req.user == null) {
+      return next();
+    }
+
     try {
       res.locals.userUISettings = await getSettings(req.user._id);
     }

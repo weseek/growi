@@ -83,8 +83,6 @@ module.exports = (options) => {
           exclude: {
             test: /node_modules/,
             exclude: [ // include as a result
-              { test: /node_modules\/growi-plugin-/ },
-              /node_modules\/growi-commons/,
               /node_modules\/codemirror/,
             ],
           },

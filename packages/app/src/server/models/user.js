@@ -187,21 +187,6 @@ module.exports = function(crowi) {
     return userData;
   };
 
-  userSchema.methods.canDeleteCompletely = function(creatorId) {
-    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (this.admin) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      return (this._id.equals(creatorId));
-    }
-
-    return false;
-  };
-
   userSchema.methods.updateApiToken = async function() {
     const self = this;
 
@@ -481,6 +466,16 @@ module.exports = function(crowi) {
       usernameUsable = false;
     }
     return usernameUsable;
+  };
+
+  userSchema.statics.isRegisterableEmail = async function(email) {
+    let isEmailUsable = true;
+
+    const userData = await this.findOne({ email });
+    if (userData) {
+      isEmailUsable = false;
+    }
+    return isEmailUsable;
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
