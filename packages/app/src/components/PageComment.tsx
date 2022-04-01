@@ -5,7 +5,7 @@ import React, {
 import { Button } from 'reactstrap';
 
 import CommentEditor from './PageComment/CommentEditor';
-import CommentAny from './PageComment/Comment';
+import Comment from './PageComment/Comment';
 import ReplayComments from './PageComment/ReplayComments';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
@@ -15,10 +15,6 @@ import { toastError } from '~/client/util/apiNotification';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
-
-// todo: Comment component will be updated to typescript
-// the below any is workaround to avoid WithTranslation IntrinsicAttributes & Omit error
-const Comment = CommentAny as any;
 
 type Props = {
   appContainer: AppContainer,

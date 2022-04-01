@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
@@ -226,11 +226,6 @@ class Comment extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
-
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -243,4 +238,14 @@ Comment.propTypes = {
   onComment: PropTypes.func,
 };
 
-export default withTranslation()(CommentWrapper);
+const CommentWrapperFC = (props) => {
+  const { t } = useTranslatiion();
+  return <Comment t={t} {...props} />
+}
+
+/**
+ * Wrapper component for using unstated
+ */
+ const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
+
+export default CommentWrapper;
