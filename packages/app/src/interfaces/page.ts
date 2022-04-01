@@ -65,7 +65,7 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && ('isEmpty' in pageInfo) && pageInfo.isEmpty === false;
+  return pageInfo != null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,8 +105,8 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
 
 export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision?: string }), IPageInfoForEntity | unknown>;
-export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+export type IPageToDeleteWithMeta<T = IPageInfoForEntity | unknown> = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string | null}), T>;
+export type IPageToRenameWithMeta<T = IPageInfoForEntity | unknown> = IPageToDeleteWithMeta<T>;
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

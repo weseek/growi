@@ -93,7 +93,7 @@ const PageRenameModal = (): JSX.Element => {
     try {
       const response = await apiv3Put('/pages/rename', {
         pageId: _id,
-        revisionId: revision,
+        revisionId: revision ?? null,
         isRecursively: !_isV5Compatible ? isRenameRecursively : undefined,
         isRenameRedirect,
         updateMetadata: !isRemainMetadata,

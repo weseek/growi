@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageInfoForEntity, IPageToRenameWithMeta, IPageWithMeta,
+} from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -22,7 +24,7 @@ import {
 
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPagePermalink,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -141,7 +143,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: emptyPagePermalink } = useEmptyPagePermalink();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -191,8 +192,12 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
+      if (page.meta != null && page.meta.isEmpty) {
+        window.location.href = `/${page.data._id}`;
+        return;
+      }
       window.location.reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
@@ -230,7 +235,7 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
-    const displayedPageId = pageId ?? emptyPagePermalink;
+    const displayedPageId = pageId;
     return (
       <>
         <div className={className}>
@@ -282,7 +287,7 @@ const GrowiContextualSubNavigation = (props) => {
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown, emptyPagePermalink,
+    path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
 

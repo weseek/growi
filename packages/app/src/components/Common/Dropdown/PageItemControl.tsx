@@ -164,7 +164,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </DropdownItem>
         ) }
 
-        { AdditionalMenuItems && (
+        { !pageInfo.isEmpty && AdditionalMenuItems && (
           <>
             { showDeviderBeforeAdditionalMenuItems && <DropdownItem divider /> }
             <AdditionalMenuItems pageInfo={pageInfo} />

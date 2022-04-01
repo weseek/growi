@@ -1342,7 +1342,7 @@ class PageService {
       await Page.replaceTargetWithPage(page, null, true);
     }
 
-    // Delete target
+    // Delete target (only updating an existing document's properties )
     let deletedPage;
     if (!page.isEmpty) {
       deletedPage = await this.deleteNonEmptyTarget(page, user);
@@ -1419,10 +1419,10 @@ class PageService {
   private async deleteEmptyTarget(page): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    await Page.deleteOne({ _id: page._id, isEmpty: true });
-
     // update descendantCount of ancestors' before removeLeafEmptyPages
     await this.updateDescendantCountOfAncestors(page._id, -page.descendantCount, false);
+
+    await Page.deleteOne({ _id: page._id, isEmpty: true });
   }
 
   async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
@@ -2103,8 +2103,8 @@ class PageService {
         isV5Compatible: true,
         isEmpty: true,
         isMovable,
-        isDeletable: false,
-        isAbleToDeleteCompletely: false,
+        isDeletable: true,
+        isAbleToDeleteCompletely: true,
         isRevertible: false,
       };
     }

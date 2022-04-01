@@ -365,7 +365,6 @@ module.exports = (crowi) => {
 
     try {
       const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true, isSharedPage);
-
       if (pageWithMeta == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
@@ -473,8 +472,8 @@ module.exports = (crowi) => {
     const { fromPath, toPath } = req.query;
 
     try {
-      const fromPage = await Page.findByPath(fromPath);
-      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+      const fromPage = await Page.findByPath(fromPath, true);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user, {}, true);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
         return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
