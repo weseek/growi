@@ -239,7 +239,7 @@ Comment.propTypes = {
 };
 
 const CommentWrapperFC = (props) => {
-  const { t } = useTranslatiion();
+  const { t } = useTranslation();
   return <Comment t={t} {...props} />
 }
 

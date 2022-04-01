@@ -22,13 +22,14 @@ type Props = {
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
+  hideIfEmpty?: boolean,
 }
 
 
 const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
-    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign,
+    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -54,8 +55,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     });
     return highlightedComment;
   }, [highlightKeywords]);
-
-  useEffect(() => { mutate() }, [pageId, mutate]);
 
   useEffect(() => {
 
@@ -136,6 +135,10 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
 
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
+
+  if (hideIfEmpty && comments?.length === 0) {
+    return <></>;
+  }
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
