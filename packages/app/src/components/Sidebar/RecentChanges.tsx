@@ -10,12 +10,11 @@ import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRxRecentlyUpdated, useSWRInifinitexRecentlyUpdated } from '~/stores/page';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
 import InfiniteScroll from './InfiniteScroll';
-
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -134,9 +133,8 @@ const RecentChanges = (): JSX.Element => {
   const { t } = useTranslation();
   const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-  const isReachingEnd = !swr.data?.[0].hasNextPage;
-  const nextPage = swr.data?.[0].nextPage ?? 1;
-
+  const isEmpty = swr.data?.[0].length === 0;
+  const isReachingEnd = isEmpty || (swr.data && swr.data[swr.data.length - 1]?.length < PER_PAGE);
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -180,9 +178,8 @@ const RecentChanges = (): JSX.Element => {
             swr={swr}
             loadingIndicator={<LoadingIndicator />}
             isReachingEnd={isReachingEnd}
-            nextPage={nextPage}
           >
-            {response => response?.items.map(page => (
+            {pages => pages.map(page => (
               isRecentChangesSidebarSmall
                 ? <SmallPageItem key={page._id} page={page} />
                 : <LargePageItem key={page._id} page={page} />
@@ -195,5 +192,4 @@ const RecentChanges = (): JSX.Element => {
   );
 
 };
-
 export default RecentChanges;

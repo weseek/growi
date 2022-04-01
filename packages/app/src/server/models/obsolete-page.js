@@ -535,15 +535,12 @@ export const getPageSchema = (crowi) => {
       totalPages: 'pageCount',
     };
     const paginationOptions = {
-      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page, customLabels,
+      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page, customLabels, sort: sortOpt,
     };
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await Page.paginate(builder.query, paginationOptions);
-    // const results = {
-    //   pages: pages.docs, totalCount: pages.totalDocs, offset: opt.offset, limit: opt.limit,
-    // };
-    console.log(pages);
-    return pages;
+    const result = { ...pages, offset: opt.offset };
+    return result;
   }
 
   /**

@@ -34,26 +34,16 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
     endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
-export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<IPagingResult<IPageHasId>, Error> => {
-  const getKey = (page: number, previousData: any) => {
-    if (previousData && !previousData.length) return null;
+export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
+  const getKey = (page: number) => {
     return `/pages/recent?page=${page + 1}`;
   };
   return useSWRInfinite(
     getKey,
-    (endpoint: string) => apiv3Get<{
-      pages: IPageHasId[], totalCount: number, limit: number, hasNextPage: boolean, nextPage: number}>(endpoint).then((response) => {
-        return {
-          items: response.data.pages,
-          totalCount: response.data.totalCount,
-          limit: response.data.limit,
-          hasNextPage: response.data.hasNextPage,
-          nextPage: response.data.nextPage,
-        };
-      }),
+    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
     {
-      initialSize: 1,
       revalidateFirstPage: false,
+      revalidateAll: false,
     },
   );
 };
