@@ -314,10 +314,7 @@ class SecuritySetting extends React.Component {
       currentPageRecursiveDeletionAuthority, currentPageRecursiveCompleteDeletionAuthority,
     } = adminGeneralSecurityContainer.state;
 
-
-    let guestModeValue = '';
-    const adminSecuritySettingElem = document.getElementById('admin-security-setting');
-    guestModeValue = adminSecuritySettingElem.getAttribute('guest-mode-value');
+    const guestModeValue = document.getElementById('admin-security-setting')?.getAttribute('guest-mode-value');
 
     const isButtonDisabledForDeletion = !validateDeleteConfigs(
       adminGeneralSecurityContainer.state.currentPageDeletionAuthority, PageDeleteConfigValue.AdminAndAuthor,
