@@ -16,7 +16,7 @@ jobs:
       RELEASE_DRAFT_BODY: ${{ steps.release-drafter.outputs.body }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Retrieve information from package.json
         uses: myrotvorets/info-from-package-json-action@1.1.0
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 

@@ -28,7 +28,10 @@
     "modal_migration_warning": "这个过程可能需要很长时间。强烈建议管理员告诉用户在转换期间不要创建、修改或删除页面。",
     "start_upgrading": "开始转换为v5兼容性",
     "successfully_started": "成功开始转换",
-    "already_upgraded": "你已经完成了向v5兼容性的转换"
+    "already_upgraded": "你已经完成了向v5兼容性的转换",
+    "header_upgrading_progress": "升级进度",
+    "migration_succeeded": "您的升级已经成功完成! 退出维护模式，可以使用GROWI。",
+    "migration_failed": "升级失败。请参考GROWI的文档，了解在失败情况下该如何处理。"
   },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",
@@ -485,6 +488,7 @@
     "select_parent_group": "选择父组",
     "release_parent_group": "Release parent group",
     "add_modal": {
+      "description": "添加的用户也将被添加到所有的父组。",
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",
       "enable_option": "启用{{option}",
@@ -495,7 +499,6 @@
     "group_list": "组列表",
     "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
-    "back_to_ancestors_group": "返回到祖先组",
     "basic_info": "基本信息",
     "user_list": "用户列表",
     "created_group": "已创建组",
@@ -511,6 +514,13 @@
       "publish_pages": "全部发布",
       "delete_pages": "全部删除",
       "transfer_pages": "转移到另一组"
+    },
+    "update_parent_confirm_modal": {
+      "header": "该组的父组被改变",
+      "caution_change_parent": "该操作改变了组的父级，即 \"{{groupName}}\" 。",
+      "danger_message": "注意，查看与该组相关的所有页面的权限会受到影响。",
+      "force_update_parents_label": "强行添加失踪的用户",
+      "force_update_parents_description": "激活这个选项，如果在父组改变后，在祖先组中有缺失的用户，可以强制添加这些用户"
     }
   }
 }

@@ -3,6 +3,7 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { CustomInput } from 'reactstrap';
 
 import Clamp from 'react-multiline-clamp';
@@ -55,6 +56,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
 
+  const { t } = useTranslation();
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   // publish ISelectable methods
@@ -85,9 +88,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
-  const dPagePath: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
+  const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, false);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+
+  const dPagePathHighlighted: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
+  const linkedPagePathHighlightedFormer = new LinkedPagePath(dPagePathHighlighted.former);
+  const linkedPagePathHighlightedLatter = new LinkedPagePath(dPagePathHighlighted.latter);
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
@@ -139,7 +145,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
-  const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
+  const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 
   let likerCount;
   if (isSelected && isIPageInfoForEntity(pageInfo)) {
@@ -156,6 +162,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   else {
     bookmarkCount = pageMeta?.bookmarkCount;
   }
+
+  const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
+  const canRenderRevisionSnippet = revisionShortBody != null;
 
   return (
     <li
@@ -185,7 +194,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {/* page path */}
               <PagePathHierarchicalLink
                 linkedPagePath={linkedPagePathFormer}
-                shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTMLForPaths}
+                linkedPagePathByHtml={linkedPagePathHighlightedFormer}
               />
               { showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
@@ -207,11 +216,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                           className="page-segment"
                           href={encodeURI(urljoin('/', pageData._id))}
                           // eslint-disable-next-line react/no-danger
-                          dangerouslySetInnerHTML={{ __html: linkedPagePathLatter.pathName }}
+                          dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
                         >
                         </a>
                       )
-                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathHighlightedLatter.pathName}</a>
                     }
                   </span>
                 </span>
@@ -239,13 +248,21 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
-                { elasticSearchResult != null && elasticSearchResult?.snippet.length > 0 && (
+                { elasticSearchResult != null && elasticSearchResult.snippet != null && (
                   // eslint-disable-next-line react/no-danger
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 ) }
                 { revisionShortBody != null && (
                   <div>{revisionShortBody}</div>
                 ) }
+                {
+                  !canRenderESSnippet && !canRenderRevisionSnippet && (
+                    <>
+                      <i className="icon-exclamation p-1"></i>
+                      {t('not_allowed_to_see_this_page')}
+                    </>
+                  )
+                }
               </Clamp>
             </div>
           </div>

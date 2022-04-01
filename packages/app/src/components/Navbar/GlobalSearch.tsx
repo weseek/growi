@@ -13,6 +13,7 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SearchForm from '../SearchForm';
+import { useCurrentPagePath } from '~/stores/context';
 
 
 type Props = {
@@ -33,6 +34,8 @@ const GlobalSearch: FC<Props> = (props: Props) => {
   const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
   const [isFocused, setFocused] = useState<boolean>(false);
 
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
     assert(data.length > 0);
 
@@ -51,12 +54,12 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     // construct search query
     let q = text;
     if (isScopeChildren) {
-      q += ` prefix:${window.location.pathname}`;
+      q += ` prefix:${currentPagePath ?? window.location.pathname}`;
     }
     url.searchParams.append('q', q);
 
     window.location.href = url.href;
-  }, [isScopeChildren, text]);
+  }, [currentPagePath, isScopeChildren, text]);
 
   const scopeLabel = isScopeChildren
     ? t('header_search_box.label.This tree')
