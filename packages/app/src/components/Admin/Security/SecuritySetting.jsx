@@ -419,13 +419,13 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
-              <p className="alert alert-warning mt-2 text-left offset-3 col-6">
+              <p className="alert alert-warning mt-2 col-6">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_setting.Fixed by env var',
-                      { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                      { key: 'FORCE_WIKI_MODE', value: adminGeneralSecurityContainer.state.wikiMode }),
                   }}
                 />
               </p>
