@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.14...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.15...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
+
+### 🚀 Improvement
+
+- imprv: Hide forgot password when localstrategy is disabled (#5380) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: The condition to attempt to reconnect to Elasticsearch (#5344) @yuki-takei
+- fix: Highlight-addons and drawio-viewer for view missing (#5376) @yuki-takei
+
+### 🧰 Maintenance
+
+- support:  modify docker-compose indent (#5322) @yuto-oweseek
 
 ## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
 
