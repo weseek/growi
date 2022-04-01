@@ -16,7 +16,7 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 
 import PageContentFooter from '../PageContentFooter';
-import PageCommentList from '../PageCommentList';
+import PageComment from '../PageComment';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -218,7 +218,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageCommentList appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} />
+        <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
         <PageContentFooter
           createdAt={new Date(pageWithMeta.data.createdAt)}
           updatedAt={new Date(pageWithMeta.data.updatedAt)}
