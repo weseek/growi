@@ -365,9 +365,11 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
+    console.log('ゲストモード', crowi.aclService.getGuestModeValue());
+
     const securityParams = {
       generalSetting: {
-        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        restrictGuestMode: crowi.aclService.getGuestModeValue(),
         pageDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),

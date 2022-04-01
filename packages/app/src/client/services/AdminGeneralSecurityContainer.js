@@ -66,11 +66,9 @@ export default class AdminGeneralSecurityContainer extends Container {
     await this.retrieveSetupStratedies();
     const response = await this.appContainer.apiv3.get('/security-setting/');
 
-    const strictGuestModeValue = document.getElementById('admin-security-setting')?.getAttribute('guest-mode-value');
-
     const { generalSetting, shareLinkSetting, generalAuth } = response.data.securityParams;
     this.setState({
-      currentRestrictGuestMode: strictGuestModeValue ?? generalSetting.restrictGuestMode,
+      currentRestrictGuestMode: generalSetting.restrictGuestMode,
       currentPageDeletionAuthority: generalSetting.pageDeletionAuthority,
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       currentPageRecursiveDeletionAuthority: generalSetting.pageRecursiveDeletionAuthority,

@@ -101,11 +101,8 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const guestModeValue = aclService.getGuestModeValue();
 
-    return res.render('admin/security', {
-      guestModeValue,
-    });
+    return res.render('admin/security');
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
