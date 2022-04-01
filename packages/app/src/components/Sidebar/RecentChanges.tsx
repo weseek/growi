@@ -10,11 +10,11 @@ import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRxRecentlyUpdated } from '~/stores/page';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
-
+import InfiniteScroll from './InfiniteScroll';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -120,14 +120,21 @@ SmallPageItem.propTypes = {
   page: PropTypes.any,
 };
 
+function LoadingIndicator() {
+  return (
+    <div className="text-muted text-center">
+      <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+    </div>
+  );
+}
 
 const RecentChanges = (): JSX.Element => {
-
+  const PER_PAGE = 20;
   const { t } = useTranslation();
-  const { data: pages, mutate } = useSWRxRecentlyUpdated();
-
+  const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-
+  const isEmpty = swr.data?.[0].length === 0;
+  const isReachingEnd = isEmpty || (swr.data && swr.data[swr.data.length - 1]?.length < PER_PAGE);
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -148,7 +155,7 @@ const RecentChanges = (): JSX.Element => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
           <i className="icon icon-reload"></i>
         </button>
         <div className="d-flex align-items-center">
@@ -167,14 +174,22 @@ const RecentChanges = (): JSX.Element => {
       </div>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
-          {(pages || []).map(page => (isRecentChangesSidebarSmall
-            ? <SmallPageItem key={page._id} page={page} />
-            : <LargePageItem key={page._id} page={page} />))}
+          <InfiniteScroll
+            swr={swr}
+            loadingIndicator={<LoadingIndicator />}
+            isReachingEnd={isReachingEnd}
+          >
+            {pages => pages.map(page => (
+              isRecentChangesSidebarSmall
+                ? <SmallPageItem key={page._id} page={page} />
+                : <LargePageItem key={page._id} page={page} />
+            ))
+            }
+          </InfiniteScroll>
         </ul>
       </div>
     </>
   );
 
 };
-
 export default RecentChanges;
