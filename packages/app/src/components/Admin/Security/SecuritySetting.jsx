@@ -311,8 +311,13 @@ class SecuritySetting extends React.Component {
     const { t, adminGeneralSecurityContainer } = this.props;
     const {
       currentRestrictGuestMode, currentPageDeletionAuthority, currentPageCompleteDeletionAuthority,
-      currentPageRecursiveDeletionAuthority, currentPageRecursiveCompleteDeletionAuthority,
+      currentPageRecursiveDeletionAuthority, currentPageRecursiveCompleteDeletionAuthority, wikiMode,
     } = adminGeneralSecurityContainer.state;
+
+
+    let guestModeValue = '';
+    const adminSecuritySettingElem = document.getElementById('admin-security-setting');
+    guestModeValue = adminSecuritySettingElem.getAttribute('guest-mode-value');
 
     const isButtonDisabledForDeletion = !validateDeleteConfigs(
       adminGeneralSecurityContainer.state.currentPageDeletionAuthority, PageDeleteConfigValue.AdminAndAuthor,
@@ -405,8 +410,8 @@ class SecuritySetting extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
-                  {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                  {guestModeValue === 'Deny' && t('security_setting.guest_mode.deny')}
+                  {guestModeValue === 'Readonly' && t('security_setting.guest_mode.readonly')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
