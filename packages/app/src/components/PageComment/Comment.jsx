@@ -240,12 +240,12 @@ Comment.propTypes = {
 
 const CommentWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <Comment t={t} {...props} />
-}
+  return <Comment t={t} {...props} />;
+};
 
 /**
  * Wrapper component for using unstated
  */
- const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
+const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
 
 export default CommentWrapper;
