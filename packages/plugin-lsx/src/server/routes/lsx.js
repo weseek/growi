@@ -195,8 +195,7 @@ module.exports = (crowi, app) => {
     }
 
     builder
-      .addConditionToExcludeTrashed()
-      .addConditionToExcludeRedirect();
+      .addConditionToExcludeTrashed();
 
     return Page.addConditionToFilteringByViewerForList(builder, user);
   }

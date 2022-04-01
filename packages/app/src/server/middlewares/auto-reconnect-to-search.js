@@ -14,7 +14,7 @@ module.exports = (crowi) => {
       await searchService.reconnectClient();
     }
     catch (err) {
-      logger.error('Auto reconnection failed.');
+      logger.error('Auto reconnection failed.', err);
     }
 
     return searchService.isReachable;
