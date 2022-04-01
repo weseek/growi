@@ -65,7 +65,6 @@ export default class AdminGeneralSecurityContainer extends Container {
   async retrieveSecurityData() {
     await this.retrieveSetupStratedies();
     const response = await this.appContainer.apiv3.get('/security-setting/');
-
     const { generalSetting, shareLinkSetting, generalAuth } = response.data.securityParams;
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode,

@@ -365,8 +365,6 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    console.log('ゲストモード', crowi.aclService.getGuestModeValue());
-
     const securityParams = {
       generalSetting: {
         restrictGuestMode: crowi.aclService.getGuestModeValue(),
