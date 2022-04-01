@@ -169,6 +169,8 @@
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
+  "not_allowed_to_see_this_page": "You cannot see this page",
+  "Confirm": "Confirm",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -684,7 +686,8 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
-    "page_delete_rights_caution": "The \"operation including the descendants\" setting is forced to be stronger than the \"operation for only the selected page\" setting.",
+    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
+    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Anyone > Admin and autor > Admin only",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
@@ -1016,5 +1019,10 @@
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
+  },
+  "user_group": {
+    "select_group": "Select group",
+    "belonging_to_no_group": "Could not find the groups you belong to.",
+    "manage_user_groups": "Manage user groups"
   }
 }

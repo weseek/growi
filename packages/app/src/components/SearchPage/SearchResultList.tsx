@@ -37,7 +37,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   const { t } = useTranslation();
 
   const pageIdsWithNoSnippet = pages
-    .filter(page => (page.meta?.elasticSearchResult?.snippet.length ?? 0) === 0)
+    .filter(page => (page.meta?.elasticSearchResult?.snippet?.length ?? 0) === 0)
     .map(page => page.data._id);
 
   const { data: isGuestUser } = useIsGuestUser();
