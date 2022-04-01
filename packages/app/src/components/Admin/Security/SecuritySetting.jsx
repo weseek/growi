@@ -310,8 +310,8 @@ class SecuritySetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
     const {
-      currentRestrictGuestMode, currentPageDeletionAuthority, currentPageCompleteDeletionAuthority,
-      currentPageRecursiveDeletionAuthority, currentPageRecursiveCompleteDeletionAuthority, wikiMode,
+      currentPageDeletionAuthority, currentPageCompleteDeletionAuthority,
+      currentPageRecursiveDeletionAuthority, currentPageRecursiveCompleteDeletionAuthority,
     } = adminGeneralSecurityContainer.state;
 
 
