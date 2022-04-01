@@ -23,9 +23,9 @@ jobs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -33,7 +33,7 @@ jobs:
 
     - name: Cache/Restore node_modules
       id: cache-dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules
@@ -103,9 +103,9 @@ jobs:
           discovery.type: single-node
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -119,7 +119,7 @@ jobs:
 
     - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules
@@ -185,7 +185,7 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['1', '2', '3']
+        spec-group: ['1', '2', '3', '4']
 
     services:
       mongodb:
@@ -200,7 +200,7 @@ jobs:
           discovery.type: single-node
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Get yarn cache dir
       id: yarn-cache-dir
@@ -208,7 +208,7 @@ jobs:
         echo "::set-output name=value::`yarn cache dir --silent`"
 
     - name: Cache/Restore dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           **/node_modules
@@ -250,7 +250,7 @@ jobs:
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
     - name: Cypress Run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v3
       with:
         working-directory: ./packages/app
         install: false

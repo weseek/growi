@@ -65,9 +65,9 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-  #need to adjust kibana version based on elasticsearch version
+  #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.1
+    image: docker.elastic.co/kibana/kibana:7.16.1
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'

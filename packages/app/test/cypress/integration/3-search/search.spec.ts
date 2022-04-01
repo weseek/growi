@@ -1,24 +1,13 @@
-context('Access to search result page directly', () => {
+context('Access to search result page', () => {
   const ssPrefix = 'access-to-result-page-directly-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
   });
 
   it('/_search with "q" param is successfully loaded', () => {
@@ -50,6 +39,30 @@ context('Access to search result page directly', () => {
     cy.screenshot(`${ssPrefix}-the-select-all-checkbox-3`);
     cy.getByTestid('cb-select-all').click({force: true});
     cy.screenshot(`${ssPrefix}-the-select-all-checkbox-4`);
+  });
+
+});
+
+
+
+context('Access to legacy private pages', () => {
+  const ssPrefix = 'access-to-legacy-private-pages-directly-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+    // collapse sidebar
+    cy.collapseSidebar(true);
+  });
+
+  it('/_private-legacy-pages is successfully loaded', () => {
+    cy.visit('/_private-legacy-pages');
+
+    cy.getByTestid('search-result-base').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}-shown`);
   });
 
 });

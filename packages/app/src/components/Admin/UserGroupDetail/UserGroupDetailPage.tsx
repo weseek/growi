@@ -7,6 +7,7 @@ import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupTable from '../UserGroup/UserGroupTable';
 import UserGroupModal from '../UserGroup/UserGroupModal';
 import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
+import UpdateParentConfirmModal from './UpdateParentConfirmModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
@@ -25,6 +26,7 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 import { useIsAclEnabled } from '~/stores/context';
+import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 
 const UserGroupDetailPage: FC = () => {
   const { t } = useTranslation();
@@ -33,7 +35,7 @@ const UserGroupDetailPage: FC = () => {
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
+  const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -46,9 +48,9 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Fetch
    */
-  const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
+  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroup._id, 10, 0);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroup._id], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
@@ -56,12 +58,14 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(userGroup._id);
-  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(userGroup._id);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroup._id);
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroup._id);
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(userGroup._id);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroup._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
+
+  const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
   /*
    * Function
@@ -80,30 +84,66 @@ const UserGroupDetailPage: FC = () => {
     setSearchType(searchType);
   }, []);
 
-  const updateUserGroup = useCallback(async(UserGroupData: Partial<IUserGroup>) => {
-    try {
-      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
-        name: UserGroupData.name,
-        description: UserGroupData.description,
-        parentId: UserGroupData.parent,
-      });
-      const { userGroup: newUserGroup } = res.data;
-      setUserGroup(newUserGroup);
-
-      // mutate
-      mutateAncestorUserGroups();
-      mutateSelectableChildUserGroups();
-      mutateSelectableParentUserGroups();
-
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+  const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
+    if (update.parent == null) {
+      throw Error('"parent" attr must not be null');
     }
-    catch (err) {
-      toastError(err);
+
+    const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
+    const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+      name: update.name,
+      description: update.description,
+      parentId,
+      forceUpdateParents,
+    });
+    const { userGroup: updatedUserGroup } = res.data;
+
+    setUserGroup(updatedUserGroup);
+
+    // mutate
+    mutateAncestorUserGroups();
+    mutateSelectableChildUserGroups();
+    mutateSelectableParentUserGroups();
+  }, [setUserGroup, mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+
+  const onSubmitUpdateGroup = useCallback(
+    async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
+      try {
+        await updateUserGroup(targetGroup, userGroupData, forceUpdateParents);
+        toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      }
+      catch {
+        toastError(t('toaster.update_failed', { target: t('UserGroup') }));
+      }
+    },
+    [t, updateUserGroup],
+  );
+
+  const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
+    if (userGroupData?.parent === undefined || typeof userGroupData?.parent === 'string') {
+      toastError(t('Something went wrong. Please try again.'));
+      return;
     }
-  }, [t, userGroup._id, setUserGroup, mutateAncestorUserGroups]);
+
+    const prevParentId = typeof targetGroup.parent === 'string' ? targetGroup.parent : (targetGroup.parent?._id || null);
+    const newParentId = typeof userGroupData.parent?._id === 'string' ? userGroupData.parent?._id : null;
+
+    const shouldShowConfirmModal = prevParentId !== newParentId;
+
+    if (shouldShowConfirmModal) { // show confirm modal before submiting
+      await openUpdateParentConfirmModal(
+        targetGroup,
+        userGroupData,
+        onSubmitUpdateGroup,
+      );
+    }
+    else { // directly submit
+      await onSubmitUpdateGroup(targetGroup, userGroupData, false);
+    }
+  }, [t, openUpdateParentConfirmModal, onSubmitUpdateGroup]);
 
   const fetchApplicableUsers = useCallback(async(searchWord) => {
-    const res = await apiv3Get(`/user-groups/${userGroup._id}/unrelated-users`, {
+    const res = await apiv3Get(`/user-groups/${currentUserGroup._id}/unrelated-users`, {
       searchWord,
       searchType,
       isAlsoMailSearched,
@@ -117,14 +157,14 @@ const UserGroupDetailPage: FC = () => {
 
   // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
-    await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
+    await apiv3Post(`/user-groups/${currentUserGroup._id}/users/${username}`);
     mutateUserGroupRelations();
-  }, [userGroup, mutateUserGroupRelations]);
+  }, [currentUserGroup, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
-    await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
+    await apiv3Delete(`/user-groups/${currentUserGroup._id}/users/${username}`);
     mutateUserGroupRelations();
-  }, [userGroup, mutateUserGroupRelations]);
+  }, [currentUserGroup, mutateUserGroupRelations]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
@@ -156,26 +196,16 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [t, mutateChildUserGroups, hideUpdateModal]);
 
-  const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
-    try {
-      await apiv3Put(`/user-groups/${selectedUserGroup._id}`, {
-        name: selectedUserGroup.name,
-        description: selectedUserGroup.description,
-        parentId: userGroup._id,
-        forceUpdateParents: false,
-      });
-
-      // mutate
-      mutateChildUserGroups();
-      mutateSelectableChildUserGroups();
-      mutateSelectableParentUserGroups();
-
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
+  const onClickAddExistingUserGroupButtonHandler = useCallback(async(selectedChild: IUserGroupHasId): Promise<void> => {
+    // show confirm modal before submiting
+    await openUpdateParentConfirmModal(
+      selectedChild,
+      {
+        parent: currentUserGroup._id,
+      },
+      onSubmitUpdateGroup,
+    );
+  }, [openUpdateParentConfirmModal, onSubmitUpdateGroup, currentUserGroup]);
 
   const showCreateModal = useCallback(() => {
     setCreateModalShown(true);
@@ -190,7 +220,7 @@ const UserGroupDetailPage: FC = () => {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
-        parentId: userGroup._id,
+        parentId: currentUserGroup._id,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
@@ -205,7 +235,7 @@ const UserGroupDetailPage: FC = () => {
     catch (err) {
       toastError(err);
     }
-  }, [t, userGroup, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
+  }, [t, currentUserGroup, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
@@ -240,7 +270,7 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Dependencies
    */
-  if (userGroup == null) {
+  if (currentUserGroup == null) {
     return <></>;
   }
 
@@ -252,8 +282,9 @@ const UserGroupDetailPage: FC = () => {
           {
             ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
               ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
-                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === userGroup._id ? 'active' : ''}`} aria-current="page">
-                  { ancestorUserGroup._id === userGroup._id ? (
+                // eslint-disable-next-line max-len
+                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroup._id ? 'active' : ''}`} aria-current="page">
+                  { ancestorUserGroup._id === currentUserGroup._id ? (
                     <>{ancestorUserGroup.name}</>
                   ) : (
                     <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
@@ -267,10 +298,10 @@ const UserGroupDetailPage: FC = () => {
 
       <div className="mt-4 form-box">
         <UserGroupForm
-          userGroup={userGroup}
+          userGroup={currentUserGroup}
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
-          onSubmit={updateUserGroup}
+          onSubmit={onClickSubmitForm}
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
@@ -280,8 +311,8 @@ const UserGroupDetailPage: FC = () => {
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
         selectableUserGroups={selectableChildUserGroups}
-        onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
-        onClickCreateUserGroupButtonHandler={showCreateModal}
+        onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
+        onClickCreateUserGroupButton={showCreateModal}
       />
 
       <UserGroupModal
@@ -299,6 +330,8 @@ const UserGroupDetailPage: FC = () => {
         onHide={hideCreateModal}
       />
 
+      <UpdateParentConfirmModal />
+
       <UserGroupTable
         userGroups={childUserGroups}
         childUserGroups={grandChildUserGroups}
@@ -313,7 +346,6 @@ const UserGroupDetailPage: FC = () => {
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteChildUserGroupById}
         isShow={isDeleteModalShown}
-        onShow={showDeleteModal}
         onHide={hideDeleteModal}
       />
 

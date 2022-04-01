@@ -1,5 +1,6 @@
 import { body, validationResult } from 'express-validator';
 
+const PASSOWRD_MINIMUM_NUMBER = 8;
 // form rules
 export const registerRules = () => {
   return [
@@ -18,8 +19,8 @@ export const registerRules = () => {
     body('registerForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('Password has invalid character')
-      .isLength({ min: 6 })
-      .withMessage('Password minimum character should be more than 6 characters')
+      .isLength({ min: PASSOWRD_MINIMUM_NUMBER })
+      .withMessage('Password minimum character should be more than 8 characters')
       .not()
       .isEmpty()
       .withMessage('Password field is required'),

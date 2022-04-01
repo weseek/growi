@@ -181,8 +181,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                   <div className="page-list px-md-4">
                     <SearchResultList
                       ref={searchResultListRef}
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      pages={pages!}
+                      pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
