@@ -48,16 +48,15 @@ function PageEditorModeManager(props) {
   const isAdmin = appContainer.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
-  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled && editorMode !== EditorMode.HackMD;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled) {
+    if (isBtnDisabled || !isHackmdEnabled) {
       return;
     }
     if (onPageEditorModeButtonClicked != null) {
       onPageEditorModeButtonClicked(viewType);
     }
-  }, [isBtnDisabled, onPageEditorModeButtonClicked]);
+  }, [isBtnDisabled, isHackmdEnabled, onPageEditorModeButtonClicked]);
 
   return (
     <>
@@ -90,7 +89,7 @@ function PageEditorModeManager(props) {
         {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode={EditorMode.HackMD}
             icon={<i className="fa fa-file-text-o" />}
@@ -104,7 +103,7 @@ function PageEditorModeManager(props) {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
-      {!isBtnDisabled && showHackmdDisabledTooltip && (
+      {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && !isHackmdEnabled && (
         <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
           {t('hackmd.not_set_up')}
         </UncontrolledTooltip>
