@@ -1,3 +1,7 @@
+/*
+ * !! TODO: https://redmine.weseek.co.jp/issues/92050 Fix & adjust test !!
+ */
+
 import mongoose from 'mongoose';
 
 import SearchService from '~/server/service/search';

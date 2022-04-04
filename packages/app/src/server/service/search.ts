@@ -74,7 +74,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   isErrorOccuredOnSearching: boolean | null
 
-  fullTextSearchDelegator: any & SearchDelegator
+  fullTextSearchDelegator: any & ElasticsearchDelegator
 
   nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
 
@@ -124,10 +124,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
   }
 
-  generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+  generateNQDelegators(defaultDelegator: ElasticsearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
-      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator() as SearchDelegator,
     };
   }
 
@@ -218,11 +218,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return this.fullTextSearchDelegator.rebuildIndex();
   }
 
-  async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
+  // TODO: https://redmine.weseek.co.jp/issues/92049 No need to parseNQString anymore
+  async parseSearchQuery(queryString: string, nqName: string | null): Promise<ParsedQuery> {
+    // eslint-disable-next-line no-param-reassign
+    queryString = normalizeQueryString(queryString);
+
     const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
     const replaceRegexp = new RegExp(/\[nq:|\]/g);
-
-    const queryString = normalizeQueryString(_queryString);
 
     // when Normal Query
     if (!regexp.test(queryString)) {
@@ -251,35 +253,30 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return parsedQuery;
   }
 
-  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
-    const { queryString, terms, delegatorName } = parsedQuery;
-    if (delegatorName != null) {
-      const nqDelegator = this.nqDelegators[delegatorName];
-      if (nqDelegator != null) {
-        return [nqDelegator, null];
-      }
-    }
+  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]> {
+    const { queryString, terms, delegatorName = SearchDelegatorName.DEFAULT } = parsedQuery;
+    const nqDeledator = this.nqDelegators[delegatorName];
 
     const data = {
       queryString,
-      terms: terms as QueryTerms,
+      terms,
     };
-    return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
+    return [nqDeledator, data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
-    let parsedQuery;
+  async searchKeyword(keyword: string, nqName: string | null, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
+    let parsedQuery: ParsedQuery;
     // parse
     try {
-      parsedQuery = await this.parseSearchQuery(keyword);
+      parsedQuery = await this.parseSearchQuery(keyword, nqName);
     }
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
       throw err;
     }
 
-    let delegator;
-    let data;
+    let delegator: SearchDelegator;
+    let data: SearchableData;
     // resolve
     try {
       [delegator, data] = await this.resolve(parsedQuery);
@@ -289,7 +286,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       throw err;
     }
 
-    return [await delegator.search(data, user, userGroups, searchOpts), delegator.name];
+    return [await delegator.search(data, user, userGroups, searchOpts), delegator.name ?? null];
   }
 
   parseQueryString(queryString: string): QueryTerms {

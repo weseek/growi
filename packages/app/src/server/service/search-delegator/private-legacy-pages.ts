@@ -4,13 +4,14 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPage } from '~/interfaces/page';
 import {
-  SearchableData, SearchDelegator,
+  QueryTerms, MongoTermsKey,
+  SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
 } from '../../interfaces/search';
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 import { ISearchResult } from '~/interfaces/search';
 
 
-class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
+class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKey, MongoQueryTerms> {
 
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES
 
@@ -18,7 +19,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(_data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
+  async search(data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -57,6 +58,14 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
         hitsCount: pages.length,
       },
     };
+  }
+
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is MongoQueryTerms {
+    return true;
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
+    return [];
   }
 
 }
