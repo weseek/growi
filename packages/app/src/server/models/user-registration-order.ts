@@ -6,9 +6,6 @@ import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '@growi/core';
 
-export const expiredAt = (): Date => {
-  return new Date(Date.now() + 600000);
-};
 export interface IUserRegistrationOrder {
   token: string,
   email: string,
@@ -26,6 +23,10 @@ export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderD
   generateOneTimeToken(): string
   createUserRegistrationOrder(email: string): UserRegistrationOrderDocument
 }
+
+const expiredAt = (): Date => {
+  return new Date(Date.now() + 600000);
+};
 
 const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({
   token: { type: String, required: true, unique: true },

@@ -8,9 +8,6 @@ import { getOrCreateModel } from '@growi/core';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-export const expiredAt = (): Date => {
-  return new Date(Date.now() + 600000);
-};
 export interface IPasswordResetOrder {
   token: string,
   email: string,
@@ -30,6 +27,10 @@ export interface PasswordResetOrderModel extends Model<PasswordResetOrderDocumen
   generateOneTimeToken(): string
   createPasswordResetOrder(email: string): PasswordResetOrderDocument
 }
+
+const expiredAt = (): Date => {
+  return new Date(Date.now() + 600000);
+};
 
 const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
   token: { type: String, required: true, unique: true },
