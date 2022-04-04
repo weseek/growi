@@ -218,7 +218,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  if (pageId == null || error != null) {
+  if (error != null) {
     return <></>;
   }
 
