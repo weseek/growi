@@ -212,7 +212,7 @@
 		},
 		"form_help": {
 			"email": "您必须有下面列出的电子邮件地址才能注册此wiki。",
-			"password": "密码长度必须至少为6个字符。",
+			"password": "密码长度必须至少为8个字符。",
 			"user_id": "您创建的网页的URL将包含您的用户ID。您的用户ID可以由字母、数字和一些符号组成。"
 		}
 	},
@@ -644,7 +644,8 @@
     "max_age": "有效期间  (msec)",
     "max_age_desc": "指定使用户会话过期的数量(以毫秒为单位)。<br>默认值: 2592000000 (30天)",
     "max_age_caution": "修改该值后需要重启服务器。",
-    "page_delete_rights_caution": "\"包括后代的操作\" 的设置被迫强于 \"只对选定的页面进行操作\" 的设置。",
+    "forced_update_desc": "设置已被强行更改。以前的设置: ",
+    "page_delete_rights_caution": "\"删除/全部删除\"权限（包括后代页面）被强制强于\"删除/完全删除\"权限。 <br> <br> 任何人 > 管理员|作者 > 仅管理员",
 		"Authentication mechanism settings": "身份验证机制设置",
 		"setup_is_not_yet_complete": "安装尚未完成",
 		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
@@ -1020,5 +1021,10 @@
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
     "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
     "select_page_to_see" : "请在下面选择你想去的页面。"
+  },
+  "user_group": {
+    "select_group": "选择组别",
+    "belonging_to_no_group": "无法找到你所属的团体。",
+    "manage_user_groups": "管理用户组"
   }
 }

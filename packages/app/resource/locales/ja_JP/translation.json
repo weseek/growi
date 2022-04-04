@@ -214,7 +214,7 @@
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、6文字以上の半角英数字または記号等を設定してください。",
+      "password": "パスワードには、8文字以上の半角英数字または記号等を設定してください。",
       "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
     }
   },
@@ -685,7 +685,8 @@
     "max_age": "有効期間 (ミリ秒)",
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
     "max_age_caution": "この値を変更した後は、サーバーを再起動する必要があります。",
-    "page_delete_rights_caution": "「子孫を含む操作」の設定値は、「単体のみの操作」の設定値よりも強いものに強制されます。",
+    "forced_update_desc": "設定が強制変更されました。前回の設定: ",
+    "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 誰でも可能 > 管理者とページ作者が可能 > 管理者のみ可能",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
@@ -1010,5 +1011,10 @@
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
     "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
     "select_page_to_see" : "以下から遷移するページを選択してください。"
+  },
+  "user_group": {
+    "select_group": "グループを選ぶ",
+    "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
+    "manage_user_groups": "グループ管理"
   }
 }
