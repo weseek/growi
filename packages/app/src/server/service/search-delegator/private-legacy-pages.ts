@@ -37,10 +37,6 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     await countQueryBuilder.addConditionAsMigratablePages(user);
     const findQueryBuilder = new PageQueryBuilder(Page.find());
     await findQueryBuilder.addConditionAsMigratablePages(user);
-    // if (false) {
-    //   countQueryBuilder.addConditionToListWithDescendants(prefix);
-    //   findQueryBuilder.addConditionToListWithDescendants(prefix);
-    // }
 
     const total = await countQueryBuilder.query.count();
 
