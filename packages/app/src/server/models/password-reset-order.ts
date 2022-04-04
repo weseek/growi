@@ -6,6 +6,8 @@ import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '@growi/core';
 
+import { expiredAt } from '~/server/util/expiredAt';
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 export interface IPasswordResetOrder {
@@ -33,7 +35,7 @@ const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
   isRevoked: { type: Boolean, default: false, required: true },
-  expiredAt: { type: Date, default: new Date(Date.now() + 600000), required: true },
+  expiredAt: { type: Date, default: expiredAt, required: true },
 }, {
   timestamps: {
     createdAt: true,
