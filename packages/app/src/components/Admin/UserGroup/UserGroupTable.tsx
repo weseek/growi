@@ -98,7 +98,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
-    const requestParams = Object.assign(userGroup, { parent: null });
+    const requestParams = Object.assign({ ...userGroup }, { parent: null });
     await props.onRemove(requestParams);
 
     userGroup.parent = null;
