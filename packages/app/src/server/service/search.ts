@@ -219,8 +219,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return this.fullTextSearchDelegator.rebuildIndex();
   }
 
-  // TODO: https://redmine.weseek.co.jp/issues/92049 Parse nqString as well
-  async parseSearchQuery(queryString: string, nqString: string | null): Promise<ParsedQuery> {
+  // TODO: https://redmine.weseek.co.jp/issues/92049 No need to parseNQString anymore
+  async parseSearchQuery(queryString: string, nqName: string | null): Promise<ParsedQuery> {
     // eslint-disable-next-line no-param-reassign
     queryString = normalizeQueryString(queryString);
 
@@ -262,11 +262,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [nqDeledator, data];
   }
 
-  async searchKeyword(keyword: string, nqString: string | null, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
+  async searchKeyword(keyword: string, nqName: string | null, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
     let parsedQuery: ParsedQuery;
     // parse
     try {
-      parsedQuery = await this.parseSearchQuery(keyword, nqString);
+      parsedQuery = await this.parseSearchQuery(keyword, nqName);
     }
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
