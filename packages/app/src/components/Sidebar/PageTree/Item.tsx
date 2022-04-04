@@ -213,9 +213,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
-    finally {
-      console.log('==============================');
-    }
   };
 
   const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
