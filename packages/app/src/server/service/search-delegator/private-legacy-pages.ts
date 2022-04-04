@@ -4,13 +4,14 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPage } from '~/interfaces/page';
 import {
-  SearchableData, SearchDelegator,
+  QueryTerms, MongoTermsKey,
+  SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
 } from '../../interfaces/search';
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 import { ISearchResult } from '~/interfaces/search';
 
 
-class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
+class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKey, MongoQueryTerms> {
 
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES
 
@@ -18,7 +19,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(_data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
+  async search(data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -36,6 +37,10 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     await countQueryBuilder.addConditionAsMigratablePages(user);
     const findQueryBuilder = new PageQueryBuilder(Page.find());
     await findQueryBuilder.addConditionAsMigratablePages(user);
+    // if (false) {
+    //   countQueryBuilder.addConditionToListWithDescendants(prefix);
+    //   findQueryBuilder.addConditionToListWithDescendants(prefix);
+    // }
 
     const total = await countQueryBuilder.query.count();
 
@@ -56,6 +61,19 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
         total,
         hitsCount: pages.length,
       },
+    };
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
+    return [];
+  }
+
+  excludeUnavailableTerms(terms: QueryTerms): MongoQueryTerms {
+    return {
+      match: [''],
+      not_match: [''],
+      prefix: [''],
+      not_prefix: [''],
     };
   }
 

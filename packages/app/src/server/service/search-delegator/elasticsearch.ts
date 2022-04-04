@@ -11,7 +11,7 @@ import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { PageModel } from '../../models/page';
 import {
-  SearchDelegator, SearchableData, QueryTerms,
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
 } from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
@@ -40,7 +40,7 @@ const ES_SORT_ORDER = {
 
 type Data = any;
 
-class ElasticsearchDelegator implements SearchDelegator<Data> {
+class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
 
   name!: SearchDelegatorName.DEFAULT
 
@@ -965,6 +965,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
 
+    if (terms == null) {
+      throw Error('Cannnot process search since terms is undefined.');
+    }
+
     const from = option.offset || null;
     const size = option.limit || null;
     const sort = option.sort || null;
@@ -982,6 +986,23 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendHighlight(query);
 
     return this.searchKeyword(query);
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
+    return [];
+  }
+
+  excludeUnavailableTerms(terms: QueryTerms): ESQueryTerms {
+    return {
+      match: [],
+      not_match: [],
+      phrase: [],
+      not_phrase: [],
+      prefix: [],
+      not_prefix: [],
+      tag: [],
+      not_tag: [],
+    };
   }
 
   async syncPageUpdated(page, user) {
