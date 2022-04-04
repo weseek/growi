@@ -17,7 +17,7 @@ export type QueryTerms = {
 export type ParsedQuery = { queryString: string, terms: QueryTerms, delegatorName?: string }
 
 export interface SearchQueryParser {
-  parseSearchQuery(queryString: string, nqString: string | null): Promise<ParsedQuery>
+  parseSearchQuery(queryString: string, nqName: string | null): Promise<ParsedQuery>
 }
 
 export interface SearchResolver {
