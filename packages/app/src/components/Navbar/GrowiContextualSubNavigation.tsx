@@ -235,14 +235,15 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
-    const displayedPageId = pageId;
+    console.log('pageId', pageId);
+
     return (
       <>
         <div className={className}>
-          { displayedPageId != null && isViewMode && (
+          { pageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
-              pageId={displayedPageId}
+              pageId={pageId}
               shareLinkId={shareLinkId}
               revisionId={revisionId}
               path={path}
@@ -251,7 +252,7 @@ const GrowiContextualSubNavigation = (props) => {
               additionalMenuItemRenderer={props => (
                 <AdditionalMenuItems
                   {...props}
-                  pageId={displayedPageId}
+                  pageId={pageId}
                   revisionId={revisionId}
                   isLinkSharingDisabled={isLinkSharingDisabled}
                   onClickTemplateMenuItem={templateMenuItemClickHandler}

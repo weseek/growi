@@ -1419,9 +1419,6 @@ class PageService {
   private async deleteEmptyTarget(page): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    // update descendantCount of ancestors' before removeLeafEmptyPages
-    await this.updateDescendantCountOfAncestors(page._id, -page.descendantCount, false);
-
     await Page.deleteOne({ _id: page._id, isEmpty: true });
   }
 
