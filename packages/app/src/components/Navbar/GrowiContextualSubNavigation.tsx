@@ -75,14 +75,20 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openPresentationModal(hrefForPresentationModal)}
         data-testid="open-presentation-modal-btn"
+        className="d-flex align-items-center"
       >
-        <i className="icon-fw"><PresentationIcon /></i>
+        <i className="grw-dropdown-icon icon-fw d-flex justify-content-center">
+          <PresentationIcon />
+        </i>
         { t('Presentation Mode') }
       </DropdownItem>
 
       {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
+      <DropdownItem
+        onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
+        className="d-flex align-items-center"
+      >
+        <i className="grw-dropdown-icon icon-fw icon-cloud-download d-flex justify-content-center"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
@@ -95,31 +101,46 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
+        className="d-flex align-items-center"
       >
-        <span className="mr-1"><HistoryIcon /></span>
+        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+          <HistoryIcon />
+        </span>
         {t('History')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
+        className="d-flex align-items-center"
       >
-        <span className="mr-1"><AttachmentIcon /></span>
+        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+          <AttachmentIcon />
+        </span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        className="d-flex align-items-center"
       >
-        <span className="mr-1"><ShareLinkIcon /></span>
+        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+          <ShareLinkIcon />
+        </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
 
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={openPageTemplateModalHandler}>
-        <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
+      <DropdownItem
+        onClick={openPageTemplateModalHandler}
+        className="d-flex align-items-center"
+      >
+        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+          <i className="icon-fw icon-magic-wand text-center"></i>
+        </span>
+        { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
   );
