@@ -988,21 +988,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return this.searchKeyword(query);
   }
 
-  validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
-    return [];
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is ESQueryTerms {
+    return true;
   }
 
-  excludeUnavailableTerms(terms: QueryTerms): ESQueryTerms {
-    return {
-      match: [],
-      not_match: [],
-      phrase: [],
-      not_phrase: [],
-      prefix: [],
-      not_prefix: [],
-      tag: [],
-      not_tag: [],
-    };
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
+    return [];
   }
 
   async syncPageUpdated(page, user) {

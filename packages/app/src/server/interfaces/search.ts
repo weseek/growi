@@ -27,8 +27,8 @@ export interface SearchResolver {
 export interface SearchDelegator<T = unknown, KEY extends AllTermsKey = AllTermsKey, QTERMS = unknown> {
   name?: SearchDelegatorName
   search(data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<T>>
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is QTERMS,
   validateTerms(terms: QueryTerms): UnavailableTermsKey<KEY>[],
-  excludeUnavailableTerms(terms: QueryTerms): QTERMS,
 }
 
 export type SearchableData = {

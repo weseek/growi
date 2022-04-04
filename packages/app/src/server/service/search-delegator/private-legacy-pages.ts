@@ -64,17 +64,12 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     };
   }
 
-  validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
-    return [];
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is MongoQueryTerms {
+    return true;
   }
 
-  excludeUnavailableTerms(terms: QueryTerms): MongoQueryTerms {
-    return {
-      match: [''],
-      not_match: [''],
-      prefix: [''],
-      not_prefix: [''],
-    };
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
+    return [];
   }
 
 }
