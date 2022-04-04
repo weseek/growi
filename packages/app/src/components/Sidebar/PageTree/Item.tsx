@@ -310,7 +310,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     if (page._id == null || page.path == null) {
-      throw Error('Any of _id, revision, and path must not be null.');
+      throw Error('Any of _id and path must not be null.');
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
