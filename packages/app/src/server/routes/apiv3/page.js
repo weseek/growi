@@ -365,6 +365,7 @@ module.exports = (crowi) => {
 
     try {
       const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true, isSharedPage);
+
       if (pageWithMeta == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
