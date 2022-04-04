@@ -1,6 +1,7 @@
 import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
@@ -74,7 +75,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     });
   };
 
-  const onClickEdit = (e) => {
+  const onClickEdit = async(e) => {
     if (props.onEdit == null) {
       return;
     }
@@ -87,7 +88,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     props.onEdit(userGroup);
   };
 
-  const onClickRemove = (e) => {
+  const onClickRemove = async(e) => {
     if (props.onRemove == null) {
       return;
     }
@@ -97,9 +98,10 @@ const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
-    userGroup.parent = null;
+    const requestParams = Object.assign(userGroup, { parent: null });
+    await props.onRemove(requestParams);
 
-    props.onRemove(userGroup);
+    userGroup.parent = null;
   };
 
   const onClickDelete = (e) => { // no preventDefault
