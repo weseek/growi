@@ -28,13 +28,21 @@ export interface PasswordResetOrderModel extends Model<PasswordResetOrderDocumen
   createPasswordResetOrder(email: string): PasswordResetOrderDocument
 }
 
+const expiredAt = (): Date => {
+  return new Date(Date.now() + 600000);
+};
+
 const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
   isRevoked: { type: Boolean, default: false, required: true },
-  createdAt: { type: Date, default: new Date(Date.now()), required: true },
-  expiredAt: { type: Date, default: new Date(Date.now() + 600000), required: true },
+  expiredAt: { type: Date, default: expiredAt, required: true },
+}, {
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
+  },
 });
 schema.plugin(uniqueValidator);
 
