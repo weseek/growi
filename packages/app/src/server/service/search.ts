@@ -15,7 +15,6 @@ import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages
 
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
-import { nqStringRegExp, parseNQString } from '~/utils/named-query';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
@@ -224,13 +223,16 @@ class SearchService implements SearchQueryParser, SearchResolver {
     // eslint-disable-next-line no-param-reassign
     queryString = normalizeQueryString(queryString);
 
+    const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RegExp(/\[nq:|\]/g);
+
     // when Normal Query
-    if (!nqStringRegExp.test(queryString)) {
+    if (!regexp.test(queryString)) {
       return { queryString, terms: this.parseQueryString(queryString) };
     }
 
     // when Named Query
-    const name = parseNQString(queryString);
+    const name = queryString.replace(replaceRegexp, '');
     const nq = await NamedQuery.findOne({ name });
 
     // will delegate to full-text search
