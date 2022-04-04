@@ -222,7 +222,6 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-  // it becomes null when opening empty page
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }

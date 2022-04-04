@@ -614,18 +614,10 @@ module.exports = function(crowi, app) {
 
     if (pages.length >= 2) {
 
-
-      // 空ページと まだマイグレートされていない同名パスが存在する場合、重複ページに飛ぶけどemptyは表示する必要ない
-
-      // identicalPathPages から empty page を 取り除く
-
-      // 取り除いた後でも空でないページの数が2以上の場合は処理を続行してよい
-      // そうでない場合は、通常通りの挙動（通常？）
-
       // populate to list
       builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
       const identicalPathPages = await builder.query.lean().exec('find');
-      console.log(identicalPathPages);
+
       return res.render('layout-growi/identical-path-page', {
         identicalPathPages,
         redirectFrom,
@@ -637,9 +629,6 @@ module.exports = function(crowi, app) {
     let isEmptyPage = false;
     if (pages.length === 1) {
       isEmptyPage = pages[0].isEmpty;
-      // ここで空ページかどうかをチェック
-      // 空の場合 notfoundに飛ばす（ここはスルー）
-      // そうでない場合、続行return res.safeRedirect(urljoin(url.pathname, url.search));
       if (!isEmptyPage) {
         const url = new URL('https://dummy.origin');
         url.pathname = `/${pages[0]._id}`;
@@ -650,9 +639,7 @@ module.exports = function(crowi, app) {
       }
     }
 
-    // ここは権限が無い場合 or 空ページのどちらか
     // Exclude isEmpty page to handle _notFound or forbidden
-    // !req.isForbidden;
     const isForbidden = await Page.exists({ path, isEmpty: false });
     if (isForbidden) {
       req.isForbidden = true;
