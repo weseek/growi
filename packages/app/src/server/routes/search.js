@@ -147,8 +147,8 @@ module.exports = function(crowi, app) {
     let delegatorName;
     try {
       const keyword = decodeURIComponent(q);
-      const nqString = decodeURIComponent(nq);
-      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, nqString, user, userGroups, searchOpts); // TODOT:
+      const nqString = nq ?? decodeURIComponent(nq);
+      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, nqString, user, userGroups, searchOpts);
     }
     catch (err) {
       logger.error('Failed to search', err);

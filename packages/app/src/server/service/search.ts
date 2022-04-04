@@ -219,8 +219,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return this.fullTextSearchDelegator.rebuildIndex();
   }
 
-  async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const queryString = normalizeQueryString(_queryString);
+  // TODO: https://redmine.weseek.co.jp/issues/92049 Parse nqString as well
+  async parseSearchQuery(queryString: string, nqString: string | null): Promise<ParsedQuery> {
+    // eslint-disable-next-line no-param-reassign
+    queryString = normalizeQueryString(queryString);
 
     // when Normal Query
     if (!nqStringRegExp.test(queryString)) {
@@ -260,11 +262,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [nqDeledator, data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
+  async searchKeyword(keyword: string, nqString: string | null, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
     let parsedQuery: ParsedQuery;
     // parse
     try {
-      parsedQuery = await this.parseSearchQuery(keyword);
+      parsedQuery = await this.parseSearchQuery(keyword, nqString);
     }
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
