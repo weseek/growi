@@ -30,6 +30,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
+      previousPageRecursiveDeletionAuthority: null,
+      previousPageRecursiveCompleteDeletionAuthority: null,
       expandOtherOptionsForDeletion: false,
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
@@ -55,6 +57,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
     this.changePageRecursiveDeletionAuthority = this.changePageRecursiveDeletionAuthority.bind(this);
     this.changePageRecursiveCompleteDeletionAuthority = this.changePageRecursiveCompleteDeletionAuthority.bind(this);
+    this.changePreviousPageRecursiveDeletionAuthority = this.changePreviousPageRecursiveDeletionAuthority.bind(this);
+    this.changePreviousPageRecursiveCompleteDeletionAuthority = this.changePreviousPageRecursiveCompleteDeletionAuthority.bind(this);
 
   }
 
@@ -150,17 +154,32 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch ExpandOtherOptionsForDeletion
+   * Change previousPageRecursiveDeletionAuthority
    */
-  switchExpandOtherOptionsForDeletion() {
-    this.setState({ expandOtherOptionsForDeletion:  !this.state.expandOtherOptionsForDeletion });
+  changePreviousPageRecursiveDeletionAuthority(val) {
+    this.setState({ previousPageRecursiveDeletionAuthority: val });
+  }
+
+
+  /**
+   * Change previousPageRecursiveCompleteDeletionAuthority
+   */
+  changePreviousPageRecursiveCompleteDeletionAuthority(val) {
+    this.setState({ previousPageRecursiveCompleteDeletionAuthority: val });
   }
 
   /**
    * Switch ExpandOtherOptionsForDeletion
    */
-  switchExpandOtherOptionsForCompleteDeletion() {
-    this.setState({ expandOtherOptionsForCompleteDeletion:  !this.state.expandOtherOptionsForCompleteDeletion });
+  switchExpandOtherOptionsForDeletion(bool) {
+    this.setState({ expandOtherOptionsForDeletion: bool });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForCompleteDeletion(bool) {
+    this.setState({ expandOtherOptionsForCompleteDeletion: bool });
   }
 
   /**
