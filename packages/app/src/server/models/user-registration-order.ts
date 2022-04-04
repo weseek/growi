@@ -6,8 +6,9 @@ import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '@growi/core';
 
-import { expiredAt } from '~/server/util/expiredAt';
-
+export const expiredAt = (): Date => {
+  return new Date(Date.now() + 600000);
+};
 export interface IUserRegistrationOrder {
   token: string,
   email: string,

@@ -6,10 +6,11 @@ import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '@growi/core';
 
-import { expiredAt } from '~/server/util/expiredAt';
-
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
+export const expiredAt = (): Date => {
+  return new Date(Date.now() + 600000);
+};
 export interface IPasswordResetOrder {
   token: string,
   email: string,
