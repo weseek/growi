@@ -87,25 +87,27 @@ function PageEditorModeManager(props) {
           />
         )}
         {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && (
-          <PageEditorModeButtonWrapper
-            editorMode={editorMode}
-            isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
-            onClick={pageEditorModeButtonClickedHandler}
-            targetMode={EditorMode.HackMD}
-            icon={<i className="fa fa-file-text-o" />}
-            label={t('hackmd.hack_md')}
-            id="grw-page-editor-mode-manager-hackmd-button"
-          />
+          <>
+            <PageEditorModeButtonWrapper
+              editorMode={editorMode}
+              isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
+              onClick={pageEditorModeButtonClickedHandler}
+              targetMode={EditorMode.HackMD}
+              icon={<i className="fa fa-file-text-o" />}
+              label={t('hackmd.hack_md')}
+              id="grw-page-editor-mode-manager-hackmd-button"
+            />
+            { !isHackmdEnabled && (
+              <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
+                {t('hackmd.not_set_up')}
+              </UncontrolledTooltip>
+            )}
+          </>
         )}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
           {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
-      {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && !isHackmdEnabled && (
-        <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
-          {t('hackmd.not_set_up')}
         </UncontrolledTooltip>
       )}
     </>
