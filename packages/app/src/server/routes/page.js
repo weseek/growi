@@ -613,6 +613,7 @@ module.exports = function(crowi, app) {
     const pages = await builder.query.lean().clone().exec('find');
 
     if (pages.length >= 2) {
+      // Todo: remove empty pages if any. Immediately return if count of remaining pages are less than 2 after removal
 
       // populate to list
       builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
