@@ -18,8 +18,8 @@ import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
 import Page from '../components/Page';
-import PageComments from '../components/PageComments';
 import PageContentFooter from '../components/PageContentFooter';
+import PageComment from '../components/PageComment';
 import PageTimeline from '../components/PageTimeline';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
@@ -120,9 +120,14 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
-    'page-comments-list': <PageComments />,
-    'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-content-footer': <PageContentFooter />,
+    'page-comments-list': <PageComment appContainer={appContainer} pageId={pageContainer.state.pageId} isReadOnly={false} titleAlign="left" />,
+    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} pageId={pageContainer.state.pageId} />,
+    'page-content-footer': <PageContentFooter
+      createdAt={new Date(pageContainer.state.createdAt)}
+      updatedAt={new Date(pageContainer.state.updatedAt)}
+      creator={pageContainer.state.creator}
+      revisionAuthor={pageContainer.state.revisionAuthor}
+    />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });

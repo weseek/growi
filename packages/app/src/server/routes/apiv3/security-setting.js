@@ -367,7 +367,7 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalSetting: {
-        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        restrictGuestMode: crowi.aclService.getGuestModeValue(),
         pageDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),

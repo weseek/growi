@@ -335,58 +335,60 @@ class SecuritySetting extends React.Component {
         )}
 
         <h4 className="mt-4">{ t('security_setting.page_list_and_search_results') }</h4>
-        <table className="table table-bordered col-lg-9 mb-5">
-          <thead>
-            <tr>
-              <th scope="col">{ t('scope_of_page_disclosure') }</th>
-              <th scope="col">{ t('set_point') }</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">{ t('Public') }</th>
-              <td>{ t('always_displayed') }</td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Anyone with the link') }</th>
-              <td>{ t('always_hidden') }</td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Only me') }</th>
-              <td>
-                <div className="custom-control custom-switch custom-checkbox-success">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="isShowRestrictedByOwner"
-                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
-                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
-                  />
-                  <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                    {t('displayed_or_hidden')}
-                  </label>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Only inside the group') }</th>
-              <td>
-                <div className="custom-control custom-switch custom-checkbox-success">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="isShowRestrictedByGroup"
-                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
-                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
-                  />
-                  <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                    {t('displayed_or_hidden')}
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="row justify-content-md-center">
+          <table className="table table-bordered col-lg-9 mb-5">
+            <thead>
+              <tr>
+                <th scope="col">{ t('scope_of_page_disclosure') }</th>
+                <th scope="col">{ t('set_point') }</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{ t('Public') }</th>
+                <td>{ t('always_displayed') }</td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Anyone with the link') }</th>
+                <td>{ t('always_hidden') }</td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Only me') }</th>
+                <td>
+                  <div className="custom-control custom-switch custom-checkbox-success">
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id="isShowRestrictedByOwner"
+                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
+                    />
+                    <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                      {t('displayed_or_hidden')}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Only inside the group') }</th>
+                <td>
+                  <div className="custom-control custom-switch custom-checkbox-success">
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id="isShowRestrictedByGroup"
+                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
+                    />
+                    <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                      {t('displayed_or_hidden')}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h4>{t('security_setting.page_access_rights')}</h4>
         <div className="row mb-4">
@@ -419,13 +421,13 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
-              <p className="alert alert-warning mt-2 text-left offset-3 col-6">
+              <p className="alert alert-warning mt-2 col-6">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_setting.Fixed by env var',
-                      { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                      { key: 'FORCE_WIKI_MODE', value: adminGeneralSecurityContainer.state.wikiMode }),
                   }}
                 />
               </p>
