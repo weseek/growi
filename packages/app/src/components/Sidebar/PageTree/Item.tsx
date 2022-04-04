@@ -195,6 +195,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       await mutateChildren();
 
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
       // force open
       setIsOpen(true);
     }
@@ -208,6 +212,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       else {
         toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
+    }
+    finally {
+      console.log('==============================');
     }
   };
 
