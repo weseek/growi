@@ -6,11 +6,14 @@ type Props = {
   onClose: () => void,
   emojiSearchText: string,
   editor: any
+  emojiPickerHelper: EmojiPickerHelper
 }
 
 const EmojiPicker: FC<Props> = (props: Props) => {
 
-  const { onClose, emojiSearchText, editor } = props;
+  const {
+    onClose, emojiSearchText, emojiPickerHelper,
+  } = props;
 
   const emojiPickerContainer = useRef<HTMLDivElement>(null);
 
@@ -40,7 +43,6 @@ const EmojiPicker: FC<Props> = (props: Props) => {
 
   }, [emojiPickerContainer, onClose, emojiSearchText]);
 
-  const emojiPickerHelper = new EmojiPickerHelper(editor);
 
   const selectEmoji = (emoji) => {
     if (emojiSearchText !== null) {

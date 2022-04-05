@@ -698,6 +698,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               onClose={() => this.setState({ isEmojiPickerShown: false })}
               emojiSearchText={emojiSearchText}
               editor={this.getCodeMirror()}
+              emojiPickerHelper={this.emojiPickerHelper}
             />
           </div>
         </div>
