@@ -155,7 +155,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      {!pageInfo.isEmpty && (
+      {revisionId != null && (
         <span>
           <SubscribeButton
             status={pageInfo.subscriptionStatus}
@@ -163,7 +163,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           />
         </span>
       )}
-      {!pageInfo.isEmpty && (
+      {revisionId != null && (
         <LikeButtons
           hideTotalNumber={isCompactMode}
           onLikeClicked={likeClickhandler}
@@ -172,7 +172,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           likers={likers}
         />
       )}
-      {!pageInfo.isEmpty && (
+      {revisionId != null && (
         <BookmarkButtons
           hideTotalNumber={isCompactMode}
           bookmarkCount={bookmarkCount}
@@ -181,7 +181,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           onBookMarkClicked={bookmarkClickHandler}
         />
       )}
-      {!pageInfo.isEmpty && !isCompactMode && (
+      {revisionId != null && !isCompactMode && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
