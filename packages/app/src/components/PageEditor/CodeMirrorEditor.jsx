@@ -602,8 +602,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   emojiPickerHandler() {
     const searchWord = this.emojiPickerHelper.getEmoji();
 
-    if (!emoji) {
-    if (!searchWord) {
+    if (searchWord != null) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
     }
