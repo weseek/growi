@@ -1,8 +1,8 @@
---- #-------------------------------------------------------------------------------------------------------------
-
 #-------------------------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
+#-------------------------------------------------------------------------------------------------------------
+
 version: '3'
 services:
   node:
@@ -55,7 +55,7 @@ services:
       - 9200:9200
     environment:
       - bootstrap.memory_lock=true
-      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
     ulimits:
       memlock:
         soft: -1
