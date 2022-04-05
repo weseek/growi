@@ -191,7 +191,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
-              className={`pt-2 d-flex align-items-center ${pageInfo.isDeletable ? 'text-danger' : ''}`}
+              className={`pt-2 grw-page-control-dropdown-item ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
