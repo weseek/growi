@@ -86,7 +86,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
   isTermsNormalized(terms: Partial<QueryTerms>): terms is MongoQueryTerms {
     const entries = Object.entries(terms);
 
-    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0);
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && val?.length > 0);
   }
 
   validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
