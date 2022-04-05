@@ -23,7 +23,6 @@ async function makeRegistrationEmailToken(email, crowi) {
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
   const expiredAt = format(userRegistrationOrder.expiredAt, 'yyyy/MM/dd HH:mm');
-  console.log(expiredAt);
   const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
   const oneTimeUrl = url.href;
   const txtFileName = 'userActivation';
