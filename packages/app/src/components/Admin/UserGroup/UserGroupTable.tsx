@@ -98,10 +98,13 @@ const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
-    const requestParams = Object.assign({ ...userGroup }, { parent: null });
-    await props.onRemove(requestParams);
-
-    userGroup.parent = null;
+    try {
+      await props.onRemove(userGroup);
+      userGroup.parent = null;
+    }
+    catch {
+      //
+    }
   };
 
   const onClickDelete = (e) => { // no preventDefault

@@ -188,7 +188,6 @@ const UserGroupDetailPage: FC = () => {
 
       // mutate
       mutateChildUserGroups();
-      mutateSelectableChildUserGroups();
 
       hideUpdateModal();
     }
@@ -268,6 +267,25 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
+  const removeChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${userGroupData._id}`, {
+        name: userGroupData.name,
+        description: userGroupData.description,
+        parentId: null,
+      });
+
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+
+      // mutate
+      mutateChildUserGroups();
+      mutateSelectableChildUserGroups();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, mutateChildUserGroups, mutateSelectableChildUserGroups]);
+
   /*
    * Dependencies
    */
@@ -338,7 +356,7 @@ const UserGroupDetailPage: FC = () => {
         childUserGroups={grandChildUserGroups}
         isAclEnabled={isAclEnabled ?? false}
         onEdit={showUpdateModal}
-        onRemove={updateChildUserGroup}
+        onRemove={removeChildUserGroup}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
       />
