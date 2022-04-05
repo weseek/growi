@@ -235,6 +235,18 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
+    let additionalMenuItemsRenderer;
+    if (revisionId != null) {
+      additionalMenuItemsRenderer = props => (
+        <AdditionalMenuItems
+          {...props}
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+          onClickTemplateMenuItem={templateMenuItemClickHandler}
+        />
+      );
+    }
     return (
       <>
         <div className={className}>
@@ -247,15 +259,7 @@ const GrowiContextualSubNavigation = (props) => {
               path={path}
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={props => (
-                <AdditionalMenuItems
-                  {...props}
-                  pageId={pageId}
-                  revisionId={revisionId}
-                  isLinkSharingDisabled={isLinkSharingDisabled}
-                  onClickTemplateMenuItem={templateMenuItemClickHandler}
-                />
-              )}
+              additionalMenuItemRenderer={additionalMenuItemsRenderer}
               onClickDuplicateMenuItem={duplicateItemClickedHandler}
               onClickRenameMenuItem={renameItemClickedHandler}
               onClickDeleteMenuItem={deleteItemClickedHandler}
