@@ -154,7 +154,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.emojiPickerHandler = this.emojiPickerHandler.bind(this);
+    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
 
   }
 
@@ -571,7 +571,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   keyUpHandler(editor, event) {
     if (event.key !== 'Backspace') {
-      this.emojiPickerHandler();
+      this.checkWhetherEmojiPickerShouldBeShown();
     }
   }
 
@@ -600,10 +600,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * Show emoji picker component when emoji pattern (`:` + searchWord ) found
    * eg `:a`, `:ap`
    */
-  emojiPickerHandler() {
+  checkWhetherEmojiPickerShouldBeShown() {
     const searchWord = this.emojiPickerHelper.getEmoji();
 
-    if (searchWord != null) {
+    if (searchWord == null) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
     }
