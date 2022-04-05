@@ -84,6 +84,7 @@ const ContextExtractorOnce: FC = () => {
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
+  const isEmptyPage = notFoundContent != null && pageId != null;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
@@ -140,7 +141,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
-  useIsEmptyPageInNotFoundContext(notFoundContent != null && pageId != null);
+  useIsEmptyPageInNotFoundContext(isEmptyPage);
 
   // Navigation
   usePreferDrawerModeByUser();
