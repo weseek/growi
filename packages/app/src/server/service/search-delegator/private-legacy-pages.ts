@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { PageModel, PageDocument } from '~/server/models/page';
+import { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPage } from '~/interfaces/page';
 import {
@@ -10,6 +10,7 @@ import {
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 import { ISearchResult } from '~/interfaces/search';
 
+const AVAILABLE_KEYS = ['match', 'not_match', 'prefix', 'not_prefix'];
 
 class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKey, MongoQueryTerms> {
 
@@ -19,7 +20,8 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
+  async search(data: SearchableData<MongoQueryTerms>, user, userGroups, option): Promise<ISearchResult<IPage>> {
+    const { terms } = data;
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -60,12 +62,37 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     };
   }
 
+  addConditionByTerms(builder: PageQueryBuilder, terms: MongoQueryTerms): PageQueryBuilder {
+    const {
+      match, not_match: notMatch, prefix, not_prefix: notPrefix,
+    } = terms;
+
+    if (match.length > 0) {
+      match.forEach(m => builder.addConditionToListByMatch(m));
+    }
+    if (notMatch.length > 0) {
+      notMatch.forEach(nm => builder.addConditionToListByNotMatch(nm));
+    }
+    if (prefix.length > 0) {
+      prefix.forEach(p => builder.addConditionToListByStartWith(p));
+    }
+    if (notPrefix.length > 0) {
+      notPrefix.forEach(np => builder.addConditionToListByNotStartWith(np));
+    }
+
+    return builder;
+  }
+
   isTermsNormalized(terms: Partial<QueryTerms>): terms is MongoQueryTerms {
-    return true;
+    const keys = Object.keys(terms);
+
+    return keys.every(k => AVAILABLE_KEYS.includes(k));
   }
 
   validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
-    return [];
+    const keys = Object.keys(terms);
+
+    return keys.filter((k): k is UnavailableTermsKey<MongoTermsKey> => !AVAILABLE_KEYS.includes(k));
   }
 
 }

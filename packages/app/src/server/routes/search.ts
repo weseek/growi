@@ -1,4 +1,5 @@
-const { default: loggerFactory } = require('~/utils/logger');
+import loggerFactory from '~/utils/logger';
+import { isSearchError, SearchError } from '../models/vo/error-search';
 
 const logger = loggerFactory('growi:routes:search');
 
@@ -35,8 +36,8 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
-  const actions = {};
-  const api = {};
+  const actions: any = {};
+  const api: any = {};
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
@@ -152,6 +153,12 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Failed to search', err);
+
+      if (isSearchError(err)) {
+        const { unavailableTermsKeys } = err;
+        return res.json(ApiResponse.error(err, 400, { unavailableTermsKeys }));
+      }
+
       return res.json(ApiResponse.error(err));
     }
 
