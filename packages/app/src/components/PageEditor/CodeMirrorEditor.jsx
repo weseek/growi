@@ -600,14 +600,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * Show emoji picker component when emoji pattern found
    */
   emojiPickerHandler() {
-    const emoji = this.emojiPickerHelper.getEmoji();
+    const searchWord = this.emojiPickerHelper.getEmoji();
 
     if (!emoji) {
+    if (!searchWord) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
     }
     else {
-      this.setState({ emojiSearchText: emoji });
+      this.setState({ emojiSearchText: searchWord });
       // Show emoji picker after user stop typing
       setTimeout(() => {
         this.setState({ isEmojiPickerShown: true });

@@ -54,8 +54,8 @@ getEmoji = () => {
       ch: sc.to().ch,
     };
     const currentSearchText = sc.matches(true, pos).match[0];
-    const searchValue = currentSearchText.replace(':', '');
-    return searchValue;
+    const searchWord = currentSearchText.replace(':', '');
+    return searchWord;
   }
 
   return;
