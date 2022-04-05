@@ -283,7 +283,7 @@ const UserGroupDetailPage: FC = () => {
     }
     catch (err) {
       toastError(err);
-      throw new Error(err);
+      throw err;
     }
   }, [t, mutateChildUserGroups, mutateSelectableChildUserGroups]);
 
