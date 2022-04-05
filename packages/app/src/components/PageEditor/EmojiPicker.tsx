@@ -29,7 +29,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
       const event = new Event('input', { bubbles: true });
       input.dispatchEvent(event);
     }
-
+    // TODO: using blur event by GW-7770 blurイベントを用いてEmojiPickerをcloseさせる
     function handleClickOutside(event) {
       if (emojiPickerContainer.current && !emojiPickerContainer.current.contains(event.target)) {
         onClose();
