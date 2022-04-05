@@ -194,7 +194,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      if (page.meta != null && page.meta.isEmpty) {
+      if (page.data._id !== null) {
         window.location.href = `/${page.data._id}`;
         return;
       }
