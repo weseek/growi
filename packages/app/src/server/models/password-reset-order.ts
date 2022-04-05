@@ -2,6 +2,7 @@ import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
 
+import { addHours } from 'date-fns';
 import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '@growi/core';
@@ -29,7 +30,7 @@ export interface PasswordResetOrderModel extends Model<PasswordResetOrderDocumen
 }
 
 const expiredAt = (): Date => {
-  return new Date(Date.now() + 600000);
+  return addHours(new Date(), 1);
 };
 
 const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
