@@ -62,8 +62,7 @@ module.exports = (crowi) => {
 
   router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
-    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
