@@ -77,7 +77,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         data-testid="open-presentation-modal-btn"
         className="d-flex align-items-center"
       >
-        <i className="icon-fw grw-dropdown-icon d-flex justify-content-center">
+        <i className="icon-fw grw-page-control-dropdown-icon">
           <PresentationIcon />
         </i>
         { t('Presentation Mode') }
@@ -88,7 +88,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
         className="d-flex align-items-center"
       >
-        <i className="icon-fw icon-cloud-download grw-dropdown-icon d-flex justify-content-center"></i>
+        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
@@ -103,7 +103,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         disabled={isGuestUser || isSharedUser}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-page-control-dropdown-icon">
           <HistoryIcon />
         </span>
         {t('History')}
@@ -113,7 +113,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-page-control-dropdown-icon">
           <AttachmentIcon />
         </span>
         {t('attachment_data')}
@@ -124,7 +124,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-page-control-dropdown-icon">
           <ShareLinkIcon />
         </span>
         {t('share_links.share_link_management')}
@@ -137,7 +137,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={openPageTemplateModalHandler}
         className="d-flex align-items-center"
       >
-        <i className="icon-fw icon-magic-wand grw-dropdown-icon d-flex justify-content-center"></i>
+        <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
         { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
