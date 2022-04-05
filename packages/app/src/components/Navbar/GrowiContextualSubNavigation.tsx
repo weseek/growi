@@ -137,9 +137,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={openPageTemplateModalHandler}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
-          <i className="icon-fw icon-magic-wand text-center"></i>
-        </span>
+        <i className="icon-fw icon-magic-wand grw-dropdown-icon d-flex justify-content-center"></i>
         { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
