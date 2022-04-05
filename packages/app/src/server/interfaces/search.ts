@@ -31,9 +31,9 @@ export interface SearchDelegator<T = unknown, KEY extends AllTermsKey = AllTerms
   validateTerms(terms: QueryTerms): UnavailableTermsKey<KEY>[],
 }
 
-export type SearchableData = {
+export type SearchableData<T = Partial<QueryTerms>> = {
   queryString: string
-  terms: QueryTerms
+  terms: T
 }
 
 // Terms Key types

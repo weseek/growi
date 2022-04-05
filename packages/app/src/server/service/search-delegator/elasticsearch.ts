@@ -38,6 +38,8 @@ const ES_SORT_ORDER = {
   [ASC]: 'asc',
 };
 
+const AVAILABLE_KEYS = ['match', 'not_match', 'phrase', 'not_phrase', 'prefix', 'not_prefix', 'tag', 'not_tag'];
+
 type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
@@ -737,7 +739,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return query;
   }
 
-  appendCriteriaForQueryString(query, parsedKeywords: QueryTerms) {
+  appendCriteriaForQueryString(query, parsedKeywords: ESQueryTerms): void {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
     if (parsedKeywords.match.length > 0) {
@@ -962,7 +964,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
 
     if (terms == null) {
@@ -989,11 +991,17 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   isTermsNormalized(terms: Partial<QueryTerms>): terms is ESQueryTerms {
-    return true;
+    const entries = Object.entries(terms);
+
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && typeof val?.length === 'number' && val.length > 0);
   }
 
   validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
-    return [];
+    const entries = Object.entries(terms);
+
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
   async syncPageUpdated(page, user) {
