@@ -49,7 +49,7 @@ module.exports = (crowi) => {
   async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
     return mailService.send({
       to: email,
-      subject: txtFileName,
+      subject: '[GROWI] Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),

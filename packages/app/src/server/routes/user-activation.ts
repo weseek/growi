@@ -29,7 +29,7 @@ async function makeRegistrationEmailToken(email, crowi) {
 
   return mailService.send({
     to: email,
-    subject: txtFileName,
+    subject: '[GROWI] User Activation',
     template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
     vars: {
       appTitle: appService.getAppTitle(),
