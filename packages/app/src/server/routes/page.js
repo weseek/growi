@@ -278,11 +278,11 @@ module.exports = function(crowi, app) {
     renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
-  async function addRenderVarsWhenEmptyPage(renderVars, emptyPageId) {
-    if (emptyPageId == null) {
+  async function addRenderVarsWhenEmptyPage(renderVars, pageId) {
+    if (pageId == null) {
       return;
     }
-    renderVars.emptyPageId = emptyPageId;
+    renderVars.pageId = pageId;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -340,8 +340,8 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
-    if (req.emptyPageId != null) {
-      await addRenderVarsWhenEmptyPage(renderVars, req.emptyPageId);
+    if (req.pageId != null) {
+      await addRenderVarsWhenEmptyPage(renderVars, req.pageId);
     }
     return res.render(view, renderVars);
   }
@@ -647,7 +647,7 @@ module.exports = function(crowi, app) {
       return _notFound(req, res);
     }
     if (isEmptyPage) {
-      req.emptyPageId = pages[0]._id;
+      req.pageId = pages[0]._id;
       return _notFound(req, res);
     }
 
