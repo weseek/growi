@@ -3,14 +3,14 @@ import { Picker } from 'emoji-mart';
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
 
 type Props = {
-  close: () => void,
+  onClose: () => void,
   emojiSearchText: string,
   editor: any
 }
 
 const EmojiPicker: FC<Props> = (props: Props) => {
 
-  const { close, emojiSearchText, editor } = props;
+  const { onClose, emojiSearchText, editor } = props;
 
   const emojiPickerContainer = useRef<HTMLDivElement>(null);
 
@@ -28,7 +28,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
 
     function handleClickOutside(event) {
       if (emojiPickerContainer.current && !emojiPickerContainer.current.contains(event.target)) {
-        close();
+        onClose();
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -38,7 +38,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     };
 
 
-  }, [emojiPickerContainer, close, emojiSearchText]);
+  }, [emojiPickerContainer, onClose, emojiSearchText]);
 
   const emojiPickerHelper = new EmojiPickerHelper(editor);
 
@@ -49,7 +49,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     else {
       emojiPickerHelper.addEmoji(emoji);
     }
-    props.close();
+    props.onClose();
   };
 
   const translation = getEmojiTranslation();
