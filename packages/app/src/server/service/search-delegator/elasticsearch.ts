@@ -991,15 +991,17 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   isTermsNormalized(terms: Partial<QueryTerms>): terms is ESQueryTerms {
-    const keys = Object.keys(terms);
+    const entries = Object.entries(terms);
 
-    return keys.every(k => AVAILABLE_KEYS.includes(k));
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0);
   }
 
   validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
-    const keys = Object.keys(terms);
+    const entries = Object.entries(terms);
 
-    return keys.filter((k): k is UnavailableTermsKey<ESTermsKey> => !AVAILABLE_KEYS.includes(k));
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
   async syncPageUpdated(page, user) {

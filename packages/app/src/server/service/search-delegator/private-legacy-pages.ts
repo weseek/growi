@@ -90,9 +90,11 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
   }
 
   validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
-    const keys = Object.keys(terms);
+    const entries = Object.entries(terms);
 
-    return keys.filter((k): k is UnavailableTermsKey<MongoTermsKey> => !AVAILABLE_KEYS.includes(k));
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<MongoTermsKey>); // use "as": https://github.com/microsoft/TypeScript/issues/41173
   }
 
 }
