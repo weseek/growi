@@ -138,7 +138,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={bookmarkItemClickedHandler}
             className="d-flex align-items-center"
           >
-            <i className="grw-dropdown-icon fa fa-fw fa-bookmark-o d-flex justify-content-center"></i>
+            <i className="fa fa-fw fa-bookmark-o d-flex grw-dropdown-icon justify-content-center"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         ) }
@@ -150,7 +150,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-duplicate-modal-btn"
             className="d-flex align-items-center"
           >
-            <i className="grw-dropdown-icon icon-fw icon-docs d-flex justify-content-center"></i>
+            <i className="icon-fw icon-docs d-flex grw-dropdown-icon justify-content-center"></i>
             {t('Duplicate')}
           </DropdownItem>
         ) }
@@ -162,7 +162,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-move-rename-modal-btn"
             className="d-flex align-items-center"
           >
-            <i className="grw-dropdown-icon icon-fw icon-action-redo d-flex justify-content-center"></i>
+            <i className="icon-fw icon-action-redo d-flex grw-dropdown-icon justify-content-center"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
@@ -173,7 +173,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={revertItemClickedHandler}
             className="d-flex align-items-center"
           >
-            <i className="grw-dropdown-icon icon-fw icon-action-undo d-flex justify-content-center"></i>
+            <i className="icon-fw icon-action-undo d-flex grw-dropdown-icon justify-content-center"></i>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
@@ -196,7 +196,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
             >
-              <i className="grw-dropdown-icon icon-fw icon-trash d-flex justify-content-center"></i>
+              <i className="icon-fw icon-trash d-flex grw-dropdown-icon justify-content-center"></i>
               {t('Delete')}
             </DropdownItem>
           </>

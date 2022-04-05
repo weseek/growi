@@ -77,7 +77,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         data-testid="open-presentation-modal-btn"
         className="d-flex align-items-center"
       >
-        <i className="grw-dropdown-icon icon-fw d-flex justify-content-center">
+        <i className="icon-fw grw-dropdown-icon d-flex justify-content-center">
           <PresentationIcon />
         </i>
         { t('Presentation Mode') }
@@ -88,7 +88,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
         className="d-flex align-items-center"
       >
-        <i className="grw-dropdown-icon icon-fw icon-cloud-download d-flex justify-content-center"></i>
+        <i className="icon-fw icon-cloud-download grw-dropdown-icon d-flex justify-content-center"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
