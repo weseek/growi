@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
 import PasswordResetOrder from '~/server/models/password-reset-order';
@@ -45,7 +46,7 @@ module.exports = (crowi) => {
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
     return mailService.send({
       to: email,
       subject: txtFileName,
@@ -54,6 +55,7 @@ module.exports = (crowi) => {
         appTitle: appService.getAppTitle(),
         email,
         url,
+        expiredAt,
       },
     });
   }
@@ -76,7 +78,8 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+      const expiredAt = format(passwordResetOrderData.expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, expiredAt);
       return res.apiv3();
     }
     catch (err) {
