@@ -103,7 +103,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         disabled={isGuestUser || isSharedUser}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-dropdown-icon d-flex justify-content-center">
           <HistoryIcon />
         </span>
         {t('History')}
@@ -113,7 +113,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-dropdown-icon d-flex justify-content-center">
           <AttachmentIcon />
         </span>
         {t('attachment_data')}
@@ -124,7 +124,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
         className="d-flex align-items-center"
       >
-        <span className="grw-dropdown-icon grw-dropdown-icon d-flex justify-content-center">
+        <span className="grw-dropdown-icon d-flex justify-content-center">
           <ShareLinkIcon />
         </span>
         {t('share_links.share_link_management')}
