@@ -597,7 +597,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   /**
-   * Show emoji picker component when emoji pattern found
+   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
+   * eg `:a`, `:ap`
    */
   emojiPickerHandler() {
     const searchWord = this.emojiPickerHelper.getEmoji();
