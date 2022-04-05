@@ -136,7 +136,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
           <DropdownItem
             onClick={bookmarkItemClickedHandler}
-            className="d-flex align-items-center"
+            className="grw-page-control-dropdown-item"
           >
             <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -148,7 +148,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem
             onClick={duplicateItemClickedHandler}
             data-testid="open-page-duplicate-modal-btn"
-            className="d-flex align-items-center"
+            className="grw-page-control-dropdown-item"
           >
             <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
             {t('Duplicate')}
@@ -160,7 +160,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem
             onClick={renameItemClickedHandler}
             data-testid="open-page-move-rename-modal-btn"
-            className="d-flex align-items-center"
+            className="grw-page-control-dropdown-item"
           >
             <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
@@ -171,7 +171,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
           <DropdownItem
             onClick={revertItemClickedHandler}
-            className="d-flex align-items-center"
+            className="grw-page-control-dropdown-item"
           >
             <i className="icon-fw icon-action-undo grw-page-control-dropdown-icon"></i>
             {t('modal_putback.label.Put Back Page')}
