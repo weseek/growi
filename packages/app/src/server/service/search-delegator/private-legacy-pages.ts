@@ -40,6 +40,9 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     const findQueryBuilder = new PageQueryBuilder(Page.find());
     await findQueryBuilder.addConditionAsMigratablePages(user);
 
+    this.addConditionByTerms(countQueryBuilder, terms);
+    this.addConditionByTerms(findQueryBuilder, terms);
+
     const total = await countQueryBuilder.query.count();
 
     const _pages: PageDocument[] = await findQueryBuilder
@@ -62,7 +65,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     };
   }
 
-  addConditionByTerms(builder: PageQueryBuilder, terms: MongoQueryTerms): PageQueryBuilder {
+  private addConditionByTerms(builder: PageQueryBuilder, terms: MongoQueryTerms): PageQueryBuilder {
     const {
       match, not_match: notMatch, prefix, not_prefix: notPrefix,
     } = terms;
