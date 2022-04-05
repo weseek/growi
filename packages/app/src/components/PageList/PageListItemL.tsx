@@ -170,11 +170,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     <li
       key={pageData._id}
       className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
+      onClick={clickHandler}
     >
-      <div
-        className="text-break w-100"
-        onClick={clickHandler}
-      >
+      <div className="text-break w-100">
         <div className="d-flex">
           {/* checkbox */}
           {onCheckboxChanged != null && (
