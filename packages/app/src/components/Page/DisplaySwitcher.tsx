@@ -7,7 +7,7 @@ import { pagePathUtils } from '@growi/core';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useIsEmptyPageContext,
 } from '~/stores/context';
 
 
@@ -36,7 +36,7 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-
+  const { data: isEmptyPageContext } = useIsEmptyPageContext();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
@@ -93,9 +93,11 @@ const DisplaySwitcher = (): JSX.Element => {
                   ) }
 
                   <div className="d-none d-lg-block">
-                    <div id="revision-toc" className="revision-toc">
-                      <TableOfContents />
-                    </div>
+                    {!isEmptyPageContext && (
+                      <div id="revision-toc" className="revision-toc">
+                        <TableOfContents />
+                      </div>
+                    )}
                     <ContentLinkButtons />
                   </div>
 

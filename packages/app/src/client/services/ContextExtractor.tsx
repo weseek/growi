@@ -8,7 +8,7 @@ import {
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
-  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink, useIsEmptyPageContext,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -140,6 +140,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useIsEmptyPageContext(notFoundContent != null && pageId != null);
 
   // Navigation
   usePreferDrawerModeByUser();

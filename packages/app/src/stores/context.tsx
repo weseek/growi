@@ -156,6 +156,9 @@ export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRRespon
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
+export const useIsEmptyPageContext = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmptyPageContext', initialData);
+};
 
 /** **********************************************************
  *                     Computed contexts
