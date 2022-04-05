@@ -15,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useIsEmptyPageInNotFoundContext,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { Nullable } from '~/interfaces/common';
@@ -340,12 +340,13 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
+  const { data: isEmptyPageInNotFoundContext } = useIsEmptyPageInNotFoundContext();
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined || isEmptyPageInNotFoundContext ? null : key,
     () => isPageExist && !isUserPage,
   );
 };
