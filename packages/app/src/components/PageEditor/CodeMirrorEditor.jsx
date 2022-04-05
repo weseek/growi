@@ -154,7 +154,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
     this.emojiPickerHandler = this.emojiPickerHandler.bind(this);
 
   }
@@ -688,10 +687,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  toggleEmojiPicker() {
-    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
-  }
-
   renderEmojiPicker() {
     const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
@@ -699,7 +694,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
-              close={this.toggleEmojiPicker}
+              close={() => this.setState({ isEmojiPickerShown: false })}
               emojiSearchText={emojiSearchText}
               editor={this.getCodeMirror()}
             />
@@ -791,6 +786,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   showDrawioHandler() {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
+
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -951,7 +947,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="Emoji"
-        onClick={this.toggleEmojiPicker}
+        onClick={() => this.setState({ isEmojiPickerShown: true })}
       >
         <EditorIcon icon="Emoji" />
       </Button>,
