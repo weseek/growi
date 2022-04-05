@@ -1,5 +1,5 @@
 import loggerFactory from '~/utils/logger';
-import { isSearchError, SearchError } from '../models/vo/error-search';
+import { isSearchError } from '../models/vo/error-search';
 
 const logger = loggerFactory('growi:routes:search');
 
@@ -31,8 +31,6 @@ const logger = loggerFactory('growi:routes:search');
  */
 module.exports = function(crowi, app) {
   // var debug = require('debug')('growi:routes:search')
-  const Page = crowi.model('Page');
-  const User = crowi.model('User');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
