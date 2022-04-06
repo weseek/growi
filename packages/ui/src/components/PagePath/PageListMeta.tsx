@@ -1,17 +1,18 @@
 import React, { FC } from 'react';
 import { templateChecker, pagePathUtils } from '@growi/core';
 import { FootstampIcon } from '../SearchPage/FootstampIcon';
-import { IPageHasId } from '@growi/app/src/interfaces/page'
+import { IPageHasId } from '@growi/app/src/interfaces/page';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 type PageListMetaProps = {
-  page: IPageHasId
+  page: IPageHasId,
   likerCount?: number,
   bookmarkCount?: number,
   shouldSpaceOutIcon?: boolean,
 }
+
 export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) => {
 
   const { page, shouldSpaceOutIcon } = props;
@@ -58,7 +59,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
     bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
   }
 
-  return(
+  return (
     <span className="page-list-meta">
       {topLabel}
       {templateLabel}
@@ -68,6 +69,6 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
       {locked}
       {bookmarkCount}
     </span>
-  )
+  );
 
-}
+};
