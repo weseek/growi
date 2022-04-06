@@ -11,7 +11,6 @@ context('Switch Sidebar content', () => {
   it('PageTree is successfully shown', () => {
     cy.visit('/page');
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-    cy.screenshot(`${ssPrefix}-pagetree-before-load`, { capture: 'viewport' });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
@@ -103,19 +102,6 @@ context('Open presentation modal', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}-open-top`);
-  });
-
-  it('PresentationModal for "/Sandbox/Bootstrap4" is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4');
-
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-presentation-modal-btn').click({force: true});
-    });
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-open-bootstrap4`);
   });
 
 });
