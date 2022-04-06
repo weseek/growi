@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { Picker } from 'emoji-mart';
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
+import { isDarkMode } from '~/client/util/color-scheme';
 
 type Props = {
   close: () => void,
