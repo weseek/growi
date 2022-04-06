@@ -195,6 +195,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       await mutateChildren();
 
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
       // force open
       setIsOpen(true);
     }
