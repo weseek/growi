@@ -1030,7 +1030,8 @@
       "4": "Medium Skin Tone",
       "5": "Medium-Dark Skin Tone",
       "6": "Dark Skin Tone"
-    },
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "Maintenance Mode",
     "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",

@@ -1022,7 +1022,8 @@
       "4": "ミディアムスキントーン",
       "5": "ミディアムダークスキントーン",
       "6": "肌の色が濃い"
-    },
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
