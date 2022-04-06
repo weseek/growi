@@ -166,8 +166,7 @@ module.exports = (crowi) => {
     if (prefix != null) {
       builder = new PageQueryBuilder(Page.find())
         .addConditionToListWithDescendants(prefix)
-        .addConditionToExcludeTrashed()
-        .addConditionToExcludeRedirect();
+        .addConditionToExcludeTrashed();
     }
     // builder to get single page
     else {

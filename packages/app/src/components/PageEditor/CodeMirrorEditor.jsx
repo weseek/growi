@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
-
 import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
@@ -14,6 +13,8 @@ import * as loadCssSync from 'load-css-file';
 import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
 import EmojiPicker from './EmojiPicker';
+import EmojiPickerHelper from './EmojiPickerHelper';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +33,7 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
@@ -110,7 +111,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
-      isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
@@ -156,8 +156,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
-    this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
-    this.closeEmojiPicker = this.closeEmojiPicker.bind(this);
+    this.emojiPickerHandler = this.emojiPickerHandler.bind(this);
+
   }
 
   init() {
@@ -175,7 +175,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    this.setState({ isEnabledEmojiAutoComplete: true });
     this.initializeTextlint();
   }
 
@@ -193,6 +192,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+    this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -253,7 +253,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // update state
     this.setState({
       isGfmMode: bool,
-      isEnabledEmojiAutoComplete: bool,
     });
 
     this.updateCheatsheetStates(bool, null);
@@ -569,7 +568,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
-    this.searchEmojiPattern();
+    this.emojiPickerHandler();
   }
 
   /**
@@ -591,6 +590,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
+  }
+
+  /**
+   * Show emoji picker component when emoji pattern found
+   */
+  emojiPickerHandler() {
+    const emoji = this.emojiPickerHelper.getEmoji();
+
+    if (!emoji) {
+      this.setState({ isEmojiPickerShown: false });
+      this.setState({ emojiSearchText: null });
+    }
+    else {
+      this.setState({ emojiSearchText: emoji });
+      this.setState({ isEmojiPickerShown: true });
+    }
   }
 
   /**
@@ -665,16 +680,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  closeEmojiPicker() {
-    this.setState({ isEmojiPickerShown: false });
+  toggleEmojiPicker() {
+    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
 
   renderEmojiPicker() {
+    const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
-            <EmojiPicker close={this.closeEmojiPicker} />
+            <EmojiPicker
+              close={this.toggleEmojiPicker}
+              emojiSearchText={emojiSearchText}
+              editor={this.getCodeMirror()}
+            />
           </div>
         </div>
       )
@@ -773,11 +793,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     });
   }
 
-  toggleEmojiPicker() {
-    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
-    this.setState({ emojiSearchText: null });
-  }
-
   onSaveForDrawio(drawioData) {
     const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
     // Fold the section after the drawio section (:::drawio) has been updated.
@@ -785,15 +800,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return range;
   }
 
-  emojiPickerOpened() {
-    // Get input element of emoji picker search
-    const input = document.querySelector('[id^="emoji-mart-search"]');
-    const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    // Set value to input of emoji picker search and trigger the search
-    valueSetter.call(input, this.state.emojiSearchText);
-    const event = new Event('input', { bubbles: true });
-    input.dispatchEvent(event);
-  }
 
   getNavbarItems() {
     return [
@@ -937,36 +943,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="Emoji"
+        onClick={this.toggleEmojiPicker}
       >
         <EditorIcon icon="Emoji" />
       </Button>,
     ];
-  }
-
-  searchEmojiPattern() {
-    const cm = this.getCodeMirror();
-    const pattern = /:[^:\s]+/;
-    const currentPos = cm.getCursor();
-    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
-
-    if (sc.findPrevious()) {
-      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-      // Add delay between search emoji and display emoji picker
-      const searchText = cm.getTokenAt(currentPos).string;
-      const searchValue = searchText.replace(':', '');
-      setTimeout(() => {
-        this.setState({ isEmojiPickerShown: isInputtingEmoji });
-        this.setState({ emojiSearchText: searchValue });
-      }, 1000);
-      // return if it isn't inputting emoji
-      if (!isInputtingEmoji) {
-        return;
-      }
-    }
-    else {
-      return;
-    }
-
   }
 
 
@@ -997,6 +978,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
+            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei

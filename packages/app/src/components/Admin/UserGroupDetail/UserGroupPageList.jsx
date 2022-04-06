@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Page from '../../PageList/Page';
+import PageListItemS from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -57,7 +57,7 @@ class UserGroupPageList extends React.Component {
     return (
       <Fragment>
         <ul className="page-list-ul page-list-ul-flat mb-3">
-          {this.state.currentPages.map(page => <li key={page._id}><Page page={page} /></li>)}
+          {this.state.currentPages.map(page => <li key={page._id}><PageListItemS page={page} /></li>)}
         </ul>
         {relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : (
           <PaginationWrapper

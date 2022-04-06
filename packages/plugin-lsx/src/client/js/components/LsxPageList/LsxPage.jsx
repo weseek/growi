@@ -92,7 +92,8 @@ export class LsxPage extends React.Component {
 
     return (
       <li className="page-list-li">
-        <small>{this.getIconElement()}</small> {pagePathNode} {pageListMeta}
+        <small>{this.getIconElement()}</small> {pagePathNode}
+        <span className="ml-2">{pageListMeta}</span>
         {this.getChildPageElement()}
       </li>
     );

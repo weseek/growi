@@ -14,10 +14,10 @@ class FullTextSearchManagement extends React.Component {
     const { t } = this.props;
 
     return (
-      <Fragment>
+      <div data-testid="admin-full-text-search">
         <h2> { t('full_text_search_management.elasticsearch_management') } </h2>
         <ElasticsearchManagement />
-      </Fragment>
+      </div>
     );
   }
 

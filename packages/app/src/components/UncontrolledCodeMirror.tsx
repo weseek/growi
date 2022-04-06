@@ -12,7 +12,6 @@ export interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
   value: string;
   options?: ICodeMirror['options'];
   isGfmMode?: boolean;
-  indentSize?: number;
   lineNumbers?: boolean;
 }
 
@@ -26,7 +25,7 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
   render(): ReactNode {
 
     const {
-      value, isGfmMode, indentSize, lineNumbers, editorContainer, options, forwardedRef, ...rest
+      value, isGfmMode, lineNumbers, editorContainer, options, forwardedRef, ...rest
     } = this.props;
 
     const { editorOptions } = editorContainer.state;
@@ -41,7 +40,6 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
           theme: editorOptions.theme,
           styleActiveLine: editorOptions.styleActiveLine,
           tabSize: 4,
-          indentUnit: indentSize,
           ...options,
         }}
         {...rest}
