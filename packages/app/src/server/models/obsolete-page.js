@@ -524,7 +524,7 @@ export const getPageSchema = (crowi) => {
 
     // find
     // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-
+    const skip = opt.page ? (+opt.page - 1) * opt.limit : opt.offset;
     const customLabels = {
       totalDocs: 'totalCount',
       docs: 'pages',
@@ -535,7 +535,7 @@ export const getPageSchema = (crowi) => {
       totalPages: 'pageCount',
     };
     const paginationOptions = {
-      lean: true, limit: opt.limit, offset: opt.offset, page: opt.page, customLabels, sort: sortOpt,
+      lean: true, limit: opt.limit, offset: skip, page: opt.page, customLabels, sort: sortOpt,
     };
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await Page.paginate(builder.query, paginationOptions);
