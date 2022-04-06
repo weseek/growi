@@ -1,6 +1,5 @@
-node_modules
-*/node_modules
-*/coverage
-*/dist
-*/Dockerfile
-*/*.dockerignore
+**/node_modules
+**/dist
+**/coverage
+**/Dockerfile
+**/*.dockerignore
