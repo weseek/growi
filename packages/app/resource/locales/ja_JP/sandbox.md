@@ -236,10 +236,10 @@ ___
 
 ```
 [/Sandbox]
-&lt;/user/admin1>
+</user/admin1>
 ```
 
-[/Sandbox]
+[/Sandbox]  
 </user/admin1>
 
 ## Pukiwiki like linker
@@ -255,7 +255,7 @@ ___
 Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 ```
 
-[[../user]]
+[[./Bootstrap4]]  
 Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 
 # :pencil: Lists

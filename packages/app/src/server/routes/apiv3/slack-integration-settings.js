@@ -2,6 +2,8 @@ import { SlackbotType, defaultSupportedSlackEventActions } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 const mongoose = require('mongoose');
 const express = require('express');
 const { body, query, param } = require('express-validator');
@@ -52,7 +54,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
