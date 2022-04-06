@@ -35,6 +35,17 @@
       <h1>GROWI</h1>
 
       <div id="login-form-errors">
+        {% set errorMessages = req.flash('errorMessages') %}
+        {% if errorMessages.length > 0 %}
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+          {% for error in errorMessages %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
         {% set message = req.flash('warningMessage') %}
         {% if message.length %}
         <div class="alert alert-danger">

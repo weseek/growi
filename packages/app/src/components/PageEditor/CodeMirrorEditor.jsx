@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
-
 import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
@@ -15,6 +14,7 @@ import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -33,7 +33,7 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
@@ -978,6 +978,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
+            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei

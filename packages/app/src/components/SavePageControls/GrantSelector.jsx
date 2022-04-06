@@ -174,12 +174,14 @@ class GrantSelector extends React.Component {
    * @memberof GrantSelector
    */
   renderSelectGroupModal() {
+    const { t } = this.props;
+
     const generateGroupListItems = () => {
       return this.state.userRelatedGroups.map((group) => {
         return (
           <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => { this.groupListItemClickHandler(group) }}>
             <h5>{group.name}</h5>
-            <div className="small">(TBD) List group members</div>
+            {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
           </button>
         );
       });
@@ -188,9 +190,9 @@ class GrantSelector extends React.Component {
     const content = this.state.userRelatedGroups.length === 0
       ? (
         <div>
-          <h4>There is no group to which you belong.</h4>
+          <h4>{t('user_group.belonging_to_no_group')}</h4>
           { this.props.appContainer.isAdmin
-            && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
+            && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
           }
         </div>
       )
@@ -207,7 +209,7 @@ class GrantSelector extends React.Component {
         toggle={this.hideSelectGroupModal}
       >
         <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-purple text-light">
-          Select a Group
+          {t('user_group.select_group')}
         </ModalHeader>
         <ModalBody>
           {content}

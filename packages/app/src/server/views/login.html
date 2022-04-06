@@ -85,6 +85,17 @@
             {% endfor %}
             {% endif %}
 
+            {% set errorMessages = req.flash('errorMessages') %}
+            {% if errorMessages.length > 0 %}
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+              {% for error in errorMessages %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
             {% if req.form.errors.length > 0 %}
             <div class="alert alert-danger">
               <ul class="mb-0">
