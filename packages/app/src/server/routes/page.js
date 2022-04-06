@@ -620,14 +620,14 @@ module.exports = function(crowi, app) {
 
       // remove empty pages if any.
       const identicalPathPages = pages.filter(p => !p.isEmpty);
-      // do nothing and return if count of remaining pages are less than 2 after removal
-      if (identicalPathPages.length < 2) return;
-
-      return res.render('layout-growi/identical-path-page', {
-        identicalPathPages,
-        redirectFrom,
-        path,
-      });
+      // render identical-path-page if count of remaining pages are 2 or more after removal
+      if (identicalPathPages.length >= 2) {
+        return res.render('layout-growi/identical-path-page', {
+          identicalPathPages,
+          redirectFrom,
+          path,
+        });
+      }
     }
 
 
