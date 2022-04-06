@@ -1,5 +1,5 @@
 import {
-  S3Client, HeadObjectCommand, GetObjectCommand,
+  S3Client, HeadObjectCommand, GetObjectCommand, DeleteObjectsCommand, PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -17,6 +17,7 @@ type AwsConfig = {
   region: string,
   endpoint: string,
   bucket: string,
+  forcePathStyle?: boolean
 }
 
 module.exports = (crowi) => {
@@ -31,8 +32,9 @@ module.exports = (crowi) => {
         secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
       },
       region: configManager.getConfig('crowi', 'aws:s3Region'),
-      endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') || undefined,
+      endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
       bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
+      forcePathStyle: configManager.getConfig('crowi', 'aws:s3Bucket') != null,
     };
   };
 
@@ -116,6 +118,89 @@ module.exports = (crowi) => {
 
   };
 
+  lib.deleteFile = async(attachment) => {
+    const filePath = getFilePathOnStorage(attachment);
+    return lib.deleteFileByFilePath(filePath);
+  };
+
+  lib.deleteFiles = async(attachments) => {
+    if (!lib.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const filePaths = attachments.map((attachment) => {
+      return { Key: getFilePathOnStorage(attachment) };
+    });
+
+    const totalParams = {
+      Bucket: awsConfig.bucket,
+      Delete: { Objects: filePaths },
+    };
+    await s3.send(new DeleteObjectsCommand(totalParams));
+  };
+
+  lib.uploadFile = async(fileStream, attachment) => {
+    if (!lib.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const filePath = getFilePathOnStorage(attachment);
+    const params = {
+      Bucket: awsConfig.bucket,
+      ContentType: attachment.fileFormat,
+      Key: filePath,
+      Body: fileStream,
+      ACL: 'public-read',
+    };
+
+    await s3.send(new PutObjectCommand(params));
+  };
+
+  lib.findDeliveryFile = async(attachment) => {
+    if (!lib.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const filePath = getFilePathOnStorage(attachment);
+
+    const params = {
+      Bucket: awsConfig.bucket,
+      Key: filePath,
+    };
+
+    // check file exists
+    const isExists = await isFileExists(s3, params);
+    if (!isExists) {
+      throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
+    }
+
+    let stream;
+    try {
+      stream = s3.send(new GetObjectCommand(params));
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
+    }
+
+    // return stream.Readable
+    return stream;
+  };
+
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
+  };
 
   return lib;
 };
