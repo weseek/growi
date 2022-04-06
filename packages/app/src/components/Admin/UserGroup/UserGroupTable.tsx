@@ -1,6 +1,7 @@
 import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
@@ -16,6 +17,7 @@ type Props = {
   childUserGroups: IUserGroupHasId[],
   isAclEnabled: boolean,
   onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>,
+  onRemove?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
 };
 
@@ -73,7 +75,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     });
   };
 
-  const onClickEdit = (e) => {
+  const onClickEdit = async(e) => {
     if (props.onEdit == null) {
       return;
     }
@@ -84,6 +86,25 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     }
 
     props.onEdit(userGroup);
+  };
+
+  const onClickRemove = async(e) => {
+    if (props.onRemove == null) {
+      return;
+    }
+
+    const userGroup = findUserGroup(e);
+    if (userGroup == null) {
+      return;
+    }
+
+    try {
+      await props.onRemove(userGroup);
+      userGroup.parent = null;
+    }
+    catch {
+      //
+    }
   };
 
   const onClickDelete = (e) => { // no preventDefault
@@ -178,6 +199,9 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
                             <i className="icon-fw icon-note"></i> {t('Edit')}
+                          </button>
+                          <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
+                            <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
                           </button>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
                             <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
