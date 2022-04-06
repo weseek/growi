@@ -3,11 +3,14 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const { query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
+
+const validator = {};
 
 /**
  * @swagger
@@ -20,6 +23,11 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
 
   const { UserGroupRelation } = crowi.models;
+
+  validator.list = [
+    query('groupIds', 'groupIds is required and must be an array').isArray(),
+    query('childGroupIds', 'childGroupIds must be an array').optional().isArray(),
+  ];
 
   /**
    * @swagger
@@ -41,13 +49,21 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: contains arrays user objects related
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, validator.list, async(req, res) => {
+    const { query } = req;
+
     try {
-      const relations = await UserGroupRelation.find().populate('relatedUser');
+      const relations = await UserGroupRelation.find({ relatedGroup: { $in: query.groupIds } }).populate('relatedUser');
+
+      let relationsOfChildGroups = null;
+      if (Array.isArray(query.childGroupIds)) {
+        const _relationsOfChildGroups = await UserGroupRelation.find({ relatedGroup: { $in: query.childGroupIds } }).populate('relatedUser');
+        relationsOfChildGroups = _relationsOfChildGroups.map(relation => serializeUserGroupRelationSecurely(relation)); // serialize
+      }
 
       const serialized = relations.map(relation => serializeUserGroupRelationSecurely(relation));
 
-      return res.apiv3({ userGroupRelations: serialized });
+      return res.apiv3({ userGroupRelations: serialized, relationsOfChildGroups });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group relations';
@@ -58,61 +74,3 @@ module.exports = (crowi) => {
 
   return router;
 };
-
-// const MAX_PAGE_LIST = 50;
-
-// function createPager(total, limit, page, pagesCount, maxPageList) {
-//   const pager = {
-//     page,
-//     pagesCount,
-//     pages: [],
-//     total,
-//     previous: null,
-//     previousDots: false,
-//     next: null,
-//     nextDots: false,
-//   };
-
-//   if (page > 1) {
-//     pager.previous = page - 1;
-//   }
-
-//   if (page < pagesCount) {
-//     pager.next = page + 1;
-//   }
-
-//   let pagerMin = Math.max(1, Math.ceil(page - maxPageList / 2));
-//   let pagerMax = Math.min(pagesCount, Math.floor(page + maxPageList / 2));
-//   if (pagerMin === 1) {
-//     if (MAX_PAGE_LIST < pagesCount) {
-//       pagerMax = MAX_PAGE_LIST;
-//     }
-//     else {
-//       pagerMax = pagesCount;
-//     }
-//   }
-//   if (pagerMax === pagesCount) {
-//     if ((pagerMax - MAX_PAGE_LIST) < 1) {
-//       pagerMin = 1;
-//     }
-//     else {
-//       pagerMin = pagerMax - MAX_PAGE_LIST;
-//     }
-//   }
-
-//   pager.previousDots = null;
-//   if (pagerMin > 1) {
-//     pager.previousDots = true;
-//   }
-
-//   pager.nextDots = null;
-//   if (pagerMax < pagesCount) {
-//     pager.nextDots = true;
-//   }
-
-//   for (let i = pagerMin; i <= pagerMax; i++) {
-//     pager.pages.push(i);
-//   }
-
-//   return pager;
-// }

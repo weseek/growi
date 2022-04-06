@@ -184,7 +184,7 @@ class UserTable extends React.Component {
             <tbody>
               {adminUsersContainer.state.users.map((user) => {
                 return (
-                  <tr key={user._id}>
+                  <tr data-testid="user-table-tr" key={user._id}>
                     <td>
                       <UserPicture user={user} className="picture rounded-circle" />
                     </td>

@@ -187,21 +187,6 @@ module.exports = function(crowi) {
     return userData;
   };
 
-  userSchema.methods.canDeleteCompletely = function(creatorId) {
-    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (this.admin) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      return (this._id.equals(creatorId));
-    }
-
-    return false;
-  };
-
   userSchema.methods.updateApiToken = async function() {
     const self = this;
 
