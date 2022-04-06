@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { templateChecker, pagePathUtils } from '@growi/core';
 import { FootstampIcon } from '../SearchPage/FootstampIcon';
-import { IPage } from '@growi/app/src/interfaces/page'
+import { IPageHasId } from '@growi/app/src/interfaces/page'
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 type PageListMetaProps = {
-  page: IPage
+  page: IPageHasId
   likerCount?: number,
   bookmarkCount?: number,
   shouldSpaceOutIcon?: boolean,
