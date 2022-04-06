@@ -34,7 +34,7 @@ module.exports = (crowi) => {
       region: configManager.getConfig('crowi', 'aws:s3Region'),
       endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
       bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
-      forcePathStyle: configManager.getConfig('crowi', 'aws:s3Bucket') != null,
+      forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
     };
   };
 
@@ -56,7 +56,7 @@ module.exports = (crowi) => {
     return filePath;
   };
 
-  const isFileExists = async(s3, params) => {
+  const isFileExists = async(s3: S3Client, params) => {
     try {
       await s3.send(new HeadObjectCommand(params));
     }
@@ -102,9 +102,8 @@ module.exports = (crowi) => {
     const params = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      Expires: lifetimeSecForTemporaryUrl,
     };
-    const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params));
+    const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), { expiresIn: lifetimeSecForTemporaryUrl });
 
 
     res.redirect(signedUrl);
