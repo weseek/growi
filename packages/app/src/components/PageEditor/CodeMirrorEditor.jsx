@@ -204,7 +204,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const isEmojiBtnClicked = emojiBtnElm.contains(event.target);
 
     // when outside of EmojiPicker is clicked, close the component.
-    if (this.state.isEmojiPickerShown && !isEmojiBtnClicked && !isEmojiPickerClicked) {
+    if (this.state.isEmojiPickerShown && !isEmojiPickerClicked && !isEmojiBtnClicked) {
       this.setState({ isEmojiPickerShown: false });
     }
   }
