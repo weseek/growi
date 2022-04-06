@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
-import { Button, Modal } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
 
@@ -13,7 +13,7 @@ import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import EmojiPicker from './EmojiPicker';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -158,10 +158,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
     this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
-    this.addEmoji = this.addEmoji.bind(this);
-    this.getSearchCursor = this.getSearchCursor.bind(this);
-    this.emojiPickerClosed = this.emojiPickerClosed.bind(this);
-    this.emojiSearchTextSetValue = this.emojiSearchTextSetValue.bind(this);
+    this.closeEmojiPicker = this.closeEmojiPicker.bind(this);
   }
 
   init() {
@@ -669,12 +666,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  renderEmojiPickerModal() {
-    return (
-      <Modal isOpen={this.state.isEmojiPickerShown} toggle={this.toggleEmojiPicker} onOpened={this.emojiPickerOpened} onClosed={this.emojiPickerClosed}>
-        <Picker set="apple" autoFocus style={{ width: '100%', position: 'absolute' }} onSelect={this.addEmoji} />
-      </Modal>
-    );
+  closeEmojiPicker() {
+    this.setState({ isEmojiPickerShown: false });
+  }
+
+  renderEmojiPicker() {
+    return this.state.isEmojiPickerShown
+      ? (
+        <div className="text-left">
+          <div className="mb-2 d-none d-md-block">
+            <EmojiPicker close={this.closeEmojiPicker} />
+          </div>
+        </div>
+      )
+      : '';
   }
 
   /**
@@ -1070,7 +1075,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
-        { this.renderEmojiPickerModal() }
+        { this.renderEmojiPicker() }
 
         <GridEditModal
           ref={this.gridEditModal}
