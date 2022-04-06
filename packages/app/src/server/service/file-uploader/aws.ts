@@ -1,5 +1,5 @@
 import {
-  S3Client, HeadObjectCommand, GetObjectCommand, DeleteObjectsCommand, PutObjectCommand,
+  S3Client, HeadObjectCommand, GetObjectCommand, DeleteObjectsCommand, PutObjectCommand, DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -138,6 +138,28 @@ module.exports = (crowi) => {
       Delete: { Objects: filePaths },
     };
     await s3.send(new DeleteObjectsCommand(totalParams));
+  };
+
+  lib.deleteFileByFilePath = async(filePath) => {
+    if (!lib.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const params = {
+      Bucket: awsConfig.bucket,
+      Key: filePath,
+    };
+
+    // check file exists
+    const isExists = await isFileExists(s3, params);
+    if (!isExists) {
+      logger.warn(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
+      return;
+    }
+
+    await s3.send(new DeleteObjectCommand(params));
   };
 
   lib.uploadFile = async(fileStream, attachment) => {
