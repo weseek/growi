@@ -55,7 +55,10 @@ export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
           className="custom-control-input"
           id="convertRecursively"
           type="checkbox"
-          onChange={e => setIsRecursively(e.target.checked)}
+          checked={isRecursively}
+          onChange={(e) => {
+            setIsRecursively(e.target.checked);
+          }}
         />
         <label className="custom-control-label" htmlFor="convertRecursively">
           { t('private_legacy_pages.modal.convert_recursively_label') }

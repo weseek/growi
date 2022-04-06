@@ -101,13 +101,8 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const isWikiModeForced = aclService.isWikiModeForced();
-    const guestModeValue = aclService.getGuestModeValue();
 
-    return res.render('admin/security', {
-      isWikiModeForced,
-      guestModeValue,
-    });
+    return res.render('admin/security');
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -284,7 +279,7 @@ module.exports = function(crowi, app) {
   // グループ詳細
   actions.userGroup.detail = async function(req, res) {
     const userGroupId = req.params.id;
-    const userGroup = await UserGroup.findOne({ _id: userGroupId });
+    const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
 
     if (userGroup == null) {
       logger.error('no userGroup is exists. ', userGroupId);

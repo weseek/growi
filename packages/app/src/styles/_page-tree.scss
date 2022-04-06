@@ -26,7 +26,7 @@ $grw-pagetree-item-padding-left: 10px;
       }
     }
 
-    .grw-pagetree-button {
+    .grw-pagetree-triangle-btn {
       background-color: transparent;
       transition: all 0.2s ease-out;
       transform: rotate(0deg);
@@ -50,7 +50,7 @@ $grw-pagetree-item-padding-left: 10px;
       }
 
       .grw-pagetree-count {
-        width: 26px;
+        width: auto;
         padding: 0.1rem 0;
         font-size: 12px;
       }

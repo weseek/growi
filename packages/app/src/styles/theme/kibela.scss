@@ -79,8 +79,6 @@ html[dark] {
 
   // dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
-  $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
 
   // admin theme box
   $color-theme-color-box: lighten($bgcolor-theme, 20%);
@@ -122,8 +120,7 @@ html[dark] {
         $color-list-hover,
         $bgcolor-list-hover,
         $color-list-active,
-        lighten($bgcolor-list-active, 55%),
-        $gray-400
+        lighten($bgcolor-list-active, 55%)
       );
     }
   }

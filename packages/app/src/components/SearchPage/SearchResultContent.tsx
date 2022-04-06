@@ -15,6 +15,9 @@ import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 
+import PageContentFooter from '../PageContentFooter';
+import PageComment from '../PageComment';
+
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -214,6 +217,13 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pagePath={page.path}
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
+        />
+        <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
+        <PageContentFooter
+          createdAt={new Date(pageWithMeta.data.createdAt)}
+          updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          creator={pageWithMeta.data.creator}
+          revisionAuthor={pageWithMeta.data.lastUpdateUser}
         />
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
+import { pagePathUtils } from '@growi/core';
 import { usePageRenameModal } from '~/stores/modal';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -29,6 +30,7 @@ const isV5Compatible = (meta: unknown): boolean => {
 const PageRenameModal = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const { isUsersHomePage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
 
@@ -53,6 +55,7 @@ const PageRenameModal = (): JSX.Element => {
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
+  const [isMatchedWithUserHomePagePath, setIsMatchedWithUserHomePagePath] = useState(false);
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -135,11 +138,21 @@ const PageRenameModal = (): JSX.Element => {
     return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
+  const checkIsUsersHomePageDebounce = useMemo(() => {
+    const checkIsPagePathRenameable = () => {
+      setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
+    };
+
+    return debounce(1000, checkIsPagePathRenameable);
+  }, [isUsersHomePage, pageNameInput]);
+
   useEffect(() => {
     if (page != null && pageNameInput !== page.data.path) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
+      checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+
 
   /**
    * change pageNameInput
@@ -176,12 +189,21 @@ const PageRenameModal = (): JSX.Element => {
   const { path } = page.data;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
-  const submitButtonDisabled = isV5Compatible(page.meta)
-    ? existingPaths.length !== 0 // v5 data
-    : !isRenameRecursively; // v4 data
+  let submitButtonDisabled = false;
+
+  if (isMatchedWithUserHomePagePath) {
+    submitButtonDisabled = true;
+  }
+  else if (isV5Compatible(page.meta)) {
+    submitButtonDisabled = existingPaths.length !== 0; // v5 data
+  }
+  else {
+    submitButtonDisabled = !isRenameRecursively; // v4 data
+  }
+
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
@@ -211,6 +233,9 @@ const PageRenameModal = (): JSX.Element => {
 
         { isTargetPageDuplicate && (
           <p className="text-danger">Error: Target path is duplicated.</p>
+        ) }
+        { isMatchedWithUserHomePagePath && (
+          <p className="text-danger">Error: Cannot move to directory under /user page.</p>
         ) }
 
         { !isV5Compatible(page.meta) && (

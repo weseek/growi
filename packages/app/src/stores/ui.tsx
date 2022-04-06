@@ -1,12 +1,14 @@
-import useSWR, {
+import { RefObject } from 'react';
+import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import SimpleBar from 'simplebar-react';
+
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import { pagePathUtils } from '@growi/core';
 
-import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -39,6 +41,15 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
 /** **********************************************************
+ *                     Storing RefObjects
+ *********************************************************** */
+
+export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
+  return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
+};
+
+
+/** **********************************************************
  *                          SWR Hooks
  *                      for switching UI
  *********************************************************** */
@@ -57,28 +68,28 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
+const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
   switch (newEditorMode) {
     case EditorMode.View:
       $('body').removeClass('on-edit');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
-      $('body').removeClass('pathname-sidebar');
+      $('body').removeClass('editing-sidebar');
       break;
     case EditorMode.Editor:
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
       $('body').removeClass('hackmd');
       // editing /Sidebar
-      if (window.location.pathname === '/Sidebar') {
-        $('body').addClass('pathname-sidebar');
+      if (isSidebar) {
+        $('body').addClass('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
       $('body').removeClass('builtin-editor');
-      $('body').removeClass('pathname-sidebar');
+      $('body').removeClass('editing-sidebar');
       break;
   }
 };
@@ -122,6 +133,9 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
+  const { data: currentPagePath } = useCurrentPagePath();
+  const isSidebar = currentPagePath === '/Sidebar';
+
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     null,
@@ -131,7 +145,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   // initial updating
   if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
     if (isEditable) {
-      updateBodyClassesByEditorMode(swrResponse.data);
+      updateBodyClassesByEditorMode(swrResponse.data, isSidebar);
     }
     isEditorModeLoaded = true;
   }
@@ -144,7 +158,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
       if (!isEditable) {
         return Promise.resolve(EditorMode.View); // fixed if not editable
       }
-      updateBodyClassesByEditorMode(editorMode);
+      updateBodyClassesByEditorMode(editorMode, isSidebar);
       updateHashByEditorMode(editorMode);
       return swrResponse.mutate(editorMode, shouldRevalidate);
     },
@@ -212,7 +226,7 @@ export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean,
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {

@@ -111,7 +111,7 @@
   "Create under": "Create page under below:",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
-  "V5 Page Migration": "V5 Page Migration",
+  "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
@@ -169,6 +169,8 @@
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
+  "not_allowed_to_see_this_page": "You cannot see this page",
+  "Confirm": "Confirm",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -393,7 +395,7 @@
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
     "outdated": "Page is updated someone and now outdated.",
-    "user_not_admin": "Only admin user can delete completely"
+    "user_not_admin": "Only admin user can delete"
   },
   "page_history": {
     "revision_list": "Revision list",
@@ -419,7 +421,7 @@
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses under this path",
-      "metadata": "Remains last update user and updated date as is",
+      "metadata": "Last update user and updated date will remain the same",
       "recursive": "Move/Rename children of under this path recursively"
     }
   },
@@ -652,7 +654,7 @@
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
-    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restriction of new users' registration",
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -667,9 +669,16 @@
     "page_listing_1_desc": "Show pages that are restricted by 'Only me' option when listing/searching",
     "page_listing_2": "Page listing/searching<br>restricted by User group",
     "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
-    "page_access_and_delete_rights": "Page access / Delete rights",
-    "complete_deletion": "Restrict complete deletion of pages",
-    "complete_deletion_explain": "Restricts users who can completely delete pages.",
+    "page_access_rights": "Page access",
+    "page_delete_rights": "Delete rights",
+    "page_delete": "Page Delete",
+    "page_delete_completely": "Page Delete Completely",
+    "other_options": "Other options",
+    "deletion_explain": "Restricts users who can trash the selected single page.",
+    "complete_deletion_explain": "Restricts users who can completely delete  selected single page.",
+    "recursive_deletion_explain": "Restricts users who can trash pages including descendants.",
+    "recursive_complete_deletion_explain": "Restricts users who can completely delete pages including descendants.",
+    "inherit": "Inherit(Use the same setting as for a single page)",
     "admin_only": "Admin only",
     "admin_and_author": "Admin and author",
     "anyone": "Anyone",
@@ -677,6 +686,8 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
+    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
+    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Anyone > Admin and autor > Admin only",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
@@ -1019,7 +1030,13 @@
       "4": "Medium Skin Tone",
       "5": "Medium-Dark Skin Tone",
       "6": "Dark Skin Tone"
-    }
+    },
+  "maintenance_mode":{
+    "maintenance_mode": "Maintenance Mode",
+    "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",
+    "admin_page": "Admin Page",
+    "login": "Login",
+    "logout": "Logout"
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",
@@ -1031,5 +1048,10 @@
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
+  },
+  "user_group": {
+    "select_group": "Select group",
+    "belonging_to_no_group": "Could not find the groups you belong to.",
+    "manage_user_groups": "Manage user groups"
   }
 }
