@@ -49,7 +49,6 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    // todo: refactoring variable name to clear what changed
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
