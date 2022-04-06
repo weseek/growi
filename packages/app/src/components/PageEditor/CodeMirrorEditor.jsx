@@ -196,6 +196,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     document.addEventListener('click', this.handleDocumentClick);
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleDocumentClick);
+  }
+
   handleDocumentClick(event) {
     const emojiPickerElm = document.querySelector('.emoji-mart');
     const emojiBtnElm = document.getElementById('emoij-btn');
