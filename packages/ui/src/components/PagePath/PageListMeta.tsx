@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import { templateChecker, pagePathUtils } from '@growi/core';
 import { FootstampIcon } from '../SearchPage/FootstampIcon';
+import { IPage } from '@growi/app/src/interfaces/page'
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 type PageListMetaProps = {
-  page: any
+  page: IPage
   likerCount?: number,
   bookmarkCount?: number,
   shouldSpaceOutIcon?: boolean,
@@ -43,7 +44,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
   }
 
   let seenUserCount;
-  if (page.seenUserCount > 0) {
+  if (page.seenUsers.length > 0) {
     seenUserCount = (
       <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}>
         <i className="footstamp-icon"><FootstampIcon /></i>
