@@ -346,7 +346,7 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
-    includesUndefined || isEmptyPageInNotFoundContext ? null : key,
+    (includesUndefined || isEmptyPageInNotFoundContext) ? null : key,
     () => isPageExist && !isUserPage,
   );
 };
