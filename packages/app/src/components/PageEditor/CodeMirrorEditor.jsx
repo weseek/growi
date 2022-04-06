@@ -117,6 +117,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: null,
+      isInputtingEmoji: false,
+      searchEmojiTimeout: 0,
     };
 
     this.gridEditModal = React.createRef();
