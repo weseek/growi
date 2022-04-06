@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
-import PageListItemS from '../PageList/PageListItemS';
+import Page from '../PageList/Page';
 import PaginationWrapper from '../PaginationWrapper';
 
 class RecentCreated extends React.Component {
@@ -57,7 +57,7 @@ class RecentCreated extends React.Component {
   generatePageList(pages) {
     return pages.map(page => (
       <li key={`recent-created:list-view:${page._id}`} className="mt-4">
-        <PageListItemS page={page} />
+        <Page page={page} />
       </li>
     ));
   }

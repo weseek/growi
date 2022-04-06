@@ -84,6 +84,11 @@ html[dark] {
   $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
   // Table colors
   $border-color-table: $gray-400; // optional
 

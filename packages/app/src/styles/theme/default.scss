@@ -72,7 +72,7 @@ html[light] {
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: lighten($primary, 77%);
+  $bgcolor-sidebar-context: $gray-100;
   // Sidebar list group
   $bgcolor-sidebar-list-group: $gray-50; // optional
 
@@ -97,6 +97,8 @@ html[light] {
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
@@ -170,7 +172,7 @@ html[dark] {
   $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: lighten($bgcolor-global, 10%);
+  $bgcolor-sidebar-context: #111d2f;
   $color-sidebar-context: $color-global;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
@@ -194,6 +196,11 @@ html[dark] {
   // Border colors
   $border-color-theme: $gray-400;
   $bordercolor-inline-code: $secondary; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: $primary;

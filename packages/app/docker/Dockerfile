@@ -1,40 +1,36 @@
-# syntax = docker/dockerfile:1
+# syntax = docker/dockerfile:experimental
 
 ARG flavor=default
 
-
-##
-## packages-json-picker
-##
-FROM node:16-slim AS packages-json-picker
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-COPY ["package.json", "yarn.lock", "lerna.json", "./"]
-COPY packages packages
-# Find and remove non-package.json files
-RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 
 
 ##
 ## deps-resolver
 ##
-FROM node:16-slim AS deps-resolver
+FROM node:14-slim AS deps-resolver
+LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-ENV optDir /opt
+ENV appDir /opt/growi
 
-WORKDIR ${optDir}
-
-# copy files
-COPY --from=packages-json-picker ${optDir} .
+WORKDIR ${appDir}
+COPY ./package.json .
+COPY ./yarn.lock .
+COPY ./lerna.json .
+COPY ./packages/app/package.json packages/app/
+COPY ./packages/core/package.json packages/core/
+COPY ./packages/codemirror-textlint/package.json packages/codemirror-textlint/
+COPY ./packages/plugin-attachment-refs/package.json packages/plugin-attachment-refs/
+COPY ./packages/plugin-lsx/package.json packages/plugin-lsx/
+COPY ./packages/plugin-pukiwiki-like-linker/package.json packages/plugin-pukiwiki-like-linker/
+COPY ./packages/slack/package.json packages/slack/
+COPY ./packages/ui/package.json packages/ui/
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN npx -y lerna bootstrap -- --frozen-lockfile
+RUN npx lerna bootstrap
 
 # make artifacts
-RUN tar -cf node_modules.tar \
+RUN tar cf node_modules.tar \
   node_modules \
   packages/*/node_modules
 
@@ -44,13 +40,9 @@ RUN tar -cf node_modules.tar \
 ## deps-resolver-prod
 ##
 FROM deps-resolver AS deps-resolver-prod
-
-# remove unnecessary packages
-RUN rm -rf packages/slackbot-proxy
-
-RUN npx -y lerna bootstrap -- --production
+RUN npx lerna bootstrap -- --production
 # make artifacts
-RUN tar -cf node_modules.tar \
+RUN tar cf node_modules.tar \
   node_modules \
   packages/*/node_modules
 
@@ -59,18 +51,18 @@ RUN tar -cf node_modules.tar \
 ##
 ## prebuilder-default
 ##
-FROM node:16-slim AS prebuilder-default
+FROM node:14-slim AS prebuilder-default
 
-ENV optDir /opt
+ENV appDir /opt/growi
 
-WORKDIR ${optDir}
+WORKDIR ${appDir}
 
 # copy dependent packages
 COPY --from=deps-resolver \
-  ${optDir}/node_modules.tar ${optDir}/
+  ${appDir}/node_modules.tar ${appDir}/
 
 # extract node_modules.tar
-RUN tar -xf node_modules.tar
+RUN tar xf node_modules.tar
 RUN rm node_modules.tar
 
 
@@ -81,7 +73,7 @@ RUN rm node_modules.tar
 FROM prebuilder-default AS prebuilder-nocdn
 
 # add dotenv file for NO_CDN
-COPY packages/app/docker/nocdn/.env.production.local ${optDir}/packages/app/
+COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
 
 
 
@@ -90,11 +82,14 @@ COPY packages/app/docker/nocdn/.env.production.local ${optDir}/packages/app/
 ##
 FROM prebuilder-${flavor} AS builder
 
-ENV optDir /opt
+ENV appDir /opt/growi
 
-WORKDIR ${optDir}
+WORKDIR ${appDir}
 
-COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
+COPY ./package.json ./
+COPY ./yarn.lock ./
+COPY ./lerna.json ./
+COPY ./tsconfig.base.json ./
 # copy all related packages
 COPY packages/app packages/app
 COPY packages/core packages/core
@@ -109,8 +104,9 @@ COPY packages/ui packages/ui
 RUN yarn lerna run build
 
 # make artifacts
-RUN tar -cf packages.tar \
+RUN tar cf packages.tar \
   package.json \
+  yarn.lock \
   tsconfig.base.json \
   packages/app/config \
   packages/app/public \
@@ -128,13 +124,12 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:16-slim
+FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
 
-ENV optDir /opt
-ENV appDir ${optDir}/growi
+ENV appDir /opt/growi
 
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
@@ -146,15 +141,15 @@ RUN set -eux; \
 	gosu nobody true
 
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/node_modules.tar ${appDir}/
+  ${appDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar ${appDir}/
+  ${appDir}/packages.tar ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -xf node_modules.tar
-RUN tar -xf packages.tar
+RUN tar xf node_modules.tar
+RUN tar xf packages.tar
 RUN rm node_modules.tar packages.tar
 
 USER root

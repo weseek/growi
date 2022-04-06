@@ -37,8 +37,7 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: null,
-      pagePath: null,
+      markdown: '',
       previewError: '',
       permalink: '',
       isPreviewOpen: false,
@@ -153,8 +152,7 @@ class LinkEditModal extends React.PureComponent {
   async setMarkdown() {
     const { t } = this.props;
     const path = this.state.linkInputValue;
-    let markdown = null;
-    let pagePath = null;
+    let markdown = '';
     let permalink = '';
     let previewError = '';
 
@@ -167,7 +165,6 @@ class LinkEditModal extends React.PureComponent {
         const { data } = await this.props.appContainer.apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
         const { page } = data;
         markdown = page.revision.body;
-        pagePath = page.path;
         permalink = page.id;
       }
       catch (err) {
@@ -177,9 +174,7 @@ class LinkEditModal extends React.PureComponent {
     else {
       previewError = t('link_edit.page_not_found_in_preview', { path });
     }
-    this.setState({
-      markdown, pagePath, previewError, permalink,
-    });
+    this.setState({ markdown, previewError, permalink });
   }
 
   renderLinkPreview() {
@@ -207,9 +202,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleChangeTypeahead(selected) {
-    const pageWithMeta = selected[0];
-    if (pageWithMeta != null) {
-      const page = pageWithMeta.data;
+    const page = selected[0];
+    if (page != null) {
       const permalink = `${window.location.origin}/${page.id}`;
       this.setState({ linkInputValue: page.path, permalink });
     }
@@ -283,8 +277,6 @@ class LinkEditModal extends React.PureComponent {
 
   renderLinkAndLabelForm() {
     const { t } = this.props;
-    const { pagePath } = this.state;
-
     return (
       <>
         <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
@@ -308,7 +300,7 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} pagePath={pagePath} error={this.state.previewError} />
+                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
               </div>

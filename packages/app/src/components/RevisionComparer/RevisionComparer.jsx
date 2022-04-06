@@ -74,7 +74,7 @@ const RevisionComparer = (props) => {
           >
             <i className="ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: null } }}>
             {/* Page path URL */}
             <CopyToClipboard text={pagePathUrl()}>
               <DropdownItem className="px-3">

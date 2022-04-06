@@ -5,14 +5,12 @@ import loggerFactory from '~/utils/logger';
 
 
 import AppContainer from '~/client/services/AppContainer';
-
-import { usePageCreateModal } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { usePageCreateModalOpened } from '~/stores/ui';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
-import { useCurrentPagePath } from '~/stores/context';
 
 const logger = loggerFactory('growi:cli:Fab');
 
@@ -20,8 +18,7 @@ const Fab = (props) => {
   const { appContainer } = props;
   const { currentUser } = appContainer;
 
-  const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPath = '' } = useCurrentPagePath();
+  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -55,11 +52,11 @@ const Fab = (props) => {
   function renderPageCreateButton() {
     return (
       <>
-        <div data-testid="grw-fab-create-page" className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+        <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={() => openCreateModal(currentPath)}
+            onClick={() => mutatePageCreateModalOpened(true)}
           >
             <CreatePageIcon />
           </button>
@@ -71,7 +68,7 @@ const Fab = (props) => {
   return (
     <div className="grw-fab d-none d-md-block d-edit-none">
       {currentUser != null && renderPageCreateButton()}
-      <div data-testid="grw-fab-return-to-top" className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
+      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button
           type="button"
           className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}

@@ -6,14 +6,14 @@ import useSWRImmutable from 'swr/immutable';
 
 
 export function useStaticSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | undefined): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | undefined,
+export function useStaticSWR<Data, Error>(key: Key, data: Data | null): SWRResponse<Data, Error>;
+export function useStaticSWR<Data, Error>(key: Key, data: Data | null,
   configuration: SWRConfiguration<Data, Error> | undefined): SWRResponse<Data, Error>;
 
 export function useStaticSWR<Data, Error>(
     ...args: readonly [Key]
-    | readonly [Key, Data | undefined]
-    | readonly [Key, Data | undefined, SWRConfiguration<Data, Error> | undefined]
+    | readonly [Key, Data | null]
+    | readonly [Key, Data | null, SWRConfiguration<Data, Error> | undefined]
 ): SWRResponse<Data, Error> {
   const [key, data, configuration] = args;
 
@@ -22,35 +22,10 @@ export function useStaticSWR<Data, Error>(
   const swrResponse = useSWRImmutable(key, null, configuration);
 
   // mutate
-  if (data !== undefined) {
+  if (data != null) {
     const { mutate } = swrResponse;
     mutate(data);
   }
 
   return swrResponse;
 }
-
-
-const ADVANCE_DELAY_MS = 800;
-
-export type ITermNumberManagerUtil = {
-  advance(): void,
-}
-
-export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  const swrResult = useStaticSWR<number, Error>(key, undefined, { fallbackData: 0 });
-
-  return {
-    ...swrResult,
-    advance: () => {
-      const { data: currentNum } = swrResult;
-      if (currentNum == null) {
-        return;
-      }
-
-      setTimeout(() => {
-        swrResult.mutate(currentNum + 1);
-      }, ADVANCE_DELAY_MS);
-    },
-  };
-};

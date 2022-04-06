@@ -18,17 +18,12 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AppService from '../service/app';
 import AclService from '../service/acl';
-import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
-import PageService from '../service/page';
-import PageGrantService from '../service/page-grant';
-import PageOperationService from '../service/page-operation';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { InstallerService } from '../service/installer';
-import Activity from '../models/activity';
-import UserGroup from '../models/user-group';
-import PageRedirect from '../models/page-redirect';
+import SearchService from '../service/search';
+
+import Actiity from '../models/activity';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -145,8 +140,47 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
   ]);
+};
 
-  await this.autoInstall();
+Crowi.prototype.initForTest = async function() {
+  await this.setupModels();
+  await this.setupConfigManager();
+
+  // setup messaging services
+  await this.setupSocketIoService();
+
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  await Promise.all([
+    this.setUpApp(),
+    this.setUpXss(),
+    // this.setUpGrowiBridge(),
+  ]);
+
+  await Promise.all([
+    // this.scanRuntimeVersions(),
+    this.setupPassport(),
+    // this.setupSearcher(),
+    // this.setupMailer(),
+    // this.setupSlackIntegrationService(),
+    // this.setupCsrf(),
+    // this.setUpFileUpload(),
+    this.setupAttachmentService(),
+    this.setUpAcl(),
+    // this.setUpCustomize(),
+    // this.setUpRestQiitaAPI(),
+    // this.setupUserGroup(),
+    // this.setupExport(),
+    // this.setupImport(),
+    this.setupPageService(),
+    this.setupInAppNotificationService(),
+    this.setupActivityService(),
+  ]);
+
+  // globalNotification depends on slack and mailer
+  // await Promise.all([
+  //   this.setUpGlobalNotification(),
+  // ]);
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -280,9 +314,7 @@ Crowi.prototype.setupModels = async function() {
   allModels = models;
 
   // include models that independent from crowi
-  allModels.Activity = Activity;
-  allModels.UserGroup = UserGroup;
-  allModels.PageRedirect = PageRedirect;
+  allModels.Activity = Actiity;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
@@ -379,36 +411,6 @@ Crowi.prototype.setupCsrf = async function() {
   this.tokens = new Tokens();
 
   return Promise.resolve();
-};
-
-Crowi.prototype.autoInstall = function() {
-  const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
-  const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
-
-  if (isInstalled || username == null) {
-    return;
-  }
-
-  logger.info('Start automatic installation');
-
-  const firstAdminUserToSave = {
-    username,
-    name: this.configManager.getConfig('crowi', 'autoInstall:adminName'),
-    email: this.configManager.getConfig('crowi', 'autoInstall:adminEmail'),
-    password: this.configManager.getConfig('crowi', 'autoInstall:adminPassword'),
-    admin: true,
-  };
-  const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
-  const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
-
-  const installerService = new InstallerService(this);
-
-  try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
-  }
-  catch (err) {
-    logger.warn('Automatic installation failed.', err);
-  }
 };
 
 Crowi.prototype.getTokens = function() {
@@ -674,16 +676,9 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
+  const PageEventService = require('../service/page');
   if (this.pageService == null) {
-    this.pageService = new PageService(this);
-  }
-  if (this.pageGrantService == null) {
-    this.pageGrantService = new PageGrantService(this);
-  }
-  if (this.pageOperationService == null) {
-    this.pageOperationService = new PageOperationService(this);
-    // TODO: Remove this code when resuming feature is implemented
-    await this.pageOperationService.init();
+    this.pageService = new PageEventService(this);
   }
 };
 

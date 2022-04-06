@@ -1,21 +1,31 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
 
-import { usePagePresentationModal } from '~/stores/modal';
+const PagePresentationModal = (props) => {
 
-const PagePresentationModal = () => {
-
-  const { data: presentationData, close: closePresentationModal } = usePagePresentationModal();
+  function closeModalHandler() {
+    if (props.onClose === null) {
+      return;
+    }
+    props.onClose();
+  }
 
   return (
-    <Modal isOpen={presentationData.isOpened} toggle={closePresentationModal} className="grw-presentation-modal" unmountOnClose={false}>
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler} className="grw-presentation-modal" unmountOnClose={false}>
       <ModalBody className="modal-body">
-        <iframe src={presentationData.href} />
+        <iframe src={props.href} />
       </ModalBody>
     </Modal>
   );
 };
+PagePresentationModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  href: PropTypes.string.isRequired,
+};
+
 
 export default PagePresentationModal;

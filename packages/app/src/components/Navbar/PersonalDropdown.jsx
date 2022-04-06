@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
 
-import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -39,12 +39,14 @@ const PersonalDropdown = (props) => {
 
   const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
-  const { scheduleToPut } = useUserUISettings();
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
 
-    const context = {};
+    const context = {
+      user,
+      currentPagePath: decodeURIComponent(window.location.pathname),
+    };
     interceptorManager.process('logout', context);
 
     window.location.href = '/logout';
@@ -52,13 +54,13 @@ const PersonalDropdown = (props) => {
 
   const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
     mutatePreferDrawerMode(bool);
-    scheduleToPut({ preferDrawerModeByUser: bool });
-  }, [mutatePreferDrawerMode, scheduleToPut]);
+    scheduleToPutUserUISettings({ preferDrawerModeByUser: bool });
+  }, [mutatePreferDrawerMode]);
 
   const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
     mutatePreferDrawerModeOnEdit(bool);
-    scheduleToPut({ preferDrawerModeOnEditByUser: bool });
-  }, [mutatePreferDrawerModeOnEdit, scheduleToPut]);
+    scheduleToPutUserUISettings({ preferDrawerModeOnEditByUser: bool });
+  }, [mutatePreferDrawerModeOnEdit]);
 
   const followOsCheckboxModifiedHandler = (bool) => {
     if (bool) {

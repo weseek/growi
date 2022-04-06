@@ -42,7 +42,7 @@ export default class RefsPostRenderInterceptor extends BasicInterceptor {
         const refsContext = (tagContext.method === 'gallery')
           ? new GalleryContext(tagContext || {})
           : new RefsContext(tagContext || {});
-        refsContext.fromPagePath = context.pagePath ?? context.currentPathname;
+        refsContext.fromPagePath = context.currentPagePath;
 
         this.renderReactDom(refsContext, elem);
       }

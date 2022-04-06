@@ -13,7 +13,7 @@ class ImportDataPageContents extends React.Component {
     const { t, adminImportContainer } = this.props;
 
     return (
-      <div data-testid="admin-import-data">
+      <Fragment>
         <GrowiArchiveSection />
 
         <form
@@ -226,7 +226,7 @@ class ImportDataPageContents extends React.Component {
 
 
         </form>
-      </div>
+      </Fragment>
     );
   }
 

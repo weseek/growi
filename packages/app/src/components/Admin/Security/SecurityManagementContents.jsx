@@ -81,7 +81,7 @@ function SecurityManagementContents(props) {
 
 
   return (
-    <div data-testid="admin-security">
+    <Fragment>
       <div className="mb-5">
         <SecuritySetting />
       </div>
@@ -141,7 +141,7 @@ function SecurityManagementContents(props) {
           </TabPane>
         </TabContent>
       </div>
-    </div>
+    </Fragment>
   );
 
 }

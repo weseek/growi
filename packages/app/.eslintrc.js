@@ -3,9 +3,6 @@ module.exports = {
     'weseek/react',
     'weseek/typescript',
   ],
-  plugins: [
-    'regex',
-  ],
   env: {
     jquery: true,
   },
@@ -28,15 +25,6 @@ module.exports = {
       name: 'axios',
       message: 'Please use src/utils/axios instead.',
     }],
-    'regex/invalid': ['error', [
-      {
-        regex: '\\?\\<\\!',
-        message: 'Do not use any negative lookbehind',
-      }, {
-        regex: '\\?\\<\\=',
-        message: 'Do not use any Positive lookbehind',
-      },
-    ]],
     '@typescript-eslint/no-var-requires': 'off',
 
     // set 'warn' temporarily -- 2021.08.02 Yuki Takei

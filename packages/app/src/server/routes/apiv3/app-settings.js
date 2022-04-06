@@ -1,8 +1,6 @@
 import { body } from 'express-validator';
 import loggerFactory from '~/utils/logger';
 
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
 const debug = require('debug')('growi:routes:admin');
@@ -152,6 +150,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
     appSetting: [
@@ -197,9 +196,6 @@ module.exports = (crowi) => {
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
     ],
-    maintenanceMode: [
-      body('flag').isBoolean(),
-    ],
   };
 
   /**
@@ -229,7 +225,6 @@ module.exports = (crowi) => {
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-      isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
       isMailerSetup: crowi.mailService.isMailerSetup,
@@ -265,7 +260,6 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
-      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -696,52 +690,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));
     }
 
-  });
-
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const isMaintenanceMode = crowi.appService.isMaintenanceMode();
-    if (!isMaintenanceMode) {
-      return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
-    }
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    try {
-      if (!isV5Compatible) {
-        // This method throws and emit socketIo event when error occurs
-        crowi.pageService.normalizeAllPublicPages();
-      }
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-    }
-
-    return res.apiv3({ isV5Compatible });
-  });
-
-  // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
-    const { flag } = req.body;
-
-    try {
-      if (flag) {
-        await crowi.appService.startMaintenanceMode();
-      }
-      else {
-        await crowi.appService.endMaintenanceMode();
-      }
-    }
-    catch (err) {
-      logger.error(err);
-      if (flag) {
-        res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
-      }
-      else {
-        res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
-      }
-    }
-
-    res.apiv3({ flag });
   });
 
   return router;

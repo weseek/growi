@@ -8,13 +8,28 @@ import SearchTypeahead from './SearchTypeahead';
 const PagePathAutoComplete = (props) => {
 
   const {
-    addTrailingSlash, initializedPath,
+    addTrailingSlash, onSubmit, onInputChange, initializedPath,
   } = props;
 
-  function getKeywordOnInit(path) {
-    if (path == null) {
+  function inputChangeHandler(pages) {
+    if (onInputChange == null) {
       return;
     }
+    const page = pages[0]; // should be single page selected
+
+    if (page != null) {
+      onInputChange(page.path);
+    }
+  }
+
+  function submitHandler() {
+    if (onSubmit == null) {
+      return;
+    }
+    onSubmit();
+  }
+
+  function getKeywordOnInit(path) {
     return addTrailingSlash
       ? pathUtils.addTrailingSlash(path)
       : pathUtils.removeTrailingSlash(path);
@@ -22,8 +37,10 @@ const PagePathAutoComplete = (props) => {
 
   return (
     <SearchTypeahead
-      {...props}
-      inputProps={{ name: 'new_path' }}
+      onSubmit={submitHandler}
+      onChange={inputChangeHandler}
+      onInputChange={props.onInputChange}
+      inputName="new_path"
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={props.autoFocus}
@@ -36,7 +53,6 @@ PagePathAutoComplete.propTypes = {
   initializedPath:  PropTypes.string,
   addTrailingSlash: PropTypes.bool,
 
-  onChange:         PropTypes.func,
   onSubmit:         PropTypes.func,
   onInputChange:    PropTypes.func,
   autoFocus:        PropTypes.bool,

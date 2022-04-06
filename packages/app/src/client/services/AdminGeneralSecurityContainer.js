@@ -1,9 +1,5 @@
 import { Container } from 'unstated';
 
-import {
-  PageSingleDeleteConfigValue, PageSingleDeleteCompConfigValue,
-  PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
-} from '~/interfaces/page-delete-config';
 import { toastError } from '../util/apiNotification';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -26,14 +22,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       wikiMode: '',
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
-      currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
-      currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
-      currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
-      currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
-      previousPageRecursiveDeletionAuthority: null,
-      previousPageRecursiveCompleteDeletionAuthority: null,
-      expandOtherOptionsForDeletion: false,
-      expandOtherOptionsForCompleteDeletion: false,
+      currentPageCompleteDeletionAuthority: 'adminOnly',
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
       appSiteUrl: appContainer.config.crowi.url || '',
@@ -53,13 +42,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       shareLinksActivePage: 1,
     };
 
-    this.changePageDeletionAuthority = this.changePageDeletionAuthority.bind(this);
-    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
-    this.changePageRecursiveDeletionAuthority = this.changePageRecursiveDeletionAuthority.bind(this);
-    this.changePageRecursiveCompleteDeletionAuthority = this.changePageRecursiveCompleteDeletionAuthority.bind(this);
-    this.changePreviousPageRecursiveDeletionAuthority = this.changePreviousPageRecursiveDeletionAuthority.bind(this);
-    this.changePreviousPageRecursiveCompleteDeletionAuthority = this.changePreviousPageRecursiveCompleteDeletionAuthority.bind(this);
-
   }
 
   async retrieveSecurityData() {
@@ -68,10 +50,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { generalSetting, shareLinkSetting, generalAuth } = response.data.securityParams;
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode,
-      currentPageDeletionAuthority: generalSetting.pageDeletionAuthority,
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
-      currentPageRecursiveDeletionAuthority: generalSetting.pageRecursiveDeletionAuthority,
-      currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
       sessionMaxAge: generalSetting.sessionMaxAge,
@@ -126,60 +105,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Change pageDeletionAuthority
-   */
-  changePageDeletionAuthority(val) {
-    this.setState({ currentPageDeletionAuthority: val });
-  }
-
-  /**
    * Change pageCompleteDeletionAuthority
    */
-  changePageCompleteDeletionAuthority(val) {
-    this.setState({ currentPageCompleteDeletionAuthority: val });
-  }
-
-  /**
-   * Change pageRecursiveDeletionAuthority
-   */
-  changePageRecursiveDeletionAuthority(val) {
-    this.setState({ currentPageRecursiveDeletionAuthority: val });
-  }
-
-  /**
-   * Change pageRecursiveCompleteDeletionAuthority
-   */
-  changePageRecursiveCompleteDeletionAuthority(val) {
-    this.setState({ currentPageRecursiveCompleteDeletionAuthority: val });
-  }
-
-  /**
-   * Change previousPageRecursiveDeletionAuthority
-   */
-  changePreviousPageRecursiveDeletionAuthority(val) {
-    this.setState({ previousPageRecursiveDeletionAuthority: val });
-  }
-
-
-  /**
-   * Change previousPageRecursiveCompleteDeletionAuthority
-   */
-  changePreviousPageRecursiveCompleteDeletionAuthority(val) {
-    this.setState({ previousPageRecursiveCompleteDeletionAuthority: val });
-  }
-
-  /**
-   * Switch ExpandOtherOptionsForDeletion
-   */
-  switchExpandOtherOptionsForDeletion(bool) {
-    this.setState({ expandOtherOptionsForDeletion: bool });
-  }
-
-  /**
-   * Switch ExpandOtherOptionsForDeletion
-   */
-  switchExpandOtherOptionsForCompleteDeletion(bool) {
-    this.setState({ expandOtherOptionsForCompleteDeletion: bool });
+  changePageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
+    this.setState({ currentPageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
   }
 
   /**
@@ -206,10 +135,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     let requestParams = {
       sessionMaxAge: this.state.sessionMaxAge,
       restrictGuestMode: this.state.currentRestrictGuestMode,
-      pageDeletionAuthority: this.state.currentPageDeletionAuthority,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
-      pageRecursiveDeletionAuthority: this.state.currentPageRecursiveDeletionAuthority,
-      pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
     };

@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 import { getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import getPageModel from '~/server/models/page';
 
 const logger = loggerFactory('growi:migrate:make-root-page-public');
 
@@ -11,7 +10,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const Page = getPageModel();
+    const Page = require('~/server/models/page')();
 
     await Page.findOneAndUpdate(
       { path: '/' },

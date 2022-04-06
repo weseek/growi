@@ -26,7 +26,6 @@ module.exports = {
   // 'growi:routes:page': 'debug',
   'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
-  'growi:service:search-delegator:elasticsearch': 'debug',
 
   /*
    * configure level for client
@@ -36,7 +35,5 @@ module.exports = {
   'growi:services:*': 'debug',
   // 'growi:StaffCredit': 'debug',
   // 'growi:cli:StickyStretchableScroller': 'debug',
-  // 'growi:cli:ItemsTree': 'debug',
-  'growi:searchResultList': 'debug',
 
 };

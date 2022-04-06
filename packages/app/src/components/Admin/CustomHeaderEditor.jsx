@@ -7,8 +7,6 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/htmlmixed/htmlmixed');
-require('codemirror/addon/hint/html-hint');
-require('codemirror/addon/edit/closetag');
 require('~/client/util/codemirror/autorefresh.ext');
 
 require('jquery-ui/ui/widgets/resizable');
@@ -24,7 +22,6 @@ export default class CustomHeaderEditor extends React.Component {
         detach
         options={{
           mode: 'htmlmixed',
-          autoCloseTags: true,
           lineNumbers: true,
           tabSize: 2,
           indentUnit: 2,

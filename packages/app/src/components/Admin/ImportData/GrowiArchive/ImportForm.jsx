@@ -287,9 +287,7 @@ class ImportForm extends React.Component {
   }
 
   async import() {
-    const {
-      appContainer, fileName, onPostImport, t,
-    } = this.props;
+    const { appContainer, fileName, onPostImport } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
     // init progress data
@@ -314,9 +312,6 @@ class ImportForm extends React.Component {
       toastSuccess(undefined, 'Import process has requested.');
     }
     catch (err) {
-      if (err.code === 'only_upsert_available') {
-        toastError(t('admin:importer_management.error.only_upsert_available'));
-      }
       toastError(err, 'Import request failed.');
     }
   }

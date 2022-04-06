@@ -32,7 +32,7 @@ html[light] {
   // $color-list: $color-global;
   $bgcolor-list: transparent;
   $color-list-hover: $color-search;
-  $bgcolor-list-hover: lighten($primary, 70%);
+  $bgcolor-list-hover: darken($bgcolor-global, 3%);
   // $color-list-active: $color-reversal;
   // $bgcolor-list-active: $primary;
 
@@ -66,6 +66,10 @@ html[light] {
   // Border colors
   $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
@@ -163,6 +167,11 @@ html[dark] {
   // Border colors
   $border-color-theme: #146aa0;
   $bordercolor-inline-code: #4d4d4d; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: $primary;

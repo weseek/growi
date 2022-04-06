@@ -1,10 +1,9 @@
 import { IUser } from './user';
 
 import { SidebarContentsType } from './ui';
-import { Ref } from './common';
 
 export interface IUserUISettings {
-  user: Ref<IUser> | null;
+  user: IUser | string;
   isSidebarCollapsed: boolean,
   currentSidebarContents: SidebarContentsType,
   currentProductNavWidth: number,

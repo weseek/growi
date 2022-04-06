@@ -1,12 +1,11 @@
-import Page from '~/server/models/page';
-
 module.exports = {
-  Page,
+  Page: require('./page'),
   // TODO GW-2746 bulk export pages
   // PageArchive: require('./page-archive'),
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
   ExternalAccount: require('./external-account'),
+  UserGroup: require('./user-group'),
   UserGroupRelation: require('./user-group-relation'),
   Revision: require('./revision'),
   Tag: require('./tag'),

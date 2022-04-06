@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
@@ -135,11 +135,11 @@ class Comment extends React.PureComponent {
 
     await interceptorManager.process('preRenderComment', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = await growiRenderer.preProcess(context.markdown, context);
+    context.markdown = await growiRenderer.preProcess(context.markdown);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = await growiRenderer.process(context.markdown, context);
+    context.parsedHTML = await growiRenderer.process(context.markdown);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML, context);
+    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
     await interceptorManager.process('postPostProcess', context);
     await interceptorManager.process('preRenderCommentHtml', context);
     this.setState({ html: context.parsedHTML });
@@ -147,9 +147,8 @@ class Comment extends React.PureComponent {
   }
 
   render() {
-    const {
-      t, comment, isReadOnly, onComment,
-    } = this.props;
+    const { t } = this.props;
+    const comment = this.props.comment;
     const commentId = comment._id;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
@@ -168,7 +167,7 @@ class Comment extends React.PureComponent {
 
     return (
       <React.Fragment>
-        {(this.state.isReEdit && !isReadOnly) ? (
+        {this.state.isReEdit ? (
           <CommentEditor
             growiRenderer={this.props.growiRenderer}
             currentCommentId={commentId}
@@ -176,10 +175,7 @@ class Comment extends React.PureComponent {
             replyTo={undefined}
             commentCreator={creator?.username}
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
-            onCommentButtonClicked={() => {
-              this.setState({ isReEdit: false });
-              if (onComment != null) onComment();
-            }}
+            onCommentButtonClicked={() => this.setState({ isReEdit: false })}
           />
         ) : (
           <div id={commentId} className={rootClassName}>
@@ -210,7 +206,7 @@ class Comment extends React.PureComponent {
                   </UncontrolledTooltip>
                 </span>
               </div>
-              {(this.isCurrentUserEqualsToAuthor() && !isReadOnly) && (
+              {this.isCurrentUserEqualsToAuthor() && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
@@ -226,26 +222,19 @@ class Comment extends React.PureComponent {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
+
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
-  isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  onComment: PropTypes.func,
 };
 
-const CommentWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <Comment t={t} {...props} />;
-};
-
-/**
- * Wrapper component for using unstated
- */
-const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
-
-export default CommentWrapper;
+export default withTranslation()(CommentWrapper);

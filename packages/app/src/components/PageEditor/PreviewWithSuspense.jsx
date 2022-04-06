@@ -5,7 +5,7 @@ import Preview from './Preview';
 import { withLoadingSppiner } from '../SuspenseUtils';
 
 function PagePreview(props) {
-  if (props.markdown == null || props.pagePath == null) {
+  if (props.markdown === '') {
     if (props.error !== '') {
       return props.error;
     }
@@ -16,7 +16,7 @@ function PagePreview(props) {
 
   return (
     <div className="linkedit-preview">
-      <Preview markdown={props.markdown} pagePath={props.pagePath} />
+      <Preview markdown={props.markdown} />
     </div>
   );
 }
@@ -24,7 +24,6 @@ function PagePreview(props) {
 PagePreview.propTypes = {
   setMarkdown: PropTypes.func,
   markdown: PropTypes.string,
-  pagePath: PropTypes.string,
   error: PropTypes.string,
 };
 

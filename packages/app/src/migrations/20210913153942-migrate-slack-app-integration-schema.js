@@ -20,11 +20,7 @@ defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    // connect only if disconnected
-    // see: https://mongoosejs.com/docs/api/connection.html#connection_Connection-readyState
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(getMongoUri(), mongoOptions);
-    }
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 

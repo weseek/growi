@@ -135,29 +135,29 @@ export default class GrowiRenderer {
     }
   }
 
-  preProcess(markdown, context) {
+  preProcess(markdown) {
     let processed = markdown;
     for (let i = 0; i < this.preProcessors.length; i++) {
       if (!this.preProcessors[i].process) {
         continue;
       }
-      processed = this.preProcessors[i].process(processed, context);
+      processed = this.preProcessors[i].process(processed);
     }
 
     return processed;
   }
 
-  process(markdown, context) {
-    return this.md.render(markdown, context);
+  process(markdown) {
+    return this.md.render(markdown);
   }
 
-  postProcess(html, context) {
+  postProcess(html) {
     let processed = html;
     for (let i = 0; i < this.postProcessors.length; i++) {
       if (!this.postProcessors[i].process) {
         continue;
       }
-      processed = this.postProcessors[i].process(processed, context);
+      processed = this.postProcessors[i].process(processed);
     }
 
     return processed;

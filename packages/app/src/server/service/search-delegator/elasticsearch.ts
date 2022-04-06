@@ -1,5 +1,4 @@
-import elasticsearch6 from '@elastic/elasticsearch6';
-import elasticsearch7 from '@elastic/elasticsearch7';
+import elasticsearch from 'elasticsearch';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -9,15 +8,11 @@ import streamToPromise from 'stream-to-promise';
 
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { PageModel } from '../../models/page';
-import {
-  SearchDelegator, SearchableData, QueryTerms,
-} from '../../interfaces/search';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
-  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
-} from '~/interfaces/search';
-import ElasticsearchClient from './elasticsearch-client';
+  MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
+} from '../../interfaces/search';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -42,17 +37,11 @@ type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data> {
 
-  name!: SearchDelegatorName.DEFAULT
+  name!: SearchDelegatorName
 
   configManager!: any
 
   socketIoService!: any
-
-  isElasticsearchV6: boolean
-
-  isElasticsearchReindexOnBoot: boolean
-
-  elasticsearch: any
 
   client: any
 
@@ -67,16 +56,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 
-    const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
-
-    if (elasticsearchVersion !== 6 && elasticsearchVersion !== 7) {
-      throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
-    }
-
-    this.isElasticsearchV6 = elasticsearchVersion === 6;
-
-    this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
-    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -107,33 +86,28 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   shouldIndexed(page) {
-    return page.revision != null;
+    return page.revision != null && page.redirectTo == null;
   }
 
   initClient() {
-    const { host, auth, indexName } = this.getConnectionInfo();
-
-    this.client = new ElasticsearchClient(new this.elasticsearch.Client({
-      node: host,
-      ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
-      auth,
+    const { host, httpAuth, indexName } = this.getConnectionInfo();
+    this.client = new elasticsearch.Client({
+      host,
+      httpAuth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
-    }));
+      // log: 'debug',
+    });
     this.indexName = indexName;
-  }
-
-  getType() {
-    return this.isElasticsearchV6 ? 'pages' : '_doc';
   }
 
   /**
    * return information object to connect to ES
-   * @return {object} { host, auth, indexName}
+   * @return {object} { host, httpAuth, indexName}
    */
   getConnectionInfo() {
     let indexName = 'crowi';
     let host = this.esUri;
-    let auth;
+    let httpAuth = '';
 
     const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
 
@@ -143,30 +117,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       indexName = url.pathname.substring(1); // omit heading slash
 
       if (url.username != null && url.password != null) {
-        const { username, password } = url;
-        auth = { username, password };
+        httpAuth = `${url.username}:${url.password}`;
       }
     }
 
     return {
       host,
-      auth,
+      httpAuth,
       indexName,
     };
   }
 
-  async init(): Promise<void> {
-    const normalizeIndices = await this.normalizeIndices();
-    if (this.isElasticsearchReindexOnBoot) {
-      try {
-        await this.rebuildIndex();
-      }
-      catch (err) {
-        logger.error('Rebuild index on boot failed', err);
-      }
-      return;
-    }
-    return normalizeIndices;
+  async init() {
+    return this.normalizeIndices();
   }
 
   /**
@@ -226,8 +189,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const { body: isExistsMainIndex } = await client.indices.exists({ index: indexName });
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsMainIndex = await client.indices.exists({ index: indexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -243,9 +206,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       };
     }
 
-    const { body: indicesBody } = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
-    const { indices } = indicesBody;
-    const { body: aliases } = await client.indices.getAlias({ index: existingIndices });
+    const { indices } = await client.indices.stats({ index: existingIndices, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
+    const aliases = await client.indices.getAlias({ index: existingIndices });
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -296,8 +258,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.error('An error occured while \'rebuildIndex\'.', error);
-      logger.error('error.meta.body', error?.meta?.body);
+      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -305,7 +266,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
-      logger.info('Normalize indices.');
       await this.normalizeIndices();
     }
 
@@ -317,19 +277,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const { body: isExistsIndex } = await client.indices.exists({ index: indexName });
+    const isExistsIndex = await client.indices.exists({ index: indexName });
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
 
     // create alias
-    const { body: isExistsAlias } = await client.indices.existsAlias({ name: aliasName, index: indexName });
+    const isExistsAlias = await client.indices.existsAlias({ name: aliasName, index: indexName });
     if (!isExistsAlias) {
       await client.indices.putAlias({
         name: aliasName,
@@ -339,18 +299,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    let mappings = this.isElasticsearchV6
-      ? require('^/resource/search/mappings-es6.json')
-      : require('^/resource/search/mappings-es7.json');
-
-    if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es7-for-ci.json');
-    }
-
-    return this.client.indices.create({
-      index,
-      body: mappings,
-    });
+    const body = require('^/resource/search/mappings.json');
+    return this.client.indices.create({ index, body });
   }
 
   /**
@@ -386,13 +336,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: this.getType(),
+        _type: 'pages',
         _id: page._id.toString(),
       },
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
-    const seenUsersCount = page.seenUsers?.length || 0;
+    const seenUsersCount = page.seenUsers.length || 0;
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -402,7 +352,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
-      like_count: page.liker?.length || 0,
+      like_count: page.liker.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,
@@ -422,7 +372,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: this.getType(),
+        _type: 'pages',
         _id: page._id.toString(),
       },
     };
@@ -441,7 +391,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   updateOrInsertDescendantsPagesById(page, user) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.find());
     builder.addConditionToListWithDescendants(page.path);
@@ -454,7 +404,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   async updateOrInsertPages(queryFactory, option: any = {}) {
     const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
     const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
@@ -467,8 +417,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const shouldIndexed = this.shouldIndexed.bind(this);
     const bulkWrite = this.client.bulk.bind(this.client);
 
-    const findQuery = new PageQueryBuilder(queryFactory()).query;
-    const countQuery = new PageQueryBuilder(queryFactory()).query;
+    const findQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+    const countQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
 
     const totalCount = await countQuery.count();
 
@@ -569,9 +519,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const { body: res } = await bulkWrite({
+          const res = await bulkWrite({
             body,
-            // requestTimeout: Infinity,
+            requestTimeout: Infinity,
           });
 
           count += (res.items || []).length;
@@ -637,33 +587,28 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
    *   data: [ pages ...],
    * }
    */
-  async searchKeyword(query): Promise<IFormattedSearchResult> {
-
+  async searchKeyword(query) {
     // for debug
     if (process.env.NODE_ENV === 'development') {
-      logger.debug('query: ', JSON.stringify(query, null, 2));
-
-      const { body: result } = await this.client.indices.validateQuery({
-        index: query.index,
-        type: query.type,
+      const result = await this.client.indices.validateQuery({
         explain: true,
         body: {
           query: query.body.query,
         },
       });
-      // for debug
-      logger.debug('ES result: ', result);
+      logger.debug('ES returns explanations: ', result.explanations);
     }
 
-    const { body: result } = await this.client.search(query);
+    const result = await this.client.search(query);
 
-    const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+    // for debug
+    logger.debug('ES result: ', result);
 
     return {
       meta: {
         took: result.took,
-        total: totalValue,
-        hitsCount: result.hits.hits.length,
+        total: result.hits.total,
+        results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
         return {
@@ -689,18 +634,14 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     }
 
     // sort by score
-    // eslint-disable-next-line prefer-const
-    let query = {
+    const query = {
       index: this.aliasName,
-      _source: fields,
+      type: 'pages',
       body: {
         query: {}, // query
+        _source: fields,
       },
     };
-
-    if (this.isElasticsearchV6) {
-      Object.assign(query, { type: 'pages' });
-    }
 
     return query;
   }
@@ -715,6 +656,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
     query.body.sort = { [sort]: { order } };
+  }
+
+  convertSortQuery(sortAxis) {
+    switch (sortAxis) {
+      case RELATION_SCORE:
+        return '_score';
+    }
   }
 
   initializeBoolQuery(query) {
@@ -765,7 +713,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     if (parsedKeywords.phrase.length > 0) {
       const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
-        const phraseQuery = {
+        phraseQueries.push({
           multi_match: {
             query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
@@ -776,24 +724,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'comments',
             ],
           },
-        };
-        if (this.isElasticsearchV6) {
-          phraseQueries.push(phraseQuery);
-        }
-        else {
-          query.body.query.bool.must.push(phraseQuery);
-        }
+        });
       });
 
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must.push(phraseQueries);
-      }
+      query.body.query.bool.must.push(phraseQueries);
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
       const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
-        const notPhraseQuery = {
+        notPhraseQueries.push({
           multi_match: {
             query: phrase, // each phrase is quoteted words
             type: 'phrase',
@@ -803,19 +743,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'body',
             ],
           },
-        };
-
-        if (this.isElasticsearchV6) {
-          notPhraseQueries.push(notPhraseQuery);
-        }
-        else {
-          query.body.query.bool.must_not.push(notPhraseQuery);
-        }
+        });
       });
 
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must_not.push(notPhraseQueries);
-      }
+      query.body.query.bool.must_not.push(notPhraseQueries);
     }
 
     if (parsedKeywords.prefix.length > 0) {
@@ -853,7 +784,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
     const {
       GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
     } = Page;
@@ -962,7 +893,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
     const { queryString, terms } = data;
 
     const from = option.offset || null;
@@ -977,8 +908,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendResultSize(query, from, size);
 
     this.appendSortOrder(query, sort, order);
-    await this.appendFunctionScore(query, queryString);
 
+    await this.appendFunctionScore(query, queryString);
     this.appendHighlight(query);
 
     return this.searchKeyword(query);

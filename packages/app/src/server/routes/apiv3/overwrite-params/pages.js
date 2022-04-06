@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-const { format } = require('date-fns');
-const { pagePathUtils } = require('@growi/core');
-
-const { isTopPage } = pagePathUtils;
 
 // eslint-disable-next-line no-unused-vars
 const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
@@ -43,14 +39,6 @@ class PageOverwriteParamsFactory {
         return GRANT_PUBLIC;
       }
       return value;
-    };
-
-    params.parent = (value, { document, schema, propertyName }) => {
-      return null;
-    };
-
-    params.descendantCount = (value, { document, schema, propertyName }) => {
-      return 0;
     };
 
     if (option.initPageMetadatas) {

@@ -3,10 +3,11 @@ import {
 } from 'mongoose';
 
 import { getOrCreateModel } from '@growi/core';
-
-import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
-
 import ActivityDefine from '../util/activityDefine';
+
+export const STATUS_SUBSCRIBE = 'SUBSCRIBE';
+export const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';
+const STATUSES = [STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE];
 
 export interface ISubscription {
   user: Types.ObjectId
@@ -22,7 +23,7 @@ export interface ISubscription {
 export interface SubscriptionDocument extends ISubscription, Document {}
 
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
-  findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
+  findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
   upsertSubscription(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
@@ -49,17 +50,17 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   status: {
     type: String,
     require: true,
-    enum: AllSubscriptionStatusType,
+    enum: STATUSES,
   },
   createdAt: { type: Date, default: new Date() },
 });
 
 subscriptionSchema.methods.isSubscribing = function() {
-  return this.status === SubscriptionStatusType.SUBSCRIBE;
+  return this.status === STATUS_SUBSCRIBE;
 };
 
 subscriptionSchema.methods.isUnsubscribing = function() {
-  return this.status === SubscriptionStatusType.UNSUBSCRIBE;
+  return this.status === STATUS_UNSUBSCRIBE;
 };
 
 subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
@@ -80,11 +81,11 @@ subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
 };
 
 subscriptionSchema.statics.getSubscription = async function(target) {
-  return this.find({ target, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
+  return this.find({ target, status: STATUS_SUBSCRIBE }).distinct('user');
 };
 
 subscriptionSchema.statics.getUnsubscription = async function(target) {
-  return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
+  return this.find({ target, status: STATUS_UNSUBSCRIBE }).distinct('user');
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

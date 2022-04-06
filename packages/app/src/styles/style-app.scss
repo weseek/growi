@@ -16,9 +16,6 @@
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
-// override simplebar-react styles
-@import 'override-simplebar';
-
 // atoms
 @import 'atoms/buttons';
 @import 'atoms/code';
@@ -32,6 +29,7 @@
 @import 'molecules/page-editor-mode-manager';
 @import 'molecules/slack-notification';
 @import 'molecules/duplicated-paths-table.scss';
+@import 'molecules/compare-paths-table.scss';
 
 // growi component
 @import 'admin';
@@ -58,7 +56,6 @@
 @import 'page-accessories-control';
 @import 'page-accessories-modal';
 @import 'page-path';
-@import 'page-tree';
 @import 'page';
 @import 'page-presentation';
 @import 'page-history';

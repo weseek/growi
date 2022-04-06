@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
-import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses, PaginateResult, IInAppNotification } from '~/interfaces/in-app-notification';
 import Crowi from '../crowi';
 import {
   InAppNotification,
@@ -9,14 +9,13 @@ import {
 
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
-import Subscription from '~/server/models/subscription';
+import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
 
 import { IUser } from '~/interfaces/user';
 
 import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
@@ -168,7 +167,7 @@ export default class InAppNotificationService {
     if (inAppNotificationSettings != null) {
       const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
       if (subscribeRule != null && subscribeRule.isEnabled) {
-        await Subscription.subscribeByPageId(userId, pageId, SubscriptionStatusType.SUBSCRIBE);
+        await Subscription.subscribeByPageId(userId, pageId, STATUS_SUBSCRIBE);
       }
     }
 

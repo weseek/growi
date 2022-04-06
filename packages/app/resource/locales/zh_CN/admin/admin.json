@@ -19,34 +19,6 @@
     "bug_report": "提交一个错误报告",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>然后提交你的问题到GitHub。</a>"
   },
-  "v5_page_migration": {
-    "page_tree_not_avaliable": "Page Tree 功能不可用",
-    "go_to_settings": "进入设置，启用该功能",
-    "migration_desc": "有一些页面具有旧的v4兼容性。为了利用新的功能，如页面树和容易重命名，请将您的所有页面转换为v5兼容性。",
-    "migration_note": "注意：你将失去页面路径的唯一约束。",
-    "upgrade_to_v5": "转换为v5兼容性",
-    "modal_migration_warning": "这个过程可能需要很长时间。强烈建议管理员告诉用户在转换期间不要创建、修改或删除页面。",
-    "start_upgrading": "开始转换为v5兼容性",
-    "successfully_started": "成功开始转换",
-    "already_upgraded": "你已经完成了向v5兼容性的转换",
-    "header_upgrading_progress": "升级进度",
-    "migration_succeeded": "您的升级已经成功完成! 退出维护模式，可以使用GROWI。",
-    "migration_failed": "升级失败。请参考GROWI的文档，了解在失败情况下该如何处理。"
-  },
-  "maintenance_mode": {
-    "maintenance_mode": "维护模式",
-    "under_maintenance_mode": "在维护模式下",
-    "failed_to_start_maintenance_mode": "启动维护模式失败",
-    "failed_to_end_maintenance_mode": "结束维护模式失败",
-    "successfully_started_maintenance_mode": "成功地启动了维护模式",
-    "successfully_ended_maintenance_mode": "成功地结束了维护模式",
-    "warning_message_to_start": "你将无法访问管理员设置以外的页面。普通用户将无法访问任何内容，直到维护模式手动结束。",
-    "warning_message_to_end": "如果 \"数据导入 \"和 \"升级到V5 \"正在进行中，建议在该过程完成之前不要退出维护模式。",
-    "supplymentary_message_to_start": "至于API，只有管理员的API将是有效的。",
-    "start_maintenance_mode": "启动维护模式",
-    "end_maintenance_mode": "结束维护模式",
-    "description": "维护模式限制了所有的用户操作。 在执行 \"数据导入 \"和 \"升级到V5 \"之前，务必启动维护模式。 要退出，进入 \"安全设置\">\"维护模式\"。"
-  },
   "app_setting": {
     "site_name": "网站名称 ",
     "sitename_change": "您可以更改用于标题和HTML标题的网站名称。",
@@ -216,9 +188,6 @@
     "beta_warning": "这个函数是Beta。",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
-    "error": {
-      "only_upsert_available": "Only 'Upsert' option is available for pages collection."
-    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
@@ -480,15 +449,10 @@
   },
   "user_group_management": {
     "create_group": "创建新组",
-    "add_child_group": "添加一个子组",
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
-    "parent_group": "父母组",
-    "select_parent_group": "选择父组",
-    "release_parent_group": "Release parent group",
     "add_modal": {
-      "description": "添加的用户也将被添加到所有的父组。",
       "add_user": "将用户添加到创建的组",
       "search_option": "搜索选项",
       "enable_option": "启用{{option}",
@@ -497,7 +461,6 @@
       "backward_match": "向后匹配"
     },
     "group_list": "组列表",
-    "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
     "basic_info": "基本信息",
     "user_list": "用户列表",
@@ -507,20 +470,13 @@
     "remove_from_group": "删除此用户",
     "delete_modal": {
       "header": "删除组",
-      "desc": "该组下的所有子组也将被删除。删除后，将无法检索已删除的组及其私人页。",
+      "desc": "删除后，将无法检索已删除的组及其私人页。",
       "dropdown_desc": "为私人页选择操作",
       "select_group": "选择组",
       "no_groups": "没有可选择的组",
       "publish_pages": "全部发布",
       "delete_pages": "全部删除",
       "transfer_pages": "转移到另一组"
-    },
-    "update_parent_confirm_modal": {
-      "header": "该组的父组被改变",
-      "caution_change_parent": "该操作改变了组的父级，即 \"{{groupName}}\" 。",
-      "danger_message": "注意，查看与该组相关的所有页面的权限会受到影响。",
-      "force_update_parents_label": "强行添加失踪的用户",
-      "force_update_parents_description": "激活这个选项，如果在父组改变后，在祖先组中有缺失的用户，可以强制添加这些用户"
     }
   }
 }

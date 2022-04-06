@@ -4,12 +4,6 @@ body .page-list {
     line-height: 1.6em;
   }
 
-  .btn-page-item-control {
-    width: 20px;
-    height: 20px;
-    padding: 0px;
-  }
-
   .page-list-ul {
     padding-left: 0;
     margin: 0;
@@ -31,11 +25,6 @@ body .page-list {
       width: 16px;
       height: 16px;
       vertical-align: text-bottom;
-
-      &.picture-md {
-        width: 20px;
-        height: 20px;
-      }
     }
 
     .page-list-meta {
@@ -58,32 +47,6 @@ body .page-list {
     // override .page-list-ul
     &.page-list-ul-flat {
       padding-left: 0;
-    }
-  }
-
-  // List group
-  .list-group {
-    .list-group-item {
-      min-height: 136px;
-
-      .page-list-meta {
-        .meta-icon {
-          width: 14px;
-          height: 14px;
-          margin-right: 14px;
-        }
-        .footstamp-icon {
-          margin-right: 2px;
-        }
-      }
-
-      .page-list-updated-at {
-        font-size: 12px;
-      }
-
-      &.list-group-item-action {
-        border-left: solid 3px transparent;
-      }
     }
   }
 }

@@ -1,32 +1,21 @@
-import { IPageWithMeta } from './page';
+import { IPageHasId } from './page';
 
-export type IPageSearchMeta = {
-  bookmarkCount?: number,
-  elasticSearchResult?: {
-    snippet?: string | null;
-    highlightedPath?: string | null;
-    isHtmlInPath: boolean;
-  };
+export enum CheckboxType {
+  NONE_CHECKED = 'noneChecked',
+  INDETERMINATE = 'indeterminate',
+  ALL_CHECKED = 'allChecked',
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
-  return meta != null && 'elasticSearchResult' in meta;
-};
-
-export type ISearchResult<T > = ISearchResultMeta & {
-  data: T[],
-}
-
-export type ISearchResultMeta = {
-  meta: {
-    took?: number
-    total: number
-    hitsCount: number
+export type IPageSearchResultData = {
+  pageData: IPageHasId,
+  pageMeta: {
+    bookmarkCount?: number,
+    elasticSearchResult?: {
+      snippet: string,
+      highlightedPath: string,
+    },
   },
 }
-
-export type IFormattedSearchResult = ISearchResult<IPageWithMeta<IPageSearchMeta>>;
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',

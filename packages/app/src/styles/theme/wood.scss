@@ -66,9 +66,9 @@ html[dark] {
   // $color-list: $color-global;
   $bgcolor-list: transparent;
   $color-list-hover: $gray-100;
-  $bgcolor-list-hover: lighten($primary, 40%);
+  $bgcolor-list-hover: darken($bgcolor-global, 3%);
   // $color-list-active: $color-reversal;
-  $bgcolor-list-active: lighten($primary, 30%);
+  // $bgcolor-list-active: $primary;
 
   // Table colors
   // $color-table: #; // optional
@@ -88,7 +88,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
+  $bgcolor-sidebar: transparent;
   // Sidebar contents
   $color-sidebar-context: #9d7406;
   $bgcolor-sidebar-context: transparent;
@@ -104,6 +104,8 @@ html[dark] {
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);

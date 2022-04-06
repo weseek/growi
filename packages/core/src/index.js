@@ -1,7 +1,6 @@
 import * as _pathUtils from './utils/path-utils';
 import * as _envUtils from './utils/env-utils';
 import * as _pagePathUtils from './utils/page-path-utils';
-import * as _pageUtils from './utils/page-utils';
 import * as _templateChecker from './utils/template-checker';
 import * as _customTagUtils from './plugin/util/custom-tag-utils';
 
@@ -9,7 +8,6 @@ import * as _customTagUtils from './plugin/util/custom-tag-utils';
 export const pathUtils = _pathUtils;
 export const envUtils = _envUtils;
 export const pagePathUtils = _pagePathUtils;
-export const pageUtils = _pageUtils;
 export const templateChecker = _templateChecker;
 export const customTagUtils = _customTagUtils;
 

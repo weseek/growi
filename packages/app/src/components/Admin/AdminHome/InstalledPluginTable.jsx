@@ -11,14 +11,8 @@ class InstalledPluginTable extends React.Component {
   render() {
     const { t, adminHomeContainer } = this.props;
 
-    const { installedPlugins } = adminHomeContainer.state;
-
-    if (installedPlugins == null) {
-      return <></>;
-    }
-
     return (
-      <table data-testid="admin-installed-plugin-table" className="table table-bordered">
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th className="text-center">{t('admin:admin_top.package_name')}</th>
@@ -31,8 +25,8 @@ class InstalledPluginTable extends React.Component {
             return (
               <tr key={plugin.name}>
                 <td>{plugin.name}</td>
-                <td data-hide-in-vrt className="text-center">{plugin.requiredVersion}</td>
-                <td data-hide-in-vrt className="text-center">{plugin.installedVersion}</td>
+                <td className="text-center">{plugin.requiredVersion}</td>
+                <td className="text-center">{plugin.installedVersion}</td>
               </tr>
             );
           })}

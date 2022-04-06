@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import PageList from './PageList';
 
 
 const TrashPageList = (props) => {
@@ -13,7 +13,7 @@ const TrashPageList = (props) => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: DescendantsPageListForCurrentPath,
+        Content: PageList,
         i18n: t('page_list'),
         index: 0,
       },
@@ -21,7 +21,7 @@ const TrashPageList = (props) => {
   }, [t]);
 
   return (
-    <div data-testid="trash-page-list" className="mt-5 d-edit-none">
+    <div className="mt-5 d-edit-none">
       <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );

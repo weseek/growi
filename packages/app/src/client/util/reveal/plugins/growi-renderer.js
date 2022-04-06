@@ -66,15 +66,15 @@
         interceptorManager.process('preRender', context)
           .then(() => { return interceptorManager.process('prePreProcess', context) })
           .then(() => {
-            context.markdown = growiRenderer.preProcess(context.markdown, context);
+            context.markdown = growiRenderer.preProcess(context.markdown);
           })
           .then(() => { return interceptorManager.process('postPreProcess', context) })
           .then(() => {
-            context.parsedHTML = growiRenderer.process(context.markdown, context);
+            context.parsedHTML = growiRenderer.process(context.markdown);
           })
           .then(() => { return interceptorManager.process('prePostProcess', context) })
           .then(() => {
-            context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
+            context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
           })
           .then(() => { return interceptorManager.process('postPostProcess', context) })
           .then(() => { return interceptorManager.process('preRenderHtml', context) })

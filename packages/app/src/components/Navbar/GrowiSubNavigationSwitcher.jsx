@@ -1,7 +1,6 @@
 import React, {
   useMemo, useState, useRef, useEffect, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
@@ -9,7 +8,7 @@ import { debounce } from 'throttle-debounce';
 import loggerFactory from '~/utils/logger';
 import { useSidebarCollapsed } from '~/stores/ui';
 
-import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
+import GrowiSubNavigation from './GrowiSubNavigation';
 
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
@@ -33,7 +32,7 @@ const GrowiSubNavigationSwitcher = (props) => {
   const fixedContainerRef = useRef();
   const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
 
-  const initWidth = useCallback(() => {
+  const resetWidth = useCallback(() => {
     const instance = fixedContainerRef.current;
 
     if (instance == null || instance.parentNode == null) {
@@ -46,22 +45,9 @@ const GrowiSubNavigationSwitcher = (props) => {
     setWidth(clientWidth);
   }, []);
 
-  const initVisible = useCallback(() => {
-    const elements = stickyEvents.stickyElements;
-
-    for (const elem of elements) {
-      const bool = stickyEvents.isSticking(elem);
-      if (bool) {
-        setVisible(bool);
-        break;
-      }
-    }
-
-  }, [stickyEvents]);
-
   // setup effect by resizing event
   useEffect(() => {
-    const resizeHandler = debounce(100, initWidth);
+    const resizeHandler = debounce(100, resetWidth);
 
     window.addEventListener('resize', resizeHandler);
 
@@ -69,7 +55,7 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, [initWidth]);
+  }, [resetWidth]);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -93,37 +79,30 @@ const GrowiSubNavigationSwitcher = (props) => {
   // update width when sidebar collapsing changed
   useEffect(() => {
     if (isSidebarCollapsed != null) {
-      setTimeout(initWidth, 300);
+      setTimeout(resetWidth, 300);
     }
-  }, [isSidebarCollapsed, initWidth]);
+  }, [isSidebarCollapsed, resetWidth]);
 
   // initialize
   useEffect(() => {
-    initWidth();
-
-    // check sticky state several times
-    setTimeout(initVisible, 100);
-    setTimeout(initVisible, 300);
-    setTimeout(initVisible, 2000);
-
-  }, [initWidth, initVisible]);
+    resetWidth();
+    setTimeout(() => {
+      stickyEvents.state.values((sticky) => {
+        setVisible(sticky.isSticky);
+      });
+    }, 100);
+  }, [resetWidth, stickyEvents]);
 
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
-      <div
-        id="grw-subnav-fixed-container"
-        className="grw-subnav-fixed-container position-fixed grw-subnav-append-shadow-container"
-        ref={fixedContainerRef}
-        style={{ width }}
-      >
-        <GrowiContextualSubNavigation isCompactMode isLinkSharingDisabled />
+      <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed" ref={fixedContainerRef} style={{ width }}>
+        <GrowiSubNavigation isCompactMode />
       </div>
     </div>
   );
 };
 
 GrowiSubNavigationSwitcher.propTypes = {
-  isLinkSharingDisabled: PropTypes.bool,
 };
 
 export default GrowiSubNavigationSwitcher;

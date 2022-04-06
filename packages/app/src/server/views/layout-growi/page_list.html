@@ -13,9 +13,9 @@
 
 
 {% block content_main_after %}
-  {% if isTrashPage(path) %}
+  {% if isTrashPage() %}
     <div class="grw-container-convertible">
-      <div id="trash-page-list-container"></div>
+      <div id="trash-page-list"></div>
     </div>
   {% endif %}
 {% endblock %}

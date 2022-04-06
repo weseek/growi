@@ -171,7 +171,7 @@ class CommentEditor extends React.Component {
       this.initializeEditor();
 
       if (onCommentButtonClicked != null) {
-        onCommentButtonClicked();
+        onCommentButtonClicked(replyTo || currentCommentId);
       }
     }
     catch (err) {
@@ -231,16 +231,16 @@ class CommentEditor extends React.Component {
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown, context);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown, context);
+        const parsedHTML = growiRenderer.process(context.markdown);
         context.parsedHTML = parsedHTML;
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })

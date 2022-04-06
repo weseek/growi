@@ -11,32 +11,24 @@ class SystemInformationTable extends React.Component {
   render() {
     const { adminHomeContainer } = this.props;
 
-    const {
-      growiVersion, nodeVersion, npmVersion, yarnVersion,
-    } = adminHomeContainer.state;
-
-    if (growiVersion == null || nodeVersion == null || npmVersion == null || yarnVersion == null) {
-      return <></>;
-    }
-
     return (
-      <table data-testid="admin-system-information-table" className="table table-bordered">
+      <table className="table table-bordered">
         <tbody>
           <tr>
             <th>GROWI</th>
-            <td data-hide-in-vrt>{ growiVersion }</td>
+            <td>{ adminHomeContainer.state.growiVersion }</td>
           </tr>
           <tr>
             <th>node.js</th>
-            <td>{ nodeVersion }</td>
+            <td>{ adminHomeContainer.state.nodeVersion }</td>
           </tr>
           <tr>
             <th>npm</th>
-            <td>{ npmVersion }</td>
+            <td>{ adminHomeContainer.state.npmVersion }</td>
           </tr>
           <tr>
             <th>yarn</th>
-            <td>{ yarnVersion }</td>
+            <td>{ adminHomeContainer.state.yarnVersion }</td>
           </tr>
         </tbody>
       </table>

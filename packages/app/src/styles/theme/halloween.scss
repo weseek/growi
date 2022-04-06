@@ -99,6 +99,7 @@ html[dark] {
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 

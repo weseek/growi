@@ -24,6 +24,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   } = props;
 
   const snapshot = parseSnapshot(notification.snapshot);
+  const pagePath = { path: snapshot.path };
 
   // publish open()
   useImperativeHandle(ref, () => ({
@@ -41,7 +42,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   return (
     <div className="p-2">
       <div>
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={snapshot.path} />
+        <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
       </div>
       <i className={`${actionIcon} mr-2`} />
       <FormattedDistanceDate

@@ -43,7 +43,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
       if (elem) {
         // instanciate LsxContext from context
         const lsxContext = new LsxContext(context.lsxContextMap[domId] || {});
-        lsxContext.fromPagePath = context.pagePath ?? context.currentPathname;
+        lsxContext.fromPagePath = context.currentPagePath;
 
         this.renderReactDOM(lsxContext, elem, isPreview);
       }

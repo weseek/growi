@@ -141,7 +141,7 @@ class UserManagement extends React.Component {
     );
 
     return (
-      <div data-testid="admin-users">
+      <Fragment>
         {adminUsersContainer.state.userForPasswordResetModal != null
         && (
           <PasswordResetModal
@@ -212,7 +212,7 @@ class UserManagement extends React.Component {
         <UserTable />
         {pager}
 
-      </div>
+      </Fragment>
     );
   }
 

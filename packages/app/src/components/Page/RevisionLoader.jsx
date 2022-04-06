@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -14,14 +13,14 @@ import RevisionRenderer from './RevisionRenderer';
 /**
  * Load data from server and render RevisionBody component
  */
-class LegacyRevisionLoader extends React.Component {
+class RevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
     this.logger = loggerFactory('growi:Page:RevisionLoader');
 
     this.state = {
-      markdown: null,
+      markdown: '',
       isLoading: false,
       isLoaded: false,
       errors: null,
@@ -50,7 +49,7 @@ class LegacyRevisionLoader extends React.Component {
       const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
-        markdown: res.data?.revision?.body,
+        markdown: res.data.revision.body,
         errors: null,
       });
 
@@ -95,23 +94,18 @@ class LegacyRevisionLoader extends React.Component {
     }
 
     // ----- after load -----
-    const isForbidden = this.state.errors != null && this.state.errors[0].code === 'forbidden-page';
     let markdown = this.state.markdown;
-    if (isForbidden) {
-      markdown = `<i class="icon-exclamation p-1"></i>${this.props.t('not_allowed_to_see_this_page')}`;
-    }
-    else if (this.state.errors != null) {
+    if (this.state.errors != null) {
       const errorMessages = this.state.errors.map((error) => {
-        return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
+        return `<span class="text-muted"><em>${error.message}</em></span>`;
       });
-      markdown = errorMessages.join('\n');
+      markdown = errorMessages.join('');
     }
 
     return (
       <RevisionRenderer
         growiRenderer={this.props.growiRenderer}
         markdown={markdown}
-        pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
       />
     );
@@ -122,22 +116,17 @@ class LegacyRevisionLoader extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LegacyRevisionLoaderWrapper = withTranslation()(withUnstatedContainers(LegacyRevisionLoader, [AppContainer]));
+const RevisionLoaderWrapper = withUnstatedContainers(RevisionLoader, [AppContainer]);
 
-LegacyRevisionLoader.propTypes = {
+RevisionLoader.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  t: PropTypes.func.isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   onRevisionLoaded: PropTypes.func,
-  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
+  highlightKeywords: PropTypes.string,
 };
 
-const RevisionLoader = (props) => {
-  return <LegacyRevisionLoaderWrapper {...props}></LegacyRevisionLoaderWrapper>;
-};
-export default RevisionLoader;
+export default RevisionLoaderWrapper;

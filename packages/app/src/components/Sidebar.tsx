@@ -2,14 +2,13 @@ import React, {
   FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
-import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
-  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
@@ -17,24 +16,16 @@ import DrawerToggler from './Navbar/DrawerToggler';
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
-import { StickyStretchableScroller } from './StickyStretchableScroller';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
-const sidebarFixedWidthInDrawerMode = 320;
-
 
 const GlobalNavigation = () => {
-  const { data: isDrawerMode } = useDrawerMode();
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
-  const { scheduleToPut } = useUserUISettings();
-
   const itemSelectedHandler = useCallback((selectedContents) => {
-    if (isDrawerMode) {
-      return;
-    }
 
     let newValue = false;
 
@@ -45,33 +36,39 @@ const GlobalNavigation = () => {
     }
 
     mutateSidebarCollapsed(newValue, false);
-    scheduleToPut({ isSidebarCollapsed: newValue });
+    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
 
-  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
+  }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
 
 const SidebarContentsWrapper = () => {
-  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+  const [resetKey, setResetKey] = useState(0);
+
+  const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
   const calcViewHeight = useCallback(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    return elem != null
-      ? window.innerHeight - elem?.getBoundingClientRect().top
+    const scrollTargetElem = document.querySelector('#grw-sidebar-contents-scroll-target');
+    return scrollTargetElem != null
+      ? window.innerHeight - scrollTargetElem?.getBoundingClientRect().top
       : window.innerHeight;
   }, []);
 
   return (
     <>
-      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-        <StickyStretchableScroller
-          simplebarRef={mutateSidebarScroller}
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeight={calcViewHeight}
-        >
+      <StickyStretchableScroller
+        scrollTargetSelector={scrollTargetSelector}
+        contentsElemSelector="#grw-sidebar-content-container"
+        stickyElemSelector=".grw-sidebar"
+        calcViewHeightFunc={calcViewHeight}
+        resetKey={resetKey}
+      />
+
+      <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
+        <div id="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
           <SidebarContents />
-        </StickyStretchableScroller>
+        </div>
       </div>
 
       <DrawerToggler iconClass="icon-arrow-left" />
@@ -90,17 +87,10 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
-  const { scheduleToPut } = useUserUISettings();
-
   const [isTransitionEnabled, setTransitionEnabled] = useState(false);
 
   const [isHover, setHover] = useState(false);
-  const [isHoverOnResizableContainer, setHoverOnResizableContainer] = useState(false);
   const [isDragging, setDrag] = useState(false);
-
-  const resizableContainer = useRef<HTMLDivElement>(null);
-
-  const timeoutIdRef = useRef<NodeJS.Timeout>();
 
   const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
 
@@ -126,21 +116,32 @@ const Sidebar: FC<Props> = (props: Props) => {
     mutateDrawerOpened(false, false);
   }, [mutateDrawerOpened]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setTransitionEnabled(true);
+    }, 1000);
+  }, []);
 
-  const setContentWidth = useCallback((newWidth: number) => {
+  useEffect(() => {
+    toggleDrawerMode(isDrawerMode);
+  }, [isDrawerMode, toggleDrawerMode]);
+
+  const resizableContainer = useRef<HTMLDivElement>(null);
+  const setContentWidth = useCallback((newWidth) => {
     if (resizableContainer.current == null) {
       return;
     }
     resizableContainer.current.style.width = `${newWidth}px`;
   }, []);
 
-  const hoverOnHandler = useCallback(() => {
+  const hoverOnResizableContainerHandler = useCallback(() => {
     if (!isCollapsed || isDrawerMode || isDragging) {
       return;
     }
 
     setHover(true);
-  }, [isCollapsed, isDragging, isDrawerMode]);
+    setContentWidth(currentProductNavWidth);
+  }, [isCollapsed, isDrawerMode, isDragging, setContentWidth, currentProductNavWidth]);
 
   const hoverOutHandler = useCallback(() => {
     if (!isCollapsed || isDrawerMode || isDragging) {
@@ -148,37 +149,21 @@ const Sidebar: FC<Props> = (props: Props) => {
     }
 
     setHover(false);
-  }, [isCollapsed, isDragging, isDrawerMode]);
-
-  const hoverOnResizableContainerHandler = useCallback(() => {
-    if (!isCollapsed || isDrawerMode || isDragging) {
-      return;
-    }
-
-    setHoverOnResizableContainer(true);
-  }, [isCollapsed, isDrawerMode, isDragging]);
-
-  const hoverOutResizableContainerHandler = useCallback(() => {
-    if (!isCollapsed || isDrawerMode || isDragging) {
-      return;
-    }
-
-    setHoverOnResizableContainer(false);
-  }, [isCollapsed, isDrawerMode, isDragging]);
+    setContentWidth(sidebarMinimizeWidth);
+  }, [isCollapsed, isDragging, isDrawerMode, setContentWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
     mutateSidebarCollapsed(newValue, false);
-    scheduleToPut({ isSidebarCollapsed: newValue });
-  }, [isCollapsed, mutateSidebarCollapsed, scheduleToPut]);
+    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
+  }, [isCollapsed, mutateSidebarCollapsed]);
 
   useEffect(() => {
     if (isCollapsed) {
       setContentWidth(sidebarMinimizeWidth);
     }
     else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setContentWidth(currentProductNavWidth!);
+      setContentWidth(currentProductNavWidth);
     }
   }, [currentProductNavWidth, isCollapsed, setContentWidth]);
 
@@ -203,18 +188,18 @@ const Sidebar: FC<Props> = (props: Props) => {
       // force collapsed
       mutateSidebarCollapsed(true);
       mutateProductNavWidth(sidebarMinWidth, false);
-      scheduleToPut({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
+      scheduleToPutUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
     }
     else {
       const newWidth = resizableContainer.current.clientWidth;
       mutateSidebarCollapsed(false);
       mutateProductNavWidth(newWidth, false);
-      scheduleToPut({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
+      scheduleToPutUserUISettings({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');
 
-  }, [mutateProductNavWidth, mutateSidebarCollapsed, scheduleToPut]);
+  }, [mutateProductNavWidth, mutateSidebarCollapsed]);
 
   const dragableAreaMouseDownHandler = useCallback((event: React.MouseEvent) => {
     if (!isResizableByDrag) {
@@ -237,68 +222,11 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   }, [dragableAreaMouseUpHandler, draggableAreaMoveHandler, isResizableByDrag]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setTransitionEnabled(true);
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
-    toggleDrawerMode(isDrawerMode);
-  }, [isDrawerMode, toggleDrawerMode]);
-
-  // open/close resizable container
-  useEffect(() => {
-    if (!isCollapsed) {
-      return;
-    }
-
-    if (isHoverOnResizableContainer) {
-      // schedule to open
-      timeoutIdRef.current = setTimeout(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        setContentWidth(currentProductNavWidth!);
-      }, 70);
-    }
-    else if (timeoutIdRef.current != null) {
-      // cancel schedule to open
-      clearTimeout(timeoutIdRef.current);
-      timeoutIdRef.current = undefined;
-    }
-
-    // close
-    if (!isHover) {
-      setContentWidth(sidebarMinimizeWidth);
-      timeoutIdRef.current = undefined;
-    }
-  }, [isCollapsed, isHover, isHoverOnResizableContainer, currentProductNavWidth, setContentWidth]);
-
-  // open/close resizable container when drawer mode
-  useEffect(() => {
-    if (isDrawerMode) {
-      setContentWidth(sidebarFixedWidthInDrawerMode);
-    }
-    else if (isCollapsed) {
-      setContentWidth(sidebarMinimizeWidth);
-    }
-    else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setContentWidth(currentProductNavWidth!);
-    }
-  }, [currentProductNavWidth, isCollapsed, isDrawerMode, setContentWidth]);
-
-
-  const showContents = isDrawerMode || isHover || !isCollapsed;
-
   return (
     <>
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
-          <div
-            className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
-            onMouseEnter={hoverOnHandler}
-            onMouseLeave={hoverOutHandler}
-          >
+          <div className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`} onMouseLeave={hoverOutHandler}>
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
                 <GlobalNavigation></GlobalNavigation>
@@ -307,11 +235,10 @@ const Sidebar: FC<Props> = (props: Props) => {
                 ref={resizableContainer}
                 className="grw-contextual-navigation"
                 onMouseEnter={hoverOnResizableContainerHandler}
-                onMouseLeave={hoverOutResizableContainerHandler}
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
                 <div className="grw-contextual-navigation-child">
-                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
+                  <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
                     <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>
@@ -327,7 +254,6 @@ const Sidebar: FC<Props> = (props: Props) => {
                 </div>
               ) }
               <button
-                data-testid="grw-navigation-resize-button"
                 className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
                 aria-expanded="true"

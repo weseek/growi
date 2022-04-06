@@ -55,6 +55,8 @@ class InstallerForm extends React.Component {
     setTimeout(() => {
       this.setState({ isSubmittingDisabled: false });
     }, 3000);
+
+    document['register-form'].submit();
   }
 
   render() {
@@ -64,7 +66,7 @@ class InstallerForm extends React.Component {
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
 
     return (
-      <div data-testid="installerForm" className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
+      <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
         <div className="row">
           <div className="col-md-12">
             <p className="alert alert-success">
@@ -82,7 +84,6 @@ class InstallerForm extends React.Component {
                   type="button"
                   className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
                   id="dropdownLanguage"
-                  data-testid="dropdownLanguage"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="true"
@@ -99,13 +100,7 @@ class InstallerForm extends React.Component {
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
                     localeMetadatas.map(meta => (
-                      <button
-                        key={meta.id}
-                        data-testid={`dropdownLanguageMenu-${meta.id}`}
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { this.changeLanguage(meta) }}
-                      >
+                      <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
                         {meta.displayName}
                       </button>
                     ))
@@ -119,7 +114,6 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-user" /></span>
               </div>
               <input
-                data-testid="tiUsername"
                 type="text"
                 className="form-control"
                 placeholder={this.props.t('User ID')}
@@ -136,7 +130,6 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-tag" /></span>
               </div>
               <input
-                data-testid="tiName"
                 type="text"
                 className="form-control"
                 placeholder={this.props.t('Name')}
@@ -151,7 +144,6 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-envelope" /></span>
               </div>
               <input
-                data-testid="tiEmail"
                 type="email"
                 className="form-control"
                 placeholder={this.props.t('Email')}
@@ -166,7 +158,6 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-lock" /></span>
               </div>
               <input
-                data-testid="tiPassword"
                 type="password"
                 className="form-control"
                 placeholder={this.props.t('Password')}
@@ -179,7 +170,6 @@ class InstallerForm extends React.Component {
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
               <button
-                data-testid="btnSubmit"
                 type="submit"
                 className="btn-fill btn btn-register"
                 id="register"

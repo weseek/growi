@@ -1,31 +1,65 @@
 import React, { FC } from 'react';
 
+
+import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
+import { useSWRxSubscriptionStatus } from '../stores/page';
 
+
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { useIsGuestUser } from '~/stores/context';
 
 type Props = {
-  isGuestUser?: boolean,
-  status?: SubscriptionStatusType,
-  onClick?: () => Promise<void>,
+  pageId: Types.ObjectId,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { isGuestUser, status } = props;
+  const { pageId } = props;
 
-  const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: subscriptionData, mutate } = useSWRxSubscriptionStatus(pageId);
 
-  const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
+  let isSubscribed;
+
+  switch (subscriptionData?.status) {
+    case true:
+      isSubscribed = true;
+      break;
+    case false:
+      isSubscribed = false;
+      break;
+    default:
+      isSubscribed = null;
+  }
+
+  const buttonClass = `${isSubscribed ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribed || isSubscribed == null ? 'fa fa-eye' : 'fa fa-eye-slash';
+
+  const handleClick = async() => {
+    if (isGuestUser) {
+      return;
+    }
+
+    try {
+      const res = await apiv3Put('/page/subscribe', { pageId, status: !isSubscribed });
+      if (res) {
+        mutate();
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
   return (
     <>
       <button
         type="button"
         id="subscribe-button"
-        onClick={props.onClick}
+        onClick={handleClick}
         className={`btn btn-subscribe border-0 ${buttonClass}`}
       >
         <i className={iconClass}></i>

@@ -25,14 +25,13 @@ export default class AdminHomeContainer extends Container {
     this.timer = null;
 
     this.state = {
-      growiVersion: null,
-      nodeVersion: null,
-      npmVersion: null,
-      yarnVersion: null,
+      retrieveError: null,
+      growiVersion: '',
+      nodeVersion: '',
+      npmVersion: '',
+      yarnVersion: '',
       copyState: this.copyStateValues.DEFAULT,
-      installedPlugins: null,
-      isV5Compatible: null,
-      isMaintenanceMode: null,
+      installedPlugins: [],
     };
 
   }
@@ -64,13 +63,11 @@ export default class AdminHomeContainer extends Container {
         yarnVersion: adminHomeParams.yarnVersion,
         installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
-        isV5Compatible: adminHomeParams.isV5Compatible,
-        isMaintenanceMode: adminHomeParams.isMaintenanceMode,
       }));
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Failed to retrive AdminHome data');
+      toastError(new Error('Failed to fetch data'));
     }
   }
 

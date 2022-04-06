@@ -2,6 +2,8 @@ import { pathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
+import { generateConfigsForInstalling } from '../models/config';
+
 import S2sMessage from '../models/vo/s2s-message';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { S2sMessagingService } from './s2s-messaging/base';
@@ -47,12 +49,6 @@ export default class AppService implements S2sMessageHandlable {
     const isDBInitialized = await this.isDBInitialized(true);
     if (isDBInitialized) {
       this.setupAfterInstall();
-
-      // remove message handler
-      const { s2sMessagingService } = this;
-      if (s2sMessagingService != null) {
-        this.s2sMessagingService.removeMessageHandler(this);
-      }
     }
   }
 
@@ -105,6 +101,15 @@ export default class AppService implements S2sMessageHandlable {
     return this.configManager.getConfig('crowi', 'app:confidential');
   }
 
+  /**
+   * Execute only once for installing application
+   */
+  async initDB(globalLang) {
+    const initialConfig = generateConfigsForInstalling();
+    initialConfig['app:globalLang'] = globalLang;
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
+  }
+
   async isDBInitialized(forceReload) {
     if (forceReload) {
       // load configs
@@ -113,22 +118,16 @@ export default class AppService implements S2sMessageHandlable {
     return this.configManager.getConfigFromDB('crowi', 'app:installed');
   }
 
-  async setupAfterInstall(): Promise<void> {
+  async setupAfterInstall() {
     await this.crowi.pluginService.autoDetectAndLoadPlugins();
     this.crowi.setupRoutesAtLast();
     this.crowi.setupGlobalErrorHandlers();
-  }
 
-  isMaintenanceMode(): boolean {
-    return this.configManager.getConfig('crowi', 'app:isMaintenanceMode');
-  }
-
-  async startMaintenanceMode(): Promise<void> {
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': true });
-  }
-
-  async endMaintenanceMode(): Promise<void> {
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': false });
+    // remove message handler
+    const { s2sMessagingService } = this;
+    if (s2sMessagingService != null) {
+      this.s2sMessagingService.removeMessageHandler(this);
+    }
   }
 
 }

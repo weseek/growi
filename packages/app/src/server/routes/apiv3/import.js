@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
@@ -206,24 +204,8 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
+
     const { fileName, collections, optionsMap } = req.body;
-
-    // pages collection can only be imported by upsert if isV5Compatible is true
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isImportPagesCollection = collections.includes('pages');
-    if (isV5Compatible && isImportPagesCollection) {
-      const option = new GrowiArchiveImportOption(null, optionsMap.pages);
-      if (option.mode !== 'upsert') {
-        return res.apiv3Err(new ErrorV3('Upsert is only available for importing pages collection.', 'only_upsert_available'));
-      }
-    }
-
-    const isMaintenanceMode = crowi.appService.isMaintenanceMode();
-    if (!isMaintenanceMode) {
-      return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
-    }
-
-
     const zipFile = importService.getFile(fileName);
 
     // return response first

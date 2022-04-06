@@ -14,14 +14,14 @@ module.exports = (crowi) => {
       await searchService.reconnectClient();
     }
     catch (err) {
-      logger.error('Auto reconnection failed.', err);
+      logger.error('Auto reconnection failed.');
     }
 
     return searchService.isReachable;
   };
 
   return (req, res, next) => {
-    if (searchService != null && searchService.isConfigured && !searchService.isReachable) {
+    if (searchService != null && !searchService.isReachable) {
       // NON-BLOCKING CALL
       // for the latency of the response
       nextTick(reconnectContext, reconnectHandler);

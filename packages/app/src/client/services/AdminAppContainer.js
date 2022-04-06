@@ -22,7 +22,6 @@ export default class AdminAppContainer extends Container {
       isEmailPublishedForNewUser: true,
       fileUpload: '',
 
-      isV5Compatible: null,
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
@@ -58,8 +57,6 @@ export default class AdminAppContainer extends Container {
       s3ReferenceFileWithRelayMode: false,
 
       isEnabledPlugins: true,
-
-      isMaintenanceMode: false,
     };
 
   }
@@ -84,7 +81,6 @@ export default class AdminAppContainer extends Container {
       globalLang: appSettingsParams.globalLang,
       isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
-      isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
@@ -118,7 +114,6 @@ export default class AdminAppContainer extends Container {
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
-      isMaintenanceMode: appSettingsParams.isMaintenanceMode,
     });
 
     // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
@@ -163,13 +158,6 @@ export default class AdminAppContainer extends Container {
    */
   changeFileUpload(fileUpload) {
     this.setState({ fileUpload });
-  }
-
-  /**
-   * Change site url
-   */
-  changeIsV5Compatible(isV5Compatible) {
-    this.setState({ isV5Compatible });
   }
 
   /**
@@ -452,22 +440,5 @@ export default class AdminAppContainer extends Container {
     return pluginSettingParams;
   }
 
-  /**
-   * Start v5 page migration
-   * @memberOf AdminAppContainer
-   */
-  async v5PageMigrationHandler() {
-    const response = await this.appContainer.apiv3.post('/app-settings/v5-schema-migration');
-    const { isV5Compatible } = response.data;
-    return { isV5Compatible };
-  }
-
-  async startMaintenanceMode() {
-    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: true });
-  }
-
-  async endMaintenanceMode() {
-    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: false });
-  }
 
 }

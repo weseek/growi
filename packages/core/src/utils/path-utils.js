@@ -106,14 +106,3 @@ export function normalizePath(path) {
   }
   return `/${match[3]}`;
 }
-
-
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function attachTitleHeader(path) {
-  return `# ${path}`;
-}

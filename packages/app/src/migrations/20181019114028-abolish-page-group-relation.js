@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import getPageModel from '~/server/models/page';
 
 const logger = loggerFactory('growi:migrate:abolish-page-group-relation');
 
@@ -38,7 +37,7 @@ module.exports = {
       return;
     }
 
-    const Page = getModelSafely('Page') || getPageModel();
+    const Page = getModelSafely('Page') || require('~/server/models/page')();
     const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
 
     // retrieve all documents from 'pagegrouprelations'
@@ -75,7 +74,7 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const Page = getModelSafely('Page') || getPageModel();
+    const Page = getModelSafely('Page') || require('~/server/models/page')();
     const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
 
     // retrieve all Page documents which granted by UserGroup
