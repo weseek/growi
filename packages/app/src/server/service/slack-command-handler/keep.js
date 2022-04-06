@@ -33,7 +33,7 @@ module.exports = (crowi) => {
   handler.createPage = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
-    const user = await User.findUserBySlackId(payload.user.id);
+    const user = await User.findUserBySlackMemberId(payload.user.id);
 
     const userId = user != null ? user._id : null;
     // validate form
@@ -148,19 +148,19 @@ module.exports = (crowi) => {
     const users = messages.map((message) => {
       return message.user;
     });
-    const growiUsers = await User.findUsersBySlackIds(users);
+    const growiUsers = await User.findUsersBySlackMemberIds(users);
     return growiUsers;
   };
   /**
    * Convert slack ID to growi user if slack ID is found in messages
    * @param {*} messages
    */
-  handler.messagesWithGrowiUser = async function(messages) {
+  handler.injectGrowiUsernameToMessages = async function(messages) {
     const growiUsers = await this.getGrowiUsersFromMessages(messages);
 
     messages.map(async(message) => {
-      const growiUser = growiUsers.find(user => user.slackId === message.user);
-      if (growiUser !== null) {
+      const growiUser = growiUsers.find(user => user.slackMemberId === message.user);
+      if (growiUser != null) {
         message.user = `${growiUser.name} (@${growiUser.username})`;
       }
       else {
@@ -173,7 +173,7 @@ module.exports = (crowi) => {
     const cleanedContents = [];
     let lastMessage = {};
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
-    await this.messagesWithGrowiUser(messages);
+    await this.injectGrowiUsernameToMessages(messages);
     messages
       .sort((a, b) => {
         return a.ts - b.ts;

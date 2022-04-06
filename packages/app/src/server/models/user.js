@@ -47,7 +47,7 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
-    slackId: { type: String, unique: true },
+    slackMemberId: { type: String, unique: true },
     // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
@@ -690,16 +690,16 @@ module.exports = function(crowi) {
     user.save();
   };
 
-  userSchema.statics.findUserBySlackId = async function(slackId) {
-    const user = this.findOne({ slackId });
+  userSchema.statics.findUserBySlackMemberId = async function(slackMemberId) {
+    const user = this.findOne({ slackMemberId });
     if (user == null) {
       throw new Error('User not found');
     }
     return user;
   };
 
-  userSchema.statics.findUsersBySlackIds = async function(slackIds) {
-    const users = this.find({ slackId: { $in: slackIds } });
+  userSchema.statics.findUsersBySlackMemberIds = async function(slackMemberIds) {
+    const users = this.find({ slackMemberId: { $in: slackMemberIds } });
     if (users.length === 0) {
       throw new Error('No user found');
     }
