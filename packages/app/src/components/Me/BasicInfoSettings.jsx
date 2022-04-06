@@ -129,7 +129,7 @@ class BasicInfoSettings extends React.Component {
           </div>
         </div>
         <div className="form-group row">
-          <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack ID')}</label>
+          <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
           <div className="col-md-6">
             <input
               className="form-control"

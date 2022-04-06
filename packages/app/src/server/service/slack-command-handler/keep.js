@@ -142,7 +142,7 @@ module.exports = (crowi) => {
   /**
    * Get all growi users from messages
    * @param {*} messages (array of messages)
-   * @returns users object with matching slack ID
+   * @returns users object with matching Slack Member ID
    */
   handler.getGrowiUsersFromMessages = async function(messages) {
     const users = messages.map((message) => {
@@ -152,7 +152,7 @@ module.exports = (crowi) => {
     return growiUsers;
   };
   /**
-   * Convert slack ID to growi user if slack ID is found in messages
+   * Convert slack member ID to growi user if slack member ID is found in messages
    * @param {*} messages
    */
   handler.injectGrowiUsernameToMessages = async function(messages) {
@@ -164,7 +164,7 @@ module.exports = (crowi) => {
         message.user = `${growiUser.name} (@${growiUser.username})`;
       }
       else {
-        message.user = `This slack ID is not registered (${message.user})`;
+        message.user = `This slack member ID is not registered (${message.user})`;
       }
     });
   };

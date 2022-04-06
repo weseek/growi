@@ -117,7 +117,7 @@ export default class PersonalContainer extends Container {
   }
 
   /**
-   * Change Slack ID
+   * Change Slack Member ID
    */
   changeSlackMemberId(inputValue) {
     this.setState({ slackMemberId: inputValue });
