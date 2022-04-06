@@ -341,7 +341,7 @@ class PageEditor extends React.Component {
               noCdn={noCdn}
               isMobile={this.props.appContainer.isMobile}
               isUploadable={this.state.isUploadable}
-              isUploadableFile={this.state.isUploadableFile}             
+              isUploadableFile={this.state.isUploadableFile}
               onScroll={this.onEditorScroll}
               onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
               onChange={this.onMarkdownChanged}
