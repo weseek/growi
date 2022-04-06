@@ -198,14 +198,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   handleDocumentClick(event) {
     const emojiPickerElm = document.querySelector('.emoji-mart');
-    const isEmojiPickerClicked = emojiPickerElm.contains(event.target);
-
     const emojiBtnElm = document.getElementById('emoij-btn');
-    const isEmojiBtnClicked = emojiBtnElm.contains(event.target);
 
-    // when outside of EmojiPicker is clicked, close the component. (excluding EmojiBtn elm on navbar)
-    if (this.state.isEmojiPickerShown && !isEmojiPickerClicked && !isEmojiBtnClicked) {
-      this.setState({ isEmojiPickerShown: false });
+    if (this.state.isEmojiPickerShown) {
+      // when outside of EmojiPicker is clicked, close the component. (excluding EmojiBtn elm on navbar)
+      if (!emojiPickerElm.contains(event.target) && !emojiBtnElm.contains(event.target)) {
+        this.setState({ isEmojiPickerShown: false });
+      }
     }
   }
 
