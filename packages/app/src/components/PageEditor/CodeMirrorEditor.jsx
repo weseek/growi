@@ -155,6 +155,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
+    this.handleDocumentClick = this.handleDocumentClick.bind(this);
 
   }
 
@@ -191,6 +192,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // fold drawio section
     this.foldDrawioSection();
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
+
+    document.addEventListener('click', this.handleDocumentClick);
+  }
+
+  handleDocumentClick(event) {
+    const emojiPickerElm = document.querySelector('.emoji-mart');
+    const isEmojiPickerClicked = emojiPickerElm.contains(event.target);
+
+    const emojiBtnElm = document.getElementById('emoij-btn');
+    const isEmojiBtnClicked = emojiBtnElm.contains(event.target);
+
+    // check
+    if (this.state.isEmojiPickerShown && !isEmojiBtnClicked && !isEmojiPickerClicked) {
+      this.setState({ isEmojiPickerShown: false });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -945,6 +961,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Drawio" />
       </Button>,
       <Button
+        id="emoij-btn"
         key="nav-item-emoji"
         color={null}
         bssize="small"

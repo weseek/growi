@@ -32,21 +32,6 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   }, [emojiSearchText]);
 
 
-  // TODO: using blur event by GW-7770
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (emojiPickerContainer.current && !emojiPickerContainer.current.contains(event.target)) {
-        onClose();
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [emojiPickerContainer, onClose]);
-
-
   const selectEmoji = (emoji) => {
     if (emojiSearchText !== null) {
       emojiPickerHelper.addEmojiOnSearch(emoji);
