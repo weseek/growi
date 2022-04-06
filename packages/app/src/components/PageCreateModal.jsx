@@ -1,6 +1,6 @@
 
 import React, {
-  useEffect, useState, useMemo,
+  useEffect, useState, useMemo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -135,8 +135,8 @@ const PageCreateModal = (props) => {
     setPageNameInput(value);
   }
 
-  function ppacSubmitHandler() {
-    createInputPage();
+  function ppacSubmitHandler(input) {
+    redirectToEditor(input);
   }
 
   /**

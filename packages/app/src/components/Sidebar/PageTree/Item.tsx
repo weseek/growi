@@ -101,7 +101,7 @@ type ItemCountProps = {
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-0 badge badge-pill badge-light">
+      <span className="grw-pagetree-count px-2 badge badge-pill badge-light">
         {props.descendantCount}
       </span>
     </>
@@ -194,6 +194,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       await mutateChildren();
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
 
       // force open
       setIsOpen(true);

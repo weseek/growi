@@ -23,10 +23,11 @@ import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
-  PageDeleteConfigValue, PageDeleteConfigValueToProcessValidation,
+  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import ActivityDefine from '../util/activityDefine';
+import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 const debug = require('debug')('growi:services:page');
 
@@ -215,34 +216,26 @@ class PageService {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
-    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, pageCompleteDeletionAuthority, recursiveAuthority);
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
-    const recursiveAuthority = this.calcRecursiveDeleteConfigValue(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, pageDeletionAuthority, recursiveAuthority);
-  }
-
-  private calcRecursiveDeleteConfigValue(confForSingle, confForRecursive) {
-    if (confForRecursive === PageDeleteConfigValue.Inherit) {
-      return confForSingle;
-    }
-
-    return confForRecursive;
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   private canDeleteLogic(
       creatorId: ObjectIdLike,
       operator,
       isRecursively: boolean,
-      authority: PageDeleteConfigValueToProcessValidation | null,
-      recursiveAuthority: PageDeleteConfigValueToProcessValidation | null,
+      authority: IPageDeleteConfigValueToProcessValidation | null,
+      recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator.admin;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
@@ -254,7 +247,7 @@ class PageService {
     return this.compareDeleteConfig(isAdmin, isOperator, authority);
   }
 
-  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: PageDeleteConfigValueToProcessValidation | null): boolean {
+  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
     if (isAdmin) {
       return true;
     }
@@ -2564,12 +2557,13 @@ class PageService {
     return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
-  // TODO: use websocket to show progress
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user,
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
   ): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
+
+    const socket = this.crowi.socketIoService.getAdminSocket();
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2624,6 +2618,9 @@ class PageService {
 
     // Limit pages to get
     const total = await Page.countDocuments(mergedFilter);
+    if (isFirst) {
+      socket.emit(SocketEventName.PMStarted, { total });
+    }
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
@@ -2631,8 +2628,9 @@ class PageService {
     const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
 
-    let countPages = 0;
     let shouldContinue = true;
+    let nextCount = count;
+    let nextSkiped = skiped;
 
     const migratePagesStream = new Writable({
       objectMode: true,
@@ -2717,12 +2715,17 @@ class PageService {
         try {
           const res = await Page.bulkWrite(updateManyOperations);
 
-          countPages += res.result.nModified;
-          logger.info(`Page migration processing: (count=${countPages})`);
+          nextCount += res.result.nModified;
+          nextSkiped += res.result.writeErrors.length;
+          logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
+
+          socket.emit(SocketEventName.PMMigrating, { count: nextCount });
+          socket.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
+            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
@@ -2730,6 +2733,7 @@ class PageService {
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
+            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
           }
         }
         catch (err) {
@@ -2751,9 +2755,11 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(mergedFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user);
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
     }
 
+    // End
+    socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
   }
 
   private async _v5NormalizeIndex() {

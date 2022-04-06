@@ -47,9 +47,9 @@ module.exports = (crowi) => {
       body('parentId', 'ParentId must be a string').optional().isString(),
     ],
     update: [
-      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('name', 'Group name must be a string').optional().trim().isString(),
       body('description', 'Group description must be a string').optional().isString(),
-      body('parentId', 'parentId must be a string').optional().isString(),
+      body('parentId', 'ParentId must be a string or null').optional({ nullable: true }).isString(),
       body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
     ],
     delete: [

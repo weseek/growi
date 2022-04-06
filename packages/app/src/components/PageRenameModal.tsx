@@ -203,7 +203,7 @@ const PageRenameModal = (): JSX.Element => {
 
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>

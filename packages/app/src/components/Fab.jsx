@@ -12,6 +12,7 @@ import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
+import { useCurrentPagePath } from '~/stores/context';
 
 const logger = loggerFactory('growi:cli:Fab');
 
@@ -20,6 +21,7 @@ const Fab = (props) => {
   const { currentUser } = appContainer;
 
   const { open: openCreateModal } = usePageCreateModal();
+  const { data: currentPath = '' } = useCurrentPagePath();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -57,7 +59,7 @@ const Fab = (props) => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={() => openCreateModal()}
+            onClick={() => openCreateModal(currentPath)}
           >
             <CreatePageIcon />
           </button>

@@ -295,6 +295,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: '/growi-internal/',
   },
+  ELASTICSEARCH_VERSION: {
+    ns:      'crowi',
+    key:     'app:elasticsearchVersion',
+    type:    ValueType.NUMBER,
+    default: 7,
+  },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',
@@ -307,12 +313,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 8000, // msec
   },
-  SEARCHBOX_SSL_URL: {
-    ns:      'crowi',
-    key:     'app:searchboxSslUrl',
-    type:    ValueType.STRING,
-    default: null,
-  },
   ELASTICSEARCH_REJECT_UNAUTHORIZED: {
     ns:      'crowi',
     key:     'app:elasticsearchRejectUnauthorized',
@@ -324,12 +324,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:elasticsearchReindexOnBoot',
     type:    ValueType.BOOLEAN,
     default: false,
-  },
-  USE_ELASTICSEARCH_V6: {
-    ns:      'crowi',
-    key:     'app:useElasticsearchV6',
-    type:    ValueType.BOOLEAN,
-    default: true,
   },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
