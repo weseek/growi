@@ -1,4 +1,3 @@
-
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
@@ -35,7 +34,8 @@ const PageCreateModal = (props) => {
   const isReachable = config.isSearchServiceReachable;
   const pathname = path || '';
   const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
+  const isUserRoot = userPageRootPath === pathname;
+  const pageNameInputInitialValue = isCreatablePage(pathname) || isUserRoot ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
@@ -46,8 +46,8 @@ const PageCreateModal = (props) => {
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
-    setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
-  }, [pathname]);
+    setPageNameInput(isCreatablePage(pathname) || isUserRoot ? pathUtils.addTrailingSlash(pathname) : '/');
+  }, [pathname, isUserRoot]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
