@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { templateChecker, pagePathUtils } from '@growi/core';
-import { FootstampIcon } from '../SearchPage/FootstampIcon';
 import { IPageHasId } from '@growi/app/src/interfaces/page';
+import { FootstampIcon } from '../SearchPage/FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
