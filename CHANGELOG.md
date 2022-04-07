@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.16...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.17...HEAD)
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
 
 *Please do not manually update this file. We've automated the process.*
 
