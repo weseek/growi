@@ -2557,18 +2557,9 @@ class PageService {
     return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
-  private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
-  ): Promise<void> {
-    const BATCH_SIZE = 100;
-    const PAGES_LIMIT = 1000;
-
-    const socket = this.crowi.socketIoService.getAdminSocket();
-
+  private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
 
-    // Build filter
     const andFilter: any = {
       $and: [
         {
@@ -2605,9 +2596,26 @@ class PageService {
       ],
     };
 
+    return mergedFilter;
+  }
+
+  private async _normalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
+  ): Promise<void> {
+    const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 1000;
+
+    const socket = this.crowi.socketIoService.getAdminSocket();
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    // Build filter
+    const matchFilter = this.buildFilterForNormalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser);
+
     let baseAggregation = Page
       .aggregate([
-        { $match: mergedFilter },
+        { $match: matchFilter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -2617,7 +2625,7 @@ class PageService {
       ]);
 
     // Limit pages to get
-    const total = await Page.countDocuments(mergedFilter);
+    const total = await Page.countDocuments(matchFilter);
     if (isFirst) {
       socket.emit(SocketEventName.PMStarted, { total });
     }
@@ -2757,7 +2765,7 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(mergedFilter) && shouldContinue) {
+    if (await Page.exists(matchFilter) && shouldContinue) {
       return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
     }
 
