@@ -520,7 +520,7 @@ export const getPageSchema = (crowi) => {
     await addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink);
 
     // count
-    const totalCount = await builder.query.exec('count');
+    // const totalCount = await builder.query.exec('count');
 
     // find
     // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
@@ -534,13 +534,22 @@ export const getPageSchema = (crowi) => {
       prevPage: 'prevPage',
       totalPages: 'pageCount',
     };
+
     const paginationOptions = {
-      lean: true, limit: opt.limit, offset: skip, page: opt.page, customLabels, sort: sortOpt,
+      lean: true,
+      ...(opt.limit) && { limit: opt.limit },
+      ...(opt.offset) && { offset: skip },
+      ...(opt.page) && { page: opt.page },
+      sort: sortOpt,
+      customLabels,
     };
+
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
 
-    const pages = await Page.paginate(builder.query.clone(), paginationOptions);
-    const result = { ...pages, offset: opt.offset };
+    const paginatedPages = await Page.paginate(builder.query.clone(), paginationOptions);
+    const result = {
+      pages: paginatedPages.pages, totalCount: paginatedPages.totalCount, offset: opt.offset, limit: opt.limit,
+    };
 
     return result;
   }
