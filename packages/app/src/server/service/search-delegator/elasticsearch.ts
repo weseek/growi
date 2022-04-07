@@ -104,7 +104,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   shouldIndexed(page) {
-    return page.revision != null && page.redirectTo == null;
+    return page.revision != null;
   }
 
   initClient() {
