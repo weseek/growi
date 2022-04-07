@@ -538,8 +538,10 @@ export const getPageSchema = (crowi) => {
       lean: true, limit: opt.limit, offset: skip, page: opt.page, customLabels, sort: sortOpt,
     };
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await Page.paginate(builder.query, paginationOptions);
+
+    const pages = await Page.paginate(builder.query.clone(), paginationOptions);
     const result = { ...pages, offset: opt.offset };
+
     return result;
   }
 
