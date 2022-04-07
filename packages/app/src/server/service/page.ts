@@ -2698,6 +2698,9 @@ class PageService {
               {
                 path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
               },
+              {
+                path: { $in: pathOrRegExps.concat(publicPathsToNormalize) },
+              },
               filterForApplicableAncestors,
               grantFiltersByUser,
             ],
