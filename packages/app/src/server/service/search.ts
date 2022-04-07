@@ -410,7 +410,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     // set search result page data
     const pages: (IPageWithMeta<IPageSearchMeta> | null)[] = searchResult.data.map((data) => {
       const pageData = findPageResult.pages.find((pageData) => {
-        return pageData.id === data._id;
+        return pageData.grant !== 2 && pageData.id === data._id;
       });
 
       if (pageData == null) {

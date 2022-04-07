@@ -157,6 +157,7 @@ module.exports = function(crowi, app) {
     let result;
     try {
       result = await searchService.formatSearchResult(searchResult, delegatorName, user, userGroups);
+      console.log(result);
     }
     catch (err) {
       logger.error(err);
