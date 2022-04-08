@@ -641,15 +641,17 @@ module.exports = function(crowi, app) {
       return prev + (current.isEmpty ? 0 : 1);
     }, 0);
 
-    if (nonEmptyPageCount >= 1) {
+    if (nonEmptyPageCount >= 1) { // Perform the operation only if nonEmptyPage(s) exist
       if (nonEmptyPageCount >= 2) {
         return redirectOperationForMultiplePages(builder, res, redirectFrom, path, next);
       }
-      const nonEmptyPage = pages.find(p => !p.isEmpty); // find nonEmpty Page
+      const nonEmptyPage = pages.find(p => !p.isEmpty); // find the nonEmpty Page
       return redirectOperationForSinglePage(nonEmptyPage, req, res);
     }
-    const hasEmptyPage = pages.length - nonEmptyPageCount >= 1;
-    if (hasEmptyPage) {
+
+    // Processing of nonEmptyPage is finished by the time this code is read
+    // If any pages exists then it should be empty pages
+    if (pages.length >= 1) {
       req.pageId = pages[0]._id;
       return _notFound(req, res);
     }
