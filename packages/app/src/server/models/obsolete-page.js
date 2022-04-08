@@ -473,28 +473,6 @@ export const getPageSchema = (crowi) => {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option = {}, shouldIncludeEmpty = false) {
-    const User = crowi.model('User');
-
-    const opt = Object.assign({}, option);
-    const builder = new this.PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
-
-    builder.addConditionToPagenate(opt.offset, opt.limit);
-
-    // count
-    const totalCount = await builder.query.exec('count');
-
-    // find
-    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.clone().exec('find');
-
-    const result = {
-      pages, totalCount, offset: opt.offset, limit: opt.limit,
-    };
-    return result;
-  };
-
-
   /**
    * find pages by PageQueryBuilder
    * @param {PageQueryBuilder} builder

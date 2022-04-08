@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "5.0.0-RC.10",
+  "version": "5.0.1-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -59,7 +59,7 @@
     "@typescript-eslint/parser": "^4.28.5",
     "cypress": "^9.2.0",
     "eslint": "^7.31.0",
-    "eslint-config-weseek": "^1.1.0",
+    "eslint-config-weseek": "^2.0.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jest": "^24.3.2",

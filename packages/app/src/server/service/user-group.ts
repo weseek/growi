@@ -27,7 +27,7 @@ class UserGroupService {
 
   // TODO 85062: write test code
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
-  async updateGroup(id, name: string, description: string, parentId?: string, forceUpdateParents = false) {
+  async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false) {
     const userGroup = await UserGroup.findById(id);
     if (userGroup == null) {
       throw new Error('The group does not exist');
@@ -39,18 +39,31 @@ class UserGroupService {
       throw new Error('The group name is already taken');
     }
 
-    userGroup.name = name;
-    userGroup.description = description;
+    if (name != null) {
+      userGroup.name = name;
+    }
+    if (description != null) {
+      userGroup.description = description;
+    }
 
     // return when not update parent
     if (userGroup.parent === parentId) {
       return userGroup.save();
     }
+
+    /*
+     * Update parent
+     */
+    if (parentId === undefined) { // undefined will be ignored
+      return userGroup.save();
+    }
+
     // set parent to null and return when parentId is null
     if (parentId == null) {
       userGroup.parent = null;
       return userGroup.save();
     }
+
 
     const parent = await UserGroup.findById(parentId);
 

@@ -134,32 +134,46 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Bookmark */}
         { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
-          <DropdownItem onClick={bookmarkItemClickedHandler}>
-            <i className="fa fa-fw fa-bookmark-o"></i>
+          <DropdownItem
+            onClick={bookmarkItemClickedHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         ) }
 
         {/* Duplicate */}
         { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
-          <DropdownItem onClick={duplicateItemClickedHandler} data-testid="open-page-duplicate-modal-btn">
-            <i className="icon-fw icon-docs"></i>
+          <DropdownItem
+            onClick={duplicateItemClickedHandler}
+            data-testid="open-page-duplicate-modal-btn"
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
             {t('Duplicate')}
           </DropdownItem>
         ) }
 
         {/* Move/Rename */}
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
-          <DropdownItem onClick={renameItemClickedHandler}>
-            <i className="icon-fw  icon-action-redo"></i>
+          <DropdownItem
+            onClick={renameItemClickedHandler}
+            data-testid="open-page-move-rename-modal-btn"
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
 
         {/* Revert */}
         { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
-          <DropdownItem onClick={revertItemClickedHandler}>
-            <i className="icon-fw  icon-action-undo"></i>
+          <DropdownItem
+            onClick={revertItemClickedHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="icon-fw icon-action-undo grw-page-control-dropdown-icon"></i>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
@@ -177,12 +191,12 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
-              className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
+              className={`pt-2 grw-page-control-dropdown-item ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
             >
-              <i className="icon-fw icon-trash"></i>
+              <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
               {t('Delete')}
             </DropdownItem>
           </>

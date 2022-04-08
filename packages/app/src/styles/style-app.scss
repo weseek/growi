@@ -150,3 +150,15 @@
     content: 'Ctrl';
   }
 }
+
+.grw-page-control-dropdown-item {
+  display: flex !important;
+  align-items: center;
+
+  .grw-page-control-dropdown-icon {
+    display: flex;
+    justify-content: center;
+    width: 25px;
+  }
+
+}

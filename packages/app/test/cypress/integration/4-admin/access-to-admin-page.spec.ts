@@ -15,23 +15,11 @@ const adminMenues = [
 context('Access to Admin page', () => {
   const ssPrefix = 'access-to-admin-page-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
-
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
   });
 
   it('/admin is successfully loaded', () => {
@@ -89,6 +77,11 @@ context('Access to Admin page', () => {
   it('/admin/slack-integration is successfully loaded', () => {
     cy.visit('/admin/slack-integration');
     cy.getByTestid('admin-slack-integration').should('be.visible');
+
+    cy.get('img.bot-difficulty-icon')
+      .should('have.length', 3)
+      .should('be.visible');
+
     cy.screenshot(`${ssPrefix}-admin-slack-integration`);
   });
 
