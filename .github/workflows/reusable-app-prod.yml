@@ -63,13 +63,13 @@ jobs:
         echo ::set-output name=file::production.tar
 
     - name: Upload production files as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Production Files
         path: ${{ steps.archive-prod-files.outputs.file }}
 
     - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Bundle Analyzing Report
         path: packages/app/report/bundle-analyzer.html
@@ -263,7 +263,7 @@ jobs:
 
     - name: Upload results
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: |
