@@ -47,7 +47,7 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
-    slackMemberId: { type: String, unique: true },
+    slackMemberId: { type: String, unique: true, sparse: true },
     // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
