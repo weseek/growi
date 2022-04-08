@@ -7,6 +7,7 @@ import { toastError } from '../util/apiNotification';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminCustomizeContainer');
 
+const DEFAULT_LOGO = '/images/logo.svg';
 /**
  * Service container for admin customize setting page (Customize.jsx)
  * @extends {Container} unstated Container
@@ -55,12 +56,17 @@ export default class AdminCustomizeContainer extends Container {
         'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
+      uploadedLogoSrc: this.getUploadedLogoSrc(),
+      isUploadedLogo: false,
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
     this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
     this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
     this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
+    this.getUploadedLogoSrc = this.getUploadedLogoSrc.bind(this);
+    this.deleteLogo = this.deleteLogo.bind(this);
+    this.uploadAttachment = this.uploadAttachment.bind(this);
 
   }
 
@@ -426,6 +432,38 @@ export default class AdminCustomizeContainer extends Container {
     catch (err) {
       logger.error(err);
       throw new Error('Failed to update data');
+    }
+  }
+
+  getUploadedLogoSrc() {
+    this.setState({ isUploadedLogo: false });
+    return DEFAULT_LOGO;
+  }
+
+  async deleteLogo() {
+    try {
+      // await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
+      this.setState({ isUploadedLogo: false, uploadedLogoSrc: DEFAULT_LOGO });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to delete profile image');
+    }
+  }
+
+  async uploadAttachment(file) {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('_csrf', this.appContainer.csrfToken);
+      // const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
+      // this.setState({ isUploadedLogo: true, uploadedLogoSrc: response.attachment.filePathProxied });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to upload profile image');
     }
   }
 
