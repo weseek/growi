@@ -140,7 +140,7 @@ jobs:
         npx lerna bootstrap -- --production
 
     - name: Download production files artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Production Files
 
@@ -224,7 +224,7 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download production files artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Production Files
 
