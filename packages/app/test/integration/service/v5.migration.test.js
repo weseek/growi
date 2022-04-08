@@ -393,6 +393,7 @@ describe('V5 page migration', () => {
      */
 
     const public = filter => ({ grant: Page.GRANT_PUBLIC, ...filter });
+    const testUser1 = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
     const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
 
     const normalized = { parent: { $ne: null } };
@@ -551,66 +552,71 @@ describe('V5 page migration', () => {
     });
 
     test('should3', async() => {
-      const _page1 = await Page.findOne(public({ path: '/normalize_g', ...normalized }));
-      const _page2 = await Page.findOne(testUser1Group({ path: '/normalize_g/normalize_h', ...notNormalized }));
-      const _page3 = await Page.findOne(testUser1Group({ path: '/normalize_g/normalize_i', ...notNormalized }));
-      const _page4 = await Page.findOne(public({ path: '/normalize_g/normalize_h/normalize_j', ...notNormalized }));
-      const _page5 = await Page.findOne(public({ path: '/normalize_g/normalize_i/normalize_k', ...notNormalized }));
+      const _pageG = await Page.findOne(public({ path: '/normalize_g', ...normalized }));
+      const _pageGH = await Page.findOne(testUser1({ path: '/normalize_g/normalize_h', ...notNormalized }));
+      const _pageGI = await Page.findOne(testUser1({ path: '/normalize_g/normalize_i', ...notNormalized }));
+      const _pageGHJ = await Page.findOne(public({ path: '/normalize_g/normalize_h/normalize_j', ...notNormalized }));
+      const _pageGIK = await Page.findOne(public({ path: '/normalize_g/normalize_i/normalize_k', ...notNormalized }));
 
-      expect(_page1).not.toBeNull();
-      expect(_page2).not.toBeNull();
-      expect(_page3).not.toBeNull();
-      expect(_page4).not.toBeNull();
-      expect(_page5).not.toBeNull();
+      expect(_pageG).not.toBeNull();
+      expect(_pageGH).not.toBeNull();
+      expect(_pageGI).not.toBeNull();
+      expect(_pageGHJ).not.toBeNull();
+      expect(_pageGIK).not.toBeNull();
 
       // Normalize
-      await normalizeParentRecursivelyByPages([_page4, _page5], testUser1);
+      await normalizeParentRecursivelyByPages([_pageGHJ, _pageGIK], testUser1);
 
-      const count1 = await Page.count({ path: '/normalize_g' });
-      const count2 = await Page.count({ path: '/normalize_g/normalize_h' });
-      const count3 = await Page.count({ path: '/normalize_g/normalize_i' });
-      const count4 = await Page.count({ path: '/normalize_g/normalize_h/normalize_j' });
-      const count5 = await Page.count({ path: '/normalize_g/normalize_i/normalize_k' });
+      const countG = await Page.count({ path: '/normalize_g' });
+      const countGH = await Page.count({ path: '/normalize_g/normalize_h' });
+      const countGI = await Page.count({ path: '/normalize_g/normalize_i' });
+      const countGHJ = await Page.count({ path: '/normalize_g/normalize_h/normalize_j' });
+      const countGIK = await Page.count({ path: '/normalize_g/normalize_i/normalize_k' });
 
-      expect(count1).toBe(1);
-      expect(count2).toBe(2);
-      expect(count3).toBe(2);
-      expect(count4).toBe(1);
-      expect(count5).toBe(1);
+      expect(countG).toBe(1);
+      expect(countGH).toBe(2);
+      expect(countGI).toBe(2);
+      expect(countGHJ).toBe(1);
+      expect(countGIK).toBe(1);
 
-      const page1 = await Page.findOne(public({ path: '/normalize_g' }));
-      const page2 = await Page.findOne(testUser1({ path: '/normalize_g/normalize_h' }));
-      const empty2 = await Page.findOne({ path: '/normalize_g/normalize_h', ...empty });
-      const page3 = await Page.findOne(testUser1({ path: '/normalize_g/normalize_i' }));
-      const empty3 = await Page.findOne({ path: '/normalize_g/normalize_i', ...empty });
-      const page4 = await Page.findOne({ path: '/normalize_g/normalize_h/normalize_j' });
-      const page5 = await Page.findOne({ path: '/normalize_g/normalize_i/normalize_k' });
+      // -- normalized pages
+      const pageG = await Page.findOne(public({ path: '/normalize_g' }));
+      const emptyGH = await Page.findOne({ path: '/normalize_g/normalize_h', ...empty });
+      const emptyGI = await Page.findOne({ path: '/normalize_g/normalize_i', ...empty });
+      const pageGHJ = await Page.findOne({ path: '/normalize_g/normalize_h/normalize_j' });
+      const pageGIK = await Page.findOne({ path: '/normalize_g/normalize_i/normalize_k' });
 
-      expect(page1).not.toBeNull();
-      expect(page2).not.toBeNull();
-      expect(empty2).not.toBeNull();
-      expect(page3).not.toBeNull();
-      expect(empty3).not.toBeNull();
-      expect(page4).not.toBeNull();
-      expect(page5).not.toBeNull();
-
+      // Check existence
+      expect(pageG).not.toBeNull();
+      expect(pageGHJ).not.toBeNull();
+      expect(pageGIK).not.toBeNull();
+      expect(emptyGH).not.toBeNull();
+      expect(emptyGI).not.toBeNull();
       // Check parent
-      expect(page1.parent).toStrictEqual(rootPage._id);
-      expect(page2.parent).toBeNull(); // should not be normalized
-      expect(empty2.parent).toStrictEqual(page2._id);
-      expect(page3.parent).toBeNull(); // should not be normalized
-      expect(empty3.parent).toStrictEqual(page2._id);
-      expect(page4.parent).toStrictEqual(page3._id);
-      expect(page5.parent).toStrictEqual(page3._id);
-
+      expect(pageG.parent).toStrictEqual(rootPage._id);
+      expect(emptyGH.parent).toStrictEqual(pageG._id);
+      expect(emptyGI.parent).toStrictEqual(pageG._id);
+      expect(pageGHJ.parent).toStrictEqual(emptyGH._id);
+      expect(pageGIK.parent).toStrictEqual(emptyGI._id);
       // Check descendantCount
-      expect(page1.descendantCount).toStrictEqual(4);
-      expect(page2.descendantCount).toStrictEqual(0); // should not be normalized
-      expect(empty2.descendantCount).toStrictEqual(1);
-      expect(page3.descendantCount).toStrictEqual(0); // should not be normalized
-      expect(empty3.descendantCount).toStrictEqual(1);
-      expect(page4.descendantCount).toStrictEqual(0);
-      expect(page5.descendantCount).toStrictEqual(0);
+      expect(pageG.descendantCount).toStrictEqual(4);
+      expect(emptyGH.descendantCount).toStrictEqual(1);
+      expect(emptyGI.descendantCount).toStrictEqual(1);
+      expect(pageGHJ.descendantCount).toStrictEqual(0);
+      expect(pageGIK.descendantCount).toStrictEqual(0);
+
+      // -- not normalized pages
+      const pageGH = await Page.findOne(testUser1({ path: '/normalize_g/normalize_h' }));
+      const pageGI = await Page.findOne(testUser1({ path: '/normalize_g/normalize_i' }));
+      // Check existence
+      expect(pageGH).not.toBeNull();
+      expect(pageGI).not.toBeNull();
+      // Check parent
+      expect(pageGH.parent).toBeNull(); // should not be normalized
+      expect(pageGI.parent).toBeNull(); // should not be normalized
+      // Check descendantCount
+      expect(pageGH.descendantCount).toStrictEqual(0); // should not be normalized
+      expect(pageGI.descendantCount).toStrictEqual(0); // should not be normalized
     });
   });
 
