@@ -600,6 +600,31 @@ module.exports = function(crowi, app) {
     res.render('layout-growi/page_list', renderVars);
   };
 
+  async function redirectOperationForMultiplePages(builder, res, redirectFrom, path) {
+    // populate to list
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+    const pages = await builder.query.lean().exec('find');
+
+    // remove empty pages if any.
+    const identicalPathPages = pages.filter(p => !p.isEmpty);
+    // render identical-path-page if count of remaining pages are 2 or more after removal
+    if (identicalPathPages.length >= 2) {
+      return res.render('layout-growi/identical-path-page', {
+        identicalPathPages,
+        redirectFrom,
+        path,
+      });
+    }
+  }
+
+  async function redirectOperationForSinglePage(page, req, res) {
+    const url = new URL('https://dummy.origin');
+    url.pathname = `/${page._id}`;
+    Object.entries(req.query).forEach(([key, value], i) => {
+      url.searchParams.append(key, value);
+    });
+    return res.safeRedirect(urljoin(url.pathname, url.search));
+  }
   /**
    * redirector
    */
@@ -612,49 +637,22 @@ module.exports = function(crowi, app) {
 
     const pages = await builder.query.lean().clone().exec('find');
 
-    if (pages.length >= 2) {
+    const nonEmptyPageCount = pages.reduce((prev, current) => {
+      return prev + (current.isEmpty ? 0 : 1);
+    }, 0);
 
-      // populate to list
-      builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-      const pages = await builder.query.lean().exec('find');
-
-      // remove empty pages if any.
-      const identicalPathPages = pages.filter(p => !p.isEmpty);
-      // render identical-path-page if count of remaining pages are 2 or more after removal
-      if (identicalPathPages.length >= 2) {
-        return res.render('layout-growi/identical-path-page', {
-          identicalPathPages,
-          redirectFrom,
-          path,
-        });
+    if (nonEmptyPageCount >= 1) {
+      if (nonEmptyPageCount >= 2) {
+        return redirectOperationForMultiplePages(builder, res, redirectFrom, path, next);
       }
+      const nonEmptyPage = pages.find(p => !p.isEmpty); // find nonEmpty Page
+      return redirectOperationForSinglePage(nonEmptyPage, req, res);
     }
-
-
-    let isEmptyPage = false;
-    if (pages.length === 1) {
-      isEmptyPage = pages[0].isEmpty;
-      if (!isEmptyPage) {
-        const url = new URL('https://dummy.origin');
-        url.pathname = `/${pages[0]._id}`;
-        Object.entries(req.query).forEach(([key, value], i) => {
-          url.searchParams.append(key, value);
-        });
-        return res.safeRedirect(urljoin(url.pathname, url.search));
-      }
-    }
-
-    // Exclude isEmpty page to handle _notFound or forbidden
-    const isForbidden = await Page.exists({ path, isEmpty: false });
-    if (isForbidden) {
-      req.isForbidden = true;
-      return _notFound(req, res);
-    }
-    if (isEmptyPage) {
+    const hasEmptyPage = pages.length - nonEmptyPageCount >= 1;
+    if (hasEmptyPage) {
       req.pageId = pages[0]._id;
       return _notFound(req, res);
     }
-
     // redirect by PageRedirect
     const pageRedirect = await PageRedirect.findOne({ fromPath: path });
     if (pageRedirect != null) {
