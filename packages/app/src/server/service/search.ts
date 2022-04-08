@@ -468,10 +468,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const testGrantedUser = pageData.grantedUsers?.[0];
     const testGrantedGroup = pageData.grantedGroup;
 
-    if (testGrant === Page.GRANT_RESTRICTED) {
-      return false;
-    }
-
     if (testGrant === Page.GRANT_OWNER) {
       if (user == null) return false;
 
