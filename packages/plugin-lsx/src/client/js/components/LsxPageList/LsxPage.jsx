@@ -1,9 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 
 import { pathUtils } from '@growi/core';
-
 import { PageListMeta } from '@growi/ui';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import { LsxContext } from '../../util/LsxContext';
 import { PageNode } from '../PageNode';

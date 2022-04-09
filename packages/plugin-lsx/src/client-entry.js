@@ -1,6 +1,6 @@
 import { LsxLogoutInterceptor } from './client/js/util/Interceptor/LsxLogoutInterceptor';
-import { LsxPreRenderInterceptor } from './client/js/util/Interceptor/LsxPreRenderInterceptor';
 import { LsxPostRenderInterceptor } from './client/js/util/Interceptor/LsxPostRenderInterceptor';
+import { LsxPreRenderInterceptor } from './client/js/util/Interceptor/LsxPreRenderInterceptor';
 
 export default (appContainer) => {
   // add interceptors
