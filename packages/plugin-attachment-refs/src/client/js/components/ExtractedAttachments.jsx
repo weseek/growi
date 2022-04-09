@@ -1,6 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import Carousel, { Modal, ModalGateway } from 'react-images';
 
 import RefsContext from '../util/RefsContext';

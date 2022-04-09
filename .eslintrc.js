@@ -21,6 +21,11 @@ module.exports = {
       {
         pathGroups: [
           {
+            pattern: 'react',
+            group: 'builtin',
+            position: 'before',
+          },
+          {
             pattern: '^/**',
             group: 'parent',
             position: 'before',
@@ -34,6 +39,7 @@ module.exports = {
         alphabetize: {
           order: 'asc',
         },
+        pathGroupsExcludedImportTypes: ['react'],
         'newlines-between': 'always',
       },
     ],

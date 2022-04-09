@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
-import { templateChecker, pagePathUtils } from '@growi/core';
+
 import { IPageHasId } from '@growi/app/src/interfaces/page';
+import { templateChecker, pagePathUtils } from '@growi/core';
+
 import { FootstampIcon } from '../SearchPage/FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
