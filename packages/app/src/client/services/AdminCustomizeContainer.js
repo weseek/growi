@@ -59,6 +59,8 @@ export default class AdminCustomizeContainer extends Container {
       uploadedLogoSrc: this.getUploadedLogoSrc(),
       isUploadedLogo: false,
       defaultLogoSrc: DEFAULT_LOGO,
+      currentLogo: '',
+      isDefaultLogo: false,
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
@@ -104,6 +106,8 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
+        currentLogo: customizeParams.currentLogo,
+        isDefaultLogo: customizeParams.isDefaultLogo,
       });
 
       // search style name from object for display
@@ -465,6 +469,28 @@ export default class AdminCustomizeContainer extends Container {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to upload profile image');
+    }
+  }
+
+  async changeIsDefaultLogoEnabled(boolean) {
+    this.setState({ isDefaultLogo: boolean });
+  }
+
+  async updateCustomizeLogo() {
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-logo', {
+        isDefaultLogo: this.state.isDefaultLogo,
+        currentLogo: this.state.currentLogo,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        isDefaultLogo: customizedParams.isDefaultLogo,
+        currentLogo: customizedParams.currentLogo,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
     }
   }
 

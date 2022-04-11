@@ -135,6 +135,8 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isEnabledStaleNotification': false,
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
+  'customize:currentLogo': '/images/logo.svg',
+  'customize:isDefaultLogo': true,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,

@@ -135,6 +135,10 @@ module.exports = (crowi) => {
     customizeScript: [
       body('customizeScript').isString(),
     ],
+    logo: [
+      body('currentLogo').isString(),
+      body('isDefaultLogo').isBoolean(),
+    ],
   };
 
   /**
@@ -177,6 +181,8 @@ module.exports = (crowi) => {
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      currentLogo: await crowi.configManager.getConfig('crowi', 'customize:currentLogo'),
+      isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
     };
 
     return res.apiv3({ customizeParams });
@@ -606,6 +612,26 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating customizeScript';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
+    }
+  });
+
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:currentLogo': req.body.currentLogo,
+      'customize:isDefaultLogo': req.body.isDefaultLogo,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        currentLogo: await crowi.configManager.getConfig('crowi', 'customize:currentLogo'),
+        isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeLogo';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeLogo-failed'));
     }
   });
 
