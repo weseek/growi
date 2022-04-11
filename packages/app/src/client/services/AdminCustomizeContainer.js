@@ -58,6 +58,7 @@ export default class AdminCustomizeContainer extends Container {
       },
       uploadedLogoSrc: this.getUploadedLogoSrc(),
       isUploadedLogo: false,
+      defaultLogoSrc: DEFAULT_LOGO,
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);

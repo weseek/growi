@@ -79,7 +79,9 @@ class CustomizeLogoSetting extends React.Component {
 
   render() {
     const { t, adminCustomizeContainer } = this.props;
-    const { uploadedLogoSrc, isUploadedLogo } = adminCustomizeContainer.state;
+    const {
+      uploadedLogoSrc, isUploadedLogo, isDefaultLogo, defaultLogoSrc,
+    } = adminCustomizeContainer.state;
 
     return (
       <React.Fragment>
@@ -88,12 +90,47 @@ class CustomizeLogoSetting extends React.Component {
             <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
             <div className="row">
               <div className="col-md-6 col-12">
+                <h4>
+                  <div className="custom-control custom-radio radio-primary">
+                    <input
+                      type="radio"
+                      id="radioDefaultLogo"
+                      className="custom-control-input"
+                      form="formImageType"
+                      name="imagetypeForm[isDefaultLogo]"
+                      checked={isDefaultLogo}
+                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(true) }}
+                    />
+                    <label className="custom-control-label" htmlFor="radioDefaultLogo">
+                      Default Logo
+                    </label>
+                  </div>
+                </h4>
+                <img src={defaultLogoSrc} width="64" />
+              </div>
+              <div className="col-md-6 col-12">
+                <h4>
+                  <div className="custom-control custom-radio radio-primary">
+                    <input
+                      type="radio"
+                      id="radioUploadLogo"
+                      className="custom-control-input"
+                      form="formImageType"
+                      name="imagetypeForm[isDefaultLogo]"
+                      checked={!isDefaultLogo}
+                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(false) }}
+                    />
+                    <label className="custom-control-label" htmlFor="radioUploadLogo">
+                      { t('Upload Logo') }
+                    </label>
+                  </div>
+                </h4>
                 <div className="row mb-3">
                   <label className="col-sm-4 col-12 col-form-label text-left">
                     { t('Current Logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    {uploadedLogoSrc && (<p><img src={uploadedLogoSrc} className="picture picture-lg" id="brandLogo" /></p>)}
+                    {uploadedLogoSrc && (<p><img src={uploadedLogoSrc} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>)}
                     {isUploadedLogo && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Logo') }</button>}
                   </div>
                 </div>
