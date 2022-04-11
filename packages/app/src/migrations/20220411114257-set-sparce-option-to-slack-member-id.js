@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:drop-pages-indices');
 
 /**
- * set sparce true as slackMemberId
+ * set sparce option to slackMemberId
  */
 module.exports = {
   async up(db) {
