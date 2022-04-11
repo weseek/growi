@@ -1,22 +1,24 @@
+import { Writable, Transform } from 'stream';
+import { URL } from 'url';
+
 import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
 import mongoose from 'mongoose';
-
-import { URL } from 'url';
-
-import { Writable, Transform } from 'stream';
 import streamToPromise from 'stream-to-promise';
 
-import { createBatchStream } from '../../util/batch-stream';
-import loggerFactory from '~/utils/logger';
-import { PageModel } from '../../models/page';
-import {
-  SearchDelegator, SearchableData, QueryTerms,
-} from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
+import loggerFactory from '~/utils/logger';
+
+import {
+  SearchDelegator, SearchableData, QueryTerms,
+} from '../../interfaces/search';
+import { PageModel } from '../../models/page';
+import { createBatchStream } from '../../util/batch-stream';
+
+
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -863,18 +865,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     ];
 
     // ensure to hit to GRANT_RESTRICTED pages that the user specified at own
-    if (user != null) {
-      grantConditions.push(
-        {
-          bool: {
-            must: [
-              { term: { grant: GRANT_RESTRICTED } },
-              { term: { granted_users: user._id.toString() } },
-            ],
-          },
-        },
-      );
-    }
+    // if (user != null) {
+    //   grantConditions.push(
+    //     {
+    //       bool: {
+    //         must: [
+    //           { term: { grant: GRANT_RESTRICTED } },
+    //           { term: { granted_users: user._id.toString() } },
+    //         ],
+    //       },
+    //     },
+    //   );
+    // }
 
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
