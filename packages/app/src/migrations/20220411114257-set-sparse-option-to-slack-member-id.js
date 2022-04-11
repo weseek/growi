@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:migrate:set-space-option-to-slack-member-id');
+const logger = loggerFactory('growi:migrate:set-sparse-option-to-slack-member-id');
 
 /**
- * set sparce option to slackMemberId
+ * set sparse option to slackMemberId
  */
 module.exports = {
   async up(db) {
