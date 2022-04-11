@@ -19,6 +19,7 @@ import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
+import CustomizeLogoSetting from './CustomizeLogoSetting';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
@@ -70,6 +71,9 @@ function Customize(props) {
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeLogoSetting />
       </div>
     </div>
   );
