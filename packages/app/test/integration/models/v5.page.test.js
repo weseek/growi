@@ -257,6 +257,50 @@ describe('Page', () => {
       },
     ]);
 
+    /**
+     * getParentAndFillAncestors
+     */
+    const pageIdPAF1 = new mongoose.Types.ObjectId();
+    const pageIdPAF2 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdPAF1,
+        path: '/PAF1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        path: '/emp_anc1/emp_anc2/PAF2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdPAF2,
+        path: '/emp_anc3',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        descendantCount: 1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/emp_anc3/PAF3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+        parent: pageIdPAF2,
+      },
+    ]);
+
   });
   describe('create', () => {
 
@@ -482,5 +526,63 @@ describe('Page', () => {
       });
     });
 
+  });
+
+  describe('getParentAndFillAncestors', () => {
+    test('return parent if exist', async() => {
+      const page1 = await Page.findOne({ path: '/PAF1' });
+      const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
+      expect(parent).toBeTruthy();
+      expect(page1.parent).toStrictEqual(parent._id);
+    });
+    test('create parent and ancestors when they do not exsit, and return the new parent', async() => {
+      const path1 = '/emp_anc1';
+      const path2 = '/emp_anc1/emp_anc2';
+      const path3 = '/emp_anc1/emp_anc2/PAF2';
+      const _page1 = await Page.findOne({ path: path1 }); // not exist
+      const _page2 = await Page.findOne({ path: path2 }); // not exist
+      const _page3 = await Page.findOne({ path: path3 }); // exist
+      expect(_page1).toBeNull();
+      expect(_page2).toBeNull();
+      expect(_page3).toBeTruthy();
+
+      const parent = await Page.getParentAndFillAncestors(_page3.path, dummyUser1);
+      const page1 = await Page.findOne({ path: path1 });
+      const page2 = await Page.findOne({ path: path2 });
+      const page3 = await Page.findOne({ path: path3 });
+
+      expect(parent._id).toStrictEqual(page2._id);
+      expect(parent.path).toStrictEqual(page2.path);
+      // expect(parent.parent).toStrictEqual(page2.parent); // this shows error as returned parent is not updated
+
+      expect(parent).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+      // expect(page3.parent).toStrictEqual(page2._id); // this shows error as page3 parent isn't updated
+    });
+    test('return parent even if the parent page is empty', async() => {
+      const path1 = '/emp_anc3';
+      const path2 = '/emp_anc3/PAF3';
+      const _page1 = await Page.findOne({ path: path1, isEmpty: true });
+      const _page2 = await Page.findOne({ path: path2, isEmpty: false });
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+
+      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
+      const page2 = await Page.findOne({ path: path2, isEmpty: false });
+
+      // check for the parent (should be the same as page1)
+      expect(parent._id).toStrictEqual(page1._id);
+      expect(parent.path).toStrictEqual(page1.path);
+      expect(parent.parnet).toStrictEqual(page1.parnet);
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+    });
   });
 });

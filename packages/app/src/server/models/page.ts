@@ -1,19 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import nodePath from 'path';
+
+import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
-import escapeStringRegexp from 'escape-string-regexp';
-import nodePath from 'path';
-import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
 
+
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
+import { IPage } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { IPage } from '../../interfaces/page';
+
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { PageRedirectModel } from './page-redirect';
 
 const { addTrailingSlash } = pathUtils;
