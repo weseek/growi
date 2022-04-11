@@ -1,7 +1,6 @@
 import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
-import getUserModel from '~/server/models/user';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:drop-pages-indices');
@@ -9,26 +8,17 @@ const logger = loggerFactory('growi:migrate:drop-pages-indices');
 /**
  * set sparce true to slackMemberId
  */
-// const updateSlackMemberIdScheme = async(db, updateIdList) => {
-//   await db.collection('pagetagrelations').updateMany(
-//     { relatedPage: { $in: updateIdList } },
-//     { $set: { isPageTrashed: true } },
-//   );
-// };
-
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const User = getModelSafely('User') || getUserModel();
+    const User = getModelSafely('User') || require('~/server/models/user')();
 
-    // User.User
-
-    await db.collection('users').updateMany(
+    await User.updateMany(
       {},
       { $set: { slackMemberId: { sparse: true } } },
+      // { upsert: true, new: true },
     );
-
 
     logger.info('Migration has successfully applied');
   },
