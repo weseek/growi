@@ -1,8 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { UncontrolledTooltip } from 'reactstrap';
 import { pagePathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
+import { UncontrolledTooltip } from 'reactstrap';
+
 
 const { userPageRoot } = pagePathUtils;
 
