@@ -857,26 +857,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const {
-      GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
+      GRANT_PUBLIC, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
     } = Page;
 
     const grantConditions: any[] = [
       { term: { grant: GRANT_PUBLIC } },
     ];
-
-    // ensure to hit to GRANT_RESTRICTED pages that the user specified at own
-    if (user != null) {
-      grantConditions.push(
-        {
-          bool: {
-            must: [
-              { term: { grant: GRANT_RESTRICTED } },
-              { term: { granted_users: user._id.toString() } },
-            ],
-          },
-        },
-      );
-    }
 
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
