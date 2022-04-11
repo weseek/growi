@@ -254,7 +254,7 @@ export const getPageSchema = (crowi) => {
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
+    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP && grant !== GRANT_RESTRICTED) {
       this.grantedUsers.push(user._id);
     }
 
