@@ -9,12 +9,13 @@ import loggerFactory from '~/utils/logger';
 /* eslint-disable no-use-before-define */
 
 const debug = require('debug')('growi:models:page');
-const nodePath = require('path');
-const urljoin = require('url-join');
-const mongoose = require('mongoose');
-const differenceInYears = require('date-fns/differenceInYears');
 
+const nodePath = require('path');
+
+const differenceInYears = require('date-fns/differenceInYears');
 const escapeStringRegexp = require('escape-string-regexp');
+const mongoose = require('mongoose');
+const urljoin = require('url-join');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
