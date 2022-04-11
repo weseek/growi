@@ -77,14 +77,20 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openPresentationModal(hrefForPresentationModal)}
         data-testid="open-presentation-modal-btn"
+        className="grw-page-control-dropdown-item"
       >
-        <i className="icon-fw"><PresentationIcon /></i>
+        <i className="icon-fw grw-page-control-dropdown-icon">
+          <PresentationIcon />
+        </i>
         { t('Presentation Mode') }
       </DropdownItem>
 
       {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
+      <DropdownItem
+        onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
@@ -97,31 +103,44 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><HistoryIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <HistoryIcon />
+        </span>
         {t('History')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><AttachmentIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <AttachmentIcon />
+        </span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><ShareLinkIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <ShareLinkIcon />
+        </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
 
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={openPageTemplateModalHandler}>
-        <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
+      <DropdownItem
+        onClick={openPageTemplateModalHandler}
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
+        { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
   );

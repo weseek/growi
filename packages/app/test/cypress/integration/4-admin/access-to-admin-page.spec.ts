@@ -77,6 +77,11 @@ context('Access to Admin page', () => {
   it('/admin/slack-integration is successfully loaded', () => {
     cy.visit('/admin/slack-integration');
     cy.getByTestid('admin-slack-integration').should('be.visible');
+
+    cy.get('img.bot-difficulty-icon')
+      .should('have.length', 3)
+      .should('be.visible');
+
     cy.screenshot(`${ssPrefix}-admin-slack-integration`);
   });
 

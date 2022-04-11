@@ -1,6 +1,7 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+
 import { addTrailingSlash } from './path-utils';
 
 /**

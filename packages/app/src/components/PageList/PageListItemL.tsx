@@ -1,6 +1,6 @@
 import React, {
-  forwardRef,
-  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
+  forwardRef, useState,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -49,12 +49,14 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    // todo: refactoring variable name to clear what changed
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const [likerCount, setLikerCount] = useState(pageData.liker.length);
+  const [bookmarkCount, setBookmarkCount] = useState(pageMeta && pageMeta.bookmarkCount ? pageMeta.bookmarkCount : 0);
 
   const { t } = useTranslation();
 
@@ -97,6 +99,14 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
+  useEffect(() => {
+    if (isIPageInfoForEntity(pageInfo) && pageInfo != null) {
+      // likerCount
+      setLikerCount(pageInfo.likerIds?.length ?? 0);
+      // bookmarkCount
+      setBookmarkCount(pageInfo.bookmarkCount ?? 0);
+    }
+  }, [pageInfo]);
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -147,22 +157,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 
-  let likerCount;
-  if (isSelected && isIPageInfoForEntity(pageInfo)) {
-    likerCount = pageInfo.likerIds?.length;
-  }
-  else {
-    likerCount = pageData.liker.length;
-  }
-
-  let bookmarkCount;
-  if (isSelected && isIPageInfoForEntity(pageInfo)) {
-    bookmarkCount = pageInfo.bookmarkCount;
-  }
-  else {
-    bookmarkCount = pageMeta?.bookmarkCount;
-  }
-
   const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
   const canRenderRevisionSnippet = revisionShortBody != null;
 
@@ -170,11 +164,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     <li
       key={pageData._id}
       className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
+      onClick={clickHandler}
     >
-      <div
-        className="text-break w-100"
-        onClick={clickHandler}
-      >
+      <div className="text-break w-100">
         <div className="d-flex">
           {/* checkbox */}
           {onCheckboxChanged != null && (
