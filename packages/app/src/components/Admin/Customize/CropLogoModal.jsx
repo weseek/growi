@@ -35,6 +35,9 @@ class CropLogoModal extends React.Component {
     this.imageRef = null;
   }
 
+  componentDidMount() {
+    document.body.style.position = 'static';
+  }
 
   onImageLoaded(image) {
     this.setState({ imageRef: image }, () => this.reset());
@@ -87,7 +90,7 @@ class CropLogoModal extends React.Component {
 
   render() {
     return (
-      <Modal style={this.style} isOpen={this.props.show} toggle={this.props.onModalClose}>
+      <Modal isOpen={this.props.show} toggle={this.props.onModalClose}>
         <ModalHeader tag="h4" toggle={this.props.onModalClose} className="bg-info text-light">
           Image Crop
         </ModalHeader>
