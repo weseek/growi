@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:migrate:drop-pages-indices');
+const logger = loggerFactory('growi:migrate:set-space-option-to-slack-member-id');
 
 /**
  * set sparce option to slackMemberId
