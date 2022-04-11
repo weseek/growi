@@ -20,9 +20,8 @@ context('Access to page', () => {
     cy.visit('/Sandbox#Headers');
 
     // wait until opacity is 1.
-    cy.getByTestid('grw-fab-create-page')
-      .should('be.visible')
-      .should('have.class', 'fadeInUp')
+    cy.getByTestid('grw-fab')
+      .invoke('show')
       .should('have.css', 'opacity', '1');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
