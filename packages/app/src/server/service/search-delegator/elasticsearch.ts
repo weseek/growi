@@ -865,18 +865,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     ];
 
     // ensure to hit to GRANT_RESTRICTED pages that the user specified at own
-    // if (user != null) {
-    //   grantConditions.push(
-    //     {
-    //       bool: {
-    //         must: [
-    //           { term: { grant: GRANT_RESTRICTED } },
-    //           { term: { granted_users: user._id.toString() } },
-    //         ],
-    //       },
-    //     },
-    //   );
-    // }
+    if (user != null) {
+      grantConditions.push(
+        {
+          bool: {
+            must: [
+              { term: { grant: GRANT_RESTRICTED } },
+              { term: { granted_users: user._id.toString() } },
+            ],
+          },
+        },
+      );
+    }
 
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
