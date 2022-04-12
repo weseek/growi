@@ -9,3 +9,9 @@ export type ITagsSearchApiv1Result = {
   ok: boolean,
   tags: string[]
 }
+
+export type ITagsListApiv1Result = {
+  ok: boolean,
+  data: ITagHasCount[],
+  totalCount: number,
+}
