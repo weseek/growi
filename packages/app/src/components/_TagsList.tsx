@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ import TagCloudBox from './TagCloudBox';
 
 
 type Props = {
-
+  isOnReload: boolean
 }
 
 const TagsList: FC<Props> = (props: Props) => {
@@ -20,13 +20,18 @@ const TagsList: FC<Props> = (props: Props) => {
   const [activePage, setActivePage] = useState(1);
   const [totalTags, setTotalTags] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
+  const [pagingOffset, setPagingOffset] = useState(0);
 
-  const { data: tagsListResult } = useSWRxTagsList(pagingLimit, 0);
+  const { data: tagsListResult, mutate } = useSWRxTagsList(pagingLimit, pagingOffset);
 
   const handlePage = (selectedPageNumber: number) => {
-    console.log(selectedPageNumber);
     setActivePage(selectedPageNumber);
+    setPagingOffset((selectedPageNumber - 1) * pagingLimit);
   };
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, props.isOnReload]);
 
   return (
     <>
