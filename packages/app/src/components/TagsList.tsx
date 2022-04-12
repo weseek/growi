@@ -30,7 +30,9 @@ const TagsList: FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    mutate();
+    if (props.isOnReload) {
+      mutate();
+    }
   }, [mutate, props.isOnReload]);
 
   if (isLoading) {
