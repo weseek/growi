@@ -579,7 +579,7 @@ describe('Page', () => {
       // check for the parent (should be the same as page1)
       expect(parent._id).toStrictEqual(page1._id);
       expect(parent.path).toStrictEqual(page1.path);
-      expect(parent.parnet).toStrictEqual(page1.parnet);
+      expect(parent.parent).toStrictEqual(page1.parent);
 
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
