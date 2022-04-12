@@ -196,8 +196,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
     document.addEventListener('click', this.handleDocumentClick);
   }
 
+
+  componentDidUpdate() {
+    const emojiPickerSearchInput = document.getElementById('emoji-mart-search-4');
+    if (emojiPickerSearchInput != null) {
+      emojiPickerSearchInput.addEventListener('blur', this.handleBlur);
+    }
+  }
+
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleDocumentClick);
+    const emojiPickerSearchInput = document.getElementById('emoji-mart-search-4');
+    emojiPickerSearchInput.removeEventListener('blur', this.handleBlur);
+  }
+
+  handleBlur(event) {
+    const emojiBtnElm = document.getElementById('emoij-btn');
+    if (!emojiBtnElm.contains(event.target)) {
+      this.setState({ isEmojiPickerShown: false });
+    }
   }
 
   handleDocumentClick(event) {
