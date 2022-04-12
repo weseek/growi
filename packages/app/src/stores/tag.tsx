@@ -1,12 +1,10 @@
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { ITag } from '~/interfaces/tag';
+import { ITagHasCount } from '~/interfaces/tag';
 
 import { apiGet } from '../client/util/apiv1-client';
 
-
-export type ITagHasCount = ITag & { count: number }
 
 export type ITagsApiv1Result = {
   ok: boolean,
