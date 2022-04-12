@@ -205,7 +205,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 
   handleEscClick(e) {
-    // Close emojiPicker when esc key was pressed,
+    // Close emojiPicker when esc key is pressed,
     if (this.state.isEmojiPickerShown && e.keyCode === 27) {
       this.setState({ isEmojiPickerShown: false });
     }
