@@ -20,7 +20,9 @@ const TagsList: FC<Props> = (props: Props) => {
   const [activePage, setActivePage] = useState(1);
   const [pagingOffset, setPagingOffset] = useState(0);
 
-  const { data: tagsList, mutate } = useSWRxTagsList(PAGING_LIMIT, pagingOffset);
+  const { data: tagsList, error, mutate } = useSWRxTagsList(PAGING_LIMIT, pagingOffset);
+
+  const isLoading = tagsList === undefined && error == null;
 
   const handlePage = (selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
@@ -30,6 +32,14 @@ const TagsList: FC<Props> = (props: Props) => {
   useEffect(() => {
     mutate();
   }, [mutate, props.isOnReload]);
+
+  if (isLoading) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+      </div>
+    );
+  }
 
   return (
     <>
