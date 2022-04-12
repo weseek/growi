@@ -1091,6 +1091,10 @@ export default (crowi: Crowi): any => {
     return !isRestricted && (!isV5Compatible || !isOnTree);
   };
 
+  schema.statics.emitPageEventUpdate = async(page, user) => {
+    pageEvent.emit('update', page, user);
+  };
+
   schema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
     if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
@@ -1160,7 +1164,7 @@ export default (crowi: Crowi): any => {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    pageEvent.emit('update', savedPage, user);
+    this.emitPageEventUpdate(savedPage, user); // call asynchronously
 
     // Update ex children's parent
     if (!wasOnTree && shouldBeOnTree) {

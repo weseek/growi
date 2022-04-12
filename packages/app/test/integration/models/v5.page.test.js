@@ -13,10 +13,19 @@ describe('Page', () => {
   let Comment;
   let ShareLink;
   let PageRedirect;
+  let UserGroup;
+  let UserGroupRelation;
   let xssSpy;
 
   let rootPage;
   let dummyUser1;
+  let pModelUser1;
+  let pModelUser2;
+  let pModelUser3;
+  let groupIdIsolate;
+  let groupIdA;
+  let groupIdB;
+  let groupIdC;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -32,10 +41,99 @@ describe('Page', () => {
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
+    UserGroup = mongoose.model('UserGroup');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
 
     rootPage = await Page.findOne({ path: '/' });
+
+    const pModelUserId1 = new mongoose.Types.ObjectId();
+    const pModelUserId2 = new mongoose.Types.ObjectId();
+    const pModelUserId3 = new mongoose.Types.ObjectId();
+    await User.insertMany([
+      {
+        _id: pModelUserId1, name: 'pmodelUser1', username: 'pmodelUser1', email: 'pmodelUser1@example.com',
+      },
+      {
+        _id: pModelUserId2, name: 'pmodelUser2', username: 'pmodelUser2', email: 'pmodelUser2@example.com',
+      },
+      {
+        _id: pModelUserId3, name: 'pModelUser3', username: 'pModelUser3', email: 'pModelUser3@example.com',
+      },
+    ]);
+    pModelUser1 = await User.findOne({ _id: pModelUserId1 });
+    pModelUser2 = await User.findOne({ _id: pModelUserId2 });
+    pModelUser3 = await User.findOne({ _id: pModelUserId3 });
+
+
+    groupIdIsolate = new mongoose.Types.ObjectId();
+    groupIdA = new mongoose.Types.ObjectId();
+    groupIdB = new mongoose.Types.ObjectId();
+    groupIdC = new mongoose.Types.ObjectId();
+    await UserGroup.insertMany([
+      {
+        _id: groupIdIsolate,
+        name: 'pModel_groupIsolate',
+      },
+      {
+        _id: groupIdA,
+        name: 'pModel_groupA',
+      },
+      {
+        _id: groupIdB,
+        name: 'pModel_groupB',
+        parent: groupIdA,
+      },
+      {
+        _id: groupIdC,
+        name: 'pModel_groupC',
+        parent: groupIdB,
+      },
+    ]);
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: groupIdIsolate,
+        relatedUser: pModelUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdIsolate,
+        relatedUser: pModelUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: pModelUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: pModelUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdA,
+        relatedUser: pModelUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdB,
+        relatedUser: pModelUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdB,
+        relatedUser: pModelUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: groupIdC,
+        relatedUser: pModelUserId3,
+        createdAt: new Date(),
+      },
+    ]);
 
     const pageIdCreate1 = new mongoose.Types.ObjectId();
     const pageIdCreate2 = new mongoose.Types.ObjectId();
@@ -129,6 +227,7 @@ describe('Page', () => {
     const pageIdUpd10 = new mongoose.Types.ObjectId();
     const pageIdUpd11 = new mongoose.Types.ObjectId();
     const pageIdUpd12 = new mongoose.Types.ObjectId();
+    const pageIdUpd13 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -255,6 +354,53 @@ describe('Page', () => {
         parent: rootPage._id,
         descendantCount: 1,
       },
+      {
+        path: '/mup19',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        path: '/mup20',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        creator: pModelUserId1,
+        lastUpdateUser: pModelUserId1,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        path: '/mup21',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdUpd13,
+        path: '/mup22',
+        grant: Page.GRANT_PUBLIC,
+        creator: pModelUser1,
+        lastUpdateUser: pModelUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        path: '/mup22/mup23',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdA,
+        creator: pModelUserId1,
+        lastUpdateUser: pModelUserId1,
+        isEmpty: false,
+        parent: pageIdUpd13,
+        descendantCount: 0,
+      },
     ]);
 
   });
@@ -350,6 +496,13 @@ describe('Page', () => {
   });
 
   describe('update', () => {
+
+    const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
+      const mockedRenameSubOperation = jest.spyOn(Page, 'emitPageEventUpdate').mockReturnValue(null);
+      const savedPage = await Page.updatePage(page, newRevisionBody, oldRevisionBody, user, options);
+      mockedRenameSubOperation.mockRestore();
+      return savedPage;
+    };
 
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
@@ -479,6 +632,58 @@ describe('Page', () => {
         expect(_page2.parent).toStrictEqual(_pageT._id);
         expect(_page3.parent).toStrictEqual(_page2._id);
         expect(_pageT.descendantCount).toBe(2);
+      });
+    });
+    describe('Changing grant to GRANT_OWNER(onlyme)', () => {
+      test('successfully change to GRANT_OWNER from GRANT_PUBLIC', async() => {
+        const path = '/mup19';
+        const _page = await Page.findOne({ path, grant: Page.GRANT_PUBLIC });
+        expect(_page).toBeTruthy();
+
+        await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_OWNER });
+
+        const page = await Page.findOne({ path });
+        expect(page.grant).toBe(Page.GRANT_OWNER);
+
+      });
+      test('successfully change to GRANT_OWNER from GRANT_USER_GROUP', async() => {
+        const path = '/mup20';
+        const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        expect(_page).toBeTruthy();
+
+        await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', pModelUser1, { grant: Page.GRANT_OWNER });
+
+        const page = await Page.findOne({ path });
+        expect(page.grant).toBe(Page.GRANT_OWNER);
+      });
+      test('successfully change to GRANT_OWNER from GRANT_RESTRICTED', async() => {
+        const path = '/mup21';
+        const _page = await Page.findOne({ path, grant: Page.GRANT_RESTRICTED });
+        expect(_page).toBeTruthy();
+
+        await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_OWNER });
+
+        const page = await Page.findOne({ path });
+        expect(page.grant).toBe(Page.GRANT_OWNER);
+      });
+      test('Failed to change to GRANT_OWNER if one of the ancestors is GRANT_USER_GROUP page', async() => {
+        const path1 = '/mup22';
+        const path2 = '/mup22/mup23';
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+
+        let isThrown;
+        try {
+          await updatePage(_page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_OWNER });
+        }
+        catch (err) {
+          isThrown = true;
+        }
+        expect(isThrown).toBe(true);
+        const page1 = await Page.findOne({ path1 });
+        const page2 = await Page.findOne({ path2 });
       });
     });
 
