@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxTagsList } from '~/stores/tag';
 
-import { toastError } from '../client/util/apiNotification';
-
 import PaginationWrapper from './PaginationWrapper';
 import TagCloudBox from './TagCloudBox';
 
@@ -18,7 +16,6 @@ const TagsList: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const [activePage, setActivePage] = useState(1);
-  const [totalTags, setTotalTags] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
   const [pagingOffset, setPagingOffset] = useState(0);
 
