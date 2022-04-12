@@ -8,10 +8,11 @@ import { apiGet } from '../client/util/apiv1-client';
 
 export type ITagsApiv1Result = {
   ok: boolean,
-  tags: Tag[];
+  tags: Tag[],
+  totalCount: number,
 }
 
-export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<Tag[], Error> => {
+export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<ITagsApiv1Result, Error> => {
   return useSWRImmutable(['/tags.list', limit, offset],
-    (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then((response: ITagsApiv1Result) => response.tags));
+    (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then((response: ITagsApiv1Result) => response));
 };
