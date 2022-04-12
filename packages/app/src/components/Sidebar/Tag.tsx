@@ -3,7 +3,6 @@ import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import TagsList from '../TagsList';
-import _TagsList from '../_TagsList';
 
 const Tag: FC = () => {
   const { t } = useTranslation('');
@@ -37,8 +36,7 @@ const Tag: FC = () => {
         </button>
       </div>
       <div className="grw-container-convertible mb-5 pb-5">
-        {/* <TagsList isOnReload={isOnReload} /> */}
-        <_TagsList isOnReload={isOnReload} />
+        <TagsList isOnReload={isOnReload} />
       </div>
     </div>
   );

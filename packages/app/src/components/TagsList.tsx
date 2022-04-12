@@ -8,6 +8,8 @@ import PaginationWrapper from './PaginationWrapper';
 import TagCloudBox from './TagCloudBox';
 
 
+const PAGING_LIMIT = 10;
+
 type Props = {
   isOnReload: boolean
 }
@@ -16,14 +18,13 @@ const TagsList: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const [activePage, setActivePage] = useState(1);
-  const [pagingLimit, setPagingLimit] = useState(10);
   const [pagingOffset, setPagingOffset] = useState(0);
 
-  const { data: tagsListResult, mutate } = useSWRxTagsList(pagingLimit, pagingOffset);
+  const { data: tagsListResult, mutate } = useSWRxTagsList(PAGING_LIMIT, pagingOffset);
 
   const handlePage = (selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
-    setPagingOffset((selectedPageNumber - 1) * pagingLimit);
+    setPagingOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   };
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const TagsList: FC<Props> = (props: Props) => {
             activePage={activePage}
             changePage={handlePage}
             totalItemsCount={tagsListResult?.totalCount || 0}
-            pagingLimit={pagingLimit}
+            pagingLimit={PAGING_LIMIT}
             align="center"
             size="md"
           />
