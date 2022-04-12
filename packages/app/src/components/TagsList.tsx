@@ -22,8 +22,6 @@ const TagsList: FC<Props> = (props: Props) => {
 
   const { data: tagsList, error, mutate } = useSWRxTagsList(PAGING_LIMIT, pagingOffset);
 
-  const isLoading = tagsList === undefined && error == null;
-
   const handlePage = (selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
     setPagingOffset((selectedPageNumber - 1) * PAGING_LIMIT);
@@ -35,6 +33,7 @@ const TagsList: FC<Props> = (props: Props) => {
     }
   }, [mutate, props.isOnReload]);
 
+  const isLoading = tagsList === undefined && error == null;
   if (isLoading) {
     return (
       <div className="text-muted text-center">
