@@ -24,16 +24,18 @@ const TagsList: FC<Props> = (props: Props) => {
   const { data: tagsListResult } = useSWRxTagsList(pagingLimit, 0);
 
   const handlePage = (selectedPageNumber: number) => {
+    console.log(selectedPageNumber);
+    setActivePage(selectedPageNumber);
   };
 
   return (
     <>
       <header className="py-0">
-        {/* <h1 className="title text-center mt-5 mb-3 font-weight-bold">{`${t('Tags')}(${this.state.totalTags})`}</h1> */}
+        <h1 className="title text-center mt-5 mb-3 font-weight-bold">{`${t('Tags')}(${tagsListResult?.totalCount || 0})`}</h1>
       </header>
       <div className="row text-center">
         <div className="col-12 mb-5 px-5">
-          {/* <TagCloudBox tags={this.state.tagData} minSize={20} /> */}
+          <TagCloudBox tags={tagsListResult?.data || []} minSize={20} />
         </div>
         <div className="col-12 tag-list mb-4">
           <ul className="list-group text-left">
@@ -52,14 +54,14 @@ const TagsList: FC<Props> = (props: Props) => {
           </ul>
         </div>
         <div className="col-12 tag-list-pagination">
-          {/* <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.handlePage}
-            totalItemsCount={this.state.totalTags}
-            pagingLimit={this.state.pagingLimit}
+          <PaginationWrapper
+            activePage={activePage}
+            changePage={handlePage}
+            totalItemsCount={tagsListResult?.totalCount || 0}
+            pagingLimit={pagingLimit}
             align="center"
             size="md"
-          /> */}
+          />
         </div>
       </div>
     </>
