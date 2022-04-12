@@ -156,6 +156,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
+    this.handleEscClick = this.handleEscClick.bind(this);
 
   }
 
@@ -194,6 +195,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
 
     document.addEventListener('click', this.handleDocumentClick);
+    document.addEventListener('keydown', this.handleEscClick);
   }
 
 
@@ -212,6 +214,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
   handleBlur(event) {
     const emojiBtnElm = document.getElementById('emoij-btn');
     if (!emojiBtnElm.contains(event.target)) {
+      this.setState({ isEmojiPickerShown: false });
+    }
+  }
+
+  handleEscClick(e) {
+    if (this.state.isEmojiPickerShown && e.keyCode === 27) {
       this.setState({ isEmojiPickerShown: false });
     }
   }
