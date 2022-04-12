@@ -1,18 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
-import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
-import { useUserUISettings } from '~/client/services/user-ui-settings';
+
 import AppContainer from '~/client/services/AppContainer';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
-
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   isUserPreferenceExists,
   isDarkMode as isDarkModeByUtil,
@@ -21,12 +16,14 @@ import {
   updateUserPreference,
   updateUserPreferenceWithOsSettings,
 } from '~/client/util/color-scheme';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 
-import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
-import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import MoonIcon from '../Icons/MoonIcon';
+import SidebarDockIcon from '../Icons/SidebarDockIcon';
+import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SunIcon from '../Icons/SunIcon';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 const PersonalDropdown = (props) => {
