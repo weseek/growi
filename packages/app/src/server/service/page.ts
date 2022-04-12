@@ -2855,6 +2855,20 @@ class PageService {
     socket.emit(SocketEventName.UpdateDescCount, data);
   }
 
+  async findNotEmptyClosestAncestor(path: string): Promise<PageDocument> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+    const builderForAncestors = new PageQueryBuilder(Page.find(), false); // empty page not included
+
+    const ancestors = await builderForAncestors
+      .addConditionToListOnlyAncestors(path) // only ancestor paths
+      .addConditionToSortPagesByDescPath() // sort by path in Desc. Long to Short.
+      .query
+      .exec();
+
+    return ancestors[0];
+  }
+
 }
 
 export default PageService;
