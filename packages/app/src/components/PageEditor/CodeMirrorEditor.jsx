@@ -198,27 +198,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     document.addEventListener('keydown', this.handleEscClick);
   }
 
-
-  componentDidUpdate() {
-    const emojiPickerSearchInput = document.getElementById('emoji-mart-search-4');
-    if (emojiPickerSearchInput != null) {
-      emojiPickerSearchInput.addEventListener('blur', this.handleBlur);
-    }
-  }
-
   componentWillUnmount() {
-    const emojiPickerSearchInput = document.getElementById('emoji-mart-search-4');
-    emojiPickerSearchInput.removeEventListener('blur', this.handleBlur);
+    document.removeEventListener('click', this.handleDocumentClick);
+    document.removeEventListener('keydown', this.handleEscClick);
   }
 
-  handleBlur(event) {
-    const emojiBtnElm = document.getElementById('emoij-btn');
-    if (!emojiBtnElm.contains(event.target)) {
-      this.setState({ isEmojiPickerShown: false });
-    }
-  }
 
   handleEscClick(e) {
+    // Close emojiPicker when esc key was pressed,
     if (this.state.isEmojiPickerShown && e.keyCode === 27) {
       this.setState({ isEmojiPickerShown: false });
     }
@@ -226,7 +213,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   handleDocumentClick(event) {
     const emojiPickerElm = document.querySelector('.emoji-mart');
-    const emojiBtnElm = document.getElementById('emoij-btn');
+    const emojiBtnElm = document.getElementById('emoji-btn');
 
     if (this.state.isEmojiPickerShown) {
       // when outside of EmojiPicker is clicked, close the component. (excluding EmojiBtn elm on navbar)
@@ -988,7 +975,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Drawio" />
       </Button>,
       <Button
-        id="emoij-btn"
+        id="emoji-btn"
         key="nav-item-emoji"
         color={null}
         bssize="small"
