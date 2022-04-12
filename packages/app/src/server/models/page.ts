@@ -607,8 +607,8 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
   });
   await this.bulkWrite(operations);
 
-  const createdParent = ancestorsMap.get(parentPath);
-
+  const parentId = ancestorsMap.get(parentPath)._id; // get parent page id to fetch updated parent parent
+  const createdParent = await this.findOne({ _id: parentId }) as PageDocument;
   return createdParent;
 };
 

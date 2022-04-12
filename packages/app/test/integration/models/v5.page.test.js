@@ -553,7 +553,7 @@ describe('Page', () => {
 
       expect(parent._id).toStrictEqual(page2._id);
       expect(parent.path).toStrictEqual(page2.path);
-      // expect(parent.parent).toStrictEqual(page2.parent); // this shows error as parent property of the returned page is not updated
+      expect(parent.parent).toStrictEqual(page2.parent);
 
       expect(parent).toBeTruthy();
       expect(page1).toBeTruthy();
