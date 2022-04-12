@@ -12,7 +12,7 @@ on:
 jobs:
 
   test-prod-node14:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/use-chrome-in-vrt
     with:
       node-version: 14.x
       skip-cypress: true
@@ -21,7 +21,7 @@ jobs:
 
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/use-chrome-in-vrt
     with:
       node-version: 16.x
       cypress-report-artifact-name: Cypress report
@@ -32,7 +32,7 @@ jobs:
   run-reg-suit-node16:
     needs: [test-prod-node16]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/use-chrome-in-vrt
 
     if: always()
 
