@@ -14,6 +14,7 @@ context('Access to search result page', () => {
     cy.visit('/_search', { qs: { q: 'labels alerts cards blocks' } });
 
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-list').find('li.list-group-item.active').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-with-q`);
