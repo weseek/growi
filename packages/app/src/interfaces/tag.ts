@@ -1,3 +1,5 @@
+export type Tag = string;
+
 export type ITag = {
   name: string,
   createdAt: Date;
