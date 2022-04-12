@@ -99,7 +99,7 @@ class CustomizeLogoSetting extends React.Component {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(true) }}
+                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                     />
                     <label className="custom-control-label" htmlFor="radioDefaultLogo">
                       Default Logo
@@ -118,7 +118,7 @@ class CustomizeLogoSetting extends React.Component {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(false) }}
+                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                     />
                     <label className="custom-control-label" htmlFor="radioUploadLogo">
                       { t('Upload Logo') }

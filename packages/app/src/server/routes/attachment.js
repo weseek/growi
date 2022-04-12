@@ -550,7 +550,7 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-
+    const attachmentType = req.body.attachmentType;
     // check type
     const acceptableFileType = /image\/.+/;
     if (!file.mimetype.match(acceptableFileType)) {
@@ -560,7 +560,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -697,6 +697,41 @@ module.exports = function(crowi, app) {
     }
 
     return res.json(ApiResponse.success({}));
+  };
+
+  api.uploadBrandLogo = async function(req, res) {
+    // check params
+    if (!req.file) {
+      return res.json(ApiResponse.error('File error.'));
+    }
+    if (!req.user) {
+      return res.json(ApiResponse.error('param "user" must be set.'));
+    }
+
+    const file = req.file;
+    const attachmentType = req.body.attachmentType;
+    const attachmentId = req.body.attachmentId;
+    console.log(attachmentId);
+    // check type
+    const acceptableFileType = /image\/.+/;
+    if (!file.mimetype.match(acceptableFileType)) {
+      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    }
+
+    let attachment;
+    try {
+      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err.message));
+    }
+
+    const result = {
+      attachment: attachment.toObject({ virtuals: true }),
+    };
+
+    return res.json(ApiResponse.success(result));
   };
 
   return actions;

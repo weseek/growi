@@ -135,7 +135,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isEnabledStaleNotification': false,
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
-  'customize:currentLogo': '/images/logo.svg',
+  'customize:attachmentId' : '',
   'customize:isDefaultLogo': true,
 
   'notification:owner-page:isEnabled': false,
@@ -244,6 +244,8 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
+    isDefaultLogo:  crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+    attachmentId: crowi.configManager.getConfig('crowi', 'customize:attachmentId'),
   };
 
   return localConfig;

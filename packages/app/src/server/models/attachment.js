@@ -35,6 +35,11 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
+    attachmentType: {
+      type: String,
+      enum: ['BRAND_LOGO', 'WIKI_PAGE', 'USER_PAGE', 'PROFILE_IMAGE', null],
+      default: null,
+    },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
@@ -51,7 +56,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType = null) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -68,7 +73,7 @@ module.exports = function(crowi) {
     attachment.fileFormat = fileFormat;
     attachment.fileSize = fileSize;
     attachment.createdAt = Date.now();
-
+    attachment.attachmentType = attachmentType;
     return attachment;
   };
 

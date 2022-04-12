@@ -59,8 +59,8 @@ export default class AdminCustomizeContainer extends Container {
       uploadedLogoSrc: this.getUploadedLogoSrc(),
       isUploadedLogo: false,
       defaultLogoSrc: DEFAULT_LOGO,
-      currentLogo: '',
       isDefaultLogo: false,
+      attachmentId: '',
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
@@ -106,10 +106,10 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
-        currentLogo: customizeParams.currentLogo,
+        attachmentId: customizeParams.attachmentId,
         isDefaultLogo: customizeParams.isDefaultLogo,
       });
-
+      console.log(this.state);
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }
@@ -462,30 +462,37 @@ export default class AdminCustomizeContainer extends Container {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
-      // const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
-      // this.setState({ isUploadedLogo: true, uploadedLogoSrc: response.attachment.filePathProxied });
+      formData.append('attachmentType', 'BRAND_LOGO');
+      formData.append('attachmentId', this.state.attachmentId);
+      const response = await this.appContainer.apiPost('/attachments.uploadBrandLogo', formData);
+
+      this.setState({
+        isUploadedLogo: true,
+        uploadedLogoSrc: response.attachment.filePathProxied,
+        attachmentId: response.attachment.id,
+      });
     }
     catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
-      throw new Error('Failed to upload profile image');
+      throw new Error('Failed to upload brand logo');
     }
   }
 
-  async changeIsDefaultLogoEnabled(boolean) {
-    this.setState({ isDefaultLogo: boolean });
+  switchDefaultLogo() {
+    this.setState({ isDefaultLogo: !this.state.isDefaultLogo });
   }
 
   async updateCustomizeLogo() {
     try {
       const response = await this.appContainer.apiv3.put('/customize-setting/customize-logo', {
         isDefaultLogo: this.state.isDefaultLogo,
-        currentLogo: this.state.currentLogo,
+        attachmentId: this.state.attachmentId,
       });
       const { customizedParams } = response.data;
       this.setState({
         isDefaultLogo: customizedParams.isDefaultLogo,
-        currentLogo: customizedParams.currentLogo,
+        attachmentId:  customizedParams.attachmentId,
       });
     }
     catch (err) {
