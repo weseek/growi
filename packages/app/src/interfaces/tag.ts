@@ -1,5 +1,4 @@
 export type ITag = {
-  _id: string
   name: string,
   createdAt: Date;
 }
