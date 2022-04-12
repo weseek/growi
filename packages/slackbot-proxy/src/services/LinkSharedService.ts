@@ -1,9 +1,10 @@
-import axios from 'axios';
-import { Inject, Service } from '@tsed/di';
 import { GrowiEventProcessor, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
 import { WebClient } from '@slack/web-api';
-import loggerFactory from '~/utils/logger';
+import { Inject, Service } from '@tsed/di';
+import axios from 'axios';
+
 import { RelationRepository } from '~/repositories/relation';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:LinkSharedService');
 

@@ -42,8 +42,11 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
   return (
     // Export markdown
-    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-      <i className="icon-fw icon-cloud-download"></i>
+    <DropdownItem
+      onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
+      className="grw-page-control-dropdown-item"
+    >
+      <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
       {t('export_bulk.export_page_markdown')}
     </DropdownItem>
   );

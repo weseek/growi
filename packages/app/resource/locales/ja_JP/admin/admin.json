@@ -471,6 +471,7 @@
   "user_group_management": {
     "create_group": "新規グループの作成",
     "add_child_group": "子グループの追加",
+    "remove_child_group": "解除",
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",
