@@ -17,8 +17,8 @@ type Props = {
 const TagsList: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const [activePage, setActivePage] = useState(1);
-  const [pagingOffset, setPagingOffset] = useState(0);
+  const [activePage, setActivePage] = useState<number>(1);
+  const [pagingOffset, setPagingOffset] = useState<number>(0);
 
   const { data: tagsList, error, mutate } = useSWRxTagsList(PAGING_LIMIT, pagingOffset);
 
