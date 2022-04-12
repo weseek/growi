@@ -562,7 +562,7 @@ describe('Page', () => {
 
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
-      // expect(page3.parent).toStrictEqual(page2._id); // this shows error as page3 parent isn't updated
+      expect(page3.parent).toBeNull(); // no parent set as this method only returns parent page
     });
     test('return parent even if the parent page is empty', async() => {
       const path1 = '/emp_anc3';
