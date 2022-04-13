@@ -9,6 +9,6 @@ import { apiGet } from '../client/util/apiv1-client';
 export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<ITagsListApiv1Result, Error> => {
   return useSWRImmutable(
     ['/tags.list', limit, offset],
-    (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then(result => result as ITagsListApiv1Result),
+    (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then((result: ITagsListApiv1Result) => result),
   );
 };
