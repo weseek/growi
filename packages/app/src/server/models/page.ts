@@ -1096,7 +1096,7 @@ export default (crowi: Crowi): any => {
     return !isRestricted && (!isV5Compatible || !isOnTree);
   };
 
-  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId) => {
+  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId): void => {
     pageEvent.emit('update', page, user);
   };
 
