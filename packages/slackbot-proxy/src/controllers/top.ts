@@ -1,10 +1,9 @@
+import { requiredScopes } from '@growi/slack';
 import {
   Controller, Get, Inject, View,
 } from '@tsed/common';
-
 import readPkgUp from 'read-pkg-up';
 
-import { requiredScopes } from '@growi/slack';
 import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';

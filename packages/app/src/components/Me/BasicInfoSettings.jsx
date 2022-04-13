@@ -1,14 +1,15 @@
 
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import PersonalContainer from '~/client/services/PersonalContainer';
 
 class BasicInfoSettings extends React.Component {
 
@@ -128,10 +129,29 @@ class BasicInfoSettings extends React.Component {
             }
           </div>
         </div>
+        <div className="form-group row">
+          <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+              key={personalContainer.state.slackMemberId}
+              name="userForm[slackMemberId]"
+              defaultValue={personalContainer.state.slackMemberId}
+              onChange={(e) => { personalContainer.changeSlackMemberId(e.target.value) }}
+            />
+          </div>
+        </div>
 
         <div className="row my-3">
           <div className="offset-4 col-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
+            <button
+              data-testid="grw-besic-info-settings-update-button"
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={personalContainer.state.retrieveError != null}
+            >
               {t('Update')}
             </button>
           </div>

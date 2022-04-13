@@ -1,7 +1,9 @@
 import { Inject, OnInit, Service } from '@tsed/di';
+
 import {
   GrowiUriInjector, GrowiUriWithOriginalData, TypedBlock,
 } from '~/interfaces/growi-uri-injector';
+
 import { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPayloadDelegator';
 import { CheckboxesActionPayloadDelegator } from './block-elements/CheckboxesActionPayloadDelegator';
 

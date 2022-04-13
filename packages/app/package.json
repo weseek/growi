@@ -28,7 +28,7 @@
     "dev:migrate:status": "yarn dev:migrate-mongo status",
     "dev:migrate:up": "yarn dev:migrate-mongo up",
     "dev:migrate:down": "yarn dev:migrate-mongo down",
-    "cy:run": "cypress run --headless",
+    "cy:run": "cypress run --browser chrome",
     "//// for CI": "",
     "dev:ci": "yarn dev:client:nowatch && yarn dev:server --ci",
     "predev:ci": "run-p resources:*",

@@ -2100,8 +2100,8 @@ class PageService {
         isV5Compatible: true,
         isEmpty: true,
         isMovable,
-        isDeletable: true, // Todo: Restrict who can delete a page
-        isAbleToDeleteCompletely: true, // Todo: Restrict who can delete a page
+        isDeletable: true,
+        isAbleToDeleteCompletely: true,
         isRevertible: false,
       };
     }

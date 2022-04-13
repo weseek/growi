@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom';
 import { customTagUtils, BasicInterceptor } from '@growi/core';
+import ReactDOM from 'react-dom';
 
 /**
  * The interceptor for lsx
