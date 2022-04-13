@@ -10,7 +10,6 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-
 import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
@@ -21,10 +20,8 @@ import Crowi from '../crowi';
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 import { PageRedirectModel } from './page-redirect';
 
-
 const { addTrailingSlash } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
-
 
 const logger = loggerFactory('growi:models:page');
 /*
