@@ -14,7 +14,7 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { IUser, IUserHasId } from '~/interfaces/user';
+import { IUserHasId } from '~/interfaces/user';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
@@ -215,7 +215,7 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike | Ref<IUser>, operator:IUserHasId, isRecursively: boolean): boolean {
+  canDeleteCompletely(creatorId: ObjectIdLike | Ref<IUserHasId>, operator:IUserHasId, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -224,7 +224,7 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike | Ref<IUser>, operator:IUserHasId, isRecursively: boolean): boolean {
+  canDelete(creatorId: ObjectIdLike | Ref<IUserHasId>, operator:IUserHasId, isRecursively: boolean): boolean {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -234,7 +234,7 @@ class PageService {
   }
 
   private canDeleteLogic(
-      creatorId: ObjectIdLike | Ref<IUser>,
+      creatorId: ObjectIdLike | Ref<IUserHasId>,
       operator,
       isRecursively: boolean,
       authority: IPageDeleteConfigValueToProcessValidation | null,
