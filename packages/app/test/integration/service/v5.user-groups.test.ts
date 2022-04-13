@@ -59,17 +59,22 @@ describe('UserGroupService', () => {
      * Update UserGroup
      */
   test('Can update user group basic info', async() => {
-    const userGroup = await UserGroup.findOne({ name: 'v5_group1' });
+    const userGroup = await UserGroup.findOne({ _id: groupId1 });
 
     const newGroupName = 'v5_group1_new';
     const newGroupDescription = 'description1_new';
     const newParentId = groupId2;
 
-    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup.id, newGroupName, newGroupDescription, newParentId);
+    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup._id, newGroupName, newGroupDescription, newParentId);
 
     expect(updatedUserGroup.name).toBe(newGroupName);
     expect(updatedUserGroup.description).toBe(newGroupDescription);
     expect(updatedUserGroup.parent).toStrictEqual(newParentId);
+  });
+
+  test('Cannot update to existing group name', async() => {
+    const userGroup = await UserGroup.findOne({ _id: groupId1 });
+    await expect(crowi.userGroupService.updateGroup(userGroup._id, 'v5_group2')).rejects.toThrow('The group name is already taken');
   });
 
 });
