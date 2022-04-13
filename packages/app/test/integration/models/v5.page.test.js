@@ -781,6 +781,7 @@ describe('Page', () => {
 
         const page = await Page.findOne({ path });
         expect(page.grant).toBe(Page.GRANT_OWNER);
+        expect(page.grantedUsers).toStrictEqual([dummyUser1._id]);
 
       });
       test('successfully change to GRANT_OWNER from GRANT_USER_GROUP', async() => {
@@ -792,6 +793,8 @@ describe('Page', () => {
 
         const page = await Page.findOne({ path });
         expect(page.grant).toBe(Page.GRANT_OWNER);
+        expect(page.grantedUsers).toStrictEqual([pModelUser1._id]);
+        expect(page.grantedGroup).toBeNull();
       });
       test('successfully change to GRANT_OWNER from GRANT_RESTRICTED', async() => {
         const path = '/mup21';
@@ -802,6 +805,7 @@ describe('Page', () => {
 
         const page = await Page.findOne({ path });
         expect(page.grant).toBe(Page.GRANT_OWNER);
+        expect(page.grantedUsers).toStrictEqual([dummyUser1._id]);
       });
       test('Failed to change to GRANT_OWNER if one of the ancestors is GRANT_USER_GROUP page', async() => {
         const path1 = '/mup22';
@@ -811,16 +815,13 @@ describe('Page', () => {
         expect(_page1).toBeTruthy();
         expect(_page2).toBeTruthy();
 
-        let isThrown;
-        try {
-          await updatePage(_page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_OWNER });
-        }
-        catch (err) {
-          isThrown = true;
-        }
-        expect(isThrown).toBe(true);
+        await expect(updatePage(_page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_OWNER }))
+          .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
+
         const page1 = await Page.findOne({ path1 });
-        const page2 = await Page.findOne({ path2 });
+        expect(page1).toBeTruthy();
+        expect(page1.grant).toBe(Page.GRANT_PUBLIC);
+        expect(page1.grantedUsers).not.toStrictEqual([dummyUser1._id]);
       });
     });
     describe('Changing grant to GRANT_USER_GROUP', () => {
