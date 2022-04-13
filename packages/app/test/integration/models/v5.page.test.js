@@ -441,7 +441,7 @@ describe('Page', () => {
         descendantCount: 1,
       },
       {
-        path: '/mup27_pub/mup25_owner',
+        path: '/mup27_pub/mup28_owner',
         grant: Page.GRANT_OWNER,
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
@@ -777,7 +777,7 @@ describe('Page', () => {
         });
         test('successfully change to GRANT_USER_GROUP from GRANT_OWNER if parent page is GRANT_PUBLIC', async() => {
           const path1 = '/mup27_pub';
-          const path2 = '/mup27_pub/mup25_owner';
+          const path2 = '/mup27_pub/mup28_owner';
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
           const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
