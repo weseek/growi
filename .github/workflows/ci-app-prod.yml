@@ -34,7 +34,10 @@ jobs:
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
 
-    if: always()
+    if: |
+      !contains( github.event.pull_request.labels.*.name, 'dependencies' ) &&
+      !contains( github.event.pull_request.labels.*.name, 'github_actions' )
+
 
     with:
       node-version: 16.x
