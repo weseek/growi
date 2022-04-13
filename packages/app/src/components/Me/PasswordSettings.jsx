@@ -1,13 +1,14 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 class PasswordSettings extends React.Component {
@@ -138,6 +139,7 @@ class PasswordSettings extends React.Component {
         <div className="row my-3">
           <div className="offset-5">
             <button
+              data-testid="grw-password-settings-update-button"
               type="button"
               className="btn btn-primary"
               onClick={this.onClickSubmit}

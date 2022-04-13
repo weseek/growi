@@ -1,22 +1,21 @@
 import React, { FC, memo } from 'react';
+
 import PropTypes from 'prop-types';
-
 import { useTranslation } from 'react-i18next';
-
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd } from '~/stores/ui';
-import { usePageCreateModal } from '~/stores/modal';
 import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
-
-import PersonalDropdown from './PersonalDropdown';
-import GlobalSearch from './GlobalSearch';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import GlobalSearch from './GlobalSearch';
+import PersonalDropdown from './PersonalDropdown';
 
 
 type NavbarRightProps = {
@@ -52,7 +51,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         </button>
       </li>
 
-      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
+      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
         <PersonalDropdown />
       </li>
     </>
