@@ -2,13 +2,15 @@ import React, {
   Dispatch,
   FC, SetStateAction, useCallback, useEffect, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 type EditorSettingsBodyProps = {
   appContainer: AppContainer
@@ -249,8 +251,12 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
     }
   };
 
+  if (textlintRules == null) {
+    return <></>;
+  }
+
   return (
-    <>
+    <div data-testid="grw-editor-settings">
       <RuleListGroup
         title="editor_settings.common_settings.common_settings"
         ruleList={commonRulesMenuItems}
@@ -267,6 +273,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       <div className="row my-3">
         <div className="offset-4 col-5">
           <button
+            data-testid="grw-editor-settings-update-button"
             type="button"
             className="btn btn-primary"
             onClick={updateRulesHandler}
@@ -275,7 +282,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
