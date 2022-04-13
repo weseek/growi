@@ -57,7 +57,6 @@ describe('UserGroupService', () => {
 
     // Create UserGroupRelations
     await UserGroupRelation.insertMany([
-      // Parent
       {
         _id: userGroupRelationId1,
         relatedGroup: groupId1,
@@ -68,12 +67,6 @@ describe('UserGroupService', () => {
         relatedGroup: groupId4,
         relatedUser: userId4,
       },
-      // Child
-      // {
-      //   _id: userGroupRelationId2,
-      //   relatedGroup: groupId2,
-      //   relatedUser: userId1,
-      // },
     ]);
 
 
@@ -101,19 +94,33 @@ describe('UserGroupService', () => {
     const userGroup1 = await UserGroup.findOne({ _id: groupId1 });
     const userGroup2 = await UserGroup.findOne({ _id: groupId2 });
 
-    const result = crowi.userGroupService.updateGroup(userGroup1._id, userGroup2.name);
+    const result = await crowi.userGroupService.updateGroup(userGroup1._id, userGroup2.name);
 
     await expect(result).rejects.toThrow('The group name is already taken');
   });
 
+  // forceUpdateParents is false
   test('Should throw an error when users in clild group do not include in users in parent group', async() => {
     const userGroup1 = await UserGroup.findOne({ _id: groupId1 });
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
 
-    const result = crowi.userGroupService.updateGroup(userGroup1._id, userGroup1.name, userGroup1.description, userGroup4._id);
+    const result = await crowi.userGroupService.updateGroup(userGroup1._id, userGroup1.name, userGroup1.description, userGroup4._id);
 
     await expect(result).rejects.toThrow('The parent group does not contain the users in this group.');
   });
+
+  // force update
+  test('Should be included user forcibly to parent group', async() => {
+    const userGroup1 = await UserGroup.findOne({ _id: groupId1 });
+    const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
+
+    const forceUpdateParents = true;
+
+    await crowi.userGroupService.updateGroup(userGroup1._id, userGroup1.name, userGroup1.description, userGroup4._id, forceUpdateParents);
+    const relatedGroup = await UserGroupRelation.findOne({ relatedGroup: userGroup4._id, relatedUser: userId1 });
+
+    expect(relatedGroup).toBeTruthy();
+  }, 80000);
 
   test('Parent should be null when parent group is released', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId3 });
@@ -121,5 +128,4 @@ describe('UserGroupService', () => {
 
     expect(updatedUserGroup.parent).toBeNull();
   });
-
 });
