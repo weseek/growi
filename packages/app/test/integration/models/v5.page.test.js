@@ -275,14 +275,6 @@ describe('Page', () => {
         descendantCount: 0,
       },
       {
-        path: '/emp_anc1/emp_anc2/PAF2',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        descendantCount: 0,
-      },
-      {
         _id: pageIdPAF2,
         path: '/emp_anc3',
         grant: Page.GRANT_PUBLIC,
@@ -541,12 +533,12 @@ describe('Page', () => {
       const path3 = '/emp_anc1/emp_anc2/PAF2';
       const _page1 = await Page.findOne({ path: path1 }); // not exist
       const _page2 = await Page.findOne({ path: path2 }); // not exist
-      const _page3 = await Page.findOne({ path: path3 }); // exist
+      const _page3 = await Page.findOne({ path: path3 }); // not exist
       expect(_page1).toBeNull();
       expect(_page2).toBeNull();
-      expect(_page3).toBeTruthy();
+      expect(_page3).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors(_page3.path, dummyUser1);
+      const parent = await Page.getParentAndFillAncestors(path3, dummyUser1);
       const page1 = await Page.findOne({ path: path1 });
       const page2 = await Page.findOne({ path: path2 });
       const page3 = await Page.findOne({ path: path3 });
@@ -558,11 +550,10 @@ describe('Page', () => {
       expect(parent).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
-      expect(page3).toBeTruthy();
+      expect(page3).toBeNull();
 
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
-      expect(page3.parent).toBeNull(); // no parent is set as this method only returns parent page
     });
     test('return parent even if the parent page is empty', async() => {
       const path1 = '/emp_anc3';
