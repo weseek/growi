@@ -1,18 +1,19 @@
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
-
 import mongoose from 'mongoose';
 
 import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
+import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
+import Crowi from '../../crowi';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
-import Crowi from '../../crowi';
-import { ApiV3Response } from './interfaces/apiv3-response';
 import PageService from '../../service/page';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { IUserHasId } from '~/interfaces/user';
+
+import { ApiV3Response } from './interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -132,7 +133,8 @@ export default (crowi: Crowi): Router => {
 
       for (const page of pages) {
         // construct isIPageInfoForListing
-        const basicPageInfo = pageService.constructBasicPageInfo(page);
+        // eslint-disable-next-line no-await-in-loop
+        const basicPageInfo = await pageService.constructBasicPageInfo(page, req.user);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

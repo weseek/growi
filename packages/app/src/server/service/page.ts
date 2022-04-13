@@ -1,33 +1,36 @@
-import { pagePathUtils, pathUtils } from '@growi/core';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
-import escapeStringRegexp from 'escape-string-regexp';
-import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import { createBatchStream } from '~/server/util/batch-stream';
-import loggerFactory from '~/utils/logger';
-import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument,
-} from '~/server/models/page';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
+import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+
+import { Ref } from '~/interfaces/common';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import { PageRedirectModel } from '../models/page-redirect';
-import Subscription from '../models/subscription';
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { IUserHasId } from '~/interfaces/user';
-import { Ref } from '~/interfaces/common';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
-import ActivityDefine from '../util/activityDefine';
+import { IUser, IUserHasId } from '~/interfaces/user';
+import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import {
+  CreateMethod, PageCreateOptions, PageModel, PageDocument,
+} from '~/server/models/page';
+import { createBatchStream } from '~/server/util/batch-stream';
+import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import { PageRedirectModel } from '../models/page-redirect';
+import { serializePageSecurely } from '../models/serializers/page-serializer';
+import Subscription from '../models/subscription';
+import ActivityDefine from '../util/activityDefine';
+
 
 const debug = require('debug')('growi:services:page');
 
@@ -212,7 +215,7 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDeleteCompletely(creatorId: ObjectIdLike | Ref<IUser>, operator:IUserHasId, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -221,7 +224,7 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDelete(creatorId: ObjectIdLike | Ref<IUser>, operator:IUserHasId, isRecursively: boolean): boolean {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -231,7 +234,7 @@ class PageService {
   }
 
   private canDeleteLogic(
-      creatorId: ObjectIdLike,
+      creatorId: ObjectIdLike | Ref<IUser>,
       operator,
       isRecursively: boolean,
       authority: IPageDeleteConfigValueToProcessValidation | null,
@@ -301,8 +304,7 @@ class PageService {
       };
     }
 
-    const isGuestUser = user == null;
-    const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
+    const pageInfo = await this.constructBasicPageInfo(page, user);
 
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
@@ -311,7 +313,7 @@ class PageService {
       ...pageInfo,
       bookmarkCount,
     };
-
+    const isGuestUser = user == null;
     if (isGuestUser) {
       return {
         data: page,
@@ -321,7 +323,6 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
@@ -329,7 +330,6 @@ class PageService {
       data: page,
       meta: {
         ...metadataForGuest,
-        isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,
         subscriptionStatus: subscription?.status,
@@ -2092,22 +2092,34 @@ class PageService {
     });
   }
 
-  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+  async constructBasicPageInfo(page: IPage, operator: IUserHasId): Promise<IPageInfo | IPageInfoForEntity> {
+    const isGuestUser = operator == null;
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
+      // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
+      // Use creator id of ancestor page to determine whether the empty page is deletable
+      const notEmptyClosestAncestor = await this.findNotEmptyClosestAncestor(page.path);
+      const creatorId = notEmptyClosestAncestor.creator;
+
+      const isDeletable = isGuestUser && !isMovable ? false : this.canDelete(creatorId, operator, false);
+      const isAbleToDeleteCompletely = isGuestUser && !isMovable ? false : this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
+
       return {
         isV5Compatible: true,
         isEmpty: true,
         isMovable,
-        isDeletable: true,
-        isAbleToDeleteCompletely: true,
+        isDeletable,
+        isAbleToDeleteCompletely,
         isRevertible: false,
       };
     }
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+
+    const isDeletable = isGuestUser && isMovable ? false : this.canDelete(page.creator, operator, false);
+    const isAbleToDeleteCompletely = isGuestUser && isMovable ? false : this.canDeleteCompletely(page.creator, operator, false); // use normal delete config
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
@@ -2117,8 +2129,8 @@ class PageService {
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
       isMovable,
-      isDeletable: isMovable,
-      isAbleToDeleteCompletely: false,
+      isDeletable,
+      isAbleToDeleteCompletely,
       isRevertible: isTrashPage(page.path),
     };
 
