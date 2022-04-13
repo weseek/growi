@@ -867,7 +867,7 @@ describe('Page', () => {
           const path1 = '/mup27_pub';
           const path2 = '/mup27_pub/mup28_owner';
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
@@ -891,7 +891,7 @@ describe('Page', () => {
           const path1 = '/mup29_A';
           const path2 = '/mup29_A/mup30_owner';
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdB }; // change to groupB
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
@@ -921,7 +921,7 @@ describe('Page', () => {
           const path1 = '/mup31_A';
           const path2 = '/mup31_A/mup32_owner';
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdIsolate }; // change to isolated group
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
@@ -934,7 +934,7 @@ describe('Page', () => {
             isThrown = true;
           }
 
-          const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedGroup: groupIdIsolate }); // not exist
           expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
@@ -946,7 +946,7 @@ describe('Page', () => {
           const path1 = '/mup33_C';
           const path2 = '/mup33_C/mup34_owner';
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // groupC
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3] });
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA }; // change to groupA which is the grandParent
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
@@ -959,8 +959,8 @@ describe('Page', () => {
             isThrown = true;
           }
 
-          const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
-          const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+          const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3] });
+          const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // not exist
           expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
           expect(pageN).toBeNull();
