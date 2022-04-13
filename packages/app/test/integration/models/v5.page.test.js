@@ -926,17 +926,11 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          let isThrown;
-          try {
-            await updatePage(_page2, 'new', 'old', pModelUser3, options);
-          }
-          catch (err) {
-            isThrown = true;
-          }
+          await expect(updatePage(_page2, 'new', 'old', pModelUser1, options))
+            .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
 
           const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedGroup: groupIdIsolate }); // not exist
-          expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
           expect(pageN).toBeNull();
           expect(page2.grant).toBe(Page.GRANT_OWNER);
@@ -951,17 +945,10 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          let isThrown;
-          try {
-            await updatePage(_page2, 'new', 'old', pModelUser3, options);
-          }
-          catch (err) {
-            isThrown = true;
-          }
-
+          await expect(updatePage(_page2, 'new', 'old', pModelUser3, options))
+            .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
           const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3] });
           const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // not exist
-          expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
           expect(pageN).toBeNull();
           expect(page2.grant).toBe(Page.GRANT_OWNER);
@@ -978,16 +965,11 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          let isThrown;
-          try {
-            await updatePage(_page2, 'new', 'old', pModelUser1, options);
-          }
-          catch (err) {
-            isThrown = true;
-          }
+          await expect(updatePage(_page2, 'new', 'old', pModelUser1, options))
+            .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
+
           const page2 = await Page.findOne({ path: path2 });
           const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // not exist
-          expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
           expect(pageN).toBeNull();
           expect(page2.grant).toBe(Page.GRANT_OWNER);
