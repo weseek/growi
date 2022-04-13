@@ -1,5 +1,5 @@
+import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
-
 /* eslint-disable no-use-before-define */
 
 
@@ -550,7 +550,7 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-
+    const attachmentType = req.body.attachmentType;
     // check type
     const acceptableFileType = /image\/.+/;
     if (!file.mimetype.match(acceptableFileType)) {
@@ -560,7 +560,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -694,6 +694,75 @@ module.exports = function(crowi, app) {
     catch (err) {
       logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting image'));
+    }
+
+    return res.json(ApiResponse.success({}));
+  };
+
+  api.uploadBrandLogo = async function(req, res) {
+    // check params
+    if (!req.file) {
+      return res.json(ApiResponse.error('File error.'));
+    }
+    if (!req.user) {
+      return res.json(ApiResponse.error('param "user" must be set.'));
+    }
+
+    const file = req.file;
+    const attachmentType = req.body.attachmentType;
+    const attachmentId = req.body.attachmentId !== 'null' ? mongoose.Types.ObjectId(req.body.attachmentId) : null;
+    // check type
+    const acceptableFileType = /image\/.+/;
+    if (!file.mimetype.match(acceptableFileType)) {
+      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    }
+
+    // remove previous attachment
+    if (attachmentId) {
+      await attachmentService.removeAttachment(attachmentId);
+    }
+
+    let attachment;
+    try {
+      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
+      const attachmentConfigParams = {
+        'customize:attachmentLogoId': attachment.id,
+        'customize:uploadedLogoSrc': attachment.filePathProxied,
+      };
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err.message));
+    }
+
+    const result = {
+      attachment: attachment.toObject({ virtuals: true }),
+    };
+
+    return res.json(ApiResponse.success(result));
+  };
+
+  api.removeBrandLogo = async function(req, res) {
+    const attachmentId = mongoose.Types.ObjectId(req.body.attachmentId);
+    const attachment = await Attachment.findById(attachmentId);
+
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    try {
+      await attachmentService.removeAttachment(attachmentId);
+      // update attachmentLogoId immediately
+      const attachmentConfigParams = {
+        'customize:attachmentLogoId': null,
+        'customize:isDefaultLogo': true,
+      };
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(500).json(ApiResponse.error('Error while deleting logo'));
     }
 
     return res.json(ApiResponse.success({}));

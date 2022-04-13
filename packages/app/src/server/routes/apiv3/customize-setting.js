@@ -135,6 +135,10 @@ module.exports = (crowi) => {
     customizeScript: [
       body('customizeScript').isString(),
     ],
+    logo: [
+      body('attachmentId').isString().optional({ nullable: true }),
+      body('isDefaultLogo').isBoolean(),
+    ],
   };
 
   /**
@@ -177,6 +181,8 @@ module.exports = (crowi) => {
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      attachmentLogoId: await crowi.configManager.getConfig('crowi', 'customize:attachmentLogoId'),
+      isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
     };
 
     return res.apiv3({ customizeParams });
@@ -606,6 +612,29 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating customizeScript';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
+    }
+  });
+
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+
+    // Set default logo when uploaded logo is empty
+    const isDefaultLogo = req.body.attachmentId ? req.body.isDefaultLogo : true;
+    const requestParams = {
+      'customize:attachmentLogoId': req.body.attachmentId,
+      'customize:isDefaultLogo': isDefaultLogo,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        attachmentLogoId: await crowi.configManager.getConfig('crowi', 'customize:attachmentLogoId'),
+        isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeLogo';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeLogo-failed'));
     }
   });
 

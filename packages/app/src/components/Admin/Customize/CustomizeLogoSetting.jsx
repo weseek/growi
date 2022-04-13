@@ -19,7 +19,6 @@ class CustomizeLogoSetting extends React.Component {
     this.state = {
       show: false,
       src: null,
-      croppedImage: null,
     };
 
     // this.imageRef = null;
@@ -44,8 +43,8 @@ class CustomizeLogoSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.uploadAttachment(this.state.croppedImage);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
+      await adminCustomizeContainer.updateCustomizeLogo();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
     catch (err) {
       toastError(err);
@@ -64,7 +63,14 @@ class CustomizeLogoSetting extends React.Component {
   }
 
   async onCropCompleted(croppedImage) {
-    this.setState({ croppedImage });
+    const { t, adminCustomizeContainer } = this.props;
+    try {
+      await adminCustomizeContainer.uploadAttachment(croppedImage);
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
     this.hideModal();
   }
 
@@ -87,7 +93,7 @@ class CustomizeLogoSetting extends React.Component {
       <React.Fragment>
         <div className="row">
           <div className="col-12">
-            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
+            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_logo')}</h2>
             <div className="row">
               <div className="col-md-6 col-12">
                 <h4>
@@ -99,7 +105,7 @@ class CustomizeLogoSetting extends React.Component {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(true) }}
+                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                     />
                     <label className="custom-control-label" htmlFor="radioDefaultLogo">
                       Default Logo
@@ -118,7 +124,7 @@ class CustomizeLogoSetting extends React.Component {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.changeIsDefaultLogoEnabled(false) }}
+                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                     />
                     <label className="custom-control-label" htmlFor="radioUploadLogo">
                       { t('Upload Logo') }

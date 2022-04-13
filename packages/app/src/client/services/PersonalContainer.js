@@ -204,6 +204,7 @@ export default class PersonalContainer extends Container {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
+      formData.append('attachmentType', 'PROFILE_IMAGE');
       const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
       this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
     }

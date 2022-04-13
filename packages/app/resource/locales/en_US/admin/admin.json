@@ -200,7 +200,8 @@
     "ctrl_space": "Ctrl+Space to autocomplete",
     "custom_script": "Custom script",
     "write_java": "You can write Javascript that is applied to whole system.",
-    "reflect_change": "You need to reload the page to reflect the change."
+    "reflect_change": "You need to reload the page to reflect the change.",
+    "custom_logo" : "Custom Logo"
   },
   "importer_management": {
     "beta_warning": "This function is Beta.",

@@ -56,16 +56,17 @@ export default class AdminCustomizeContainer extends Container {
         'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
-      uploadedLogoSrc: this.getUploadedLogoSrc(),
+      uploadedLogoSrc: '',
       isUploadedLogo: false,
       defaultLogoSrc: DEFAULT_LOGO,
+      isDefaultLogo: false,
+      attachmentId: '',
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
     this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
     this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
     this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
-    this.getUploadedLogoSrc = this.getUploadedLogoSrc.bind(this);
     this.deleteLogo = this.deleteLogo.bind(this);
     this.uploadAttachment = this.uploadAttachment.bind(this);
 
@@ -104,10 +105,23 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
+        attachmentId: customizeParams.attachmentLogoId,
+        isDefaultLogo: customizeParams.isDefaultLogo,
       });
-
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
+
+      // set current uploaded logo
+      if (customizeParams.attachmentLogoId) {
+        const logoPath = `/attachment/${customizeParams.attachmentLogoId}`;
+
+        this.setState({ isUploadedLogo: true });
+        this.setState({ uploadedLogoSrc: logoPath });
+      }
+      else {
+        this.setState({ isUploadedLogo: false });
+        this.setState({ uploadedLogoSrc: DEFAULT_LOGO });
+      }
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -436,20 +450,26 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  getUploadedLogoSrc() {
-    this.setState({ isUploadedLogo: false });
-    return DEFAULT_LOGO;
-  }
 
   async deleteLogo() {
     try {
-      // await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
-      this.setState({ isUploadedLogo: false, uploadedLogoSrc: DEFAULT_LOGO });
+      const formData = {
+        _csrf:  this.appContainer.csrfToken,
+        attachmentId: this.state.attachmentId,
+      };
+      await this.appContainer.apiPost('/attachments.removeBrandLogo', formData);
+      this.setState({
+        isUploadedLogo: false,
+        uploadedLogoSrc: DEFAULT_LOGO,
+        attachmentId: null,
+        isDefaultLogo: true,
+      });
+
     }
     catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
-      throw new Error('Failed to delete profile image');
+      throw new Error('Failed to delete logo');
     }
   }
 
@@ -458,13 +478,42 @@ export default class AdminCustomizeContainer extends Container {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
-      // const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
-      // this.setState({ isUploadedLogo: true, uploadedLogoSrc: response.attachment.filePathProxied });
+      formData.append('attachmentType', 'BRAND_LOGO');
+      formData.append('attachmentId', this.state.attachmentId);
+      const response = await this.appContainer.apiPost('/attachments.uploadBrandLogo', formData);
+
+      this.setState({
+        isUploadedLogo: true,
+        uploadedLogoSrc: response.attachment.filePathProxied,
+        attachmentId: response.attachment.id,
+      });
     }
     catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
-      throw new Error('Failed to upload profile image');
+      throw new Error('Failed to upload brand logo');
+    }
+  }
+
+  switchDefaultLogo() {
+    this.setState({ isDefaultLogo: !this.state.isDefaultLogo });
+  }
+
+  async updateCustomizeLogo() {
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-logo', {
+        isDefaultLogo: this.state.isDefaultLogo,
+        attachmentId: this.state.attachmentId,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        isDefaultLogo: customizedParams.isDefaultLogo,
+        attachmentId:  customizedParams.attachmentId,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
     }
   }
 

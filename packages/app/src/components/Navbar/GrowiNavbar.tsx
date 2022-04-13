@@ -14,6 +14,7 @@ import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
 
+
 import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
@@ -86,22 +87,34 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
   );
 });
 
+interface NavbarLogoProps {
+  logoSrc?: string,
+}
+const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
+
+  const { logoSrc } = props;
+  return logoSrc
+    ? (<img src={logoSrc} className="picture picture-lg " id="settingBrandLogo" width="32" />)
+    : <GrowiLogo />;
+
+});
 
 const GrowiNavbar = (props) => {
 
   const { appContainer } = props;
   const { currentUser } = appContainer;
-  const { crowi, isSearchServiceConfigured } = appContainer.config;
-
+  const {
+    crowi, isSearchServiceConfigured, isDefaultLogo, uploadedLogoSrc,
+  } = appContainer.config;
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
-
+  const logoSrc = !isDefaultLogo ? uploadedLogoSrc : null;
   return (
     <>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
         <a className="grw-logo d-block" href="/">
-          <GrowiLogo />
+          <GrowiNavbarLogo logoSrc={...logoSrc} />
         </a>
       </div>
 
