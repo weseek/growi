@@ -535,7 +535,7 @@ describe('Page', () => {
       expect(parent).toBeTruthy();
       expect(page1.parent).toStrictEqual(parent._id);
     });
-    test('create parent and ancestors when they do not exsit, and return the new parent', async() => {
+    test('create parent and ancestors when they do not exist, and return the new parent', async() => {
       const path1 = '/emp_anc1';
       const path2 = '/emp_anc1/emp_anc2';
       const path3 = '/emp_anc1/emp_anc2/PAF2';
