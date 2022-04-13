@@ -340,7 +340,7 @@ describe('V5 page migration', () => {
 
   });
 
-  describe.only('should normalize only selected pages recursively (while observing the page permission rule)', () => {
+  describe('should normalize only selected pages recursively (while observing the page permission rule)', () => {
     /*
      * # Test flow 1
      * - Existing pages
@@ -498,9 +498,9 @@ describe('V5 page migration', () => {
       ]);
     });
 
-    test('should1', async() => {
+    test('should not run normalization when the target page is GRANT_USER_GROUP surrounded by public pages', async() => {
       const mockMainOperation = jest.spyOn(crowi.pageService, 'normalizeParentRecursivelyMainOperation').mockImplementation(v => v);
-      const _page1 = await Page.findOne(public({ path: '/deep_path/normalize_a' }));
+      const _page1 = await Page.findOne(public({ path: '/deep_path/normalize_a', ...empty }));
       const _page2 = await Page.findOne(public({ path: '/deep_path/normalize_a/normalize_b', ...normalized }));
       const _page3 = await Page.findOne(testUser1Group({ path: '/deep_path/normalize_a', ...notNormalized }));
       const _page4 = await Page.findOne(testUser1Group({ path: '/deep_path/normalize_c', ...notNormalized }));
@@ -518,7 +518,7 @@ describe('V5 page migration', () => {
       mockMainOperation.mockRestore();
     });
 
-    test('should2', async() => {
+    test('should not include siblings', async() => {
       const _page1 = await Page.findOne(public({ path: '/normalize_d', ...empty }));
       const _page2 = await Page.findOne(testUser1Group({ path: '/normalize_d/normalize_e', ...normalized }));
       const _page3 = await Page.findOne(testUser1Group({ path: '/normalize_d', ...notNormalized }));
@@ -553,7 +553,7 @@ describe('V5 page migration', () => {
       expect(page3.descendantCount).toBe(0); // should not be normalized
     });
 
-    test('should3', async() => {
+    test('should replace all unnecessary empty pages and normalization succeeds', async() => {
       const _pageG = await Page.findOne(public({ path: '/normalize_g', ...normalized }));
       const _pageGH = await Page.findOne(owned({ path: '/normalize_g/normalize_h', ...notNormalized }));
       const _pageGI = await Page.findOne(owned({ path: '/normalize_g/normalize_i', ...notNormalized }));

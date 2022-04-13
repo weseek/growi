@@ -2386,7 +2386,7 @@ class PageService {
     // Save prevDescendantCount for sub-operation
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
-    const builder = new PageQueryBuilder(Page.findOne());
+    const builder = new PageQueryBuilder(Page.findOne(), true);
     builder.addConditionAsMigrated();
     builder.addConditionToListByPageIdsArray([page._id]);
     const exPage = await builder.query.exec();
