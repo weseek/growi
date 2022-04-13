@@ -232,6 +232,7 @@ describe('Page', () => {
     const pageIdUpd15 = new mongoose.Types.ObjectId();
     const pageIdUpd16 = new mongoose.Types.ObjectId();
     const pageIdUpd17 = new mongoose.Types.ObjectId();
+    const pageIdUpd18 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -492,6 +493,27 @@ describe('Page', () => {
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
         parent: pageIdUpd17,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdUpd18,
+        path: '/mup33_C',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: groupIdC,
+        creator: pModelUserId3,
+        lastUpdateUser: pModelUserId3,
+        isEmpty: false,
+        parent: rootPage,
+        descendantCount: 1,
+      },
+      {
+        path: '/mup33_C/mup34_owner',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [pModelUserId3],
+        creator: pModelUserId3,
+        lastUpdateUser: pModelUserId3,
+        isEmpty: false,
+        parent: pageIdUpd18,
         descendantCount: 0,
       },
     ]);
@@ -891,17 +913,41 @@ describe('Page', () => {
           }
 
           const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedGroup: groupIdIsolate }); // not exist
           expect(isThrown).toBe(true);
           expect(page2).toBeTruthy();
+          expect(pageN).toBeNull();
           expect(page2.grant).toBe(Page.GRANT_OWNER);
           expect(page2.grantedUsers).toStrictEqual([pModelUser1._id]);
         });
-        test('Fail to change to GRANT_USER_GROUP if the group to set is an ancestor of the parent page group', async() => {});
+        test('Fail to change to GRANT_USER_GROUP if the group to set is an ancestor of the parent page group', async() => {
+          const path1 = '/mup33_C';
+          const path2 = '/mup33_C/mup34_owner';
+          const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // groupC
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA }; // change to groupA which is the grandParent
+          expect(_page1).toBeTruthy();
+          expect(_page2).toBeTruthy();
+
+          let isThrown;
+          try {
+            await updatePage(_page2, 'new', 'old', pModelUser3, options);
+          }
+          catch (err) {
+            isThrown = true;
+          }
+
+          const page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER });
+          const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+          expect(isThrown).toBe(true);
+          expect(page2).toBeTruthy();
+          expect(pageN).toBeNull();
+          expect(page2.grant).toBe(Page.GRANT_OWNER);
+          expect(page2.grantedUsers).toStrictEqual([pModelUser3._id]);
+        });
       });
       describe('update grant of a page under a page with GRANT_OWNER', () => {
-        test('Fail to change from GRNAT_OWNER', async() => {
-
-        });
+        test('Fail to change from GRNAT_OWNER', async() => { });
       });
 
     });
