@@ -56,9 +56,9 @@ describe('UserGroupService', () => {
   });
 
   /*
-     * Update UserGroup
-     */
-  test('Can update user group basic info', async() => {
+    * Update UserGroup
+    */
+  test('Can update user group basic info (name, description, parent)', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId1 });
 
     const newGroupName = 'v5_group1_new';
@@ -75,6 +75,13 @@ describe('UserGroupService', () => {
   test('Cannot update to existing group name', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId1 });
     await expect(crowi.userGroupService.updateGroup(userGroup._id, 'v5_group2')).rejects.toThrow('The group name is already taken');
+  });
+
+  test('Parent will be null If parent group is released', async() => {
+    const userGroup = await UserGroup.findOne({ _id: groupId3 });
+    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup._id, userGroup.name, userGroup.description, null);
+
+    expect(updatedUserGroup.parent).toBeNull();
   });
 
 });
