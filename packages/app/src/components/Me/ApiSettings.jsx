@@ -1,13 +1,14 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 class ApiSettings extends React.Component {
@@ -46,6 +47,8 @@ class ApiSettings extends React.Component {
             {personalContainer.state.apiToken != null
               ? (
                 <input
+                  data-testid="grw-api-settings-input"
+                  data-hide-in-vrt
                   className="form-control"
                   type="text"
                   name="apiToken"
@@ -76,6 +79,7 @@ class ApiSettings extends React.Component {
         <div className="row my-3">
           <div className="offset-4 col-5">
             <button
+              data-testid="grw-api-settings-update-button"
               type="button"
               className="btn btn-primary text-nowrap"
               onClick={this.onClickSubmit}

@@ -19,11 +19,8 @@ context('Access to page', () => {
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
 
-    // wait until opacity is 1.
-    cy.getByTestid('grw-fab-create-page')
-      .should('be.visible')
-      .should('have.class', 'fadeInUp')
-      .should('have.css', 'opacity', '1');
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
