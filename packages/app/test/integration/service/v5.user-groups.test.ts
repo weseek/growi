@@ -45,7 +45,7 @@ describe('UserGroupService', () => {
   /*
     * Update UserGroup
     */
-  test('Can update user group basic info (name, description, parent)', async() => {
+  test('Updated values should be reflected. (name, description, parent)', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId1 });
 
     const newGroupName = 'v5_group1_new';
