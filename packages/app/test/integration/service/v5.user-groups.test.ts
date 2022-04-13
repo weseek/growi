@@ -60,8 +60,12 @@ describe('UserGroupService', () => {
   });
 
   test('Should throw an error when trying to set existing group name', async() => {
-    const userGroup = await UserGroup.findOne({ _id: groupId1 });
-    await expect(crowi.userGroupService.updateGroup(userGroup._id, 'v5_group2')).rejects.toThrow('The group name is already taken');
+    const userGroup1 = await UserGroup.findOne({ _id: groupId1 });
+    const userGroup2 = await UserGroup.findOne({ _id: groupId2 });
+
+    const result = crowi.userGroupService.updateGroup(userGroup1._id, userGroup2.name);
+
+    await expect(result).rejects.toThrow('The group name is already taken');
   });
 
   test('Parent should be null when parent group is released', async() => {
