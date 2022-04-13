@@ -2371,7 +2371,14 @@ class PageService {
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
-      await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+
+      try {
+        await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+      }
+      catch (err) {
+        logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+        throw err;
+      }
     }
   }
 
@@ -2379,8 +2386,9 @@ class PageService {
     // Save prevDescendantCount for sub-operation
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
-    const builder = new PageQueryBuilder(Page.findOne(), true);
+    const builder = new PageQueryBuilder(Page.findOne());
     builder.addConditionAsMigrated();
+    builder.addConditionToListByPageIdsArray([page._id]);
     const exPage = await builder.query.exec();
     const options = { prevDescendantCount: exPage?.descendantCount ?? 0 };
 

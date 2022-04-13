@@ -340,7 +340,7 @@ describe('V5 page migration', () => {
 
   });
 
-  describe('should normalize only selected pages recursively (while observing the page permission rule)', () => {
+  describe.only('should normalize only selected pages recursively (while observing the page permission rule)', () => {
     /*
      * # Test flow 1
      * - Existing pages
@@ -371,7 +371,7 @@ describe('V5 page migration', () => {
      *     - /normalize_f (user group) remains in v4 schema
      *
      *
-     * # Test flow 3 (should remove all unnecessary empty pages)
+     * # Test flow 3 (should replace all unnecessary empty pages)
      * - Existing pages
      *   - v5 compatible pages
      *     - / (root)
@@ -379,21 +379,21 @@ describe('V5 page migration', () => {
      *   - v4 pages
      *     - /normalize_g/normalize_h (only me)
      *     - /normalize_g/normalize_i (only me)
-     *     - /normalize_g/normalize_h/normalize_j (public)
-     *     - /normalize_g/normalize_i/normalize_k (public)
+     *     - /normalize_g/normalize_h/normalize_j (only me)
+     *     - /normalize_g/normalize_i/normalize_k (only me)
      *
-     * - Normalize /normalize_g/normalize_h/normalize_j (public) & /normalize_g/normalize_i/normalize_k (public)
+     * - Normalize /normalize_g/normalize_h/normalize_j (only me) & /normalize_g/normalize_i/normalize_k (only me)
      *   - Expect
      *     - /normalize_g/normalize_h (empty)
      *       - parent is /normalize_g (public)
      *     - /normalize_g/normalize_i (empty)
      *       - parent is /normalize_g (public)
-     *     - /normalize_g/normalize_h/normalize_j (public) is normalized
-     *     - /normalize_g/normalize_i/normalize_k (public) is normalized
+     *     - /normalize_g/normalize_h/normalize_j (only me) is normalized
+     *     - /normalize_g/normalize_i/normalize_k (only me) is normalized
      */
 
     const public = filter => ({ grant: Page.GRANT_PUBLIC, ...filter });
-    const testUser1 = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
+    const owned = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
     const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
 
     const normalized = { parent: { $ne: null } };
@@ -406,8 +406,6 @@ describe('V5 page migration', () => {
       const id2 = new mongoose.Types.ObjectId();
       const id3 = new mongoose.Types.ObjectId();
       const id4 = new mongoose.Types.ObjectId();
-      const id5 = new mongoose.Types.ObjectId();
-      const id6 = new mongoose.Types.ObjectId();
 
       await Page.insertMany([
         // 1
@@ -449,16 +447,16 @@ describe('V5 page migration', () => {
           parent: rootPage._id,
         },
         {
+          path: '/normalize_d',
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroup: testUser1GroupId,
+          parent: null,
+        },
+        {
           path: '/normalize_d/normalize_e',
           grant: Page.GRANT_USER_GROUP,
           grantedGroup: testUser1GroupId,
           parent: id2,
-        },
-        {
-          path: '/normalize_g/normalize_h/normalize_j',
-          grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
-          parent: null,
         },
         {
           path: '/normalize_f',
@@ -487,10 +485,14 @@ describe('V5 page migration', () => {
         },
         {
           path: '/normalize_g/normalize_h/normalize_j',
+          grant: Page.GRANT_OWNER,
+          grantedUsers: [testUser1._id],
           parent: null,
         },
         {
           path: '/normalize_g/normalize_i/normalize_k',
+          grant: Page.GRANT_OWNER,
+          grantedUsers: [testUser1._id],
           parent: null,
         },
       ]);
@@ -553,10 +555,10 @@ describe('V5 page migration', () => {
 
     test('should3', async() => {
       const _pageG = await Page.findOne(public({ path: '/normalize_g', ...normalized }));
-      const _pageGH = await Page.findOne(testUser1({ path: '/normalize_g/normalize_h', ...notNormalized }));
-      const _pageGI = await Page.findOne(testUser1({ path: '/normalize_g/normalize_i', ...notNormalized }));
-      const _pageGHJ = await Page.findOne(public({ path: '/normalize_g/normalize_h/normalize_j', ...notNormalized }));
-      const _pageGIK = await Page.findOne(public({ path: '/normalize_g/normalize_i/normalize_k', ...notNormalized }));
+      const _pageGH = await Page.findOne(owned({ path: '/normalize_g/normalize_h', ...notNormalized }));
+      const _pageGI = await Page.findOne(owned({ path: '/normalize_g/normalize_i', ...notNormalized }));
+      const _pageGHJ = await Page.findOne(owned({ path: '/normalize_g/normalize_h/normalize_j', ...notNormalized }));
+      const _pageGIK = await Page.findOne(owned({ path: '/normalize_g/normalize_i/normalize_k', ...notNormalized }));
 
       expect(_pageG).not.toBeNull();
       expect(_pageGH).not.toBeNull();
@@ -599,15 +601,15 @@ describe('V5 page migration', () => {
       expect(pageGHJ.parent).toStrictEqual(emptyGH._id);
       expect(pageGIK.parent).toStrictEqual(emptyGI._id);
       // Check descendantCount
-      expect(pageG.descendantCount).toStrictEqual(4);
+      expect(pageG.descendantCount).toStrictEqual(2);
       expect(emptyGH.descendantCount).toStrictEqual(1);
       expect(emptyGI.descendantCount).toStrictEqual(1);
       expect(pageGHJ.descendantCount).toStrictEqual(0);
       expect(pageGIK.descendantCount).toStrictEqual(0);
 
       // -- not normalized pages
-      const pageGH = await Page.findOne(testUser1({ path: '/normalize_g/normalize_h' }));
-      const pageGI = await Page.findOne(testUser1({ path: '/normalize_g/normalize_i' }));
+      const pageGH = await Page.findOne(owned({ path: '/normalize_g/normalize_h' }));
+      const pageGI = await Page.findOne(owned({ path: '/normalize_g/normalize_i' }));
       // Check existence
       expect(pageGH).not.toBeNull();
       expect(pageGI).not.toBeNull();
