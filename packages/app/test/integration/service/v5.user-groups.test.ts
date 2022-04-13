@@ -60,10 +60,14 @@ describe('UserGroupService', () => {
      */
   test('Can update user group basic info', async() => {
     const userGroup = await UserGroup.findOne({ name: 'v5_group1' });
-    await crowi.serGroupService.updateGroup(userGroup.id, 'v5_group1_new', 'description1_new');
 
-    expect(userGroup.name).toBe('v5_group1_new');
-    expect(userGroup.description).toBe('description1_new');
+    const newGroupName = 'v5_group1_new';
+    const newGroupDescription = 'description1_new';
+
+    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup.id, newGroupName, newGroupDescription);
+
+    expect(updatedUserGroup.name).toBe(newGroupName);
+    expect(updatedUserGroup.description).toBe(newGroupDescription);
   });
 
 });
