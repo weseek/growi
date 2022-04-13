@@ -11,6 +11,11 @@ describe('UserGroupService', () => {
   let UserGroup;
 
 
+  const groupId1 = new mongoose.Types.ObjectId();
+  const groupId2 = new mongoose.Types.ObjectId();
+  const groupId3 = new mongoose.Types.ObjectId();
+
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -25,11 +30,6 @@ describe('UserGroupService', () => {
     // dummyUser2 = await UserGroup.findOne({ username: 'v5DummyUser2' });
 
     // xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
-
-
-    const groupId1 = new mongoose.Types.ObjectId();
-    const groupId2 = new mongoose.Types.ObjectId();
-    const groupId3 = new mongoose.Types.ObjectId();
 
 
     // Create Groups
@@ -63,11 +63,13 @@ describe('UserGroupService', () => {
 
     const newGroupName = 'v5_group1_new';
     const newGroupDescription = 'description1_new';
+    const newParentId = groupId2;
 
-    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup.id, newGroupName, newGroupDescription);
+    const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup.id, newGroupName, newGroupDescription, newParentId);
 
     expect(updatedUserGroup.name).toBe(newGroupName);
     expect(updatedUserGroup.description).toBe(newGroupDescription);
+    expect(updatedUserGroup.parent).toStrictEqual(newParentId);
   });
 
 });
