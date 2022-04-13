@@ -64,7 +64,7 @@ describe('UserGroupService', () => {
     await expect(crowi.userGroupService.updateGroup(userGroup._id, 'v5_group2')).rejects.toThrow('The group name is already taken');
   });
 
-  test('Parent will be null If parent group is released', async() => {
+  test('Parent should be null when parent group is released', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId3 });
     const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup._id, userGroup.name, userGroup.description, null);
 
