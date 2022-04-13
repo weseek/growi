@@ -11,9 +11,10 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 
+import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
-import { IPage } from '../../interfaces/page';
+import { IPage, IPageHasId } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
@@ -1095,7 +1096,7 @@ export default (crowi: Crowi): any => {
     return !isRestricted && (!isV5Compatible || !isOnTree);
   };
 
-  schema.statics.emitPageEventUpdate = (page, user) => {
+  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId) => {
     pageEvent.emit('update', page, user);
   };
 
