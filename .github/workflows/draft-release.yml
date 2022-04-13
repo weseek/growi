@@ -50,6 +50,10 @@ jobs:
           RELEASE_VERSION=`npx semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
           echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
 
+      - name: Ignore CVE-2022-24765
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+
       - name: Create/Update Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:
