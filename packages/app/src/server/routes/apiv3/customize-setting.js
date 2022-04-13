@@ -616,9 +616,12 @@ module.exports = (crowi) => {
   });
 
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+
+    // Set default logo when uploaded logo is empty
+    const isDefaultLogo = req.body.attachmentId ? req.body.isDefaultLogo : true;
     const requestParams = {
       'customize:attachmentLogoId': req.body.attachmentId,
-      'customize:isDefaultLogo': req.body.isDefaultLogo,
+      'customize:isDefaultLogo': isDefaultLogo,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);

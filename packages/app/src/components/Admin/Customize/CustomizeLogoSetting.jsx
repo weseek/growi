@@ -44,7 +44,7 @@ class CustomizeLogoSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeLogo();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
     catch (err) {
       toastError(err);
@@ -93,7 +93,7 @@ class CustomizeLogoSetting extends React.Component {
       <React.Fragment>
         <div className="row">
           <div className="col-12">
-            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
+            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_logo')}</h2>
             <div className="row">
               <div className="col-md-6 col-12">
                 <h4>

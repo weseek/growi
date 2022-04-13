@@ -458,8 +458,13 @@ export default class AdminCustomizeContainer extends Container {
         attachmentId: this.state.attachmentId,
       };
       await this.appContainer.apiPost('/attachments.removeBrandLogo', formData);
-      this.setState({ isUploadedLogo: false, uploadedLogoSrc: DEFAULT_LOGO });
-      this.setState({ attachmentId: null });
+      this.setState({
+        isUploadedLogo: false,
+        uploadedLogoSrc: DEFAULT_LOGO,
+        attachmentId: null,
+        isDefaultLogo: true,
+      });
+
     }
     catch (err) {
       this.setState({ retrieveError: err });

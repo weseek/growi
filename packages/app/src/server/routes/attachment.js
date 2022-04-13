@@ -725,6 +725,11 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
+      const attachmentConfigParams = {
+        'customize:attachmentLogoId': attachment.id,
+        'customize:uploadedLogoSrc': attachment.filePathProxied,
+      };
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
     }
     catch (err) {
       logger.error(err);
@@ -749,7 +754,11 @@ module.exports = function(crowi, app) {
     try {
       await attachmentService.removeAttachment(attachmentId);
       // update attachmentLogoId immediately
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'customize:attachmentLogoId': null });
+      const attachmentConfigParams = {
+        'customize:attachmentLogoId': null,
+        'customize:isDefaultLogo': true,
+      };
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
     }
     catch (err) {
       logger.error(err);
