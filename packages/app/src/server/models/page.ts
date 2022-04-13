@@ -1,19 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import nodePath from 'path';
+
+import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
-import escapeStringRegexp from 'escape-string-regexp';
-import nodePath from 'path';
-import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
 
+
+import { IUserHasId } from '~/interfaces/user';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
+import { IPage, IPageHasId } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { IPage } from '../../interfaces/page';
+
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { PageRedirectModel } from './page-redirect';
 
 const { addTrailingSlash } = pathUtils;
@@ -1091,7 +1096,7 @@ export default (crowi: Crowi): any => {
     return !isRestricted && (!isV5Compatible || !isOnTree);
   };
 
-  schema.statics.emitPageEventUpdate = async(page, user) => {
+  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId) => {
     pageEvent.emit('update', page, user);
   };
 
@@ -1164,7 +1169,7 @@ export default (crowi: Crowi): any => {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    this.emitPageEventUpdate(savedPage, user); // call asynchronously
+    this.emitPageEventUpdate(savedPage, user);
 
     // Update ex children's parent
     if (!wasOnTree && shouldBeOnTree) {
