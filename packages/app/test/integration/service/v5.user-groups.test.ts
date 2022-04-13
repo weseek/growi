@@ -4,12 +4,8 @@ import mongoose from 'mongoose';
 import { getInstance } from '../setup-crowi';
 
 describe('UserGroupService', () => {
-  // let dummyUser1;
-  // let dummyUser2;
-
   let crowi;
   let UserGroup;
-
 
   const groupId1 = new mongoose.Types.ObjectId();
   const groupId2 = new mongoose.Types.ObjectId();
@@ -22,25 +18,16 @@ describe('UserGroupService', () => {
 
     UserGroup = mongoose.model('UserGroup');
 
-    /*
-     * Common
-     */
-
-    // dummyUser1 = await UserGroup.findOne({ username: 'v5DummyUser1' });
-    // dummyUser2 = await UserGroup.findOne({ username: 'v5DummyUser2' });
-
-    // xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
-
 
     // Create Groups
     await UserGroup.insertMany([
-      // no parent
+      // No parent
       {
         _id: groupId1,
         name: 'v5_group1',
         description: 'description1',
       },
-      // no parent
+      // No parent
       {
         _id: groupId2,
         name: 'v5_group2',
@@ -72,7 +59,7 @@ describe('UserGroupService', () => {
     expect(updatedUserGroup.parent).toStrictEqual(newParentId);
   });
 
-  test('Cannot update to existing group name', async() => {
+  test('Should throw an error when trying to set existing group name', async() => {
     const userGroup = await UserGroup.findOne({ _id: groupId1 });
     await expect(crowi.userGroupService.updateGroup(userGroup._id, 'v5_group2')).rejects.toThrow('The group name is already taken');
   });
