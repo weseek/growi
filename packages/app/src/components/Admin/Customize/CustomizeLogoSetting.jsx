@@ -19,7 +19,6 @@ class CustomizeLogoSetting extends React.Component {
     this.state = {
       show: false,
       src: null,
-      croppedImage: null,
     };
 
     // this.imageRef = null;
@@ -44,7 +43,7 @@ class CustomizeLogoSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.uploadAttachment(this.state.croppedImage);
+      await adminCustomizeContainer.updateCustomizeLogo();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
     }
     catch (err) {
@@ -64,7 +63,14 @@ class CustomizeLogoSetting extends React.Component {
   }
 
   async onCropCompleted(croppedImage) {
-    this.setState({ croppedImage });
+    const { t, adminCustomizeContainer } = this.props;
+    try {
+      await adminCustomizeContainer.uploadAttachment(croppedImage);
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
     this.hideModal();
   }
 

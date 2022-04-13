@@ -56,7 +56,7 @@ export default class AdminCustomizeContainer extends Container {
         'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
-      uploadedLogoSrc: this.getUploadedLogoSrc(),
+      uploadedLogoSrc: '',
       isUploadedLogo: false,
       defaultLogoSrc: DEFAULT_LOGO,
       isDefaultLogo: false,
@@ -67,7 +67,6 @@ export default class AdminCustomizeContainer extends Container {
     this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
     this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
     this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
-    this.getUploadedLogoSrc = this.getUploadedLogoSrc.bind(this);
     this.deleteLogo = this.deleteLogo.bind(this);
     this.uploadAttachment = this.uploadAttachment.bind(this);
 
@@ -106,12 +105,23 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
-        attachmentId: customizeParams.attachmentId,
+        attachmentId: customizeParams.attachmentLogoId,
         isDefaultLogo: customizeParams.isDefaultLogo,
       });
-      console.log(this.state);
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
+
+      // set current uploaded logo
+      if (customizeParams.attachmentLogoId) {
+        const logoPath = `/attachment/${customizeParams.attachmentLogoId}`;
+
+        this.setState({ isUploadedLogo: true });
+        this.setState({ uploadedLogoSrc: logoPath });
+      }
+      else {
+        this.setState({ isUploadedLogo: false });
+        this.setState({ uploadedLogoSrc: DEFAULT_LOGO });
+      }
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -440,20 +450,21 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  getUploadedLogoSrc() {
-    this.setState({ isUploadedLogo: false });
-    return DEFAULT_LOGO;
-  }
 
   async deleteLogo() {
     try {
-      // await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
+      const formData = {
+        _csrf:  this.appContainer.csrfToken,
+        attachmentId: this.state.attachmentId,
+      };
+      await this.appContainer.apiPost('/attachments.removeBrandLogo', formData);
       this.setState({ isUploadedLogo: false, uploadedLogoSrc: DEFAULT_LOGO });
+      this.setState({ attachmentId: null });
     }
     catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
-      throw new Error('Failed to delete profile image');
+      throw new Error('Failed to delete logo');
     }
   }
 
