@@ -2358,6 +2358,17 @@ class PageService {
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
+      const Page = mongoose.model('Page') as unknown as PageModel;
+      const { PageQueryBuilder } = Page;
+      const builder = new PageQueryBuilder(Page.findOne());
+      builder.addConditionAsMigrated();
+      builder.addConditionToListByPathsArray([page.path]);
+      const existingPage = await builder.query.exec();
+
+      if (existingPage?.parent != null) {
+        throw Error('This page has already converted.');
+      }
+
       let pageOp;
       try {
         pageOp = await PageOperation.create({
