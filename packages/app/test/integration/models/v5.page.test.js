@@ -598,7 +598,7 @@ describe('Page', () => {
         const page = await Page.findOne({ path });
         expect(page).toBeTruthy();
         expect(page.grant).toBe(Page.GRANT_RESTRICTED);
-        expect(page.grantedUsers).toBeNull();
+        expect(page.grantedUsers).toStrictEqual([]);
       });
     });
 
