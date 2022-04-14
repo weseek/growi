@@ -1,18 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 import StickyEvents from 'sticky-events';
-import loggerFactory from '~/utils/logger';
 
 
 import AppContainer from '~/client/services/AppContainer';
-
-import { usePageCreateModal } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
+import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
-import { useCurrentPagePath } from '~/stores/context';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:cli:Fab');
 
@@ -55,7 +55,7 @@ const Fab = (props) => {
   function renderPageCreateButton() {
     return (
       <>
-        <div data-testid="grw-fab-create-page" className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+        <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
@@ -69,7 +69,7 @@ const Fab = (props) => {
   }
 
   return (
-    <div className="grw-fab d-none d-md-block d-edit-none">
+    <div className="grw-fab d-none d-md-block d-edit-none" data-testid="grw-fab">
       {currentUser != null && renderPageCreateButton()}
       <div data-testid="grw-fab-return-to-top" className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button
