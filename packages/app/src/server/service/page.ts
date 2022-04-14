@@ -2294,23 +2294,25 @@ class PageService {
       throw Error('Restricted pages can not be migrated');
     }
 
-    let updatedPage;
+    let normalizedPage;
 
     // replace if empty page exists
     if (existingPage != null && existingPage.isEmpty) {
-      await Page.replaceTargetWithPage(existingPage, page, true);
-      updatedPage = await Page.findById(page._id);
+      // Inherit descendantCount from the empty page
+      const updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { descendantCount: existingPage.descendantCount }, { new: true });
+      await Page.replaceTargetWithPage(existingPage, updatedPage, true);
+      normalizedPage = await Page.findById(page._id);
     }
     else {
       const parent = await Page.getParentAndFillAncestors(page.path, user);
-      updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
+      normalizedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
 
     // Update descendantCount
     const inc = 1;
-    await this.updateDescendantCountOfAncestors(updatedPage.parent, inc, true);
+    await this.updateDescendantCountOfAncestors(normalizedPage.parent, inc, true);
 
-    return updatedPage;
+    return normalizedPage;
   }
 
   async normalizeParentRecursivelyByPages(pages, user): Promise<void> {
@@ -2388,7 +2390,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.findOne(), true);
     builder.addConditionAsMigrated();
-    builder.addConditionToListByPageIdsArray([page._id]);
+    builder.addConditionToListByPathsArray([page.path]);
     const exPage = await builder.query.exec();
     const options = { prevDescendantCount: exPage?.descendantCount ?? 0 };
 
