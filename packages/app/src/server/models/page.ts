@@ -1,19 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import nodePath from 'path';
+
+import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
-import escapeStringRegexp from 'escape-string-regexp';
-import nodePath from 'path';
-import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
 
+
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
+import { IPage } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { IPage } from '../../interfaces/page';
+
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { PageRedirectModel } from './page-redirect';
 
 const { addTrailingSlash } = pathUtils;
@@ -951,6 +955,21 @@ export function generateGrantCondition(
 }
 
 schema.statics.generateGrantCondition = generateGrantCondition;
+
+schema.statics.findNotEmptyClosestAncestor = async function(path: string): Promise<PageDocument> {
+  const Page = mongoose.model('Page') as unknown as PageModel;
+  const { PageQueryBuilder } = Page;
+  const builderForAncestors = new PageQueryBuilder(Page.find(), false); // empty page not included
+
+  const ancestors = await builderForAncestors
+    .addConditionToListOnlyAncestors(path) // only ancestor paths
+    .addConditionToSortPagesByDescPath() // sort by path in Desc. Long to Short.
+    .query
+    .exec();
+
+  return ancestors[0];
+};
+
 
 export type PageCreateOptions = {
   format?: string

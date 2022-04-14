@@ -2093,17 +2093,19 @@ class PageService {
   }
 
   async constructBasicPageInfo(page: IPage, operator: IUserHasId): Promise<IPageInfo | IPageInfoForEntity> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const isGuestUser = operator == null;
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
       // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
       // Use creator id of ancestor page to determine whether the empty page is deletable
-      const notEmptyClosestAncestor = await this.findNotEmptyClosestAncestor(page.path);
+      const notEmptyClosestAncestor = await Page.findNotEmptyClosestAncestor(page.path);
       const creatorId = notEmptyClosestAncestor.creator;
 
-      const isDeletable = isGuestUser && !isMovable ? false : this.canDelete(creatorId, operator, false);
-      const isAbleToDeleteCompletely = isGuestUser && !isMovable ? false : this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
+      const isDeletable = !isMovable ? false : this.canDelete(creatorId, operator, false);
+      const isAbleToDeleteCompletely = !isMovable ? false : this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
 
       return {
         isV5Compatible: true,
@@ -2865,20 +2867,6 @@ class PageService {
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
     socket.emit(SocketEventName.UpdateDescCount, data);
-  }
-
-  async findNotEmptyClosestAncestor(path: string): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
-    const builderForAncestors = new PageQueryBuilder(Page.find(), false); // empty page not included
-
-    const ancestors = await builderForAncestors
-      .addConditionToListOnlyAncestors(path) // only ancestor paths
-      .addConditionToSortPagesByDescPath() // sort by path in Desc. Long to Short.
-      .query
-      .exec();
-
-    return ancestors[0];
   }
 
 }
