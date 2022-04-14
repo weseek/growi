@@ -215,7 +215,7 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike | Ref<IUserHasId>, operator:IUserHasId, isRecursively: boolean): boolean {
+  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -224,7 +224,7 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike | Ref<IUserHasId>, operator:IUserHasId, isRecursively: boolean): boolean {
+  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -234,7 +234,7 @@ class PageService {
   }
 
   private canDeleteLogic(
-      creatorId: ObjectIdLike | Ref<IUserHasId>,
+      creatorId: ObjectIdLike,
       operator,
       isRecursively: boolean,
       authority: IPageDeleteConfigValueToProcessValidation | null,
@@ -2092,7 +2092,7 @@ class PageService {
     });
   }
 
-  async constructBasicPageInfo(page: IPage, operator: IUserHasId): Promise<IPageInfo | IPageInfoForEntity> {
+  async constructBasicPageInfo(page: IPage, operator): Promise<IPageInfo | IPageInfoForEntity> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const isGuestUser = operator == null;
@@ -2120,8 +2120,8 @@ class PageService {
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
-    const isDeletable = isGuestUser && isMovable ? false : this.canDelete(page.creator, operator, false);
-    const isAbleToDeleteCompletely = isGuestUser && isMovable ? false : this.canDeleteCompletely(page.creator, operator, false); // use normal delete config
+    const isDeletable = !isMovable ? false : this.canDelete(page.creator as ObjectIdLike, operator, false);
+    const isAbleToDeleteCompletely = !isMovable ? false : this.canDeleteCompletely(page.creator as ObjectIdLike, operator, false); // use normal delete config
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
