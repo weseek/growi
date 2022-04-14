@@ -4,7 +4,7 @@ import React, {
 import type { SWRInfiniteResponse } from 'swr/infinite';
 
 type Props<T> = {
-  swr: SWRInfiniteResponse<T>
+  swrInifiniteResponse : SWRInfiniteResponse<T>
   children: React.ReactChild | ((item: T) => React.ReactNode),
   loadingIndicator?: React.ReactNode
   endingIndicator?: React.ReactNode
@@ -12,23 +12,33 @@ type Props<T> = {
   offset?: number
 }
 
-const useIntersection = <T extends HTMLElement>(): [boolean, Ref<T>] => {
+const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
   const [intersecting, setIntersecting] = useState<boolean>(false);
   const [element, setElement] = useState<HTMLElement>();
   useEffect(() => {
-    if (!element) return;
-    const observer = new IntersectionObserver((entries) => {
-      setIntersecting(entries[0]?.isIntersecting);
-    });
-    observer.observe(element);
-    return () => observer.unobserve(element);
+    if (element != null) {
+      const observer = new IntersectionObserver((entries) => {
+        setIntersecting(entries[0]?.isIntersecting);
+      });
+      observer.observe(element);
+      return () => observer.unobserve(element);
+    }
+    return;
   }, [element]);
   return [intersecting, el => el && setElement(el)];
 };
 
-const InfiniteScroll = <T, >(props: Props<T>): React.ReactElement<Props<T>> => {
+const LoadingIndicator = (): React.ReactElement => {
+  return (
+    <div className="text-muted text-center">
+      <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+    </div>
+  );
+};
+
+const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
   const {
-    swr: {
+    swrInifiniteResponse: {
       setSize, data, isValidating,
     },
     children,
@@ -51,7 +61,10 @@ const InfiniteScroll = <T, >(props: Props<T>): React.ReactElement<Props<T>> => {
       {typeof children === 'function' ? data?.map(item => children(item)) : children}
       <div style={{ position: 'relative' }}>
         <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-        {isReachingEnd ? endingIndicator : loadingIndicator}
+        {isReachingEnd
+          ? endingIndicator
+          : loadingIndicator || <LoadingIndicator />
+        }
       </div>
     </>
   );

@@ -497,36 +497,36 @@ export const getPageSchema = (crowi) => {
     // add grant conditions
     await addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink);
 
-    // count
-    // const totalCount = await builder.query.exec('count');
-
-    // find
-    // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    const skip = opt.page ? (+opt.page - 1) * opt.limit : opt.offset;
-    const customLabels = {
-      totalDocs: 'totalCount',
-      docs: 'pages',
-      limit: 'limit',
-      page: 'currentPage',
-      nextPage: 'nextPage',
-      prevPage: 'prevPage',
-      totalPages: 'pageCount',
-    };
-
-    const paginationOptions = {
-      lean: true,
-      ...(opt.limit) && { limit: opt.limit },
-      ...(opt.offset) && { offset: skip },
-      ...(opt.page) && { page: opt.page },
-      sort: sortOpt,
-      customLabels,
-    };
 
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
 
+    if (!opt.page) {
+      // count
+      const totalCount = await builder.query.exec('count');
+
+      // find
+      builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
+      const pages = await builder.query.lean().clone().exec('find');
+      const result = {
+        pages, totalCount, offset: opt.offset, limit: opt.limit,
+      };
+      return result;
+    }
+
+    // Pagination for infinite scroll
+    // Paginate with mongoose paginate v2 & `page` exists is in options
+    const skip = opt.page ? (+opt.page - 1) * opt.limit : opt.offset;
+
+    const paginationOptions = {
+      lean: true,
+      limit: opt.limit,
+      offset: skip,
+      page: opt.page,
+      sort: sortOpt,
+    };
     const paginatedPages = await Page.paginate(builder.query.clone(), paginationOptions);
     const result = {
-      pages: paginatedPages.pages, totalCount: paginatedPages.totalCount, offset: opt.offset, limit: opt.limit,
+      pages: paginatedPages.docs, totalCount: paginatedPages.totalDocs, offset: opt.offset, limit: opt.limit,
     };
 
     return result;

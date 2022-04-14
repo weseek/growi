@@ -120,14 +120,6 @@ SmallPageItem.propTypes = {
   page: PropTypes.any,
 };
 
-function LoadingIndicator() {
-  return (
-    <div className="text-muted text-center">
-      <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-    </div>
-  );
-}
-
 const RecentChanges = (): JSX.Element => {
   const PER_PAGE = 20;
   const { t } = useTranslation();
@@ -175,8 +167,7 @@ const RecentChanges = (): JSX.Element => {
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
           <InfiniteScroll
-            swr={swr}
-            loadingIndicator={<LoadingIndicator />}
+            swrInifiniteResponse={swr}
             isReachingEnd={isReachingEnd}
           >
             {pages => pages.map(page => (
