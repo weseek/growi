@@ -401,6 +401,16 @@ describe('Page', () => {
         parent: pageIdUpd13,
         descendantCount: 0,
       },
+      {
+        path: '/mup24',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [dummyUser1._id],
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
     ]);
 
   });
@@ -576,6 +586,22 @@ describe('Page', () => {
         expect(_pageT.descendantCount).toBe(0);
       });
     });
+
+    describe('Changing grant to GRANT_RESTRICTED', () => {
+      test('successfully change to GRANT_RESTRICTED from GRANT_OWNER', async() => {
+        const path = '/mup24';
+        const _page = await Page.findOne({ path, grant: Page.GRANT_OWNER, grantedUsers: [dummyUser1._id] });
+        expect(_page).toBeTruthy();
+
+        await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+
+        const page = await Page.findOne({ path });
+        expect(page).toBeTruthy();
+        expect(page.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(page.grantedUsers).toBeNull();
+      });
+    });
+
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
       test('a page will create ancestors if they do not exist', async() => {
         const pathT = '/mup16_top';
@@ -634,6 +660,7 @@ describe('Page', () => {
         expect(_pageT.descendantCount).toBe(2);
       });
     });
+
     describe('Changing grant to GRANT_OWNER(onlyme)', () => {
       test('successfully change to GRANT_OWNER from GRANT_PUBLIC', async() => {
         const path = '/mup19';
