@@ -1,19 +1,20 @@
-import { format } from 'date-fns';
+import { format, subSeconds } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
+import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
-import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
 
-import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
-import httpErrorHandler from '../../middlewares/http-error-handler';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import httpErrorHandler from '../../middlewares/http-error-handler';
+import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body } = require('express-validator');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
@@ -77,8 +78,10 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      const expiredAt = format(passwordResetOrderData.expiredAt, 'yyyy/MM/dd HH:mm');
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, expiredAt);
+      const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
+      const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();
     }
     catch (err) {
