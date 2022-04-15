@@ -1,8 +1,49 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.1](https://github.com/weseek/growi/compare/v5.0.0...v5.0.1) - 2022-04-15
+
+### 💎 Features
+
+- feat: Input Slack member ID (#5412) @mudana-grune
+- feat: Remove child group from parent group (#5600) @miya
+
+### 🚀 Improvement
+
+- imprv: Add spinner to tag sidebar (#5700) @miya
+- imprv: Adjust pagelist and comment position (#5682) @Yohei-Shiina
+- imprv: Adjust layout for PageTree Descendant Count (#5666) @miya
+- imprv: adjust spaces in page item control and subnav btn (#5655) @Yohei-Shiina
+- imprv: Clickable area of PageListItemL (#5665) @yuki-takei
+- imprv: Add an expiration date for the link in the email (#5660) @miya
+- imprv: remove min-width from search-sort-option-btn (#5656) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Correction of expiredAt attached to email (#5715) @miya
+- fix: Normalize parent so it does not include siblings (#5678) @hakumizuki
+- fix: Prevent auto completing email with username stored by browser in /me page (#5702) @Yohei-Shiina
+- fix: Do not include granted users if change page permission restricted (#5693) @miya
+- fix: Do not include in search results if the page grant is restricted (#5691) @miya
+- fix: Password reset gives error update password failed when submitting a new password (#5685) @kaoritokashiki
+- fix: Cannot register new users (#5683) @kaoritokashiki
+- fix: Sync change of count for both like and bookmark in search page (#5667) @Yohei-Shiina
+- imprv: Adjust layout for PageTree Descendant Count (#5666) @miya
+- fix: HackMD disabled tooltip on mobile (#5658) @yuki-takei
+- fix: One Time Token is not available (#5654) @miya
+- fix: Page items disappear when dnd (#5651) @miya
+
+### 🧰 Maintenance
+
+- ci(deps): bump anothrNick/github-tag-action from 1.36.0 to 1.38.0 (#5271) @dependabot
+- ci(deps): bump amannn/action-semantic-pull-request from 3.4.5 to 4.2.0 (#5627) @dependabot
+- ci(deps): bump actions/upload-artifact from 2 to 3 (#5686) @dependabot
+- ci(deps): bump actions/download-artifact from 2 to 3 (#5687) @dependabot
+- support: Migration for setting sparce option to slack member id (#5694) @kaoritokashiki
+- support: Update eslint-config-weseek (#5673) @yuki-takei
 
 ## [v5.0.0](https://github.com/weseek/growi/compare/v4.5.15...v5.0.0) - 2022-04-01
 
