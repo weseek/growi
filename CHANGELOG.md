@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.17...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.18...HEAD)
+
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
 
 ## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
 
