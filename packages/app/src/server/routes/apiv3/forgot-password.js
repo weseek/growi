@@ -63,7 +63,7 @@ module.exports = (crowi) => {
   router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = grobalLang || req.language;
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -96,7 +96,7 @@ module.exports = (crowi) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
