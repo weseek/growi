@@ -32,7 +32,6 @@ export type IPage = {
 
 export type IPageInfo = {
   sumOfLikers: number
-  sumOfSeenUsers: number
   likerIds: string[]
   seenUserIds: string[]
   isSeen: boolean
