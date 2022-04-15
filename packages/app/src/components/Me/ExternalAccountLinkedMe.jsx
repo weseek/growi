@@ -1,16 +1,19 @@
 
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
-import ExternalAccountRow from './ExternalAccountRow';
+import { toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import AssociateModal from './AssociateModal';
 import DisassociateModal from './DisassociateModal';
+import ExternalAccountRow from './ExternalAccountRow';
 
 class ExternalAccountLinkedMe extends React.Component {
 
@@ -68,7 +71,12 @@ class ExternalAccountLinkedMe extends React.Component {
     return (
       <Fragment>
         <h2 className="border-bottom my-4">
-          <button type="button" className="btn btn-outline-secondary btn-sm pull-right" onClick={this.openAssociateModal}>
+          <button
+            type="button"
+            data-testid="grw-external-account-add-button"
+            className="btn btn-outline-secondary btn-sm pull-right"
+            onClick={this.openAssociateModal}
+          >
             <i className="icon-plus" aria-hidden="true" />
             Add
           </button>

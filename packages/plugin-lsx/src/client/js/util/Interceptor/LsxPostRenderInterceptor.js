@@ -1,10 +1,10 @@
+import { BasicInterceptor } from '@growi/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BasicInterceptor } from '@growi/core';
 
-import { LsxContext } from '../LsxContext';
 import { Lsx } from '../../components/Lsx';
+import { LsxContext } from '../LsxContext';
 
 /**
  * The interceptor for lsx
