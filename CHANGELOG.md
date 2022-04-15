@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: Edit button to open built-in editor does not work when HackMD is disabled (#5719) @yuki-takei
+- fix: Share link list occures error when related page is not found (#5718) @yuki-takei
 
 ## [v5.0.1](https://github.com/weseek/growi/compare/v5.0.0...v5.0.1) - 2022-04-15
 
