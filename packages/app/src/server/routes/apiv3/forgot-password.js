@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, subSeconds } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
 import PasswordResetOrder from '~/server/models/password-reset-order';
@@ -78,8 +78,10 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      const expiredAt = format(passwordResetOrderData.expiredAt, 'yyyy/MM/dd HH:mm');
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, expiredAt);
+      const grwTzoffset = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffset);
+      const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();
     }
     catch (err) {
