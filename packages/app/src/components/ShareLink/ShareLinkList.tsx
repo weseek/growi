@@ -1,16 +1,19 @@
 import React from 'react';
 
 import dateFnsFormat from 'date-fns/format';
-import PropTypes from 'prop-types';
-import { useTranslation, withTranslation } from 'react-i18next';
-
-import AppContainer from '~/client/services/AppContainer';
+import { useTranslation } from 'react-i18next';
 
 import CopyDropdown from '../Page/CopyDropdown';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
-const ShareLinkTr = (props) => {
+type ShareLinkTrProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  shareLink: any,
+  isAdmin?: boolean,
+  onDelete?: () => void,
+}
+
+const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { isAdmin, shareLink, onDelete } = props;
@@ -57,7 +60,14 @@ const ShareLinkTr = (props) => {
 };
 
 
-const ShareLinkList = (props) => {
+type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  shareLinks: any[],
+  onClickDeleteButton?: (shareLinkId: string) => void,
+  isAdmin?: boolean,
+}
+
+const ShareLinkList = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
@@ -100,17 +110,4 @@ const ShareLinkList = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
-
-ShareLinkList.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  shareLinks: PropTypes.array.isRequired,
-  onClickDeleteButton: PropTypes.func,
-  isAdmin: PropTypes.bool,
-};
-
-export default withTranslation()(ShareLinkListWrapper);
+export default ShareLinkList;
