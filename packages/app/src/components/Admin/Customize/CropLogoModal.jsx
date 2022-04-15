@@ -8,7 +8,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
+
 import ReactCrop from 'react-image-crop';
 import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
@@ -125,4 +125,4 @@ CropLogoModal.propTypes = {
   onModalClose: PropTypes.func.isRequired,
   onCropCompleted: PropTypes.func.isRequired,
 };
-export default withTranslation()(LogoFormWrapper);
+export default (LogoFormWrapper);

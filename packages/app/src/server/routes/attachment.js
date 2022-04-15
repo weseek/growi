@@ -710,7 +710,15 @@ module.exports = function(crowi, app) {
 
     const file = req.file;
     const attachmentType = req.body.attachmentType;
-    const attachmentId = req.body.attachmentId !== 'null' ? mongoose.Types.ObjectId(req.body.attachmentId) : null;
+
+    let attachmentId;
+    if (req.body.attachmentId === 'null' || req.body.attachmentId === 'undefined') {
+      attachmentId = null;
+    }
+    else {
+      attachmentId = mongoose.Types.ObjectId(req.body.attachmentId);
+    }
+
     // check type
     const acceptableFileType = /image\/.+/;
     if (!file.mimetype.match(acceptableFileType)) {
