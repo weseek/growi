@@ -1,14 +1,17 @@
 import React, { FC, memo } from 'react';
 
-import AuthorInfo from './Navbar/AuthorInfo';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import { Ref } from '../interfaces/common';
 import { IUser } from '../interfaces/user';
 
+import AuthorInfo from './Navbar/AuthorInfo';
+
+
 type Props = {
   createdAt: Date,
   updatedAt: Date,
-  creator: Ref<IUser>,
+  creator: Ref<IUser> | ObjectIdLike,
   revisionAuthor: Ref<IUser>,
 }
 
