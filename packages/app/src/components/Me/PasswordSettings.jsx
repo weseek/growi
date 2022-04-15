@@ -1,13 +1,13 @@
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 class PasswordSettings extends React.Component {
@@ -98,6 +98,9 @@ class PasswordSettings extends React.Component {
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
             <div className="col-md-5">
+              {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
+              {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
+              <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
               <input
                 className="form-control"
                 type="password"

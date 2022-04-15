@@ -20,6 +20,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId);
   const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
   const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
+  const sumOfSeenUserIds = pageInfo?.seenUserIds.length || 0;
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
@@ -33,7 +34,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
-        <span className="seen-user-count">{seenUsers.length}</span>
+        <span className="seen-user-count">{sumOfSeenUserIds}</span>
       </Button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="seen-user-popover">
