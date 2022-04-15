@@ -78,8 +78,8 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      const grwTzoffset = crowi.appService.getTzoffset() * 60;
-      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffset);
+      const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
       const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
       await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();

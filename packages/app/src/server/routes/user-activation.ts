@@ -22,8 +22,8 @@ async function makeRegistrationEmailToken(email, crowi) {
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
   const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
-  const grwTzoffset = crowi.appService.getTzoffset() * 60;
-  const expiredAt = subSeconds(userRegistrationOrder.expiredAt, grwTzoffset);
+  const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+  const expiredAt = subSeconds(userRegistrationOrder.expiredAt, grwTzoffsetSec);
   const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
   const oneTimeUrl = url.href;
   const txtFileName = 'userActivation';
