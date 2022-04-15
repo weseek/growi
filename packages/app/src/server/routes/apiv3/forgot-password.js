@@ -1,3 +1,4 @@
+import { format, subSeconds } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
 import PasswordResetOrder from '~/server/models/password-reset-order';
@@ -45,15 +46,16 @@ module.exports = (crowi) => {
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
     return mailService.send({
       to: email,
-      subject: txtFileName,
+      subject: '[GROWI] Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
         url,
+        expiredAt,
       },
     });
   }
@@ -61,7 +63,7 @@ module.exports = (crowi) => {
   router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = grobalLang || req.language;
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -76,7 +78,10 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+      const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
+      const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();
     }
     catch (err) {
@@ -91,7 +96,7 @@ module.exports = (crowi) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
