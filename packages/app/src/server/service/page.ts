@@ -2122,8 +2122,8 @@ class PageService {
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
-    const isDeletable = !isMovable ? false : this.canDelete(page.creator as ObjectIdLike, operator, false);
-    const isAbleToDeleteCompletely = !isMovable ? false : this.canDeleteCompletely(page.creator as ObjectIdLike, operator, false); // use normal delete config
+    const isDeletable = this.canDelete(page.creator, operator, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.creator, operator, false); // use normal delete config
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
