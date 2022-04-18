@@ -37,7 +37,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath,
+  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -215,8 +215,8 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
-    if (operator == null) return false;
+  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) { return false }
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -225,8 +225,8 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
-    if (operator == null) return false;
+  canDelete(path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
+    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) { return false }
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -268,11 +268,11 @@ class PageService {
   }
 
   filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user, isRecursively));
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
   }
 
   filterPagesByCanDelete(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDelete(p.creator, user, isRecursively));
+    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -2106,8 +2106,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNotEmptyClosestAncestor(page.path);
       const creatorId = notEmptyClosestAncestor.creator;
 
-      const isDeletable = this.canDelete(creatorId, operator, false);
-      const isAbleToDeleteCompletely = this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
+      const isDeletable = this.canDelete(page.path, creatorId, operator, false);
+      const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, operator, false); // use normal delete config
 
       return {
         isV5Compatible: true,
@@ -2122,8 +2122,8 @@ class PageService {
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
-    const isDeletable = this.canDelete(page.creator, operator, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.creator, operator, false); // use normal delete config
+    const isDeletable = this.canDelete(page.path, page.creator, operator, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, page.creator, operator, false); // use normal delete config
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
