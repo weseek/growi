@@ -12,7 +12,6 @@ import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-
 class PageAttachment extends React.Component {
 
   constructor(props) {
