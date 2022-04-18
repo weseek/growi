@@ -1,5 +1,3 @@
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-
 import { Ref, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
 import { IRevision, HasRevisionShortbody } from './revision';
@@ -13,7 +11,7 @@ export interface IPage {
   status: string,
   revision: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: Ref<IUser> | ObjectIdLike,
+  creator: any,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
