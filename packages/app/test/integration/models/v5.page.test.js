@@ -538,6 +538,78 @@ describe('Page', () => {
         parent: pageIdUpd19,
         descendantCount: 0,
       },
+      {
+        path: '/mup40',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [dummyUser1._id],
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+    ]);
+
+    /**
+     * getParentAndFillAncestors
+     */
+    const pageIdPAF1 = new mongoose.Types.ObjectId();
+    const pageIdPAF2 = new mongoose.Types.ObjectId();
+    const pageIdPAF3 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdPAF1,
+        path: '/PAF1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdPAF2,
+        path: '/emp_anc3',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        descendantCount: 1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/emp_anc3/PAF3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+        parent: pageIdPAF2,
+      },
+      {
+        _id: pageIdPAF3,
+        path: '/emp_anc4',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        descendantCount: 1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/emp_anc4/PAF4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+        parent: pageIdPAF3,
+      },
+      {
+        path: '/emp_anc4',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [dummyUser1._id],
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+      },
     ]);
 
   });
@@ -713,6 +785,22 @@ describe('Page', () => {
         expect(_pageT.descendantCount).toBe(0);
       });
     });
+
+    describe('Changing grant to GRANT_RESTRICTED', () => {
+      test('successfully change to GRANT_RESTRICTED from GRANT_OWNER', async() => {
+        const path = '/mup40';
+        const _page = await Page.findOne({ path, grant: Page.GRANT_OWNER, grantedUsers: [dummyUser1._id] });
+        expect(_page).toBeTruthy();
+
+        await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+
+        const page = await Page.findOne({ path });
+        expect(page).toBeTruthy();
+        expect(page.grant).toBe(Page.GRANT_RESTRICTED);
+        expect(page.grantedUsers).toStrictEqual([]);
+      });
+    });
+
     describe('Changing grant from RESTRICTED to PUBLIC of', () => {
       test('a page will create ancestors if they do not exist', async() => {
         const pathT = '/mup16_top';
@@ -771,6 +859,7 @@ describe('Page', () => {
         expect(_pageT.descendantCount).toBe(2);
       });
     });
+
     describe('Changing grant to GRANT_OWNER(onlyme)', () => {
       test('successfully change to GRANT_OWNER from GRANT_PUBLIC', async() => {
         const path = '/mup19';
@@ -980,5 +1069,86 @@ describe('Page', () => {
 
     });
 
+  });
+
+  describe('getParentAndFillAncestors', () => {
+    test('return parent if exist', async() => {
+      const page1 = await Page.findOne({ path: '/PAF1' });
+      const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
+      expect(parent).toBeTruthy();
+      expect(page1.parent).toStrictEqual(parent._id);
+    });
+    test('create parent and ancestors when they do not exist, and return the new parent', async() => {
+      const path1 = '/emp_anc1';
+      const path2 = '/emp_anc1/emp_anc2';
+      const path3 = '/emp_anc1/emp_anc2/PAF2';
+      const _page1 = await Page.findOne({ path: path1 }); // not exist
+      const _page2 = await Page.findOne({ path: path2 }); // not exist
+      const _page3 = await Page.findOne({ path: path3 }); // not exist
+      expect(_page1).toBeNull();
+      expect(_page2).toBeNull();
+      expect(_page3).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors(path3, dummyUser1);
+      const page1 = await Page.findOne({ path: path1 });
+      const page2 = await Page.findOne({ path: path2 });
+      const page3 = await Page.findOne({ path: path3 });
+
+      expect(parent._id).toStrictEqual(page2._id);
+      expect(parent.path).toStrictEqual(page2.path);
+      expect(parent.parent).toStrictEqual(page2.parent);
+
+      expect(parent).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeNull();
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+    });
+    test('return parent even if the parent page is empty', async() => {
+      const path1 = '/emp_anc3';
+      const path2 = '/emp_anc3/PAF3';
+      const _page1 = await Page.findOne({ path: path1, isEmpty: true });
+      const _page2 = await Page.findOne({ path: path2, isEmpty: false });
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+
+      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
+      const page2 = await Page.findOne({ path: path2, isEmpty: false });
+
+      // check for the parent (should be the same as page1)
+      expect(parent._id).toStrictEqual(page1._id);
+      expect(parent.path).toStrictEqual(page1.path);
+      expect(parent.parent).toStrictEqual(page1.parent);
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+    });
+    test("should find parent while NOT updating private legacy page's parent", async() => {
+      const path1 = '/emp_anc4';
+      const path2 = '/emp_anc4/PAF4';
+      const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
+      const _page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
+      const _page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_page3.parent).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
+      const page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
+      const page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+      expect(page3.parent).toBeNull(); // parent property of page in private legacy pages should be null
+
+      expect(page1._id).toStrictEqual(parent._id);
+      expect(page2.parent).toStrictEqual(parent._id);
+
+    });
   });
 });

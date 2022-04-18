@@ -2,14 +2,10 @@ import React, { FC } from 'react';
 
 import { TagCloud } from 'react-tagcloud';
 
-type Tag = {
-  _id: string,
-  name: string,
-  count: number,
-}
+import { ITagHasCount } from '~/interfaces/tag';
 
 type Props = {
-  tags:Tag[],
+  tags: ITagHasCount[],
   minSize?: number,
   maxSize?: number,
 }
