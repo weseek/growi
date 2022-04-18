@@ -11,7 +11,8 @@ const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 
-const MIN_OPACITY_LEVEL = -3;
+const SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT = 5;
+const MIN_STRENGTH_LEVEL = -3;
 
 type SeenUsersCountProps = {
   count: number,
@@ -27,17 +28,21 @@ const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
     return <></>;
   }
 
-  const strengthLevel = Math.log(count / (activeUsersCount ?? count)); // Max: 0
-
-  if (strengthLevel <= MIN_OPACITY_LEVEL) {
+  if (activeUsersCount != null && activeUsersCount <= SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT) {
     return <></>;
   }
 
-  assert(strengthLevel > MIN_OPACITY_LEVEL); // [0, MIN_OPACITY_LEVEL)
+  const strengthLevel = Math.log(count / (activeUsersCount ?? count)); // Max: 0
+
+  if (strengthLevel <= MIN_STRENGTH_LEVEL) {
+    return <></>;
+  }
+
+  assert(strengthLevel > MIN_STRENGTH_LEVEL); // [0, MIN_STRENGTH_LEVEL)
 
   let strengthClass = '';
   if (strengthLevel < 0) {
-    strengthClass = `strength-${Math.ceil(strengthLevel * -1)}`; // opacity-{0, 1, 2, 3}
+    strengthClass = `strength-${Math.ceil(strengthLevel * -1)}`; // strength-{0, 1, 2, 3}
   }
 
   return (
