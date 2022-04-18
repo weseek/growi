@@ -10,10 +10,10 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-
+import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
-import { IPage } from '../../interfaces/page';
+import { IPage, IPageHasId } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
@@ -24,8 +24,6 @@ const { addTrailingSlash } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
-
-
 /*
  * define schema
  */
@@ -38,7 +36,7 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export interface PageDocument extends IPage, Document {}
+export interface PageDocument extends IPage, Document { }
 
 
 type TargetAndAncestorsResult = {
@@ -736,7 +734,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
     .lean()
     .exec();
   // mark target
-  const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
+  const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
     if (page.path === path) {
       page.isTarget = true;
     }
@@ -784,7 +782,7 @@ schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: Objec
 /**
  * recount descendantCount of a page with the provided id and return it
  */
-schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise<number> {
+schema.statics.recountDescendantCount = async function(id: ObjectIdLike): Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -1093,9 +1091,13 @@ export default (crowi: Crowi): any => {
     return savedPage;
   };
 
-  const shouldUseUpdatePageV4 = (grant:number, isV5Compatible:boolean, isOnTree:boolean): boolean => {
+  const shouldUseUpdatePageV4 = (grant: number, isV5Compatible: boolean, isOnTree: boolean): boolean => {
     const isRestricted = grant === GRANT_RESTRICTED;
     return !isRestricted && (!isV5Compatible || !isOnTree);
+  };
+
+  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId): void => {
+    pageEvent.emit('update', page, user);
   };
 
   schema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
@@ -1167,7 +1169,7 @@ export default (crowi: Crowi): any => {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    pageEvent.emit('update', savedPage, user);
+    this.emitPageEventUpdate(savedPage, user);
 
     // Update ex children's parent
     if (!wasOnTree && shouldBeOnTree) {
