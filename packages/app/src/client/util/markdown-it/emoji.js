@@ -1,3 +1,5 @@
+import { emojiMartData } from './emoji-mart-data';
+
 export default class EmojiConfigurer {
 
   constructor(crowi) {
@@ -5,7 +7,9 @@ export default class EmojiConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-emoji'));
+    emojiMartData().then((data) => {
+      md.use(require('markdown-it-emoji-mart'), { defs: data });
+    });
   }
 
 }

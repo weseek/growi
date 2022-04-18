@@ -109,10 +109,6 @@
     border-top: 1px dotted $gray-300;
     border-bottom: none;
 
-    &:active {
-      box-shadow: none;
-    }
-
     &:hover,
     &:focus {
       border-bottom: none;

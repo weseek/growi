@@ -1,19 +1,24 @@
+
 import React, {
   FC, useRef, useEffect, useState,
 } from 'react';
 import { Picker } from 'emoji-mart';
-import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
-import { isDarkMode } from '~/client/util/color-scheme';
+import i18n from 'i18next';
+import EmojiPickerHelper from './EmojiPickerHelper';
+
 
 type Props = {
-  close: () => void,
+  onClose: () => void,
   emojiSearchText: string,
   editor: any
+  emojiPickerHelper: EmojiPickerHelper
 }
 
 const EmojiPicker: FC<Props> = (props: Props) => {
 
-  const { close, emojiSearchText, editor } = props;
+  const {
+    onClose, emojiSearchText, emojiPickerHelper,
+  } = props;
 
   const emojiPickerContainer = useRef<HTMLDivElement>(null);
   const [emojiPickerHeight, setEmojiPickerHeight] = useState(0);
@@ -34,11 +39,15 @@ const EmojiPicker: FC<Props> = (props: Props) => {
       const event = new Event('input', { bubbles: true });
       input.dispatchEvent(event);
     }
+  }, [emojiSearchText]);
 
+
+  // TODO: using blur event by GW-7770
+  useEffect(() => {
     function handleClickOutside(event) {
       if (emojiPickerContainer.current && !emojiPickerContainer.current.contains(event.target)) {
-        close();
         setStyle({});
+        onClose();
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -46,6 +55,8 @@ const EmojiPicker: FC<Props> = (props: Props) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, [emojiPickerContainer, onClose]);
+
 
 
   }, [emojiPickerContainer, close, emojiSearchText, emojiPickerHeight]);
@@ -57,6 +68,47 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     else {
       emojiPickerHelper.addEmoji(emoji);
     }
+    props.onClose();
+  };
+
+
+  const getEmojiTranslation = () => {
+
+    const categories = {};
+    [
+      'search',
+      'recent',
+      'smileys',
+      'people',
+      'nature',
+      'foods',
+      'activity',
+      'places',
+      'objects',
+      'symbols',
+      'flags',
+      'custom',
+    ].forEach((category) => {
+      categories[category] = i18n.t(`emoji.categories.${category}`);
+    });
+
+    const skintones = {};
+    (Array.from(Array(6).keys())).forEach((tone) => {
+      skintones[tone + 1] = i18n.t(`emoji.skintones.${tone + 1}`);
+    });
+
+    const translation = {
+      search: i18n.t('emoji.search'),
+      clear: i18n.t('emoji.clear'),
+      notfound: i18n.t('emoji.notfound'),
+      skintext: i18n.t('emoji.skintext'),
+      categories,
+      categorieslabel: i18n.t('emoji.categorieslabel'),
+      skintones,
+      title: i18n.t('emoji.title'),
+    };
+
+    return translation;
   };
 
   const translation = getEmojiTranslation();

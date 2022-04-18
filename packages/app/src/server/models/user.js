@@ -47,6 +47,7 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
+    slackMemberId: { type: String, unique: true, sparse: true },
     // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
@@ -185,21 +186,6 @@ module.exports = function(crowi) {
     this.setPassword(password);
     const userData = await this.save();
     return userData;
-  };
-
-  userSchema.methods.canDeleteCompletely = function(creatorId) {
-    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    if (this.admin) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
-      return true;
-    }
-    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      return (this._id.equals(creatorId));
-    }
-
-    return false;
   };
 
   userSchema.methods.updateApiToken = async function() {
@@ -702,6 +688,22 @@ module.exports = function(crowi) {
 
     user.isInvitationEmailSended = true;
     user.save();
+  };
+
+  userSchema.statics.findUserBySlackMemberId = async function(slackMemberId) {
+    const user = this.findOne({ slackMemberId });
+    if (user == null) {
+      throw new Error('User not found');
+    }
+    return user;
+  };
+
+  userSchema.statics.findUsersBySlackMemberIds = async function(slackMemberIds) {
+    const users = this.find({ slackMemberId: { $in: slackMemberIds } });
+    if (users.length === 0) {
+      throw new Error('No user found');
+    }
+    return users;
   };
 
   class UserUpperLimitException {

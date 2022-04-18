@@ -275,7 +275,7 @@ class ManageGlobalNotification extends React.Component {
                   onChange={() => this.onChangeTriggerEvents('pageLike')}
                 >
                   <span className="badge badge-pill badge-info">
-                    <i className="icon-like mr-1" />LIKE
+                    <i className="fa fa-heart-o mr-1" />LIKE
                   </span>
                 </TriggerEventCheckBox>
               </div>

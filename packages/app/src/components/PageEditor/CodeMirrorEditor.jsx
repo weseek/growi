@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
-
 import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
@@ -12,7 +11,6 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import 'emoji-mart/css/emoji-mart.css';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
 import InterceptorManager from '~/services/interceptor-manager';
@@ -141,6 +139,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+    this.keyUpHandler = this.keyUpHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -155,8 +154,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
-    this.emojiPickerHandler = this.emojiPickerHandler.bind(this);
+    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
 
   }
 
@@ -568,7 +566,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
-    this.emojiPickerHandler();
+
+  }
+
+  keyUpHandler(editor, event) {
+    if (event.key !== 'Backspace') {
+      this.checkWhetherEmojiPickerShouldBeShown();
+    }
   }
 
   /**
@@ -593,18 +597,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   /**
-   * Show emoji picker component when emoji pattern found
+   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
+   * eg `:a`, `:ap`
    */
-  emojiPickerHandler() {
-    const emoji = this.emojiPickerHelper.getEmoji();
+  checkWhetherEmojiPickerShouldBeShown() {
+    const searchWord = this.emojiPickerHelper.getEmoji();
 
-    if (!emoji) {
+    if (searchWord == null) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
     }
     else {
-      this.setState({ emojiSearchText: emoji });
-      this.setState({ isEmojiPickerShown: true });
+      this.setState({ emojiSearchText: searchWord });
+      // Show emoji picker after user stop typing
+      setTimeout(() => {
+        this.setState({ isEmojiPickerShown: true });
+      }, 700);
     }
   }
 
@@ -701,9 +709,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
-              close={this.toggleEmojiPicker}
+              onClose={() => this.setState({ isEmojiPickerShown: false })}
               emojiSearchText={emojiSearchText}
               editor={this.getCodeMirror()}
+              emojiPickerHelper={this.emojiPickerHelper}
             />
           </div>
         </div>
@@ -793,6 +802,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   showDrawioHandler() {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
+
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -953,7 +963,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="Emoji"
-        onClick={this.toggleEmojiPicker}
+        onClick={() => this.setState({ isEmojiPickerShown: true })}
       >
         <EditorIcon icon="Emoji" />
       </Button>,
@@ -988,6 +998,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
+            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
@@ -1027,6 +1038,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
+          onKeyUp={this.keyUpHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }

@@ -16,17 +16,17 @@ import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationF
 const i18n = i18nFactory();
 
 // render InstallerForm
-const installerFormElem = document.getElementById('installer-form');
-if (installerFormElem) {
-  const userName = installerFormElem.dataset.userName;
-  const name = installerFormElem.dataset.name;
-  const email = installerFormElem.dataset.email;
-  const csrf = installerFormElem.dataset.csrf;
+const installerFormContainerElem = document.getElementById('installer-form-container');
+if (installerFormContainerElem) {
+  const userName = installerFormContainerElem.dataset.userName;
+  const name = installerFormContainerElem.dataset.name;
+  const email = installerFormContainerElem.dataset.email;
+  const csrf = installerFormContainerElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
     </I18nextProvider>,
-    installerFormElem,
+    installerFormContainerElem,
   );
 }
 

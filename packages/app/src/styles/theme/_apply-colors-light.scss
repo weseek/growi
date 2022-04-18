@@ -2,10 +2,9 @@
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
-$bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
-$bgcolor-list-active: $primary !default;
+$bgcolor-list-hover: lighten($primary, 72%) !default;
+$bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
-$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
 $border-color-table: $gray-200 !default;
@@ -16,17 +15,30 @@ $color-tags: $secondary !default;
 $bgcolor-tags: $gray-200 !default;
 $border-color-global: $gray-300 !default;
 $border-color-toc: $border-color-global !default;
+$color-dropdown: $color-global !default;
+$color-dropdown-link: $color-global !default;
+$color-dropdown-link-hover: $color-global !default;
+$color-dropdown-link-active: $color-reversal !default;
+$bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
+$text-muted: $gray-500;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
+$dropdown-color: $color-dropdown;
+$dropdown-link-color: $color-dropdown-link;
+$dropdown-link-hover-color: $color-dropdown-link-hover;
+$dropdown-link-active-color: $color-dropdown-link-active;
+$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
+@import 'reboot-bootstrap-text';
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
+@import 'reboot-bootstrap-dropdown';
 
 // List Group
 @include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
@@ -166,6 +178,42 @@ $border-color: $border-color-global;
 .grw-sidebar {
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
+  // Pagetree
+  .grw-pagetree {
+    @include override-list-group-item-for-pagetree(
+      $color-list,
+      $bgcolor-sidebar-list-group,
+      $color-list-hover,
+      $bgcolor-list-hover,
+      $color-list-active,
+      $bgcolor-list-active
+    );
+    .grw-pagetree-triangle-btn {
+      @include button-outline-svg-icon-variant($gray-400, $primary);
+    }
+    .grw-pagetree-count {
+      color: $gray-500;
+      background: $gray-200;
+    }
+  }
+  .private-legacy-pages-link {
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+  }
+}
+
+.btn.btn-page-item-control {
+  @include button-outline-variant($gray-500, $primary, lighten($primary, 52%), transparent);
+  @include hover() {
+    background-color: lighten($primary, 58%);
+  }
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: $primary;
+  }
+  box-shadow: none !important;
 }
 
 /*

@@ -13,6 +13,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+
 import EditorContainer from '~/client/services/EditorContainer';
 
 import { getOptionsToSave } from '~/client/util/editor';
@@ -327,6 +329,8 @@ class PageEditor extends React.Component {
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
 
+    const { path } = this.props.pageContainer.state;
+
     return (
       <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
@@ -354,6 +358,13 @@ class PageEditor extends React.Component {
             onScroll={this.onPreviewScroll}
           />
         </div>
+        <ConflictDiffModal
+          isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
+          onClose={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          appContainer={this.props.appContainer}
+          pageContainer={this.props.pageContainer}
+          markdownOnEdit={this.state.markdown}
+        />
       </div>
     );
   }

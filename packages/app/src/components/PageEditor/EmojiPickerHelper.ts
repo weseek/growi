@@ -1,4 +1,3 @@
-import i18n from 'i18next';
 import { CSSProperties } from 'react';
 
 export default class EmojiPickerHelper {
@@ -76,52 +75,11 @@ getEmoji = () => {
       ch: sc.to().ch,
     };
     const currentSearchText = sc.matches(true, pos).match[0];
-    const searchValue = currentSearchText.replace(':', '');
-    return searchValue;
+    const searchWord = currentSearchText.replace(':', '');
+    return searchWord;
   }
 
   return;
-
 }
 
 }
-
-
-export const getEmojiTranslation = () => {
-
-  const categories = {};
-  [
-    'search',
-    'recent',
-    'smileys',
-    'people',
-    'nature',
-    'foods',
-    'activity',
-    'places',
-    'objects',
-    'symbols',
-    'flags',
-    'custom',
-  ].forEach((category) => {
-    categories[category] = i18n.t(`emoji.categories.${category}`);
-  });
-
-  const skintones = {};
-  (Array.from(Array(6).keys())).forEach((tone) => {
-    skintones[tone + 1] = i18n.t(`emoji.skintones.${tone + 1}`);
-  });
-
-  const translation = {
-    search: i18n.t('emoji.search'),
-    clear: i18n.t('emoji.clear'),
-    notfound: i18n.t('emoji.notfound'),
-    skintext: i18n.t('emoji.skintext'),
-    categories,
-    categorieslabel: i18n.t('emoji.categorieslabel'),
-    skintones,
-    title: i18n.t('emoji.title'),
-  };
-
-  return translation;
-};

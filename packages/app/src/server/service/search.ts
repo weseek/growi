@@ -1,20 +1,27 @@
-import RE2 from 're2';
 import xss from 'xss';
+import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageSearchMeta, ISearchResult } from '~/interfaces/search';
+import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
+import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
-import loggerFactory from '~/utils/logger';
+import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
-import { IPageHasId } from '~/interfaces/page';
+
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
 const filterXssOptions = {
@@ -32,17 +39,30 @@ const normalizeQueryString = (_queryString: string): string => {
   return queryString;
 };
 
-export type FormattedSearchResult = {
-  data: IPageHasId[]
+const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
 
-  totalCount: number
+  const Page = crowi.model('Page') as unknown as PageModel;
+  const User = crowi.model('User');
 
-  meta: {
-    total: number
-    took?: number
-    count?: number
-  }
-}
+  const builder = new Page.PageQueryBuilder(Page.find(({ _id: { $in: pageIds } })), false);
+
+  builder.addConditionToPagenate(undefined, undefined); // offset and limit are unnesessary
+
+  builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL); // populate lastUpdateUser
+  builder.query = builder.query.populate({
+    path: 'creator',
+    select: User.USER_FIELDS_EXCEPT_CONFIDENTIAL,
+  });
+
+  const pages = await builder.query.clone().exec('find');
+  const totalCount = await builder.query.exec('count');
+
+  return {
+    pages,
+    totalCount,
+  };
+
+};
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -107,6 +127,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
     };
   }
 
@@ -198,8 +219,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
-    const replaceRegexp = new RE2(/\[nq:|\]/g);
+    const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RegExp(/\[nq:|\]/g);
 
     const queryString = normalizeQueryString(_queryString);
 
@@ -246,7 +267,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[Result<any> & MetaData, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
     let parsedQuery;
     // parse
     try {
@@ -358,11 +379,16 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName: SearchDelegatorName): Promise<FormattedSearchResult> {
+  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName: SearchDelegatorName, user, userGroups): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
+      const data: IPageWithMeta<IPageSearchMeta>[] = searchResult.data.map((page) => {
+        return {
+          data: page,
+        };
+      });
+
       return {
-        data: searchResult.data,
-        totalCount: searchResult.data.length,
+        data,
         meta: searchResult.meta,
       };
     }
@@ -370,23 +396,26 @@ class SearchService implements SearchQueryParser, SearchResolver {
     /*
      * Format ElasticSearch result
      */
-    const Page = this.crowi.model('Page') as any; // TODO: typescriptize model
     const User = this.crowi.model('User');
-    const result = {} as FormattedSearchResult;
+    const result = {} as IFormattedSearchResult;
 
     // get page data
     const pageIds = searchResult.data.map((page) => { return page._id });
-    const findPageResult = await Page.findListByPageIds(pageIds);
+
+    const findPageResult = await findPageListByIds(pageIds, this.crowi);
 
     // set meta data
     result.meta = searchResult.meta;
-    result.totalCount = findPageResult.totalCount;
 
     // set search result page data
-    result.data = searchResult.data.map((data) => {
+    const pages: (IPageWithMeta<IPageSearchMeta> | null)[] = searchResult.data.map((data) => {
       const pageData = findPageResult.pages.find((pageData) => {
         return pageData.id === data._id;
       });
+
+      if (pageData == null) {
+        return null;
+      }
 
       // add tags and seenUserCount to pageData
       pageData._doc.tags = data._source.tag_names;
@@ -401,13 +430,22 @@ class SearchService implements SearchQueryParser, SearchResolver {
       let elasticSearchResult;
       const highlightData = data._highlight;
       if (highlightData != null) {
-        const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
-        const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+        const snippet = this.canShowSnippet(pageData, user, userGroups)
+          ? highlightData['body.en'] || highlightData['body.ja'] || highlightData['comments.en'] || highlightData['comments.ja']
+          : null;
+        const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
+        const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
-          snippet: filterXss.process(snippet),
-          highlightedPath: filterXss.process(pathMatch),
+          snippet: snippet != null && typeof snippet[0] === 'string' ? filterXss.process(snippet) : null,
+          highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' ? filterXss.process(pathMatch) : null,
+          isHtmlInPath,
         };
+      }
+
+      // serialize creator
+      if (pageData.creator != null && pageData.creator instanceof User) {
+        pageData.creator = serializeUserSecurely(pageData.creator);
       }
 
       // generate pageMeta data
@@ -416,10 +454,37 @@ class SearchService implements SearchQueryParser, SearchResolver {
         elasticSearchResult,
       };
 
-      return pageData; // { pageData, pageMeta } at dev/5.0.x
+      return { data: pageData, meta: pageMeta };
     });
 
+    result.data = pages.filter(nonNullable);
     return result;
+  }
+
+  canShowSnippet(pageData, user, userGroups): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const testGrant = pageData.grant;
+    const testGrantedUser = pageData.grantedUsers?.[0];
+    const testGrantedGroup = pageData.grantedGroup;
+
+    if (testGrant === Page.GRANT_RESTRICTED) {
+      return false;
+    }
+
+    if (testGrant === Page.GRANT_OWNER) {
+      if (user == null) return false;
+
+      return user._id.toString() === testGrantedUser.toString();
+    }
+
+    if (testGrant === Page.GRANT_USER_GROUP) {
+      if (userGroups == null) return false;
+
+      return userGroups.map(id => id.toString()).includes(testGrantedGroup.toString());
+    }
+
+    return true;
   }
 
 }

@@ -1,8 +1,177 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.0](https://github.com/weseek/growi/compare/v4.5.15...v5.0.0) - 2022-04-01
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5080) @yuki-takei
+- feat: Elasticsearch reindex on boot (#5149) @LuqmanHakim-Grune
+- feat: PageTree and re-impl SearchResult with list group (#5286) @yuki-takei
+- feat: Rename(Move) by Drag & Drop (#5292) @hakumizuki
+- feat: Maintenance mode (#5486) @hakumizuki
+- feat: Delete permission config (#5527) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Show comments in search page result (#5645) @yuki-takei
+- imprv: Add description for user addition (#5614) @hakumizuki
+- imprv: Validate deletion settings (#5581) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Swiping to previous/next page for Mac users (5.0.x) (#5491) @hakumizuki
+- fix: Guest User Access Dropdown shows wrong value (#5643) @miya
+- fix: Show full text on presentation mode (#5636) @hakumizuki
+- fix: Displaying minimum length of password (#5630) @Yohei-Shiina
+- fix: Domain whitelist is not respected (fix #5408) (#5470) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (#5457) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump plantuml-encoder from 1.2.5 to 1.4.0 (#5633) @dependabot
+- ci(deps-dev): bump codemirror from 5.63.0 to 5.64.0 (#4777) @dependabot
+- ci(deps): bump nanoid from 3.1.30 to 3.2.0 (#5142) @dependabot
+- support: Upgrade openid client (#5185) @mudana-grune
+- ci(deps): bump amannn/action-semantic-pull-request from 3.4.2 to 3.4.5 (#4559) @dependabot
+- ci(deps): bump extend from 3.0.1 to 3.0.2 (#5222) @dependabot
+- ci(deps-dev): bump jquery-ui from 1.12.1 to 1.13.0 (#4548) @dependabot
+- ci(deps): bump actions/setup-node from 2 to 3 (#5437) @dependabot
+- ci(deps): bump actions/checkout from 2 to 3 (#5462) @dependabot
+- ci(deps): bump peter-evans/dockerhub-description from 2 to 3 (#5615) @dependabot
+- ci(deps): bump actions/cache from 2 to 3 (#5584) @dependabot
+- ci(deps-dev): bump reveal.js from 3.6.0 to 4.3.1 (#5603) @dependabot
+- support: Update yarn git-hosted-info v2.8.8 to v2.8.9 (#5215) @LuqmanHakim-Grune
+- support: dependabot trim-off-newlines (#5336) @mudana-grune
+- support: dependabot @npmcli/git (#5337) @mudana-grune
+- support: dependabot highlight.js (#5352) @mudana-grune
+- support: dependabot extend (#5335) @mudana-grune
+- support: dependabot ajv (#5333) @mudana-grune
+- support: dependabot dot-drop (#5204) @LuqmanHakim-Grune
+- support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
+- support: update validator version (#5562) @LuqmanHakim-Grune
+
+## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
+
+### 🐛 Bug Fixes
+
+- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
+
+## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
+
+### 🚀 Improvement
+
+- imprv: Hide forgot password when localstrategy is disabled (#5380) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: The condition to attempt to reconnect to Elasticsearch (#5344) @yuki-takei
+- fix: Highlight-addons and drawio-viewer for view missing (#5376) @yuki-takei
+
+### 🧰 Maintenance
+
+- support:  modify docker-compose indent (#5322) @yuto-oweseek
+
+## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
+
+### 💎 Features
+
+- feat: OGP in public wiki (#5304) @yuto-oweseek
+
+## [v4.5.13](https://github.com/weseek/growi/compare/v4.5.12...v4.5.13) - 2022-02-08
+
+### 🐛 Bug Fixes
+
+- fix: fix: Sidebar collapsing (#5283) @yuki-takei
+
+## [v4.5.12](https://github.com/weseek/growi/compare/v4.5.11...v4.5.12) - 2022-02-01
+
+### 🚀 Improvement
+
+- imprv: Sidebar opening delay (for v4.5.x) (#5218) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: /_api/v3/page with pageId param occurs an 500 error (#5212) @yuki-takei
+- fix: Resolving OIDC issure host (#5220) @yuki-takei
+
+## [v4.5.11](https://github.com/weseek/growi/compare/v4.5.10...v4.5.11) - 2022-01-26
+
+### 🐛 Bug Fixes
+
+- fix: Internal server error occured when "Restrict complete deletion of pages" option's value is "Admin and author" (#5175 ) @yuki-takei
+
+## [v4.5.10](https://github.com/weseek/growi/compare/v4.5.9...v4.5.10) - 2022-01-26
+
+### 💎 Features
+
+- feat: Automatic installation (#5141) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Migrate like states to swr (#5137) @miya
+
+### 🐛 Bug Fixes
+
+- fix: 86631-cannot-reset-password-in-case-that-register-limitation-is-Closed (#5155) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: VRT with Cypress (#5030) @yuki-takei
+
+## [v4.5.9](https://github.com/weseek/growi/compare/v4.5.8...v4.5.9) - 2022-01-21
+
+### 🚀 Improvement
+
+- imprv: 79291 make password min length 8 charactors (#5116) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: OIDC reconnection bug fix (#5104) @mudana-grune
+- fix: /_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
+- fix: Default completely deletion settings label mismatched against to actual (#5102) @yuki-takei
+- fix: OIDC issuer host availability check (#5099) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Improve multistage build (#5090) @yuki-takei
+- support: Omit node-re2 (#5089) @yuki-takei
+- ci(deps-dev): bump swr from 1.0.1 to 1.1.2 (#5018) @dependabot
+
+## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
+
+### 💎 Features
+
+- feat: Display a list of bookmarked users (#5044) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Built-in editor scroll position is reset after save (Introduced by v4.5.3) (#5074) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump y18n to v4.0.3 (#5071) @yuki-takei
+- support: Omit prettier-stylelint (#5070) @yuki-takei
+- support: Bump tar to 6.1.11 (#5069) @yuki-takei
+
+## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
+
+### 🐛 Bug Fixes
+
+- fix: Subnavigation sticking initialization (#5062) @yuki-takei
+- fix: Built-in editor was broken (#5061) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump re2 to 1.17.2 (#5059) @yuki-takei
 
 ## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
 
