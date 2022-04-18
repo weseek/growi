@@ -647,7 +647,7 @@ module.exports = function(crowi, app) {
 
     // Processing of nonEmptyPage is finished by the time this code is read
     // If any pages exist then they should be empty
-    const emptyPage = pages[0]; // null or undefined
+    const emptyPage = pages[0];
     if (emptyPage != null) {
       req.pageId = emptyPage._id;
       return _notFound(req, res);
