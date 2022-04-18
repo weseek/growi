@@ -10,6 +10,7 @@ import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
 import { useSWRxPageComment } from '~/stores/comment';
+import { useSWRxPageList } from '~/stores/page';
 
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -45,6 +46,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: comments } = useSWRxPageComment(currentPageId);
+  const { data: pagingResult } = useSWRxPageList(currentPath ?? null);
 
   const { data: editorMode } = useEditorMode();
 
@@ -74,7 +76,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <PageListIcon />
                         {t('page_list')}
-                        <span></span> {/* for a count badge */}
+                        <span>{pagingResult?.totalCount}</span> {/* for a count badge */}
                       </button>
                     ) }
                   </div>
