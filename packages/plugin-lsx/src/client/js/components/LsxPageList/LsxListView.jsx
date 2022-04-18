@@ -1,8 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { PageNode } from '../PageNode';
 import { LsxContext } from '../../util/LsxContext';
+import { PageNode } from '../PageNode';
+
 import { LsxPage } from './LsxPage';
 
 export class LsxListView extends React.Component {
