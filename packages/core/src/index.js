@@ -1,9 +1,9 @@
-import * as _pathUtils from './utils/path-utils';
+import * as _customTagUtils from './plugin/util/custom-tag-utils';
 import * as _envUtils from './utils/env-utils';
 import * as _pagePathUtils from './utils/page-path-utils';
 import * as _pageUtils from './utils/page-utils';
+import * as _pathUtils from './utils/path-utils';
 import * as _templateChecker from './utils/template-checker';
-import * as _customTagUtils from './plugin/util/custom-tag-utils';
 
 // export utils
 export const pathUtils = _pathUtils;
@@ -18,4 +18,5 @@ export * from './plugin/service/tag-cache-manager';
 export * from './models/devided-page-path';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
+export * from './utils/browser-utils';
 export * from './utils/mongoose-utils';

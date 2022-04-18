@@ -74,7 +74,7 @@ class PageGrantService {
     // GRANT_OWNER
     else if (ancestor.grant === Page.GRANT_OWNER) {
       if (target.grantedUserIds?.length !== 1) {
-        throw Error('grantedUserIds must have one user');
+        return false;
       }
 
       if (target.grant !== Page.GRANT_OWNER) { // only GRANT_OWNER page can exist under GRANT_OWNER page

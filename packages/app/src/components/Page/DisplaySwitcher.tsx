@@ -75,7 +75,9 @@ const DisplaySwitcher = (): JSX.Element => {
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPath)}
                       >
-                        <PageListIcon />
+                        <div className="grw-page-accessories-control-icon">
+                          <PageListIcon />
+                        </div>
                         {t('page_list')}
                         <CountBadge count={pagingResult?.totalCount} />
                       </button>
@@ -84,13 +86,17 @@ const DisplaySwitcher = (): JSX.Element => {
 
                   {/* Comments */}
                   { getCommentListDom != null && !isTopPagePath && (
-                    <div className="mt-2">
+                    <div className="grw-page-accessories-control mt-2">
                       <button
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
                       >
+<<<<<<< HEAD
                         <i className="icon-fw icon-bubbles"></i>
+=======
+                        <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
+>>>>>>> feat/add-count-badge-in-toc
                         <span>Comments</span>
                         <CountBadge count={comments != null ? comments.length : 0} />
                       </button>

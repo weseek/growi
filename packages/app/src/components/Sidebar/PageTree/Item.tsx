@@ -94,6 +94,24 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
 };
 
+<<<<<<< HEAD
+=======
+
+type ItemCountProps = {
+  descendantCount: number
+}
+
+const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
+  return (
+    <>
+      <span className="grw-pagetree-count badge badge-pill badge-light">
+        {props.descendantCount}
+      </span>
+    </>
+  );
+};
+
+>>>>>>> feat/add-count-badge-in-toc
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {

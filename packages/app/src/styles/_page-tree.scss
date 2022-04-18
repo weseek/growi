@@ -49,9 +49,15 @@ $grw-pagetree-item-padding-left: 10px;
         display: none;
       }
 
+<<<<<<< HEAD
       .grw-count-badge {
         width: auto;
         padding: 0.1rem 0;
+=======
+      .grw-pagetree-count {
+        min-width: 28px;
+        padding: 0.1rem 0.5rem;
+>>>>>>> feat/add-count-badge-in-toc
         font-size: 12px;
       }
     }
