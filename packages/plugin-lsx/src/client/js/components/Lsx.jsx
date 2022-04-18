@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
-
 import { LsxContext } from '../util/LsxContext';
 import { TagCacheManagerFactory } from '../util/TagCacheManagerFactory';
-import { PageNode } from './PageNode';
+
 import { LsxListView } from './LsxPageList/LsxListView';
+import { PageNode } from './PageNode';
 
 export class Lsx extends React.Component {
 

@@ -16,6 +16,33 @@ module.exports = {
   ],
   rules: {
     'import/prefer-default-export': 'off',
+    'import/order': [
+      'warn',
+      {
+        pathGroups: [
+          {
+            pattern: 'react',
+            group: 'builtin',
+            position: 'before',
+          },
+          {
+            pattern: '^/**',
+            group: 'parent',
+            position: 'before',
+          },
+          {
+            pattern: '~/**',
+            group: 'parent',
+            position: 'before',
+          },
+        ],
+        alphabetize: {
+          order: 'asc',
+        },
+        pathGroupsExcludedImportTypes: ['react'],
+        'newlines-between': 'always',
+      },
+    ],
     '@typescript-eslint/no-explicit-any': 'off',
     indent: [
       'error',
