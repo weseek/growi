@@ -9,6 +9,7 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
+import { useSWRxPageComment } from '~/stores/comment';
 
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -43,6 +44,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
+  const { data: comments } = useSWRxPageComment(currentPageId);
 
   const { data: editorMode } = useEditorMode();
 
@@ -87,7 +89,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="mr-2 icon-fw icon-bubbles"></i>
                         <span>Comments</span>
-                        <span></span> {/* for a count badge */}
+                        <span>{ comments != null ? comments.length : 0 }</span> {/* for a count badge */}
                       </button>
                     </div>
                   ) }
