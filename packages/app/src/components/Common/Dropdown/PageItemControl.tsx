@@ -1,16 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
+
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
-
-import loggerFactory from '~/utils/logger';
 
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useSWRxPageInfo } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
