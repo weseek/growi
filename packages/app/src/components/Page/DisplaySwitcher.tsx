@@ -1,30 +1,29 @@
 import React, { useMemo } from 'react';
+
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
-import { pagePathUtils } from '@growi/core';
 
-import { EditorMode, useEditorMode } from '~/stores/ui';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
-import { useSWRxPageComment } from '~/stores/comment';
+import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageList } from '~/stores/page';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
-
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-
-import PageListIcon from '../Icons/PageListIcon';
-import Editor from '../PageEditor';
-import Page from '../Page';
-import UserInfo from '../User/UserInfo';
-import TableOfContents from '../TableOfContents';
-import ContentLinkButtons from '../ContentLinkButtons';
-import PageEditorByHackmd from '../PageEditorByHackmd';
-import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
-import HashChanged from '../EventListeneres/HashChanged';
 import CountBadge from '../Common/CountBadge';
+import ContentLinkButtons from '../ContentLinkButtons';
+import HashChanged from '../EventListeneres/HashChanged';
+import PageListIcon from '../Icons/PageListIcon';
+import Page from '../Page';
+import Editor from '../PageEditor';
+import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+import PageEditorByHackmd from '../PageEditorByHackmd';
+import TableOfContents from '../TableOfContents';
+import UserInfo from '../User/UserInfo';
 
 
 const WIKI_HEADER_LINK = 120;
@@ -92,11 +91,7 @@ const DisplaySwitcher = (): JSX.Element => {
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
                       >
-<<<<<<< HEAD
-                        <i className="icon-fw icon-bubbles"></i>
-=======
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
->>>>>>> feat/add-count-badge-in-toc
                         <span>Comments</span>
                         <CountBadge count={comments != null ? comments.length : 0} />
                       </button>

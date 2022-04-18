@@ -1,33 +1,33 @@
 import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
-import { DropdownToggle } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-
-import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
+import { useDrag, useDrop } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
+import { DropdownToggle } from 'reactstrap';
 
-import loggerFactory from '~/utils/logger';
 
-import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
-
-import { useSWRxPageChildren } from '~/stores/page-listing';
-import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
-
-import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import CountBadge from '../../Common/CountBadge';
-import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
-import { ItemNode } from './ItemNode';
-import { usePageTreeDescCountMap } from '~/stores/ui';
+import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import TriangleIcon from '~/components/Icons/TriangleIcon';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
+import { usePageTreeDescCountMap } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
+
+
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import CountBadge from '../../Common/CountBadge';
+import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
+
+import { ItemNode } from './ItemNode';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -94,24 +94,7 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
 };
 
-<<<<<<< HEAD
-=======
 
-type ItemCountProps = {
-  descendantCount: number
-}
-
-const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
-  return (
-    <>
-      <span className="grw-pagetree-count badge badge-pill badge-light">
-        {props.descendantCount}
-      </span>
-    </>
-  );
-};
-
->>>>>>> feat/add-count-badge-in-toc
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
