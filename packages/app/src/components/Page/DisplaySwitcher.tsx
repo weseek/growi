@@ -24,6 +24,7 @@ import ContentLinkButtons from '../ContentLinkButtons';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import HashChanged from '../EventListeneres/HashChanged';
+import CountBadge from '../Common/CountBadge';
 
 
 const WIKI_HEADER_LINK = 120;
@@ -76,7 +77,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <PageListIcon />
                         {t('page_list')}
-                        <span>{pagingResult?.totalCount}</span> {/* for a count badge */}
+                        <CountBadge count={pagingResult?.totalCount} />
                       </button>
                     ) }
                   </div>
@@ -89,9 +90,9 @@ const DisplaySwitcher = (): JSX.Element => {
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
                       >
-                        <i className="mr-2 icon-fw icon-bubbles"></i>
+                        <i className="icon-fw icon-bubbles"></i>
                         <span>Comments</span>
-                        <span>{ comments != null ? comments.length : 0 }</span> {/* for a count badge */}
+                        <CountBadge count={comments != null ? comments.length : 0} />
                       </button>
                     </div>
                   ) }

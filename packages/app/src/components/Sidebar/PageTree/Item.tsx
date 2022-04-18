@@ -21,6 +21,7 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -91,21 +92,6 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
-};
-
-
-type ItemCountProps = {
-  descendantCount: number
-}
-
-const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
-  return (
-    <>
-      <span className="grw-pagetree-count px-2 badge badge-pill badge-light">
-        {props.descendantCount}
-      </span>
-    </>
-  );
 };
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
@@ -465,7 +451,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )}
         {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
-            <ItemCount descendantCount={descendantCount} />
+            <CountBadge count={descendantCount} />
           </div>
         )}
         <div className="grw-pagetree-control d-flex">
