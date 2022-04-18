@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -50,13 +51,13 @@ function PageEditorModeManager(props) {
   const showHackmdBtn = isHackmdEnabled || isAdmin;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled || !isHackmdEnabled) {
+    if (isBtnDisabled) {
       return;
     }
     if (onPageEditorModeButtonClicked != null) {
       onPageEditorModeButtonClicked(viewType);
     }
-  }, [isBtnDisabled, isHackmdEnabled, onPageEditorModeButtonClicked]);
+  }, [isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
     <>
@@ -91,7 +92,7 @@ function PageEditorModeManager(props) {
             <PageEditorModeButtonWrapper
               editorMode={editorMode}
               isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
-              onClick={pageEditorModeButtonClickedHandler}
+              onClick={isHackmdEnabled ? pageEditorModeButtonClickedHandler : undefined}
               targetMode={EditorMode.HackMD}
               icon={<i className="fa fa-file-text-o" />}
               label={t('hackmd.hack_md')}
