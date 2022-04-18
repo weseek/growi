@@ -7,7 +7,7 @@ type CountProps = {
 const CountBadge: FC<CountProps> = (props:CountProps) => {
   return (
     <>
-      <span className="grw-pagetree-count px-2 badge badge-pill badge-light">
+      <span className="grw-count-badge px-2 badge badge-pill badge-light">
         {props.count}
       </span>
     </>
