@@ -12,7 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  useSWRxNamedQuerySearch,
+  useSWRxSearch,
 } from '~/stores/search';
 import {
   ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
@@ -133,9 +133,12 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data, conditions, mutate } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
+  // TODOT: replace '/' with keyword
+  const { data, conditions, mutate } = useSWRxSearch('/', 'PrivateLegacyPages', {
     offset,
     limit,
+    includeUserPages: true,
+    includeTrashPages: false,
   });
 
   const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();

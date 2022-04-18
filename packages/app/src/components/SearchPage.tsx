@@ -9,7 +9,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useIsSearchServiceReachable } from '~/stores/context';
-import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
+import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
@@ -119,7 +119,7 @@ export const SearchPage = (props: Props): JSX.Element => {
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions, mutate } = useSWRxFullTextSearch(keyword, {
+  const { data, conditions, mutate } = useSWRxSearch(keyword, null, {
     ...configurationsByControl,
     offset,
     limit,
