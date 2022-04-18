@@ -28,6 +28,7 @@ module.exports = (crowi) => {
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+      query('page').isInt({ min: 1 }).withMessage('page is required and must be set to a number greater than 1'),
       query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
   };
