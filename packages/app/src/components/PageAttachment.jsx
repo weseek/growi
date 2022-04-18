@@ -1,14 +1,17 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PageAttachmentList from './PageAttachment/PageAttachmentList';
-import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
-import PaginationWrapper from './PaginationWrapper';
-import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+
+import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
+import PageAttachmentList from './PageAttachment/PageAttachmentList';
+import PaginationWrapper from './PaginationWrapper';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 
 class PageAttachment extends React.Component {
 
