@@ -216,7 +216,8 @@ class PageService {
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) { return false }
+    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) return false;
+
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -226,7 +227,8 @@ class PageService {
   }
 
   canDelete(path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
-    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) { return false }
+    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) return false;
+
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
