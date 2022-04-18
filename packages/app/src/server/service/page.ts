@@ -215,7 +215,8 @@ class PageService {
     });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDeleteCompletely(creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
+    if (operator == null) return false;
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -224,7 +225,8 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDelete(creatorId: ObjectIdLike, operator: any, isRecursively: boolean): boolean {
+    if (operator == null) return false;
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -2104,8 +2106,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNotEmptyClosestAncestor(page.path);
       const creatorId = notEmptyClosestAncestor.creator;
 
-      const isDeletable = !isMovable ? false : this.canDelete(creatorId, operator, false);
-      const isAbleToDeleteCompletely = !isMovable ? false : this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
+      const isDeletable = this.canDelete(creatorId, operator, false);
+      const isAbleToDeleteCompletely = this.canDeleteCompletely(creatorId, operator, false); // use normal delete config
 
       return {
         isV5Compatible: true,
