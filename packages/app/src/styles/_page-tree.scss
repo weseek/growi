@@ -50,8 +50,8 @@ $grw-pagetree-item-padding-left: 10px;
       }
 
       .grw-pagetree-count {
-        width: auto;
-        padding: 0.1rem 0;
+        min-width: 28px;
+        padding: 0.1rem 0.5rem;
         font-size: 12px;
       }
     }

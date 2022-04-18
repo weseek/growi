@@ -1,30 +1,29 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import detectIndent from 'detect-indent';
 
-import { throttle, debounce } from 'throttle-debounce';
+
 import { envUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
+import detectIndent from 'detect-indent';
+import PropTypes from 'prop-types';
+import { throttle, debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import Editor from './PageEditor/Editor';
-import Preview from './PageEditor/Preview';
-import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-
 import EditorContainer from '~/client/services/EditorContainer';
-
+import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
+
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+import Editor from './PageEditor/Editor';
+import Preview from './PageEditor/Preview';
+import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -332,34 +331,31 @@ class PageEditor extends React.Component {
     const { path } = this.props.pageContainer.state;
 
     return (
-      <>
-        <div className="d-flex flex-wrap">
-          <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-            <Editor
-              ref={(c) => { this.editor = c }}
-              value={this.state.markdown}
-              noCdn={noCdn}
-              isMobile={this.props.appContainer.isMobile}
-              isUploadable={this.state.isUploadable}
-              isUploadableFile={this.state.isUploadableFile}
-              onScroll={this.onEditorScroll}
-              onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
-              onChange={this.onMarkdownChanged}
-              onUpload={this.onUpload}
-              onSave={this.onSaveWithShortcut}
-            />
-          </div>
-          <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
-            <Preview
-              markdown={this.state.markdown}
-              pagePath={path}
-              // eslint-disable-next-line no-return-assign
-              inputRef={(el) => { return this.previewElement = el }}
-              isMathJaxEnabled={this.state.isMathJaxEnabled}
-              renderMathJaxOnInit={false}
-              onScroll={this.onPreviewScroll}
-            />
-          </div>
+      <div className="d-flex flex-wrap">
+        <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
+          <Editor
+            ref={(c) => { this.editor = c }}
+            value={this.state.markdown}
+            noCdn={noCdn}
+            isMobile={this.props.appContainer.isMobile}
+            isUploadable={this.state.isUploadable}
+            isUploadableFile={this.state.isUploadableFile}
+            onScroll={this.onEditorScroll}
+            onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+            onChange={this.onMarkdownChanged}
+            onUpload={this.onUpload}
+            onSave={this.onSaveWithShortcut}
+          />
+        </div>
+        <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+          <Preview
+            markdown={this.state.markdown}
+            // eslint-disable-next-line no-return-assign
+            inputRef={(el) => { return this.previewElement = el }}
+            isMathJaxEnabled={this.state.isMathJaxEnabled}
+            renderMathJaxOnInit={false}
+            onScroll={this.onPreviewScroll}
+          />
         </div>
         <ConflictDiffModal
           isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
@@ -368,7 +364,7 @@ class PageEditor extends React.Component {
           pageContainer={this.props.pageContainer}
           markdownOnEdit={this.state.markdown}
         />
-      </>
+      </div>
     );
   }
 

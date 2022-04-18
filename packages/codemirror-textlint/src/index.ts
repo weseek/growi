@@ -1,6 +1,7 @@
-import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
-import textlintToCodeMirror from 'textlint-message-to-codemirror';
 import textlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatched-pair';
+import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
+import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
+import textlintToCodeMirror from 'textlint-message-to-codemirror';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
 import textlintRuleDateWeekdayMismatch from 'textlint-rule-date-weekday-mismatch';
 // import textlintRuleEnCapitalization from 'textlint-rule-en-capitalization';  // omit because en-pos package is too big
@@ -28,7 +29,6 @@ import textlintRulePreferTariTari from 'textlint-rule-prefer-tari-tari';
 import textlintRuleSentenceLength from 'textlint-rule-sentence-length';
 import textlintRuleUseSiUnits from 'textlint-rule-use-si-units';
 
-import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
 import { loggerFactory } from './utils/logger';
 
 type RulesConfigObj = {

@@ -1,16 +1,17 @@
-import axios from 'axios';
-import { Inject, Service } from '@tsed/di';
-import { MultiStaticSelect } from '@slack/web-api';
 import {
   actionsBlock, buttonElement, getInteractionIdRegexpFromCommandName,
   GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
   inputBlock, InteractionHandledResult, markdownSectionBlock, respond, InteractionPayloadAccessor, replaceOriginal,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
+import { MultiStaticSelect } from '@slack/web-api';
+import { Inject, Service } from '@tsed/di';
+import axios from 'axios';
 import { DeleteResult } from 'typeorm';
-import { RelationRepository } from '~/repositories/relation';
+
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
+import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');

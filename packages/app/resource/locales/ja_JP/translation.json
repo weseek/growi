@@ -686,7 +686,7 @@
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
     "max_age_caution": "この値を変更した後は、サーバーを再起動する必要があります。",
     "forced_update_desc": "設定が強制変更されました。前回の設定: ",
-    "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 誰でも可能 > 管理者とページ作者が可能 > 管理者のみ可能",
+    "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 管理者のみ可能 > 管理者とページ作者が可能 > 誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
@@ -993,6 +993,36 @@
     "success_to_send_email": "メールを送信しました",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
+  },
+  "emoji" :{
+    "title": "絵文字を選択",
+    "search": "探す",
+    "clear": "リセット",
+    "notfound": "絵文字が見つかりません",
+    "skintext": "デフォルトの肌の色を選択",
+    "categories": {
+      "search": "の検索結果",
+      "recent": "最近使用された",
+      "smileys": "スマイリーと感情",
+      "people": "人と体",
+      "nature": "動物と自然",
+      "foods": "食べ物や飲み物",
+      "activity": "アクティビティ",
+      "places": "旅行と場所",
+      "objects": "オブジェクト",
+      "symbols": "シンボル",
+      "flags": "国旗",
+      "custom": "カスタマイズ"
+    },
+    "categorieslabel": "絵文字カテゴリ",
+    "skintones": {
+      "1": "デフォルトの肌の色",
+      "2": "明るい肌のトーン",
+      "3": "ミディアム-明るい肌のトーン",
+      "4": "ミディアムスキントーン",
+      "5": "ミディアムダークスキントーン",
+      "6": "肌の色が濃い"
+    }
   },
   "maintenance_mode":{
     "maintenance_mode": "メンテナンスモード",
