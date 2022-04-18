@@ -8,8 +8,8 @@ const express = require('express');
 
 const router = express.Router();
 const { query } = require('express-validator');
-
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
