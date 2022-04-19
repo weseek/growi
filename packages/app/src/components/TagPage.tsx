@@ -12,9 +12,10 @@ const LIMIT = 10;
 const TagPage: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList } = useSWRxTagDataList(LIMIT, offset);
+  const { data: tagDataList, error } = useSWRxTagDataList(LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
+  const isLoading = tagDataList === undefined && error == null;
 
   const { t } = useTranslation('');
 
@@ -23,9 +24,6 @@ const TagPage: FC = () => {
     setOffset((selectedPageNumber - 1) * 10);
   }, []);
 
-  // todo: consider loading state by designer's advice
-  if (!tagDataList) return <div>{t('Loading')}</div>;
-
   // todo: adjust margin and redesign tags page
   return (
     <div className="grw-container-convertible mb-5 pb-5">
@@ -33,13 +31,22 @@ const TagPage: FC = () => {
       <div className="px-3 text-center">
         <TagCloudBox tags={tagData} minSize={20} />
       </div>
-      <TagList
-        tagData={tagData}
-        totalTags={totalCount}
-        activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
-        onChangePage={setOffsetByPageNumber}
-        limit={LIMIT}
-      />
+      { isLoading
+        ? (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+          </div>
+        )
+        : (
+          <TagList
+            tagData={tagData}
+            totalTags={totalCount}
+            activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
+            onChangePage={setOffsetByPageNumber}
+            limit={LIMIT}
+          />
+        )
+      }
     </div>
   );
 

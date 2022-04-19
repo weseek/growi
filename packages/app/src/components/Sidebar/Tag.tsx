@@ -15,6 +15,7 @@ const Tag: FC = () => {
   const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagDataList(LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
+  const isLoading = tagDataList === undefined && error == null;
 
   const { t } = useTranslation('');
 
@@ -26,18 +27,6 @@ const Tag: FC = () => {
   const onReload = useCallback(() => {
     mutateTagDataList();
   }, [mutateTagDataList]);
-
-
-  // if (!tagDataList) return <div>{t('Loading')}</div>;
-
-  const isLoading = tagDataList === undefined && error == null;
-  if (isLoading) {
-    return (
-      <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-      </div>
-    );
-  }
 
   // todo: adjust design by XD
   return (
@@ -57,6 +46,7 @@ const Tag: FC = () => {
       <div className="px-3 text-center">
         <TagCloudBox tags={tagData} />
       </div>
+
       <div className="d-flex justify-content-center my-5">
         <button
           className="btn btn-primary rounded px-5"
@@ -66,13 +56,23 @@ const Tag: FC = () => {
           {t('Check All tags')}
         </button>
       </div>
-      <TagList
-        tagData={tagData}
-        totalTags={totalCount}
-        activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
-        onChangePage={setOffsetByPageNumber}
-        limit={LIMIT}
-      />
+
+      { isLoading
+        ? (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+          </div>
+        )
+        : (
+          <TagList
+            tagData={tagData}
+            totalTags={totalCount}
+            activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
+            onChangePage={setOffsetByPageNumber}
+            limit={LIMIT}
+          />
+        )
+      }
     </div>
   );
 
