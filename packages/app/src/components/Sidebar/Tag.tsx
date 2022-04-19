@@ -1,5 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
+
 import TagsList from '../TagsList';
 
 const Tag: FC = () => {

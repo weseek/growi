@@ -1,31 +1,29 @@
 import { RefObject } from 'react';
+
+import { isClient, pagePathUtils } from '@growi/core';
+import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import SimpleBar from 'simplebar-react';
 
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
-import { pagePathUtils } from '@growi/core';
-
+import { IFocusable } from '~/client/interfaces/focusable';
+import { Nullable } from '~/interfaces/common';
 import { SidebarContentsType } from '~/interfaces/ui';
+import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useIsEmptyPageInNotFoundContext,
 } from './context';
-import { IFocusable } from '~/client/interfaces/focusable';
-import { Nullable } from '~/interfaces/common';
-import { UpdateDescCountData } from '~/interfaces/websocket';
+import { useStaticSWR } from './use-static-swr';
 
 const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
-
-const isServer = typeof window === 'undefined';
 
 
 /** **********************************************************
@@ -55,10 +53,10 @@ export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRRe
  *********************************************************** */
 
 export const useIsMobile = (): SWRResponse<boolean, Error> => {
-  const key = isServer ? null : 'isMobile';
+  const key = isClient() ? 'isMobile' : null;
 
   let configuration;
-  if (!isServer) {
+  if (isClient()) {
     const userAgent = window.navigator.userAgent.toLowerCase();
     configuration = {
       fallbackData: /iphone|ipad|android/.test(userAgent),
@@ -166,11 +164,11 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
+  const key: Key = isClient() ? 'isDeviceSmallerThanMd' : null;
 
   const { cache, mutate } = useSWRConfig();
 
-  if (!isServer) {
+  if (isClient()) {
     const mdOrAvobeHandler = function(this: MediaQueryList): void {
       // sm -> md: matches will be true
       // md -> sm: matches will be false
@@ -190,11 +188,11 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
 };
 
 export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
+  const key: Key = isClient() ? 'isDeviceSmallerThanLg' : null;
 
   const { cache, mutate } = useSWRConfig();
 
-  if (!isServer) {
+  if (isClient()) {
     const lgOrAvobeHandler = function(this: MediaQueryList): void {
       // md -> lg: matches will be true
       // lg -> md: matches will be false

@@ -1,9 +1,10 @@
 import { pagePathUtils } from '@growi/core';
-import urljoin from 'url-join';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
+import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
+
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -431,6 +432,7 @@ module.exports = function(crowi, app) {
       // redirect to page (path) url
       const url = new URL('https://dummy.origin');
       url.pathname = page.path;
+      url.searchParams.append('originalEmptyPageId', page._id); // add this to distingish if user access the empty page intentionally
       Object.entries(req.query).forEach(([key, value], i) => {
         url.searchParams.append(key, value);
       });
@@ -600,23 +602,6 @@ module.exports = function(crowi, app) {
     res.render('layout-growi/page_list', renderVars);
   };
 
-  async function redirectOperationForMultiplePages(builder, res, redirectFrom, path) {
-    // populate to list
-    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
-
-    // remove empty pages if any.
-    const identicalPathPages = pages.filter(p => !p.isEmpty);
-    // render identical-path-page if count of remaining pages are 2 or more after removal
-    if (identicalPathPages.length >= 2) {
-      return res.render('layout-growi/identical-path-page', {
-        identicalPathPages,
-        redirectFrom,
-        path,
-      });
-    }
-  }
-
   async function redirectOperationForSinglePage(page, req, res) {
     const url = new URL('https://dummy.origin');
     url.pathname = `/${page._id}`;
@@ -625,34 +610,46 @@ module.exports = function(crowi, app) {
     });
     return res.safeRedirect(urljoin(url.pathname, url.search));
   }
+
   /**
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const { redirectFrom } = req.query;
+    const { redirectFrom, originalEmptyPageId } = req.query;
+
+    // originalEmptyPageId exists when user accesses an empty page by pageId
+    if (originalEmptyPageId != null) {
+      req.pageId = originalEmptyPageId;
+      return _notFound(req, res);
+    }
 
     const includeEmpty = true;
     const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
+
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+
     await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
-
     const pages = await builder.query.lean().clone().exec('find');
+    const nonEmptyPages = pages.filter(p => !p.isEmpty);
 
-    const nonEmptyPageCount = pages.reduce((prev, current) => {
-      return prev + (current.isEmpty ? 0 : 1);
-    }, 0);
+    if (nonEmptyPages.length >= 2) {
+      return res.render('layout-growi/identical-path-page', {
+        identicalPathPages: nonEmptyPages,
+        redirectFrom,
+        path,
+      });
+    }
 
-    if (nonEmptyPageCount >= 1) { // Perform the operation only if nonEmptyPage(s) exist
-      if (nonEmptyPageCount >= 2) {
-        return redirectOperationForMultiplePages(builder, res, redirectFrom, path, next);
-      }
+    if (nonEmptyPages.length === 1) {
       const nonEmptyPage = pages.find(p => !p.isEmpty); // find the nonEmpty Page
       return redirectOperationForSinglePage(nonEmptyPage, req, res);
     }
 
     // Processing of nonEmptyPage is finished by the time this code is read
-    // If any pages exists then it should be empty pages
-    if (pages.length >= 1) {
-      req.pageId = pages[0]._id;
+    // If any pages exist then they should be empty
+    const emptyPage = pages[0];
+    if (emptyPage != null) {
+      req.pageId = emptyPage._id;
       return _notFound(req, res);
     }
     // redirect by PageRedirect

@@ -1,9 +1,10 @@
 
+import React from 'react';
+
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
-import React from 'react';
 
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
@@ -58,6 +59,8 @@ export class Lsx extends React.Component {
 
     try {
       const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
+
+      lsxContext.activeUsersCount = res.activeUsersCount;
 
       if (res.ok) {
         const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
