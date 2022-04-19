@@ -201,7 +201,7 @@ module.exports = (crowi) => {
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     restartRenamePage: [
-
+      // need validation
     ],
   };
 
