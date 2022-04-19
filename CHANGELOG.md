@@ -102,6 +102,20 @@
 - support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
 - support: update validator version (#5562) @LuqmanHakim-Grune
 
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
+
+### 🐛 Bug Fixes
+
+* fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina  
+
 ## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
 
 ### 💎 Features
