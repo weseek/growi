@@ -2,6 +2,8 @@
 
 ## [Unreleased](https://github.com/weseek/growi/compare/v4.5.18...HEAD)
 
+*Please do not manually update this file. We've automated the process.*
+
 ## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
 
 ### 🐛 Bug Fixes
@@ -12,7 +14,9 @@
 
 ## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
 
-*Please do not manually update this file. We've automated the process.*
+### 🐛 Bug Fixes
+
+* fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina  
 
 ## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
 
