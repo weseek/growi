@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import TagList from '../TagList';
 import TagCloudBox from '../TagCloudBox';
 
-import { useSWRxTagDataList } from '~/stores/tag';
+import { useSWRxTagsList } from '~/stores/tag';
 import { ITagCountHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
@@ -12,7 +12,7 @@ const LIMIT = 10;
 const Tag: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagDataList(LIMIT, offset);
+  const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagsList(LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
