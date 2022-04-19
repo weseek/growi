@@ -6,8 +6,8 @@ const express = require('express');
 
 const router = express.Router();
 const { query } = require('express-validator');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -27,8 +27,8 @@ module.exports = (crowi) => {
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('page').isInt({ min: 1 }).withMessage('page must be a number greater than or equal to 1'),
-      query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
+      query('page').optional().isInt().withMessage('page must be a number'),
+      query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
   };
   /**
@@ -52,7 +52,7 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
-    const page = req.query.page;
+    const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
     try {
