@@ -8,7 +8,7 @@ describe('User', () => {
   let crowi;
   let User;
 
-  let adminusertest2Id;
+  let adminusertestToBeRemovedId;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -23,25 +23,38 @@ describe('User', () => {
         lang: 'en_US',
       },
       {
-        name: 'Admin Example',
+        name: 'Admin Example Active',
         username: 'adminusertest1',
-        email: 'adminusertest@example.com',
+        email: 'adminusertest1@example.com',
         password: 'adminusertestpass',
+        admin: true,
+        status: User.STATUS_ACTIVE,
+        lang: 'en_US',
+      },
+      {
+        name: 'Admin Example Suspended',
+        username: 'adminusertest2',
+        email: 'adminusertes2@example.com',
+        password: 'adminusertestpass',
+        admin: true,
+        status: User.STATUS_SUSPENDED,
         lang: 'en_US',
       },
       {
         name: 'Admin Example to delete',
-        username: 'adminusertest2',
-        email: 'adminusertest2@example.com',
+        username: 'adminusertestToBeRemoved',
+        email: 'adminusertestToBeRemoved@example.com',
         password: 'adminusertestpass',
+        admin: true,
+        status: User.STATUS_ACTIVE,
         lang: 'en_US',
       },
     ]);
 
-    // delete adminusertest2
-    const adminusertest2 = await User.findOne({ username: 'adminusertest2' });
-    adminusertest2Id = adminusertest2._id;
-    await adminusertest2.statusDelete();
+    // delete adminusertestToBeRemoved
+    const adminusertestToBeRemoved = await User.findOne({ username: 'adminusertestToBeRemoved' });
+    adminusertestToBeRemovedId = adminusertestToBeRemoved._id;
+    await adminusertestToBeRemoved.statusDelete();
   });
 
   describe('Create and Find.', () => {
@@ -62,18 +75,46 @@ describe('User', () => {
       });
 
     });
+
   });
 
   describe('Delete.', () => {
-    test('adminusertest2 should have correct attributes', async() => {
-      const adminusertest2 = await User.findOne({ _id: adminusertest2Id });
 
-      expect(adminusertest2).toBeInstanceOf(User);
-      expect(adminusertest2.name).toBe('');
-      expect(adminusertest2.password).toBe('');
-      expect(adminusertest2.googleId).toBeNull();
-      expect(adminusertest2.isGravatarEnabled).toBeFalsy();
-      expect(adminusertest2.image).toBeNull();
+    describe('Deleted users', () => {
+      test('should have correct attributes', async() => {
+        const adminusertestToBeRemoved = await User.findOne({ _id: adminusertestToBeRemovedId });
+
+        expect(adminusertestToBeRemoved).toBeInstanceOf(User);
+        expect(adminusertestToBeRemoved.name).toBe('');
+        expect(adminusertestToBeRemoved.password).toBe('');
+        expect(adminusertestToBeRemoved.googleId).toBeNull();
+        expect(adminusertestToBeRemoved.isGravatarEnabled).toBeFalsy();
+        expect(adminusertestToBeRemoved.image).toBeNull();
+      });
+    });
+  });
+
+  describe('User.findAdmins', () => {
+    test('should retrieves only active users', async() => {
+      const users = await User.findAdmins();
+      const adminusertestActive = users.find(user => user.username === 'adminusertest1');
+      const adminusertestSuspended = users.find(user => user.username === 'adminusertest2');
+      const adminusertestToBeRemoved = users.find(user => user._id.toString() === adminusertestToBeRemovedId.toString());
+
+      expect(adminusertestActive).toBeInstanceOf(User);
+      expect(adminusertestSuspended).toBeUndefined();
+      expect(adminusertestToBeRemoved).toBeUndefined();
+    });
+
+    test('with \'includesInactive\' option should retrieves suspended users', async() => {
+      const users = await User.findAdmins({ status: [User.STATUS_ACTIVE, User.STATUS_SUSPENDED] });
+      const adminusertestActive = users.find(user => user.username === 'adminusertest1');
+      const adminusertestSuspended = users.find(user => user.username === 'adminusertest2');
+      const adminusertestToBeRemoved = users.find(user => user._id.toString() === adminusertestToBeRemovedId.toString());
+
+      expect(adminusertestActive).toBeInstanceOf(User);
+      expect(adminusertestSuspended).toBeInstanceOf(User);
+      expect(adminusertestToBeRemoved).toBeUndefined();
     });
   });
 
