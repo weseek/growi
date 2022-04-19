@@ -162,6 +162,7 @@ class Lsx {
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const ApiResponse = crowi.require('../util/apiResponse');
   const actions = {};
 
@@ -207,6 +208,15 @@ module.exports = (crowi, app) => {
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
 
+    // count active users
+    let activeUsersCount;
+    try {
+      activeUsersCount = await User.countListByStatus(User.STATUS_ACTIVE);
+    }
+    catch (error) {
+      return res.json(ApiResponse.error(error));
+    }
+
     let query = builder.query;
     try {
       // depth
@@ -227,7 +237,7 @@ module.exports = (crowi, app) => {
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
       const pages = await query.exec();
-      res.json(ApiResponse.success({ pages }));
+      res.json(ApiResponse.success({ pages, activeUsersCount }));
     }
     catch (error) {
       return res.json(ApiResponse.error(error));

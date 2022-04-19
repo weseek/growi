@@ -1,24 +1,23 @@
 import React, { useState, useCallback, useEffect } from 'react';
+
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
-
-import loggerFactory from '~/utils/logger';
 
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useSWRxPageInfo } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
 
 export const MenuItemType = {
   BOOKMARK: 'bookmark',
-  DUPLICATE: 'duplicate',
   RENAME: 'rename',
+  DUPLICATE: 'duplicate',
   DELETE: 'delete',
   REVERT: 'revert',
 } as const;
@@ -34,8 +33,8 @@ type CommonProps = {
   forceHideMenuItems?: ForceHideMenuItems,
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
-  onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
+  onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
@@ -55,7 +54,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
 
@@ -69,14 +68,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }, [onClickBookmarkMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const duplicateItemClickedHandler = useCallback(async() => {
-    if (onClickDuplicateMenuItem == null) {
-      return;
-    }
-    await onClickDuplicateMenuItem(pageId);
-  }, [onClickDuplicateMenuItem, pageId]);
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
     if (onClickRenameMenuItem == null) {
       return;
@@ -87,6 +78,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickRenameMenuItem(pageId, pageInfo);
   }, [onClickRenameMenuItem, pageId, pageInfo]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const duplicateItemClickedHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem(pageId);
+  }, [onClickDuplicateMenuItem, pageId]);
 
   const revertItemClickedHandler = useCallback(async() => {
     if (onClickRevertMenuItem == null) {
@@ -143,18 +142,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </DropdownItem>
         ) }
 
-        {/* Duplicate */}
-        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
-          <DropdownItem
-            onClick={duplicateItemClickedHandler}
-            data-testid="open-page-duplicate-modal-btn"
-            className="grw-page-control-dropdown-item"
-          >
-            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
-            {t('Duplicate')}
-          </DropdownItem>
-        ) }
-
         {/* Move/Rename */}
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
           <DropdownItem
@@ -164,6 +151,18 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           >
             <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
+          </DropdownItem>
+        ) }
+
+        {/* Duplicate */}
+        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
+          <DropdownItem
+            onClick={duplicateItemClickedHandler}
+            data-testid="open-page-duplicate-modal-btn"
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
+            {t('Duplicate')}
           </DropdownItem>
         ) }
 
@@ -224,7 +223,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -255,19 +254,19 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   const isLoading = shouldFetch && fetchedPageInfo == null;
 
-  const duplicateMenuItemClickHandler = useCallback(async() => {
-    if (onClickDuplicateMenuItem == null) {
-      return;
-    }
-    await onClickDuplicateMenuItem(pageId);
-  }, [onClickDuplicateMenuItem, pageId]);
-
   const renameMenuItemClickHandler = useCallback(async() => {
     if (onClickRenameMenuItem == null) {
       return;
     }
     await onClickRenameMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
   }, [onClickRenameMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
+
+  const duplicateMenuItemClickHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem(pageId);
+  }, [onClickDuplicateMenuItem, pageId]);
 
   const deleteMenuItemClickHandler = useCallback(async() => {
     if (onClickDeleteMenuItem == null) {
@@ -289,8 +288,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         isLoading={isLoading}
         pageInfo={fetchedPageInfo ?? presetPageInfo}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickRenameMenuItem={renameMenuItemClickHandler}
+        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
       />
     </Dropdown>

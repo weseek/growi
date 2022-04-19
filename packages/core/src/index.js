@@ -18,4 +18,5 @@ export * from './plugin/service/tag-cache-manager';
 export * from './models/devided-page-path';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
+export * from './utils/browser-utils';
 export * from './utils/mongoose-utils';
