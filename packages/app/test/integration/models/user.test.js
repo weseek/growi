@@ -8,17 +8,40 @@ describe('User', () => {
   let crowi;
   let User;
 
+  let adminusertest2Id;
+
   beforeAll(async() => {
     crowi = await getInstance();
     User = mongoose.model('User');
 
-    await User.create({
-      name: 'Example for User Test',
-      username: 'usertest',
-      email: 'usertest@example.com',
-      password: 'usertestpass',
-      lang: 'en_US',
-    });
+    await User.insertMany([
+      {
+        name: 'Example for User Test',
+        username: 'usertest',
+        email: 'usertest@example.com',
+        password: 'usertestpass',
+        lang: 'en_US',
+      },
+      {
+        name: 'Admin Example',
+        username: 'adminusertest1',
+        email: 'adminusertest@example.com',
+        password: 'adminusertestpass',
+        lang: 'en_US',
+      },
+      {
+        name: 'Admin Example to delete',
+        username: 'adminusertest2',
+        email: 'adminusertest2@example.com',
+        password: 'adminusertestpass',
+        lang: 'en_US',
+      },
+    ]);
+
+    // delete adminusertest2
+    const adminusertest2 = await User.findOne({ username: 'adminusertest2' });
+    adminusertest2Id = adminusertest2._id;
+    await adminusertest2.statusDelete();
   });
 
   describe('Create and Find.', () => {
@@ -38,6 +61,19 @@ describe('User', () => {
         expect(user.name).toBe('Example for User Test');
       });
 
+    });
+  });
+
+  describe('Delete.', () => {
+    test('adminusertest2 should have correct attributes', async() => {
+      const adminusertest2 = await User.findOne({ _id: adminusertest2Id });
+
+      expect(adminusertest2).toBeInstanceOf(User);
+      expect(adminusertest2.name).toBe('');
+      expect(adminusertest2.password).toBe('');
+      expect(adminusertest2.googleId).toBeNull();
+      expect(adminusertest2.isGravatarEnabled).toBeFalsy();
+      expect(adminusertest2.image).toBeNull();
     });
   });
 
