@@ -1,6 +1,10 @@
 import React, { FC, useRef, useEffect } from 'react';
-import i18n from 'i18next';
+
 import { Picker } from 'emoji-mart';
+import i18n from 'i18next';
+
+import { isDarkMode } from '~/client/util/color-scheme';
+
 import EmojiPickerHelper from './EmojiPickerHelper';
 
 type Props = {
@@ -98,11 +102,11 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   };
 
   const translation = getEmojiTranslation();
-
+  const theme = isDarkMode() ? 'dark' : 'light';
   return (
     <div className="overlay">
       <div ref={emojiPickerContainer}>
-        <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} emojiTooltip />
+        <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} emojiTooltip theme={theme} />
       </div>
     </div>
   );
