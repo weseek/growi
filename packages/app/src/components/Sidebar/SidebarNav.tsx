@@ -35,6 +35,8 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
 
   const labelForTestId = label.toLowerCase().replace(' ', '-');
 
+  console.log(labelForTestId, 'ああああ');
+
   return (
     <button
       type="button"

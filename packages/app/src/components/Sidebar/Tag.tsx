@@ -1,11 +1,13 @@
 import React, { FC, useState, useCallback } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import TagList from '../TagList';
-import TagCloudBox from '../TagCloudBox';
-
-import { useSWRxTagsList } from '~/stores/tag';
 import { ITagCountHasId } from '~/interfaces/tag';
+import { useSWRxTagsList } from '~/stores/tag';
+
+import TagCloudBox from '../TagCloudBox';
+import TagList from '../TagList';
+
 
 const LIMIT = 10;
 
@@ -30,7 +32,7 @@ const Tag: FC = () => {
 
   // todo: adjust design by XD
   return (
-    <div className="grw-container-convertible px-4 mb-5 pb-5">
+    <div className="grw-container-convertible px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>
         <button

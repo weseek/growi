@@ -1,9 +1,12 @@
 import React, {
   FC, useCallback,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
-import PaginationWrapper from './PaginationWrapper';
+
 import { ITagCountHasId } from '~/interfaces/tag';
+
+import PaginationWrapper from './PaginationWrapper';
 
 type TagListProps = {
   tagData: ITagCountHasId[],
@@ -47,7 +50,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   }
 
   return (
-    <>
+    <div data-testid="grw-tags-list">
       <ul className="list-group text-left mb-4">
         {generateTagList(tagData)}
       </ul>
@@ -63,7 +66,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         />
       )
       }
-    </>
+    </div>
   );
 
 };
