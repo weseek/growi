@@ -1,11 +1,12 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
+
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 type IObjectId = mongoose.Types.ObjectId;
@@ -39,6 +40,7 @@ export interface IPageOperation {
   user: IUserForResuming,
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
+  isFailure: boolean,
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -94,6 +96,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
+  isFailure: { type: Boolean, default: false, required: true },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
