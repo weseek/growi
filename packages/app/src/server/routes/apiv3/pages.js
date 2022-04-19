@@ -1,16 +1,15 @@
-import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
-const mongoose = require('mongoose');
-
-const { body } = require('express-validator');
+const express = require('express');
 const { query } = require('express-validator');
+const { body } = require('express-validator');
+const mongoose = require('mongoose');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -200,6 +199,9 @@ module.exports = (crowi) => {
       body('isRecursively')
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
+    ],
+    restartRenamePage: [
+
     ],
   };
 
@@ -534,6 +536,19 @@ module.exports = (crowi) => {
 
     return res.apiv3(result);
   });
+
+  router.post('/restart-page-rename-operation',
+    accessTokenParser, loginRequiredStrictly, csrf, validator.restartRenamePage, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.body;
+      const operator = req.user;
+      try {
+        await crowi.pageService.restartPageRenameOperation(operator, pageId);
+      }
+      catch (err) {
+        logger.error('Faild renaming page', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   /**
    * @swagger
