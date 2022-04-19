@@ -26,6 +26,7 @@ import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
 import SearchControl from './SearchPage/SearchControl';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -43,20 +44,24 @@ type SearchResultListHeadProps = {
   offset: number,
   pagingSize: number,
   onPagingSizeChanged: (size: number) => void,
+  migrationStatus?: V5MigrationStatus,
 }
 
 const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
   const { t } = useTranslation();
-  const { data: migrationStatus } = useSWRxV5MigrationStatus();
-
-  if (migrationStatus == null) {
-    return <></>;
-  }
 
   const {
     searchResult, offset, pagingSize,
-    onPagingSizeChanged,
+    onPagingSizeChanged, migrationStatus,
   } = props;
+
+  if (migrationStatus == null) {
+    return (
+      <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      </div>
+    );
+  }
 
   const { took, total, hitsCount } = searchResult.meta;
   const leftNum = offset + 1;
@@ -152,7 +157,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     includeTrashPages: false,
   });
 
+  const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
+
   const searchInvokedHandler = useCallback((_keyword: string) => {
+    mutateMigrationStatus();
     setKeyword(_keyword);
     setOffset(0);
   }, []);
@@ -225,10 +233,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       () => {
         toastSuccess(t('Successfully requested'));
         closeModal();
+        mutateMigrationStatus();
         mutate();
       },
     );
-  }, [data, mutate, openModal, closeModal]);
+  }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
     setOffset(0);
@@ -300,9 +309,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
+        migrationStatus={migrationStatus}
       />
     );
-  }, [data, limit, offset, pagingSizeChangedHandler]);
+  }, [data, limit, offset, pagingSizeChangedHandler, migrationStatus]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
