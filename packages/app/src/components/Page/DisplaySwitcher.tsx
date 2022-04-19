@@ -78,7 +78,7 @@ const DisplaySwitcher = (): JSX.Element => {
                           <PageListIcon />
                         </div>
                         {t('page_list')}
-                        <CountBadge count={pagingResult?.totalCount} />
+                        {pagingResult != null && <CountBadge count={pagingResult.totalCount} />}
                       </button>
                     ) }
                   </div>
@@ -93,7 +93,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
-                        <CountBadge count={comments != null ? comments.length : 0} />
+                        {comments != null && <CountBadge count={comments.length} />}
                       </button>
                     </div>
                   ) }

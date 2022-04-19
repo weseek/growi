@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 type CountProps = {
-  count: number | null | undefined
+  count: number
 }
 
 const CountBadge: FC<CountProps> = (props:CountProps) => {
