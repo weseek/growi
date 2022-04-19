@@ -12,7 +12,7 @@ const LIMIT = 10;
 const Tag: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagDataList(LIMIT, offset);
+  const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagDataList(LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
 
@@ -27,8 +27,17 @@ const Tag: FC = () => {
     mutateTagDataList();
   }, [mutateTagDataList]);
 
-  // todo: consider loading state by designer's advice
-  if (!tagDataList) return <div>{t('Loading')}</div>;
+
+  // if (!tagDataList) return <div>{t('Loading')}</div>;
+
+  const isLoading = tagDataList === undefined && error == null;
+  if (isLoading) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+      </div>
+    );
+  }
 
   // todo: adjust design by XD
   return (
