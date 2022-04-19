@@ -36,7 +36,7 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
 };
 export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
   const getKey = (page: number) => {
-    return `/pages/recent?page=${page + 1}`;
+    return `/pages/recent?offset=${page + 1}`;
   };
   return useSWRInfinite(
     getKey,

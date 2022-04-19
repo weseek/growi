@@ -514,14 +514,10 @@ export const getPageSchema = (crowi) => {
     }
 
     // Pagination for infinite scroll
-    // Paginate with mongoose paginate v2 & `page` exists is in options
-    const skip = opt.page ? (+opt.page - 1) * opt.limit : opt.offset;
-
     const paginationOptions = {
       lean: true,
       limit: opt.limit,
-      offset: skip,
-      page: opt.page,
+      offset: opt.offset,
       sort: sortOpt,
     };
     const paginatedPages = await Page.paginate(builder.query.clone(), paginationOptions);
