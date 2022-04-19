@@ -19,8 +19,8 @@ context('Access to page', () => {
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
 
-    // wait until opacity is 1.
-    cy.getByTestid('grw-fab-create-page').should('have.css', 'opacity', '1')
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
@@ -95,6 +95,8 @@ context('Access to special pages', () => {
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
     cy.getByTestid('grw-sidebar-content-tags').should('be.visible');
+    cy.getByTestid('grw-tags-list').should('be.visible');
+    cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
     cy.getByTestid('tags-page').should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);

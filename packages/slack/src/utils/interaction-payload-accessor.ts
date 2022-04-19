@@ -1,6 +1,8 @@
 import assert from 'assert';
-import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
+
 import { IChannel } from '../interfaces/channel';
+import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
+
 import loggerFactory from './logger';
 
 const logger = loggerFactory('@growi/slack:utils:interaction-payload-accessor');
