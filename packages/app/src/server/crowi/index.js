@@ -130,7 +130,7 @@ Crowi.prototype.init = async function() {
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
-    this.setupUserGroup(),
+    this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
@@ -644,7 +644,7 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
   }
 };
 
-Crowi.prototype.setupUserGroup = async function() {
+Crowi.prototype.setupUserGroupService = async function() {
   const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);

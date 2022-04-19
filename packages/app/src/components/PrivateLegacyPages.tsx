@@ -204,7 +204,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     openModal(
       selectedPages,
       () => {
-        toastSuccess('success');
+        toastSuccess(t('Successfully requested'));
         closeModal();
         mutate();
       },

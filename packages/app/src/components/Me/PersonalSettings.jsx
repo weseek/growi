@@ -1,15 +1,17 @@
 
 import React, { useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
-import UserSettings from './UserSettings';
-import PasswordSettings from './PasswordSettings';
-import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
+
 import ApiSettings from './ApiSettings';
 import { EditorSettings } from './EditorSettings';
+import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import InAppNotificationSettings from './InAppNotificationSettings';
+import PasswordSettings from './PasswordSettings';
+import UserSettings from './UserSettings';
 
 const PersonalSettings = (props) => {
 
@@ -58,7 +60,9 @@ const PersonalSettings = (props) => {
 
 
   return (
-    <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+    <div data-testid="grw-personal-settings">
+      <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+    </div>
   );
 
 };
