@@ -96,7 +96,7 @@
 </div><!-- /#wrapper -->
 
 {% block fixed-controls %}
-<div id="grw-fab-container"></div>
+<div id="grw-fab-container" data-testid="grw-fab-container"></div>
 {% endblock %}
 
 <div id="grw-hotkeys-manager"></div>
@@ -104,6 +104,14 @@
 {% include '../widget/system-version.html' %}
 
 <div id="page-create-modal"></div>
+<div id="page-delete-modal"></div>
+<div id="page-duplicate-modal"></div>
+<div id="page-rename-modal"></div>
+<div id="page-presentation-modal"></div>
+<div id="page-accessories-modal"></div>
+<div id="descendants-page-list-modal"></div>
+<div id="page-put-back-modal"></div>
+
 {% include '../modal/shortcuts.html' %}
 
 {% block body_end %}
@@ -123,6 +131,11 @@
 {% if userUISettings != null %}
   <script type="application/json" id="growi-user-ui-settings">
   {{ userUISettings|json|safe }}
+  </script>
+{% endif %}
+{% if targetAndAncestors != null %}
+  <script type="application/json" id="growi-pagetree-target-and-ancestors">
+  {{ targetAndAncestors|json|safe }}
   </script>
 {% endif %}
 

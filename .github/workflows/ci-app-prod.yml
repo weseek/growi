@@ -5,6 +5,8 @@ on:
     branches:
       - master
   pull_request:
+    branches:
+        - master
     types: [opened, reopened, synchronize]
 
 jobs:
@@ -22,6 +24,7 @@ jobs:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 16.x
+      skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
       cypress-report-artifact-name: Cypress report
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -36,6 +39,7 @@ jobs:
 
     with:
       node-version: 16.x
+      skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
       cypress-report-artifact-name: Cypress report
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}

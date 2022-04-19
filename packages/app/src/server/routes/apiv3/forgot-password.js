@@ -1,14 +1,20 @@
+import { format, subSeconds } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
+import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
-import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
+
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import httpErrorHandler from '../../middlewares/http-error-handler';
+import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body } = require('express-validator');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
@@ -18,7 +24,6 @@ module.exports = (crowi) => {
   const User = crowi.model('User');
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
     password: [
@@ -40,23 +45,25 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+  const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
+
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
     return mailService.send({
       to: email,
-      subject: txtFileName,
+      subject: '[GROWI] Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
         url,
+        expiredAt,
       },
     });
   }
 
-  router.post('/', async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
-    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -71,7 +78,10 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+      const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
+      const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();
     }
     catch (err) {
@@ -81,11 +91,12 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', apiLimiter, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/', apiLimiter, checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
@@ -109,6 +120,7 @@ module.exports = (crowi) => {
   });
 
   // middleware to handle error
+  router.use(httpErrorHandler);
   router.use((error, req, res, next) => {
     if (error != null) {
       return res.apiv3Err(new ErrorV3(error.message, error.code));

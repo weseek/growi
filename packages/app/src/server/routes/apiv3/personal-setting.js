@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
 import InAppNotificationSettings from '../../models/in-app-notification-settings';
 
@@ -69,16 +70,21 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const { User, ExternalAccount } = crowi.models;
 
   const validator = {
     personal: [
       body('name').isString().not().isEmpty(),
-      body('email').isEmail(),
+      body('email')
+        .isEmail()
+        .custom((email) => {
+          if (!User.isEmailValid(email)) throw new Error('email is not included in whitelist');
+          return true;
+        }),
       body('lang').isString().isIn(listLocaleIds()),
       body('isEmailPublished').isBoolean(),
+      body('slackMemberId').optional().isString(),
     ],
     imageType: [
       body('isGravatarEnabled').isBoolean(),
@@ -221,6 +227,7 @@ module.exports = (crowi) => {
       user.email = req.body.email;
       user.lang = req.body.lang;
       user.isEmailPublished = req.body.isEmailPublished;
+      user.slackMemberId = req.body.slackMemberId;
 
       const updatedUser = await user.save();
       req.i18n.changeLanguage(req.body.lang);

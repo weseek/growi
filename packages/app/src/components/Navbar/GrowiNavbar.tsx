@@ -1,20 +1,21 @@
 import React, { FC, memo } from 'react';
+
 import PropTypes from 'prop-types';
-
 import { useTranslation } from 'react-i18next';
-
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd, usePageCreateModalOpened } from '~/stores/ui';
+import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
-
-import PersonalDropdown from './PersonalDropdown';
-import GlobalSearch from './GlobalSearch';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import GlobalSearch from './GlobalSearch';
+import PersonalDropdown from './PersonalDropdown';
 
 
 type NavbarRightProps = {
@@ -22,7 +23,8 @@ type NavbarRightProps = {
 }
 const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { t } = useTranslation();
-  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { open: openCreateModal } = usePageCreateModal();
 
   const { currentUser } = props;
 
@@ -41,14 +43,15 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <button
           className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
           type="button"
-          onClick={() => mutatePageCreateModalOpened(true)}
+          data-testid="newPageBtn"
+          onClick={() => openCreateModal(currentPagePath || '')}
         >
           <i className="icon-pencil mr-2"></i>
           <span className="d-none d-lg-block">{ t('New') }</span>
         </button>
       </li>
 
-      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
+      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
         <PersonalDropdown />
       </li>
     </>
@@ -90,6 +93,7 @@ const GrowiNavbar = (props) => {
   const { crowi, isSearchServiceConfigured } = appContainer.config;
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   return (
     <>
@@ -111,7 +115,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>

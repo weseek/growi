@@ -18,13 +18,17 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AppService from '../service/app';
 import AclService from '../service/acl';
+import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
+import PageService from '../service/page';
+import PageGrantService from '../service/page-grant';
+import PageOperationService from '../service/page-operation';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import SearchService from '../service/search';
 import { InstallerService } from '../service/installer';
-
-import Actiity from '../models/activity';
+import Activity from '../models/activity';
+import UserGroup from '../models/user-group';
+import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -126,7 +130,7 @@ Crowi.prototype.init = async function() {
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
-    this.setupUserGroup(),
+    this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
@@ -276,7 +280,9 @@ Crowi.prototype.setupModels = async function() {
   allModels = models;
 
   // include models that independent from crowi
-  allModels.Activity = Actiity;
+  allModels.Activity = Activity;
+  allModels.UserGroup = UserGroup;
+  allModels.PageRedirect = PageRedirect;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
@@ -393,11 +399,12 @@ Crowi.prototype.autoInstall = function() {
     admin: true,
   };
   const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+  const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
 
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
@@ -637,7 +644,7 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
   }
 };
 
-Crowi.prototype.setupUserGroup = async function() {
+Crowi.prototype.setupUserGroupService = async function() {
   const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
@@ -667,9 +674,16 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  const PageEventService = require('../service/page');
   if (this.pageService == null) {
-    this.pageService = new PageEventService(this);
+    this.pageService = new PageService(this);
+  }
+  if (this.pageGrantService == null) {
+    this.pageGrantService = new PageGrantService(this);
+  }
+  if (this.pageOperationService == null) {
+    this.pageOperationService = new PageOperationService(this);
+    // TODO: Remove this code when resuming feature is implemented
+    await this.pageOperationService.init();
   }
 };
 

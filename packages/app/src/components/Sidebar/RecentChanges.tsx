@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
@@ -14,8 +14,6 @@ import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
-
-import FootstampIcon from '../FootstampIcon';
 
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -123,7 +121,7 @@ SmallPageItem.propTypes = {
 };
 
 
-const RecentChanges: FC<void> = () => {
+const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: pages, mutate } = useSWRxRecentlyUpdated();
@@ -167,7 +165,7 @@ const RecentChanges: FC<void> = () => {
           </div>
         </div>
       </div>
-      <div className="grw-sidebar-content-body grw-recent-changes p-3">
+      <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
           {(pages || []).map(page => (isRecentChangesSidebarSmall
             ? <SmallPageItem key={page._id} page={page} />

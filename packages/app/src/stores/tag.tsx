@@ -1,23 +1,14 @@
-import useSWR, { SWRResponse } from 'swr';
-import { ITagCountHasId } from '~/interfaces/tag';
-import { apiGet } from '~/client/util/apiv1-client';
+import { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
-type ITagDataListResponse = {
-  data: ITagCountHasId[],
-  totalCount: number,
-}
+import { ITagsListApiv1Result } from '~/interfaces/tag';
 
-export const useSWRxTagDataList = (
-    limit: number,
-    offset: number,
-): SWRResponse<ITagDataListResponse, Error> => {
-  return useSWR(
-    `/tags.list?limit=${limit}&offset=${offset}`,
-    endpoint => apiGet(endpoint).then((response: ITagDataListResponse) => {
-      return {
-        data: response.data,
-        totalCount: response.totalCount,
-      };
-    }),
+import { apiGet } from '../client/util/apiv1-client';
+
+
+export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<ITagsListApiv1Result, Error> => {
+  return useSWRImmutable(
+    ['/tags.list', limit, offset],
+    (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then((result: ITagsListApiv1Result) => result),
   );
 };

@@ -1,5 +1,8 @@
 import path from 'path';
+
+import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
+
 import UserRegistrationOrder from '../models/user-registration-order';
 
 export const form = (req, res): void => {
@@ -20,17 +23,21 @@ async function makeRegistrationEmailToken(email, crowi) {
   const appUrl = appService.getSiteUrl();
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
+  const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+  const expiredAt = subSeconds(userRegistrationOrder.expiredAt, grwTzoffsetSec);
+  const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
   const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
   const oneTimeUrl = url.href;
   const txtFileName = 'userActivation';
 
   return mailService.send({
     to: email,
-    subject: txtFileName,
+    subject: '[GROWI] User Activation',
     template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
     vars: {
       appTitle: appService.getAppTitle(),
       email,
+      expiredAt: formattedExpiredAt,
       url: oneTimeUrl,
     },
   });
