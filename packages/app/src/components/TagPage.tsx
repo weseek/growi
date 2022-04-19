@@ -1,11 +1,12 @@
 import React, { FC, useState, useCallback } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import TagList from './TagList';
-import TagCloudBox from './TagCloudBox';
-
-import { useSWRxTagsList } from '~/stores/tag';
 import { ITagCountHasId } from '~/interfaces/tag';
+import { useSWRxTagsList } from '~/stores/tag';
+
+import TagCloudBox from './TagCloudBox';
+import TagList from './TagList';
 
 const LIMIT = 10;
 
@@ -38,13 +39,15 @@ const TagPage: FC = () => {
           </div>
         )
         : (
-          <TagList
-            tagData={tagData}
-            totalTags={totalCount}
-            activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
-            onChangePage={setOffsetByPageNumber}
-            limit={LIMIT}
-          />
+          <div data-testid="grw-tags-list">
+            <TagList
+              tagData={tagData}
+              totalTags={totalCount}
+              activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
+              onChangePage={setOffsetByPageNumber}
+              limit={LIMIT}
+            />
+          </div>
         )
       }
     </div>
