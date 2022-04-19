@@ -957,9 +957,7 @@ export function generateGrantCondition(
 schema.statics.generateGrantCondition = generateGrantCondition;
 
 schema.statics.findNotEmptyClosestAncestor = async function(path: string): Promise<PageDocument> {
-  const Page = mongoose.model('Page') as unknown as PageModel;
-  const { PageQueryBuilder } = Page;
-  const builderForAncestors = new PageQueryBuilder(Page.find(), false); // empty page not included
+  const builderForAncestors = new PageQueryBuilder(this.find(), false); // empty page not included
 
   const ancestors = await builderForAncestors
     .addConditionToListOnlyAncestors(path) // only ancestor paths
