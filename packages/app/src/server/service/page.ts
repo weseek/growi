@@ -2309,23 +2309,25 @@ class PageService {
       throw Error('Restricted pages can not be migrated');
     }
 
-    let updatedPage;
+    let normalizedPage;
 
     // replace if empty page exists
     if (existingPage != null && existingPage.isEmpty) {
-      await Page.replaceTargetWithPage(existingPage, page, true);
-      updatedPage = await Page.findById(page._id);
+      // Inherit descendantCount from the empty page
+      const updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { descendantCount: existingPage.descendantCount }, { new: true });
+      await Page.replaceTargetWithPage(existingPage, updatedPage, true);
+      normalizedPage = await Page.findById(page._id);
     }
     else {
       const parent = await Page.getParentAndFillAncestors(page.path, user);
-      updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
+      normalizedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
 
     // Update descendantCount
     const inc = 1;
-    await this.updateDescendantCountOfAncestors(updatedPage.parent, inc, true);
+    await this.updateDescendantCountOfAncestors(normalizedPage.parent, inc, true);
 
-    return updatedPage;
+    return normalizedPage;
   }
 
   async normalizeParentRecursivelyByPages(pages, user): Promise<void> {
@@ -2371,6 +2373,17 @@ class PageService {
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
+      const Page = mongoose.model('Page') as unknown as PageModel;
+      const { PageQueryBuilder } = Page;
+      const builder = new PageQueryBuilder(Page.findOne());
+      builder.addConditionAsMigrated();
+      builder.addConditionToListByPathsArray([page.path]);
+      const existingPage = await builder.query.exec();
+
+      if (existingPage?.parent != null) {
+        throw Error('This page has already converted.');
+      }
+
       let pageOp;
       try {
         pageOp = await PageOperation.create({
@@ -2386,7 +2399,14 @@ class PageService {
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
-      await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+
+      try {
+        await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+      }
+      catch (err) {
+        logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+        throw err;
+      }
     }
   }
 
@@ -2396,6 +2416,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.findOne(), true);
     builder.addConditionAsMigrated();
+    builder.addConditionToListByPathsArray([page.path]);
     const exPage = await builder.query.exec();
     const options = { prevDescendantCount: exPage?.descendantCount ?? 0 };
 
@@ -2572,18 +2593,9 @@ class PageService {
     return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
   }
 
-  private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
-  ): Promise<void> {
-    const BATCH_SIZE = 100;
-    const PAGES_LIMIT = 1000;
-
-    const socket = this.crowi.socketIoService.getAdminSocket();
-
+  private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
 
-    // Build filter
     const andFilter: any = {
       $and: [
         {
@@ -2620,9 +2632,26 @@ class PageService {
       ],
     };
 
+    return mergedFilter;
+  }
+
+  private async _normalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
+  ): Promise<void> {
+    const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 1000;
+
+    const socket = this.crowi.socketIoService.getAdminSocket();
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    // Build filter
+    const matchFilter = this.buildFilterForNormalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser);
+
     let baseAggregation = Page
       .aggregate([
-        { $match: mergedFilter },
+        { $match: matchFilter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -2632,7 +2661,7 @@ class PageService {
       ]);
 
     // Limit pages to get
-    const total = await Page.countDocuments(mergedFilter);
+    const total = await Page.countDocuments(matchFilter);
     if (isFirst) {
       socket.emit(SocketEventName.PMStarted, { total });
     }
@@ -2713,6 +2742,9 @@ class PageService {
               {
                 path: { $regex: new RegExp(`^${parentPathEscaped}(\\/[^/]+)\\/?$`, 'i') }, // see: regexr.com/6889f (e.g. /parent/any_child or /any_level1)
               },
+              {
+                path: { $in: pathOrRegExps.concat(publicPathsToNormalize) },
+              },
               filterForApplicableAncestors,
               grantFiltersByUser,
             ],
@@ -2769,7 +2801,7 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(mergedFilter) && shouldContinue) {
+    if (await Page.exists(matchFilter) && shouldContinue) {
       return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
     }
 

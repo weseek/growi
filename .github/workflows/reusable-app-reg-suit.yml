@@ -9,6 +9,8 @@ on:
       checkout-ref:
         type: string
         default: ${{ github.head_ref }}
+      skip-reg-suit:
+        type: boolean
       cypress-report-artifact-name:
         required: true
         type: string
@@ -32,6 +34,8 @@ jobs:
     # use secrets for "VRT" environment
     # https://github.com/weseek/growi/settings/environments/376165508/edit
     environment: VRT
+
+    if: ${{ !inputs.skip-reg-suit }}
 
     env:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
@@ -71,7 +75,7 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download screenshots taken by cypress
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: packages/app/test/cypress
