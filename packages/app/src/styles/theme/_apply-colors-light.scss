@@ -357,6 +357,11 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 * grw-side-contents
 */
 .grw-side-contents-sticky-container {
+  .grw-count-badge {
+    color: $gray-500;
+    background: $gray-200;
+  }
+
   .grw-border-vr {
     border-color: $border-color-toc;
   }
