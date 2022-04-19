@@ -48,10 +48,12 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     const _pages: PageDocument[] = await findQueryBuilder
       .addConditionToPagenate(offset, limit)
       .query
+      .populate('creator')
       .populate('lastUpdateUser')
       .exec();
 
     const pages = _pages.map((page) => {
+      page.creator = serializeUserSecurely(page.creator);
       page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
       return page;
     });

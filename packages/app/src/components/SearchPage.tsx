@@ -193,7 +193,7 @@ export const SearchPage = (props: Props): JSX.Element => {
   }, [keyword]);
   const hitsCount = data?.meta.hitsCount;
 
-  const deleteAllControl = useMemo(() => {
+  const allControl = useMemo(() => {
     const isDisabled = hitsCount === 0;
 
     return (
@@ -222,13 +222,15 @@ export const SearchPage = (props: Props): JSX.Element => {
     return (
       <SearchControl
         isSearchServiceReachable={isSearchServiceReachable}
+        isEnableSort
+        isEnableFilter
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
-        deleteAllControl={deleteAllControl}
+        allControl={allControl}
       >
       </SearchControl>
     );
-  }, [deleteAllControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
+  }, [allControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
