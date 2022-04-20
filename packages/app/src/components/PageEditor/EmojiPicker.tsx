@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
