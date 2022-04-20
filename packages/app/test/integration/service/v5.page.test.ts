@@ -130,7 +130,7 @@ describe('Test page service methods', () => {
       {
         _id: pageOpId1,
         actionType: 'Rename',
-        actionStage: 'Sub',
+        actionStage: 'Main',
         fromPath: '/_renamePOP1',
         toPath: '/renamePOP1',
         page: {
@@ -170,7 +170,7 @@ describe('Test page service methods', () => {
       mockedRenameSubOperation.mockRestore();
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
     };
-    test('it should successfully restart rename operation when ActionType of unfinished PageOperation is Main', async() => {
+    test('it should successfully restart rename operation', async() => {
       const _path1 = '/renamePOP1';
       const _path2 = '/renamePOP1/renamePOP2';
       const _path3 = '/_renamePOP1/renamePOP2/renamePOP3'; // not processed
@@ -207,7 +207,6 @@ describe('Test page service methods', () => {
       expect(page3.parent).toStrictEqual(page2._id);
       expect(page4.parent).toStrictEqual(page3._id);
     });
-    test('it should successfully restart rename operation when ActionType of unfinished PageOperation is Sub', async() => {});
     test('it should fail when PageOperation is not found', async() => {});
   });
 });
