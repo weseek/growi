@@ -10,6 +10,7 @@ const { pathUtils, pagePathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
+const { query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
