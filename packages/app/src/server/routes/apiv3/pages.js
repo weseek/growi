@@ -200,9 +200,6 @@ module.exports = (crowi) => {
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
-    restartRenamePage: [
-      body('pageId').isMongoId().withMessage('pageId is required'),
-    ],
   };
 
   async function createPageAction({
@@ -537,18 +534,6 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  router.post('/restart-page-rename-operation',
-    accessTokenParser, loginRequiredStrictly, csrf, validator.restartRenamePage, apiV3FormValidator, async(req, res) => {
-      const { pageId } = req.body;
-      const operator = req.user;
-      try {
-        await crowi.pageService.restartPageRenameOperation(operator, pageId);
-      }
-      catch (err) {
-        logger.error('Faild to restart renaming pages', err);
-        return res.apiv3Err(err, 500);
-      }
-    });
 
   /**
    * @swagger
