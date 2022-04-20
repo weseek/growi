@@ -448,16 +448,7 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-
-    let renamedPage;
-    try {
-      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
-    }
-    catch (err) {
-      pageOp.isFailure = true;
-      pageOp.save();
-      throw err;
-    }
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
 
     return renamedPage;
   }
