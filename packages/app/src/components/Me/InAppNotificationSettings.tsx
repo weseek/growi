@@ -2,10 +2,11 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
 import { pullAllBy } from 'lodash';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { useTranslation } from 'react-i18next';
+
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { subscribeRuleNames, SubscribeRuleDescriptions } from '~/interfaces/in-app-notification';
 
 type SubscribeRule = {
@@ -96,6 +97,7 @@ const InAppNotificationSettings: FC = () => {
       <div className="row my-3">
         <div className="offset-4 col-5">
           <button
+            data-testid="grw-in-app-notification-settings-update-button"
             type="button"
             className="btn btn-primary"
             onClick={updateSettingsHandler}

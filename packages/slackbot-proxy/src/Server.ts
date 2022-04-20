@@ -1,26 +1,27 @@
-import { Configuration, Inject, InjectorService } from '@tsed/di';
-import { HttpServer, PlatformApplication } from '@tsed/common';
 import '@tsed/platform-express'; // !! DO NOT MODIFY !!
 import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
 import '@tsed/swagger';
 
+import { createTerminus } from '@godaddy/terminus';
+import { HttpServer, PlatformApplication } from '@tsed/common';
+import { Configuration, Inject, InjectorService } from '@tsed/di';
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
-import methodOverride from 'method-override';
-import helmet from 'helmet';
 import { Express } from 'express';
 import expressBunyanLogger from 'express-bunyan-logger';
-
+import helmet from 'helmet';
+import methodOverride from 'method-override';
 import { ConnectionOptions, getConnectionManager } from 'typeorm';
-import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
+import loggerFactory from '~/utils/logger';
+
 import { GlobalHttpErrorHandlingMiddleware } from './middlewares/GlobalHttpErrorHandlingMiddleware';
+
 import './filters/CustomHttpErrorFilter';
 import './filters/ResourceNotFoundFilter';
-import loggerFactory from '~/utils/logger';
 
 export const rootDir = __dirname;
 const isProduction = process.env.NODE_ENV === 'production';

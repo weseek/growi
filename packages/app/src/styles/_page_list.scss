@@ -48,6 +48,18 @@ body .page-list {
       i {
         margin-right: 2px;
       }
+
+      .seen-users-count {
+        &.strength-1 {
+          font-weight: bold;
+        }
+        &.strength-2 {
+          font-weight: normal;
+        }
+        &.strength-3 {
+          opacity: 0.6;
+        }
+      }
     }
 
     // after second level indent

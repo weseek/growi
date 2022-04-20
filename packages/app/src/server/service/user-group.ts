@@ -25,7 +25,6 @@ class UserGroupService {
     return UserGroupRelation.removeAllInvalidRelations();
   }
 
-  // TODO 85062: write test code
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
   async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false) {
     const userGroup = await UserGroup.findById(id);
