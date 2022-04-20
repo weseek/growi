@@ -441,7 +441,6 @@ class PageService {
         fromPath: page.path,
         toPath: newPagePath,
         options,
-        isFailure: false,
       });
     }
     catch (err) {
