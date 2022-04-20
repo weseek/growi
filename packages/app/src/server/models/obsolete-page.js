@@ -501,11 +501,10 @@ export const getPageSchema = (crowi) => {
 
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     // count
-    // const totalCount = await builder.query.exec('count');
+    const totalCount = await builder.query.exec('count');
 
     // find
-    // builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-
+    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     const paginationOptions = {
       lean: true,
       limit: opt.limit,
@@ -514,7 +513,7 @@ export const getPageSchema = (crowi) => {
     };
     const paginatedPages = await Page.paginate(builder.query.clone(), paginationOptions);
     const result = {
-      pages: paginatedPages.docs, totalCount: paginatedPages.totalDocs, offset: opt.offset, limit: opt.limit,
+      pages: paginatedPages.docs, totalCount, offset: opt.offset, limit: opt.limit,
     };
 
     return result;
