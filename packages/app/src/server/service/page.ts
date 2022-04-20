@@ -441,13 +441,23 @@ class PageService {
         fromPath: page.path,
         toPath: newPagePath,
         options,
+        isFailure: false,
       });
     }
     catch (err) {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+
+    let renamedPage;
+    try {
+      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+    }
+    catch (err) {
+      pageOp.isFailure = true;
+      pageOp.save();
+      throw err;
+    }
 
     return renamedPage;
   }
@@ -544,6 +554,7 @@ class PageService {
 
     // update descendants first
     await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    await PageOperation.findByIdAndUpdate(pageOpId, { isFailure: true });
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -562,16 +573,12 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async restartPageRenameOperation(operator: IUserHasId, pageId: ObjectIdLike): Promise<void> {
-
-    if (operator == null) {
-      throw new Error('This operation is not allowed for guest users');
-    }
-
-    const pageOp = await PageOperation.findOne({ 'page.id': pageId });
+  async restartPageRenameOperation(pageId: ObjectIdLike): Promise<void> {
+    const pageOp = await PageOperation.findOne({ 'page.id': pageId, actionType: PageActionType.Rename, isFailure: true });
     if (pageOp == null || pageOp.toPath == null) throw Error('PageRenameOperation is not executable');
 
     pageOp.actionStage = PageActionStage.Main; // to restart from the beginning
+
     const {
       page, toPath, user, options, _id,
     } = pageOp;
