@@ -684,7 +684,6 @@ Crowi.prototype.setupPageService = async function() {
     // TODO: Remove this code when resuming feature is implemented
     await this.pageOperationService.init();
   }
-  await this.pageService.restartPageRenameOperation(); // this should be removed
 };
 
 Crowi.prototype.setupInAppNotificationService = async function() {
