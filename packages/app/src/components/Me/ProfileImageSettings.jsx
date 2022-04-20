@@ -1,15 +1,16 @@
 import React from 'react';
+
+import md5 from 'md5';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import md5 from 'md5';
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import ImageCropModal from '~/components/Common/ImageCropModal';
 
-import ImageCropModal from './ImageCropModal';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 class ProfileImageSettings extends React.Component {
 

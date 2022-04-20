@@ -1017,5 +1017,11 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
+  },
+  "crop_image_modal": {
+    "image_crop": "画像の切り抜き",
+    "crop": "トリム",
+    "reset": "リセット",
+    "cancel": "キャンセル"
   }
 }

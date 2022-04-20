@@ -1027,5 +1027,11 @@
     "select_group": "选择组别",
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
+  },
+  "crop_image_modal": {
+    "image_crop": "图像裁剪",
+    "crop": "修剪",
+    "reset": "重启",
+    "cancel": "取消"
   }
 }

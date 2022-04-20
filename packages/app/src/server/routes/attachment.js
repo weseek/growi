@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import loggerFactory from '~/utils/logger';
 /* eslint-disable no-use-before-define */
 
@@ -7,7 +8,6 @@ const logger = loggerFactory('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -427,7 +427,7 @@ module.exports = function(crowi, app) {
     if (pageId == null && pagePath == null) {
       return res.json(ApiResponse.error('Either page_id or path is required.'));
     }
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
 
@@ -542,7 +542,7 @@ module.exports = function(crowi, app) {
    */
   api.uploadProfileImage = async function(req, res) {
     // check params
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
     if (!req.user) {
@@ -701,10 +701,10 @@ module.exports = function(crowi, app) {
 
   api.uploadBrandLogo = async function(req, res) {
     // check params
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
-    if (!req.user) {
+    if (req.user == null) {
       return res.json(ApiResponse.error('param "user" must be set.'));
     }
 

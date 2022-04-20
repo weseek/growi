@@ -1,14 +1,18 @@
 import React, { FC, useState } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AppContainer from '~/client/services/AppContainer';
+import {
+  toastError, toastSuccess,
+} from '~/client/util/apiNotification';
+import ImageCropModal from '~/components/Common/ImageCropModal';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CropLogoModal from './CropLogoModal';
+
 
 type Props = {
   adminCustomizeContainer : AdminCustomizeContainer
@@ -33,7 +37,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
   };
 
   const onSelectFile = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
+    if (e.target.files != null && e.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener('load', () => setSrc(reader.result));
       reader.readAsDataURL(e.target.files[0]);
@@ -54,7 +58,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
   const onClickDeleteBtn = async() => {
     try {
       await adminCustomizeContainer.deleteLogo();
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
       toastError(err);
@@ -64,7 +68,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
   const onCropCompleted = async(croppedImage) => {
     try {
       await adminCustomizeContainer.uploadAttachment(croppedImage);
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
       toastError(err);
@@ -92,7 +96,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                     onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                   />
                   <label className="custom-control-label" htmlFor="radioDefaultLogo">
-                    Default Logo
+                    {t('admin:customize_setting.default_logo')}
                   </label>
                 </div>
               </h4>
@@ -111,22 +115,26 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                     onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
                   />
                   <label className="custom-control-label" htmlFor="radioUploadLogo">
-                    { t('Upload Logo') }
+                    { t('admin:customize_setting.upload_logo') }
                   </label>
                 </div>
               </h4>
               <div className="row mb-3">
                 <label className="col-sm-4 col-12 col-form-label text-left">
-                  { t('Current Logo') }
+                  { t('admin:customize_setting.current_logo') }
                 </label>
                 <div className="col-sm-8 col-12">
                   {uploadedLogoSrc && (<p><img src={uploadedLogoSrc} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>)}
-                  {isUploadedLogo && <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>{ t('Delete Logo') }</button>}
+                  {isUploadedLogo && (
+                    <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
+                      { t('admin:customize_setting.delete_logo') }
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="row">
                 <label className="col-sm-4 col-12 col-form-label text-left">
-                  {t('Upload new logo')}
+                  { t('admin:customize_setting.upload_new_logo') }
                 </label>
                 <div className="col-sm-8 col-12">
                   <input type="file" onChange={onSelectFile} name="brandLogo" accept="image/*" />
@@ -138,7 +146,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
         </div>
       </div>
 
-      <CropLogoModal
+      <ImageCropModal
         show={isShow}
         src={src}
         onModalClose={cancelModal}

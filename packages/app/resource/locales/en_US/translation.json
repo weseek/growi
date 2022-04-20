@@ -1025,5 +1025,11 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
+  },
+  "crop_image_modal": {
+    "image_crop": "Image Crop",
+    "crop": "Crop",
+    "reset": "Reset",
+    "cancel": "Cancel"
   }
 }
