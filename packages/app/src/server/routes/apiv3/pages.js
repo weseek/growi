@@ -1,15 +1,15 @@
+import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const { pathUtils, pagePathUtils } = require('@growi/core');
 const express = require('express');
-const { query } = require('express-validator');
-const { body } = require('express-validator');
+const { pathUtils, pagePathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
+
+const { body } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -533,7 +533,6 @@ module.exports = (crowi) => {
 
     return res.apiv3(result);
   });
-
 
   /**
    * @swagger
