@@ -572,13 +572,11 @@ class PageService {
     if (pageOp == null || pageOp.toPath == null) throw Error('PageRenameOperation is not executable');
 
     pageOp.actionStage = PageActionStage.Main; // to restart from the beginning
-    const page = pageOp.page;
-    const newPagePath = pageOp.toPath;
-    const user = pageOp.user;
-    const options = pageOp.options;
-    const pageOpId = pageOp._id;
+    const {
+      page, toPath, user, options, _id,
+    } = pageOp;
 
-    await this.renameMainOperation(page, newPagePath, user, options, pageOpId);
+    await this.renameMainOperation(page, toPath, user, options, _id);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
