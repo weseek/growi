@@ -277,19 +277,30 @@ ul.pagination {
   // Pagetree
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
-      $color-list,
+      $gray-200,
       $bgcolor-sidebar-list-group,
-      $color-list-hover,
-      $bgcolor-list-hover,
-      $color-list-active,
-      lighten($bgcolor-list-hover, 5%)
+      $gray-200,
+      lighten($bgcolor-sidebar-context, 8%),
+      $gray-200,
+      lighten($bgcolor-sidebar-context, 15%)
     );
     .grw-pagetree-triangle-btn {
       @include button-outline-svg-icon-variant($secondary, $gray-200);
     }
     .grw-pagetree-count {
       color: $gray-400;
-      background: $gray-700;
+      background: lighten($bgcolor-sidebar-context, 15%);
+    }
+    .btn-page-item-control {
+      @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+      @include hover() {
+        background-color: lighten($bgcolor-sidebar-context, 20%);
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        background-color: lighten($bgcolor-sidebar-context, 34%);
+      }
+      box-shadow: none !important;
     }
   }
   .private-legacy-pages-link {
@@ -302,11 +313,12 @@ ul.pagination {
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
   @include hover() {
-    background-color: $gray-600;
+    background-color: $gray-700;
   }
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     color: $gray-200;
+    background-color: $gray-600;
   }
   box-shadow: none !important;
 }
