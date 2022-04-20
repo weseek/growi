@@ -201,7 +201,7 @@ module.exports = (crowi) => {
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     restartRenamePage: [
-      // need validation
+      body('pageId').isMongoId().withMessage('pageId is required'),
     ],
   };
 
@@ -545,7 +545,7 @@ module.exports = (crowi) => {
         await crowi.pageService.restartPageRenameOperation(operator, pageId);
       }
       catch (err) {
-        logger.error('Faild renaming page', err);
+        logger.error('Faild to restart renaming pages', err);
         return res.apiv3Err(err, 500);
       }
     });
