@@ -554,7 +554,6 @@ class PageService {
 
     // update descendants first
     await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
-    await PageOperation.findByIdAndUpdate(pageOpId, { isFailure: true });
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
