@@ -207,6 +207,10 @@ describe('Test page service methods', () => {
       expect(page3.parent).toStrictEqual(page2._id);
       expect(page4.parent).toStrictEqual(page3._id);
     });
-    test('it should fail when PageOperation is not found', async() => {});
+    test('it should fail and throw error if PageOperation is not Found', async() => {
+      const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
+      await expect(restartPageRenameOperation(pageOpId))
+        .rejects.toThrow(new Error('PageRenameOperation is not executable'));
+    });
   });
 });
