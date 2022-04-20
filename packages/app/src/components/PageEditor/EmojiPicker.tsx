@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
@@ -73,7 +73,13 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const translation = getEmojiTranslation();
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
-      <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} emojiTooltip />
+      <Picker
+        onSelect={selectEmoji}
+        i18n={translation}
+        title={translation.title}
+        emojiTooltip
+        style={{ position: 'absolute' }}
+      />
     </Modal>
   );
 };
