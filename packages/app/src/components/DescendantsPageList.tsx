@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
-
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IDataWithMeta,
@@ -11,12 +9,13 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
+
 import {
   useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList, useDescendantsPageListForCurrentPathTermManager,
 } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
-
 import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
+
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 
