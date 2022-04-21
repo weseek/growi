@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
@@ -108,23 +108,29 @@ const PageDeleteModal: FC = () => {
      */
     if (deleteModalData.pages.length > 1) {
       try {
-        const isRecursively = isDeleteRecursively === true ? true : undefined;
-        const isCompletely = isDeleteCompletely === true ? true : undefined;
-
-        const pageIdToRevisionIdMap = {};
-        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
-
-        const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
-          pageIdToRevisionIdMap,
-          isRecursively,
-          isCompletely,
-        });
-
         const onDeleted = deleteModalData.opts?.onDeleted;
-        if (onDeleted != null) {
-          onDeleted(data.paths, data.isRecursively, data.isCompletely);
-        }
 
+        if (emptyTrash) {
+          await apiv3Delete('/pages/empty-trash');
+          if (onDeleted != null) {
+            onDeleted('', null, null);
+          }
+        }
+        else {
+          const isRecursively = isDeleteRecursively === true ? true : undefined;
+          const isCompletely = isDeleteCompletely === true ? true : undefined;
+          const pageIdToRevisionIdMap = {};
+          deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
+          const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
+            pageIdToRevisionIdMap,
+            isRecursively,
+            isCompletely,
+          });
+          const onDeleted = deleteModalData.opts?.onDeleted;
+          if (onDeleted != null) {
+            onDeleted(data.paths, data.isRecursively, data.isCompletely);
+          }
+        }
         closeDeleteModal();
       }
       catch (err) {

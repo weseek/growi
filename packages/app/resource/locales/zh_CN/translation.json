@@ -422,6 +422,7 @@
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
+  "empty_trash": "清空垃圾",
 	"modal_empty": {
 		"empty_the_trash": "Empty The Trash",
 		"notice": "完全删除的页面是不可恢复的。"

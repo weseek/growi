@@ -8,7 +8,7 @@ import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-
+import { toastSuccess } from '~/client/util/apiNotification';
 import { useCurrentPagePath } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
@@ -129,9 +129,11 @@ export const CustomNavTab = (props) => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const onDeletedHandler = (...args) => {
-    // process after multipe pages delete api
-  };
+  const onDeletedHandler = useCallback(() => {
+    toastSuccess(t('empty_trash'));
+
+    mutate();
+  }, [mutate, t]);
 
   const emptyTrashClickHandler = () => {
     openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });

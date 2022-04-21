@@ -443,6 +443,7 @@
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
+  "empty_trash": "ゴミ箱を空にしました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
