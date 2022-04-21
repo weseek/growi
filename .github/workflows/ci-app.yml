@@ -7,6 +7,17 @@ on:
       - rc/**
       - chore/**
       - support/prepare-v**
+    paths:
+      - .github/workflows/ci-app.yml
+      - .eslint*
+      - tsconfig.base.json
+      - yarn.lock
+      - packages/app/**
+      - '!packages/app/docker/**'
+      - packages/core/**
+      - packages/slack/**
+      - packages/ui/**
+      - packages/plugin-*/**
 
 jobs:
   lint:
