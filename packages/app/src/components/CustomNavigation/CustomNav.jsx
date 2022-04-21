@@ -1,10 +1,19 @@
 import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
+
 import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
+
+import { toastSuccess } from '~/client/util/apiNotification';
+import { useCurrentPagePath } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/modal';
+import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 function getBreakpointOneLevelLarger(breakpoint) {
@@ -85,6 +94,10 @@ export const CustomNavTab = (props) => {
   const navContainer = useRef();
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
+  const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
+  const { advance: advancePt } = usePageTreeTermManager();
 
   const {
     activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown,
@@ -103,6 +116,40 @@ export const CustomNavTab = (props) => {
       onNavSelected(key);
     }
   }, [onNavSelected]);
+
+  const pageIds = pagingResult?.items?.map(page => page._id);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
+
+  let pageWithMetas = [];
+
+  const convertToIDataWithMeta = (page) => {
+    return { data: page };
+  };
+
+  // initial data
+  if (pagingResult != null) {
+    // convert without meta at first
+    console.log(pagingResult);
+    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
+    // inject data for listing
+    pageWithMetas = injectTo(dataWithMetas);
+  }
+
+  const deonDeleteHandler = (...args) => {
+    // alert(pagingResult.items.length);
+    toastSuccess(args[2] ? 'あいうえお' : 'かきくけこ');
+
+    advancePt();
+
+    if (mutate != null) {
+      mutate(...args);
+    }
+  };
+
+  const allDeleteButtonClickHandler = () => {
+
+    openDeleteModal(pageWithMetas, { onDeleted: mutate });
+  };
 
   function registerNavLink(key, elm) {
     if (elm != null) {
@@ -147,9 +194,12 @@ export const CustomNavTab = (props) => {
     inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   }
 
+  // trash page flag
+  const isTrash = isTrashPage(currentPath);
+
   return (
     <div className="grw-custom-nav-tab">
-      <div ref={navContainer}>
+      <div ref={navContainer} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
 
@@ -169,6 +219,18 @@ export const CustomNavTab = (props) => {
             );
           })}
         </Nav>
+        { isTrash && (
+          <div className="d-flex align-items-center">
+            <button
+              type="button"
+              className="btn btn-outline-secondary rounded-pill text-danger d-flex align-items-center"
+              onClick={() => allDeleteButtonClickHandler()}
+            >
+              <i className="icon-fw icon-trash"></i>
+              <div>全て削除</div>
+            </button>
+          </div>
+        )}
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
