@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import SocketIoContainer from '~/client/services/SocketIoContainer';
 import AppContainer from '~/client/services/AppContainer';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { apiv3Delete } from '~/client/util/apiv3-client';
+
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const EmptyTrashModal = (props) => {
   const {
@@ -23,7 +24,7 @@ const EmptyTrashModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Delete('/pages/empty-trash');
+      await apiv3Delete('/pages/empty-trash');
       window.location.reload();
     }
     catch (err) {

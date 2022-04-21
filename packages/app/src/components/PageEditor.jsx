@@ -1,30 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import detectIndent from 'detect-indent';
 
-import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
+import detectIndent from 'detect-indent';
+import PropTypes from 'prop-types';
+import { throttle, debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import Editor from './PageEditor/Editor';
-import Preview from './PageEditor/Preview';
-import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-
 import EditorContainer from '~/client/services/EditorContainer';
-
+import PageContainer from '~/client/services/PageContainer';
+import { apiGet, apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
+
+
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+import Editor from './PageEditor/Editor';
+import Preview from './PageEditor/Preview';
+import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { withUnstatedContainers } from './UnstatedUtils';
+
+
+// TODO: remove this when omitting unstated is completed
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -170,7 +171,7 @@ class PageEditor extends React.Component {
     } = this.props;
 
     try {
-      let res = await appContainer.apiGet('/attachments.limit', {
+      let res = await apiGet('/attachments.limit', {
         fileSize: file.size,
       });
 
@@ -187,7 +188,7 @@ class PageEditor extends React.Component {
         formData.append('page_id', pageContainer.state.pageId);
       }
 
-      res = await appContainer.apiPost('/attachments.add', formData);
+      res = await apiPost('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 

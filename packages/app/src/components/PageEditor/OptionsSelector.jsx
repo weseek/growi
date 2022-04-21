@@ -1,16 +1,18 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
 import { withTranslation } from 'react-i18next';
-
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import { DownloadDictModal } from './DownloadDictModal';
 
 
@@ -133,9 +135,8 @@ class OptionsSelector extends React.Component {
   }
 
   async updateIsTextlintEnabledToDB(newVal) {
-    const { appContainer } = this.props;
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
+      await apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
     }
     catch (err) {
       toastError(err);

@@ -1,9 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
 import { withTranslation } from 'react-i18next';
-
-
 import {
   UncontrolledDropdown,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -13,6 +11,7 @@ import {
 
 
 import AppContainer from '~/client/services/AppContainer';
+import { apiGet } from '~/client/util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -69,7 +68,7 @@ class GrantSelector extends React.Component {
    * Retrieve user-group-relations data from backend
    */
   retrieveUserGroupRelations() {
-    this.props.appContainer.apiGet('/me/user-group-relations')
+    apiGet('/me/user-group-relations')
       .then((res) => {
         return res.userGroupRelations;
       })
