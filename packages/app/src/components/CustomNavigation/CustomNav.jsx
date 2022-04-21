@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
+
 
 import { toastSuccess } from '~/client/util/apiNotification';
 import { useCurrentPagePath } from '~/stores/context';
@@ -91,6 +93,7 @@ CustomNavDropdown.propTypes = {
 
 
 export const CustomNavTab = (props) => {
+  const { t } = useTranslation();
   const navContainer = useRef();
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
@@ -117,8 +120,6 @@ export const CustomNavTab = (props) => {
     }
   }, [onNavSelected]);
 
-  // ==========================================
-
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
@@ -128,32 +129,19 @@ export const CustomNavTab = (props) => {
     return { data: page };
   };
 
-  // initial data
   if (pagingResult != null) {
-    // convert without meta at first
-    console.log(pagingResult);
     const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    // inject data for listing
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const deonDeleteHandler = (...args) => {
-    // alert(pagingResult.items.length);
-    toastSuccess(args[2] ? 'あいうえお' : 'かきくけこ');
-
-    advancePt();
-
-    if (mutate != null) {
-      mutate(...args);
-    }
+  const onDeletedHandler = (...args) => {
+    // process after multipe pages delete api
+    alert(currentPath);
   };
 
-  const allDeleteButtonClickHandler = () => {
-
-    openDeleteModal(pageWithMetas, { onDeleted: mutate });
+  const emptyTrashClickHandler = () => {
+    openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
   };
-
-  // ==========================================
 
   function registerNavLink(key, elm) {
     if (elm != null) {
@@ -199,7 +187,7 @@ export const CustomNavTab = (props) => {
   }
 
   // trash page flag
-  const isTrash = isTrashPage(currentPath);
+  const isTrash = currentPath === '/trash';
 
   return (
     <div className="grw-custom-nav-tab">
@@ -228,10 +216,10 @@ export const CustomNavTab = (props) => {
             <button
               type="button"
               className="btn btn-outline-secondary rounded-pill text-danger d-flex align-items-center"
-              onClick={() => allDeleteButtonClickHandler()}
+              onClick={() => emptyTrashClickHandler()}
             >
               <i className="icon-fw icon-trash"></i>
-              <div>全て削除</div>
+              <div>{t('modal_delete.empty_trash')}</div>
             </button>
           </div>
         )}
