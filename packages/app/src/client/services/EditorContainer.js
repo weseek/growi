@@ -2,6 +2,8 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiv3Get } from '../util/apiv3-client';
+
 const logger = loggerFactory('growi:services:EditorContainer');
 
 /**
@@ -184,7 +186,7 @@ export default class EditorContainer extends Container {
       return;
     }
 
-    const { data } = await this.appContainer.apiv3Get('/personal-setting/editor-settings');
+    const { data } = await apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings == null) {
       return;

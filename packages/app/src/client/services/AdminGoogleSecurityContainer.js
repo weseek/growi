@@ -1,9 +1,11 @@
-import { Container } from 'unstated';
-
 import { pathUtils } from '@growi/core';
+import { Container } from 'unstated';
 import urljoin from 'url-join';
+
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
 
@@ -16,7 +18,6 @@ export default class AdminGoogleSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.appContainer = appContainer;
     this.dummyGoogleClientId = 0;
     this.dummyGoogleClientIdForError = 1;
 
@@ -37,7 +38,7 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { googleOAuth } = response.data.securityParams;
       this.setState({
         googleClientId: googleOAuth.googleClientId,
@@ -91,7 +92,7 @@ export default class AdminGoogleSecurityContainer extends Container {
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', requestParams);
+    const response = await apiv3Put('/security-setting/google-oauth', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({
