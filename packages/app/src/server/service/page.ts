@@ -31,7 +31,6 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import ActivityDefine from '../util/activityDefine';
 
-
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
@@ -563,7 +562,12 @@ class PageService {
   }
 
   async restartPageRenameOperation(pageId: ObjectIdLike): Promise<void> {
-    const pageOp = await PageOperation.findOne({ 'page.id': pageId, actionType: PageActionType.Rename, isFailure: true });
+    const filter = { 'page.id': pageId, actionType: PageActionType.Rename, isFailure: true };
+    const update = { isFailure: false };
+    const option = { new: true };
+    // find one, update it, and return the updated document
+    const pageOp = await PageOperation.findOneAndUpdate(filter, update, option); // set isFailure to false before rename operation
+
     if (pageOp == null || pageOp.toPath == null) {
       throw Error('PageRenameOperation cannot be restarted as PageOperation to be processed is not found');
     }
