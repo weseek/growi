@@ -44,6 +44,13 @@ type TargetAndAncestorsResult = {
   rootPage: PageDocument
 }
 
+type PaginatedPages = {
+  pages: PageDocument[],
+  totalCount: number,
+  limit: number,
+  offset: number
+}
+
 export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
@@ -54,7 +61,7 @@ export interface PageModel extends Model<PageDocument> {
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
-
+  findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
@@ -652,6 +659,39 @@ schema.statics.findByPathAndViewer = async function(
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();
+};
+
+schema.statics.findRecentUpdatedPages = async function(
+    path: string, user, options, includeEmpty = false,
+): Promise<PaginatedPages> {
+
+  const sortOpt = {};
+  sortOpt[options.sort] = options.desc;
+
+  const Page = this;
+  const User = mongoose.model('User') as any;
+
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const baseQuery = this.find({});
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+  if (!options.includeTrashed) {
+    queryBuilder.addConditionToExcludeTrashed();
+  }
+
+  queryBuilder.addConditionToListWithDescendants(path, options);
+  queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+  await addViewerCondition(queryBuilder, user);
+  const pages = await Page.paginate(queryBuilder.query.clone(), {
+    lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
+  });
+  const results = {
+    pages: pages.docs, totalCount: pages.totalDocs, offset: options.offset, limit: options.limit,
+  };
+
+  return results;
 };
 
 
