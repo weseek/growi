@@ -44,7 +44,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
-  const { data: currentPage } = useSWRxPageByPath(currentPath ?? '');
+  const { data: currentPage } = useSWRxPageByPath(currentPath);
 
   const { data: editorMode } = useEditorMode();
 
