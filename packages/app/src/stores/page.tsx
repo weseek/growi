@@ -17,7 +17,7 @@ import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPageByPath = (path: string | null, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
-    path ? ['/page', path] : null,
+    path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
     {
       fallbackData: initialData,
