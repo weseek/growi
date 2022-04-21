@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 
+
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { useTranslation } from 'react-i18next';
-
-import { usePutBackPageModal } from '~/stores/modal';
 import { apiPost } from '~/client/util/apiv1-client';
+import { PathAlreadyExistsError } from '~/server/models/errors';
+import { usePutBackPageModal } from '~/stores/modal';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -46,7 +47,7 @@ const PutBackPageModal = () => {
       closePutBackPageModal();
     }
     catch (err) {
-      setErrs(err);
+      setErrs([err]);
     }
   }
 

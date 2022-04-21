@@ -1,9 +1,11 @@
 import { pagePathUtils } from '@growi/core';
-import urljoin from 'url-join';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
+import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
+
+import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -1261,6 +1263,9 @@ module.exports = function(crowi, app) {
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
     catch (err) {
+      if (err instanceof PathAlreadyExistsError) {
+        return res.json(ApiResponse.error(('Page exists', 'already_exists')));
+      }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
     }
