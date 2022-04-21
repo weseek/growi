@@ -2,20 +2,18 @@ import { Container } from 'unstated';
 
 import InterceptorManager from '~/services/interceptor-manager';
 
+import GrowiRenderer from '../util/GrowiRenderer';
 import {
   apiDelete, apiGet, apiPost, apiRequest,
 } from '../util/apiv1-client';
 import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '../util/apiv3-client';
-import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
-import GrowiRenderer from '../util/GrowiRenderer';
-
 import {
   mediaQueryListForDarkMode,
   applyColorScheme,
 } from '../util/color-scheme';
-
+import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import { i18nFactory } from '../util/i18n';
 
 /**
@@ -26,10 +24,6 @@ export default class AppContainer extends Container {
 
   constructor() {
     super();
-
-    this.state = {
-      preferDarkModeByMediaQuery: false,
-    };
 
     // get csrf token from body element
     // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
@@ -85,8 +79,6 @@ export default class AppContainer extends Container {
   }
 
   initApp() {
-    this.initMediaQueryForColorScheme();
-
     this.injectToWindow();
   }
 
@@ -112,18 +104,6 @@ export default class AppContainer extends Container {
     }
 
     this.injectToWindow();
-  }
-
-  async initMediaQueryForColorScheme() {
-    const switchStateByMediaQuery = async(mql) => {
-      const preferDarkMode = mql.matches;
-      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
-
-      applyColorScheme();
-    };
-
-    // add event listener
-    mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
   }
 
   initPlugins() {
