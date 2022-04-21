@@ -1264,7 +1264,8 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       if (err instanceof PathAlreadyExistsError) {
-        return res.json(ApiResponse.error(('Page exists', 'already_exists')));
+        logger.error('Page exists', err);
+        return res.json(ApiResponse.error(err, 'already_exists'));
       }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
