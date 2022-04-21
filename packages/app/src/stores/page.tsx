@@ -15,7 +15,7 @@ import { useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
-export const useSWRxPageByPath = (path: string | null, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxPageByPath = (path: string | null | undefined, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
     path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
