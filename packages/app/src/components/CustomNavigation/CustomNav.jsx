@@ -9,13 +9,9 @@ import {
 } from 'reactstrap';
 
 
-import { toastSuccess } from '~/client/util/apiNotification';
 import { useCurrentPagePath } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
-
-import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 function getBreakpointOneLevelLarger(breakpoint) {
@@ -100,7 +96,6 @@ export const CustomNavTab = (props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: currentPath } = useCurrentPagePath();
   const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
-  const { advance: advancePt } = usePageTreeTermManager();
 
   const {
     activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown,
@@ -136,7 +131,6 @@ export const CustomNavTab = (props) => {
 
   const onDeletedHandler = (...args) => {
     // process after multipe pages delete api
-    alert(currentPath);
   };
 
   const emptyTrashClickHandler = () => {
