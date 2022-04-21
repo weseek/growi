@@ -4,11 +4,11 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
-
 import {
   IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
+
 import { apiGet } from '../client/util/apiv1-client';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
@@ -16,9 +16,9 @@ import { useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
-export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxPageByPath = (path: string | null | undefined, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
-    ['/page', path],
+    path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
     {
       fallbackData: initialData,
