@@ -127,7 +127,7 @@ jobs:
         workingDir: packages/slackbot-proxy
 
     - name: Commit
-      uses: github-actions-x/commit@v2.8
+      uses: github-actions-x/commit@v2.9
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         push-branch: support/prepare-v${{ steps.package-json.outputs.packageVersion }}
