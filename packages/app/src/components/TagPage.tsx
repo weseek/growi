@@ -29,7 +29,7 @@ const TagPage: FC = () => {
   return (
     <div className="grw-container-convertible mb-5 pb-5">
       <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
-      <div className="px-3 text-center">
+      <div className="px-3 mb-5 text-center">
         <TagCloudBox tags={tagData} minSize={20} />
       </div>
       { isLoading
