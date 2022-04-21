@@ -20,7 +20,7 @@ import Crowi from '../crowi';
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 import { PageRedirectModel } from './page-redirect';
 
-const { addTrailingSlash } = pathUtils;
+const { addTrailingSlash, normalizePath } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
@@ -126,7 +126,7 @@ const generateChildrenRegExp = (path: string): RegExp => {
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
-class PageQueryBuilder {
+export class PageQueryBuilder {
 
   query: any;
 
@@ -247,7 +247,9 @@ class PageQueryBuilder {
    * *option*
    *   Left for backward compatibility
    */
-  addConditionToListByStartWith(path, option?) {
+  addConditionToListByStartWith(str: string): PageQueryBuilder {
+    const path = normalizePath(str);
+
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -257,6 +259,50 @@ class PageQueryBuilder {
 
     this.query = this.query
       .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+  }
+
+  addConditionToListByNotStartWith(str: string): PageQueryBuilder {
+    const path = normalizePath(str);
+
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const startsPattern = escapeStringRegexp(str);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^(?!${startsPattern}).*$`) });
+
+    return this;
+  }
+
+  addConditionToListByMatch(str: string): PageQueryBuilder {
+    // No request is set for "/"
+    if (str === '/') {
+      return this;
+    }
+
+    const match = escapeStringRegexp(str);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^(?=.*${match}).*$`) });
+
+    return this;
+  }
+
+  addConditionToListByNotMatch(str: string): PageQueryBuilder {
+    // No request is set for "/"
+    if (str === '/') {
+      return this;
+    }
+
+    const match = escapeStringRegexp(str);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^(?!.*${match}).*$`) });
 
     return this;
   }
