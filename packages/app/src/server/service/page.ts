@@ -563,16 +563,13 @@ class PageService {
 
   async restartPageRenameOperation(pageId: ObjectIdLike): Promise<void> {
     const filter = { 'page.id': pageId, actionType: PageActionType.Rename, isFailure: true };
-    const update = { isFailure: false };
-    const option = { new: true };
+    const update = { isFailure: false, actionStage: PageActionStage.Main }; // as it restarts from the beginning
     // find one, update it, and return the updated document
-    const pageOp = await PageOperation.findOneAndUpdate(filter, update, option); // set isFailure to false before rename operation
+    const pageOp = await PageOperation.findOneAndUpdate(filter, update, { new: true }); // set isFailure to false before rename operation
 
     if (pageOp == null || pageOp.toPath == null) {
       throw Error('PageRenameOperation cannot be restarted as PageOperation to be processed is not found');
     }
-
-    pageOp.actionStage = PageActionStage.Main; // to restart from the beginning
 
     const {
       page, toPath, user, options, _id,
