@@ -564,7 +564,9 @@ class PageService {
 
   async restartPageRenameOperation(pageId: ObjectIdLike): Promise<void> {
     const pageOp = await PageOperation.findOne({ 'page.id': pageId, actionType: PageActionType.Rename, isFailure: true });
-    if (pageOp == null || pageOp.toPath == null) throw Error('PageRenameOperation is not executable');
+    if (pageOp == null || pageOp.toPath == null) {
+      throw Error('PageRenameOperation cannot be restarted as PageOperation to be processed is not found');
+    }
 
     pageOp.actionStage = PageActionStage.Main; // to restart from the beginning
 
