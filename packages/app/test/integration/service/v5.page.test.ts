@@ -214,7 +214,7 @@ describe('Test page service methods', () => {
     test('it should fail and throw error if PageOperation is not found', async() => {
       const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
       await expect(restartPageRenameOperation(pageOpId))
-        .rejects.toThrow(new Error('PageRenameOperation is not executable'));
+        .rejects.toThrow(new Error('PageRenameOperation cannot be restarted as PageOperation to be processed is not found'));
     });
   });
 });
