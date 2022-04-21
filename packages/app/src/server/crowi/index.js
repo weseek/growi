@@ -7,7 +7,6 @@ import { createTerminus } from '@godaddy/terminus';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
-
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -738,7 +737,7 @@ Crowi.prototype.cleanupPageOperation = async function() {
   const excludeList = [PageActionType.Rename]; // list of ActionType to avoid being cleaned up
   await PageOperation.cleanup(excludeList);
   await PageOperation.markAsFailure();
-  logger.info('PageOperation cleaned up');
+  logger.info('cleanupPageOperation has been finished');
 };
 
 export default Crowi;
