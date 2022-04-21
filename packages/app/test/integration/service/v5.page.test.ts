@@ -77,20 +77,29 @@ describe('Test page service methods', () => {
     /**
      * pages
      */
+    const pageId0 = new mongoose.Types.ObjectId();
     const pageId1 = new mongoose.Types.ObjectId();
     const pageId2 = new mongoose.Types.ObjectId();
     const pageId3 = new mongoose.Types.ObjectId();
-    const pageId4 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
-        _id: pageId1,
-        path: '/renamePOP1',
+        _id: pageId0,
+        path: '/POP0',
         parent: rootPage._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 3,
+        descendantCount: 0,
+      },
+      {
+        _id: pageId1,
+        path: '/POP0/renamePOP1',
+        parent: pageId0._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 2,
       },
       {
         _id: pageId2,
@@ -99,21 +108,12 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 2,
-      },
-      {
-        _id: pageId3,
-        path: '/_renamePOP1/renamePOP2/renamePOP3',
-        parent: pageId2,
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
         descendantCount: 1,
       },
       {
-        _id: pageId4,
-        path: '/_renamePOP1/renamePOP2/renamePOP3/renamePOP4',
-        parent: pageId3,
+        _id: pageId3,
+        path: '/renamePOP1/renamePOP2/renamePOP3',
+        parent: pageId2,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -130,15 +130,15 @@ describe('Test page service methods', () => {
       {
         _id: pageOpId1,
         actionType: 'Rename',
-        actionStage: 'Main',
-        fromPath: '/_renamePOP1',
-        toPath: '/renamePOP1',
+        actionStage: 'Sub',
+        fromPath: '/renamePOP1',
+        toPath: '/POP0/renamePOP1',
         page: {
           _id: pageId1,
           parent: rootPage._id,
-          descendantCount: 1,
+          descendantCount: 2,
           isEmpty: false,
-          path: '/_renamePOP1',
+          path: '/renamePOP1',
           revision: pageOpRevisionId1,
           status: 'published',
           grant: 1,
@@ -171,41 +171,45 @@ describe('Test page service methods', () => {
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
     };
     test('it should successfully restart rename operation', async() => {
-      const _path1 = '/renamePOP1';
-      const _path2 = '/renamePOP1/renamePOP2';
-      const _path3 = '/_renamePOP1/renamePOP2/renamePOP3'; // not processed
-      const _path4 = '/_renamePOP1/renamePOP2/renamePOP3/renamePOP4'; // not processed
+      const _path0 = '/POP0';
+      const _path1 = '/POP0/renamePOP1'; // as if renamed already
+      const _path2 = '/renamePOP1/renamePOP2'; // not renamed
+      const _path3 = '/renamePOP1/renamePOP2/renamePOP3'; // not renamed
+      const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
       const _page3 = await Page.findOne({ path: _path3 });
-      const _page4 = await Page.findOne({ path: _path4 });
+      expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
-      expect(_page4).toBeTruthy();
       const _pageOperation = await PageOperation.findOne({ 'page.id': _page1._id, actionType: PageActionType.Rename, isFailure: true });
       expect(_pageOperation).toBeTruthy();
 
       await restartPageRenameOperation(_pageOperation._id);
 
-      const path1 = '/renamePOP1';
-      const path2 = '/renamePOP1/renamePOP2';
-      const path3 = '/renamePOP1/renamePOP2/renamePOP3';
-      const path4 = '/renamePOP1/renamePOP2/renamePOP3/renamePOP4';
+      const path0 = '/POP0';
+      const path1 = '/POP0/renamePOP1';
+      const path2 = '/POP0/renamePOP1/renamePOP2';
+      const path3 = '/POP0/renamePOP1/renamePOP2/renamePOP3';
+      const page0 = await Page.findOne({ path: path0 });
       const page1 = await Page.findOne({ path: path1 });
       const page2 = await Page.findOne({ path: path2 });
       const page3 = await Page.findOne({ path: path3 });
-      const page4 = await Page.findOne({ path: path4 });
       const pageOperation = await PageOperation.findOne({ _id: _pageOperation._id });
+      expect(page0.descendantCount).toBe(3);
+      expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
-      expect(page4).toBeTruthy();
-      expect(pageOperation).toBeNull();
-      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(pageOperation).toBeNull(); // should not exist
+      expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
       expect(page3.parent).toStrictEqual(page2._id);
-      expect(page4.parent).toStrictEqual(page3._id);
+      expect(page0.descendantCount).toBe(3);
+      expect(page1.descendantCount).toBe(2);
+      expect(page2.descendantCount).toBe(1);
+      expect(page3.descendantCount).toBe(0);
     });
     test('it should fail and throw error if PageOperation is not found', async() => {
       const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
