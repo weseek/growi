@@ -119,4 +119,12 @@ schema.statics.findMainOps = async function(
   );
 };
 
+schema.statics.cleanup = async function(excludeList: PageActionType[]): Promise<void> {
+  await this.deleteMany({ actionType: { $nin: excludeList } });
+};
+
+schema.statics.markAsFailure = async function(): Promise<void> {
+  await this.updateMany({}, { isFailure: true });
+};
+
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
