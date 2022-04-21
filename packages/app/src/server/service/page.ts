@@ -1883,8 +1883,7 @@ class PageService {
 
     // throw if any page already exists
     if (originPage != null) {
-      const err:{code: string, targetPath: string} = { code: 'already_exists', targetPath: originPage.path };
-      throw new PathAlreadyExistsError(err);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     // 2. Revert target
@@ -1978,8 +1977,7 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      const err:{code: string, targetPath: string} = { code: 'already_exists', targetPath: originPage.path };
-      throw new PathAlreadyExistsError(err);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     if (isRecursively) {

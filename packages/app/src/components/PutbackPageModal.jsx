@@ -21,6 +21,7 @@ const PutBackPageModal = () => {
   const onPutBacked = pageDataToRevert.opts?.onPutBacked;
 
   const [errs, setErrs] = useState(null);
+  const [targetPath, setTargetPath] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
 
@@ -47,6 +48,7 @@ const PutBackPageModal = () => {
       closePutBackPageModal();
     }
     catch (err) {
+      setTargetPath(err.data);
       setErrs([err]);
     }
   }
@@ -79,7 +81,7 @@ const PutBackPageModal = () => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
