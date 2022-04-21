@@ -6,12 +6,11 @@ import { TabContent, TabPane } from 'reactstrap';
 
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxPageList } from '~/stores/page';
+import { useSWRxPageByPath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
@@ -45,8 +44,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
-  const { data: comments } = useSWRxPageComment(currentPageId);
-  const { data: pagingResult } = useSWRxPageList(currentPath ?? null);
+  const { data: currentPage } = useSWRxPageByPath(currentPath ?? '');
 
   const { data: editorMode } = useEditorMode();
 
@@ -78,7 +76,7 @@ const DisplaySwitcher = (): JSX.Element => {
                           <PageListIcon />
                         </div>
                         {t('page_list')}
-                        {pagingResult != null && <CountBadge count={pagingResult.totalCount} />}
+                        {currentPage?.descendantCount != null && <CountBadge count={currentPage.descendantCount + 1} />}
                       </button>
                     ) }
                   </div>
@@ -93,7 +91,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
-                        {comments != null && <CountBadge count={comments.length} />}
+                        {currentPage?.commentCount != null && <CountBadge count={currentPage.commentCount} />}
                       </button>
                     </div>
                   ) }
