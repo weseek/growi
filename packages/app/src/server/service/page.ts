@@ -173,6 +173,16 @@ class PageService {
       }
     });
 
+    // duplicate
+    this.pageEvent.on('duplicate', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DUPLICATE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
@@ -965,6 +975,7 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
+    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -1059,6 +1070,7 @@ class PageService {
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );
+    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
