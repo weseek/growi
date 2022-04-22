@@ -295,7 +295,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/audit-log');
   };
 
-
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
