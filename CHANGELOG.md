@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
+
+### 💎 Features
+
+- feat: Search on private legacy pages (#5723) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Dark theme color optimization (#5737) @shukmos
+- imprv: Change the order of menu items (#5722) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
 
@@ -101,6 +118,20 @@
 - support: dependabot dot-drop (#5204) @LuqmanHakim-Grune
 - support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
 - support: update validator version (#5562) @LuqmanHakim-Grune
+
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
+
+### 🐛 Bug Fixes
+
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
 
 ## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
 

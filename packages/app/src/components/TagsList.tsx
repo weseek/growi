@@ -43,7 +43,7 @@ const TagsList: FC<Props> = (props: Props) => {
   }
 
   return (
-    <>
+    <div data-testid="grw-tags-list">
       <header className="py-0">
         <h1 className="title text-center mt-5 mb-3 font-weight-bold">{`${t('Tags')}(${tagsList?.totalCount || 0})`}</h1>
       </header>
@@ -78,7 +78,7 @@ const TagsList: FC<Props> = (props: Props) => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

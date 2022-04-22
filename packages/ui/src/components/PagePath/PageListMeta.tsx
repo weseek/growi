@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import assert from 'assert';
+
 import { IPageHasId } from '@growi/app/src/interfaces/page';
 import { templateChecker, pagePathUtils } from '@growi/core';
 
@@ -8,16 +10,62 @@ import { FootstampIcon } from '../SearchPage/FootstampIcon';
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
+
+const SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT = 5;
+const MIN_STRENGTH_LEVEL = -3;
+
+type SeenUsersCountProps = {
+  count: number,
+  activeUsersCount?: number,
+  shouldSpaceOutIcon?: boolean,
+}
+
+const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
+
+  const { count, shouldSpaceOutIcon, activeUsersCount } = props;
+
+  if (count === 0) {
+    return <></>;
+  }
+
+  if (activeUsersCount != null && activeUsersCount <= SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT) {
+    return <></>;
+  }
+
+  const strengthLevel = Math.log(count / (activeUsersCount ?? count)); // Max: 0
+
+  if (strengthLevel <= MIN_STRENGTH_LEVEL) {
+    return <></>;
+  }
+
+  assert(strengthLevel > MIN_STRENGTH_LEVEL); // [0, MIN_STRENGTH_LEVEL)
+
+  let strengthClass = '';
+  if (strengthLevel < 0) {
+    strengthClass = `strength-${Math.ceil(strengthLevel * -1)}`; // strength-{0, 1, 2, 3}
+  }
+
+  return (
+    <span className={`seen-users-count ${shouldSpaceOutIcon ? 'mr-3' : ''} ${strengthClass}`}>
+      <i className="footstamp-icon"><FootstampIcon /></i>
+      {count}
+    </span>
+  );
+
+};
+
+
 type PageListMetaProps = {
   page: IPageHasId,
   likerCount?: number,
   bookmarkCount?: number,
   shouldSpaceOutIcon?: boolean,
+  activeUsersCount?: number,
 }
 
 export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) => {
 
-  const { page, shouldSpaceOutIcon } = props;
+  const { page, shouldSpaceOutIcon, activeUsersCount } = props;
 
   // top check
   let topLabel;
@@ -46,16 +94,6 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
     locked = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="icon-lock" /></span>;
   }
 
-  let seenUserCount;
-  if (page.seenUsers.length > 0) {
-    seenUserCount = (
-      <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}>
-        <i className="footstamp-icon"><FootstampIcon /></i>
-        {page.seenUsers.length}
-      </span>
-    );
-  }
-
   let bookmarkCount;
   if (props.bookmarkCount != null && props.bookmarkCount > 0) {
     bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
@@ -65,7 +103,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
     <span className="page-list-meta">
       {topLabel}
       {templateLabel}
-      {seenUserCount}
+      <SeenUsersCount count={page.seenUsers.length} activeUsersCount={activeUsersCount} />
       {commentCount}
       {likerCount}
       {locked}
