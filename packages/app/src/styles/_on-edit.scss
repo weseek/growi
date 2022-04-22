@@ -1,6 +1,7 @@
 @import 'editor-overlay';
 
 body:not(.on-edit) {
+
   // hide .page-editor-footer
   .page-editor-footer {
     display: none !important;
@@ -39,7 +40,7 @@ body.on-edit {
   }
 
   // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
+  $editor-margin-top: $grw-navbar-border-width+$grw-subnav-height-on-edit;
   @include expand-editor($editor-margin-top);
 
   @include media-breakpoint-up(lg) {
@@ -92,6 +93,7 @@ body.on-edit {
           display: none;
         }
       }
+
       @include media-breakpoint-up(md) {
         .dropdown-toggle {
           min-width: 100px;
@@ -109,11 +111,13 @@ body.on-edit {
     }
 
     .btn-expand {
+
       // rotate icon
       i {
         display: inline-block;
         transition: transform 200ms;
       }
+
       &.expand i {
         transform: rotate(-180deg);
       }
@@ -153,9 +157,11 @@ body.on-edit {
   // ellipsis .grw-page-path-hierarchical-link
   .grw-subnav-left-side {
     overflow: hidden;
+
     .grw-path-nav-container {
       margin-right: 1rem;
       overflow: hidden;
+
       .grw-page-path-nav {
         white-space: nowrap;
 
@@ -173,6 +179,7 @@ body.on-edit {
   }
 
   .nav:hover {
+
     .btn-copy,
     .btn-edit,
     .btn-edit-tags {
@@ -182,6 +189,7 @@ body.on-edit {
   }
 
   &.builtin-editor {
+
     /*****************
     * Editor styles
     *****************/
@@ -225,8 +233,7 @@ body.on-edit {
       }
     }
 
-    .page-editor-preview-container {
-    }
+    .page-editor-preview-container {}
 
     .page-editor-preview-body {
       padding: 18px 15px 0;
@@ -237,6 +244,7 @@ body.on-edit {
       .icon-container {
         width: 20px;
       }
+
       .menuitem-label {
         min-width: 130px;
       }
@@ -260,8 +268,9 @@ body.on-edit {
   }
 
   &.hackmd {
+
     .hackmd-preinit,
-    #iframe-hackmd-container > iframe {
+    #iframe-hackmd-container>iframe {
       border: none;
     }
 
@@ -296,6 +305,7 @@ body.on-edit {
       margin: 0 auto;
     }
   }
+
   &.growi-layout-fluid .page-editor-preview-body {
     .wiki {
       margin: 0 auto;
@@ -344,6 +354,7 @@ body.on-edit {
 */
 
 .grw-grid-edit-modal {
+
   .desktop-preview,
   .tablet-preview,
   .mobile-preview {
@@ -352,6 +363,7 @@ body.on-edit {
       margin: 0px;
     }
   }
+
   .desktop-preview {
     .row {
       div {
@@ -370,6 +382,7 @@ body.on-edit {
 
   .mobile-preview {
     width: 75%;
+
     .row {
       div {
         padding: 0px;
@@ -379,8 +392,16 @@ body.on-edit {
 
   .grid-division-menu {
     width: 60vw;
+
     @include media-breakpoint-down(lg) {
       width: 80vw;
     }
   }
+}
+
+/*
+ Emoji picker modal
+*/
+.emoji-picker-modal {
+  background-color: transparent !important;
 }

@@ -1,8 +1,11 @@
 import React, { FC } from 'react';
+
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
+
 import { isDarkMode } from '~/client/util/color-scheme';
+
 import EmojiPickerHelper from './EmojiPickerHelper';
 
 type Props = {
@@ -85,7 +88,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const theme = isDarkMode() ? 'dark' : 'light';
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji}>
+    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji} backdropClassName="emoji-picker-modal">
       <Picker
         onSelect={selectEmoji}
         i18n={translation}
