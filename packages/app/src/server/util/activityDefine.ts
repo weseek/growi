@@ -1,6 +1,8 @@
+// TargetModel
 const MODEL_PAGE = 'Page';
 const MODEL_COMMENT = 'Comment';
 
+// Activity
 const ACTION_PAGE_LIKE = 'PAGE_LIKE';
 const ACTION_PAGE_BOOKMARK = 'PAGE_BOOKMARK';
 const ACTION_PAGE_UPDATE = 'PAGE_UPDATE';
