@@ -38,13 +38,13 @@ const PersonalDropdown = (props) => {
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
 
-  const logoutHandler = () => {
+  const logoutHandler = async() => {
     const { interceptorManager } = appContainer;
 
     const context = {};
     interceptorManager.process('logout', context);
 
-    window.location.href = '/logout';
+    await appContainer.apiPost('/logout');
   };
 
   const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {

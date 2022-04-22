@@ -1,23 +1,23 @@
 import express from 'express';
 
+import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
-import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import * as loginFormValidator from '../middlewares/login-form-validator';
+import * as registerFormValidator from '../middlewares/register-form-validator';
 import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
 
-import * as loginFormValidator from '../middlewares/login-form-validator';
-import * as registerFormValidator from '../middlewares/register-form-validator';
 
+import * as allInAppNotifications from './all-in-app-notifications';
 import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
-import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
+const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
-const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -79,7 +79,7 @@ module.exports = function(crowi, app) {
 
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
-  app.get('/logout'                   , applicationInstalled, logout.logout);
+  app.post('/_api/logout'                   , applicationInstalled, logout.logout);
 
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
