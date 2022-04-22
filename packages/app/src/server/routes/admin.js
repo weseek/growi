@@ -1,5 +1,5 @@
-import loggerFactory from '~/utils/logger';
 import UserGroup from '~/server/models/user-group';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:admin');
 const debug = require('debug')('growi:routes:admin');
@@ -288,6 +288,13 @@ module.exports = function(crowi, app) {
 
     return res.render('admin/user-group-detail', { userGroup });
   };
+
+  // AuditLog
+  actions.auditLog = {};
+  actions.auditLog.index = (req, res) => {
+    return res.render('admin/audit-log');
+  };
+
 
   // Importer management
   actions.importer = {};
