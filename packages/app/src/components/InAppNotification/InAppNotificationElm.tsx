@@ -103,6 +103,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'renamed';
       actionIcon = 'icon-action-redo';
       break;
+    case 'PAGE_DUPLICATE':
+      actionMsg = 'duplicated';
+      actionIcon = 'icon-docs';
+      break;
     case 'PAGE_DELETE':
       actionMsg = 'deleted';
       actionIcon = 'icon-trash';
