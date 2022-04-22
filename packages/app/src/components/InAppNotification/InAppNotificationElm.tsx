@@ -1,16 +1,18 @@
 import React, {
   FC, useRef,
 } from 'react';
-import { DropdownItem } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
-import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { DropdownItem } from 'reactstrap';
+
+import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
 import PageModelNotification from './PageNotification/PageModelNotification';
-import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { apiv3Post } from '~/client/util/apiv3-client';
+
 
 interface Props {
   notification: IInAppNotification & HasObjectId
