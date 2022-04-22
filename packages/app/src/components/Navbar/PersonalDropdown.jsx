@@ -8,6 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { toastError } from '~/client/util/apiNotification';
 import {
   isUserPreferenceExists,
   isDarkMode as isDarkModeByUtil,
@@ -49,7 +50,7 @@ const PersonalDropdown = (props) => {
       window.location.href = '/';
     }
     catch (err) {
-      console.log(err);
+      toastError(err);
     }
   };
 
