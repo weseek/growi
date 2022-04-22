@@ -1,33 +1,37 @@
-import { pagePathUtils, pathUtils } from '@growi/core';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
-import escapeStringRegexp from 'escape-string-regexp';
-import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import { createBatchStream } from '~/server/util/batch-stream';
-import loggerFactory from '~/utils/logger';
-import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument,
-} from '~/server/models/page';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
+import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+
+import { Ref } from '~/interfaces/common';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import { PageRedirectModel } from '../models/page-redirect';
-import Subscription from '../models/subscription';
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { IUserHasId } from '~/interfaces/user';
-import { Ref } from '~/interfaces/common';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
-import ActivityDefine from '../util/activityDefine';
+import { IUserHasId } from '~/interfaces/user';
+import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import {
+  CreateMethod, PageCreateOptions, PageModel, PageDocument,
+} from '~/server/models/page';
+import { createBatchStream } from '~/server/util/batch-stream';
+import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { PathAlreadyExistsError } from '../models/errors';
+import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import { PageRedirectModel } from '../models/page-redirect';
+import { serializePageSecurely } from '../models/serializers/page-serializer';
+import Subscription from '../models/subscription';
+import ActivityDefine from '../util/activityDefine';
+
 
 const debug = require('debug')('growi:services:page');
 
@@ -1879,7 +1883,7 @@ class PageService {
 
     // throw if any page already exists
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     // 2. Revert target
@@ -1973,7 +1977,7 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     if (isRecursively) {
