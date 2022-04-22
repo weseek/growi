@@ -19,6 +19,14 @@
  {% block fixed-controls %}
  {% endblock %}
 
+ <script>
+  // function buttonClick(){alert('Click');}
+//   document.getElementById('maintanounse-mode-logout').addEventListener('click', ()=>{
+//     consoel.log('aaaaai')
+//     location.reload();
+// }, false);
+  </script>
+
 {% block layout_main %}
 <div id="main" class="main">
   <div id="content-main" class="content-main container-lg">
@@ -42,8 +50,10 @@
                 </p>
               {% else %}
                 <p>
-                  <i class="icon-arrow-right"></i>
-                  <a href="/logout">{{ t('maintenance_mode.logout') }}</a>
+                  <form action="/_api/v3/logout" name="form1" method="post">
+                    <i class="icon-arrow-right"></i>
+                  </form>
+                  <a href="javascript:form1.submit()" id="maintanounse-mode-logout">{{ t('maintenance_mode.logout') }}</a>
                 </p>
               {% endif %}
             </div>

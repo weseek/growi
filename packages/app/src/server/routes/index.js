@@ -44,7 +44,6 @@ module.exports = function(crowi, app) {
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  const logout = require('./logout')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
   const user = require('./user')(crowi, app);
@@ -79,7 +78,6 @@ module.exports = function(crowi, app) {
 
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
-  app.post('/_api/logout'                   , applicationInstalled, logout.logout);
 
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
