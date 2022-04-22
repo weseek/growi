@@ -47,7 +47,7 @@ const PersonalDropdown = (props) => {
 
     try {
       appContainer.apiv3Post('/logout');
-      window.location.href = '/';
+      window.location.reload();
     }
     catch (err) {
       toastError(err);

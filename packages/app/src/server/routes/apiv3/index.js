@@ -10,30 +10,31 @@ const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-un
 const express = require('express');
 
 const router = express.Router();
-const routerForAdmin = express.Router();
+const routerForAdminAndAuth = express.Router();
 
 module.exports = (crowi) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
 
-  routerForAdmin.use('/healthcheck', require('./healthcheck')(crowi));
+  routerForAdminAndAuth.use('/healthcheck', require('./healthcheck')(crowi));
 
   // admin
-  routerForAdmin.use('/admin-home', require('./admin-home')(crowi));
-  routerForAdmin.use('/markdown-setting', require('./markdown-setting')(crowi));
-  routerForAdmin.use('/app-settings', require('./app-settings')(crowi));
-  routerForAdmin.use('/customize-setting', require('./customize-setting')(crowi));
-  routerForAdmin.use('/notification-setting', require('./notification-setting')(crowi));
-  routerForAdmin.use('/users', require('./users')(crowi));
-  routerForAdmin.use('/user-groups', require('./user-group')(crowi));
-  routerForAdmin.use('/export', require('./export')(crowi));
-  routerForAdmin.use('/import', require('./import')(crowi));
-  routerForAdmin.use('/search', require('./search')(crowi));
-  routerForAdmin.use('/security-setting', require('./security-setting')(crowi));
-  routerForAdmin.use('/mongo', require('./mongo')(crowi));
-  routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
-  routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
+  routerForAdminAndAuth.use('/admin-home', require('./admin-home')(crowi));
+  routerForAdminAndAuth.use('/markdown-setting', require('./markdown-setting')(crowi));
+  routerForAdminAndAuth.use('/app-settings', require('./app-settings')(crowi));
+  routerForAdminAndAuth.use('/customize-setting', require('./customize-setting')(crowi));
+  routerForAdminAndAuth.use('/notification-setting', require('./notification-setting')(crowi));
+  routerForAdminAndAuth.use('/users', require('./users')(crowi));
+  routerForAdminAndAuth.use('/user-groups', require('./user-group')(crowi));
+  routerForAdminAndAuth.use('/export', require('./export')(crowi));
+  routerForAdminAndAuth.use('/import', require('./import')(crowi));
+  routerForAdminAndAuth.use('/search', require('./search')(crowi));
+  routerForAdminAndAuth.use('/security-setting', require('./security-setting')(crowi));
+  routerForAdminAndAuth.use('/mongo', require('./mongo')(crowi));
+  routerForAdminAndAuth.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
+  routerForAdminAndAuth.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
+  routerForAdminAndAuth.use('/logout', require('./logout')(crowi));
 
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
@@ -43,8 +44,6 @@ module.exports = (crowi) => {
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
 
   router.use('/statistics', require('./statistics')(crowi));
-
-  router.use('/logout', require('./logout')(crowi));
 
 
   router.use('/search', require('./search')(crowi));
@@ -78,5 +77,5 @@ module.exports = (crowi) => {
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
 
-  return [router, routerForAdmin];
+  return [router, routerForAdminAndAuth];
 };
