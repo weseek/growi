@@ -20,6 +20,18 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     onClose, emojiSearchText, emojiPickerHelper, isOpen,
   } = props;
 
+  // Set search emoji input and trigger search
+  const searchEmoji = () => {
+    if (emojiSearchText !== null) {
+      const input = window.document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
+      const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+      valueSetter?.call(input, emojiSearchText);
+      const event = new Event('input', { bubbles: true });
+      input.dispatchEvent(event);
+      input.focus();
+    }
+  };
+
   const selectEmoji = (emoji) => {
     if (emojiSearchText !== null) {
       emojiPickerHelper.addEmojiOnSearch(emoji);
@@ -72,7 +84,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
 
   const translation = getEmojiTranslation();
   return (
-    <Modal isOpen={isOpen} toggle={onClose}>
+    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji}>
       <Picker
         onSelect={selectEmoji}
         i18n={translation}
