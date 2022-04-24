@@ -35,8 +35,8 @@ const AdminNavigation = (props) => {
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-      // todo: Thinking Better of AuditLog Icons
-      case 'audit-log':                return <><i className="icon-fw fa fa-paw"></i>            { t('AuditLog')}</>;
+      // TODO: Consider where to place the "AuditLog"
+      case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('AuditLog')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
