@@ -11,6 +11,7 @@ import TagList from './TagList';
 const PAGING_LIMIT = 10;
 
 const TagPage: FC = () => {
+  const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
@@ -21,6 +22,7 @@ const TagPage: FC = () => {
   const { t } = useTranslation('');
 
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
+    setActivePage(selectedPageNumber);
     setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   }, []);
 
@@ -42,7 +44,7 @@ const TagPage: FC = () => {
             <TagList
               tagData={tagData}
               totalTags={totalCount}
-              activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
+              activePage={activePage}
               onChangePage={setOffsetByPageNumber}
               pagingLimit={PAGING_LIMIT}
             />
