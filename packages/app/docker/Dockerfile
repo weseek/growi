@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1
+# syntax = docker/dockerfile:1.4
 
 ARG flavor=default
 
@@ -157,11 +157,7 @@ RUN tar -xf node_modules.tar
 RUN tar -xf packages.tar
 RUN rm node_modules.tar packages.tar
 
-USER root
-
-COPY packages/app/docker/docker-entrypoint.sh /
-RUN chmod 700 /docker-entrypoint.sh
-RUN chown node:node ${appDir}
+COPY --chown=node:node --chmod=700 packages/app/docker/docker-entrypoint.sh /
 
 WORKDIR ${appDir}/packages/app
 
