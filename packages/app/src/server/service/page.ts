@@ -175,6 +175,16 @@ class PageService {
       }
     });
 
+    // revert
+    this.pageEvent.on('revert', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_REVERT);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
@@ -1895,6 +1905,8 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
+    this.pageEvent.emit('revert', page, user);
+
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
@@ -1993,6 +2005,8 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    this.pageEvent.emit('revert', page, user);
 
     return updatedPage;
   }
