@@ -8,12 +8,12 @@ import { useSWRxTagsList } from '~/stores/tag';
 import TagCloudBox from './TagCloudBox';
 import TagList from './TagList';
 
-const LIMIT = 10;
+const PAGING_LIMIT = 10;
 
 const TagPage: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, error } = useSWRxTagsList(LIMIT, offset);
+  const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
@@ -21,8 +21,7 @@ const TagPage: FC = () => {
   const { t } = useTranslation('');
 
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
-    // offset = (selectedPageNumber - 1) * 10
-    setOffset((selectedPageNumber - 1) * 10);
+    setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   }, []);
 
   // todo: adjust margin and redesign tags page
@@ -45,7 +44,7 @@ const TagPage: FC = () => {
               totalTags={totalCount}
               activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
               onChangePage={setOffsetByPageNumber}
-              limit={LIMIT}
+              pagingLimit={PAGING_LIMIT}
             />
           </div>
         )

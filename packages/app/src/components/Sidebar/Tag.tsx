@@ -9,12 +9,13 @@ import TagCloudBox from '../TagCloudBox';
 import TagList from '../TagList';
 
 
-const LIMIT = 10;
+const PAGING_LIMIT = 10;
 
 const Tag: FC = () => {
+  const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagsList(LIMIT, offset);
+  const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
   const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
@@ -22,8 +23,8 @@ const Tag: FC = () => {
   const { t } = useTranslation('');
 
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
-    // offset = (selectedPageNumber - 1) * 10
-    setOffset((selectedPageNumber - 1) * 10);
+    setActivePage(selectedPageNumber);
+    setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   }, []);
 
   const onReload = useCallback(() => {
@@ -69,9 +70,9 @@ const Tag: FC = () => {
           <TagList
             tagData={tagData}
             totalTags={totalCount}
-            activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
+            activePage={activePage}
             onChangePage={setOffsetByPageNumber}
-            limit={LIMIT}
+            pagingLimit={PAGING_LIMIT}
           />
         )
       }

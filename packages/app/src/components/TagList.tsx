@@ -13,7 +13,7 @@ type TagListProps = {
   totalTags: number,
   activePage: number,
   onChangePage?: (selectedPageNumber: number) => void,
-  limit: number,
+  pagingLimit: number,
   isPaginationShown?: boolean,
 }
 
@@ -23,7 +23,7 @@ const defaultProps = {
 
 const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) => {
   const {
-    tagData, totalTags, activePage, onChangePage, limit, isPaginationShown,
+    tagData, totalTags, activePage, onChangePage, pagingLimit, isPaginationShown,
   } = props;
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
@@ -60,7 +60,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
           activePage={activePage}
           changePage={onChangePage}
           totalItemsCount={totalTags}
-          pagingLimit={limit}
+          pagingLimit={pagingLimit}
           align="center"
           size="md"
         />
