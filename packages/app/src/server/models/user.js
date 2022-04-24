@@ -1,14 +1,15 @@
 /* eslint-disable no-use-before-define */
 import loggerFactory from '~/utils/logger';
 
+const crypto = require('crypto');
+
 const debug = require('debug')('growi:models:user');
+const md5 = require('md5');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
-const md5 = require('md5');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const crypto = require('crypto');
 
 const { listLocaleIds, migrateDeprecatedLocaleId } = require('~/utils/locale-utils');
 
@@ -393,8 +394,16 @@ module.exports = function(crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = async function() {
-    return this.find({ admin: true });
+  userSchema.statics.findAdmins = async function(option) {
+    const sort = option?.sort ?? { createdAt: -1 };
+
+    let status = option?.status ?? [STATUS_ACTIVE];
+    if (!Array.isArray(status)) {
+      status = [status];
+    }
+
+    return this.find({ admin: true, status: { $in: status } })
+      .sort(sort);
   };
 
   userSchema.statics.findUserByUsername = function(username) {

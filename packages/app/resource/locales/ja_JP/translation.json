@@ -395,7 +395,7 @@
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
-    "already_exists": "新しいページが既に存在しています。",
+    "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが削除できます"
   },
@@ -641,7 +641,7 @@
   "private_legacy_pages": {
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
-    "alert_title": "古い v4 互換形式のプライベートページを表示しています",
+    "alert_title": "古い v4 互換形式のプライベートページが存在します",
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
     "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",

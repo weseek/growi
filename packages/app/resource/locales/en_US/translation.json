@@ -396,7 +396,7 @@
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
-    "already_exists": "New page is already exists.",
+    "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete"
   },
@@ -642,7 +642,7 @@
   "private_legacy_pages": {
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
-    "alert_title": "You are viewing old v4 compatible private pages.",
+    "alert_title": "Old v4 compatible format private pages exist.",
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
     "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
