@@ -25,6 +25,7 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { PathAlreadyExistsError } from '../models/errors';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
@@ -1893,7 +1894,7 @@ class PageService {
 
     // throw if any page already exists
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     // 2. Revert target
@@ -1987,7 +1988,7 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     if (isRecursively) {
