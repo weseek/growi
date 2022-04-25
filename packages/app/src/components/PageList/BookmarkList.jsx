@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -16,7 +16,9 @@ import PageListItemS from './PageListItemS';
 const logger = loggerFactory('growi:BookmarkList');
 
 const BookmarkList = (props) => {
-  const { t, userId } = props;
+  const { t } = useTranslation();
+
+  const { userId } = props;
 
   const [pages, setPages] = useState([]);
 
@@ -84,8 +86,6 @@ const BookmarkList = (props) => {
 };
 
 BookmarkList.propTypes = {
-  t: PropTypes.func.isRequired,
-
   userId: PropTypes.string.isRequired,
 };
 
