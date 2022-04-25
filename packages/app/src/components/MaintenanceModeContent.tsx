@@ -35,7 +35,7 @@ const MaintenanceModeContent = (props) => {
         ? (
           <p>
             <i className="icon-arrow-right"></i>
-            <a href="" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
+            <a href="#" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
           </p>
         )
         : (
