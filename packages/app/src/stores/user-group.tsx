@@ -15,9 +15,9 @@ type MyUserGroupRelationsResult = {
   userGroupRelations: IUserGroupRelationHasId[],
 }
 
-export const useSWRxMyUserGroupRelations = (): SWRResponse<IUserGroupRelationHasId[], Error> => {
+export const useSWRxMyUserGroupRelations = (shouldFetch: boolean): SWRResponse<IUserGroupRelationHasId[], Error> => {
   return useSWR(
-    '/me/user-group-relations',
+    shouldFetch ? '/me/user-group-relations' : null,
     endpoint => apiGet(endpoint).then(result => (result as MyUserGroupRelationsResult).userGroupRelations),
   );
 };

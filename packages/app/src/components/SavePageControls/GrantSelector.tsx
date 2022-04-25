@@ -57,7 +57,9 @@ const GrantSelector = (props: Props): JSX.Element => {
   const [isSelectGroupModalShown, setIsSelectGroupModalShown] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
-  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations();
+
+  const shouldFetch = isSelectGroupModalShown;
+  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations(shouldFetch);
 
   const showSelectGroupModal = useCallback(() => {
     mutateMyUserGroupRelations();
@@ -150,14 +152,20 @@ const GrantSelector = (props: Props): JSX.Element => {
   /**
    * Render select grantgroup modal.
    */
-  const renderSelectGroupModal = useCallback(() => {
-    if (currentUser == null) {
+  const renderSelectGroupModalContent = useCallback(() => {
+    if (!shouldFetch) {
       return <></>;
     }
 
+    const isLoading = myUserGroupRelations == null;
+
     // show spinner
-    if (myUserGroupRelations === undefined) {
-      return <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>;
+    if (isLoading) {
+      return (
+        <div className="my-3 text-center">
+          <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+        </div>
+      );
     }
 
     // extract IUserGroupHasId
@@ -169,53 +177,52 @@ const GrantSelector = (props: Props): JSX.Element => {
       // exclude undefined elements
       .filter((elem): elem is IUserGroupHasId => elem != null);
 
-    const generateGroupListItems = () => {
-      return userRelatedGroups.map((group) => {
-        return (
-          <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
-            <h5>{group.name}</h5>
-            {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
-          </button>
-        );
-      });
-    };
-
-    const content = userRelatedGroups.length === 0
-      ? (
+    if (userRelatedGroups.length === 0) {
+      return (
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
-          { currentUser.admin && (
+          { currentUser?.admin && (
             <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
           ) }
         </div>
-      )
-      : (
-        <div className="list-group">
-          {generateGroupListItems()}
-        </div>
       );
+    }
 
     return (
-      <Modal
-        className="select-grant-group"
-        isOpen={isSelectGroupModalShown}
-        toggle={() => setIsSelectGroupModalShown(false)}
-      >
-        <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
-          {t('user_group.select_group')}
-        </ModalHeader>
-        <ModalBody>
-          {content}
-        </ModalBody>
-      </Modal>
+      <div className="list-group">
+        { userRelatedGroups.map((group) => {
+          return (
+            <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
+              <h5>{group.name}</h5>
+              {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
+            </button>
+          );
+        }) }
+      </div>
     );
-  }, [currentUser, groupListItemClickHandler, isSelectGroupModalShown, myUserGroupRelations, t]);
+
+  }, [currentUser?.admin, groupListItemClickHandler, myUserGroupRelations, shouldFetch, t]);
 
   return (
-    <React.Fragment>
+    <>
       { renderGrantSelector() }
-      { !disabled && renderSelectGroupModal() }
-    </React.Fragment>
+
+      {/* render modal */}
+      { !disabled && currentUser != null && (
+        <Modal
+          className="select-grant-group"
+          isOpen={isSelectGroupModalShown}
+          toggle={() => setIsSelectGroupModalShown(false)}
+        >
+          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
+            {t('user_group.select_group')}
+          </ModalHeader>
+          <ModalBody>
+            {renderSelectGroupModalContent()}
+          </ModalBody>
+        </Modal>
+      ) }
+    </>
   );
 
 };
