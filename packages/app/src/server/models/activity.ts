@@ -1,13 +1,12 @@
+import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { getOrCreateModel, getModelSafely } from '@growi/core';
 import loggerFactory from '../../utils/logger';
-
-
-import ActivityDefine from '../util/activityDefine';
 import activityEvent from '../events/activity';
+import ActivityDefine from '../util/activityDefine';
 
 import Subscription from './subscription';
 
@@ -67,6 +66,7 @@ activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 }, { unique: true });
+activitySchema.plugin(mongoosePaginate);
 
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
