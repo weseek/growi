@@ -26,13 +26,11 @@ const MaintenanceModeContent = (props) => {
           </p>
         )
         : (
-          <p>
-            <form action="/_api/v3/logout" name="form1" method="post">
-              <i className="icon-arrow-right"></i>
-              {/* <a href="javascript:form1.submit()" id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a> */}
-              <a href="" id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
-            </form>
-          </p>
+          <form action="/_api/v3/logout" name="form1" method="post">
+            <i className="icon-arrow-right"></i>
+            {/* <a href="javascript:form1.submit()" id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a> */}
+            <a href="" id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
+          </form>
         )
       }
     </div>
