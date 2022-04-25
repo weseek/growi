@@ -170,7 +170,7 @@ export const CustomNavTab = (props) => {
             );
           })}
         </Nav>
-        {emptyTrashButton && emptyTrashButton}
+        {emptyTrashButton}
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }

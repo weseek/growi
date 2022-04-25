@@ -230,6 +230,23 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
+  const renderDeleteModaloptions = () => {
+    if (emptyTrash) {
+      return renderCompletelyDeleteAlert();
+    }
+
+    if (!isDeletable) {
+      return;
+    }
+
+    return (
+      <>
+        {renderDeleteRecursivelyForm()}
+        {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
+      </>
+    );
+  };
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -242,18 +259,7 @@ const PageDeleteModal: FC = () => {
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePathsToDelete()}
         </div>
-        {(() => {
-          if (emptyTrash) {
-            renderCompletelyDeleteAlert();
-          }
-          else {
-            if (isDeletable) renderDeleteRecursivelyForm();
-            if (isDeletable && !forceDeleteCompletelyMode) renderDeleteCompletelyForm();
-          }
-        })()}
-        { isDeletable && !emptyTrash && renderDeleteRecursivelyForm()}
-        { isDeletable && !forceDeleteCompletelyMode && !emptyTrash && renderDeleteCompletelyForm() }
-        { emptyTrash && renderCompletelyDeleteAlert() }
+        {renderDeleteModaloptions()}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
