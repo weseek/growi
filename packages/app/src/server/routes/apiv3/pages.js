@@ -784,7 +784,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/legacy-pages-migration', /* accessTokenParser, loginRequired, csrf, */ validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { convertPath, pageIds: _pageIds, isRecursively } = req.body;
 
     // Convert by path
