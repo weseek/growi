@@ -32,7 +32,6 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import ActivityDefine from '../util/activityDefine';
 
-
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
@@ -175,10 +174,10 @@ class PageService {
       }
     });
 
-    // revert
-    this.pageEvent.on('revert', async(page, user) => {
+    // duplicate
+    this.pageEvent.on('duplicate', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -199,6 +198,16 @@ class PageService {
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // revert
+    this.pageEvent.on('revert', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -977,6 +986,7 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
+    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -1071,6 +1081,7 @@ class PageService {
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );
+    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
