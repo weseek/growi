@@ -208,10 +208,17 @@ module.exports = (crowi, app) => {
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
 
-    // count active users
-    let activeUsersCount;
+    // count viewers of `/`
+    let toppageViewersCount;
     try {
-      activeUsersCount = await User.countListByStatus(User.STATUS_ACTIVE);
+      const aggRes = await Page.aggregate([
+        { $match: { path: '/' } },
+        { $project: { count: { $size: '$seenUsers' } } },
+      ]);
+
+      toppageViewersCount = aggRes.length > 0
+        ? aggRes[0].count
+        : 1;
     }
     catch (error) {
       return res.json(ApiResponse.error(error));
@@ -237,7 +244,7 @@ module.exports = (crowi, app) => {
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
       const pages = await query.exec();
-      res.json(ApiResponse.success({ pages, activeUsersCount }));
+      res.json(ApiResponse.success({ pages, toppageViewersCount }));
     }
     catch (error) {
       return res.json(ApiResponse.error(error));
