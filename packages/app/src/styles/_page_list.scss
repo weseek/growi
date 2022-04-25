@@ -49,6 +49,12 @@ body .page-list {
         margin-right: 2px;
       }
 
+      .footstamp-icon {
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
       .seen-users-count {
         &.strength-1 {
           font-weight: bold;
@@ -77,17 +83,6 @@ body .page-list {
   .list-group {
     .list-group-item {
       min-height: 136px;
-
-      .page-list-meta {
-        .meta-icon {
-          width: 14px;
-          height: 14px;
-          margin-right: 14px;
-        }
-        .footstamp-icon {
-          margin-right: 2px;
-        }
-      }
 
       .page-list-updated-at {
         font-size: 12px;
