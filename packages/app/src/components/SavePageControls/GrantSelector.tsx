@@ -9,13 +9,10 @@ import {
 } from 'reactstrap';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { isNotRef } from '~/interfaces/common';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 const AVAILABLE_GRANTS = [
@@ -36,8 +33,6 @@ const AVAILABLE_GRANTS = [
 
 
 type Props = {
-  appContainer: AppContainer,
-
   disabled?: boolean,
   grant: number,
   grantGroupId?: string,
@@ -225,9 +220,4 @@ const GrantSelector = (props: Props): JSX.Element => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrantSelectorWrapper = withUnstatedContainers(GrantSelector, [AppContainer]);
-
-export default GrantSelectorWrapper;
+export default GrantSelector;
