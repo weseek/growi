@@ -13,7 +13,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -341,7 +341,7 @@ class PageEditor extends React.Component {
               ref={(c) => { this.editor = c }}
               value={this.state.markdown}
               noCdn={noCdn}
-              isMobile={this.props.appContainer.isMobile}
+              isMobile={this.props.isMobile}
               isUploadable={this.state.isUploadable}
               isUploadableFile={this.state.isUploadableFile}
               emojiStrategy={emojiStrategy}
@@ -385,6 +385,7 @@ const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, P
 const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
@@ -400,6 +401,7 @@ const PageEditorWrapper = (props) => {
       {...props}
       isEditable={isEditable}
       editorMode={editorMode}
+      isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
       grant={grant}
@@ -419,6 +421,7 @@ PageEditor.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
