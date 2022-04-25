@@ -240,9 +240,17 @@ const PageDeleteModal: FC = () => {
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
+        {(() => {
+          if (emptyTrash) {
+            renderCompletelyDeleteAlert();
+          }
+          else {
+            if (isDeletable) renderDeleteRecursivelyForm();
+            if (isDeletable && !forceDeleteCompletelyMode) renderDeleteCompletelyForm();
+          }
+        })()}
         { isDeletable && !emptyTrash && renderDeleteRecursivelyForm()}
         { isDeletable && !forceDeleteCompletelyMode && !emptyTrash && renderDeleteCompletelyForm() }
         { emptyTrash && renderCompletelyDeleteAlert() }

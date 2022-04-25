@@ -3,15 +3,9 @@ import React, {
 } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
-
-
-import { useCurrentPagePath } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
 
 
 function getBreakpointOneLevelLarger(breakpoint) {
@@ -89,16 +83,12 @@ CustomNavDropdown.propTypes = {
 
 
 export const CustomNavTab = (props) => {
-  const { t } = useTranslation();
   const navContainer = useRef();
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: currentPath } = useCurrentPagePath();
-  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
 
   const {
-    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown,
+    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown, emptyTrashButton,
   } = props;
 
   const navTabRefs = useMemo(() => {
@@ -114,28 +104,6 @@ export const CustomNavTab = (props) => {
       onNavSelected(key);
     }
   }, [onNavSelected]);
-
-  const pageIds = pagingResult?.items?.map(page => page._id);
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
-
-  let pageWithMetas = [];
-
-  const convertToIDataWithMeta = (page) => {
-    return { data: page };
-  };
-
-  if (pagingResult != null) {
-    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    pageWithMetas = injectTo(dataWithMetas);
-  }
-
-  const onDeletedHandler = (...args) => {
-    // process after multipe pages delete api
-  };
-
-  const emptyTrashClickHandler = () => {
-    openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
-  };
 
   function registerNavLink(key, elm) {
     if (elm != null) {
@@ -180,9 +148,6 @@ export const CustomNavTab = (props) => {
     inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   }
 
-  // trash page flag
-  const isTrash = currentPath === '/trash';
-
   return (
     <div className="grw-custom-nav-tab">
       <div ref={navContainer} className="d-flex justify-content-between">
@@ -205,18 +170,7 @@ export const CustomNavTab = (props) => {
             );
           })}
         </Nav>
-        { isTrash && (
-          <div className="d-flex align-items-center">
-            <button
-              type="button"
-              className="btn btn-outline-secondary rounded-pill text-danger d-flex align-items-center"
-              onClick={() => emptyTrashClickHandler()}
-            >
-              <i className="icon-fw icon-trash"></i>
-              <div>{t('modal_delete.empty_trash')}</div>
-            </button>
-          </div>
-        )}
+        {emptyTrashButton && emptyTrashButton}
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
@@ -231,6 +185,7 @@ CustomNavTab.propTypes = {
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  emptyTrashButton: PropTypes.element,
 };
 
 CustomNavTab.defaultProps = {
