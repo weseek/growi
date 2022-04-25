@@ -115,6 +115,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'completely deleted';
       actionIcon = 'icon-fire';
       break;
+    case 'PAGE_REVERT':
+      actionMsg = 'reverted';
+      actionIcon = 'icon-action-undo';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
