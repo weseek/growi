@@ -791,9 +791,7 @@ module.exports = (crowi) => {
     if (convertPath != null) {
       const normalizedPath = pathUtils.normalizePath(convertPath);
       try {
-        // await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
-        const User = mongoose.model('User');
-        await crowi.pageService.normalizeParentByPath(normalizedPath, await User.findOne());
+        await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
       }
       catch (err) {
         logger.error(err);
