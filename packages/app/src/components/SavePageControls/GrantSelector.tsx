@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -12,112 +11,109 @@ import {
 
 import AppContainer from '~/client/services/AppContainer';
 import { apiGet } from '~/client/util/apiv1-client';
+import { IUserGroupHasId } from '~/interfaces/user';
+import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+
+const AVAILABLE_GRANTS = [
+  {
+    grant: 1, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
+  },
+  {
+    grant: 2, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
+  },
+  // { grant: 3, iconClass: '', label: 'Specified users only' },
+  {
+    grant: 4, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
+  },
+  {
+    grant: 5, iconClass: 'icon-options', btnStyleClass: 'outline-purple', label: 'Only inside the group', reselectLabel: 'Reselect the group',
+  },
+];
+
+
+type Props = {
+  appContainer: AppContainer,
+
+  disabled?: boolean,
+  grant: number,
+  grantGroupId?: string,
+  grantGroupName?: string,
+
+  onUpdateGrant?: (args: { grant: number, grantGroupId?: string | null, grantGroupName?: string | null }) => void,
+}
+
 /**
  * Page grant select component
- *
- * @export
- * @class GrantSelector
- * @extends {React.Component}
  */
-class GrantSelector extends React.Component {
+const GrantSelector = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
 
-  constructor(props) {
-    super(props);
+  const {
+    disabled,
+    grantGroupName,
+    onUpdateGrant,
+  } = props;
 
-    this.availableGrants = [
-      {
-        grant: 1, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
-      },
-      {
-        grant: 2, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
-      },
-      // { grant: 3, iconClass: '', label: 'Specified users only' },
-      {
-        grant: 4, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
-      },
-      {
-        grant: 5, iconClass: 'icon-options', btnStyleClass: 'outline-purple', label: 'Only inside the group', reselectLabel: 'Reselect the group',
-      },
-    ];
 
-    this.state = {
-      userRelatedGroups: [],
-      isSelectGroupModalShown: false,
-    };
+  const [userRelatedGroups, setUserRelatedGroups] = useState<IUserGroupHasId[]>([]);
+  const [isSelectGroupModalShown, setIsSelectGroupModalShown] = useState(false);
 
-    this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
-    this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
-
-    this.changeGrantHandler = this.changeGrantHandler.bind(this);
-    this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
-  }
-
-  showSelectGroupModal() {
-    this.retrieveUserGroupRelations();
-    this.setState({ isSelectGroupModalShown: true });
-  }
-
-  hideSelectGroupModal() {
-    this.setState({ isSelectGroupModalShown: false });
-  }
+  const { data: currentUser } = useCurrentUser();
 
   /**
    * Retrieve user-group-relations data from backend
    */
-  retrieveUserGroupRelations() {
-    apiGet('/me/user-group-relations')
-      .then((res) => {
-        return res.userGroupRelations;
-      })
-      .then((userGroupRelations) => {
-        const userRelatedGroups = userGroupRelations.map((relation) => {
-          return relation.relatedGroup;
-        });
-        this.setState({ userRelatedGroups });
-      });
-  }
+  const retrieveUserGroupRelations = async() => {
+    const res = await apiGet('/me/user-group-relations') as any;
+    const userRelatedGroups = res.userGroupRelations.map((relation) => {
+      return relation.relatedGroup;
+    });
+    setUserRelatedGroups(userRelatedGroups);
+  };
+
+  const showSelectGroupModal = useCallback(() => {
+    retrieveUserGroupRelations();
+    setIsSelectGroupModalShown(true);
+  }, []);
 
   /**
    * change event handler for grant selector
    */
-  changeGrantHandler(grant) {
+  const changeGrantHandler = useCallback((grant: number) => {
     // select group
     if (grant === 5) {
-      this.showSelectGroupModal();
+      showSelectGroupModal();
       return;
     }
 
-    if (this.props.onUpdateGrant != null) {
-      this.props.onUpdateGrant({ grant, grantGroupId: null, grantGroupName: null });
+    if (onUpdateGrant != null) {
+      onUpdateGrant({ grant, grantGroupId: null, grantGroupName: null });
     }
-  }
+  }, [onUpdateGrant, showSelectGroupModal]);
 
-  groupListItemClickHandler(grantGroup) {
-    if (this.props.onUpdateGrant != null) {
-      this.props.onUpdateGrant({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
+  const groupListItemClickHandler = useCallback((grantGroup: IUserGroupHasId) => {
+    if (onUpdateGrant != null) {
+      onUpdateGrant({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
     }
 
     // hide modal
-    this.hideSelectGroupModal();
-  }
+    setIsSelectGroupModalShown(false);
+  }, [onUpdateGrant]);
 
   /**
    * Render grant selector DOM.
-   * @returns
-   * @memberof GrantSelector
    */
-  renderGrantSelector() {
-    const { t } = this.props;
-    const { grant: currentGrant, grantGroupId } = this.props;
+  const renderGrantSelector = useCallback(() => {
+    const { grant: currentGrant, grantGroupId } = props;
 
-    let dropdownToggleBtnColor = null;
-    let dropdownToggleLabelElm = null;
+    let dropdownToggleBtnColor;
+    let dropdownToggleLabelElm;
 
-    const dropdownMenuElems = this.availableGrants.map((opt) => {
-      const label = (opt.grant === 5 && grantGroupId != null)
+    const dropdownMenuElems = AVAILABLE_GRANTS.map((opt) => {
+      const label = ((opt.grant === 5 && opt.reselectLabel != null) && grantGroupId != null)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -134,7 +130,7 @@ class GrantSelector extends React.Component {
         dropdownToggleLabelElm = labelElm;
       }
 
-      return <DropdownItem key={opt.grant} onClick={() => this.changeGrantHandler(opt.grant)}>{labelElm}</DropdownItem>;
+      return <DropdownItem key={opt.grant} onClick={() => changeGrantHandler(opt.grant)}>{labelElm}</DropdownItem>;
     });
 
     // add specified group option
@@ -142,7 +138,7 @@ class GrantSelector extends React.Component {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{this.props.grantGroupName}</span>
+          <span className="label">{grantGroupName}</span>
         </span>
       );
 
@@ -155,7 +151,7 @@ class GrantSelector extends React.Component {
     return (
       <div className="form-group grw-grant-selector mb-0">
         <UncontrolledDropdown direction="up">
-          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
+          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu>
@@ -164,21 +160,20 @@ class GrantSelector extends React.Component {
         </UncontrolledDropdown>
       </div>
     );
-  }
+  }, [changeGrantHandler, disabled, grantGroupName, props, t]);
 
   /**
    * Render select grantgroup modal.
-   *
-   * @returns
-   * @memberof GrantSelector
    */
-  renderSelectGroupModal() {
-    const { t } = this.props;
+  const renderSelectGroupModal = useCallback(() => {
+    if (currentUser == null) {
+      return <></>;
+    }
 
     const generateGroupListItems = () => {
-      return this.state.userRelatedGroups.map((group) => {
+      return userRelatedGroups.map((group) => {
         return (
-          <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => { this.groupListItemClickHandler(group) }}>
+          <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
             <h5>{group.name}</h5>
             {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
           </button>
@@ -186,13 +181,13 @@ class GrantSelector extends React.Component {
       });
     };
 
-    const content = this.state.userRelatedGroups.length === 0
+    const content = userRelatedGroups.length === 0
       ? (
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
-          { this.props.appContainer.isAdmin
-            && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
-          }
+          { currentUser.admin && (
+            <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
+          ) }
         </div>
       )
       : (
@@ -204,10 +199,10 @@ class GrantSelector extends React.Component {
     return (
       <Modal
         className="select-grant-group"
-        isOpen={this.state.isSelectGroupModalShown}
-        toggle={this.hideSelectGroupModal}
+        isOpen={isSelectGroupModalShown}
+        toggle={() => setIsSelectGroupModalShown(false)}
       >
-        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-purple text-light">
+        <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
           {t('user_group.select_group')}
         </ModalHeader>
         <ModalBody>
@@ -215,34 +210,20 @@ class GrantSelector extends React.Component {
         </ModalBody>
       </Modal>
     );
-  }
+  }, [currentUser, groupListItemClickHandler, isSelectGroupModalShown, t, userRelatedGroups]);
 
-  render() {
-    return (
-      <React.Fragment>
-        { this.renderGrantSelector() }
-        { !this.props.disabled && this.renderSelectGroupModal() }
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      { renderGrantSelector() }
+      { !disabled && renderSelectGroupModal() }
+    </React.Fragment>
+  );
 
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
 const GrantSelectorWrapper = withUnstatedContainers(GrantSelector, [AppContainer]);
 
-GrantSelector.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  disabled: PropTypes.bool,
-  grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
-
-  onUpdateGrant: PropTypes.func,
-};
-
-export default withTranslation()(GrantSelectorWrapper);
+export default GrantSelectorWrapper;
