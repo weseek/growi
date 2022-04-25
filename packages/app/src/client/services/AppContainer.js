@@ -66,11 +66,6 @@ export default class AppContainer extends Container {
 
     this.interceptorManager = new InterceptorManager();
 
-    if (this.currentUser != null) {
-      // remove old user cache
-      this.removeOldUserCache();
-    }
-
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
@@ -221,18 +216,6 @@ export default class AppContainer extends Container {
 
   getEmojiStrategy() {
     return emojiStrategy;
-  }
-
-  removeOldUserCache() {
-    if (window.localStorage.userByName == null) {
-      return;
-    }
-
-    const keys = ['userByName', 'userById', 'users', 'lastFetched'];
-
-    keys.forEach((key) => {
-      window.localStorage.removeItem(key);
-    });
   }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
