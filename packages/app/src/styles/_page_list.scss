@@ -56,14 +56,16 @@ body .page-list {
         }
       }
       .seen-users-count {
-        &.strength-1 {
+        &.strength-0,
+        &.strength-1,
+        &.strength-2 {
           font-weight: bold;
         }
-        &.strength-2 {
+        &.strength-3 {
           font-weight: normal;
         }
-        &.strength-3 {
-          opacity: 0.6;
+        &.strength-4 {
+          opacity: 0.5;
         }
       }
     }
