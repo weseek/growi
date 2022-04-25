@@ -230,7 +230,7 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
-  const renderDeleteModaloptions = () => {
+  const renderDeleteModalOptions = () => {
     if (emptyTrash) {
       return renderCompletelyDeleteAlert();
     }
