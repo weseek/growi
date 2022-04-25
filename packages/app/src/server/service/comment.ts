@@ -1,7 +1,7 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { supportedTargetModelNames, supportedEventModelNames, supportedActionNames } from '~/interfaces/activity';
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
@@ -45,7 +45,7 @@ class CommentService {
           return;
         }
 
-        const activity = await this.createActivity(savedComment, supportedActionNames.ACTION_COMMENT_CREATE);
+        const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
@@ -58,7 +58,7 @@ class CommentService {
     this.commentEvent.on('update', async(updatedComment) => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, supportedActionNames.ACTION_COMMENT_UPDATE);
+        await this.createActivity(updatedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -82,9 +82,9 @@ class CommentService {
   private createActivity = async function(comment, action) {
     const parameters = {
       user: comment.creator,
-      targetModel: supportedTargetModelNames.MODEL_PAGE,
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: comment.page,
-      eventModel: supportedEventModelNames.MODEL_COMMENT,
+      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
       event: comment._id,
       action,
     };

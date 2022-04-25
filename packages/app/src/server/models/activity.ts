@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { supportedTargetModelNames, supportedEventModelNames, supportedActionNames } from '~/interfaces/activity';
+import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -38,7 +38,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   targetModel: {
     type: String,
     require: true,
-    enum: Object.values(supportedTargetModelNames),
+    enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -48,7 +48,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   action: {
     type: String,
     require: true,
-    enum: Object.values(supportedActionNames),
+    enum: AllSupportedActionType,
   },
   event: {
     type: Schema.Types.ObjectId,
@@ -56,7 +56,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   eventModel: {
     type: String,
-    enum: Object.values(supportedEventModelNames),
+    enum: AllSupportedEventModelType,
   },
 }, {
   timestamps: true,

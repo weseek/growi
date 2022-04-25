@@ -14,15 +14,16 @@ const ACTION_PAGE_REVERT = 'PAGE_REVERT';
 const ACTION_COMMENT_CREATE = 'COMMENT_CREATE';
 const ACTION_COMMENT_UPDATE = 'COMMENT_UPDATE';
 
-export const supportedTargetModelNames = {
+
+export const SUPPORTED_TARGET_MODEL_TYPE = {
   MODEL_PAGE,
 } as const;
 
-export const supportedEventModelNames = {
+export const SUPPORTED_EVENT_MODEL_TYPE = {
   MODEL_COMMENT,
 } as const;
 
-export const supportedActionNames = {
+export const SUPPORTED_ACTION_TYPE = {
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
   ACTION_PAGE_UPDATE,
@@ -35,6 +36,11 @@ export const supportedActionNames = {
   ACTION_COMMENT_UPDATE,
 } as const;
 
-// type supportedTargetModelType = typeof supportedTargetModelNames[keyof typeof supportedTargetModelNames];
-// type supportedEventModelType = typeof supportedEventModelNames[keyof typeof supportedEventModelNames];
-// type supportedActionType = typeof supportedActionNames[keyof typeof supportedActionNames];
+
+export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
+export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
+export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
+
+// type supportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_NAMES[keyof typeof SUPPORTED_TARGET_MODEL_NAMES];
+// type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_NAMES[keyof typeof SUPPORTED_EVENT_MODEL_NAMES];
+// type supportedActionType = typeof SUPPORTED_ACTION_NAMES[keyof typeof SUPPORTED_ACTION_NAMES];

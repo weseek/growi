@@ -4,7 +4,7 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { supportedTargetModelNames, supportedActionNames } from '~/interfaces/activity';
+import { AllSupportedTargetModelType, AllSupportedActionType } from '~/interfaces/activity';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 import { ActivityDocument } from './activity';
@@ -46,7 +46,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   targetModel: {
     type: String,
     require: true,
-    enum: Object.values(supportedTargetModelNames),
+    enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -56,7 +56,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   action: {
     type: String,
     require: true,
-    enum: Object.values(supportedActionNames),
+    enum: AllSupportedActionType,
   },
   activities: [
     {
