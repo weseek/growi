@@ -10,9 +10,10 @@ import {
 
 
 import AppContainer from '~/client/services/AppContainer';
-import { apiGet } from '~/client/util/apiv1-client';
+import { isNotRef } from '~/interfaces/common';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
+import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -58,26 +59,15 @@ const GrantSelector = (props: Props): JSX.Element => {
   } = props;
 
 
-  const [userRelatedGroups, setUserRelatedGroups] = useState<IUserGroupHasId[]>([]);
   const [isSelectGroupModalShown, setIsSelectGroupModalShown] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
-
-  /**
-   * Retrieve user-group-relations data from backend
-   */
-  const retrieveUserGroupRelations = async() => {
-    const res = await apiGet('/me/user-group-relations') as any;
-    const userRelatedGroups = res.userGroupRelations.map((relation) => {
-      return relation.relatedGroup;
-    });
-    setUserRelatedGroups(userRelatedGroups);
-  };
+  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations();
 
   const showSelectGroupModal = useCallback(() => {
-    retrieveUserGroupRelations();
+    mutateMyUserGroupRelations();
     setIsSelectGroupModalShown(true);
-  }, []);
+  }, [mutateMyUserGroupRelations]);
 
   /**
    * change event handler for grant selector
@@ -170,6 +160,20 @@ const GrantSelector = (props: Props): JSX.Element => {
       return <></>;
     }
 
+    // show spinner
+    if (myUserGroupRelations === undefined) {
+      return <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>;
+    }
+
+    // extract IUserGroupHasId
+    const userRelatedGroups: IUserGroupHasId[] = myUserGroupRelations
+      .map((relation) => {
+        // relation.relatedGroup should be populated by server
+        return isNotRef(relation.relatedGroup) ? relation.relatedGroup : undefined;
+      })
+      // exclude undefined elements
+      .filter((elem): elem is IUserGroupHasId => elem != null);
+
     const generateGroupListItems = () => {
       return userRelatedGroups.map((group) => {
         return (
@@ -210,7 +214,7 @@ const GrantSelector = (props: Props): JSX.Element => {
         </ModalBody>
       </Modal>
     );
-  }, [currentUser, groupListItemClickHandler, isSelectGroupModalShown, t, userRelatedGroups]);
+  }, [currentUser, groupListItemClickHandler, isSelectGroupModalShown, myUserGroupRelations, t]);
 
   return (
     <React.Fragment>
