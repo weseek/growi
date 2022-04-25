@@ -259,7 +259,7 @@ const PageDeleteModal: FC = () => {
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePathsToDelete()}
         </div>
-        {renderDeleteModaloptions()}
+        {renderDeleteModalOptions()}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
