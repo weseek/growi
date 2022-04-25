@@ -10,9 +10,13 @@ interface AuthorizedRequest extends Request {
 }
 
 module.exports = (crowi: Crowi): Router => {
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+
   const router = express.Router();
 
-  router.get('/list', async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/list', accessTokenParser, loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     return res.apiv3({});
   });
 
