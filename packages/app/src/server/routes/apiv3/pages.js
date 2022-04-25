@@ -797,7 +797,7 @@ module.exports = (crowi) => {
       }
       catch (err) {
         logger.error(err);
-        return res.apiv3Err(new ErrorV3(`Failed to convert pages.`), 400);
+        return res.apiv3Err(new ErrorV3('Failed to convert pages.'), 400);
       }
 
       return res.apiv3({});
@@ -810,7 +810,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
     if (pageIds.length === 0) {
-      return res.apiv3Err(new ErrorV3(`No page is selected.`), 400);
+      return res.apiv3Err(new ErrorV3('No page is selected.'), 400);
     }
 
     try {
