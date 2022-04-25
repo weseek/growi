@@ -55,8 +55,6 @@ export default class AppContainer extends Container {
   initContents() {
     const body = document.querySelector('body');
 
-    this.isAdmin = body.dataset.isAdmin === 'true';
-
     this.isDocSaved = true;
 
     this.originRenderer = new GrowiRenderer(this);
