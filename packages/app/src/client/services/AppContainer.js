@@ -3,16 +3,6 @@ import { Container } from 'unstated';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import {
-  apiDelete, apiGet, apiPost, apiRequest,
-} from '../util/apiv1-client';
-import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
-} from '../util/apiv3-client';
-import {
-  mediaQueryListForDarkMode,
-  applyColorScheme,
-} from '../util/color-scheme';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import { i18nFactory } from '../util/i18n';
 
@@ -52,23 +42,6 @@ export default class AppContainer extends Container {
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
-
-    this.apiGet = apiGet;
-    this.apiPost = apiPost;
-    this.apiDelete = apiDelete;
-    this.apiRequest = apiRequest;
-
-    this.apiv3Get = apiv3Get;
-    this.apiv3Post = apiv3Post;
-    this.apiv3Put = apiv3Put;
-    this.apiv3Delete = apiv3Delete;
-
-    this.apiv3 = {
-      get: apiv3Get,
-      post: apiv3Post,
-      put: apiv3Put,
-      delete: apiv3Delete,
-    };
   }
 
   /**
