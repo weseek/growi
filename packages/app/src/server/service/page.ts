@@ -2237,6 +2237,43 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
+  async normalizeParentByPath(path: string, user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const page = await Page.findByPathAndViewer(path, user);
+
+    if (page == null) {
+      throw Error(`Could not find the page "${path}" to convert.`);
+    }
+    if (Array.isArray(page)) {
+      throw Error('page must not be an array');
+    }
+
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.NormalizeParent,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: page.path,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
+    }
+
+    try {
+      await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+    }
+    catch (err) {
+      logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+      throw err;
+    }
+  }
+
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -2455,7 +2492,11 @@ class PageService {
 
       const { prevDescendantCount } = options;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = (newDescendantCount - prevDescendantCount) + 1;
+      let inc = newDescendantCount - prevDescendantCount;
+      const isAlreadyConverted = page.parent != null;
+      if (!isAlreadyConverted) {
+        inc += 1;
+      }
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
