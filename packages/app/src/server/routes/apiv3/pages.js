@@ -194,8 +194,10 @@ module.exports = (crowi) => {
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     legacyPagesMigration: [
-      body('pageIds').isArray().withMessage('pageIds is required'),
+      body('convertPath').optional().isString().withMessage('convertPath must be a string'),
+      body('pageIds').optional().isArray().withMessage('pageIds must be an array'),
       body('isRecursively')
+        .optional()
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
@@ -783,11 +785,30 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
-    const { pageIds: _pageIds, isRecursively } = req.body;
+    const { convertPath, pageIds: _pageIds, isRecursively } = req.body;
+
+    // Convert by path
+    if (convertPath != null) {
+      const normalizedPath = pathUtils.normalizePath(convertPath);
+      try {
+        await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to convert pages.'), 400);
+      }
+
+      return res.apiv3({});
+    }
+
+    // Convert by pageIds
     const pageIds = _pageIds == null ? [] : _pageIds;
 
     if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
+    }
+    if (pageIds.length === 0) {
+      return res.apiv3Err(new ErrorV3('No page is selected.'), 400);
     }
 
     try {
