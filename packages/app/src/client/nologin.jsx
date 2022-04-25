@@ -1,17 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'unstated';
-import { I18nextProvider } from 'react-i18next';
 
-import { i18nFactory } from './util/i18n';
+import ReactDOM from 'react-dom';
+import { I18nextProvider } from 'react-i18next';
+import { Provider } from 'unstated';
+
 
 import AppContainer from '~/client/services/AppContainer';
+import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 
 import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
-import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
+import MaintenanceModeContent from '../components/MaintenanceModeContent';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
-import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
+import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
+
+import { i18nFactory } from './util/i18n';
 
 const i18n = i18nFactory();
 
@@ -85,10 +88,25 @@ if (loginFormElem) {
   );
 }
 
-// render PasswordResetRequestForm
-const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
 const appContainer = new AppContainer();
 appContainer.initApp();
+
+// render MaintenanceModeContent
+const maintenanceModeContentElm = document.getElementById('maintenance-mode-content');
+if (maintenanceModeContentElm) {
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[appContainer]}>
+        <MaintenanceModeContent />
+      </Provider>
+    </I18nextProvider>,
+    maintenanceModeContentElm,
+  );
+}
+
+// render PasswordResetRequestForm
+const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
 if (passwordResetRequestFormElem) {
 
   ReactDOM.render(

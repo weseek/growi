@@ -19,12 +19,9 @@
  {% block fixed-controls %}
  {% endblock %}
 
- <script>
-  document.getElementById('maintanounse-mode-logout').addEventListener('click', ()=>{
-    console.log('aaaaai')
-    location.reload();
-}, false);
-  </script>
+ {% block html_additional_headers %}
+ <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+{% endblock %}
 
 {% block layout_main %}
 <div id="main" class="main">
@@ -37,25 +34,7 @@
             <h1 class="text-center">{{ t('maintenance_mode.maintenance_mode') }}</h1>
             <h3>{{ t('maintenance_mode.growi_is_under_maintenance') }}</h3>
             <hr />
-            <div class="text-left">
-              <p>
-                <i class="icon-arrow-right"></i>
-                <a href="/admin">{{ t('maintenance_mode.admin_page') }}</a>
-              </p>
-              {% if not user %}
-                <p>
-                  <i class="icon-arrow-right"></i>
-                  <a href="/login">{{ t('maintenance_mode.login') }}</a>
-                </p>
-              {% else %}
-                <p>
-                  <form action="/_api/v3/logout" name="form1" method="post">
-                    <i class="icon-arrow-right"></i>
-                    <a href="javascript:form1.submit()" id="maintanounse-mode-logout">{{ t('maintenance_mode.logout') }}</a>
-                  </form>
-                </p>
-              {% endif %}
-            </div>
+            <div id="maintenance-mode-content"></div>
           </div>
         </div>
       </div>
