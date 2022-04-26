@@ -2254,11 +2254,26 @@ class PageService {
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
+    // accept page migration --- 1
+    socket.emit(SocketEventName.PageMigrationStarted);
+
     if (isRecursively) {
       const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
       // DO NOT await !!
-      this.normalizeParentRecursivelyByPages(pages, user);
+      (async() => {
+        try {
+          await this.normalizeParentRecursivelyByPages(pages, user);
+          // page migration ended --- 2
+          socket.emit(SocketEventName.PageMigrationEnded);
+        }
+        catch {
+          // fail page migration --- 3
+          socket.emit(SocketEventName.PageMigrationError);
+        }
+      })();
 
       return;
     }
@@ -2279,11 +2294,18 @@ class PageService {
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
+          // fail page migrate --- 3
+          socket.emit(SocketEventName.PageMigrationError);
+        }
+        else {
+          // page migrate ended --- 2
+          socket.emit(SocketEventName.PageMigrationEnded);
         }
       }
       catch (err) {
         logger.error('Something went wrong while normalizing parent.', err);
-        // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
+        // fail page migrate --- 3
+        socket.emit(SocketEventName.PageMigrationError);
       }
     }
   }
