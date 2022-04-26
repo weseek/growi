@@ -79,7 +79,7 @@ export class LsxPage extends React.Component {
 
   render() {
     const pageNode = this.props.pageNode;
-    const { activeUsersCount } = this.props.lsxContext;
+    const { toppageViewersCount } = this.props.lsxContext;
 
     // create PagePath element
     let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
@@ -88,7 +88,7 @@ export class LsxPage extends React.Component {
     }
 
     // create PageListMeta element
-    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} activeUsersCount={activeUsersCount} /> : '';
+    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} basisViewersCount={toppageViewersCount} /> : '';
 
     return (
       <li className="page-list-li">
