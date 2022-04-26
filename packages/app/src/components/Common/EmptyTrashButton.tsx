@@ -1,20 +1,17 @@
 import React, { useMemo } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
-
-import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
-import PageListIcon from './Icons/PageListIcon';
+import { useSWRxPageList, useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
 
 
 const EmptyTrashButton = () => {
   const { t } = useTranslation();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: pagingResult } = useSWRxDescendantsPageListForCurrrentPath();
+  // pagingList => pages under '/trash'
+  // const { data: pagingResult } = useSWRxDescendantsPageListForCurrrentPath();
+  const { data: pagingResult } = useSWRxPageList('/trash');
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
@@ -52,30 +49,4 @@ const EmptyTrashButton = () => {
   );
 };
 
-
-const TrashPageList = (props) => {
-  const { t } = props;
-
-  const navTabMapping = useMemo(() => {
-    return {
-      pagelist: {
-        Icon: PageListIcon,
-        Content: DescendantsPageListForCurrentPath,
-        i18n: t('page_list'),
-        index: 0,
-      },
-    };
-  }, [t]);
-
-  return (
-    <div data-testid="trash-page-list" className="mt-5 d-edit-none">
-      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={EmptyTrashButton()} />
-    </div>
-  );
-};
-
-TrashPageList.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-};
-
-export default withTranslation()(TrashPageList);
+export default EmptyTrashButton;
