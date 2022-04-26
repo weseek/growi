@@ -44,19 +44,14 @@ class ActivityService {
    */
   getPaginatedActivity = async(limit: number, offset: number) => {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    try {
-      const paginateResult = await Activity.paginate(
-        {
-          sort: { createdAt: -1 },
-          limit,
-          offset,
-        },
-      );
-      return paginateResult;
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    const paginateResult = await Activity.paginate(
+      {
+        sort: { createdAt: -1 },
+        limit,
+        offset,
+      },
+    );
+    return paginateResult;
   }
 
 }
