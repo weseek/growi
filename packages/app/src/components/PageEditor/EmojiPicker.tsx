@@ -1,14 +1,16 @@
 import React, { FC } from 'react';
+
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
+
 import { isDarkMode } from '~/client/util/color-scheme';
+
 import EmojiPickerHelper from './EmojiPickerHelper';
 
 type Props = {
   onClose: () => void,
   emojiSearchText: string,
-  editor: any
   emojiPickerHelper: EmojiPickerHelper,
   isOpen: boolean
 }
