@@ -1,8 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
+
 import { isDarkMode } from '~/client/util/color-scheme';
+
 import EmojiPickerHelper from './EmojiPickerHelper';
 
 type Props = {
@@ -19,6 +22,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     onClose, emojiSearchText, emojiPickerHelper, isOpen,
   } = props;
 
+  const [style, setStyle] = useState({});
   // Set search emoji input and trigger search
   const searchEmoji = () => {
     if (emojiSearchText !== null) {
@@ -28,6 +32,8 @@ const EmojiPicker: FC<Props> = (props: Props) => {
       const event = new Event('input', { bubbles: true });
       input.dispatchEvent(event);
       input.focus();
+      const emojiPickerHeight = window.document.querySelector('[id^="emoji-mart-search"]')?.clientHeight;
+      setStyle(emojiPickerHelper.getCursorCoords(emojiPickerHeight));
     }
   };
 
@@ -84,7 +90,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const translation = getEmojiTranslation();
   const theme = isDarkMode() ? 'dark' : 'light';
 
-  return (
+  return Object.keys(style).length !== 0 ? (
     <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji}>
       <Picker
         onSelect={selectEmoji}
@@ -95,7 +101,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
         theme={theme}
       />
     </Modal>
-  );
+  ) : <></>;
 };
 
 export default EmojiPicker;

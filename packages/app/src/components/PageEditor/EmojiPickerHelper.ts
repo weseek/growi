@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 export default class EmojiPickerHelper {
 
 editor;
@@ -9,6 +11,25 @@ constructor(editor) {
   this.pattern = /:[^:\s]+/;
 }
 
+getCursorCoords = (emojiPickerHeight):CSSProperties => {
+  const offset = 30;
+  const cursorPos = this.editor.cursorCoords(true);
+  const editorPos = this.editor.getWrapperElement().getBoundingClientRect();
+  this.editor.focus();
+  // Emoji Picker bottom position exceed editor's bottom position
+  if (cursorPos.bottom + emojiPickerHeight > editorPos.bottom) {
+    return {
+      top: editorPos.bottom - emojiPickerHeight,
+      left: cursorPos.left,
+      position: 'absolute',
+    };
+  }
+  return {
+    top: cursorPos.top + offset,
+    left: cursorPos.left,
+    position: 'absolute',
+  };
+}
 
 getSearchCursor() {
   const currentPos = this.editor.getCursor();
