@@ -1,7 +1,8 @@
-import React, { FC, useRef, useEffect } from 'react';
+import React, { FC } from 'react';
 
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
+import { Modal } from 'reactstrap';
 
 import { isDarkMode } from '~/client/util/color-scheme';
 
@@ -10,46 +11,27 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 type Props = {
   onClose: () => void,
   emojiSearchText: string,
-  editor: any
-  emojiPickerHelper: EmojiPickerHelper
+  emojiPickerHelper: EmojiPickerHelper,
+  isOpen: boolean
 }
 
 const EmojiPicker: FC<Props> = (props: Props) => {
 
   const {
-    onClose, emojiSearchText, emojiPickerHelper,
+    onClose, emojiSearchText, emojiPickerHelper, isOpen,
   } = props;
 
-  const emojiPickerContainer = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-
-    if (emojiSearchText != null) {
-      // Get input element of emoji picker search
-      const input = document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
+  // Set search emoji input and trigger search
+  const searchEmoji = () => {
+    if (emojiSearchText !== null) {
+      const input = window.document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
       const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
-      // Set value to input of emoji picker search and trigger the search
       valueSetter?.call(input, emojiSearchText);
       const event = new Event('input', { bubbles: true });
       input.dispatchEvent(event);
+      input.focus();
     }
-  }, [emojiSearchText]);
-
-
-  // TODO: using blur event by GW-7770
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (emojiPickerContainer.current && !emojiPickerContainer.current.contains(event.target)) {
-        onClose();
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [emojiPickerContainer, onClose]);
-
+  };
 
   const selectEmoji = (emoji) => {
     if (emojiSearchText !== null) {
@@ -58,7 +40,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     else {
       emojiPickerHelper.addEmoji(emoji);
     }
-    props.onClose();
+    onClose();
   };
 
 
@@ -103,12 +85,18 @@ const EmojiPicker: FC<Props> = (props: Props) => {
 
   const translation = getEmojiTranslation();
   const theme = isDarkMode() ? 'dark' : 'light';
+
   return (
-    <div className="overlay">
-      <div ref={emojiPickerContainer}>
-        <Picker autoFocus onSelect={selectEmoji} i18n={translation} title={translation.title} emojiTooltip theme={theme} />
-      </div>
-    </div>
+    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji}>
+      <Picker
+        onSelect={selectEmoji}
+        i18n={translation}
+        title={translation.title}
+        emojiTooltip
+        style={{ position: 'absolute' }}
+        theme={theme}
+      />
+    </Modal>
   );
 };
 
