@@ -25,7 +25,7 @@ describe('UserGroupService', () => {
 
     // Create Users
     await User.insertMany([
-      { name: 'user1', username: 'user1', email: 'user1@example.com' },
+      { name: 'user1', username: 'user1', email: 'user-group-test1@example.com' },
     ]);
 
 
