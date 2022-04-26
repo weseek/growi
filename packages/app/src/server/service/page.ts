@@ -18,6 +18,7 @@ import {
 import { IUserHasId } from '~/interfaces/user';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { ActivityDocument } from '~/server/models/activity';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
@@ -2229,12 +2230,9 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page, user, action) {
-    const { activityService, inAppNotificationService } = this.crowi;
+  private async createActivity(page, user, action) {
+    const { activityService } = this.crowi;
 
-    const snapshot = stringifySnapshot(page);
-
-    // Create activity
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
@@ -2243,10 +2241,19 @@ class PageService {
     };
     const activity = await activityService.createByParameters(parameters);
 
+    return activity;
+  }
+
+  private async createAndSendNotifications(page, user, action) {
+    const { inAppNotificationService } = this.crowi;
+
+    const activity = (this.createActivity(page, user, action) as any) as ActivityDocument;
+
     // Get user to be notified
     const targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
+    const snapshot = stringifySnapshot(page);
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
