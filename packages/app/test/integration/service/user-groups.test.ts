@@ -71,7 +71,6 @@ describe('UserGroupService', () => {
       {
         relatedGroup: userGroup4,
         relatedUser: user1,
-        createdAt: new Date(),
       },
     ]);
 
