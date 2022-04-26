@@ -62,10 +62,10 @@ context('Access User settings', () => {
     cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}-external-account-3`);
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
+    cy.get('.toast').should('not.exist');
     cy.getByTestid('grw-associate-modal').find('.close').click();
     cy.screenshot(`${ssPrefix}-external-account-4`);
 
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
     cy.get('.toast').should('not.exist');
 
     // Access Password setting
