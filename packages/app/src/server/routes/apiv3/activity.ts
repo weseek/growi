@@ -1,4 +1,5 @@
 import express, { Request, Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
 import Activity from '~/server/models/activity';
@@ -19,6 +20,13 @@ const validator = {
   ],
 };
 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message:
+    'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+});
+
 module.exports = (crowi: Crowi): Router => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -26,8 +34,8 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  router.get('/', apiLimiter, accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
 
