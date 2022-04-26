@@ -88,7 +88,7 @@ export const CustomNavTab = (props) => {
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
   const {
-    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown, navRightElement,
+    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown, emptyTrashButton,
   } = props;
 
   const navTabRefs = useMemo(() => {
@@ -170,7 +170,7 @@ export const CustomNavTab = (props) => {
             );
           })}
         </Nav>
-        {navRightElement}
+        {emptyTrashButton}
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
@@ -185,7 +185,7 @@ CustomNavTab.propTypes = {
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  navRightElement: PropTypes.node,
+  emptyTrashButton: PropTypes.element,
 };
 
 CustomNavTab.defaultProps = {
