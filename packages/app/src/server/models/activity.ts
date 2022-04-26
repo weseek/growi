@@ -26,6 +26,7 @@ export interface ActivityDocument extends Document {
 }
 
 export interface ActivityModel extends Model<ActivityDocument> {
+  [x:string]: any
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
 // TODO: add revision id
@@ -102,5 +103,17 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 
   activityEvent.emit('create', targetUsers, savedActivity);
 });
+
+activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number) {
+  const paginateResult = await this.paginate(
+    {},
+    {
+      limit,
+      offset,
+      sort: { createdAt: -1 },
+    },
+  );
+  return paginateResult;
+};
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
