@@ -29,21 +29,19 @@ module.exports = (crowi: Crowi): Router => {
   const activityService = crowi.activityService;
 
 
-  router.get(
-    '/list', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
-      const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
-      const offset = req.query.offset || 1;
+  router.get('/list', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+    const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const offset = req.query.offset || 1;
 
-      try {
-        const paginatedActivity = await activityService.getPaginatedActivity(limit, offset);
-        return res.apiv3({ paginatedActivity });
-      }
-      catch (err) {
-        logger.error('Failed to get paginated activity', err);
-        return res.apiv3Err(err);
-      }
-    },
-  );
+    try {
+      const paginatedActivity = await activityService.getPaginatedActivity(limit, offset);
+      return res.apiv3({ paginatedActivity });
+    }
+    catch (err) {
+      logger.error('Failed to get paginated activity', err);
+      return res.apiv3Err(err);
+    }
+  });
 
   return router;
 };
