@@ -173,17 +173,14 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
     socket?.on(SocketEventName.PageMigrationStarted, () => {
       // page migration started
-      console.log('page migration started');
     });
 
     socket?.on(SocketEventName.PageMigrationEnded, () => {
       // page migration ended
-      console.log('page migration ended');
     });
 
     socket?.on(SocketEventName.PageMigrationError, () => {
       // page migration error
-      console.log('page migration error');
     });
 
     return () => {

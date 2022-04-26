@@ -2256,7 +2256,6 @@ class PageService {
 
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
-    // accept page migration --- 1
     socket.emit(SocketEventName.PageMigrationStarted);
 
     if (isRecursively) {
@@ -2266,11 +2265,9 @@ class PageService {
       (async() => {
         try {
           await this.normalizeParentRecursivelyByPages(pages, user);
-          // page migration ended --- 2
           socket.emit(SocketEventName.PageMigrationEnded);
         }
         catch {
-          // fail page migration --- 3
           socket.emit(SocketEventName.PageMigrationError);
         }
       })();
@@ -2294,17 +2291,14 @@ class PageService {
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
-          // fail page migrate --- 3
           socket.emit(SocketEventName.PageMigrationError);
         }
         else {
-          // page migrate ended --- 2
           socket.emit(SocketEventName.PageMigrationEnded);
         }
       }
       catch (err) {
         logger.error('Something went wrong while normalizing parent.', err);
-        // fail page migrate --- 3
         socket.emit(SocketEventName.PageMigrationError);
       }
     }
