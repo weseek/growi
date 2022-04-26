@@ -15,7 +15,6 @@ const validator = {
   list: [
     query('limit').optional().isInt({ max: 100 }).withMessage('limit must be a number less than or equal to 100'),
     query('offset').optional().isInt().withMessage('page must be a number'),
-
   ],
 };
 
