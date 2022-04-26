@@ -5,12 +5,19 @@ import {
 
 import { usePagePresentationModal } from '~/stores/modal';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PagePresentationModal = () => {
 
   const { data: presentationData, close: closePresentationModal } = usePagePresentationModal();
 
   return (
-    <Modal isOpen={presentationData.isOpened} toggle={closePresentationModal} className="grw-presentation-modal" unmountOnClose={false}>
+    <Modal
+      isOpen={presentationData.isOpened}
+      toggle={closePresentationModal}
+      data-testid="page-presentation-modal"
+      className="grw-presentation-modal"
+      unmountOnClose={false}
+    >
       <ModalBody className="modal-body">
         <iframe src={presentationData.href} />
       </ModalBody>
