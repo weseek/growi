@@ -61,12 +61,15 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminAndAuth] = require('./apiv3')(crowi);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
   // API v3 for admin
-  app.use('/_api/v3', apiV3AdminAndAuth);
+  app.use('/_api/v3', apiV3AdminRouter);
+
+  // API v3 for auth
+  app.use('/_api/v3', apiV3AuthRouter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
