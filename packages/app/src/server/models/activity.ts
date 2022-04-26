@@ -2,6 +2,7 @@ import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
 
@@ -25,6 +26,7 @@ export interface ActivityDocument extends Document {
 }
 
 export interface ActivityModel extends Model<ActivityDocument> {
+  [x:string]: any
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
 // TODO: add revision id
@@ -65,6 +67,7 @@ activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 }, { unique: true });
+activitySchema.plugin(mongoosePaginate);
 
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
@@ -100,5 +103,17 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 
   activityEvent.emit('create', targetUsers, savedActivity);
 });
+
+activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number) {
+  const paginateResult = await this.paginate(
+    {},
+    {
+      limit,
+      offset,
+      sort: { createdAt: -1 },
+    },
+  );
+  return paginateResult;
+};
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);

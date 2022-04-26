@@ -1,6 +1,6 @@
 import { getModelSafely } from '@growi/core';
-import Crowi from '../crowi';
 
+import Crowi from '../crowi';
 
 class ActivityService {
 
