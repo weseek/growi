@@ -1,27 +1,28 @@
 import React, { useMemo } from 'react';
+
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
-import { pagePathUtils } from '@growi/core';
 
-import { EditorMode, useEditorMode } from '~/stores/ui';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
+import { useDescendantsPageListModal } from '~/stores/modal';
+import { useSWRxPageByPath } from '~/stores/page';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
-
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-
-import PageListIcon from '../Icons/PageListIcon';
-import Editor from '../PageEditor';
-import Page from '../Page';
-import UserInfo from '../User/UserInfo';
-import TableOfContents from '../TableOfContents';
+import CountBadge from '../Common/CountBadge';
 import ContentLinkButtons from '../ContentLinkButtons';
-import PageEditorByHackmd from '../PageEditorByHackmd';
-import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import HashChanged from '../EventListeneres/HashChanged';
+import PageListIcon from '../Icons/PageListIcon';
+import Page from '../Page';
+import Editor from '../PageEditor';
+import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+import PageEditorByHackmd from '../PageEditorByHackmd';
+import TableOfContents from '../TableOfContents';
+import UserInfo from '../User/UserInfo';
 
 
 const WIKI_HEADER_LINK = 120;
@@ -43,6 +44,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
+  const { data: currentPage } = useSWRxPageByPath(currentPath);
 
   const { data: editorMode } = useEditorMode();
 
@@ -74,7 +76,7 @@ const DisplaySwitcher = (): JSX.Element => {
                           <PageListIcon />
                         </div>
                         {t('page_list')}
-                        <span></span> {/* for a count badge */}
+                        {currentPage?.descendantCount != null && <CountBadge count={currentPage.descendantCount + 1} />}
                       </button>
                     ) }
                   </div>
@@ -89,7 +91,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
-                        <span></span> {/* for a count badge */}
+                        {currentPage?.commentCount != null && <CountBadge count={currentPage.commentCount} />}
                       </button>
                     </div>
                   ) }

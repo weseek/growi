@@ -107,6 +107,7 @@
 	"Connected": "Connected",
 	"Show": "显示",
 	"Hide": "隐藏",
+  "Loading": "加载...",
 	"Reset": "重置",
 	"Disclose E-mail": "显示邮箱",
 	"page exists": "页面已存在",
@@ -156,6 +157,7 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
+  "popular_tags": "流行标签",
   "Check All tags": "检查所有标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
 	"Show latest": "显示最新",
@@ -179,6 +181,7 @@
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
+  "Successfully requested": "进程成功接受",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -371,7 +374,7 @@
   },
 	"page_api_error": {
 		"notfound_or_forbidden": "未找到或禁止原始页。",
-		"already_exists": "新建页面已存在",
+		"already_exists": "具有该路径的页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以删除"
   },
@@ -925,7 +928,7 @@
   "private_legacy_pages": {
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
-    "alert_title": "你正在查看旧的v4兼容的私人网页。",
+    "alert_title": "存在旧的v4兼容格式的私人网页。",
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
     "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",

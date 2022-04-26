@@ -1,16 +1,14 @@
-import loggerFactory from '~/utils/logger';
-
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
-const mongoose = require('mongoose');
-
+const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
+const mongoose = require('mongoose');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -366,18 +364,17 @@ module.exports = (crowi) => {
   router.get('/recent', accessTokenParser, loginRequired, async(req, res) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
-
+    const skip = offset > 0 ? (offset - 1) * limit : offset;
     const queryOptions = {
-      offset,
+      offset: skip,
       limit,
       includeTrashed: false,
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
     };
-
     try {
-      const result = await Page.findListWithDescendants('/', req.user, queryOptions);
+      const result = await Page.findRecentUpdatedPages('/', req.user, queryOptions);
       if (result.pages.length > limit) {
         result.pages.pop();
       }

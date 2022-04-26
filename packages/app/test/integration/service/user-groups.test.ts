@@ -22,7 +22,6 @@ describe('UserGroupService', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
-    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
