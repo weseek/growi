@@ -1,17 +1,18 @@
+
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
 
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
-
 import { LsxContext } from '../util/LsxContext';
 import { TagCacheManagerFactory } from '../util/TagCacheManagerFactory';
-import { PageNode } from './PageNode';
+
 import { LsxListView } from './LsxPageList/LsxListView';
+import { PageNode } from './PageNode';
 
 export class Lsx extends React.Component {
 
@@ -58,6 +59,8 @@ export class Lsx extends React.Component {
 
     try {
       const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
+
+      lsxContext.toppageViewersCount = res.toppageViewersCount;
 
       if (res.ok) {
         const nodeTree = this.generatePageNodeTree(pagePath, res.pages);

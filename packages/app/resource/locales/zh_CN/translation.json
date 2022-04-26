@@ -107,6 +107,7 @@
 	"Connected": "Connected",
 	"Show": "显示",
 	"Hide": "隐藏",
+  "Loading": "加载...",
 	"Reset": "重置",
 	"Disclose E-mail": "显示邮箱",
 	"page exists": "页面已存在",
@@ -156,6 +157,7 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
+  "popular_tags": "流行标签",
   "Check All tags": "检查所有标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
 	"Show latest": "显示最新",
@@ -179,6 +181,7 @@
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
+  "Successfully requested": "进程成功接受",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -212,7 +215,7 @@
 		},
 		"form_help": {
 			"email": "您必须有下面列出的电子邮件地址才能注册此wiki。",
-			"password": "密码长度必须至少为6个字符。",
+			"password": "密码长度必须至少为8个字符。",
 			"user_id": "您创建的网页的URL将包含您的用户ID。您的用户ID可以由字母、数字和一些符号组成。"
 		}
 	},
@@ -371,7 +374,7 @@
   },
 	"page_api_error": {
 		"notfound_or_forbidden": "未找到或禁止原始页。",
-		"already_exists": "新建页面已存在",
+		"already_exists": "具有该路径的页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以删除"
   },
@@ -644,7 +647,8 @@
     "max_age": "有效期间  (msec)",
     "max_age_desc": "指定使用户会话过期的数量(以毫秒为单位)。<br>默认值: 2592000000 (30天)",
     "max_age_caution": "修改该值后需要重启服务器。",
-    "page_delete_rights_caution": "\"包括后代的操作\" 的设置被迫强于 \"只对选定的页面进行操作\" 的设置。",
+    "forced_update_desc": "设置已被强行更改。以前的设置: ",
+    "page_delete_rights_caution": "\"删除/全部删除\"权限（包括后代页面）被强制强于\"删除/完全删除\"权限。 <br> <br> 仅管理员 > 管理员|作者 > 何人",
 		"Authentication mechanism settings": "身份验证机制设置",
 		"setup_is_not_yet_complete": "安装尚未完成",
 		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
@@ -924,7 +928,7 @@
   "private_legacy_pages": {
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
-    "alert_title": "你正在查看旧的v4兼容的私人网页。",
+    "alert_title": "存在旧的v4兼容格式的私人网页。",
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
     "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",
@@ -1020,5 +1024,10 @@
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
     "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
     "select_page_to_see" : "请在下面选择你想去的页面。"
+  },
+  "user_group": {
+    "select_group": "选择组别",
+    "belonging_to_no_group": "无法找到你所属的团体。",
+    "manage_user_groups": "管理用户组"
   }
 }

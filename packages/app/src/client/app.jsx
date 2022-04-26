@@ -1,28 +1,26 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'unstated';
-import { I18nextProvider } from 'react-i18next';
+
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-
+import ReactDOM from 'react-dom';
+import { I18nextProvider } from 'react-i18next';
 import { SWRConfig } from 'swr';
+import { Provider } from 'unstated';
 
+import CommentContainer from '~/client/services/CommentContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
+import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import PageHistoryContainer from '~/client/services/PageHistoryContainer';
+import PersonalContainer from '~/client/services/PersonalContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
+import TagContainer from '~/client/services/TagContainer';
+import IdenticalPathPage from '~/components/IdenticalPathPage';
+import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
-import Sidebar from '../components/Sidebar';
-import { SearchPage } from '../components/SearchPage';
-import TagsList from '../components/TagsList';
-import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
-import Page from '../components/Page';
-import PageComments from '../components/PageComments';
-import PageContentFooter from '../components/PageContentFooter';
-import PageTimeline from '../components/PageTimeline';
-import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
-import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import TrashPageList from '../components/TrashPageList';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
@@ -35,23 +33,25 @@ import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
 import MyDraftList from '../components/MyDraftList/MyDraftList';
 import BookmarkList from '../components/PageList/BookmarkList';
 import Fab from '../components/Fab';
+import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
-import IdenticalPathPage from '~/components/IdenticalPathPage';
-
-import ContextExtractor from '~/client/services/ContextExtractor';
-import PageContainer from '~/client/services/PageContainer';
-import PageHistoryContainer from '~/client/services/PageHistoryContainer';
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
-import CommentContainer from '~/client/services/CommentContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import TagContainer from '~/client/services/TagContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
+import Page from '../components/Page';
+import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import ShareLinkAlert from '../components/Page/ShareLinkAlert';
+import PageComment from '../components/PageComment';
+import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
+import PageContentFooter from '../components/PageContentFooter';
+import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
+import PageTimeline from '../components/PageTimeline';
+import { SearchPage } from '../components/SearchPage';
+import Sidebar from '../components/Sidebar';
+import TagPage from '../components/TagPage';
 
 import { appContainer, componentMappings } from './base';
 import { toastError } from './util/apiNotification';
-import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
+
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -90,7 +90,7 @@ Object.assign(componentMappings, {
   'identical-path-page': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'tags-page': <TagsList crowi={appContainer} />,
+  'tags-page': <TagPage />,
 
   'grw-page-status-alert-container': <PageStatusAlert />,
 
@@ -120,9 +120,14 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
-    'page-comments-list': <PageComments />,
-    'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-content-footer': <PageContentFooter />,
+    'page-comments-list': <PageComment appContainer={appContainer} pageId={pageContainer.state.pageId} isReadOnly={false} titleAlign="left" />,
+    'page-comment-write': <CommentEditorLazyRenderer appContainer={appContainer} pageId={pageContainer.state.pageId} />,
+    'page-content-footer': <PageContentFooter
+      createdAt={new Date(pageContainer.state.createdAt)}
+      updatedAt={new Date(pageContainer.state.updatedAt)}
+      creator={pageContainer.state.creator}
+      revisionAuthor={pageContainer.state.revisionAuthor}
+    />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });

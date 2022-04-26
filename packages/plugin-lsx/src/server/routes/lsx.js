@@ -162,6 +162,7 @@ class Lsx {
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const ApiResponse = crowi.require('../util/apiResponse');
   const actions = {};
 
@@ -207,6 +208,22 @@ module.exports = (crowi, app) => {
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
 
+    // count viewers of `/`
+    let toppageViewersCount;
+    try {
+      const aggRes = await Page.aggregate([
+        { $match: { path: '/' } },
+        { $project: { count: { $size: '$seenUsers' } } },
+      ]);
+
+      toppageViewersCount = aggRes.length > 0
+        ? aggRes[0].count
+        : 1;
+    }
+    catch (error) {
+      return res.json(ApiResponse.error(error));
+    }
+
     let query = builder.query;
     try {
       // depth
@@ -227,7 +244,7 @@ module.exports = (crowi, app) => {
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
       const pages = await query.exec();
-      res.json(ApiResponse.success({ pages }));
+      res.json(ApiResponse.success({ pages, toppageViewersCount }));
     }
     catch (error) {
       return res.json(ApiResponse.error(error));

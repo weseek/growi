@@ -1,8 +1,163 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.14...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
+
+### 💎 Features
+
+- feat: Search on private legacy pages (#5723) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Dark theme color optimization (#5737) @shukmos
+- imprv: Change the order of menu items (#5722) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
+
+## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: Edit button to open built-in editor does not work when HackMD is disabled (#5719) @yuki-takei
+- fix: Share link list occures error when related page is not found (#5718) @yuki-takei
+
+## [v5.0.1](https://github.com/weseek/growi/compare/v5.0.0...v5.0.1) - 2022-04-15
+
+### 💎 Features
+
+- feat: Input Slack member ID (#5412) @mudana-grune
+- feat: Remove child group from parent group (#5600) @miya
+
+### 🚀 Improvement
+
+- imprv: Add spinner to tag sidebar (#5700) @miya
+- imprv: Adjust pagelist and comment position (#5682) @Yohei-Shiina
+- imprv: Adjust layout for PageTree Descendant Count (#5666) @miya
+- imprv: adjust spaces in page item control and subnav btn (#5655) @Yohei-Shiina
+- imprv: Clickable area of PageListItemL (#5665) @yuki-takei
+- imprv: Add an expiration date for the link in the email (#5660) @miya
+- imprv: remove min-width from search-sort-option-btn (#5656) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Correction of expiredAt attached to email (#5715) @miya
+- fix: Normalize parent so it does not include siblings (#5678) @hakumizuki
+- fix: Prevent auto completing email with username stored by browser in /me page (#5702) @Yohei-Shiina
+- fix: Do not include granted users if change page permission restricted (#5693) @miya
+- fix: Do not include in search results if the page grant is restricted (#5691) @miya
+- fix: Password reset gives error update password failed when submitting a new password (#5685) @kaoritokashiki
+- fix: Cannot register new users (#5683) @kaoritokashiki
+- fix: Sync change of count for both like and bookmark in search page (#5667) @Yohei-Shiina
+- imprv: Adjust layout for PageTree Descendant Count (#5666) @miya
+- fix: HackMD disabled tooltip on mobile (#5658) @yuki-takei
+- fix: One Time Token is not available (#5654) @miya
+- fix: Page items disappear when dnd (#5651) @miya
+
+### 🧰 Maintenance
+
+- ci(deps): bump anothrNick/github-tag-action from 1.36.0 to 1.38.0 (#5271) @dependabot
+- ci(deps): bump amannn/action-semantic-pull-request from 3.4.5 to 4.2.0 (#5627) @dependabot
+- ci(deps): bump actions/upload-artifact from 2 to 3 (#5686) @dependabot
+- ci(deps): bump actions/download-artifact from 2 to 3 (#5687) @dependabot
+- support: Migration for setting sparce option to slack member id (#5694) @kaoritokashiki
+- support: Update eslint-config-weseek (#5673) @yuki-takei
+
+## [v5.0.0](https://github.com/weseek/growi/compare/v4.5.15...v5.0.0) - 2022-04-01
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5080) @yuki-takei
+- feat: Elasticsearch reindex on boot (#5149) @LuqmanHakim-Grune
+- feat: PageTree and re-impl SearchResult with list group (#5286) @yuki-takei
+- feat: Rename(Move) by Drag & Drop (#5292) @hakumizuki
+- feat: Maintenance mode (#5486) @hakumizuki
+- feat: Delete permission config (#5527) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Show comments in search page result (#5645) @yuki-takei
+- imprv: Add description for user addition (#5614) @hakumizuki
+- imprv: Validate deletion settings (#5581) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Swiping to previous/next page for Mac users (5.0.x) (#5491) @hakumizuki
+- fix: Guest User Access Dropdown shows wrong value (#5643) @miya
+- fix: Show full text on presentation mode (#5636) @hakumizuki
+- fix: Displaying minimum length of password (#5630) @Yohei-Shiina
+- fix: Domain whitelist is not respected (fix #5408) (#5470) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (#5457) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump plantuml-encoder from 1.2.5 to 1.4.0 (#5633) @dependabot
+- ci(deps-dev): bump codemirror from 5.63.0 to 5.64.0 (#4777) @dependabot
+- ci(deps): bump nanoid from 3.1.30 to 3.2.0 (#5142) @dependabot
+- support: Upgrade openid client (#5185) @mudana-grune
+- ci(deps): bump amannn/action-semantic-pull-request from 3.4.2 to 3.4.5 (#4559) @dependabot
+- ci(deps): bump extend from 3.0.1 to 3.0.2 (#5222) @dependabot
+- ci(deps-dev): bump jquery-ui from 1.12.1 to 1.13.0 (#4548) @dependabot
+- ci(deps): bump actions/setup-node from 2 to 3 (#5437) @dependabot
+- ci(deps): bump actions/checkout from 2 to 3 (#5462) @dependabot
+- ci(deps): bump peter-evans/dockerhub-description from 2 to 3 (#5615) @dependabot
+- ci(deps): bump actions/cache from 2 to 3 (#5584) @dependabot
+- ci(deps-dev): bump reveal.js from 3.6.0 to 4.3.1 (#5603) @dependabot
+- support: Update yarn git-hosted-info v2.8.8 to v2.8.9 (#5215) @LuqmanHakim-Grune
+- support: dependabot trim-off-newlines (#5336) @mudana-grune
+- support: dependabot @npmcli/git (#5337) @mudana-grune
+- support: dependabot highlight.js (#5352) @mudana-grune
+- support: dependabot extend (#5335) @mudana-grune
+- support: dependabot ajv (#5333) @mudana-grune
+- support: dependabot dot-drop (#5204) @LuqmanHakim-Grune
+- support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
+- support: update validator version (#5562) @LuqmanHakim-Grune
+
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
+
+### 🐛 Bug Fixes
+
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
+
+## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
+
+### 🐛 Bug Fixes
+
+- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
+
+## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
+
+### 🚀 Improvement
+
+- imprv: Hide forgot password when localstrategy is disabled (#5380) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: The condition to attempt to reconnect to Elasticsearch (#5344) @yuki-takei
+- fix: Highlight-addons and drawio-viewer for view missing (#5376) @yuki-takei
+
+### 🧰 Maintenance
+
+- support:  modify docker-compose indent (#5322) @yuto-oweseek
 
 ## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
 

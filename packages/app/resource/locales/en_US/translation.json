@@ -100,6 +100,7 @@
   "Connected": "Connected",
   "Show": "Show",
   "Hide": "Hide",
+  "Loading": "Loading...",
   "Disclose E-mail": "Disclose E-mail",
   "page exists": "this page already exists",
   "Error occurred": "Error occurred",
@@ -148,6 +149,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "popular_tags": "Popular tags",
   "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
   "Show latest": "Show latest",
@@ -171,6 +173,7 @@
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
+  "Successfully requested": "Successfully requested.",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -393,7 +396,7 @@
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
-    "already_exists": "New page is already exists.",
+    "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete"
   },
@@ -639,7 +642,7 @@
   "private_legacy_pages": {
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
-    "alert_title": "You are viewing old v4 compatible private pages.",
+    "alert_title": "Old v4 compatible format private pages exist.",
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
     "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
@@ -654,7 +657,7 @@
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
-    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restriction of new users' registration",
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -686,7 +689,8 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
-    "page_delete_rights_caution": "The \"operation including the descendants\" setting is forced to be stronger than the \"operation for only the selected page\" setting.",
+    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
+    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Admin only > Admin and autor > Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
@@ -1018,5 +1022,10 @@
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
+  },
+  "user_group": {
+    "select_group": "Select group",
+    "belonging_to_no_group": "Could not find the groups you belong to.",
+    "manage_user_groups": "Manage user groups"
   }
 }
