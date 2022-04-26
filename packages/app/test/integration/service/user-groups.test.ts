@@ -128,9 +128,12 @@ describe('UserGroupService', () => {
 
     const forceUpdateParents = true;
 
-    await crowi.userGroupService.updateGroup(userGroup4._id, userGroup4.name, userGroup4.description, userGroup5._id, forceUpdateParents);
+    const updatedUserGroup = await crowi.userGroupService.updateGroup(
+      userGroup4._id, userGroup4.name, userGroup4.description, userGroup5._id, forceUpdateParents,
+    );
     const relatedGroup = await UserGroupRelation.findOne({ relatedGroup: userGroup5._id, relatedUser: userGroup4Relation.relatedUser });
 
+    expect(updatedUserGroup.parent).toStrictEqual(userGroup5._id);
     expect(relatedGroup).toBeTruthy();
   });
 
