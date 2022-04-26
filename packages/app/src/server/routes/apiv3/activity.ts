@@ -7,10 +7,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 
-interface AuthorizedRequest extends Request {
- user?: any
-}
-
 const validator = {
   list: [
     query('limit').optional().isInt({ max: 100 }).withMessage('limit must be a number less than or equal to 100'),
@@ -30,7 +26,7 @@ module.exports = (crowi: Crowi): Router => {
 
 
   router.get(
-    '/list', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    '/list', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
       const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
       const offset = req.query.offset || 1;
 
