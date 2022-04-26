@@ -10,7 +10,6 @@ import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationF
 
 import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
-import MaintenanceModeContent from '../components/MaintenanceModeContent';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 
@@ -91,19 +90,6 @@ if (loginFormElem) {
 const appContainer = new AppContainer();
 appContainer.initApp();
 
-// render MaintenanceModeContent
-const maintenanceModeContentElm = document.getElementById('maintenance-mode-content');
-if (maintenanceModeContentElm) {
-
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <MaintenanceModeContent />
-      </Provider>
-    </I18nextProvider>,
-    maintenanceModeContentElm,
-  );
-}
 
 // render PasswordResetRequestForm
 const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');

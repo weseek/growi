@@ -1,22 +1,24 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { useCurrentUser } from '~/stores/context';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 
-const MaintenanceModeContent = (props) => {
+const MaintenanceModeContent = () => {
   const { t } = useTranslation();
-  const { appContainer } = props;
 
-  const isUserLoggedIn = appContainer.currentUser != null;
+  const { data: currentUser } = useCurrentUser();
+
+  console.log('currentUser', currentUser);
+
+  // const isUserLoggedIn = currentUser != null;
 
   const logoutHandler = async() => {
     try {
-      appContainer.apiv3Post('/logout');
+      apiv3Post('/logout');
       window.location.reload();
     }
     catch (err) {
@@ -31,7 +33,7 @@ const MaintenanceModeContent = (props) => {
         <i className="icon-arrow-right"></i>
         <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
       </p>
-      {isUserLoggedIn
+      {currentUser != null
         ? (
           <p>
             <i className="icon-arrow-right"></i>
@@ -41,7 +43,7 @@ const MaintenanceModeContent = (props) => {
         : (
           <p>
             <i className="icon-arrow-right"></i>
-            <a className="btn btn-link" href="/login">{ t('maintenance_mode.login') }</a>
+            <a href="/login">{ t('maintenance_mode.login') }</a>
           </p>
         )
       }
@@ -50,8 +52,5 @@ const MaintenanceModeContent = (props) => {
 
 };
 
-MaintenanceModeContent.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
 
-export default withUnstatedContainers(MaintenanceModeContent, [AppContainer]);
+export default MaintenanceModeContent;

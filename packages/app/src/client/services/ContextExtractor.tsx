@@ -1,5 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
+
 import { pagePathUtils } from '@growi/core';
+
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import {
+  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
 
 import {
   useSiteUrl,
@@ -10,13 +19,6 @@ import {
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
 } from '../../stores/context';
-import {
-  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
-} from '~/stores/ui';
-import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
