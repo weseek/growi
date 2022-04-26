@@ -69,7 +69,6 @@ describe('UserGroupService', () => {
     // Create UserGroupRelations
     await UserGroupRelation.insertMany([
       {
-        // _id: userGroupRelationId1,
         relatedGroup: userGroup4,
         relatedUser: user1,
         createdAt: new Date(),
