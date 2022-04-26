@@ -15,7 +15,7 @@ import {
   useSWRxSearch,
 } from '~/stores/search';
 import {
-  ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
+  ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -23,7 +23,7 @@ import { OperateAllControl } from './SearchPage/OperateAllControl';
 
 import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
-import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
+import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import SearchControl from './SearchPage/SearchControl';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
@@ -165,7 +165,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     setOffset(0);
   }, []);
 
-  const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
+  const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -347,7 +347,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         searchPager={searchPager}
       />
 
-      <LegacyPrivatePagesMigrationModal />
+      <PrivateLegacyPagesMigrationModal />
     </>
   );
 };
