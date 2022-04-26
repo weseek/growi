@@ -1,11 +1,6 @@
 import { getModelSafely } from '@growi/core';
 
-import loggerFactory from '~/utils/logger';
-
 import Crowi from '../crowi';
-
-
-const logger = loggerFactory('growi:service:activity');
 
 class ActivityService {
 
