@@ -1,10 +1,14 @@
 import express, { Request, Router } from 'express';
 import { query } from 'express-validator';
 
+import loggerFactory from '~/utils/logger';
+
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
+
+const logger = loggerFactory('growi:routes:apiv3:activity');
 
 
 const validator = {
@@ -35,6 +39,7 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3({ paginatedActivity });
       }
       catch (err) {
+        logger.error('Failed to get paginated activity', err);
         return res.apiv3Err(err);
       }
     },
