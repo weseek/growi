@@ -146,10 +146,10 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       <ModalBody>
         {/* TODO: i18n */}
         <p>{t('modal_description')}</p>
-        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={(e) => setInput(e.target.value)} />
+        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={ e => setInput(e.target.value) } />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onSubmit={(e) => {e.preventDefault();props.onSubmit?.(currentInput);}}>
+        <button type="button" className="btn btn-primary" onSubmit={ e => { e.preventDefault(); props.onSubmit?.(currentInput) } }>
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
           { t('private_legacy_pages.modal.button_label') }
         </button>
