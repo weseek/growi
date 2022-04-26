@@ -4,13 +4,13 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import {
-  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { IFormattedSearchResult } from '~/interfaces/search';
 import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   useSWRxSearch,
 } from '~/stores/search';
@@ -27,6 +27,7 @@ import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationM
 import SearchControl from './SearchPage/SearchControl';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -124,6 +125,39 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+/*
+ * ConvertByPathModal
+ */
+type ConvertByPathModalProps = {
+  isOpen: boolean,
+  close?: () => void,
+  onSubmit?: (convertPath: string) => Promise<void> | void,
+}
+const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const [currentInput, setInput] = useState<string>('');
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
+        { t('private_legacy_pages.modal.title') }
+      </ModalHeader>
+      <ModalBody>
+        {/* TODO: i18n */}
+        <p>{t('modal_description')}</p>
+        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={(e) => setInput(e.target.value)} />
+      </ModalBody>
+      <ModalFooter>
+        <button type="button" className="btn btn-primary" onSubmit={(e) => {e.preventDefault();props.onSubmit?.(currentInput);}}>
+          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          { t('private_legacy_pages.modal.button_label') }
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+});
+
 
 /**
  * LegacyPage
@@ -133,7 +167,7 @@ type Props = {
   appContainer: AppContainer,
 }
 
-export const PrivateLegacyPages = (props: Props): JSX.Element => {
+const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -144,6 +178,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(INITIAL_PAGING_SIZE);
+  const [isOpenConvertModal, setOpenConvertModal] = useState<boolean>(false);
 
   const [isControlEnabled, setControlEnabled] = useState(false);
 
@@ -282,6 +317,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
             </UncontrolledButtonDropdown>
           </OperateAllControl>
         </div>
+        <div className="d-flex pl-md-2">
+          <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
+            Input the path to convert
+          </button>
+        </div>
       </div>
     );
   }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
@@ -348,6 +388,25 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       />
 
       <PrivateLegacyPagesMigrationModal />
+      <ConvertByPathModal
+        isOpen={isOpenConvertModal}
+        close={() => setOpenConvertModal(false)}
+        onSubmit={async(convertPath: string) => {
+          try {
+            await apiv3Post<void>('/pages/legacy-pages-migration', {
+              convertPath,
+            });
+            // TODO: i18n
+            toastSuccess(t('success_message'));
+          }
+          catch {
+            // TODO: i18n
+            toastError(t('error_message'));
+          }
+        }}
+      />
     </>
   );
 };
+
+export default PrivateLegacyPages;

@@ -16,7 +16,7 @@ import PersonalContainer from '~/client/services/PersonalContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
-import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
+import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
