@@ -652,6 +652,13 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "by_path_modal": {
+      "title": "新しい v5 互換形式への変換",
+      "description": "パスを入力することで、そのパスの配下のページを全て v5 互換形式に変換します",
+      "button_label": "変換",
+      "success": "正常に変換を開始しました",
+      "error": "変換を開始できませんでした"
     }
   },
   "security_setting": {

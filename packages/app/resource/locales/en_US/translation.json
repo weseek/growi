@@ -653,6 +653,13 @@
       "convert_recursively_label": "Convert child pages recursively.",
       "convert_recursively_desc": "Convert pages under this path recursively.",
       "button_label": "Convert"
+    },
+    "by_path_modal": {
+      "title": "Convert to new v5 compatible format",
+      "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
+      "button_label": "Convert",
+      "success": "Successfully requested conversion.",
+      "error": "Failed to request conversion."
     }
   },
   "security_setting": {
