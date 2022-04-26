@@ -1,18 +1,16 @@
+import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { getOrCreateModel, getModelSafely } from '@growi/core';
+import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
+
 import loggerFactory from '../../utils/logger';
-
-
-import ActivityDefine from '../util/activityDefine';
 import activityEvent from '../events/activity';
 
 import Subscription from './subscription';
 
 const logger = loggerFactory('growi:models:activity');
-
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
@@ -40,7 +38,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   targetModel: {
     type: String,
     require: true,
-    enum: ActivityDefine.getSupportTargetModelNames(),
+    enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -50,7 +48,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   action: {
     type: String,
     require: true,
-    enum: ActivityDefine.getSupportActionNames(),
+    enum: AllSupportedActionType,
   },
   event: {
     type: Schema.Types.ObjectId,
@@ -58,7 +56,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   eventModel: {
     type: String,
-    enum: ActivityDefine.getSupportEventModelNames(),
+    enum: AllSupportedEventModelType,
   },
 }, {
   timestamps: true,
