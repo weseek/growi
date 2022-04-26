@@ -12,10 +12,6 @@ const MaintenanceModeContent = () => {
 
   const { data: currentUser } = useCurrentUser();
 
-  console.log('currentUser', currentUser);
-
-  // const isUserLoggedIn = currentUser != null;
-
   const logoutHandler = async() => {
     try {
       apiv3Post('/logout');
@@ -43,7 +39,7 @@ const MaintenanceModeContent = () => {
         : (
           <p>
             <i className="icon-arrow-right"></i>
-            <a href="/login">{ t('maintenance_mode.login') }</a>
+            <a className="btn btn-link" href="/login">{ t('maintenance_mode.login') }</a>
           </p>
         )
       }
