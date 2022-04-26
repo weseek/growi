@@ -113,7 +113,7 @@ describe('UserGroupService', () => {
   });
 
   // In case that forceUpdateParents is false
-  test('Should throw an error when users in clild group do not include in parent group', async() => {
+  test('Should throw an error when users in child group do not include in parent group', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5 });
 
