@@ -1,13 +1,15 @@
 import React from 'react';
+
+import md5 from 'md5';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import md5 from 'md5';
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 import ImageCropModal from './ImageCropModal';
 
@@ -114,7 +116,7 @@ class ProfileImageSettings extends React.Component {
                   checked={isGravatarEnabled}
                   onChange={() => { personalContainer.changeIsGravatarEnabled(true) }}
                 />
-                <label className="custom-control-label" htmlFor="radioGravatar">
+                <label className="custom-control-label" htmlFor="radioGravatar" data-hide-in-vrt>
                   <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
                 </label>
                 <a href="https://gravatar.com/">
@@ -122,7 +124,7 @@ class ProfileImageSettings extends React.Component {
                 </a>
               </div>
             </h4>
-            <img src={this.generateGravatarSrc()} width="64" />
+            <img src={this.generateGravatarSrc()} width="64" data-hide-in-vrt />
           </div>
 
           <div className="col-md-6 col-12">
