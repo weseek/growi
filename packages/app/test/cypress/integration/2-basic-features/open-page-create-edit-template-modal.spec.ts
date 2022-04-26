@@ -1,6 +1,6 @@
-context('Open Page Create Edit Template Modal', () => {
+context('Open Page presentation Template Modal', () => {
 
-  const ssPrefix = 'access-to-page-template-modal';
+  const ssPrefix = 'access-to-modal-';
 
   let connectSid: string | undefined;
 
@@ -22,14 +22,24 @@ context('Open Page Create Edit Template Modal', () => {
     }
   });
 
-  it('CreateEditTemplatePage is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
-     cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-template-modal-btn').click();
-    });
 
-     cy.getByTestid('page-template-modal').should('be.visible').screenshot(`${ssPrefix}-open-bootstrap4`);
-  });
+  it('PresentationModal for is shown successfully', () => {
+    cy.visit('/Sandbox/Bootstrap4', {  });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-presentation-modal-btn').click();
+   });
+
+    cy.getByTestid('page-presentation-modal-btn').should('be.visible').screenshot(`${ssPrefix}-open-page-presentation-bootstrap4`);
+ });
+  // it('CreateEditTemplatePage is shown successfully', () => {
+  //    cy.visit('/Sandbox/Bootstrap4', {  });
+  //    cy.get('#grw-subnav-container').within(() => {
+  //      cy.getByTestid('open-page-item-control-btn').click();
+  //      cy.getByTestid('open-page-template-modal-btn').click();
+  //   });
+
+  //    cy.getByTestid('page-template-modal').should('be.visible').screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+  // });
 
 });
