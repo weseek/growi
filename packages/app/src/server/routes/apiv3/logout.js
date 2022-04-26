@@ -8,7 +8,8 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   router.post('/', async(req, res) => {
-    return req.session.destroy();
+    req.session.destroy();
+    return res.send();
   });
 
   return router;

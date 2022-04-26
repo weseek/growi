@@ -14,7 +14,7 @@ const MaintenanceModeContent = () => {
 
   const logoutHandler = async() => {
     try {
-      apiv3Post('/logout');
+      await apiv3Post('/logout');
       window.location.reload();
     }
     catch (err) {
