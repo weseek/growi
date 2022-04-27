@@ -12,7 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  useSWRxNamedQuerySearch,
+  useSWRxSearch,
 } from '~/stores/search';
 import {
   ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
@@ -24,10 +24,15 @@ import { OperateAllControl } from './SearchPage/OperateAllControl';
 import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
+import SearchControl from './SearchPage/SearchControl';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 
 
 // TODO: replace with "customize:showPageLimitationS"
-const INITIAL_PAGIONG_SIZE = 20;
+const INITIAL_PAGING_SIZE = 20;
+
+const initQ = '/';
 
 
 /**
@@ -39,6 +44,7 @@ type SearchResultListHeadProps = {
   offset: number,
   pagingSize: number,
   onPagingSizeChanged: (size: number) => void,
+  migrationStatus?: V5MigrationStatus,
 }
 
 const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
@@ -46,14 +52,24 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   const {
     searchResult, offset, pagingSize,
-    onPagingSizeChanged,
+    onPagingSizeChanged, migrationStatus,
   } = props;
+
+  if (migrationStatus == null) {
+    return (
+      <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      </div>
+    );
+  }
 
   const { took, total, hitsCount } = searchResult.meta;
   const leftNum = offset + 1;
   const rightNum = offset + hitsCount;
 
-  if (total === 0) {
+  const isSuccess = migrationStatus.migratablePagesCount === 0;
+
+  if (isSuccess) {
     return (
       <div className="card border-success mt-3">
         <div className="card-body">
@@ -125,18 +141,29 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   } = props;
 
 
+  const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [limit, setLimit] = useState<number>(INITIAL_PAGING_SIZE);
 
   const [isControlEnabled, setControlEnabled] = useState(false);
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data, conditions, mutate } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
+  const { data, conditions, mutate } = useSWRxSearch(keyword, 'PrivateLegacyPages', {
     offset,
     limit,
+    includeUserPages: true,
+    includeTrashPages: false,
   });
+
+  const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
+
+  const searchInvokedHandler = useCallback((_keyword: string) => {
+    mutateMigrationStatus();
+    setKeyword(_keyword);
+    setOffset(0);
+  }, []);
 
   const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
 
@@ -206,10 +233,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       () => {
         toastSuccess(t('Successfully requested'));
         closeModal();
+        mutateMigrationStatus();
         mutate();
       },
     );
-  }, [data, mutate, openModal, closeModal]);
+  }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
     setOffset(0);
@@ -224,41 +252,52 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
-  const searchControl = useMemo(() => {
+  const searchControlAllAction = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
 
     return (
-      <div className="shadow-sm">
-        <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-          <div className="d-flex pl-md-2">
-            <OperateAllControl
-              ref={selectAllControlRef}
-              isCheckboxDisabled={isCheckboxDisabled}
-              onCheckboxChanged={selectAllCheckboxChangedHandler}
-            >
-              <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="outline-primary" disabled={!isControlEnabled}>
-                  {t('private_legacy_pages.bulk_operation')}
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem onClick={convertMenuItemClickedHandler}>
-                    <i className="icon-fw icon-refresh"></i>
-                    {t('private_legacy_pages.convert_all_selected_pages')}
-                  </DropdownItem>
-                  <DropdownItem onClick={deleteAllButtonClickedHandler}>
-                    <span className="text-danger">
-                      <i className="icon-fw icon-trash"></i>
-                      {t('search_result.delete_all_selected_page')}
-                    </span>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledButtonDropdown>
-            </OperateAllControl>
-          </div>
+      <div className="search-control d-flex align-items-center">
+        <div className="d-flex pl-md-2">
+          <OperateAllControl
+            ref={selectAllControlRef}
+            isCheckboxDisabled={isCheckboxDisabled}
+            onCheckboxChanged={selectAllCheckboxChangedHandler}
+          >
+            <UncontrolledButtonDropdown>
+              <DropdownToggle caret color="outline-primary" disabled={!isControlEnabled}>
+                {t('private_legacy_pages.bulk_operation')}
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={convertMenuItemClickedHandler}>
+                  <i className="icon-fw icon-refresh"></i>
+                  {t('private_legacy_pages.convert_all_selected_pages')}
+                </DropdownItem>
+                <DropdownItem onClick={deleteAllButtonClickedHandler}>
+                  <span className="text-danger">
+                    <i className="icon-fw icon-trash"></i>
+                    {t('search_result.delete_all_selected_page')}
+                  </span>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
+          </OperateAllControl>
         </div>
       </div>
     );
   }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+
+  const searchControl = useMemo(() => {
+    return (
+      <SearchControl
+        isSearchServiceReachable
+        isEnableSort={false}
+        isEnableFilter={false}
+        initialSearchConditions={{ keyword: initQ, limit: INITIAL_PAGING_SIZE }}
+        onSearchInvoked={searchInvokedHandler}
+        allControl={searchControlAllAction}
+      />
+    );
+  }, [searchInvokedHandler, searchControlAllAction]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -270,9 +309,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
+        migrationStatus={migrationStatus}
       />
     );
-  }, [data, limit, offset, pagingSizeChangedHandler]);
+  }, [data, limit, offset, pagingSizeChangedHandler, migrationStatus]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed

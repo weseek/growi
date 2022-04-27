@@ -17,6 +17,7 @@ import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { SearchError } from '../models/vo/error-search';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -37,6 +38,10 @@ const normalizeQueryString = (_queryString: string): string => {
   queryString = queryString.replace(/\s+/g, ' ');
 
   return queryString;
+};
+
+const normalizeNQName = (nqName: string): string => {
+  return nqName.trim();
 };
 
 const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
@@ -74,7 +79,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   isErrorOccuredOnSearching: boolean | null
 
-  fullTextSearchDelegator: any & SearchDelegator
+  fullTextSearchDelegator: any & ElasticsearchDelegator
 
   nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
 
@@ -124,10 +129,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
   }
 
-  generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+  generateNQDelegators(defaultDelegator: ElasticsearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
-      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator() as unknown as SearchDelegator,
     };
   }
 
@@ -218,68 +223,79 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return this.fullTextSearchDelegator.rebuildIndex();
   }
 
-  async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
-    const replaceRegexp = new RegExp(/\[nq:|\]/g);
+  async parseSearchQuery(queryString: string, nqName: string | null): Promise<ParsedQuery> {
+    // eslint-disable-next-line no-param-reassign
+    queryString = normalizeQueryString(queryString);
 
-    const queryString = normalizeQueryString(_queryString);
+    const terms = this.parseQueryString(queryString);
 
-    // when Normal Query
-    if (!regexp.test(queryString)) {
-      return { queryString, terms: this.parseQueryString(queryString) };
+    if (nqName == null) {
+      return { queryString, terms };
     }
 
-    // when Named Query
-    const name = queryString.replace(replaceRegexp, '');
-    const nq = await NamedQuery.findOne({ name });
+    const nq = await NamedQuery.findOne({ name: normalizeNQName(nqName) });
 
     // will delegate to full-text search
     if (nq == null) {
-      return { queryString, terms: this.parseQueryString(queryString) };
+      logger.debug(`Delegated to full-text search since a named query document did not found. (nqName="${nqName}")`);
+      return { queryString, terms };
     }
 
     const { aliasOf, delegatorName } = nq;
 
-    let parsedQuery;
+    let parsedQuery: ParsedQuery;
     if (aliasOf != null) {
       parsedQuery = { queryString: normalizeQueryString(aliasOf), terms: this.parseQueryString(aliasOf) };
     }
-    if (delegatorName != null) {
-      parsedQuery = { queryString, delegatorName };
+    else {
+      parsedQuery = { queryString, terms, delegatorName };
     }
 
     return parsedQuery;
   }
 
-  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
-    const { queryString, terms, delegatorName } = parsedQuery;
-    if (delegatorName != null) {
-      const nqDelegator = this.nqDelegators[delegatorName];
-      if (nqDelegator != null) {
-        return [nqDelegator, null];
-      }
-    }
+  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]> {
+    const { queryString, terms, delegatorName = SearchDelegatorName.DEFAULT } = parsedQuery;
+    const nqDeledator = this.nqDelegators[delegatorName];
 
     const data = {
       queryString,
-      terms: terms as QueryTerms,
+      terms,
     };
-    return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
+    return [nqDeledator, data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
-    let parsedQuery;
+  /**
+   * Throws SearchError if data is corrupted.
+   * @param {SearchableData} data
+   * @param {SearchDelegator} delegator
+   * @throws {SearchError} SearchError
+   */
+  private validateSearchableData(delegator: SearchDelegator, data: SearchableData): void {
+    const { terms } = data;
+
+    if (delegator.isTermsNormalized(terms)) {
+      return;
+    }
+
+    const unavailableTermsKeys = delegator.validateTerms(terms);
+
+    throw new SearchError('The query string includes unavailable terms.', unavailableTermsKeys);
+  }
+
+  async searchKeyword(keyword: string, nqName: string | null, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string | null]> {
+    let parsedQuery: ParsedQuery;
     // parse
     try {
-      parsedQuery = await this.parseSearchQuery(keyword);
+      parsedQuery = await this.parseSearchQuery(keyword, nqName);
     }
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
       throw err;
     }
 
-    let delegator;
-    let data;
+    let delegator: SearchDelegator;
+    let data: SearchableData;
     // resolve
     try {
       [delegator, data] = await this.resolve(parsedQuery);
@@ -289,7 +305,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
       throw err;
     }
 
-    return [await delegator.search(data, user, userGroups, searchOpts), delegator.name];
+    // throws
+    this.validateSearchableData(delegator, data);
+
+    return [await delegator.search(data, user, userGroups, searchOpts), delegator.name ?? null];
   }
 
   parseQueryString(queryString: string): QueryTerms {
