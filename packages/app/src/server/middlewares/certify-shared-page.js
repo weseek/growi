@@ -1,3 +1,4 @@
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:certify-shared-page');
@@ -11,7 +12,6 @@ module.exports = (crowi) => {
       return next();
     }
 
-    const ShareLink = crowi.model('ShareLink');
     const sharelink = await ShareLink.findOne({ _id: shareLinkId, relatedPage: pageId });
 
     // check sharelink enabled

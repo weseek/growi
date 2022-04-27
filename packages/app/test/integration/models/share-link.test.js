@@ -1,3 +1,5 @@
+import ShareLink from '~/server/models/share-link';
+
 const { getInstance } = require('../setup-crowi');
 
 describe('ShareLink', () => {
@@ -8,7 +10,6 @@ describe('ShareLink', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
-    ShareLink = crowi.model('ShareLink');
     Page = require('~/server/routes/page')(crowi);
   });
 

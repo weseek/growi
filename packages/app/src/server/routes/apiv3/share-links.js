@@ -1,5 +1,6 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -28,7 +29,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
 
   /**
@@ -140,7 +140,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
     }
 
-    const ShareLink = crowi.model('ShareLink');
 
     try {
       const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });

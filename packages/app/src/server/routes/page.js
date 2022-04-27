@@ -3,7 +3,9 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
+
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
@@ -144,7 +146,6 @@ module.exports = function(crowi, app) {
   const User = crowi.model('User');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');
 
   const { PageQueryBuilder } = Page;
