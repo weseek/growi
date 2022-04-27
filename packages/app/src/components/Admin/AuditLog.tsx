@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxActivityList } from '~/stores/activity';
 
-import ActivityTable from './AuditLog/ActivityTable';
+import { AuditLogManagement } from './AuditLog/AuditLogManagement';
 
 const AuditLog: FC = () => {
   const { t } = useTranslation();
@@ -15,7 +15,7 @@ const AuditLog: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2>{t('AuditLog')}</h2>
-      <ActivityTable activityList={activityList} />
+      <AuditLogManagement activityList={activityList} />
     </div>
   );
 };
