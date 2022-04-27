@@ -2254,9 +2254,16 @@ class PageService {
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const socket = this.crowi.socketIoService.getDefaultSocket();
-
     const pages = await Page.findByIdsAndViewer(pageIds, user, null);
+
+    if (pages == null || pages.length === 0) {
+      logger.error('pageIds is null or 0 length.');
+      throw Error('The number of pageIds is 0');
+    }
+
+    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
 
     this.normalizeParentRecursivelyByPages(pages, user);
 
@@ -2274,7 +2281,7 @@ class PageService {
         continue;
       }
 
-      const errorData = { path: page.path };
+      const errorData: PageMigrationErrorData = { paths: [page.path] };
 
       try {
         const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
@@ -2359,17 +2366,6 @@ class PageService {
      */
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
-    if (pages == null || pages.length === 0) {
-      logger.error('pageIds is null or 0 length.');
-      socket.emit(SocketEventName.PageMigrationError);
-      return;
-    }
-
-    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
-      socket.emit(SocketEventName.PageMigrationError);
-      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
-    }
-
     const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
 
     let normalizablePages;
@@ -2388,20 +2384,20 @@ class PageService {
     }
 
     if (nonNormalizablePages.length !== 0) {
-      for (const page of nonNormalizablePages) {
-        const errorData: PageMigrationErrorData = { path: page.path };
-        socket.emit(SocketEventName.PageMigrationError, errorData);
-      }
+      const nonNormalizablePagePaths: string[] = [];
+      nonNormalizablePages.forEach(p => nonNormalizablePagePaths.push(p.path));
+      const errorData: PageMigrationErrorData = { paths: nonNormalizablePagePaths };
+      socket.emit(SocketEventName.PageMigrationError, errorData);
     }
 
     /*
      * Main Operation (s)
      */
+    const errorData: string[] = [];
     for await (const page of normalizablePages) {
       const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
-      const errorData: PageMigrationErrorData = { path: page.path };
       if (!canOperate) {
-        socket.emit(SocketEventName.PageMigrationError, errorData);
+        errorData.push(page.path);
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
@@ -2413,7 +2409,7 @@ class PageService {
       const existingPage = await builder.query.exec();
 
       if (existingPage?.parent != null) {
-        socket.emit(SocketEventName.PageMigrationError, errorData);
+        errorData.push(page.path);
         throw Error('This page has already converted.');
       }
 
@@ -2429,7 +2425,7 @@ class PageService {
         });
       }
       catch (err) {
-        socket.emit(SocketEventName.PageMigrationError, errorData);
+        errorData.push(page.path);
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
@@ -2438,12 +2434,17 @@ class PageService {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
       catch (err) {
-        socket.emit(SocketEventName.PageMigrationError, errorData);
+        errorData.push(page.path);
         logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
         throw err;
       }
     }
-    socket.emit(SocketEventName.PageMigrationSuccess);
+    if (errorData.length === 0) {
+      socket.emit(SocketEventName.PageMigrationSuccess);
+    }
+    else {
+      socket.emit(SocketEventName.PageMigrationError, { paths: errorData });
+    }
   }
 
   async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
