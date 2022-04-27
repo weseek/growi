@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { getInstance } from '../setup-crowi';
 
 describe('UserGroupService', () => {
-  jest.setTimeout(60000);
   let crowi;
   let User;
   let UserGroup;
