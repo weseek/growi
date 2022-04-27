@@ -154,7 +154,6 @@ describe('Test page service methods', () => {
           createRedirectPage: false,
           updateMetadata: true,
         },
-        isFailure: true,
       },
     ]);
   });
@@ -162,12 +161,14 @@ describe('Test page service methods', () => {
   describe('restart renameOperation', () => {
     const restartPageRenameOperation = async(pageOperationId) => {
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
+      const mockedSetTimeoutToStopSetInterval = jest.spyOn(crowi.pageService, 'setTimeoutToStopSetInterval').mockReturnValue(null);
 
       await crowi.pageService.restartPageRenameOperation(pageOperationId);
 
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
       mockedRenameSubOperation.mockRestore();
+      mockedSetTimeoutToStopSetInterval.mockRestore();
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
     };
     test('it should successfully restart rename operation', async() => {
@@ -183,10 +184,10 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
-      const _pageOperation = await PageOperation.findOne({ 'page.id': _page1._id, actionType: PageActionType.Rename, isFailure: true });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
       expect(_pageOperation).toBeTruthy();
 
-      await restartPageRenameOperation(_pageOperation._id);
+      await restartPageRenameOperation(_pageOperation.page._id);
 
       const path0 = '/POP0';
       const path1 = '/POP0/renamePOP1';
@@ -214,7 +215,14 @@ describe('Test page service methods', () => {
     test('it should fail and throw error if PageOperation is not found', async() => {
       const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
       await expect(restartPageRenameOperation(pageOpId))
-        .rejects.toThrow(new Error('PageRenameOperation cannot be restarted as PageOperation to be processed is not found'));
+        .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
+    });
+
+    test('it should fail and throw error if the current time is behind time of unprocessableExpiryDate', async() => {
+      // write test
+      // const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
+      // await expect(restartPageRenameOperation(pageOpId))
+      //   .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
     });
   });
 });
