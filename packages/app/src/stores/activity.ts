@@ -7,7 +7,7 @@ import { PaginateResult } from '../interfaces/mongoose-utils';
 
 export const useSWRxActivityList = (limit?: number, offset?: number): SWRResponse<PaginateResult<IActivity>, Error> => {
   return useSWRImmutable(
-    ['/activity/list', limit, offset],
+    ['/activity', limit, offset],
     (endpoint, limit, offset) => apiv3Get(endpoint, { limit, offset }).then(result => result.data.paginatedActivity),
   );
 };
