@@ -844,7 +844,7 @@ describe('Page', () => {
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
     });
-    test("should find parent while NOT updating private legacy page's parent", async() => {
+    test('should find parent while NOT updating private legacy page\'s parent', async() => {
       const path1 = '/emp_anc4';
       const path2 = '/emp_anc4/PAF4';
       const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
