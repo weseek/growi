@@ -26,3 +26,5 @@ export type PMStartedData = { total: number };
 export type PMMigratingData = { count: number };
 export type PMErrorCountData = { skip: number };
 export type PMEndedData = { isSucceeded: boolean };
+
+export type PageMigrationErrorData = { path: string }

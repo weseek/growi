@@ -2268,8 +2268,6 @@ class PageService {
 
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
-    // socket.emit(SocketEventName.PageMigrationStarted);
-
     for (const pageId of pageIds) {
       const page = Page.findById(pageId);
       if (page == null) {
@@ -2285,18 +2283,19 @@ class PageService {
         const normalizedPage = this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
+          // ------------------ send socket error with path ------------------
+          socket.emit(SocketEventName.PageMigrationError, { page.path });
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
-          // socket.emit(SocketEventName.PageMigrationError);
-        }
-        else {
-          // socket.emit(SocketEventName.PageMigrationEnded);
         }
       }
       catch (err) {
+        // ------------------ send socket error with path ------------------
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
         logger.error('Something went wrong while normalizing parent.', err);
-        // socket.emit(SocketEventName.PageMigrationError);
       }
     }
+    // ------------------ send socket success ------------------
+    socket.emit(SocketEventName.PageMigrationSuccess);
   }
 
   private async normalizeParentByPage(page, user) {
@@ -2359,12 +2358,18 @@ class PageService {
     /*
      * Main Operation
      */
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
     if (pages == null || pages.length === 0) {
       logger.error('pageIds is null or 0 length.');
+      // ------------------ send socket error ------------------
+      socket.emit(SocketEventName.PageMigrationError);
       return;
     }
 
     if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      // ------------------ send socket error ------------------
+      socket.emit(SocketEventName.PageMigrationError);
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
@@ -2376,17 +2381,25 @@ class PageService {
       [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(user, pagesToNormalize);
     }
     catch (err) {
+      // ------------------ send socket error ------------------
+      socket.emit(SocketEventName.PageMigrationError);
       throw err;
     }
 
     if (normalizablePages.length === 0) {
       // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
+      // ------------------ send socket error ------------------
+      socket.emit(SocketEventName.PageMigrationError);
       return;
     }
 
     if (nonNormalizablePages.length !== 0) {
       // TODO: iterate nonNormalizablePages and send socket error to client so that the user can know which path failed to migrate
       // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
+      // ------------------ send socket error with path ------------------
+      for (const page of nonNormalizablePages) {
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
+      }
     }
 
     /*
@@ -2395,6 +2408,8 @@ class PageService {
     for await (const page of normalizablePages) {
       const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
       if (!canOperate) {
+        // ------------------ send socket error with path ------------------
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
@@ -2406,6 +2421,8 @@ class PageService {
       const existingPage = await builder.query.exec();
 
       if (existingPage?.parent != null) {
+        // ------------------ send socket error with path ------------------
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
         throw Error('This page has already converted.');
       }
 
@@ -2421,6 +2438,8 @@ class PageService {
         });
       }
       catch (err) {
+        // ------------------ send socket error with path ------------------
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
@@ -2429,10 +2448,14 @@ class PageService {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
       catch (err) {
+        // ------------------ send socket error with path ------------------
+        socket.emit(SocketEventName.PageMigrationError, { page.path });
         logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
         throw err;
       }
     }
+    // ------------------ send socket success ------------------
+    socket.emit(SocketEventName.PageMigrationSuccess);
   }
 
   async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
