@@ -10,7 +10,6 @@ import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
 type Props = {
   onClose: () => void,
   emojiSearchText: string,
-  editor: any
   emojiPickerHelper: EmojiPickerHelper,
   isOpen: boolean
 }
