@@ -477,11 +477,25 @@ describe('Page', () => {
         path: '/get_parent_A',
         creator: dummyUser1,
         lastUpdateUser: dummyUser1,
+        parent: null,
       },
       {
         path: '/get_parent_A/get_parent_B',
         creator: dummyUser1,
         lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_C',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/get_parent_C/get_parent_D',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
       },
     ]);
 
@@ -868,7 +882,7 @@ describe('Page', () => {
       expect(page2.parent).toStrictEqual(parent._id);
 
     });
-    test('should find parent while NOT creating unnecessary empty pages', async() => {
+    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
       const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
@@ -887,6 +901,7 @@ describe('Page', () => {
       const emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
 
       // -- Check existance
+      expect(parent).not.toBeNull();
       expect(pageA).not.toBeNull();
       expect(pageAB).not.toBeNull();
       expect(emptyA).toBeNull();
@@ -895,6 +910,35 @@ describe('Page', () => {
       // -- Check parent
       expect(pageA.parent).not.toBeNull();
       expect(pageAB.parent).not.toBeNull();
+    });
+    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
+      const _pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false, parent: { $ne: null } });
+      const _pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const _emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const _emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      expect(_pageC).not.toBeNull();
+      expect(_pageCD).not.toBeNull();
+      expect(_emptyC).toBeNull();
+      expect(_emptyCD).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors('/get_parent_C/get_parent_D/get_parent_E', dummyUser1);
+
+      const pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageC).not.toBeNull();
+      expect(pageCD).not.toBeNull();
+      expect(emptyC).toBeNull();
+      expect(emptyCD).toBeNull();
+
+      // -- Check parent
+      expect(pageC.parent).not.toBeNull();
+      expect(pageCD.parent).not.toBeNull();
     });
   });
 });
