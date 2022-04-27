@@ -1,17 +1,22 @@
 import React, { FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { useSWRxActivityList } from '~/stores/activity';
 
-const AuditLog: FC = () => {
-  const { data: activityListData } = useSWRxActivityList(5, 0);
+import ActivityTable from './AuditLog/ActivityTable';
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const AuditLog: FC = () => {
+  const { t } = useTranslation();
+
+  const { data: activityListData } = useSWRxActivityList(10, 0);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
 
-  console.log(activityList);
-
   return (
-    <>Hello, AuditLog</>
+    <div data-testid="admin-auditlog">
+      <h2>{t('AuditLog')}</h2>
+      <ActivityTable activityList={activityList} />
+    </div>
   );
 };
 

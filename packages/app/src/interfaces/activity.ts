@@ -1,3 +1,4 @@
+import { HasObjectId } from './has-object-id';
 import { IUser } from './user';
 
 // Model
@@ -54,3 +55,5 @@ export type IActivity = {
   action: supportedActionType
   createdAt: Date
 }
+
+export type IActivityHasId = IActivity & HasObjectId;

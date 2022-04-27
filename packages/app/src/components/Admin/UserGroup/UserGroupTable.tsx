@@ -2,13 +2,13 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
+import { TFunctionResult } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
-import Xss from '~/services/xss';
-import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
+import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
+import Xss from '~/services/xss';
 
 type Props = {
   headerLabel?: TFunctionResult,
@@ -183,7 +183,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                     })}
                   </ul>
                 </td>
-                <td>{dateFnsFormat(new Date(group.createdAt), 'yyyy-MM-dd')}</td>
+                <td>{dateFnsFormat(new Date(group.createdAt), 'yyyy-MM-dd HH:mm')}</td>
                 {props.isAclEnabled
                   ? (
                     <td>
