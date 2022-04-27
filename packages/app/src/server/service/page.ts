@@ -2386,8 +2386,7 @@ class PageService {
     if (nonNormalizablePages.length !== 0) {
       const nonNormalizablePagePaths: string[] = [];
       nonNormalizablePages.forEach(p => nonNormalizablePagePaths.push(p.path));
-      const errorData: PageMigrationErrorData = { paths: nonNormalizablePagePaths };
-      socket.emit(SocketEventName.PageMigrationError, errorData);
+      socket.emit(SocketEventName.PageMigrationError, { paths: nonNormalizablePagePaths });
     }
 
     /*
