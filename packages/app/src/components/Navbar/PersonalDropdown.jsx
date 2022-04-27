@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-
-import AppContainer from '~/client/services/AppContainer';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import {
   isUserPreferenceExists,
   isDarkMode as isDarkModeByUtil,
@@ -17,6 +15,7 @@ import {
   updateUserPreference,
   updateUserPreferenceWithOsSettings,
 } from '~/client/util/color-scheme';
+import { useCurrentUser } from '~/stores/context';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 
@@ -24,13 +23,13 @@ import MoonIcon from '../Icons/MoonIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SunIcon from '../Icons/SunIcon';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
-const PersonalDropdown = (props) => {
+const PersonalDropdown = () => {
+  const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
 
-  const { t, appContainer } = props;
-  const user = appContainer.currentUser || {};
+  const user = currentUser || {};
 
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
@@ -40,13 +39,8 @@ const PersonalDropdown = (props) => {
   const { scheduleToPut } = useUserUISettings();
 
   const logoutHandler = async() => {
-    const { interceptorManager } = appContainer;
-
-    const context = {};
-    interceptorManager.process('logout', context);
-
     try {
-      await appContainer.apiv3Post('/logout');
+      await apiv3Post('/logout');
       window.location.reload();
     }
     catch (err) {
@@ -236,15 +230,4 @@ const PersonalDropdown = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer]);
-
-
-PersonalDropdown.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(PersonalDropdownWrapper);
+export default PersonalDropdown;
