@@ -40,7 +40,7 @@ export interface IPageOperation {
   user: IUserForResuming,
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
-  isFailure: boolean,
+  unprocessableExpiryDate?: Date,
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -96,7 +96,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
-  isFailure: { type: Boolean, default: false, required: true },
+  unprocessableExpiryDate: { type: Date, default: null },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
