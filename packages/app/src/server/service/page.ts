@@ -2263,25 +2263,26 @@ class PageService {
     return;
   }
 
-  normalizeParentByPageIds(pageIds: ObjectIdLike[], user): void {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
+    const Page = await mongoose.model('Page') as unknown as PageModel;
 
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
-    for (const pageId of pageIds) {
-      const page = Page.findById(pageId);
-      const errorData: PageMigrationErrorData = { path: page.path };
+    for await (const pageId of pageIds) {
+      const page = await Page.findById(pageId);
       if (page == null) {
         continue;
       }
 
+      const errorData = { path: page.path };
+
       try {
-        const canOperate = this.crowi.pageOperationService.canOperate(false, page.path, page.path);
+        const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
         if (!canOperate) {
           throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
-        const normalizedPage = this.normalizeParentByPage(page, user);
+        const normalizedPage = await this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
           socket.emit(SocketEventName.PageMigrationError, errorData);
