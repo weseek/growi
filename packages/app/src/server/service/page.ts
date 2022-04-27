@@ -2258,7 +2258,7 @@ class PageService {
 
     if (pages == null || pages.length === 0) {
       logger.error('pageIds is null or 0 length.');
-      throw Error('The number of pageIds is 0');
+      throw Error('pageIds is null or 0 length.');
     }
 
     if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
