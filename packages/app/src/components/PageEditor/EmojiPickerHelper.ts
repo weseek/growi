@@ -1,3 +1,7 @@
+import { CSSProperties } from 'react';
+
+import i18n from 'i18next';
+
 export default class EmojiPickerHelper {
 
 editor;
@@ -9,8 +13,27 @@ constructor(editor) {
   this.pattern = /:[^:\s]+/;
 }
 
+setStyle = ():CSSProperties => {
+  const offset = 20;
+  const emojiPickerHeight = 420;
+  const cursorPos = this.editor.cursorCoords(true);
+  const editorPos = this.editor.getWrapperElement().getBoundingClientRect();
+  // Emoji Picker bottom position exceed editor's bottom position
+  if (cursorPos.bottom + emojiPickerHeight > editorPos.bottom) {
+    return {
+      top: editorPos.bottom - emojiPickerHeight,
+      left: cursorPos.left + offset,
+      position: 'fixed',
+    };
+  }
+  return {
+    top: cursorPos.top + offset,
+    left: cursorPos.left + offset,
+    position: 'fixed',
+  };
+}
 
-getSearchCursor() {
+getSearchCursor =() => {
   const currentPos = this.editor.getCursor();
   const sc = this.editor.getSearchCursor(this.pattern, currentPos, { multiline: false });
   return sc;
@@ -21,7 +44,7 @@ addEmojiOnSearch = (emoji) => {
   const currentPos = this.editor.getCursor();
   const sc = this.getSearchCursor();
   if (sc.findPrevious()) {
-    sc.replace(emoji.colons, this.editor.getTokenAt(currentPos).string);
+    sc.replace(`${emoji.colons} `, this.editor.getTokenAt(currentPos).string);
     this.editor.focus();
     this.editor.refresh();
   }
@@ -32,7 +55,7 @@ addEmojiOnSearch = (emoji) => {
 addEmoji = (emoji) => {
   const currentPos = this.editor.getCursor();
   const doc = this.editor.getDoc();
-  doc.replaceRange(emoji.colons, currentPos);
+  doc.replaceRange(`${emoji.colons} `, currentPos);
   this.editor.focus();
   this.editor.refresh();
 }
@@ -60,3 +83,42 @@ getEmoji = () => {
 }
 
 }
+
+export const getEmojiTranslation = () => {
+
+  const categories = {};
+  [
+    'search',
+    'recent',
+    'smileys',
+    'people',
+    'nature',
+    'foods',
+    'activity',
+    'places',
+    'objects',
+    'symbols',
+    'flags',
+    'custom',
+  ].forEach((category) => {
+    categories[category] = i18n.t(`emoji.categories.${category}`);
+  });
+
+  const skintones = {};
+  (Array.from(Array(6).keys())).forEach((tone) => {
+    skintones[tone + 1] = i18n.t(`emoji.skintones.${tone + 1}`);
+  });
+
+  const translation = {
+    search: i18n.t('emoji.search'),
+    clear: i18n.t('emoji.clear'),
+    notfound: i18n.t('emoji.notfound'),
+    skintext: i18n.t('emoji.skintext'),
+    categories,
+    categorieslabel: i18n.t('emoji.categorieslabel'),
+    skintones,
+    title: i18n.t('emoji.title'),
+  };
+
+  return translation;
+};
