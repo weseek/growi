@@ -12,7 +12,7 @@ const formatDate = (date) => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm:ss');
 };
 
-export const AuditLogManagement : FC<Props> = (props: Props) => {
+export const ActivityTable : FC<Props> = (props: Props) => {
   return (
     <div className="table-responsive text-nowrap h-100">
       <table className="table table-default table-bordered table-user-list">
