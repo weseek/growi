@@ -12,7 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
-import { SocketEventName } from '~/interfaces/websocket';
+import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
 import {
   ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
 } from '~/stores/modal';
@@ -174,7 +174,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       // page migration success
     });
 
-    socket?.on(SocketEventName.PageMigrationError, () => {
+    socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
       // page migration error
     });
 
