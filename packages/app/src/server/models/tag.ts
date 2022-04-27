@@ -8,9 +8,9 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 
 export interface TagDocument extends Document {
-  _id: Types.ObjectId
-  name: string
-}
+  _id: Types.ObjectId;
+  name: string;
+}
 
 export interface TagModel extends Model<TagDocument>{
   getIdToNameMap(tagIds: Types.ObjectId)
@@ -29,7 +29,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = function(tagIds) {
+tagSchema.statics.getIdToNameMap = async function(tagIds) {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
@@ -40,7 +40,7 @@ tagSchema.statics.getIdToNameMap = function(tagIds) {
   return idToNameMap;
 };
 
-tagSchema.statics.findOrCreate = function(tagName) {
+tagSchema.statics.findOrCreate = async function(tagName) {
   const tag = await this.findOne({ name: tagName });
   if (!tag) {
     return this.create({ name: tagName });
@@ -48,7 +48,7 @@ tagSchema.statics.findOrCreate = function(tagName) {
   return tag;
 };
 
-tagSchema.statics.findOrCreateMany = function(tagNames) {
+tagSchema.statics.findOrCreateMany = async function(tagNames) {
   const existTags = await this.find({ name: { $in: tagNames } });
   const existTagNames = existTags.map((tag) => { return tag.name });
 
