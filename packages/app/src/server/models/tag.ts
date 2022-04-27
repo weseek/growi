@@ -13,7 +13,7 @@ export interface TagDocument extends Document {
 }
 
 export interface TagModel extends Model<TagDocument>{
-  getIdToNameMap(tagIds: Types.ObjectId)
+  getIdToNameMap(tagIds: Types.ObjectId[])
   findOrCreate(tagName: string)
   findOrCreateMany(tagNames: string[])
 }
@@ -29,7 +29,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function(tagIds) {
+tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]) {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
@@ -40,7 +40,7 @@ tagSchema.statics.getIdToNameMap = async function(tagIds) {
   return idToNameMap;
 };
 
-tagSchema.statics.findOrCreate = async function(tagName) {
+tagSchema.statics.findOrCreate = async function(tagName: string) {
   const tag = await this.findOne({ name: tagName });
   if (!tag) {
     return this.create({ name: tagName });
@@ -48,7 +48,7 @@ tagSchema.statics.findOrCreate = async function(tagName) {
   return tag;
 };
 
-tagSchema.statics.findOrCreateMany = async function(tagNames) {
+tagSchema.statics.findOrCreateMany = async function(tagNames: string[]) {
   const existTags = await this.find({ name: { $in: tagNames } });
   const existTagNames = existTags.map((tag) => { return tag.name });
 
