@@ -27,7 +27,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
         <tbody>
           {props.activityList.map((activity) => {
             return (
-              <tr data-testid="user-table-tr" key={activity._id}>
+              <tr data-testid="activity-table" key={activity._id}>
                 <td>{activity.user?.username}</td>
                 <td>{activity.targetModel}</td>
                 <td>{activity.action}</td>
