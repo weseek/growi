@@ -473,6 +473,16 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
       },
+      {
+        path: '/get_parent_A',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+      },
+      {
+        path: '/get_parent_A/get_parent_B',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+      },
     ]);
 
   });
@@ -779,7 +789,7 @@ describe('Page', () => {
 
   });
 
-  describe('getParentAndFillAncestors', () => {
+  describe.only('getParentAndFillAncestors', () => {
     test('return parent if exist', async() => {
       const page1 = await Page.findOne({ path: '/PAF1' });
       const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
@@ -857,6 +867,34 @@ describe('Page', () => {
       expect(page1._id).toStrictEqual(parent._id);
       expect(page2.parent).toStrictEqual(parent._id);
 
+    });
+    test.only("should find parent while NOT creating unnecessary empty pages", async() => {
+      const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const _emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      expect(_pageA).not.toBeNull();
+      expect(_pageAB).not.toBeNull();
+      expect(_emptyA).toBeNull();
+      expect(_emptyAB).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors('/get_parent_A/get_parent_B/get_parent_C', dummyUser1);
+
+      const pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(pageA).not.toBeNull();
+      expect(pageAB).not.toBeNull();
+      expect(emptyA).toBeNull();
+      expect(emptyAB).toBeNull();
+
+      // -- Check parent
+      expect(pageA.parent).not.toBeNull();
+      expect(pageAB.parent).not.toBeNull();
     });
   });
 });
