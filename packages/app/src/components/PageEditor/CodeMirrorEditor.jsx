@@ -1,37 +1,37 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import urljoin from 'url-join';
-import * as codemirror from 'codemirror';
-import { Button } from 'reactstrap';
-
-import { JSHINT } from 'jshint';
-
-import * as loadScript from 'simple-load-script';
-import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import EmojiPicker from './EmojiPicker';
-import EmojiPickerHelper from './EmojiPickerHelper';
+import * as codemirror from 'codemirror';
+import { JSHINT } from 'jshint';
+import * as loadCssSync from 'load-css-file';
+import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
+import * as loadScript from 'simple-load-script';
+import urljoin from 'url-join';
+
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import AbstractEditor from './AbstractEditor';
-import SimpleCheatsheet from './SimpleCheatsheet';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
+import AbstractEditor from './AbstractEditor';
+import DrawioModal from './DrawioModal';
+import EditorIcon from './EditorIcon';
+import EmojiPicker from './EmojiPicker';
+import EmojiPickerHelper from './EmojiPickerHelper';
+import GridEditModal from './GridEditModal';
+import geu from './GridEditorUtil';
+import HandsontableModal from './HandsontableModal';
+import LinkEditModal from './LinkEditModal';
+import mdu from './MarkdownDrawioUtil';
+import mlu from './MarkdownLinkUtil';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-import mlu from './MarkdownLinkUtil';
-import mtu from './MarkdownTableUtil';
-import mdu from './MarkdownDrawioUtil';
-import geu from './GridEditorUtil';
-import GridEditModal from './GridEditModal';
-import LinkEditModal from './LinkEditModal';
-import HandsontableModal from './HandsontableModal';
-import EditorIcon from './EditorIcon';
-import DrawioModal from './DrawioModal';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import SimpleCheatsheet from './SimpleCheatsheet';
+
+
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
@@ -695,7 +695,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
-              onClose={() => this.setState({ isEmojiPickerShown: false })}
+              onClose={() => this.setState({ isEmojiPickerShown: false, emojiSearchText: null })}
               emojiSearchText={emojiSearchText}
               editor={this.getCodeMirror()}
               emojiPickerHelper={this.emojiPickerHelper}
