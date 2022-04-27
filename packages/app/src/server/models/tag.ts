@@ -1,7 +1,3 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-
-// const mongoose = require('mongoose');
 import { getOrCreateModel } from '@growi/core';
 import {
   Types, Document, Model, Schema,
