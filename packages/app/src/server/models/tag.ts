@@ -14,7 +14,6 @@ export interface TagDocument extends Document {
 
 export interface TagModel extends Model<TagDocument>{
   getIdToNameMap(tagIds: Types.ObjectId[])
-  findOrCreate(tagName: string)
   findOrCreateMany(tagNames: string[])
 }
 
@@ -38,14 +37,6 @@ tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]) {
   });
 
   return idToNameMap;
-};
-
-tagSchema.statics.findOrCreate = async function(tagName: string) {
-  const tag = await this.findOne({ name: tagName });
-  if (!tag) {
-    return this.create({ name: tagName });
-  }
-  return tag;
 };
 
 tagSchema.statics.findOrCreateMany = async function(tagNames: string[]) {
