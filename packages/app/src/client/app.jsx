@@ -181,7 +181,6 @@ const renderMainComponents = () => {
 
 // extract context before rendering main components
 const elem = document.getElementById('growi-context-extractor');
-console.log('elem_hoge', elem);
 if (elem != null) {
   ReactDOM.render(
     <SWRConfig value={swrGlobalConfiguration}>
