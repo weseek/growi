@@ -12,7 +12,11 @@ export interface TagDocument extends Document {
   name: string
 }
 
-export interface TagModel extends Model<TagDocument>{}
+export interface TagModel extends Model<TagDocument>{
+  getIdToNameMap(tagIds: Types.ObjectId)
+  findOrCreate(tagName: string)
+  findOrCreateMany(tagNames: string[])
+}
 
 const tagSchema = new Schema<TagDocument, TagModel>({
   name: {
