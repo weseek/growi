@@ -868,7 +868,7 @@ describe('Page', () => {
       expect(page2.parent).toStrictEqual(parent._id);
 
     });
-    test("should find parent while NOT creating unnecessary empty pages", async() => {
+    test('should find parent while NOT creating unnecessary empty pages', async() => {
       const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
