@@ -121,7 +121,7 @@ describe('UserGroupService', () => {
   });
 
   // In case that forceUpdateParents is true
-  test('User should be included to parent group forcibly in case that force update is true', async() => {
+  test('User should be included to parent group in case that force update is true', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
     const userGroup4Relation = await UserGroupRelation.findOne({ relatedGroup:  userGroup4 });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5 });
