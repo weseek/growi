@@ -3,9 +3,7 @@ import ShareLink from '~/server/models/share-link';
 const { getInstance } = require('../setup-crowi');
 
 describe('ShareLink', () => {
-  // eslint-disable-next-line no-unused-vars
   let crowi;
-  let ShareLink;
   let Page;
 
   beforeAll(async() => {
