@@ -789,7 +789,7 @@ describe('Page', () => {
 
   });
 
-  describe.only('getParentAndFillAncestors', () => {
+  describe('getParentAndFillAncestors', () => {
     test('return parent if exist', async() => {
       const page1 = await Page.findOne({ path: '/PAF1' });
       const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
@@ -868,7 +868,7 @@ describe('Page', () => {
       expect(page2.parent).toStrictEqual(parent._id);
 
     });
-    test.only("should find parent while NOT creating unnecessary empty pages", async() => {
+    test("should find parent while NOT creating unnecessary empty pages", async() => {
       const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
