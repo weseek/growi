@@ -9,8 +9,7 @@ export const SocketEventName = {
   PMEnded: 'PublicMigrationEnded',
 
   // Page migration
-  PageMigrationStarted: 'PageMigrationStarted',
-  PageMigrationEnded: 'PageMigrationEnded',
+  PageMigrationSuccess: 'PageMigrationSuccess',
   PageMigrationError: 'PageMigrationError',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];

@@ -2251,55 +2251,50 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
+  async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
-    socket.emit(SocketEventName.PageMigrationStarted);
+    const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
-    if (isRecursively) {
-      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
+    this.normalizeParentRecursivelyByPages(pages, user);
 
-      // DO NOT await !!
-      (async() => {
-        try {
-          await this.normalizeParentRecursivelyByPages(pages, user);
-          socket.emit(SocketEventName.PageMigrationEnded);
-        }
-        catch {
-          socket.emit(SocketEventName.PageMigrationError);
-        }
-      })();
+    return;
+  }
 
-      return;
-    }
+  normalizeParentByPageIds(pageIds: ObjectIdLike[], user): void {
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
-    for await (const pageId of pageIds) {
-      const page = await Page.findById(pageId);
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
+    // socket.emit(SocketEventName.PageMigrationStarted);
+
+    for (const pageId of pageIds) {
+      const page = Page.findById(pageId);
       if (page == null) {
         continue;
       }
 
       try {
-        const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
+        const canOperate = this.crowi.pageOperationService.canOperate(false, page.path, page.path);
         if (!canOperate) {
           throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
-        const normalizedPage = await this.normalizeParentByPage(page, user);
+        const normalizedPage = this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
-          socket.emit(SocketEventName.PageMigrationError);
+          // socket.emit(SocketEventName.PageMigrationError);
         }
         else {
-          socket.emit(SocketEventName.PageMigrationEnded);
+          // socket.emit(SocketEventName.PageMigrationEnded);
         }
       }
       catch (err) {
         logger.error('Something went wrong while normalizing parent.', err);
-        socket.emit(SocketEventName.PageMigrationError);
+        // socket.emit(SocketEventName.PageMigrationError);
       }
     }
   }

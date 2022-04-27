@@ -170,13 +170,8 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { data: socket } = useGlobalSocket();
 
   useEffect(() => {
-
-    socket?.on(SocketEventName.PageMigrationStarted, () => {
-      // page migration started
-    });
-
-    socket?.on(SocketEventName.PageMigrationEnded, () => {
-      // page migration ended
+    socket?.on(SocketEventName.PageMigrationSuccess, () => {
+      // page migration success
     });
 
     socket?.on(SocketEventName.PageMigrationError, () => {
@@ -184,8 +179,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
 
     return () => {
-      socket?.off(SocketEventName.PageMigrationStarted);
-      socket?.off(SocketEventName.PageMigrationEnded);
+      socket?.off(SocketEventName.PageMigrationSuccess);
       socket?.off(SocketEventName.PageMigrationError);
     };
   }, [socket]);
