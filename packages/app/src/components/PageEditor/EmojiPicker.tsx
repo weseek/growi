@@ -47,7 +47,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const theme = isDarkMode() ? 'dark' : 'light';
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji} fade={false}>
+    <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji} backdropClassName="emoji-picker-modal" fade={false}>
       <Picker
         onSelect={selectEmoji}
         i18n={translation}
