@@ -47,9 +47,6 @@ const { addTrailingSlash } = pathUtils;
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-// https://www.designcise.com/web/tutorial/what-is-the-correct-typescript-return-type-for-javascripts-settimeout-function#inferring-type-using-return-type
-type TSetInterval = ReturnType<typeof setInterval>
-
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
 
@@ -408,11 +405,12 @@ class PageService {
    */
   async setIntervalUpdatePageOperationExpiryDate(
       pageOperationId: ObjectIdLike, extendTimeSec: number, intervalSec: number,
-  ): Promise<TSetInterval> {
+  ): Promise<NodeJS.Timeout> {
     const pageOp = await PageOperation.findByIdAndUpdate(pageOperationId, { unprocessableExpiryDate: addSeconds(new Date(), extendTimeSec) }, { new: true });
     if (pageOp == null) throw Error('setinterval cannot be set as page operation is not found');
 
-    const timerId = setInterval(async(): Promise<void> => {
+    // https://github.com/Microsoft/TypeScript/issues/30128#issuecomment-467968688
+    const timerId = global.setInterval(async(): Promise<void> => {
       pageOp.unprocessableExpiryDate = addSeconds(new Date(), extendTimeSec);
       await pageOp.save();
       logger.info(`property unprocessableExpiryDate of page operation(${pageOperationId}) is updated`);
@@ -561,29 +559,28 @@ class PageService {
       throw Error('PageOperation document not found');
     }
 
-
-    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
-    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOp._id, extendTimeSec, intervalSec);
-
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, autoUpdateIntervalTimerId);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
 
 
   async renameSubOperation(
-      page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: TSetInterval,
+      page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike,
   ): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
 
+    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
+    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
+    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOpId, extendTimeSec, intervalSec);
+
     try {
-    // update descendants first
+      // update descendants first
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
       // clear interval
       clearInterval(autoUpdateIntervalTimerId);
@@ -637,10 +634,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
 
-    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
-    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOperation._id, extendTimeSec, intervalSec);
-    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOperation._id, autoUpdateIntervalTimerId);
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOperation._id);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
