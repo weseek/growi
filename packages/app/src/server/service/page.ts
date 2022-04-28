@@ -26,7 +26,7 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType, PageOperationAutoUpdateTimerType } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -406,8 +406,8 @@ class PageService {
    * @param selfStopSec time to self-stop in case setInterval kept alive as a zombie process
    * @returns tiemr id
    */
-  async setIntervalUpdatePageOperationExpireDate(
-      pageOperationId:ObjectIdLike, extendTimeSec: number, intervalSec: number, selfStopSec: number,
+  async setIntervalUpdatePageOperationExpiryDate(
+      pageOperationId: ObjectIdLike, extendTimeSec: number, intervalSec: number, selfStopSec: number,
   ): Promise<TSetInterval> {
     const pageOp = await PageOperation.findByIdAndUpdate(pageOperationId, { unprocessableExpiryDate: addSeconds(new Date(), extendTimeSec) }, { new: true });
     if (pageOp == null) throw Error('setinterval cannot be set as page operation is not found');
@@ -487,12 +487,12 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const extendTimeSec = 10;
-    const intervalSec = 5;
-    const selfStopSec = 15;
+    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
+    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
+    const selfStopSec = PageOperationAutoUpdateTimerType.SelfStopSec;
     // Keep updating the property unprocessableExpiryDate until the renaming process is complete
     // to avoid PageOperation being processed by multiple processes.
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpireDate(pageOp._id, extendTimeSec, intervalSec, selfStopSec);
+    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOp._id, extendTimeSec, intervalSec, selfStopSec);
     const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, autoUpdateIntervalTimerId);
 
     return renamedPage;
@@ -594,6 +594,9 @@ class PageService {
     try {
     // update descendants first
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      // clear interval
+      clearInterval(autoUpdateIntervalTimerId);
+      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
     }
     catch (err) {
       // clear interval if failed
@@ -601,10 +604,6 @@ class PageService {
       logger.error('renameDescendantsWithStream Failed:', err);
       throw Error(err);
     }
-
-    // clear interval
-    clearInterval(autoUpdateIntervalTimerId);
-    logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -623,7 +622,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async restartPageRenameOperation(pageId: ObjectIdLike): Promise<void> {
+  async resumePageRenameOperation(pageId: ObjectIdLike): Promise<void> {
     if (pageId == null) {
       throw Error('it did not restart rename operation because pageId is missing.');
     }
@@ -646,10 +645,10 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
 
-    const extendTimeSec = 10;
-    const intervalSec = 5;
-    const selfStopSec = 15;
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpireDate(pageOperation._id, extendTimeSec, intervalSec, selfStopSec);
+    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
+    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
+    const selfStopSec = PageOperationAutoUpdateTimerType.SelfStopSec;
+    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOperation._id, extendTimeSec, intervalSec, selfStopSec);
     await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOperation._id, autoUpdateIntervalTimerId);
   }
 
