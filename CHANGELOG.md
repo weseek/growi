@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.4](https://github.com/weseek/growi/compare/v5.0.3...v5.0.4) - 2022-04-28
+
+### 💎 Features
+
+- feat: Private legacy pages convert by path (#5787) @hakumizuki
+- feat: Generate activity when page is created (#5765) @miya
+- feat: Private legacy pages convert by path API (#5760) @hakumizuki
+- feat:  Create notification when page is reverted (#5756) @miya
+- feat: Create notification when page is duplicated (#5749) @miya
+- feat: Add count badge to Page List button and Comment button (#5740) @yukendev
+- feat: Infinite scroll for Recent Changes in Sidebar (#5647) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Change GET method to POST for logout operation (#5751) @kaoritokashiki
+- imprv: Redesign tags (#5730) @miya
+- imprv: i18n for already_exists error in PutBackPageModal (#5747) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (#5788) @yuki-takei
+- fix: Include any public pages as applicable ancestors (#5786) @hakumizuki
+- fix: Not create unnecessary empty pages when ancestors are public (#5774) @hakumizuki
+- fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
+- fix:  footstamp-icon size (#5759) @kaoritokashiki
 
 ## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
 
