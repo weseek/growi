@@ -1,5 +1,5 @@
 import loggerFactory from '~/utils/logger';
-import { isSearchError } from '../models/vo/error-search';
+import { isSearchError } from '../models/vo/search-error';
 
 const logger = loggerFactory('growi:routes:search');
 
