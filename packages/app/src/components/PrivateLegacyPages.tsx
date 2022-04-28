@@ -148,7 +148,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onSubmit={(e) => { e.preventDefault(); props.onSubmit?.(currentInput) }}>
+        <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(currentInput)}>
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
@@ -318,6 +318,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
         <div className="d-flex pl-md-2">
           <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
+            {/* TODO: i18n */}
             Input the path to convert
           </button>
         </div>
@@ -396,6 +397,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
               convertPath,
             });
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
+            setOpenConvertModal(false);
           }
           catch {
             toastError(t('private_legacy_pages.by_path_modal.error'));
