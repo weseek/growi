@@ -28,6 +28,7 @@ import SearchControl from './SearchPage/SearchControl';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -398,8 +399,28 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
           }
-          catch {
-            toastError(t('private_legacy_pages.by_path_modal.error'));
+          catch (errs) {
+            if (errs.length === 1) {
+              switch (errs[0].code) {
+                case V5ConversionErrCode.GRANT_INVALID:
+                  toastError(t('private_legacy_pages.by_path_modal.error_grant_invalid'));
+                  break;
+                case V5ConversionErrCode.PAGE_RESTRICTED:
+                  toastError(t('private_legacy_pages.by_path_modal.error_page_restricted'));
+                  break;
+                case V5ConversionErrCode.PAGE_NOT_FOUND:
+                  toastError(t('private_legacy_pages.by_path_modal.error_page_not_found'));
+                  break;
+                case V5ConversionErrCode.DUPLICATE_PAGES_FOUND:
+                  toastError(t('private_legacy_pages.by_path_modal.error_duplicate_pages_found'));
+                  break;
+                default:
+                  toastError(t('private_legacy_pages.by_path_modal.error'));
+              }
+            }
+            else {
+              toastError(t('private_legacy_pages.by_path_modal.error'));
+            }
           }
         }}
       />

@@ -2,6 +2,7 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -795,6 +796,11 @@ module.exports = (crowi) => {
       }
       catch (err) {
         logger.error(err);
+
+        if (isV5ConversionError(err)) {
+          return res.apiv3Err(new ErrorV3(err.message, err.code), 400);
+        }
+
         return res.apiv3Err(new ErrorV3('Failed to convert pages.'), 400);
       }
 

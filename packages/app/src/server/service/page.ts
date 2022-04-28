@@ -31,6 +31,8 @@ import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import ActivityDefine from '../util/activityDefine';
+import { V5ConversionError } from '../models/vo/v5-conversion-error';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 
 const debug = require('debug')('growi:services:page');
 
@@ -2254,13 +2256,42 @@ class PageService {
   async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const page = await Page.findByPathAndViewer(path, user);
-
-    if (page == null) {
-      throw Error(`Could not find the page "${path}" to convert.`);
+    const pages = await Page.findByPathAndViewer(path, user, null, false);
+    if (pages == null || !Array.isArray(pages)) {
+      throw Error('Something went wrong while converting pages.');
     }
-    if (Array.isArray(page)) {
-      throw Error('page must not be an array');
+    if (pages.length === 0) {
+      throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
+    }
+    if (pages.length > 1) {
+      throw new V5ConversionError(`There are more than two pages at the path "${path}". Please rename or delete the page first.`, V5ConversionErrCode.DUPLICATE_PAGES_FOUND);
+    }
+
+    const page = pages[0];
+    const {
+      grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+    } = page;
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = true;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${path}"`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw new V5ConversionError('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.', V5ConversionErrCode.GRANT_INVALID);
+      }
+    }
+    else {
+      throw new V5ConversionError('Restricted pages can not be migrated', V5ConversionErrCode.PAGE_RESTRICTED);
     }
 
     let pageOp;

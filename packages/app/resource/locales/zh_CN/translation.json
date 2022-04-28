@@ -946,7 +946,11 @@
       "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
       "button_label": "转换",
       "success": "成功地请求转换。",
-      "error": "请求转换失败。"
+      "error": "请求转换失败。",
+      "error_grant_invalid": "页面权限不正确。请更正并重试。",
+      "error_page_restricted": "此路径中的页面不能被转换为v5兼容格式。",
+      "error_page_not_found": "没有找到页面。",
+      "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
