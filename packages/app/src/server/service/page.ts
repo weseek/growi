@@ -49,7 +49,6 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // https://www.designcise.com/web/tutorial/what-is-the-correct-typescript-return-type-for-javascripts-settimeout-function#inferring-type-using-return-type
 type TSetInterval = ReturnType<typeof setInterval>
-type TSetTimeout = ReturnType<typeof setTimeout>
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -498,7 +497,7 @@ class PageService {
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: ReturnType<typeof setInterval>) {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: TSetInterval) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -585,7 +584,7 @@ class PageService {
 
 
   async renameSubOperation(
-      page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: ReturnType<typeof setInterval>,
+      page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: TSetInterval,
   ): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
