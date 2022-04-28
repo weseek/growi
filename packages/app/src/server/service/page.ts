@@ -486,6 +486,8 @@ class PageService {
     let renamedPage;
     try {
       renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, autoUpdateIntervalTimerId);
+      clearInterval(autoUpdateIntervalTimerId);
+      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
     }
     catch (err) {
       clearInterval(autoUpdateIntervalTimerId);
