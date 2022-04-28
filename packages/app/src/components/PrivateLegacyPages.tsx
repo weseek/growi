@@ -175,7 +175,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
 
     socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
-      if (data.paths.length === 0) {
+      if (data == null || data.paths.length === 0) {
         toastWarning(t('admin:v5_page_migration.page_migration_failed'));
       }
       else if (data.paths.length > 3) {
