@@ -53,13 +53,22 @@ describe('Page', () => {
     const pModelUserId3 = new mongoose.Types.ObjectId();
     await User.insertMany([
       {
-        _id: pModelUserId1, name: 'pmodelUser1', username: 'pmodelUser1', email: 'pmodelUser1@example.com',
+        _id: pModelUserId1,
+        name: 'pmodelUser1',
+        username: 'pmodelUser1',
+        email: 'pmodelUser1@example.com',
       },
       {
-        _id: pModelUserId2, name: 'pmodelUser2', username: 'pmodelUser2', email: 'pmodelUser2@example.com',
+        _id: pModelUserId2,
+        name: 'pmodelUser2',
+        username: 'pmodelUser2',
+        email: 'pmodelUser2@example.com',
       },
       {
-        _id: pModelUserId3, name: 'pModelUser3', username: 'pModelUser3', email: 'pModelUser3@example.com',
+        _id: pModelUserId3,
+        name: 'pModelUser3',
+        username: 'pModelUser3',
+        email: 'pModelUser3@example.com',
       },
     ]);
     pModelUser1 = await User.findOne({ _id: pModelUserId1 });
