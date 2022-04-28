@@ -141,17 +141,16 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
-        { t('private_legacy_pages.modal.title') }
+        { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
       <ModalBody>
-        {/* TODO: i18n */}
-        <p>{t('modal_description')}</p>
+        <p>{t('private_legacy_pages.by_path_modal.description')}</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onSubmit={(e) => { e.preventDefault(); props.onSubmit?.(currentInput) }}>
+        <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(currentInput)}>
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
-          { t('private_legacy_pages.modal.button_label') }
+          { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
       </ModalFooter>
     </Modal>
@@ -319,7 +318,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
         <div className="d-flex pl-md-2">
           <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
-            Input the path to convert
+            {t('private_legacy_pages.input_path_to_convert')}
           </button>
         </div>
       </div>
@@ -396,12 +395,11 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
             await apiv3Post<void>('/pages/legacy-pages-migration', {
               convertPath,
             });
-            // TODO: i18n
-            toastSuccess(t('success_message'));
+            toastSuccess(t('private_legacy_pages.by_path_modal.success'));
+            setOpenConvertModal(false);
           }
           catch {
-            // TODO: i18n
-            toastError(t('error_message'));
+            toastError(t('private_legacy_pages.by_path_modal.error'));
           }
         }}
       />
