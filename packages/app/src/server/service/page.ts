@@ -21,7 +21,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder, addViewerCondition,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -46,6 +46,24 @@ const { addTrailingSlash } = pathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
+
+const hasSlash = (str: string): boolean => {
+  return str.includes('/');
+};
+
+/*
+ * Generate RegExp instance for one level lower path
+ */
+const generateChildrenRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
+};
+
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -2992,6 +3010,70 @@ class PageService {
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
     socket.emit(SocketEventName.UpdateDescCount, data);
+  }
+
+  /**
+   * Find all children by parent's path or id. Using id should be prioritized
+   */
+  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    let queryBuilder: PageQueryBuilder;
+    if (hasSlash(parentPathOrId)) {
+      const path = parentPathOrId;
+      const regexp = generateChildrenRegExp(path);
+      queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+    }
+    else {
+      const parentId = parentPathOrId;
+      queryBuilder = new PageQueryBuilder(Page.find({ parent: parentId } as any), true); // TODO: improve type
+    }
+    await addViewerCondition(queryBuilder, user, userGroups);
+
+    return queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+  }
+
+  async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
+    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+
+    // get pages at once
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
+    await addViewerCondition(queryBuilder, user, userGroups);
+    const _pages = await queryBuilder
+      .addConditionAsMigrated()
+      .addConditionToMinimizeDataForRendering()
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+    // mark target
+    const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+      return page;
+    });
+
+    /*
+     * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+     */
+    const pathToChildren: Record<string, PageDocument[]> = {};
+    const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+    sortedPaths.every((path) => {
+      const children = pages.filter(page => pathlib.dirname(page.path) === path);
+      if (children.length === 0) {
+        return false; // break when children do not exist
+      }
+      pathToChildren[path] = children;
+      return true;
+    });
+
+    return pathToChildren;
   }
 
 }

@@ -120,19 +120,6 @@ const hasSlash = (str: string): boolean => {
   return str.includes('/');
 };
 
-/*
- * Generate RegExp instance for one level lower path
- */
-const generateChildrenRegExp = (path: string): RegExp => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
-};
-
 export class PageQueryBuilder {
 
   query: any;
@@ -667,7 +654,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
 };
 
 // Utility function to add viewer condition to PageQueryBuilder instance
-const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
+export const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
   let relatedUserGroups = userGroups;
   if (user != null && relatedUserGroups == null) {
     const UserGroupRelation: any = mongoose.model('UserGroupRelation');
@@ -782,67 +769,6 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   return { targetAndAncestors, rootPage };
 };
 
-/*
- * Find all children by parent's path or id. Using id should be prioritized
- */
-schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
-  let queryBuilder: PageQueryBuilder;
-  if (hasSlash(parentPathOrId)) {
-    const path = parentPathOrId;
-    const regexp = generateChildrenRegExp(path);
-    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp } }), true);
-  }
-  else {
-    const parentId = parentPathOrId;
-    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO: improve type
-  }
-  await addViewerCondition(queryBuilder, user, userGroups);
-
-  return queryBuilder
-    .addConditionToSortPagesByAscPath()
-    .query
-    .lean()
-    .exec();
-};
-
-schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
-  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
-  const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
-
-  // get pages at once
-  const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }), true);
-  await addViewerCondition(queryBuilder, user, userGroups);
-  const _pages = await queryBuilder
-    .addConditionAsMigrated()
-    .addConditionToMinimizeDataForRendering()
-    .addConditionToSortPagesByAscPath()
-    .query
-    .lean()
-    .exec();
-  // mark target
-  const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
-    if (page.path === path) {
-      page.isTarget = true;
-    }
-    return page;
-  });
-
-  /*
-   * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
-   */
-  const pathToChildren: Record<string, PageDocument[]> = {};
-  const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
-  sortedPaths.every((path) => {
-    const children = pages.filter(page => nodePath.dirname(page.path) === path);
-    if (children.length === 0) {
-      return false; // break when children do not exist
-    }
-    pathToChildren[path] = children;
-    return true;
-  });
-
-  return pathToChildren;
-};
 
 /*
  * Utils from obsolete-page.js
