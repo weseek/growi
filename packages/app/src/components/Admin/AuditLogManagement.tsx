@@ -29,17 +29,27 @@ export const AuditLogManagement: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2>{t('AuditLog')}</h2>
-      <>
-        <ActivityTable activityList={activityList} />
-        <PaginationWrapper
-          activePage={activePage}
-          changePage={setActivePageBySelectedPageNum}
-          totalItemsCount={totalActivityNum}
-          pagingLimit={PAGING_LIMIT}
-          align="center"
-          size="sm"
-        />
-      </>
+
+      { isLoading
+        ? (
+          <div className="text-muted text-center mb-5">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        )
+        : (
+          <>
+            <ActivityTable activityList={activityList} />
+            <PaginationWrapper
+              activePage={activePage}
+              changePage={setActivePageBySelectedPageNum}
+              totalItemsCount={totalActivityNum}
+              pagingLimit={PAGING_LIMIT}
+              align="center"
+              size="sm"
+            />
+          </>
+        )
+      }
     </div>
   );
 };
