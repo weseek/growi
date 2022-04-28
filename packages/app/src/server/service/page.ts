@@ -478,28 +478,13 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
-    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
 
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOp._id, extendTimeSec, intervalSec);
-
-    let renamedPage;
-    try {
-      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, autoUpdateIntervalTimerId);
-      clearInterval(autoUpdateIntervalTimerId);
-      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
-    }
-    catch (err) {
-      clearInterval(autoUpdateIntervalTimerId);
-      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
-      logger.warn(`renameMainOperation Failed: ${err}`);
-      throw err;
-    }
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
 
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, autoUpdateIntervalTimerId: TSetInterval) {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -575,6 +560,11 @@ class PageService {
     if (pageOp == null) {
       throw Error('PageOperation document not found');
     }
+
+
+    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
+    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
+    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOp._id, extendTimeSec, intervalSec);
 
     /*
      * Sub Operation
