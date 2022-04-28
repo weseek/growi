@@ -2278,26 +2278,21 @@ class PageService {
     /*
      * UserGroup & Owner validation
      */
-    if (grant !== Page.GRANT_RESTRICTED) {
-      let isGrantNormalized = false;
-      try {
-        const shouldCheckDescendants = true;
+    let isGrantNormalized = false;
+    try {
+      const shouldCheckDescendants = true;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
-      }
-      catch (err) {
-        logger.error(`Failed to validate grant of page at "${path}"`, err);
-        throw err;
-      }
-      if (!isGrantNormalized) {
-        throw new V5ConversionError(
-          'This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.',
-          V5ConversionErrCode.GRANT_INVALID,
-        );
-      }
+      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
     }
-    else {
-      throw new V5ConversionError('Restricted pages can not be migrated', V5ConversionErrCode.PAGE_RESTRICTED);
+    catch (err) {
+      logger.error(`Failed to validate grant of page at "${path}"`, err);
+      throw err;
+    }
+    if (!isGrantNormalized) {
+      throw new V5ConversionError(
+        'This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.',
+        V5ConversionErrCode.GRANT_INVALID,
+      );
     }
 
     let pageOp;

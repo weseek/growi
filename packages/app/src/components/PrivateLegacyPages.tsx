@@ -405,9 +405,6 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
                 case V5ConversionErrCode.GRANT_INVALID:
                   toastError(t('private_legacy_pages.by_path_modal.error_grant_invalid'));
                   break;
-                case V5ConversionErrCode.PAGE_RESTRICTED:
-                  toastError(t('private_legacy_pages.by_path_modal.error_page_restricted'));
-                  break;
                 case V5ConversionErrCode.PAGE_NOT_FOUND:
                   toastError(t('private_legacy_pages.by_path_modal.error_page_not_found'));
                   break;

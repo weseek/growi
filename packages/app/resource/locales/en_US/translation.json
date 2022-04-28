@@ -662,7 +662,6 @@
       "success": "Successfully requested conversion.",
       "error": "Failed to request conversion.",
       "error_grant_invalid": "Page permissions are incorrect. Please correct it and try again.",
-      "error_page_restricted": "Pages in this path cannot be converted to v5 compatible format.",
       "error_page_not_found": "Page not found.",
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }

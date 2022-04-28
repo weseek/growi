@@ -661,7 +661,6 @@
       "success": "正常に変換を開始しました",
       "error": "変換を開始できませんでした",
       "error_grant_invalid": "ページの権限が正しくありません。修正してから再度実行してください",
-      "error_page_restricted": "このパスのページは v5 互換形式に変換することが出来ません",
       "error_page_not_found": "ページが見つかりませんでした",
       "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
