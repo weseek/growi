@@ -221,10 +221,10 @@ describe('Test page service methods', () => {
   });
 
   describe('restart renameOperation', () => {
-    const resumePageRenameOperation = async(pageOperationId) => {
+    const resumePageRenameOperation = async(pageId) => {
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
 
-      await crowi.pageService.resumePageRenameOperation(pageOperationId);
+      await crowi.pageService.resumePageRenameOperation(pageId);
 
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
@@ -273,8 +273,8 @@ describe('Test page service methods', () => {
       expect(page3.descendantCount).toBe(0);
     });
     test('it should fail and throw error if PageOperation is not found', async() => {
-      const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
-      await expect(resumePageRenameOperation(pageOpId))
+      const pageId = new mongoose.Types.ObjectId(); // not exist in DB
+      await expect(resumePageRenameOperation(pageId))
         .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
     });
 
