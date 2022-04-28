@@ -495,6 +495,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: a
     aggregationPipeline.push({
       $match: {
         $or: [
+          { grant: GRANT_PUBLIC },
           { parent: { $ne: null } },
           { path: '/' },
         ],
