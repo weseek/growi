@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IDataWithMeta,
   IPageHasId,
@@ -14,7 +15,7 @@ import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } fro
 const EmptyTrashButton = () => {
   const { t } = useTranslation();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: pagingResult } = useSWRxDescendantsPageListForCurrrentPath();
+  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
@@ -30,8 +31,10 @@ const EmptyTrashButton = () => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const onDeletedHandler = (...args) => {
-    // process after multipe pages delete api
+  const onDeletedHandler = () => {
+    toastSuccess(t('empty_trash'));
+
+    mutate();
   };
 
   const emptyTrashClickHandler = () => {
