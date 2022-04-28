@@ -1,32 +1,33 @@
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { IFormattedSearchResult } from '~/interfaces/search';
-import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
-import {
-  useSWRxSearch,
-} from '~/stores/search';
+import { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import { IFormattedSearchResult } from '~/interfaces/search';
+import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
 import {
   ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
 } from '~/stores/modal';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import {
+  useSWRxSearch,
+} from '~/stores/search';
+import { useGlobalSocket } from '~/stores/websocket';
 
-import PaginationWrapper from './PaginationWrapper';
-import { OperateAllControl } from './SearchPage/OperateAllControl';
-
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
+import PaginationWrapper from './PaginationWrapper';
+import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -166,6 +167,22 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, []);
 
   const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
+  const { data: socket } = useGlobalSocket();
+
+  useEffect(() => {
+    socket?.on(SocketEventName.PageMigrationSuccess, () => {
+      // page migration success
+    });
+
+    socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
+      // page migration error
+    });
+
+    return () => {
+      socket?.off(SocketEventName.PageMigrationSuccess);
+      socket?.off(SocketEventName.PageMigrationError);
+    };
+  }, [socket]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
