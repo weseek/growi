@@ -318,8 +318,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
         <div className="d-flex pl-md-2">
           <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
-            {/* TODO: i18n */}
-            Input the path to convert
+            {t('private_legacy_pages.input_path_to_convert')}
           </button>
         </div>
       </div>
