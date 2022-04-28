@@ -44,7 +44,6 @@ module.exports = function(crowi, app) {
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  const logout = require('./logout')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
   const user = require('./user')(crowi, app);
@@ -62,12 +61,15 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter] = require('./apiv3')(crowi);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
   // API v3 for admin
   app.use('/_api/v3', apiV3AdminRouter);
+
+  // API v3 for auth
+  app.use('/_api/v3', apiV3AuthRouter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
@@ -76,10 +78,10 @@ module.exports = function(crowi, app) {
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
   app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
-  app.get('/logout'                   , applicationInstalled, logout.logout);
 
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
