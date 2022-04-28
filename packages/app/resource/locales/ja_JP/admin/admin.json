@@ -32,8 +32,9 @@
     "header_upgrading_progress": "アップグレード進行度",
     "migration_succeeded": "アップグレードが正常に完了しました！メンテナンスモードを終了して、GROWI を使用することができます。",
     "migration_failed": "アップグレードが失敗しました。失敗した場合の対処法は GROWI docs を参照してください。",
-    "page_migration_succeeded": "ページの v5 互換形式変換が正常に終了しました。",
-    "page_migration_failed": "{{paths}} の変換中にエラーが発生しました。"
+    "page_migration_succeeded": "ページの v5 互換形式への変換が正常に終了しました。",
+    "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+    "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
   },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
