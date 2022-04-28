@@ -1,4 +1,6 @@
-import React, { useState, FC, useMemo } from 'react';
+import React, {
+  useState, FC, useMemo, useCallback,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -210,11 +212,9 @@ const PageDeleteModal: FC = () => {
     );
   }
 
-  const renderCompletelyDeleteAlert = () => {
-    return (
-      <p className="form-text mt-0">{t('modal_delete.empty_trash_alert')}</p>
-    );
-  };
+  const renderCompletelyDeleteAlert = useMemo(() => {
+    return <p className="form-text mt-0">{t('modal_delete.empty_trash_alert')}</p>;
+  }, [t]);
 
   const renderPagePathsToDelete = () => {
     const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
@@ -230,9 +230,9 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
-  const renderDeleteModalOptions = () => {
+  const renderDeleteModalOptions = useCallback(() => {
     if (emptyTrash) {
-      return renderCompletelyDeleteAlert();
+      return renderCompletelyDeleteAlert;
     }
 
     if (!isDeletable) {
@@ -245,7 +245,7 @@ const PageDeleteModal: FC = () => {
         {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
       </>
     );
-  };
+  }, [t]);
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
