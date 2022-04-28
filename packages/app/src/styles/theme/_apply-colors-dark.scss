@@ -287,7 +287,7 @@ ul.pagination {
     .grw-pagetree-triangle-btn {
       @include button-outline-svg-icon-variant($secondary, $gray-200);
     }
-    .grw-pagetree-count {
+    .grw-count-badge {
       color: $gray-400;
       background: lighten($bgcolor-sidebar-context, 15%);
     }
@@ -481,6 +481,11 @@ ul.pagination {
 * grw-side-contents
 */
 .grw-side-contents-sticky-container {
+  .grw-count-badge {
+    color: $gray-400;
+    background: $gray-700;
+  }
+
   .grw-border-vr {
     border-color: $border-color-toc;
   }

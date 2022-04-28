@@ -60,7 +60,7 @@ export class Lsx extends React.Component {
     try {
       const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
 
-      lsxContext.activeUsersCount = res.activeUsersCount;
+      lsxContext.toppageViewersCount = res.toppageViewersCount;
 
       if (res.ok) {
         const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
