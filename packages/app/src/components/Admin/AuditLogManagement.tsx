@@ -14,26 +14,16 @@ const PAGING_LIMIT = 10;
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
 
-  /*
-   * State
-   */
   const [activePage, setActivePage] = useState<number>(1);
-  const [offset, setOffset] = useState<number>(0);
+  const offset = (activePage - 1) * PAGING_LIMIT;
 
-  /*
-    * Fetch
-    */
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
   const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
   const isLoading = activityListData === undefined && error == null;
 
-  /*
-    * Functions
-    */
-  const setOffsetByPageNumber = useCallback((selectedPageNum: number) => {
+  const setActivePageBySelectedPageNum = useCallback((selectedPageNum: number) => {
     setActivePage(selectedPageNum);
-    setOffset((selectedPageNum - 1) * PAGING_LIMIT);
   }, []);
 
   return (
@@ -43,7 +33,7 @@ export const AuditLogManagement: FC = () => {
         <ActivityTable activityList={activityList} />
         <PaginationWrapper
           activePage={activePage}
-          changePage={setOffsetByPageNumber}
+          changePage={setActivePageBySelectedPageNum}
           totalItemsCount={totalActivityNum}
           pagingLimit={PAGING_LIMIT}
           align="center"
