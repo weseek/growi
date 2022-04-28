@@ -1,5 +1,7 @@
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
+
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
@@ -340,6 +342,20 @@ module.exports = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
+    }
+
+    // create activity
+    try {
+      const parameters = {
+        user: req.user._id,
+        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+        target: createdPage,
+        action: SUPPORTED_ACTION_TYPE.PAGE_CREATE,
+      };
+      await crowi.activityService.createByParameter(parameters);
+    }
+    catch (err) {
+      logger.error('Failed to create activity', err);
     }
 
     // create subscription

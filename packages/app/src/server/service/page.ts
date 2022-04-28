@@ -6,6 +6,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
@@ -30,7 +31,6 @@ import PageOperation, { PageActionStage, PageActionType } from '../models/page-o
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
-import ActivityDefine from '../util/activityDefine';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 
@@ -159,7 +159,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -169,7 +169,7 @@ class PageService {
     // rename
     this.pageEvent.on('rename', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
       }
       catch (err) {
         logger.error(err);
@@ -179,7 +179,7 @@ class PageService {
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DUPLICATE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -189,7 +189,7 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
       }
       catch (err) {
         logger.error(err);
@@ -199,7 +199,7 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -209,7 +209,7 @@ class PageService {
     // revert
     this.pageEvent.on('revert', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -219,7 +219,7 @@ class PageService {
     // likes
     this.pageEvent.on('like', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
       }
       catch (err) {
         logger.error(err);
@@ -229,7 +229,7 @@ class PageService {
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
       }
       catch (err) {
         logger.error(err);
@@ -2239,7 +2239,7 @@ class PageService {
     // Create activity
     const parameters = {
       user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: page,
       action,
     };
