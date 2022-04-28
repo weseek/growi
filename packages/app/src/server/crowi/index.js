@@ -16,7 +16,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
-import PageOperation, { PageActionType } from '../models/page-operation';
+import PageOperation, { PageActionType, PageActionStage } from '../models/page-operation';
 import PageRedirect from '../models/page-redirect';
 import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
@@ -735,8 +735,8 @@ Crowi.prototype.cleanupPageOperation = async function() {
   if (PageOperation == null) return;
 
   const excludeList = [PageActionType.Rename]; // list of ActionType to avoid being cleaned up
-  await PageOperation.cleanup(excludeList);
-  await PageOperation.markAsFailure();
+  const excludeStage = PageActionStage.Sub;
+  await PageOperation.cleanup(excludeList, excludeStage);
   logger.info('cleanupPageOperation has been finished');
 };
 
