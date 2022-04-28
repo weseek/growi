@@ -884,10 +884,28 @@ describe('Page', () => {
     });
     test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
       // All pages does not have parent (v4 schema)
-      const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false, parent: null });
-      const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false, parent: null });
-      const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
-      const _emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const _pageA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _pageAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _emptyA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
 
       expect(_pageA).not.toBeNull();
       expect(_pageAB).not.toBeNull();
