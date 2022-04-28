@@ -81,6 +81,9 @@ describe('Test page service methods', () => {
     const pageId1 = new mongoose.Types.ObjectId();
     const pageId2 = new mongoose.Types.ObjectId();
     const pageId3 = new mongoose.Types.ObjectId();
+    const pageId4 = new mongoose.Types.ObjectId();
+    const pageId5 = new mongoose.Types.ObjectId();
+    const pageId6 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -119,13 +122,42 @@ describe('Test page service methods', () => {
         lastUpdateUser: dummyUser1._id,
         descendantCount: 0,
       },
+      {
+        _id: pageId4,
+        path: '/POP1',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageId5,
+        path: '/POP1/renamePOP4',
+        parent: pageId0._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageId6,
+        path: '/renamePOP4/renamePOP5',
+        parent: pageId5,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 0,
+      },
     ]);
 
     /**
      * PageOperation
      */
     const pageOpId1 = new mongoose.Types.ObjectId();
+    const pageOpId2 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId2 = new mongoose.Types.ObjectId();
     await PageOperation.insertMany([
       {
         _id: pageOpId1,
@@ -154,16 +186,46 @@ describe('Test page service methods', () => {
           createRedirectPage: false,
           updateMetadata: true,
         },
+        unprocessableExpiryDate: null,
+      },
+      {
+        _id: pageOpId2,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/renamePOP4',
+        toPath: '/POP1/renamePOP4',
+        page: {
+          _id: pageId5,
+          parent: rootPage._id,
+          descendantCount: 2,
+          isEmpty: false,
+          path: '/renamePOP4',
+          revision: pageOpRevisionId2,
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+        unprocessableExpiryDate: new Date(5000, 0, 1), // year 5000
       },
     ]);
   });
 
   describe('restart renameOperation', () => {
-    const restartPageRenameOperation = async(pageOperationId) => {
+    const resumePageRenameOperation = async(pageOperationId) => {
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
       const mockedSetTimeoutToStopSetInterval = jest.spyOn(crowi.pageService, 'setTimeoutToStopSetInterval').mockReturnValue(null);
 
-      await crowi.pageService.restartPageRenameOperation(pageOperationId);
+      await crowi.pageService.resumePageRenameOperation(pageOperationId);
 
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
@@ -173,9 +235,9 @@ describe('Test page service methods', () => {
     };
     test('it should successfully restart rename operation', async() => {
       const _path0 = '/POP0';
-      const _path1 = '/POP0/renamePOP1'; // as if renamed already
-      const _path2 = '/renamePOP1/renamePOP2'; // not renamed
-      const _path3 = '/renamePOP1/renamePOP2/renamePOP3'; // not renamed
+      const _path1 = '/POP0/renamePOP1'; // renamed already
+      const _path2 = '/renamePOP1/renamePOP2'; // not renamed yet
+      const _path3 = '/renamePOP1/renamePOP2/renamePOP3'; // not renamed yet
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
@@ -187,7 +249,7 @@ describe('Test page service methods', () => {
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
       expect(_pageOperation).toBeTruthy();
 
-      await restartPageRenameOperation(_pageOperation.page._id);
+      await resumePageRenameOperation(_pageOperation.page._id);
 
       const path0 = '/POP0';
       const path1 = '/POP0/renamePOP1';
@@ -214,15 +276,24 @@ describe('Test page service methods', () => {
     });
     test('it should fail and throw error if PageOperation is not found', async() => {
       const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
-      await expect(restartPageRenameOperation(pageOpId))
+      await expect(resumePageRenameOperation(pageOpId))
         .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
     });
 
-    test('it should fail and throw error if the current time is behind time of unprocessableExpiryDate', async() => {
-      // write test
-      // const pageOpId = new mongoose.Types.ObjectId(); // not exist in DB
-      // await expect(restartPageRenameOperation(pageOpId))
-      //   .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
+    test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
+      const _path0 = '/POP1';
+      const _path1 = '/POP1/renamePOP4'; // renamed already
+      const _path2 = '/renamePOP4/renamePOP5'; // not renamed yet
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      const _page2 = await Page.findOne({ path: _path2 });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_pageOperation).toBeTruthy();
+      const promise = resumePageRenameOperation(_pageOperation.page._id);
+      await expect(promise).rejects.toThrow(new Error('it did not restart rename operation because it is currently being processed'));
     });
   });
 });
