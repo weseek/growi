@@ -1,4 +1,6 @@
-import React, { useState, FC, useMemo } from 'react';
+import React, {
+  useState, FC, useMemo, useCallback,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -216,11 +218,9 @@ const PageDeleteModal: FC = () => {
     );
   }
 
-  const renderCompletelyDeleteAlert = () => {
-    return (
-      <p className="form-text mt-0">{t('modal_delete.empty_trash_alert')}</p>
-    );
-  };
+  const renderCompletelyDeleteAlert = useMemo(() => {
+    return <p className="form-text mt-0">{t('modal_delete.empty_trash_alert')}</p>;
+  }, [t]);
 
   const renderPagePathsToDelete = () => {
     const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
@@ -236,6 +236,23 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
+  const renderDeleteModalOptions = useCallback(() => {
+    if (emptyTrash) {
+      return renderCompletelyDeleteAlert;
+    }
+
+    if (!isDeletable) {
+      return;
+    }
+
+    return (
+      <>
+        {renderDeleteRecursivelyForm()}
+        {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
+      </>
+    );
+  }, [t, deleteModalData, isDeleteCompletely, isDeleteRecursively]);
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -246,12 +263,9 @@ const PageDeleteModal: FC = () => {
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
-        { isDeletable && !emptyTrash && renderDeleteRecursivelyForm()}
-        { isDeletable && !forceDeleteCompletelyMode && !emptyTrash && renderDeleteCompletelyForm() }
-        { emptyTrash && renderCompletelyDeleteAlert() }
+        {renderDeleteModalOptions()}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
