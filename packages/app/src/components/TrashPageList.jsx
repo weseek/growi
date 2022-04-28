@@ -23,13 +23,13 @@ const TrashPageList = (props) => {
     };
   }, [t]);
 
-  const EmptyTrashButton = useMemo(() => {
+  const emptyTrashButton = useMemo(() => {
     return <EmptyTrashButton />;
   }, [t]);
 
   return (
     <div data-testid="trash-page-list" className="mt-5 d-edit-none">
-      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={EmptyTrashButton} />
+      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={emptyTrashButton} />
     </div>
   );
 };
