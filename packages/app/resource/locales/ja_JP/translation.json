@@ -435,7 +435,10 @@
     "delete_completely": "完全削除",
     "delete_completely_restriction": "完全削除をするための権限がありません。",
     "recursively": "配下のページも削除します",
-    "completely": "ゴミ箱を経由せず、完全に削除します"
+    "completely": "ゴミ箱を経由せず、完全に削除します",
+    "empty_trash": "ゴミ箱を空にする",
+    "empty_trash_button": "空にする",
+    "empty_trash_alert": "これらのページは完全に削除され、この操作は取り消すことができません"
   },
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",

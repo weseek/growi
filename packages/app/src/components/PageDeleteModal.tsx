@@ -1,22 +1,26 @@
-import React, { useState, FC, useMemo } from 'react';
+import React, {
+  useState, FC, useMemo, useCallback,
+} from 'react';
+
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { usePageDeleteModal } from '~/stores/modal';
-import loggerFactory from '~/utils/logger';
-
+import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
-import { HasObjectId } from '~/interfaces/has-object-id';
+import { usePageDeleteModal } from '~/stores/modal';
+import { useSWRxPageInfoForList } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
+
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+
 import { isTrashPage } from '^/../core/src/utils/page-path-utils';
-import { useSWRxPageInfoForList } from '~/stores/page';
 
 
 const logger = loggerFactory('growi:cli:PageDeleteModal');
@@ -41,6 +45,7 @@ const PageDeleteModal: FC = () => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
+  const emptyTrash = deleteModalData?.opts?.emptyTrash ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
     .filter(p => !isIPageInfoForEntity(p.meta));
@@ -207,6 +212,10 @@ const PageDeleteModal: FC = () => {
     );
   }
 
+  const renderCompletelyDeleteAlert = useMemo(() => {
+    return <p className="form-text mt-0">{t('modal_delete.empty_trash_alert')}</p>;
+  }, [t]);
+
   const renderPagePathsToDelete = () => {
     const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
 
@@ -221,21 +230,36 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
+  const renderDeleteModalOptions = useCallback(() => {
+    if (emptyTrash) {
+      return renderCompletelyDeleteAlert;
+    }
+
+    if (!isDeletable) {
+      return;
+    }
+
+    return (
+      <>
+        {renderDeleteRecursivelyForm()}
+        {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
+      </>
+    );
+  }, [t, deleteModalData, isDeleteCompletely, isDeleteRecursively]);
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
-        { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
+        { emptyTrash ? t('modal_delete.empty_trash') : t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
-        { isDeletable && renderDeleteRecursivelyForm()}
-        { isDeletable && !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
+        {renderDeleteModalOptions()}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
@@ -245,8 +269,8 @@ const PageDeleteModal: FC = () => {
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
         >
-          <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
-          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
+          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          { emptyTrash ? t('modal_delete.empty_trash_button') : t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </ModalFooter>
     </Modal>

@@ -1,10 +1,12 @@
 import { SWRResponse } from 'swr';
-import { useStaticSWR } from './use-static-swr';
+
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IUserGroupHasId } from '~/interfaces/user';
+
+import { useStaticSWR } from './use-static-swr';
 
 
 /*
@@ -33,6 +35,7 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
+  emptyTrash?: true,
 }
 
 type DeleteModalStatus = {
