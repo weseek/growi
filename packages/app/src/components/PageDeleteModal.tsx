@@ -245,7 +245,7 @@ const PageDeleteModal: FC = () => {
         {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
       </>
     );
-  }, [t]);
+  }, [t, deleteModalData, isDeleteCompletely, isDeleteRecursively]);
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
