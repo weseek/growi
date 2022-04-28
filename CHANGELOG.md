@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.18...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.19...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
+
+### 🐛 Bug Fixes
+
+- fix: Swiping to previous/next page for Mac users (4.5.x) (#5758) @hirokei-camel
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
 
 ## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
 
@@ -16,7 +23,7 @@
 
 ### 🐛 Bug Fixes
 
-* fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina  
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
 
 ## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
 
