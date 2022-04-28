@@ -2264,7 +2264,10 @@ class PageService {
       throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
     }
     if (pages.length > 1) {
-      throw new V5ConversionError(`There are more than two pages at the path "${path}". Please rename or delete the page first.`, V5ConversionErrCode.DUPLICATE_PAGES_FOUND);
+      throw new V5ConversionError(
+        `There are more than two pages at the path "${path}". Please rename or delete the page first.`,
+        V5ConversionErrCode.DUPLICATE_PAGES_FOUND,
+      );
     }
 
     const page = pages[0];
@@ -2287,7 +2290,10 @@ class PageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw new V5ConversionError('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.', V5ConversionErrCode.GRANT_INVALID);
+        throw new V5ConversionError(
+          'This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.',
+          V5ConversionErrCode.GRANT_INVALID,
+        );
       }
     }
     else {
