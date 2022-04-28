@@ -2279,13 +2279,8 @@ class PageService {
       throw err;
     }
 
-    try {
-      await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
-    }
-    catch (err) {
-      logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
-      throw err;
-    }
+    // no await
+    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
   }
 
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
