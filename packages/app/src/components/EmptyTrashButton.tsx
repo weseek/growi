@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -31,11 +31,11 @@ const EmptyTrashButton = () => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const onDeletedHandler = () => {
+  const onDeletedHandler = useCallback(() => {
     toastSuccess(t('empty_trash'));
 
     mutate();
-  };
+  }, [t, mutate]);
 
   const emptyTrashClickHandler = () => {
     openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
