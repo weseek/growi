@@ -2,6 +2,11 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import {
+  IDataWithMeta,
+  IPageHasId,
+  IPageInfoForOperation,
+} from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
 
@@ -14,7 +19,7 @@ const EmptyTrashButton = () => {
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
 
-  let pageWithMetas = [];
+  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
   const convertToIDataWithMeta = (page) => {
     return { data: page };
