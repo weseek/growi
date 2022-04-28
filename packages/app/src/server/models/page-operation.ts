@@ -31,7 +31,6 @@ export type PageActionStage = typeof PageActionStage[keyof typeof PageActionStag
 export const PageOperationAutoUpdateTimerType = {
   ExtendSec: 5, // add this second(s) to current time
   IntervalSec: 5, // every this second(s)
-  SelfStopSec: 20, // execute self-stop after this second(s)
 } as const;
 
 /*

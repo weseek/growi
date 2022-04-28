@@ -223,14 +223,12 @@ describe('Test page service methods', () => {
   describe('restart renameOperation', () => {
     const resumePageRenameOperation = async(pageOperationId) => {
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedSetTimeoutToStopSetInterval = jest.spyOn(crowi.pageService, 'setTimeoutToStopSetInterval').mockReturnValue(null);
 
       await crowi.pageService.resumePageRenameOperation(pageOperationId);
 
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
       mockedRenameSubOperation.mockRestore();
-      mockedSetTimeoutToStopSetInterval.mockRestore();
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
     };
     test('it should successfully restart rename operation', async() => {
