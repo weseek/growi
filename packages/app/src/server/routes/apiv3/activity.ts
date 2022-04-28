@@ -2,13 +2,16 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
+import { IActivity } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:activity');
 
@@ -24,7 +27,7 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // limit each IP to 10 requests per windowMs
   message:
-    'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+    'Too many requests sent from this IP, please try again after 15 minutes.',
 });
 
 module.exports = (crowi: Crowi): Router => {
@@ -40,8 +43,22 @@ module.exports = (crowi: Crowi): Router => {
     const offset = req.query.offset || 1;
 
     try {
-      const paginatedActivity = await Activity.getPaginatedActivity(limit, offset);
-      return res.apiv3({ paginatedActivity });
+      const paginationResult = await Activity.getPaginatedActivity(limit, offset);
+
+      const User = crowi.model('User');
+      const serializedDocs = paginationResult.docs.map((doc: IActivity) => {
+        if (doc.user != null && doc.user instanceof User) {
+          doc.user = serializeUserSecurely(doc.user);
+        }
+        return doc;
+      });
+
+      const serializedPaginationResult = {
+        ...paginationResult,
+        docs: serializedDocs,
+      };
+
+      return res.apiv3({ serializedPaginationResult });
     }
     catch (err) {
       logger.error('Failed to get paginated activity', err);

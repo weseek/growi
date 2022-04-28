@@ -1,3 +1,6 @@
+import { HasObjectId } from './has-object-id';
+import { IUser } from './user';
+
 // Model
 const MODEL_PAGE = 'Page';
 const MODEL_COMMENT = 'Comment';
@@ -43,6 +46,16 @@ export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_
 export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 
-// type supportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_NAMES[keyof typeof SUPPORTED_TARGET_MODEL_NAMES];
-// type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_NAMES[keyof typeof SUPPORTED_EVENT_MODEL_NAMES];
-// type supportedActionType = typeof SUPPORTED_ACTION_NAMES[keyof typeof SUPPORTED_ACTION_NAMES];
+type supportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof typeof SUPPORTED_TARGET_MODEL_TYPE];
+// type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
+type supportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
+
+export type IActivity = {
+  user?: IUser
+  targetModel: supportedTargetModelType
+  targe: string
+  action: supportedActionType
+  createdAt: Date
+}
+
+export type IActivityHasId = IActivity & HasObjectId;
