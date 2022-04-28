@@ -2257,7 +2257,6 @@ class PageService {
     const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
     if (pages == null || pages.length === 0) {
-      logger.error('pageIds is null or 0 length.');
       throw Error('pageIds is null or 0 length.');
     }
 
@@ -2384,19 +2383,19 @@ class PageService {
     }
 
     if (nonNormalizablePages.length !== 0) {
-      const nonNormalizablePagePaths: string[] = [];
-      nonNormalizablePages.forEach(p => nonNormalizablePagePaths.push(p.path));
+      const nonNormalizablePagePaths: string[] = nonNormalizablePages.map(p => p.path);
       socket.emit(SocketEventName.PageMigrationError, { paths: nonNormalizablePagePaths });
+      logger.debug('Some pages could not be converted.', nonNormalizablePagePaths);
     }
 
     /*
      * Main Operation (s)
      */
-    const errorData: string[] = [];
+    const errorPagePaths: string[] = [];
     for await (const page of normalizablePages) {
       const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
       if (!canOperate) {
-        errorData.push(page.path);
+        errorPagePaths.push(page.path);
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
@@ -2408,7 +2407,7 @@ class PageService {
       const existingPage = await builder.query.exec();
 
       if (existingPage?.parent != null) {
-        errorData.push(page.path);
+        errorPagePaths.push(page.path);
         throw Error('This page has already converted.');
       }
 
@@ -2424,7 +2423,7 @@ class PageService {
         });
       }
       catch (err) {
-        errorData.push(page.path);
+        errorPagePaths.push(page.path);
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
@@ -2433,16 +2432,16 @@ class PageService {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
       catch (err) {
-        errorData.push(page.path);
+        errorPagePaths.push(page.path);
         logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
         throw err;
       }
     }
-    if (errorData.length === 0) {
+    if (errorPagePaths.length === 0) {
       socket.emit(SocketEventName.PageMigrationSuccess);
     }
     else {
-      socket.emit(SocketEventName.PageMigrationError, { paths: errorData });
+      socket.emit(SocketEventName.PageMigrationError, { paths: errorPagePaths });
     }
   }
 
