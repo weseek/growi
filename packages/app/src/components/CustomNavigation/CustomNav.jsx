@@ -7,15 +7,6 @@ import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-<<<<<<< HEAD
-import { toastSuccess } from '~/client/util/apiNotification';
-import { useCurrentPagePath } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
-
-=======
->>>>>>> feat/93162-create-empty-trash-in-trash-page
-
 function getBreakpointOneLevelLarger(breakpoint) {
   switch (breakpoint) {
     case 'sm':
@@ -113,33 +104,6 @@ export const CustomNavTab = (props) => {
     }
   }, [onNavSelected]);
 
-<<<<<<< HEAD
-  const pageIds = pagingResult?.items?.map(page => page._id);
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
-
-  let pageWithMetas = [];
-
-  const convertToIDataWithMeta = (page) => {
-    return { data: page };
-  };
-
-  if (pagingResult != null) {
-    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    pageWithMetas = injectTo(dataWithMetas);
-  }
-
-  const onDeletedHandler = useCallback(() => {
-    toastSuccess(t('empty_trash'));
-
-    mutate();
-  }, [mutate, t]);
-
-  const emptyTrashClickHandler = () => {
-    openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
-  };
-
-=======
->>>>>>> feat/93162-create-empty-trash-in-trash-page
   function registerNavLink(key, elm) {
     if (elm != null) {
       navTabRefs[key] = elm;
