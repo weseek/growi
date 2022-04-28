@@ -940,10 +940,27 @@ describe('Page', () => {
       expect(pageAB.parent).not.toBeNull();
     });
     test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
-      const _pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false, parent: { $ne: null } });
-      const _pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
-      const _emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
-      const _emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const _pageC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: { $ne: null },
+      });
+      const _pageCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+      });
+      const _emptyC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
 
       expect(_pageC).not.toBeNull();
       expect(_pageCD).not.toBeNull();
