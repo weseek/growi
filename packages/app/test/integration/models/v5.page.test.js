@@ -883,6 +883,7 @@ describe('Page', () => {
 
     });
     test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
+      // All pages does not have parent (v4 schema)
       const _pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const _emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
@@ -936,9 +937,12 @@ describe('Page', () => {
       expect(emptyC).toBeNull();
       expect(emptyCD).toBeNull();
 
-      // -- Check parent
-      expect(pageC.parent).not.toBeNull();
-      expect(pageCD.parent).not.toBeNull();
+      // -- Check parent attribute
+      expect(pageC.parent).toStrictEqual(rootPage._id);
+      expect(pageCD.parent).toStrictEqual(pageC._id);
+
+      // -- Check the found parent
+      expect(parent).toStrictEqual(pageCD);
     });
   });
 });
