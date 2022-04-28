@@ -9,7 +9,7 @@ import {
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastWarning } from '~/client/util/apiNotification';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
@@ -172,10 +172,13 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   useEffect(() => {
     socket?.on(SocketEventName.PageMigrationSuccess, () => {
       // page migration success
+      toastSuccess(t('admin:v5_page_migration.page_migration_succeeded'));
     });
 
     socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
       // page migration error
+      const errorPaths: string = data.paths.join(', ');
+      toastWarning(t('admin:v5_page_migration.page_migration_failed', { paths: errorPaths }));
     });
 
     return () => {
