@@ -1,6 +1,5 @@
 // Model
 const MODEL_PAGE = 'Page';
-const MODEL_COMMENT = 'Comment';
 
 // Action
 const ACTION_PAGE_LIKE = 'PAGE_LIKE';
@@ -20,10 +19,6 @@ export const SUPPORTED_TARGET_MODEL_TYPE = {
   MODEL_PAGE,
 } as const;
 
-export const SUPPORTED_EVENT_MODEL_TYPE = {
-  MODEL_COMMENT,
-} as const;
-
 export const SUPPORTED_ACTION_TYPE = {
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
@@ -40,9 +35,7 @@ export const SUPPORTED_ACTION_TYPE = {
 
 
 export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
-export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 
 // type supportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_NAMES[keyof typeof SUPPORTED_TARGET_MODEL_NAMES];
-// type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_NAMES[keyof typeof SUPPORTED_EVENT_MODEL_NAMES];
 // type supportedActionType = typeof SUPPORTED_ACTION_NAMES[keyof typeof SUPPORTED_ACTION_NAMES];

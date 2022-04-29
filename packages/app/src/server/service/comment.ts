@@ -1,7 +1,7 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
@@ -84,8 +84,6 @@ class CommentService {
       user: comment.creator,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: comment.page,
-      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
-      event: comment._id,
       action,
     };
     const activity = await this.activityService.createByParameters(parameters);

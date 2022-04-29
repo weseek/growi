@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedTargetModelType, AllSupportedActionType } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -18,8 +18,6 @@ export interface ActivityDocument extends Document {
   targetModel: string
   target: Types.ObjectId
   action: string
-  event: Types.ObjectId
-  eventModel: string
 
   getNotificationTargetUsers(): Promise<any[]>
 }
@@ -49,14 +47,6 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: String,
     require: true,
     enum: AllSupportedActionType,
-  },
-  event: {
-    type: Schema.Types.ObjectId,
-    refPath: 'eventModel',
-  },
-  eventModel: {
-    type: String,
-    enum: AllSupportedEventModelType,
   },
 }, {
   timestamps: {
