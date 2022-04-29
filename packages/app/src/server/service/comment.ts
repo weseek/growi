@@ -66,8 +66,8 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('remove', async(comment) => {
-      this.commentEvent.onRemove();
+    this.commentEvent.on('delete', async(comment) => {
+      this.commentEvent.onDelete();
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);

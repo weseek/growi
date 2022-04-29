@@ -99,7 +99,7 @@ module.exports = function(crowi) {
    * post remove hook
    */
   commentSchema.post('reomove', async(savedComment) => {
-    await commentEvent.emit('remove', savedComment);
+    await commentEvent.emit('delete', savedComment);
   });
 
   commentSchema.methods.removeWithReplies = async function(comment) {
@@ -110,7 +110,7 @@ module.exports = function(crowi) {
         [{ replyTo: this._id }, { _id: this._id }]),
     });
 
-    await commentEvent.emit('remove', comment);
+    await commentEvent.emit('delete', comment);
     return;
   };
 
