@@ -1,6 +1,5 @@
 import { pagePathUtils } from '@growi/core';
 
-
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
