@@ -33,7 +33,7 @@ class CommentService {
 
   initCommentEventListeners(): void {
     // create
-    this.commentEvent.on('create', async(savedComment) => {
+    this.commentEvent.on('create', async(user, savedComment) => {
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
@@ -45,7 +45,7 @@ class CommentService {
           return;
         }
 
-        const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
+        const activity = await this.createActivity(user, savedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
@@ -55,10 +55,10 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(updatedComment) => {
+    this.commentEvent.on('update', async(user, updatedComment) => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
+        await this.createActivity(user, updatedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -79,11 +79,11 @@ class CommentService {
     });
   }
 
-  private createActivity = async function(comment, action) {
+  private createActivity = async function(user, target, action) {
     const parameters = {
-      user: comment.creator,
+      user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: comment.page,
+      target,
       action,
     };
     const activity = await this.activityService.createByParameters(parameters);
