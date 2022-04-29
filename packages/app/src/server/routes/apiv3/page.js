@@ -1,8 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
+
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -474,6 +475,11 @@ module.exports = (crowi) => {
 
     try {
       const fromPage = await Page.findByPath(fromPath);
+
+      if (fromPage == null) {
+        return res.apiv3({ existPaths: [] });
+      }
+
       const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
