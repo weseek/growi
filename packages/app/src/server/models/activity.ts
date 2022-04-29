@@ -18,6 +18,7 @@ export interface ActivityDocument extends Document {
   targetModel: string
   target: Types.ObjectId
   action: string
+  snapshot: string
 
   getNotificationTargetUsers(): Promise<any[]>
 }
@@ -47,6 +48,9 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: String,
     require: true,
     enum: AllSupportedActionType,
+  },
+  snapshot: {
+    type: String,
   },
 }, {
   timestamps: {

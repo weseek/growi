@@ -2,7 +2,8 @@ import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { stringifySnapshot as stringifySnapshotForActivity } from '~/models/serializers/activity-snapshot/user';
+import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
@@ -80,24 +81,26 @@ class CommentService {
   }
 
   private createActivity = async function(user, target, action) {
+    const snapshot = stringifySnapshotForActivity(user);
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target,
       action,
+      snapshot,
     };
     const activity = await this.activityService.createByParameters(parameters);
     return activity;
   };
 
   private createAndSendNotifications = async function(activity, page) {
-    const snapshot = stringifySnapshot(page);
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
+    const snapshot = stringifySnapshotForInAppNotification(page);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };

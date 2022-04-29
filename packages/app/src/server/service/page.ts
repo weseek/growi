@@ -18,7 +18,8 @@ import {
 } from '~/interfaces/page-delete-config';
 import { IUserHasId } from '~/interfaces/user';
 import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { stringifySnapshot as stringifySnapshotForActivity } from '~/models/serializers/activity-snapshot/user';
+import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
@@ -159,7 +160,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -169,7 +170,7 @@ class PageService {
     // rename
     this.pageEvent.on('rename', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
       }
       catch (err) {
         logger.error(err);
@@ -179,7 +180,7 @@ class PageService {
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -189,7 +190,7 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
       }
       catch (err) {
         logger.error(err);
@@ -199,7 +200,7 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -209,7 +210,7 @@ class PageService {
     // revert
     this.pageEvent.on('revert', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -219,7 +220,7 @@ class PageService {
     // likes
     this.pageEvent.on('like', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
       }
       catch (err) {
         logger.error(err);
@@ -229,7 +230,7 @@ class PageService {
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
+        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
       }
       catch (err) {
         logger.error(err);
@@ -2231,18 +2232,17 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page, user, action) {
+  private async createAndSendNotifications(user, target, action) {
     const { activityService, inAppNotificationService } = this.crowi;
-    console.log(user);
-
-    const snapshot = stringifySnapshot(page);
 
     // Create activity
+    const snapshotForActivity = stringifySnapshotForActivity(user);
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: page,
+      target,
       action,
+      snapshot: snapshotForActivity,
     };
     const activity = await activityService.createByParameters(parameters);
 
@@ -2250,7 +2250,8 @@ class PageService {
     const targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
+    const snapshotForInAppNotification = stringifySnapshotForInAppNotification(target);
+    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshotForInAppNotification);
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
