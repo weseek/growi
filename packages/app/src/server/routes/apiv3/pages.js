@@ -350,9 +350,9 @@ module.exports = (crowi) => {
         user: req.user._id,
         targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
         target: createdPage,
-        action: SUPPORTED_ACTION_TYPE.PAGE_CREATE,
+        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
       };
-      await crowi.activityService.createByParameter(parameters);
+      await crowi.activityService.createByParameters(parameters);
     }
     catch (err) {
       logger.error('Failed to create activity', err);
