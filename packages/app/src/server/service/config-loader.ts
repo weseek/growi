@@ -358,6 +358,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  API_RATE_LIMIT_TIME_MS: {
+    ns:      'crowi',
+    key:     'security:rateLimitWindowMs',
+    type:    ValueType.NUMBER,
+    default: 15 * 60 * 1000, // 15 minutes
+  },
+  API_RATE_LIMIT_MAX_REQUESTS: {
+    ns:      'crowi',
+    key:     'security:rateLimitMax',
+    type:    ValueType.NUMBER,
+    default: 10,
+  },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',

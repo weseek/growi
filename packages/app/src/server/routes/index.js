@@ -19,13 +19,6 @@ const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
-  message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
-});
-
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
@@ -58,6 +51,15 @@ module.exports = function(crowi, app) {
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
+
+  const rateLimitWindowsMs = crowi.configManager.getConfig('crowi', 'security:rateLimitWindowMs');
+  const rateLimitMax = crowi.configManager.getConfig('crowi', 'security:rateLimitMax');
+  const apiLimiter = rateLimit({
+    windowMs: rateLimitWindowsMs,
+    max: rateLimitMax, // limit each IP to ${rateLimitMax} requests per windowMs
+    message:
+      `Too many requests sent from this IP, please try again after ${Math.round(rateLimitWindowsMs / (60 * 1000))} minutes.`,
+  });
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
