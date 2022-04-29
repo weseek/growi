@@ -59,7 +59,10 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     enum: AllSupportedEventModelType,
   },
 }, {
-  timestamps: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
+  },
 });
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
