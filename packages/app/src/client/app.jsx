@@ -37,6 +37,7 @@ import NotFoundAlert from '../components/Page/NotFoundAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
+import FixGrantAlert from '../components/Page/FixGrantAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
@@ -98,6 +99,8 @@ Object.assign(componentMappings, {
   'maintenance-mode-content': <MaintenanceModeContent />,
 
   'trash-page-alert': <TrashPageAlert />,
+
+  'fix-grant-alert': <FixGrantAlert />,
 
   'trash-page-list-container': <TrashPageList />,
 
