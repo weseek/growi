@@ -79,7 +79,7 @@ const EmptyTrashModal: FC = () => {
     <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="bg-danger text-light">
         <i className="icon-fw icon-fire"></i>
-        {t('ゴミ箱を空にする文言')}
+        {t('modal_empty.empty_the_trash')}
       </ModalHeader>
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
@@ -87,7 +87,7 @@ const EmptyTrashModal: FC = () => {
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePaths()}
         </div>
-        {t('ゴミ箱を空にする文言')}
+        {t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
@@ -97,7 +97,7 @@ const EmptyTrashModal: FC = () => {
           onClick={emptyTrashButtonHandler}
         >
           <i className="mr-1 icon-fire" aria-hidden="true"></i>
-          {t('ゴミ箱を空にする文言')}
+          {t('modal_empty.empty_the_trash_button')}
         </button>
       </ModalFooter>
     </Modal>
