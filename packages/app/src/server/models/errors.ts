@@ -1,0 +1,12 @@
+import ExtensibleCustomError from 'extensible-custom-error';
+
+export class PathAlreadyExistsError extends ExtensibleCustomError {
+
+  targetPath: string;
+
+  constructor(message: string, targetPath: string) {
+    super(message);
+    this.targetPath = targetPath;
+  }
+
+}

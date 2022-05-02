@@ -62,7 +62,12 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   }
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
-    toastSuccess(args[2] ? t('deleted_pages_completely', { path: args[0] }) : t('deleted_pages', { path: args[0] }));
+    if (args[0] != null && args[2] != null) {
+      toastSuccess(args[2] ? t('deleted_pages_completely', { path: args[0] }) : t('deleted_pages', { path: args[0] }));
+    }
+    else {
+      return;
+    }
 
     advancePt();
 
