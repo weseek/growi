@@ -38,7 +38,6 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 */
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
-  emptyTrash?: true,
 }
 
 type DeleteModalStatus = {
