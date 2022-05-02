@@ -23,6 +23,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   // Set search emoji input and trigger search
   const searchEmoji = () => {
     const input = window.document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
+    let emojiList;
     if (emojiSearchText !== null) {
 
       const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
@@ -35,9 +36,12 @@ const EmojiPicker: FC<Props> = (props: Props) => {
     }
     const emojiCategoryList = window.document.querySelector('.emoji-mart-category-list');
 
-    input.addEventListener('input', () => {
-      console.log(emojiCategoryList?.childNodes);
+    ['keyup', 'focus'].forEach((event) => {
+      input.addEventListener(event, () => {
+        emojiList = window.document.querySelectorAll('.emoji-mart-category:not([style*="display: none"]) > .emoji-mart-category-list > li');
+      });
     });
+    console.log(emojiList);
 
   };
 
