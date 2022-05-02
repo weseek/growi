@@ -939,6 +939,11 @@
       "convert_recursively_label": "递归地转换子页面。",
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
+    },
+    "toaster": {
+      "page_migration_succeeded": "页面到 v5 兼容格式的转换已成功完成。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",

@@ -171,18 +171,18 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   useEffect(() => {
     socket?.on(SocketEventName.PageMigrationSuccess, () => {
-      toastSuccess(t('admin:v5_page_migration.page_migration_succeeded'));
+      toastSuccess(t('private_legacy_pages.toaster.page_migration_succeeded'));
     });
 
     socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
       if (data.paths.length === 0) {
-        toastError(t('admin:v5_page_migration.page_migration_failed'));
+        toastError(t('private_legacy_pages.toaster.page_migration_failed'));
       }
       else {
         const errorPaths = data.paths.length > 3
           ? `${data.paths.slice(0, 3).join(', ')}...`
           : data.paths.join(', ');
-        toastError(t('admin:v5_page_migration.page_migration_failed_with_paths', { paths: errorPaths }));
+        toastError(t('private_legacy_pages.toaster.page_migration_failed_with_paths', { paths: errorPaths }));
       }
     });
 

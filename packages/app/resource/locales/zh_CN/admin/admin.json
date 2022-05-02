@@ -31,10 +31,7 @@
     "already_upgraded": "你已经完成了向v5兼容性的转换",
     "header_upgrading_progress": "升级进度",
     "migration_succeeded": "您的升级已经成功完成! 退出维护模式，可以使用GROWI。",
-    "migration_failed": "升级失败。请参考GROWI的文档，了解在失败情况下该如何处理。",
-    "page_migration_succeeded": "页面到 v5 兼容格式的转换已成功完成。",
-    "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
-    "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
+    "migration_failed": "升级失败。请参考GROWI的文档，了解在失败情况下该如何处理。"
   },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",

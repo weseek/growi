@@ -652,6 +652,11 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "toaster": {
+      "page_migration_succeeded": "ページの v5 互換形式への変換が正常に終了しました。",
+      "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+      "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
     }
   },
   "security_setting": {
