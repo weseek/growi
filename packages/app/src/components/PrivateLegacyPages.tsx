@@ -174,8 +174,8 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       toastSuccess(t('private_legacy_pages.toaster.page_migration_succeeded'));
     });
 
-    socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
-      if (data.paths.length === 0) {
+    socket?.on(SocketEventName.PageMigrationError, (data?: PageMigrationErrorData) => {
+      if (data == null || data.paths.length === 0) {
         toastError(t('private_legacy_pages.toaster.page_migration_failed'));
       }
       else {
