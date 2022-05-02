@@ -8,13 +8,13 @@ import {
   IPageHasId,
   IPageInfo,
 } from '~/interfaces/page';
-import { usePageDeleteModal } from '~/stores/modal';
+import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
 
 
 const EmptyTrashButton = () => {
   const { t } = useTranslation();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openEmptyTrashModal } = useEmptyTrashModal();
   const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
@@ -31,14 +31,14 @@ const EmptyTrashButton = () => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const onDeletedHandler = useCallback(() => {
+  const onEmptiedTrashHandler = useCallback(() => {
     toastSuccess(t('empty_trash'));
 
     mutate();
   }, [t, mutate]);
 
   const emptyTrashClickHandler = () => {
-    openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
+    openEmptyTrashModal(pageWithMetas, { onEmptiedTrash: onEmptiedTrashHandler });
   };
 
   return (
