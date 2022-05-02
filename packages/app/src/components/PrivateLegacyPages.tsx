@@ -9,7 +9,7 @@ import {
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
@@ -171,11 +171,19 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   useEffect(() => {
     socket?.on(SocketEventName.PageMigrationSuccess, () => {
-      // page migration success
+      toastSuccess(t('private_legacy_pages.toaster.page_migration_succeeded'));
     });
 
-    socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
-      // page migration error
+    socket?.on(SocketEventName.PageMigrationError, (data?: PageMigrationErrorData) => {
+      if (data == null || data.paths.length === 0) {
+        toastError(t('private_legacy_pages.toaster.page_migration_failed'));
+      }
+      else {
+        const errorPaths = data.paths.length > 3
+          ? `${data.paths.slice(0, 3).join(', ')}...`
+          : data.paths.join(', ');
+        toastError(t('private_legacy_pages.toaster.page_migration_failed_with_paths', { paths: errorPaths }));
+      }
     });
 
     return () => {
