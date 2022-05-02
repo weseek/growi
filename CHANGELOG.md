@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
+
+### 💎 Features
+
+- feat: Search on private legacy pages (#5723) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Dark theme color optimization (#5737) @shukmos
+- imprv: Change the order of menu items (#5722) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
 
@@ -114,7 +131,7 @@
 
 ### 🐛 Bug Fixes
 
-* fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina  
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
 
 ## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
 
