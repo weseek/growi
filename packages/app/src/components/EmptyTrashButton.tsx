@@ -49,7 +49,7 @@ const EmptyTrashButton = () => {
         onClick={() => emptyTrashClickHandler()}
       >
         <i className="icon-fw icon-trash"></i>
-        <div>{t('modal_delete.empty_trash')}</div>
+        <div>{t('modal_empty.empty_the_trash')}</div>
       </button>
     </div>
   );
