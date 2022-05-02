@@ -175,11 +175,13 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
 
     socket?.on(SocketEventName.PageMigrationError, (data: PageMigrationErrorData) => {
-      if (data == null || data.paths.length === 0) {
+      if (data.paths.length === 0) {
         toastError(t('admin:v5_page_migration.page_migration_failed'));
       }
       else {
-        const errorPaths = data.paths.length > 3 ? `${data.paths.slice(0, 3).join(', ')}...` : data.paths.join(', ');
+        const errorPaths = data.paths.length > 3
+          ? `${data.paths.slice(0, 3).join(', ')}...`
+          : data.paths.join(', ');
         toastError(t('admin:v5_page_migration.page_migration_failed_with_paths', { paths: errorPaths }));
       }
     });
