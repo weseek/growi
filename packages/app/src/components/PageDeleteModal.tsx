@@ -104,7 +104,6 @@ const PageDeleteModal: FC = () => {
       return;
     }
 
-
     /*
      * When multiple pages
      */
