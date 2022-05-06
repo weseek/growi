@@ -550,8 +550,6 @@ module.exports = (crowi) => {
 
     const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
-    logger.error(`trash page count: ${pagesInTrash.length}`);
-
     const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
     if (deletablePages.length === 0) {
