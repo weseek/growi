@@ -472,6 +472,9 @@ module.exports = (crowi) => {
   router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
     const { fromPath, toPath } = req.query;
 
+    console.log('fromPath', fromPath);
+    console.log('toPath', toPath);
+
     try {
       const fromPage = await Page.findByPath(fromPath);
       if (fromPage == null) throw new Error('fromPage is Null');
