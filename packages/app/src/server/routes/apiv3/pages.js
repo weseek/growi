@@ -547,8 +547,11 @@ module.exports = (crowi) => {
    */
   router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
-    const { pageIdToRevisionIdMap } = req.body;
-    const pageIds = Object.keys(pageIdToRevisionIdMap);
+    const { pageIds } = req.body;
+    // const { pageIdToRevisionIdMap } = req.body;
+    // const pageIds = Object.keys(pageIdToRevisionIdMap);
+
+    logger.error(`pageIds: ${pageIds}`);
 
     let pagesToDelete;
 
