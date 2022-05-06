@@ -642,6 +642,7 @@
   "private_legacy_pages": {
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
+    "input_path_to_convert": "Input a path to convert pages",
     "alert_title": "Old v4 compatible format private pages exist.",
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
@@ -658,6 +659,16 @@
       "page_migration_succeeded": "Conversion of page to v5 has been successfully completed.",
       "page_migration_failed_with_paths": "Conversion of {{paths}} to v5 has been failed.",
       "page_migration_failed": "Conversion of page to v5 has been failed."
+    },
+    "by_path_modal": {
+      "title": "Convert to new v5 compatible format",
+      "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
+      "button_label": "Convert",
+      "success": "Successfully requested conversion.",
+      "error": "Failed to request conversion.",
+      "error_grant_invalid": "Page permissions are incorrect. Please correct it and try again.",
+      "error_page_not_found": "Page not found.",
+      "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
   "security_setting": {

@@ -17,7 +17,7 @@ import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { SearchError } from '../models/vo/error-search';
+import { SearchError } from '../models/vo/search-error';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');

@@ -8,6 +8,7 @@ import streamToPromise from 'stream-to-promise';
 
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
@@ -31,6 +32,7 @@ import PageOperation, { PageActionStage, PageActionType } from '../models/page-o
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
+import { V5ConversionError } from '../models/vo/v5-conversion-error';
 
 const debug = require('debug')('growi:services:page');
 
@@ -2251,6 +2253,68 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
+  async normalizeParentByPath(path: string, user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const pages = await Page.findByPathAndViewer(path, user, null, false);
+    if (pages == null || !Array.isArray(pages)) {
+      throw Error('Something went wrong while converting pages.');
+    }
+    if (pages.length === 0) {
+      throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
+    }
+    if (pages.length > 1) {
+      throw new V5ConversionError(
+        `There are more than two pages at the path "${path}". Please rename or delete the page first.`,
+        V5ConversionErrCode.DUPLICATE_PAGES_FOUND,
+      );
+    }
+
+    const page = pages[0];
+    const {
+      grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+    } = page;
+
+    /*
+     * UserGroup & Owner validation
+     */
+    let isGrantNormalized = false;
+    try {
+      const shouldCheckDescendants = true;
+
+      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+    }
+    catch (err) {
+      logger.error(`Failed to validate grant of page at "${path}"`, err);
+      throw err;
+    }
+    if (!isGrantNormalized) {
+      throw new V5ConversionError(
+        'This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.',
+        V5ConversionErrCode.GRANT_INVALID,
+      );
+    }
+
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.NormalizeParent,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: page.path,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
+    }
+
+    // no await
+    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+  }
+
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -2490,7 +2554,11 @@ class PageService {
 
       const { prevDescendantCount } = options;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = (newDescendantCount - prevDescendantCount) + 1;
+      let inc = newDescendantCount - prevDescendantCount;
+      const isAlreadyConverted = page.parent != null;
+      if (!isAlreadyConverted) {
+        inc += 1;
+      }
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
