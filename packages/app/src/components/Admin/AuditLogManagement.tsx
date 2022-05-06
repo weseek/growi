@@ -33,6 +33,7 @@ const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDro
           {
             props.dropdownItemList.map(item => (
               <button
+                key={item}
                 type="button"
                 className="dropdown-item"
               >
