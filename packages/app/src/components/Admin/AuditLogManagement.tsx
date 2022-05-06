@@ -10,8 +10,14 @@ import PaginationWrapper from '../PaginationWrapper';
 import { ActivityTable } from './AuditLog/ActivityTable';
 
 
+const SelectQueryDropdownLabel = {
+  SELECT_ACTION: 'select_action',
+} as const;
+
+const allSelectQueryDropdownLabel = Object.values(SelectQueryDropdownLabel);
+
 type SelectQueryDropdownProps = {
-  dropdownLabel: string
+  dropdownLabel: typeof allSelectQueryDropdownLabel[keyof typeof allSelectQueryDropdownLabel];
   dropdownItemList: string[]
 }
 
@@ -39,10 +45,6 @@ const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDro
     </div>
   );
 };
-
-const SelectQueryDropdownLabel = {
-  SELECT_ACTION: 'select_action',
-} as const;
 
 const PAGING_LIMIT = 10;
 
