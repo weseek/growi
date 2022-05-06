@@ -2,12 +2,42 @@ import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { AllSupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivityList } from '~/stores/activity';
 
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
 
+
+type SelectQueryDropdownProps = {
+  dropdownLabel: string
+  dropdownItemList: string[]
+}
+
+const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDropdownProps) => {
+  return (
+    <div className="btn-group mr-2 mb-3">
+      <div className="dropdown">
+        <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+          {t}
+        </button>
+        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {
+            props.dropdownItemList.map(item => (
+              <button
+                type="button"
+                className="dropdown-item"
+              >
+                {item}
+              </button>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 const PAGING_LIMIT = 10;
 
@@ -38,6 +68,8 @@ export const AuditLogManagement: FC = () => {
         )
         : (
           <>
+            <SelectQueryDropdown dropdownLabel="Select Action" dropdownItemList={AllSupportedActionType} />
+
             <ActivityTable activityList={activityList} />
             <PaginationWrapper
               activePage={activePage}
