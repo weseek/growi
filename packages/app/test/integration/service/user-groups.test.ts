@@ -5,7 +5,6 @@ import { getInstance } from '../setup-crowi';
 
 describe('UserGroupService', () => {
   let crowi;
-  let User;
   let UserGroup;
   let UserGroupRelation;
 
@@ -14,19 +13,16 @@ describe('UserGroupService', () => {
   const groupId3 = new mongoose.Types.ObjectId();
   const groupId4 = new mongoose.Types.ObjectId();
   const groupId5 = new mongoose.Types.ObjectId();
+  const groupId6 = new mongoose.Types.ObjectId();
+  const groupId7 = new mongoose.Types.ObjectId();
+  const groupId8 = new mongoose.Types.ObjectId();
 
   const userId1 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     crowi = await getInstance();
-    User = mongoose.model('User');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
-
-    // Create Users
-    await User.insertMany([
-      { name: 'user1', username: 'user1', email: 'user-group-test1@example.com' },
-    ]);
 
 
     // Create Groups
@@ -61,12 +57,38 @@ describe('UserGroupService', () => {
         name: 'v5_group5',
         description: 'description5',
       },
+      // No parent
+      {
+        _id: groupId6,
+        name: 'v5_group6',
+        description: 'description5',
+      },
+      // No parent
+      {
+        _id: groupId7,
+        name: 'v5_group7',
+        description: 'description5',
+      },
+      // No parent
+      {
+        _id: groupId8,
+        name: 'v5_group8',
+        description: 'description5',
+      },
     ]);
 
     // Create UserGroupRelations
     await UserGroupRelation.insertMany([
       {
         relatedGroup: groupId4,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId6,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId8,
         relatedUser: userId1,
       },
     ]);
@@ -117,8 +139,10 @@ describe('UserGroupService', () => {
     await expect(result).rejects.toThrow('The parent group does not contain the users in this group.');
   });
 
-  // In case that forceUpdateParents is true
-  test('User should be included to parent group in case that force update is true', async() => {
+  /*
+  * forceUpdateParents true
+  */
+  test('User should be included to parent group (2 groups ver)', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
     const userGroup4Relation = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5 });
@@ -132,6 +156,22 @@ describe('UserGroupService', () => {
 
     expect(updatedUserGroup.parent).toStrictEqual(userGroup5._id);
     expect(relatedGroup).toBeTruthy();
+  });
+
+  test('User should be included to parent group (3 groups ver)', async() => {
+    const userGroup8 = await UserGroup.findOne({ _id: groupId8 });
+    const forceUpdateParents = true;
+
+    await crowi.userGroupService.updateGroup(
+      userGroup8._id, userGroup8.name, userGroup8.description, groupId7, forceUpdateParents,
+    );
+    const relatedGroup6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
+    const relatedGroup7 = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
+    const relatedGroup8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
+
+    expect(relatedGroup6).toBeTruthy();
+    expect(relatedGroup7).toBeTruthy();
+    expect(relatedGroup8).toBeTruthy();
   });
 
 });
