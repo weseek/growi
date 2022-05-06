@@ -15,6 +15,7 @@ describe('UserGroupService', () => {
   const groupId4 = new mongoose.Types.ObjectId();
   const groupId5 = new mongoose.Types.ObjectId();
 
+  const userId1 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -62,14 +63,11 @@ describe('UserGroupService', () => {
       },
     ]);
 
-    const user1 = await User.findOne({ username: 'user1' });
-    const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
-
     // Create UserGroupRelations
     await UserGroupRelation.insertMany([
       {
-        relatedGroup: userGroup4,
-        relatedUser: user1,
+        relatedGroup: groupId4,
+        relatedUser: userId1,
       },
     ]);
 
@@ -110,7 +108,7 @@ describe('UserGroupService', () => {
   });
 
   // In case that forceUpdateParents is false
-  test('Should throw an error when users in child group do not include in parent group', async() => {
+  test('Should throw an error when users in child group do not exist in parent group', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5 });
 
@@ -122,7 +120,7 @@ describe('UserGroupService', () => {
   // In case that forceUpdateParents is true
   test('User should be included to parent group in case that force update is true', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
-    const userGroup4Relation = await UserGroupRelation.findOne({ relatedGroup:  userGroup4 });
+    const userGroup4Relation = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5 });
 
     const forceUpdateParents = true;
