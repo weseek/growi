@@ -118,6 +118,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { getDescCount } = usePageTreeDescCountMap();
   const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
 
+  if (page._id === '626a75e84facce2aa48d983a') {
+    console.log(page.path, isOpen);
+  }
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -129,6 +132,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     if (target == null) {
       return;
     }
+
+    console.log('displayDroppedItemByPageId_isOpen', isOpen);
 
     // wait 500ms to avoid removing before d-none is set by useDrag end() callback
     setTimeout(() => {
@@ -145,20 +150,36 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       }
       return !pagePathUtils.isUsersProtectedPages(page.path);
     },
-    end: (item, monitor) => {
+    end: async(item, monitor) => {
+      console.log('monitor.didDrop()', monitor.didDrop(), item.page.path, isOpen);
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
       if (dropResult != null) {
         setShouldHide(true);
       }
+
+      await setIsOpen(true);
+
+      console.log('item.page.path_isOpen', isOpen);
+
+
+      // if (monitor.didDrop() && isOpen) {
+      //   console.log('drag_end', item.page.path);
+      //   setIsOpen(false);
+      //   setIsOpen(true);
+      //   mutateChildren();
+      // }
     },
     collect: monitor => ({
-      isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
+      // isDragging: monitor.isDragging(),
+      // canDrag: monitor.canDrag(),
+      // didDrop: monitor.didDrop(),
+      // endDrag: monitor.endDrag(),
     }),
   });
 
   const pageItemDropHandler = async(item: ItemNode) => {
+    console.log('pageItemDropHandler', item.page.path);
     const { page: droppedPage } = item;
 
     if (!isDroppable(droppedPage, page, true)) {
@@ -187,7 +208,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       }
 
       // force open
-      setIsOpen(true);
+      await setIsOpen(true);
+      console.log('force open');
     }
     catch (err) {
       // display the dropped item
@@ -204,7 +226,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
-    drop: pageItemDropHandler,
+    drop: (item) => { return pageItemDropHandler(item) },
     hover: (item, monitor) => {
       // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
       if (monitor.isOver()) {
