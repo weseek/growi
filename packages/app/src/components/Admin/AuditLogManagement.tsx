@@ -16,11 +16,12 @@ type SelectQueryDropdownProps = {
 }
 
 const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDropdownProps) => {
+  const { t } = useTranslation();
   return (
     <div className="btn-group mr-2 mb-3">
       <div className="dropdown">
         <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          {t}
+          {t(`admin:audit_log_management.${props.dropdownLabel}`)}
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {
@@ -38,6 +39,10 @@ const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDro
     </div>
   );
 };
+
+const SelectQueryDropdownLabel = {
+  SELECT_ACTION: 'select_action',
+} as const;
 
 const PAGING_LIMIT = 10;
 
@@ -68,7 +73,10 @@ export const AuditLogManagement: FC = () => {
         )
         : (
           <>
-            <SelectQueryDropdown dropdownLabel="Select Action" dropdownItemList={AllSupportedActionType} />
+            <SelectQueryDropdown
+              dropdownLabel={SelectQueryDropdownLabel.SELECT_ACTION}
+              dropdownItemList={AllSupportedActionType}
+            />
 
             <ActivityTable activityList={activityList} />
             <PaginationWrapper
