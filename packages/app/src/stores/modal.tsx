@@ -76,7 +76,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
 /*
 * EmptyTrashModal
 */
-export type IEmptyTrashModalOption = {
+type IEmptyTrashModalOption = {
   onEmptiedTrash?: () => void,
 }
 
