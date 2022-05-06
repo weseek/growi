@@ -1,16 +1,15 @@
-import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
-const mongoose = require('mongoose');
-
+const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
+const mongoose = require('mongoose');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -548,6 +547,25 @@ module.exports = (crowi) => {
    */
   router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
+    const { pageIdToRevisionIdMap } = req.body;
+    const pageIds = Object.keys(pageIdToRevisionIdMap);
+
+    let pagesToDelete;
+
+    try {
+      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true);
+    }
+    catch (err) {
+      logger.error('Failed to find pages to delete.', err);
+      return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
+    }
+
+    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, true);
+
+    if (deletablePages.length === 0) {
+      const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
+    }
 
     try {
       const pages = await crowi.pageService.emptyTrashPage(req.user, options);

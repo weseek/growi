@@ -26,8 +26,13 @@ const EmptyTrashModal: FC = () => {
       return;
     }
 
+    const pageIdToRevisionIdMap = {};
+    emptyTrashModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
+
     try {
-      await apiv3Delete('/pages/empty-trash');
+      await apiv3Delete('/pages/empty-trash', {
+        pageIdToRevisionIdMap,
+      });
       const onEmptiedTrash = emptyTrashModalData.opts?.onEmptiedTrash;
       if (onEmptiedTrash != null) {
         onEmptiedTrash();
