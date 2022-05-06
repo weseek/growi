@@ -121,7 +121,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // please set pageId you want to move
   if (page._id === '6274b69ec7e8f53c61213225') {
     console.log(page.path, isOpen);
-    // setIsOpen(true);
   }
 
   // hasDescendants flag
