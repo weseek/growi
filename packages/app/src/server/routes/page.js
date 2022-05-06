@@ -271,8 +271,12 @@ module.exports = function(crowi, app) {
 
   async function addRenderVarsForGrantValidation(renderVars, user, page) {
     const {
-      path, grant, grantedUsers, grantedGroup,
+      path, grant, grantedUsers, grantedGroup, isEmpty,
     } = page;
+
+    if (isEmpty) {
+      return;
+    }
 
     const isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUsers, grantedGroup, false, false);
 
@@ -476,6 +480,7 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
     await addRenderVarsForGrantValidation(renderVars, req.user, page);
+
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
