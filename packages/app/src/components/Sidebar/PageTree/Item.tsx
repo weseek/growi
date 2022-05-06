@@ -160,7 +160,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     collect: monitor => ({
       isDragging: monitor.isDragging(),
       canDrag: monitor.canDrag(),
-      didDrop: monitor.didDrop(),
     }),
   });
 
