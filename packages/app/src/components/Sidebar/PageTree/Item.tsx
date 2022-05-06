@@ -118,8 +118,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { getDescCount } = usePageTreeDescCountMap();
   const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
 
-  if (page._id === '626a75e84facce2aa48d983a') {
+  // please set pageId you want to move
+  if (page._id === '6274b69ec7e8f53c61213225') {
     console.log(page.path, isOpen);
+    // setIsOpen(true);
   }
 
   // hasDescendants flag
@@ -132,8 +134,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     if (target == null) {
       return;
     }
-
-    console.log('displayDroppedItemByPageId_isOpen', isOpen);
 
     // wait 500ms to avoid removing before d-none is set by useDrag end() callback
     setTimeout(() => {
@@ -157,24 +157,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       if (dropResult != null) {
         setShouldHide(true);
       }
-
-      await setIsOpen(true);
-
-      console.log('item.page.path_isOpen', isOpen);
-
-
-      // if (monitor.didDrop() && isOpen) {
-      //   console.log('drag_end', item.page.path);
-      //   setIsOpen(false);
-      //   setIsOpen(true);
-      //   mutateChildren();
-      // }
     },
     collect: monitor => ({
-      // isDragging: monitor.isDragging(),
-      // canDrag: monitor.canDrag(),
-      // didDrop: monitor.didDrop(),
-      // endDrag: monitor.endDrag(),
+      isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
+      didDrop: monitor.didDrop(),
     }),
   });
 
@@ -208,8 +195,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       }
 
       // force open
-      await setIsOpen(true);
-      console.log('force open');
+      setIsOpen(true);
     }
     catch (err) {
       // display the dropped item
@@ -226,7 +212,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
-    drop: (item) => { return pageItemDropHandler(item) },
+    drop:  pageItemDropHandler,
     hover: (item, monitor) => {
       // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
       if (monitor.isOver()) {
