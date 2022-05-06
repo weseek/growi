@@ -19,23 +19,38 @@ const allSelectQueryDropdownLabel = Object.values(SelectQueryDropdownLabel);
 type SelectQueryDropdownProps = {
   dropdownLabel: typeof allSelectQueryDropdownLabel[keyof typeof allSelectQueryDropdownLabel];
   dropdownItemList: string[]
+  setQueryHandler: (query: string) => void
 }
 
 const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDropdownProps) => {
   const { t } = useTranslation();
+
+  const { dropdownLabel, dropdownItemList, setQueryHandler } = props;
+
+  const [selectedItem, setSelectedItem] = useState('');
+
+  const onClickItemButton = useCallback((item) => {
+    if (setQueryHandler == null) {
+      return;
+    }
+    setQueryHandler(item);
+    setSelectedItem(item);
+  }, [setQueryHandler, setSelectedItem]);
+
   return (
     <div className="btn-group mr-2 mb-3">
       <div className="dropdown">
         <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          {t(`admin:audit_log_management.${props.dropdownLabel}`)}
+          {selectedItem !== '' ? selectedItem : t(`admin:audit_log_management.${dropdownLabel}`)}
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {
-            props.dropdownItemList.map(item => (
+            dropdownItemList.map(item => (
               <button
                 key={item}
                 type="button"
                 className="dropdown-item"
+                onClick={() => onClickItemButton(item)}
               >
                 {item}
               </button>
@@ -54,6 +69,7 @@ export const AuditLogManagement: FC = () => {
 
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
+  const [actionQuery, setActionQuery] = useState('');
 
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
@@ -79,6 +95,7 @@ export const AuditLogManagement: FC = () => {
             <SelectQueryDropdown
               dropdownLabel={SelectQueryDropdownLabel.SELECT_ACTION}
               dropdownItemList={AllSupportedActionType}
+              setQueryHandler={setActionQuery}
             />
 
             <ActivityTable activityList={activityList} />
