@@ -2,22 +2,20 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
-
-import { usePageDuplicateModal } from '~/stores/modal';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useIsSearchServiceReachable, useSiteUrl } from '~/stores/context';
+import { usePageDuplicateModal } from '~/stores/modal';
 
-import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import DuplicatePathsTable from './DuplicatedPathsTable';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import PagePathAutoComplete from './PagePathAutoComplete';
 
 
 const PageDuplicateModal = (): JSX.Element => {
@@ -81,15 +79,6 @@ const PageDuplicateModal = (): JSX.Element => {
       checkExistPathsDebounce(page.path, pageNameInput);
     }
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
-
-  /**
-   * change pageNameInput for PagePathAutoComplete
-   * @param {string} value
-   */
-  function ppacInputChangeHandler(value) {
-    setErrs(null);
-    setPageNameInput(value);
-  }
 
   /**
    * change pageNameInput
@@ -183,7 +172,7 @@ const PageDuplicateModal = (): JSX.Element => {
                   <PagePathAutoComplete
                     initializedPath={path}
                     onSubmit={duplicate}
-                    onInputChange={ppacInputChangeHandler}
+                    onInputChange={inputChangeHandler}
                     autoFocus
                   />
                 )
