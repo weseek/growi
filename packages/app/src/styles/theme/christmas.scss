@@ -185,15 +185,15 @@ html[dark] {
  */
   .grw-sidebar {
     // Pagetree
-    .grw-pagetree {
-      @include override-list-group-item-for-pagetree(
-        $color-list,
-        $bgcolor-sidebar-list-group,
-        $color-list-hover,
-        $bgcolor-list-hover,
-        $color-list-active,
-        $bgcolor-list-hover
-      );
-    }
+    // .grw-pagetree {
+    //   @include override-list-group-item-for-pagetree(
+    //     $color-list,
+    //     $bgcolor-sidebar-list-group,
+    //     $color-list-hover,
+    //     $bgcolor-list-hover,
+    //     $color-list-active,
+    //     $bgcolor-list-hover
+    //   );
+    // }
   }
 }
