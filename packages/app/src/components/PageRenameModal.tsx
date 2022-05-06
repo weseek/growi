@@ -2,24 +2,22 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
+import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
-
 import { debounce } from 'throttle-debounce';
-import { pagePathUtils } from '@growi/core';
-import { usePageRenameModal } from '~/stores/modal';
+
 import { toastError } from '~/client/util/apiNotification';
-
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import DuplicatedPathsTable from './DuplicatedPathsTable';
-import { useSiteUrl } from '~/stores/context';
 import { isIPageInfoForEntity } from '~/interfaces/page';
+import { useSiteUrl } from '~/stores/context';
+import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
+
+import DuplicatedPathsTable from './DuplicatedPathsTable';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 
 const isV5Compatible = (meta: unknown): boolean => {
