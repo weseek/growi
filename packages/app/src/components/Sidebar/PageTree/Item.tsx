@@ -150,7 +150,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       }
       return !pagePathUtils.isUsersProtectedPages(page.path);
     },
-    end: async(item, monitor) => {
+    end: (item, monitor) => {
       console.log('monitor.didDrop()', monitor.didDrop(), item.page.path, isOpen);
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -212,7 +212,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
     accept: 'PAGE_TREE',
-    drop:  pageItemDropHandler,
+    drop: pageItemDropHandler,
     hover: (item, monitor) => {
       // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
       if (monitor.isOver()) {
