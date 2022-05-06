@@ -8,12 +8,7 @@ import {
 } from 'reactstrap';
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import {
-  IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
-} from '~/interfaces/page';
 import { useEmptyTrashModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -24,19 +19,6 @@ const EmptyTrashModal: FC = () => {
 
   const isOpened = emptyTrashModalData?.isOpened ?? false;
 
-  const notOperatablePages: IPageToDeleteWithMeta[] = (emptyTrashModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForEntity(p.meta));
-  const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
-
-  const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
-
-  // inject IPageInfo to operate
-  let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
-  if (emptyTrashModalData?.pages != null && notOperatablePageIds.length > 0) {
-    injectedPages = injectTo(emptyTrashModalData?.pages);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
 
   async function emptyTrash() {
@@ -62,13 +44,12 @@ const EmptyTrashModal: FC = () => {
   }
 
   const renderPagePaths = () => {
-    const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : emptyTrashModalData?.pages;
+    const pages = emptyTrashModalData?.pages;
 
     if (pages != null) {
       return pages.map(page => (
         <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
-          { !page.meta?.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
         </p>
       ));
     }
