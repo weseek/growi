@@ -547,26 +547,20 @@ module.exports = (crowi) => {
    */
   router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
-    const { pageIds } = req.body;
-    // const { pageIdToRevisionIdMap } = req.body;
-    // const pageIds = Object.keys(pageIdToRevisionIdMap);
 
-    logger.error(`pageIds: ${pageIds}`);
+    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
-    let pagesToDelete;
+    logger.error(`trash page count: ${pagesInTrash.length}`);
 
-    try {
-      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true);
-    }
-    catch (err) {
-      logger.error('Failed to find pages to delete.', err);
-      return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
-    }
-
-    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, true);
+    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
     if (deletablePages.length === 0) {
       const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
+    }
+
+    if (deletablePages.length < pagesInTrash.length) {
+      const msg = 'Some pages can not be deleted.';
       return res.apiv3Err(new ErrorV3(msg), 500);
     }
 

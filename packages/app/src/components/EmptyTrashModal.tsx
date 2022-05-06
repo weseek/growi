@@ -26,10 +26,8 @@ const EmptyTrashModal: FC = () => {
       return;
     }
 
-    const pageIds = emptyTrashModalData.pages.map(p => p.data._id);
-
     try {
-      await apiv3Delete('/pages/empty-trash', { pageIds });
+      await apiv3Delete('/pages/empty-trash');
       const onEmptiedTrash = emptyTrashModalData.opts?.onEmptiedTrash;
       if (onEmptiedTrash != null) {
         onEmptiedTrash();
