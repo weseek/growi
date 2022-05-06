@@ -61,19 +61,20 @@ describe('UserGroupService', () => {
       {
         _id: groupId6,
         name: 'v5_group6',
-        description: 'description5',
+        description: 'description6',
       },
       // No parent
       {
         _id: groupId7,
         name: 'v5_group7',
-        description: 'description5',
+        description: 'description7',
+        parent: groupId6,
       },
       // No parent
       {
         _id: groupId8,
         name: 'v5_group8',
-        description: 'description5',
+        description: 'description8',
       },
     ]);
 
