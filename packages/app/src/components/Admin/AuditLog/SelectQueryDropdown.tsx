@@ -31,6 +31,14 @@ export const SelectQueryDropdown: FC<Props> = (props: Props) => {
           {selectedItem === undefined ? t(`admin:audit_log_management.${dropdownLabel}`) : selectedItem}
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <button
+            type="button"
+            className="dropdown-item"
+            onClick={() => onClickItemButton(undefined)}
+          >
+            {t('admin:audit_log_management.unassigned')}
+          </button>
+          <div className="dropdown-divider"></div>
           {
             dropdownItemList.map(item => (
               <button

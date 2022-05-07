@@ -516,6 +516,7 @@
     }
   },
   "audit_log_management": {
+    "unassigned": "Unassigned",
     "select_action": "Select Action"
   }
 }

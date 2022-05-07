@@ -525,6 +525,7 @@
     }
   },
   "audit_log_management": {
+    "unassigned": "未分配的",
     "select_action": "选择行动"
   }
 }
