@@ -16,19 +16,27 @@ const PAGING_LIMIT = 10;
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
 
+  /*
+   * State
+   */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
   const [actionQuery, setActionQuery] = useState<string | undefined>(undefined);
 
+  /*
+   * Fetch
+   */
   const query = {
     action: actionQuery,
   };
-
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, query);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
   const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
   const isLoading = activityListData === undefined && error == null;
 
+  /*
+   * Functions
+   */
   const setActivePageBySelectedPageNum = useCallback((selectedPageNum: number) => {
     setActivePage(selectedPageNum);
   }, []);
