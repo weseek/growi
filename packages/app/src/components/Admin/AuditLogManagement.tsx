@@ -33,6 +33,11 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
+  const setActionQueryHandler = useCallback((query) => {
+    setActionQuery(query);
+    setActivePage(1);
+  }, []);
+
   return (
     <div data-testid="admin-auditlog">
       <h2>{t('AuditLog')}</h2>
@@ -40,7 +45,7 @@ export const AuditLogManagement: FC = () => {
       <SelectQueryDropdown
         dropdownLabel="select_action"
         dropdownItemList={AllSupportedActionType}
-        setQueryHandler={setActionQuery}
+        onSetQuery={setActionQueryHandler}
       />
 
       { isLoading
