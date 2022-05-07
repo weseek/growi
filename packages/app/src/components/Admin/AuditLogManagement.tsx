@@ -8,7 +8,7 @@ import { useSWRxActivityList } from '~/stores/activity';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
-import { SelectQueryDropdown } from './AuditLog/SelectQueryDropdown';
+import { SelectQueryItemsDropdown } from './AuditLog/SelectQueryItemsDropdown';
 
 
 const PAGING_LIMIT = 10;
@@ -50,7 +50,7 @@ export const AuditLogManagement: FC = () => {
     <div data-testid="admin-auditlog">
       <h2>{t('AuditLog')}</h2>
 
-      <SelectQueryDropdown
+      <SelectQueryItemsDropdown
         dropdownLabel="select_action"
         dropdownItemList={AllSupportedActionType}
         onSelectItem={selectActionNameHandler}

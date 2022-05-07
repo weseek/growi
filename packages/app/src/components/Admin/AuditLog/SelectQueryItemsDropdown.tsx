@@ -9,7 +9,7 @@ type Props = {
   onSelectItem: (item: string | undefined) => void
 }
 
-export const SelectQueryDropdown: FC<Props> = (props: Props) => {
+export const SelectQueryItemsDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { dropdownLabel, dropdownItemList, onSelectItem } = props;
