@@ -41,7 +41,7 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const selectActionNameHandler = useCallback((selectedActionName) => {
+  const selectActionNameHandler = useCallback((selectedActionName: string | undefined) => {
     setActivePage(1);
     setActionName(selectedActionName);
   }, []);

@@ -16,7 +16,7 @@ export const SelectQueryItemsDropdown: FC<Props> = (props: Props) => {
 
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined);
 
-  const onClickItemButton = useCallback((selectedItem) => {
+  const onClickItemButton = useCallback((selectedItem: string | undefined) => {
     if (onSelectItem == null) {
       return;
     }
