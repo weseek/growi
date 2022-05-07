@@ -21,13 +21,13 @@ export const AuditLogManagement: FC = () => {
    */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
-  const [actionQuery, setActionQuery] = useState<string | undefined>(undefined);
+  const [actionName, setActionName] = useState<string | undefined>(undefined);
 
   /*
    * Fetch
    */
   const query = {
-    action: actionQuery,
+    action: actionName,
   };
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, query);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
@@ -41,9 +41,9 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const setActionQueryHandler = useCallback((query) => {
-    setActionQuery(query);
+  const selectActionNameHandler = useCallback((selectedActionName) => {
     setActivePage(1);
+    setActionName(selectedActionName);
   }, []);
 
   return (
@@ -53,7 +53,7 @@ export const AuditLogManagement: FC = () => {
       <SelectQueryDropdown
         dropdownLabel="select_action"
         dropdownItemList={AllSupportedActionType}
-        onSetQuery={setActionQueryHandler}
+        onSelectItem={selectActionNameHandler}
       />
 
       { isLoading

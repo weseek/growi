@@ -6,23 +6,23 @@ import { useTranslation } from 'react-i18next';
 type Props = {
   dropdownLabel: string
   dropdownItemList: string[]
-  onSetQuery: (query: string | undefined) => void
+  onSelectItem: (item: string | undefined) => void
 }
 
 export const SelectQueryDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { dropdownLabel, dropdownItemList, onSetQuery } = props;
+  const { dropdownLabel, dropdownItemList, onSelectItem } = props;
 
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined);
 
-  const onClickItemButton = useCallback((item) => {
-    if (onSetQuery == null) {
+  const onClickItemButton = useCallback((selectedItem) => {
+    if (onSelectItem == null) {
       return;
     }
-    onSetQuery(item);
-    setSelectedItem(item);
-  }, [onSetQuery, setSelectedItem]);
+    onSelectItem(selectedItem);
+    setSelectedItem(selectedItem);
+  }, [onSelectItem, setSelectedItem]);
 
   return (
     <div className="btn-group mr-2 mb-3">
