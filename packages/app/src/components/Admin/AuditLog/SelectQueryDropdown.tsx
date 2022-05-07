@@ -3,13 +3,13 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 
-type SelectQueryDropdownProps = {
+type Props = {
   dropdownLabel: string
   dropdownItemList: string[]
   setQueryHandler: (query: string | undefined) => void
 }
 
-export const SelectQueryDropdown: FC<SelectQueryDropdownProps> = (props: SelectQueryDropdownProps) => {
+export const SelectQueryDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { dropdownLabel, dropdownItemList, setQueryHandler } = props;
