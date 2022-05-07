@@ -5,9 +5,15 @@ import { apiv3Get } from '../client/util/apiv3-client';
 import { IActivityHasId } from '../interfaces/activity';
 import { PaginateResult } from '../interfaces/mongoose-utils';
 
-export const useSWRxActivityList = (limit?: number, offset?: number): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
+type IQuery = {
+  action?: string
+}
+
+export const useSWRxActivityList = (limit?: number, offset?: number, query?: IQuery): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
+  const stringifiedQuery = JSON.stringify(query);
   return useSWRImmutable(
-    ['/activity', limit, offset],
-    (endpoint, limit, offset) => apiv3Get(endpoint, { limit, offset }).then(result => result.data.serializedPaginationResult),
+    ['/activity', limit, offset, stringifiedQuery],
+    (endpoint, limit, offset, stringifiedQuery) => apiv3Get(endpoint, { limit, offset, query: stringifiedQuery })
+      .then(result => result.data.serializedPaginationResult),
   );
 };

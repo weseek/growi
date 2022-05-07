@@ -18,9 +18,13 @@ export const AuditLogManagement: FC = () => {
 
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
-  const [actionQuery, setActionQuery] = useState('');
+  const [actionQuery, setActionQuery] = useState<string | undefined>(undefined);
 
-  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset);
+  const query = {
+    action: actionQuery,
+  };
+
+  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, query);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
   const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
   const isLoading = activityListData === undefined && error == null;
@@ -33,6 +37,12 @@ export const AuditLogManagement: FC = () => {
     <div data-testid="admin-auditlog">
       <h2>{t('AuditLog')}</h2>
 
+      <SelectQueryDropdown
+        dropdownLabel="select_action"
+        dropdownItemList={AllSupportedActionType}
+        setQueryHandler={setActionQuery}
+      />
+
       { isLoading
         ? (
           <div className="text-muted text-center mb-5">
@@ -41,12 +51,6 @@ export const AuditLogManagement: FC = () => {
         )
         : (
           <>
-            <SelectQueryDropdown
-              dropdownLabel="select_action"
-              dropdownItemList={AllSupportedActionType}
-              setQueryHandler={setActionQuery}
-            />
-
             <ActivityTable activityList={activityList} />
             <PaginationWrapper
               activePage={activePage}

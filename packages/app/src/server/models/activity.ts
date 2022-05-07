@@ -104,9 +104,9 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   activityEvent.emit('create', targetUsers, savedActivity);
 });
 
-activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number) {
+activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
   const paginateResult = await this.paginate(
-    {},
+    query,
     {
       limit,
       offset,
