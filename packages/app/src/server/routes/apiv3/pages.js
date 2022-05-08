@@ -834,7 +834,12 @@ module.exports = (crowi) => {
     }
 
     try {
-      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
+      if (isRecursively) {
+        await crowi.pageService.normalizeParentByPageIdsRecursively(pageIds, req.user);
+      }
+      else {
+        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
+      }
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);

@@ -940,6 +940,11 @@
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
     },
+    "toaster": {
+      "page_migration_succeeded": "已成功将所选页面转换为 v5 兼容格式。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
+    },
     "by_path_modal": {
       "title": "转换为新的v5兼容格式",
       "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",

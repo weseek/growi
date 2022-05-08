@@ -653,6 +653,11 @@
       "convert_recursively_desc": "Convert pages under this path recursively.",
       "button_label": "Convert"
     },
+    "toaster": {
+      "page_migration_succeeded": "Conversion of selected page to v5 has been successfully completed.",
+      "page_migration_failed_with_paths": "Conversion of {{paths}} to v5 has been failed.",
+      "page_migration_failed": "Conversion of page to v5 has been failed."
+    },
     "by_path_modal": {
       "title": "Convert to new v5 compatible format",
       "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
