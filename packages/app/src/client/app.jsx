@@ -33,11 +33,11 @@ import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationS
 import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
 import NotFoundAlert from '../components/Page/NotFoundAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
-import FixGrantAlert from '../components/Page/FixGrantAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
@@ -100,7 +100,7 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'fix-grant-alert': <FixGrantAlert />,
+  'fix-page-grant-alert': <FixPageGrantAlert />,
 
   'trash-page-list-container': <TrashPageList />,
 
