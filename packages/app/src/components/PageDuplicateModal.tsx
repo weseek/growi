@@ -81,6 +81,15 @@ const PageDuplicateModal = (): JSX.Element => {
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
   /**
+   * change pageNameInput for PagePathAutoComplete
+   * @param {string} value
+   */
+  function ppacInputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
+
+  /**
    * change pageNameInput
    * @param {string} value
    */
@@ -172,7 +181,7 @@ const PageDuplicateModal = (): JSX.Element => {
                   <PagePathAutoComplete
                     initializedPath={path}
                     onSubmit={duplicate}
-                    onInputChange={inputChangeHandler}
+                    onInputChange={ppacInputChangeHandler}
                     autoFocus
                   />
                 )
