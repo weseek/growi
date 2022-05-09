@@ -2,22 +2,20 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
-
-import { usePageDuplicateModal } from '~/stores/modal';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useIsSearchServiceReachable, useSiteUrl } from '~/stores/context';
+import { usePageDuplicateModal } from '~/stores/modal';
 
-import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import DuplicatePathsTable from './DuplicatedPathsTable';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import PagePathAutoComplete from './PagePathAutoComplete';
 
 
 const PageDuplicateModal = (): JSX.Element => {
