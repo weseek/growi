@@ -6,7 +6,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, ISnapshot } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -18,7 +18,6 @@ import {
 } from '~/interfaces/page-delete-config';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot as stringifySnapshotForActivity } from '~/models/serializers/activity-snapshot/user';
 import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
@@ -2236,7 +2235,7 @@ class PageService {
     const { activityService, inAppNotificationService } = this.crowi;
 
     // Create activity
-    const snapshotForActivity = stringifySnapshotForActivity(user);
+    const snapshotForActivity: ISnapshot = { username: user.username };
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,

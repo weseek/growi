@@ -1,8 +1,7 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
-import { stringifySnapshot as stringifySnapshotForActivity } from '~/models/serializers/activity-snapshot/user';
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, ISnapshot } from '~/interfaces/activity';
 import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
@@ -81,7 +80,7 @@ class CommentService {
   }
 
   private createActivity = async function(user, target, action) {
-    const snapshot = stringifySnapshotForActivity(user);
+    const snapshot: ISnapshot = { username: user.username };
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
