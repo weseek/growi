@@ -59,8 +59,6 @@ export interface PageModel extends Model<PageDocument> {
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
-  findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
-  findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
@@ -116,8 +114,21 @@ const schema = new Schema<PageDocument, PageModel>({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-const hasSlash = (str: string): boolean => {
+export const hasSlash = (str: string): boolean => {
   return str.includes('/');
+};
+
+/*
+ * Generate RegExp instance for one level lower path
+ */
+export const generateChildrenRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 export class PageQueryBuilder {
