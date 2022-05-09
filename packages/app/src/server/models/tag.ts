@@ -3,6 +3,8 @@ import {
   Types, Model, Schema,
 } from 'mongoose';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
@@ -15,7 +17,7 @@ export interface TagDocument {
 export type IdToNameMap = {[key:Types.ObjectId] : string }
 
 export interface TagModel extends Model<TagDocument>{
-  getIdToNameMap(tagIds: Types.ObjectId[]): IdToNameMap
+  getIdToNameMap(tagIds: Types.ObjectIdLike[]): IdToNameMap
   findOrCreateMany(tagNames: string[]): Promise<TagDocument[]>
 }
 
@@ -31,7 +33,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]): Promise<IdToNameMap> {
+tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
