@@ -22,7 +22,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder, addViewerCondition,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder, addViewerCondition, generateChildrenRegExp, hasSlash,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -48,24 +48,6 @@ const { addTrailingSlash } = pathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
-
-const hasSlash = (str: string): boolean => {
-  return str.includes('/');
-};
-
-/*
- * Generate RegExp instance for one level lower path
- */
-const generateChildrenRegExp = (path: string): RegExp => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
-};
-
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
