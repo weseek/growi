@@ -44,8 +44,13 @@ module.exports = (crowi: Crowi): Router => {
     const offset = req.query.offset || 1;
     const query = req.query.query as string || '';
 
+    const parsedQuery = JSON.parse(query);
+    const q = {
+      action: parsedQuery.action,
+    };
+
     try {
-      const paginationResult = await Activity.getPaginatedActivity(limit, offset, JSON.parse(query));
+      const paginationResult = await Activity.getPaginatedActivity(limit, offset, q);
 
       const User = crowi.model('User');
       const serializedDocs = paginationResult.docs.map((doc: IActivity) => {
