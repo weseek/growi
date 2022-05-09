@@ -2,7 +2,7 @@ import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, ISnapshot } from '~/interfaces/activity';
-import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
@@ -99,7 +99,7 @@ class CommentService {
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    const snapshot = stringifySnapshotForInAppNotification(page);
+    const snapshot = stringifySnapshot(page);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };

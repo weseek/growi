@@ -18,7 +18,7 @@ import {
 } from '~/interfaces/page-delete-config';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot as stringifySnapshotForInAppNotification } from '~/models/serializers/in-app-notification-snapshot/page';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
@@ -2249,7 +2249,7 @@ class PageService {
     const targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    const snapshotForInAppNotification = stringifySnapshotForInAppNotification(target);
+    const snapshotForInAppNotification = stringifySnapshot(target);
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshotForInAppNotification);
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
