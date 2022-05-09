@@ -179,21 +179,4 @@ html[dark] {
       @include btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
     }
   }
-
-  /*
- * GROWI Sidebar
- */
-  .grw-sidebar {
-    // Pagetree
-    // .grw-pagetree {
-    //   @include override-list-group-item-for-pagetree(
-    //     $color-list,
-    //     $bgcolor-sidebar-list-group,
-    //     $color-list-hover,
-    //     $bgcolor-list-hover,
-    //     $color-list-active,
-    //     $bgcolor-list-hover
-    //   );
-    // }
-  }
 }
