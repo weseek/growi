@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
-
 import mongoose from 'mongoose';
+
+import { Tag } from '~/server/models/tag';
 
 import { getInstance } from '../setup-crowi';
 
@@ -22,7 +23,6 @@ describe('PageService page operations with non-public pages', () => {
   let User;
   let UserGroup;
   let UserGroupRelation;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -93,7 +93,6 @@ describe('PageService page operations with non-public pages', () => {
     UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
