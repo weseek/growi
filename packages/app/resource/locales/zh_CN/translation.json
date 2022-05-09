@@ -414,16 +414,15 @@
 		"delete_completely": "Delete completely",
 		"delete_completely_restriction": "You don't have the authority to delete pages completely.",
 		"recursively": "Delete children of <code>%s</code> recursively.",
-		"completely": "Delete completely instead of putting it into trash.",
-    "empty_trash": "清空垃圾",
-    "empty_trash_button": "清空垃圾",
-    "empty_trash_alert": "这些页面已被永久删除，此操作无法撤消"
+		"completely": "Delete completely instead of putting it into trash."
   },
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
+  "empty_trash": "清空垃圾",
 	"modal_empty": {
-		"empty_the_trash": "Empty The Trash",
+		"empty_the_trash": "清空垃圾",
+    "empty_the_trash_button": "清空垃圾",
 		"notice": "完全删除的页面是不可恢复的。"
 	},
 	"modal_duplicate": {

@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IDataWithMeta,
   IPageHasId,
   IPageInfo,
 } from '~/interfaces/page';
-import { usePageDeleteModal } from '~/stores/modal';
+import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
 
 
 const EmptyTrashButton = () => {
   const { t } = useTranslation();
-  const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: pagingResult } = useSWRxDescendantsPageListForCurrrentPath();
+  const { open: openEmptyTrashModal } = useEmptyTrashModal();
+  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
@@ -30,12 +31,14 @@ const EmptyTrashButton = () => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
-  const onDeletedHandler = (...args) => {
-    // process after multipe pages delete api
-  };
+  const onEmptiedTrashHandler = useCallback(() => {
+    toastSuccess(t('empty_trash'));
+
+    mutate();
+  }, [t, mutate]);
 
   const emptyTrashClickHandler = () => {
-    openDeleteModal(pageWithMetas, { onDeleted: onDeletedHandler, emptyTrash: true });
+    openEmptyTrashModal(pageWithMetas, { onEmptiedTrash: onEmptiedTrashHandler });
   };
 
   return (
@@ -46,7 +49,7 @@ const EmptyTrashButton = () => {
         onClick={() => emptyTrashClickHandler()}
       >
         <i className="icon-fw icon-trash"></i>
-        <div>{t('modal_delete.empty_trash')}</div>
+        <div>{t('modal_empty.empty_the_trash')}</div>
       </button>
     </div>
   );
