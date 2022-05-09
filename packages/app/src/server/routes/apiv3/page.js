@@ -403,7 +403,8 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/isGrantNormalized'
+   *                  isGrantNormalized:
+   *                    type: boolean
    *          400:
    *            description: Bad request. Page is unreachable or empty.
    *          500:
