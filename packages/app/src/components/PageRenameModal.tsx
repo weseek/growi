@@ -48,6 +48,7 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
+  const [isRenameButtonPushed, setIsRenameButtonPushed] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -113,11 +114,12 @@ const PageRenameModal = (): JSX.Element => {
     }
     catch (err) {
       setErrs(err);
+      setIsRenameButtonPushed(false);
     }
   }, [closeRenameModal, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
-  const checkExistPaths = useCallback(async(fromPath, toPath) => {
-    if (page == null) {
+  const checkExistPaths = useCallback(async(fromPath, toPath, isCheckable) => {
+    if (page == null || !isCheckable) {
       return;
     }
 
@@ -146,10 +148,10 @@ const PageRenameModal = (): JSX.Element => {
 
   useEffect(() => {
     if (page != null && pageNameInput !== page.data.path) {
-      checkExistPathsDebounce(page.data.path, pageNameInput);
+      checkExistPathsDebounce(page.data.path, pageNameInput, !isRenameButtonPushed);
       checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce, isRenameButtonPushed]);
 
 
   /**
@@ -172,6 +174,7 @@ const PageRenameModal = (): JSX.Element => {
       setErrs(null);
       setSubordinatedPages([]);
       setExistingPaths([]);
+      setIsRenameButtonPushed(false);
       setIsRenameRecursively(true);
       setIsRenameRedirect(false);
       setIsRemainMetadata(false);
@@ -216,7 +219,7 @@ const PageRenameModal = (): JSX.Element => {
             <div className="input-group-prepend">
               <span className="input-group-text">{siteUrl}</span>
             </div>
-            <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
+            <form className="flex-fill" onSubmit={(e) => { setIsRenameButtonPushed(true); e.preventDefault(); rename() }}>
               <input
                 type="text"
                 value={pageNameInput}
