@@ -1,4 +1,6 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -6,49 +8,62 @@ import { useTranslation } from 'react-i18next';
 type Props = {
   dropdownLabel: string
   dropdownItemList: string[]
-  onSelectItem: (item: string | undefined) => void
+  onCheckItem: (items: string[]) => void
 }
 
 export const SelectQueryItemsDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { dropdownLabel, dropdownItemList, onSelectItem } = props;
+  const { dropdownLabel, dropdownItemList, onCheckItem } = props;
 
-  const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined);
+  const [checkedItems, setCheckedItems] = useState<string[]>(dropdownItemList);
 
-  const onClickItemButton = useCallback((selectedItem: string | undefined) => {
-    if (onSelectItem == null) {
-      return;
+  const handleChange = useCallback((checkedItem: string) => {
+    setCheckedItems(
+      checkedItems.includes(checkedItem)
+        ? checkedItems.filter(item => item !== checkedItem)
+        : [...checkedItems, checkedItem],
+    );
+  }, [checkedItems]);
+
+  useEffect(() => {
+    if (onCheckItem != null) {
+      onCheckItem(checkedItems);
     }
-    onSelectItem(selectedItem);
-    setSelectedItem(selectedItem);
-  }, [onSelectItem, setSelectedItem]);
+  }, [onCheckItem, checkedItems]);
 
   return (
     <div className="btn-group mr-2 mb-3">
       <div className="dropdown">
         <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          {selectedItem === undefined ? t(`admin:audit_log_management.${dropdownLabel}`) : selectedItem}
+          {t(`admin:audit_log_management.${dropdownLabel}`)}
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <button
-            type="button"
-            className="dropdown-item"
-            onClick={() => onClickItemButton(undefined)}
-          >
-            {t('admin:audit_log_management.unassigned')}
-          </button>
-          <div className="dropdown-divider"></div>
+          <div className="dropdown-item">
+            <div className="form-group px-2 m-0">
+              <input type="checkbox" className="form-check-input" />
+              <label className="form-check-label">Page</label>
+            </div>
+          </div>
           {
             dropdownItemList.map(item => (
-              <button
-                key={item}
-                type="button"
-                className="dropdown-item"
-                onClick={() => onClickItemButton(item)}
-              >
-                {item}
-              </button>
+              <div className="dropdown-item" key={item}>
+                <div className="form-group px-4 m-0">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`checkbox${item}`}
+                    onChange={() => { handleChange(item) }}
+                    checked={checkedItems.includes(item)}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={`checkbox${item}`}
+                  >
+                    {item}
+                  </label>
+                </div>
+              </div>
             ))
           }
         </ul>
