@@ -1,13 +1,13 @@
 import { getOrCreateModel } from '@growi/core';
 import {
-  Types, Document, Model, Schema,
+  Types, Model, Schema,
 } from 'mongoose';
 
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 
-export interface TagDocument extends Document {
+export interface TagDocument {
   _id: Types.ObjectId;
   name: string;
 }
