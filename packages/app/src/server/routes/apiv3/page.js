@@ -179,6 +179,9 @@ module.exports = (crowi) => {
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
+    isGrantNormalized: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
@@ -377,6 +380,62 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/is-grant-normalized:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/info
+   *        description: Retrieve current page's isGrantNormalized value
+   *        operationId: getIsGrantNormalized
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Successfully retrieved current isGrantNormalized.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    isGrantNormalized:
+   *                      type: boolean
+   *          400:
+   *            description: Bad request. Page is unreachable or empty.
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/is-grant-normalized', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+
+    const Page = crowi.model('Page');
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    const {
+      path, grant, grantedUsers, grantedGroup,
+    } = page;
+
+    let isGrantNormalized;
+    try {
+      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroup, false, false);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing isGrantNormalized.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3({ isGrantNormalized });
   });
 
   /**
