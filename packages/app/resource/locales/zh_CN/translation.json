@@ -186,8 +186,7 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "目前还不支持包含斜线的标题"
+    "title_required": "标题是必需的。"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -928,6 +927,7 @@
   "private_legacy_pages": {
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
+		"input_path_to_convert": "输入一个转换页面的路径",
     "alert_title": "存在旧的v4兼容格式的私人网页。",
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
@@ -939,6 +939,21 @@
       "convert_recursively_label": "递归地转换子页面。",
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
+    },
+    "toaster": {
+      "page_migration_succeeded": "已成功将所选页面转换为 v5 兼容格式。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
+    },
+    "by_path_modal": {
+      "title": "转换为新的v5兼容格式",
+      "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
+      "button_label": "转换",
+      "success": "成功地请求转换。",
+      "error": "请求转换失败。",
+      "error_grant_invalid": "页面权限不正确。请更正并重试。",
+      "error_page_not_found": "没有找到页面。",
+      "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
