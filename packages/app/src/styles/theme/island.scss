@@ -116,4 +116,16 @@ html[dark] {
       color: $color-reversal;
     }
   }
+
+  /*
+   * GROWI Sidebar
+  */
+  .grw-sidebar {
+    // Pagetree
+    .grw-pagetree {
+      .grw-pagetree-triangle-btn {
+        @include button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
+      }
+    }
+  }
 }
