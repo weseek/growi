@@ -82,14 +82,6 @@ const PageCreateModal = (props) => {
   }
 
   /**
-   * change pageNameInput
-   * @param {string} value
-   */
-  function inputChangeHandler(value) {
-    setPageNameInput(value);
-  }
-
-  /**
    * change template
    * @param {string} value
    */
@@ -206,7 +198,7 @@ const PageCreateModal = (props) => {
                     initializedPath={pageNameInput}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
-                    onInputChange={inputChangeHandler}
+                    onInputChange={value => setPageNameInput(value)}
                     autoFocus
                   />
                 )
@@ -217,7 +209,7 @@ const PageCreateModal = (props) => {
                       value={pageNameInput}
                       className="form-control flex-fill"
                       placeholder={t('Input page name')}
-                      onChange={e => inputChangeHandler(e.target.value)}
+                      onChange={e => setPageNameInput(e.target.value)}
                       required
                     />
                   </form>
