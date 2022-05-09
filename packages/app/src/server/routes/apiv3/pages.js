@@ -545,7 +545,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
 
     const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
@@ -557,17 +557,25 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg), 500);
     }
 
+    // when some pages are not deletable
     if (deletablePages.length < pagesInTrash.length) {
-      const msg = 'Some pages can not be deleted.';
-      return res.apiv3Err(new ErrorV3(msg), 500);
+      try {
+        await crowi.pageService.deleteMultipleCompletely(deletablePages, req.user);
+        return res.apiv3({ deletablePages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
     }
-
-    try {
-      const pages = await crowi.pageService.emptyTrashPage(req.user, options);
-      return res.apiv3({ pages });
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+    // when all pages are deletable
+    else {
+      try {
+        const pages = await crowi.pageService.emptyTrashPage(req.user, options);
+        return res.apiv3({ pages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
     }
   });
 
