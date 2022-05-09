@@ -444,6 +444,7 @@
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "empty_the_trash_button": "空にする",
+    "not_deletable_notice": "権利がないため、いくつかのページは削除できません",
     "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {

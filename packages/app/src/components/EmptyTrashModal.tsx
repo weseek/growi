@@ -19,6 +19,8 @@ const EmptyTrashModal: FC = () => {
 
   const isOpened = emptyTrashModalData?.isOpened ?? false;
 
+  const canDeleteAllpages = emptyTrashModalData?.opts?.canDelepeAllPages ?? false;
+
   const [errs, setErrs] = useState<Error[] | null>(null);
 
   async function emptyTrash() {
@@ -68,6 +70,7 @@ const EmptyTrashModal: FC = () => {
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePaths()}
         </div>
+        {!canDeleteAllpages && t('modal_empty.not_deletable_notice')}<br />
         {t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
