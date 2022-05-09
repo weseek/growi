@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { AllSupportedTargetModelType, AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedTargetModelType, AllSupportedActionType, ISnapshot } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -18,7 +18,7 @@ export interface ActivityDocument extends Document {
   targetModel: string
   target: Types.ObjectId
   action: string
-  snapshot: string
+  snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
 }
@@ -26,6 +26,7 @@ export interface ActivityDocument extends Document {
 export interface ActivityModel extends Model<ActivityDocument> {
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
+
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   user: {
@@ -50,7 +51,9 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     enum: AllSupportedActionType,
   },
   snapshot: {
-    type: String,
+    type: {
+      username: String,
+    },
   },
 }, {
   timestamps: {
