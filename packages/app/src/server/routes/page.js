@@ -5,6 +5,7 @@ import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
 
+import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -1281,6 +1282,10 @@ module.exports = function(crowi, app) {
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
     catch (err) {
+      if (err instanceof PathAlreadyExistsError) {
+        logger.error('Path already exists', err);
+        return res.json(ApiResponse.error(err, 'already_exists', err.targetPath));
+      }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
     }

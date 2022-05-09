@@ -1,8 +1,58 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.4](https://github.com/weseek/growi/compare/v5.0.3...v5.0.4) - 2022-04-28
+
+### 💎 Features
+
+- feat: Private legacy pages convert by path (#5787) @hakumizuki
+- feat: Generate activity when page is created (#5765) @miya
+- feat: Private legacy pages convert by path API (#5760) @hakumizuki
+- feat:  Create notification when page is reverted (#5756) @miya
+- feat: Create notification when page is duplicated (#5749) @miya
+- feat: Add count badge to Page List button and Comment button (#5740) @yukendev
+- feat: Infinite scroll for Recent Changes in Sidebar (#5647) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Change GET method to POST for logout operation (#5751) @kaoritokashiki
+- imprv: Redesign tags (#5730) @miya
+- imprv: i18n for already_exists error in PutBackPageModal (#5747) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (#5788) @yuki-takei
+- fix: Include any public pages as applicable ancestors (#5786) @hakumizuki
+- fix: Not create unnecessary empty pages when ancestors are public (#5774) @hakumizuki
+- fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
+- fix:  footstamp-icon size (#5759) @kaoritokashiki
+
+## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
+
+### 🐛 Bug Fixes
+
+- fix: Swiping to previous/next page for Mac users (4.5.x) (#5758) @hirokei-camel
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+
+## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
+
+### 💎 Features
+
+- feat: Search on private legacy pages (#5723) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Dark theme color optimization (#5737) @shukmos
+- imprv: Change the order of menu items (#5722) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
 
@@ -51,6 +101,31 @@
 - ci(deps): bump actions/download-artifact from 2 to 3 (#5687) @dependabot
 - support: Migration for setting sparce option to slack member id (#5694) @kaoritokashiki
 - support: Update eslint-config-weseek (#5673) @yuki-takei
+
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
+
+### 🐛 Bug Fixes
+
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
+
+## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
+
+### 🐛 Bug Fixes
+
+- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
 
 ## [v5.0.0](https://github.com/weseek/growi/compare/v4.5.15...v5.0.0) - 2022-04-01
 
@@ -102,16 +177,6 @@
 - support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
 - support: update validator version (#5562) @LuqmanHakim-Grune
 
-## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
-
-### 💎 Features
-
-- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
-
-### 🐛 Bug Fixes
-
-- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
-- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
 
 ## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
 

@@ -1,33 +1,38 @@
-import { pagePathUtils, pathUtils } from '@growi/core';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
-import escapeStringRegexp from 'escape-string-regexp';
-import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import { createBatchStream } from '~/server/util/batch-stream';
-import loggerFactory from '~/utils/logger';
-import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument,
-} from '~/server/models/page';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
+import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import { PageRedirectModel } from '../models/page-redirect';
-import Subscription from '../models/subscription';
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { IUserHasId } from '~/interfaces/user';
-import { Ref } from '~/interfaces/common';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import { SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
-import ActivityDefine from '../util/activityDefine';
+import { IUserHasId } from '~/interfaces/user';
+import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import {
+  CreateMethod, PageCreateOptions, PageModel, PageDocument,
+} from '~/server/models/page';
+import { createBatchStream } from '~/server/util/batch-stream';
+import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { PathAlreadyExistsError } from '../models/errors';
+import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import { PageRedirectModel } from '../models/page-redirect';
+import { serializePageSecurely } from '../models/serializers/page-serializer';
+import Subscription from '../models/subscription';
+import { V5ConversionError } from '../models/vo/v5-conversion-error';
 
 const debug = require('debug')('growi:services:page');
 
@@ -154,7 +159,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -164,7 +169,17 @@ class PageService {
     // rename
     this.pageEvent.on('rename', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // duplicate
+    this.pageEvent.on('duplicate', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -174,7 +189,7 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
       }
       catch (err) {
         logger.error(err);
@@ -184,7 +199,17 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // revert
+    this.pageEvent.on('revert', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -194,7 +219,7 @@ class PageService {
     // likes
     this.pageEvent.on('like', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
       }
       catch (err) {
         logger.error(err);
@@ -204,7 +229,7 @@ class PageService {
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
       }
       catch (err) {
         logger.error(err);
@@ -963,6 +988,7 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
+    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -1057,6 +1083,7 @@ class PageService {
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );
+    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
@@ -1876,7 +1903,7 @@ class PageService {
 
     // throw if any page already exists
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     // 2. Revert target
@@ -1887,6 +1914,8 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    this.pageEvent.emit('revert', page, user);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
@@ -1970,7 +1999,7 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
+      throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     if (isRecursively) {
@@ -1986,6 +2015,8 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    this.pageEvent.emit('revert', page, user);
 
     return updatedPage;
   }
@@ -2205,7 +2236,7 @@ class PageService {
     // Create activity
     const parameters = {
       user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: page,
       action,
     };
@@ -2219,23 +2250,98 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
+  async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    if (isRecursively) {
-      const pages = await Page.findByIdsAndViewer(pageIds, user, null);
-
-      // DO NOT await !!
-      this.normalizeParentRecursivelyByPages(pages, user);
-
-      return;
+    const pages = await Page.findByPathAndViewer(path, user, null, false);
+    if (pages == null || !Array.isArray(pages)) {
+      throw Error('Something went wrong while converting pages.');
     }
+    if (pages.length === 0) {
+      throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
+    }
+    if (pages.length > 1) {
+      throw new V5ConversionError(
+        `There are more than two pages at the path "${path}". Please rename or delete the page first.`,
+        V5ConversionErrCode.DUPLICATE_PAGES_FOUND,
+      );
+    }
+
+    const page = pages[0];
+    const {
+      grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+    } = page;
+
+    /*
+     * UserGroup & Owner validation
+     */
+    let isGrantNormalized = false;
+    try {
+      const shouldCheckDescendants = true;
+
+      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+    }
+    catch (err) {
+      logger.error(`Failed to validate grant of page at "${path}"`, err);
+      throw err;
+    }
+    if (!isGrantNormalized) {
+      throw new V5ConversionError(
+        'This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.',
+        V5ConversionErrCode.GRANT_INVALID,
+      );
+    }
+
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.NormalizeParent,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: page.path,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
+    }
+
+    // no await
+    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+  }
+
+  async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const pages = await Page.findByIdsAndViewer(pageIds, user, null);
+
+    if (pages == null || pages.length === 0) {
+      throw Error('pageIds is null or 0 length.');
+    }
+
+    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
+    this.normalizeParentRecursivelyByPages(pages, user);
+
+    return;
+  }
+
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
+    const Page = await mongoose.model('Page') as unknown as PageModel;
+
+    const socket = this.crowi.socketIoService.getDefaultSocket();
 
     for await (const pageId of pageIds) {
       const page = await Page.findById(pageId);
       if (page == null) {
         continue;
       }
+
+      const errorData: PageMigrationErrorData = { paths: [page.path] };
 
       try {
         const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
@@ -2246,14 +2352,16 @@ class PageService {
         const normalizedPage = await this.normalizeParentByPage(page, user);
 
         if (normalizedPage == null) {
+          socket.emit(SocketEventName.PageMigrationError, errorData);
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
         }
       }
       catch (err) {
+        socket.emit(SocketEventName.PageMigrationError, errorData);
         logger.error('Something went wrong while normalizing parent.', err);
-        // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
       }
     }
+    socket.emit(SocketEventName.PageMigrationSuccess);
   }
 
   private async normalizeParentByPage(page, user) {
@@ -2316,14 +2424,7 @@ class PageService {
     /*
      * Main Operation
      */
-    if (pages == null || pages.length === 0) {
-      logger.error('pageIds is null or 0 length.');
-      return;
-    }
-
-    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
-      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
-    }
+    const socket = this.crowi.socketIoService.getDefaultSocket();
 
     const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
 
@@ -2333,25 +2434,29 @@ class PageService {
       [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(user, pagesToNormalize);
     }
     catch (err) {
+      socket.emit(SocketEventName.PageMigrationError);
       throw err;
     }
 
     if (normalizablePages.length === 0) {
-      // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
+      socket.emit(SocketEventName.PageMigrationError);
       return;
     }
 
     if (nonNormalizablePages.length !== 0) {
-      // TODO: iterate nonNormalizablePages and send socket error to client so that the user can know which path failed to migrate
-      // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
+      const nonNormalizablePagePaths: string[] = nonNormalizablePages.map(p => p.path);
+      socket.emit(SocketEventName.PageMigrationError, { paths: nonNormalizablePagePaths });
+      logger.debug('Some pages could not be converted.', nonNormalizablePagePaths);
     }
 
     /*
      * Main Operation (s)
      */
+    const errorPagePaths: string[] = [];
     for await (const page of normalizablePages) {
       const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
       if (!canOperate) {
+        errorPagePaths.push(page.path);
         throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
@@ -2363,6 +2468,7 @@ class PageService {
       const existingPage = await builder.query.exec();
 
       if (existingPage?.parent != null) {
+        errorPagePaths.push(page.path);
         throw Error('This page has already converted.');
       }
 
@@ -2378,6 +2484,7 @@ class PageService {
         });
       }
       catch (err) {
+        errorPagePaths.push(page.path);
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
@@ -2386,9 +2493,16 @@ class PageService {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
       catch (err) {
+        errorPagePaths.push(page.path);
         logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
         throw err;
       }
+    }
+    if (errorPagePaths.length === 0) {
+      socket.emit(SocketEventName.PageMigrationSuccess);
+    }
+    else {
+      socket.emit(SocketEventName.PageMigrationError, { paths: errorPagePaths });
     }
   }
 
@@ -2437,7 +2551,11 @@ class PageService {
 
       const { prevDescendantCount } = options;
       const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
-      const inc = (newDescendantCount - prevDescendantCount) + 1;
+      let inc = newDescendantCount - prevDescendantCount;
+      const isAlreadyConverted = page.parent != null;
+      if (!isAlreadyConverted) {
+        inc += 1;
+      }
       await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
