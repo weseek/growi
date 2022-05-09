@@ -155,6 +155,11 @@ const PageRenameModal = (): JSX.Element => {
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
 
 
+  function ppacInputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
+
   /**
    * change pageNameInput
    * @param {string} value
@@ -225,7 +230,7 @@ const PageRenameModal = (): JSX.Element => {
                   <PagePathAutoComplete
                     initializedPath={path}
                     onSubmit={rename}
-                    onInputChange={inputChangeHandler}
+                    onInputChange={ppacInputChangeHandler}
                     autoFocus
                   />
                 )
