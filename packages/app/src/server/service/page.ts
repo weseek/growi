@@ -49,11 +49,6 @@ const { addTrailingSlash } = pathUtils;
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-type TargetAndAncestorsResult = {
-  targetAndAncestors: PageDocument[]
-  rootPage: PageDocument
-}
-
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
 
@@ -3150,48 +3145,6 @@ class PageService {
     });
 
     return pathToChildren;
-  }
-
-  /*
-   * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
-   * The result will include the target as well
-   */
-  async findTargetAndAncestorsByPathOrId(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    let path;
-    if (!hasSlash(pathOrId)) {
-      const _id = pathOrId;
-      const page = await Page.findOne({ _id });
-
-      path = page == null ? '/' : page.path;
-    }
-    else {
-      path = pathOrId;
-    }
-
-    const ancestorPaths = collectAncestorPaths(path);
-    ancestorPaths.push(path); // include target
-
-    // Do not populate
-    const queryBuilder = new PageQueryBuilder(Page.find(), true);
-    await addViewerCondition(queryBuilder, user, userGroups);
-
-    const _targetAndAncestors: PageDocument[] = await queryBuilder
-      .addConditionAsMigrated()
-      .addConditionToListByPathsArray(ancestorPaths)
-      .addConditionToMinimizeDataForRendering()
-      .addConditionToSortPagesByDescPath()
-      .query
-      .lean()
-      .exec();
-
-    // no same path pages
-    const ancestorsMap = new Map<string, PageDocument>();
-    _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
-    const targetAndAncestors = Array.from(ancestorsMap.values());
-    const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
-
-    return { targetAndAncestors, rootPage };
   }
 
 }
