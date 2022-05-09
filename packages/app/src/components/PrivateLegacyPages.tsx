@@ -1,34 +1,35 @@
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IFormattedSearchResult } from '~/interfaces/search';
-import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import {
-  useSWRxSearch,
-} from '~/stores/search';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import { IFormattedSearchResult } from '~/interfaces/search';
+import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
-
-import PaginationWrapper from './PaginationWrapper';
-import { OperateAllControl } from './SearchPage/OperateAllControl';
-
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
-import { MenuItemType } from './Common/Dropdown/PageItemControl';
-import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
-import SearchControl from './SearchPage/SearchControl';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import { V5MigrationStatus } from '~/interfaces/page-listing-results';
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import {
+  useSWRxSearch,
+} from '~/stores/search';
+import { useGlobalSocket } from '~/stores/websocket';
+
+import { MenuItemType } from './Common/Dropdown/PageItemControl';
+import PaginationWrapper from './PaginationWrapper';
+import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
+import { OperateAllControl } from './SearchPage/OperateAllControl';
+import SearchControl from './SearchPage/SearchControl';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -201,6 +202,30 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, []);
 
   const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
+  const { data: socket } = useGlobalSocket();
+
+  useEffect(() => {
+    socket?.on(SocketEventName.PageMigrationSuccess, () => {
+      toastSuccess(t('private_legacy_pages.toaster.page_migration_succeeded'));
+    });
+
+    socket?.on(SocketEventName.PageMigrationError, (data?: PageMigrationErrorData) => {
+      if (data == null || data.paths.length === 0) {
+        toastError(t('private_legacy_pages.toaster.page_migration_failed'));
+      }
+      else {
+        const errorPaths = data.paths.length > 3
+          ? `${data.paths.slice(0, 3).join(', ')}...`
+          : data.paths.join(', ');
+        toastError(t('private_legacy_pages.toaster.page_migration_failed_with_paths', { paths: errorPaths }));
+      }
+    });
+
+    return () => {
+      socket?.off(SocketEventName.PageMigrationSuccess);
+      socket?.off(SocketEventName.PageMigrationError);
+    };
+  }, [socket]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;

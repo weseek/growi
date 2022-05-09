@@ -187,8 +187,7 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "目前还不支持包含斜线的标题"
+    "title_required": "标题是必需的。"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -941,6 +940,11 @@
       "convert_recursively_label": "递归地转换子页面。",
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
+    },
+    "toaster": {
+      "page_migration_succeeded": "已成功将所选页面转换为 v5 兼容格式。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
     },
     "by_path_modal": {
       "title": "转换为新的v5兼容格式",
