@@ -69,5 +69,9 @@
     {% if isTrashPage(page.path) %}
       <div id="trash-page-alert"></div>
     {% endif %}
+
+    {% if isGrantNormalized and not isGrantNormalized %}
+      <div id="fix-page-grant-alert"></div>
+    {% endif %}
   </div>
 </div>
