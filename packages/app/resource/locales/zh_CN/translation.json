@@ -417,6 +417,7 @@
 		"recursively": "Delete children of <code>%s</code> recursively.",
 		"completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_page": "删去的页面。",
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
