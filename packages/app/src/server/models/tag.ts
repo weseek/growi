@@ -14,7 +14,7 @@ export interface TagDocument {
   name: string;
 }
 
-export type IdToNameMap = {[key:Types.ObjectId] : string }
+export type IdToNameMap = {[key: string] : string }
 
 export interface TagModel extends Model<TagDocument>{
   getIdToNameMap(tagIds: ObjectIdLike[]): IdToNameMap
