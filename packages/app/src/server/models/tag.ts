@@ -16,7 +16,7 @@ export type IdToNameMap = {[key:Types.ObjectId] : string }
 
 export interface TagModel extends Model<TagDocument>{
   getIdToNameMap(tagIds: Types.ObjectId[]): IdToNameMap
-  findOrCreateMany(tagNames: string[])
+  findOrCreateMany(tagNames: string[]): Promise<TagDocument[]>
 }
 
 
@@ -42,7 +42,7 @@ tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]): Pro
   return idToNameMap;
 };
 
-tagSchema.statics.findOrCreateMany = async function(tagNames: string[]) {
+tagSchema.statics.findOrCreateMany = async function(tagNames: string[]): Promise<TagDocument[]> {
   const existTags = await this.find({ name: { $in: tagNames } });
   const existTagNames = existTags.map((tag) => { return tag.name });
 
