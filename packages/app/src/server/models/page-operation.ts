@@ -128,4 +128,16 @@ schema.statics.cleanup = async function(excludeActionTypeList: PageActionType[],
   await this.deleteMany({ actionType: { $nin: excludeActionTypeList }, actionStage: { $ne: excludeStage } });
 };
 
+schema.statics.findByActionType = async function(pageActionType: PageActionType): Promise<PageOperationDocument[]> {
+  return this.find({ actionType: pageActionType });
+};
+
+/**
+ * it's processable if unprocessableExpiryDate is null or current time is past unprocessableExpiryDate
+ */
+schema.statics.isProcessable = function(pageOperation): boolean {
+  const expiryDate = pageOperation.unprocessableExpiryDate;
+  return expiryDate == null || (expiryDate != null && new Date() > expiryDate);
+};
+
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
