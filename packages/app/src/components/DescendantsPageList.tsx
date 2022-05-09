@@ -63,11 +63,11 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
     if (args[0] == null || args[2] == null) {
+      toastSuccess('ページを削除しました');
       return;
     }
-    if (args[0] != null && args[2] != null) {
-      toastSuccess(args[2] ? t('deleted_pages_completely', { path: args[0] }) : t('deleted_pages', { path: args[0] }));
-    }
+
+    toastSuccess(args[2] ? t('deleted_pages_completely', { path: args[0] }) : t('deleted_pages', { path: args[0] }));
 
     advancePt();
 
