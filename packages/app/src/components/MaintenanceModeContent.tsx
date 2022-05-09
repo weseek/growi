@@ -25,18 +25,16 @@ const MaintenanceModeContent = () => {
 
   return (
     <div className="text-left">
+      <p>
+        <i className="icon-arrow-right"></i>
+        <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
+      </p>
       {currentUser != null
         ? (
-          <>
-            <p>
-              <i className="icon-arrow-right"></i>
-              <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
-            </p>
-            <p>
-              <i className="icon-arrow-right"></i>
-              <a className="btn btn-link" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
-            </p>
-          </>
+          <p>
+            <i className="icon-arrow-right"></i>
+            <a className="btn btn-link" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
+          </p>
         )
         : (
           <p>
