@@ -2,7 +2,6 @@
 /* eslint-disable no-return-await */
 
 const flatMap = require('array.prototype.flatmap');
-
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -112,6 +111,7 @@ class PageTagRelation {
 
     // retrieve tag documents
     const Tag = mongoose.model('Tag');
+    // TODO: set IdToNameMap type by 93933
     const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
 
     // convert to map

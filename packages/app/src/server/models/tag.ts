@@ -12,10 +12,13 @@ export interface TagDocument {
   name: string;
 }
 
+export type IdToNameMap = {[key:Types.ObjectId] : string }
+
 export interface TagModel extends Model<TagDocument>{
-  getIdToNameMap(tagIds: Types.ObjectId[])
+  getIdToNameMap(tagIds: Types.ObjectId[]): IdToNameMap
   findOrCreateMany(tagNames: string[])
 }
+
 
 const tagSchema = new Schema<TagDocument, TagModel>({
   name: {
@@ -28,7 +31,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]) {
+tagSchema.statics.getIdToNameMap = async function(tagIds: Types.ObjectId[]): Promise<IdToNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
