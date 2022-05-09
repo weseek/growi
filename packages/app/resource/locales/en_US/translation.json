@@ -186,9 +186,7 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required.",
-    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
-
+    "title_required": "Title is required."
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -654,6 +652,11 @@
       "convert_recursively_label": "Convert child pages recursively.",
       "convert_recursively_desc": "Convert pages under this path recursively.",
       "button_label": "Convert"
+    },
+    "toaster": {
+      "page_migration_succeeded": "Conversion of selected page to v5 has been successfully completed.",
+      "page_migration_failed_with_paths": "Conversion of {{paths}} to v5 has been failed.",
+      "page_migration_failed": "Conversion of page to v5 has been failed."
     },
     "by_path_modal": {
       "title": "Convert to new v5 compatible format",
