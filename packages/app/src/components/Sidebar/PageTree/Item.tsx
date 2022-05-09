@@ -368,13 +368,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       };
     }
 
-    if (title.includes('/')) {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.slashed_are_not_yet_supported'),
-      };
-    }
-
     return null;
   };
 
