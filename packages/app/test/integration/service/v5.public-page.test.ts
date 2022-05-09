@@ -2,8 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
-import { Tag } from '~/server/models/tag';
-
+import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with only public pages', () => {

@@ -1,4 +1,4 @@
-import { Tag } from './tag';
+import Tag from './tag';
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */

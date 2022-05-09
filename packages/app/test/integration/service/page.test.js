@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
 
-import { Tag } from '~/server/models/tag';
+import Tag from '~/server/models/tag';
 
 const mongoose = require('mongoose');
 
