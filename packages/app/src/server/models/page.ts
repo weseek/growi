@@ -57,7 +57,7 @@ export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, andFilter?): Promise<void>
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
@@ -482,6 +482,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: a
     aggregationPipeline.push({
       $match: {
         $or: [
+          { grant: GRANT_PUBLIC },
           { parent: { $ne: null } },
           { path: '/' },
         ],
