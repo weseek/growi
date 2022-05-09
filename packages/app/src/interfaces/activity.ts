@@ -1,3 +1,5 @@
+import { IUser } from '~/interfaces/user';
+
 // Model
 const MODEL_PAGE = 'Page';
 
@@ -39,3 +41,7 @@ export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 
 // type supportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_NAMES[keyof typeof SUPPORTED_TARGET_MODEL_NAMES];
 // type supportedActionType = typeof SUPPORTED_ACTION_NAMES[keyof typeof SUPPORTED_ACTION_NAMES];
+
+export type ISnapshot = {
+  username: Pick<IUser, 'username'>
+}
