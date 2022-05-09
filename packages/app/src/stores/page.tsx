@@ -146,3 +146,15 @@ export const useSWRxPageInfoForList = (
     },
   };
 };
+
+type DataIsGrantNormalized = { isGrantNormalized: boolean };
+
+export const useSWRxIsGrantNormalized = (
+    pageId: string | null | undefined,
+): SWRResponse<DataIsGrantNormalized, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/is-grant-normalized', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
