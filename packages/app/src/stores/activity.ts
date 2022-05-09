@@ -6,7 +6,7 @@ import { IActivityHasId } from '../interfaces/activity';
 import { PaginateResult } from '../interfaces/mongoose-utils';
 
 type IQuery = {
-  action?: string
+  action?: string[]
 }
 
 export const useSWRxActivityList = (limit?: number, offset?: number, query?: IQuery): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
