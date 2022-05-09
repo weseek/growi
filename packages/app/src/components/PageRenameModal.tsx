@@ -12,12 +12,13 @@ import { debounce } from 'throttle-debounce';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { isIPageInfoForEntity } from '~/interfaces/page';
-import { useSiteUrl } from '~/stores/context';
+import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import PagePathAutoComplete from './PagePathAutoComplete';
 
 
 const isV5Compatible = (meta: unknown): boolean => {
@@ -31,6 +32,7 @@ const PageRenameModal = (): JSX.Element => {
   const { isUsersHomePage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
+  const { data: isReachable } = useIsSearchServiceReachable();
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;
@@ -87,6 +89,7 @@ const PageRenameModal = (): JSX.Element => {
     const _isV5Compatible = isV5Compatible(page.meta);
 
     setErrs(null);
+    setIsRenameButtonPushed(true);
 
     const { _id, path, revision } = page.data;
     try {
@@ -154,6 +157,11 @@ const PageRenameModal = (): JSX.Element => {
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce, isRenameButtonPushed]);
 
 
+  function ppacInputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
+
   /**
    * change pageNameInput
    * @param {string} value
@@ -219,15 +227,26 @@ const PageRenameModal = (): JSX.Element => {
             <div className="input-group-prepend">
               <span className="input-group-text">{siteUrl}</span>
             </div>
-            <form className="flex-fill" onSubmit={(e) => { setIsRenameButtonPushed(true); e.preventDefault(); rename() }}>
-              <input
-                type="text"
-                value={pageNameInput}
-                className="form-control"
-                onChange={e => inputChangeHandler(e.target.value)}
-                required
-                autoFocus
-              />
+            <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
+              {isReachable
+                ? (
+                  <PagePathAutoComplete
+                    initializedPath={path}
+                    onSubmit={rename}
+                    onInputChange={ppacInputChangeHandler}
+                    autoFocus
+                  />
+                )
+                : (
+                  <input
+                    type="text"
+                    value={pageNameInput}
+                    className="form-control"
+                    onChange={e => inputChangeHandler(e.target.value)}
+                    required
+                    autoFocus
+                  />
+                )}
             </form>
           </div>
         </div>
