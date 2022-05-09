@@ -39,11 +39,6 @@ const STATUS_DELETED = 'deleted';
 export interface PageDocument extends IPage, Document { }
 
 
-type TargetAndAncestorsResult = {
-  targetAndAncestors: PageDocument[]
-  rootPage: PageDocument
-}
-
 type PaginatedPages = {
   pages: PageDocument[],
   totalCount: number,
@@ -58,7 +53,6 @@ export interface PageModel extends Model<PageDocument> {
   getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
-  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
@@ -738,49 +732,6 @@ schema.statics.findRecentUpdatedPages = async function(
 
   return results;
 };
-
-
-/*
- * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
- * The result will include the target as well
- */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
-  let path;
-  if (!hasSlash(pathOrId)) {
-    const _id = pathOrId;
-    const page = await this.findOne({ _id });
-
-    path = page == null ? '/' : page.path;
-  }
-  else {
-    path = pathOrId;
-  }
-
-  const ancestorPaths = collectAncestorPaths(path);
-  ancestorPaths.push(path); // include target
-
-  // Do not populate
-  const queryBuilder = new PageQueryBuilder(this.find(), true);
-  await addViewerCondition(queryBuilder, user, userGroups);
-
-  const _targetAndAncestors: PageDocument[] = await queryBuilder
-    .addConditionAsMigrated()
-    .addConditionToListByPathsArray(ancestorPaths)
-    .addConditionToMinimizeDataForRendering()
-    .addConditionToSortPagesByDescPath()
-    .query
-    .lean()
-    .exec();
-
-  // no same path pages
-  const ancestorsMap = new Map<string, PageDocument>();
-  _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
-  const targetAndAncestors = Array.from(ancestorsMap.values());
-  const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
-
-  return { targetAndAncestors, rootPage };
-};
-
 
 /*
  * Utils from obsolete-page.js

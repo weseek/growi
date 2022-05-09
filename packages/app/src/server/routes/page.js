@@ -260,7 +260,7 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForPageTree(renderVars, pathOrId, user) {
-    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(pathOrId, user);
+    const { targetAndAncestors, rootPage } = await crowi.pageService.findTargetAndAncestorsByPathOrId(pathOrId, user);
 
     if (targetAndAncestors.length === 0 && pathOrId.includes('/') && !isTopPage(pathOrId)) {
       throw new Error('Ancestors must have at least one page.');
