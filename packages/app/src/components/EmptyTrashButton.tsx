@@ -31,6 +31,8 @@ const EmptyTrashButton = () => {
     pageWithMetas = injectTo(dataWithMetas);
   }
 
+  const deletablePages = pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
+
   const onEmptiedTrashHandler = useCallback(() => {
     toastSuccess(t('empty_trash'));
 
@@ -38,7 +40,8 @@ const EmptyTrashButton = () => {
   }, [t, mutate]);
 
   const emptyTrashClickHandler = () => {
-    openEmptyTrashModal(pageWithMetas, { onEmptiedTrash: onEmptiedTrashHandler });
+    if (deletablePages.length === 0) { return }
+    openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDelepeAllPages: pagingResult?.totalCount === deletablePages.length });
   };
 
   return (

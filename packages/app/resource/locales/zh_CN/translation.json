@@ -423,6 +423,7 @@
 	"modal_empty": {
 		"empty_the_trash": "清空垃圾",
     "empty_the_trash_button": "清空垃圾",
+    "not_deletable_notice": "由于缺乏权限，一些页面不能被删除",
 		"notice": "完全删除的页面是不可恢复的。"
 	},
 	"modal_duplicate": {
