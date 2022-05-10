@@ -127,7 +127,9 @@ const PageRenameModal = (): JSX.Element => {
     try {
       const res = await apiv3Get<{ existPaths: string[]}>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
-      setCanRename(true);
+      if (existPaths.length === 0) {
+        setCanRename(true);
+      }
       setExistingPaths(existPaths);
     }
     catch (err) {
