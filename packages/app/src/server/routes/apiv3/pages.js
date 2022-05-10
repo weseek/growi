@@ -560,7 +560,8 @@ module.exports = (crowi) => {
     // when some pages are not deletable
     if (deletablePages.length < pagesInTrash.length) {
       try {
-        await crowi.pageService.deleteMultipleCompletely(deletablePages, req.user);
+        const options = { isCompletely: true, isRecursively: true };
+        await crowi.pageService.deleteMultiplePages(deletablePages, req.user, options);
         return res.apiv3({ deletablePages });
       }
       catch (err) {
