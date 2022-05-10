@@ -83,7 +83,7 @@ export const SelectQueryItemsDropdown: FC<Props> = (props: Props) => {
     <div className="btn-group mr-2 mb-3">
       <div className="dropdown">
         <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          {t('admin:audit_log_management.select_action')}
+          <i className="fa fa-fw fa-bolt" />Action
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {dropdownItems.map(item => (
