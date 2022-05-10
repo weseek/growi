@@ -33,7 +33,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   if (currentUser == null) {
     return (
       <>
-        <li className="nav-item dropdown dropdown-toggle">
+        <li className="nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <GuestDropdown />
         </li>
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
