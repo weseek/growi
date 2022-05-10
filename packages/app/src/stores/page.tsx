@@ -147,14 +147,33 @@ export const useSWRxPageInfoForList = (
   };
 };
 
-type DataIsGrantNormalized = { isGrantNormalized: boolean };
-
+/*
+ * Grant normalization fetching hooks
+ */
+export type IResIsGrantNormalized = { isGrantNormalized: boolean };
 export const useSWRxIsGrantNormalized = (
     pageId: string | null | undefined,
-): SWRResponse<DataIsGrantNormalized, Error> => {
+): SWRResponse<IResIsGrantNormalized, Error> => {
 
   return useSWRImmutable(
     pageId != null ? ['/page/is-grant-normalized', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export type IApplicableGrant = {
+  grant: number
+  applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
+}
+export type IResApplicableGrant = {
+  data: IApplicableGrant[]
+}
+export const useSWRxApplicableGrant = (
+    pageId: string | null | undefined,
+): SWRResponse<IResApplicableGrant, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };

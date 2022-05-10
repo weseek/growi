@@ -1,39 +1,171 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { PageGrant } from '~/interfaces/page';
 
 import { useCurrentPageId } from '~/stores/context';
-import { useSWRxIsGrantNormalized } from '~/stores/page';
+import { IResApplicableGrant, useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
-  close?(): Promise<void> | void
-  submit?(): Promise<void> | void
+  pageId: string
+  close(): Promise<void> | void
 }
 
 const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, close, submit,
+    isOpen, pageId, close,
   } = props;
+
+  const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
+  const [selectedGroupName, setSelectedGroupName] = useState<string | undefined>(undefined);
+
+  // Alert message state
+  const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
+
+  // const { data: applicableGrantData } = useSWRxApplicableGrant(pageId);
+  const applicableGrantData: IResApplicableGrant = {
+    data: [
+      { grant: PageGrant.GRANT_OWNER },
+      { grant: PageGrant.GRANT_USER_GROUP, applicableGroups: [{ _id: 'testid1', name: 'testgroup1' }, { _id: 'testid2', name: 'testgroup2' }] },
+    ],
+  };
+
+  const applicableGroups = applicableGrantData.data.find(d => d.grant === PageGrant.GRANT_USER_GROUP)?.applicableGroups;
+
+  // Reset state when opened
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedGrant(PageGrant.GRANT_OWNER);
+      setSelectedGroupName(undefined);
+      setShowModalAlert(false);
+    }
+  }, [isOpen]);
+
+  const submit = async() => {
+    // Validate input values
+    if (selectedGrant === PageGrant.GRANT_USER_GROUP && selectedGroupName == null) {
+      setShowModalAlert(true);
+      return;
+    }
+
+    close();
+
+    try {
+      await apiv3Put(`/page/${pageId}/grant`, {
+        grant: selectedGrant,
+        grantedGroupName: selectedGroupName,
+      });
+    }
+    catch (err) {
+      toastError();
+    }
+    toastSuccess();
+  };
+
+  const renderModalBody = () => {
+    const isGrantAvailable = applicableGrantData.data.length > 0;
+
+    if (!isGrantAvailable) {
+      return (
+        <p className="mb-2">
+          No grant is available for this page. Please fix the parent page&apos;s grant first.
+        </p>
+      );
+    }
+
+    return (
+      <ModalBody>
+        <div className="form-group grw-scrollable-modal-body">
+          <p className="mb-2">
+            You need to fix the grant of this page. Select new grant from below.
+          </p>
+          <div className="ml-2">
+            <div className="custom-control custom-radio mb-3">
+              <input
+                className="custom-control-input"
+                name="grantUser"
+                id="grantUser"
+                type="radio"
+                checked={selectedGrant === PageGrant.GRANT_OWNER}
+                onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
+              />
+              <label className="custom-control-label" htmlFor="grantUser">
+                { t('fix_page_grant.modal.radio_btn.only_me') }
+              </label>
+            </div>
+            <div className="custom-control custom-radio d-flex mb-3">
+              <input
+                className="custom-control-input"
+                name="grantUserGroup"
+                id="grantUserGroup"
+                type="radio"
+                checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
+                onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
+              />
+              <label className="custom-control-label" htmlFor="grantUserGroup">
+                { t('fix_page_grant.modal.radio_btn.grant_group') }
+              </label>
+              <div className="dropdown ml-2">
+                <div className="d-flex">
+                  <button
+                    type="button"
+                    className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                    data-toggle="dropdown"
+                    disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
+                  >
+                    <span className="float-left">
+                      {
+                        selectedGroupName == null
+                          ? t('fix_page_grant.modal.select_group_default_text')
+                          : selectedGroupName
+                      }
+                    </span>
+                  </button>
+                  <div className="dropdown-menu">
+                    {
+                      applicableGroups != null && applicableGroups.map(g => (
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => setSelectedGroupName(g.name)}
+                        >
+                          {g.name}
+                        </button>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+            {
+              shouldShowModalAlert && (
+                <p className="alert alert-warning">
+                  {t('fix_page_grant.modal.alert_message')}
+                </p>
+              )
+            }
+          </div>
+        </div>
+      </ModalBody>
+    );
+  };
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={close} className="grw-create-page">
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         { t('fix_page_grant.modal.title') }
       </ModalHeader>
-      <ModalBody>
-        <div className="form-group grw-scrollable-modal-body pb-1">
-          <label>{ t('fix_page_grant.modal.converting_pages') }:</label><br />
-        </div>
-      </ModalBody>
+      {renderModalBody()}
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={submit}>
-          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
           { t('fix_page_grant.modal.button_label') }
         </button>
       </ModalFooter>
@@ -67,11 +199,15 @@ const FixPageGrantAlert = (): JSX.Element => {
         </div>
       </div>
 
-      <FixPageGrantModal
-        isOpen={isOpen}
-        close={() => setOpen(false)}
-        submit={() => {}} // TODO: update grant
-      />
+      {
+        pageId != null && (
+          <FixPageGrantModal
+            isOpen={isOpen}
+            pageId={pageId}
+            close={() => setOpen(false)}
+          />
+        )
+      }
     </>
   );
 };
