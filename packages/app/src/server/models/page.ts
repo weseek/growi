@@ -432,16 +432,6 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToListByRegexp(regexp) {
-    this.query = this.query
-      .and({
-        path: {
-          $in: regexp,
-        },
-      });
-    return this;
-  }
-
   addConditionToListByPageIdsArray(pageIds) {
     this.query = this.query
       .and({

@@ -3093,7 +3093,7 @@ class PageService {
     if (hasSlash(parentPathOrId)) {
       const path = parentPathOrId;
       const regexp = generateChildrenRegExp(path);
-      queryBuilder.addConditionToListByRegexp(regexp);
+      queryBuilder.addConditionToListByPathsArray(regexp);
     }
     else {
       const parentId = parentPathOrId;
@@ -3118,7 +3118,7 @@ class PageService {
     const queryBuilder = new PageQueryBuilder(Page.find(), true);
     await queryBuilder.addViewerCondition(user, userGroups);
     const _pages = await queryBuilder
-      .addConditionToListByRegexp(regexp)
+      .addConditionToListByPathsArray(regexp)
       .addConditionAsMigrated()
       .addConditionToMinimizeDataForRendering()
       .addConditionToSortPagesByAscPath()
