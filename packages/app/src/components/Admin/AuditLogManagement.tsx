@@ -56,19 +56,11 @@ export const AuditLogManagement: FC = () => {
 
       <SelectActionDropdown
         dropdownItems={[
-          {
-            targetModelName: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-            actionNames: AllSupportedPageAction,
-            checkedItems,
-            onCheckItem: checkActionNameHandler,
-          },
-          {
-            targetModelName: SUPPORTED_TARGET_MODEL_TYPE.MODEL_COMMENT,
-            actionNames: AllSupportedCommentAction,
-            checkedItems,
-            onCheckItem: checkActionNameHandler,
-          },
+          { actionType: 'Page', actionNames: AllSupportedPageAction },
+          { actionType: 'Comment', actionNames: AllSupportedCommentAction },
         ]}
+        checkedItems={checkedItems}
+        onCheckItem={checkActionNameHandler}
       />
 
       { isLoading
