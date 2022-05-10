@@ -345,7 +345,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  // Utility function to add viewer condition to PageQueryBuilder instance
+  // add viewer condition to PageQueryBuilder instance
   async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
