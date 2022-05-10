@@ -151,10 +151,10 @@ describe('UserGroupService', () => {
     const updatedUserGroup = await crowi.userGroupService.updateGroup(
       userGroup4._id, userGroup4.name, userGroup4.description, groupId5, forceUpdateParents,
     );
-    const relatedGroup = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroup4Relation.relatedUser });
+    const userGroupRelation5 = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroup4Relation.relatedUser });
 
     expect(updatedUserGroup.parent).toStrictEqual(groupId5);
-    expect(relatedGroup).toBeTruthy();
+    expect(userGroupRelation5).toBeTruthy();
   });
 
   test('User should be included to parent group (3 groups ver)', async() => {
@@ -164,13 +164,13 @@ describe('UserGroupService', () => {
     await crowi.userGroupService.updateGroup(
       userGroup8._id, userGroup8.name, userGroup8.description, groupId7, forceUpdateParents,
     );
-    const relatedGroup6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
-    const relatedGroup7 = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
-    const relatedGroup8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
+    const userGroupRelation6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
+    const userGroupRelation7 = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
+    const userGroupRelation8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
 
-    expect(relatedGroup6).toBeTruthy();
-    expect(relatedGroup7).toBeTruthy();
-    expect(relatedGroup8).toBeTruthy();
+    expect(userGroupRelation6).toBeTruthy();
+    expect(userGroupRelation7).toBeTruthy();
+    expect(userGroupRelation8).toBeTruthy();
   });
 
 });
