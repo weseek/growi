@@ -4,14 +4,14 @@ import { SupportedActionType } from '~/interfaces/activity';
 
 type Props = {
   dropdownItems: Array<{actionType: string, actionNames: SupportedActionType[]}>
-  checkedItems: Map<SupportedActionType, boolean>
+  actionMap: Map<SupportedActionType, boolean>
   onSelectAction: (action: SupportedActionType) => void
   onSelectAllACtion: (actions: SupportedActionType[], isChecked: boolean) => void
 }
 
 export const SelectActionDropdown: FC<Props> = (props: Props) => {
   const {
-    dropdownItems, checkedItems, onSelectAction, onSelectAllACtion,
+    dropdownItems, actionMap, onSelectAction, onSelectAllACtion,
   } = props;
 
   const selectActionCheckboxChangedHandler = useCallback((action) => {
@@ -55,7 +55,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                         className="form-check-input"
                         id={`checkbox${action}`}
                         onChange={() => { selectActionCheckboxChangedHandler(action) }}
-                        checked={checkedItems.get(action)}
+                        checked={actionMap.get(action)}
                       />
                       <label
                         className="form-check-label"

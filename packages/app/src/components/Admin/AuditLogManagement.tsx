@@ -24,7 +24,7 @@ export const AuditLogManagement: FC = () => {
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
 
-  const [checkedItems, setCheckedItems] = useState(
+  const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
 
@@ -47,13 +47,13 @@ export const AuditLogManagement: FC = () => {
   }, []);
 
   const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
-    setCheckedItems(prev => new Map([...prev, [action, !checkedItems.get(action)]]));
-  }, [checkedItems, setCheckedItems]);
+    setActionMap(prev => new Map([...prev, [action, !actionMap.get(action)]]));
+  }, [actionMap, setActionMap]);
 
   const selectAllActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
-    actions.forEach(action => checkedItems.set(action, isChecked));
-    setCheckedItems(new Map(checkedItems.entries()));
-  }, [checkedItems, setCheckedItems]);
+    actions.forEach(action => actionMap.set(action, isChecked));
+    setActionMap(new Map(actionMap.entries()));
+  }, [actionMap, setActionMap]);
 
   return (
     <div data-testid="admin-auditlog">
@@ -64,7 +64,7 @@ export const AuditLogManagement: FC = () => {
           { actionType: 'Page', actionNames: AllSupportedPageAction },
           { actionType: 'Comment', actionNames: AllSupportedCommentAction },
         ]}
-        checkedItems={checkedItems}
+        actionMap={actionMap}
         onSelectAction={selectActionCheckboxChangedHandler}
         onSelectAllACtion={selectAllActionCheckboxChangedHandler}
       />
