@@ -153,7 +153,7 @@ describe('UserGroupService', () => {
     const userGroupRelation5BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup5, relatedUser: userId1 });
     expect(userGroupRelation5BeforeUpdate).toBeNull();
 
-    // update group (forceUpdate: true)
+    // update userGroup4's parent with userGroup5 (forceUpdate: true)
     const forceUpdateParents = true;
     const updatedUserGroup = await crowi.userGroupService.updateGroup(
       userGroup4._id, userGroup4.name, userGroup4.description, groupId5, forceUpdateParents,
@@ -172,7 +172,7 @@ describe('UserGroupService', () => {
     const userGroupRelation7BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  groupId7, relatedUser: userId1 });
     expect(userGroupRelation7BeforeUpdate).toBeNull();
 
-    // update group (forceUpdate: true)
+    // update userGroup8's parent with userGroup7 (forceUpdate: true)
     const forceUpdateParents = true;
     await crowi.userGroupService.updateGroup(
       userGroup8._id, userGroup8.name, userGroup8.description, groupId7, forceUpdateParents,
