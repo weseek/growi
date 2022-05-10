@@ -15,6 +15,7 @@ import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDro
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import GlobalSearch from './GlobalSearch';
+import GuestDropdown from './GuestDropdown';
 import PersonalDropdown from './PersonalDropdown';
 
 
@@ -30,7 +31,14 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
 
   // render login button
   if (currentUser == null) {
-    return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+    return (
+      <>
+        <li className="nav-item dropdown dropdown-toggle">
+          <GuestDropdown />
+        </li>
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
+      </>
+    );
   }
 
   return (
