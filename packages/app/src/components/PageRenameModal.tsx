@@ -50,7 +50,6 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
-  const [isRenameButtonPushed, setIsRenameButtonPushed] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -89,7 +88,6 @@ const PageRenameModal = (): JSX.Element => {
     const _isV5Compatible = isV5Compatible(page.meta);
 
     setErrs(null);
-    setIsRenameButtonPushed(true);
 
     const { _id, path, revision } = page.data;
     try {
@@ -117,7 +115,6 @@ const PageRenameModal = (): JSX.Element => {
     }
     catch (err) {
       setErrs(err);
-      setIsRenameButtonPushed(false);
     }
   }, [closeRenameModal, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
@@ -151,10 +148,10 @@ const PageRenameModal = (): JSX.Element => {
 
   useEffect(() => {
     if (page != null && pageNameInput !== page.data.path) {
-      checkExistPathsDebounce(page.data.path, pageNameInput, !isRenameButtonPushed);
+      checkExistPathsDebounce(page.data.path, pageNameInput);
       checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce, isRenameButtonPushed]);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
 
 
   function ppacInputChangeHandler(value) {
@@ -182,7 +179,6 @@ const PageRenameModal = (): JSX.Element => {
       setErrs(null);
       setSubordinatedPages([]);
       setExistingPaths([]);
-      setIsRenameButtonPushed(false);
       setIsRenameRecursively(true);
       setIsRenameRedirect(false);
       setIsRemainMetadata(false);
