@@ -145,34 +145,45 @@ describe('UserGroupService', () => {
   test('User should be included to parent group (2 groups ver)', async() => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4, parent: null });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5, parent: null });
+    // userGroup4 has userId1
     const userGroupRelation4 = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
-    const userGroupRelation5BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup5, relatedUser: userId1 });
     expect(userGroupRelation4).toBeTruthy();
+
+    // userGroup5 has not userId1
+    const userGroupRelation5BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup5, relatedUser: userId1 });
     expect(userGroupRelation5BeforeUpdate).toBeNull();
 
+    // update group (forceUpdate: true)
     const forceUpdateParents = true;
     const updatedUserGroup = await crowi.userGroupService.updateGroup(
       userGroup4._id, userGroup4.name, userGroup4.description, groupId5, forceUpdateParents,
     );
-    expect(updatedUserGroup.parent).toStrictEqual(groupId5);
 
+    expect(updatedUserGroup.parent).toStrictEqual(groupId5);
+    // userGroup5 should have userId1
     const userGroupRelation5AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroupRelation4.relatedUser });
     expect(userGroupRelation5AfterUpdate).toBeTruthy();
   });
 
   test('User should be included to parent group (3 groups ver)', async() => {
     const userGroup8 = await UserGroup.findOne({ _id: groupId8, parent: null });
-    const forceUpdateParents = true;
 
+    // userGroup7 has not userId1
+    const userGroupRelation7BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  groupId7, relatedUser: userId1 });
+    expect(userGroupRelation7BeforeUpdate).toBeNull();
+
+    // update group (forceUpdate: true)
+    const forceUpdateParents = true;
     await crowi.userGroupService.updateGroup(
       userGroup8._id, userGroup8.name, userGroup8.description, groupId7, forceUpdateParents,
     );
-    const userGroupRelation6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
-    const userGroupRelation7 = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
-    const userGroupRelation8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
 
+    const userGroupRelation6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
+    const userGroupRelation7AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
+    const userGroupRelation8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
     expect(userGroupRelation6).toBeTruthy();
-    expect(userGroupRelation7).toBeTruthy();
+    // userGroup7 should have userId1
+    expect(userGroupRelation7AfterUpdate).toBeTruthy();
     expect(userGroupRelation8).toBeTruthy();
   });
 
