@@ -345,6 +345,18 @@ export class PageQueryBuilder {
     return this;
   }
 
+  // Utility function to add viewer condition to PageQueryBuilder instance
+  async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
+      const UserGroupRelation: any = mongoose.model('UserGroupRelation');
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, false);
+    return this;
+  }
+
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
     const condition = generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
@@ -659,17 +671,6 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
   return createdParent;
 };
 
-// Utility function to add viewer condition to PageQueryBuilder instance
-export const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
-  let relatedUserGroups = userGroups;
-  if (user != null && relatedUserGroups == null) {
-    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-    relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-  }
-
-  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
-};
-
 /*
  * Find pages by ID and viewer.
  */
@@ -677,7 +678,7 @@ schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, user
   const baseQuery = this.find({ _id: { $in: pageIds } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   return queryBuilder.query.exec();
 };
@@ -695,7 +696,7 @@ schema.statics.findByPathAndViewer = async function(
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   return queryBuilder.query.exec();
 };
@@ -722,7 +723,7 @@ schema.statics.findRecentUpdatedPages = async function(
 
   queryBuilder.addConditionToListWithDescendants(path, options);
   queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-  await addViewerCondition(queryBuilder, user);
+  await queryBuilder.addViewerCondition(user);
   const pages = await Page.paginate(queryBuilder.query.clone(), {
     lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
   });
@@ -755,7 +756,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find(), true);
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionAsMigrated()

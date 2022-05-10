@@ -22,7 +22,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder, addViewerCondition,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -3100,7 +3100,7 @@ class PageService {
       queryBuilder = new PageQueryBuilder(Page.find({ parent: parentId } as any), true); // TODO: improve type
       queryBuilder.addConditionToFilteringByParentId(parentId);
     }
-    await addViewerCondition(queryBuilder, user, userGroups);
+    await queryBuilder.addViewerCondition(user, userGroups);
 
     return queryBuilder
       .addConditionToSortPagesByAscPath()
@@ -3116,7 +3116,7 @@ class PageService {
 
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find(), true);
-    await addViewerCondition(queryBuilder, user, userGroups);
+    await queryBuilder.addViewerCondition(user, userGroups);
     const _pages = await queryBuilder
       .addConditionToListByRegexp(regexp)
       .addConditionAsMigrated()
