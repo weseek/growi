@@ -275,7 +275,7 @@ export const hasSlash = (str: string): boolean => {
   return str.includes('/');
 };
 
-/*
+/**
  * Generate RegExp instance for one level lower path
  */
 export const generateChildrenRegExp = (path: string): RegExp => {
