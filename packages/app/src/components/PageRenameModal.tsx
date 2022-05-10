@@ -50,6 +50,7 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
+  const [canRename, setCanRename] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -81,7 +82,7 @@ const PageRenameModal = (): JSX.Element => {
   }, [isOpened, page, updateSubordinatedList]);
 
   const rename = useCallback(async() => {
-    if (page == null) {
+    if (page == null || !canRename) {
       return;
     }
 
@@ -116,16 +117,17 @@ const PageRenameModal = (): JSX.Element => {
     catch (err) {
       setErrs(err);
     }
-  }, [closeRenameModal, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
+  }, [closeRenameModal, canRename, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
-  const checkExistPaths = useCallback(async(fromPath, toPath, isCheckable) => {
-    if (page == null || !isCheckable) {
+  const checkExistPaths = useCallback(async(fromPath, toPath) => {
+    if (page == null) {
       return;
     }
 
     try {
-      const res = await apiv3Get<{ existPaths: string[] }>('/page/exist-paths', { fromPath, toPath });
+      const res = await apiv3Get<{ existPaths: string[]}>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
+      setCanRename(true);
       setExistingPaths(existPaths);
     }
     catch (err) {
@@ -152,6 +154,10 @@ const PageRenameModal = (): JSX.Element => {
       checkIsUsersHomePageDebounce(pageNameInput);
     }
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+
+  useEffect(() => {
+    setCanRename(false);
+  }, [pageNameInput]);
 
 
   function ppacInputChangeHandler(value) {
@@ -197,6 +203,9 @@ const PageRenameModal = (): JSX.Element => {
   let submitButtonDisabled = false;
 
   if (isMatchedWithUserHomePagePath) {
+    submitButtonDisabled = true;
+  }
+  else if (!canRename) {
     submitButtonDisabled = true;
   }
   else if (isV5Compatible(page.meta)) {
