@@ -74,7 +74,7 @@ type Props = {
   }>
 }
 
-export const SelectQueryItemsDropdown: FC<Props> = (props: Props) => {
+export const SelectActionDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { dropdownItems } = props;
