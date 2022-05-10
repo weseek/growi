@@ -26,7 +26,8 @@ const validator = {
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // limit each IP to 30 requests per windowMs
+  // todo restore 100000 -> 30
+  max: 100000, // limit each IP to 30 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes.',
 });
