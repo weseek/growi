@@ -1,8 +1,9 @@
 import loggerFactory from '~/utils/logger';
-import * as userActivation from './user-activation';
+
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
 
 import pageListing from './page-listing';
+import * as userActivation from './user-activation';
 
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
 
@@ -10,6 +11,7 @@ const express = require('express');
 
 const router = express.Router();
 const routerForAdmin = express.Router();
+const routerForAuth = express.Router();
 
 module.exports = (crowi) => {
 
@@ -33,6 +35,9 @@ module.exports = (crowi) => {
   routerForAdmin.use('/mongo', require('./mongo')(crowi));
   routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
   routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
+
+  // auth
+  routerForAuth.use('/logout', require('./logout')(crowi));
 
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
@@ -75,5 +80,5 @@ module.exports = (crowi) => {
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
 
-  return [router, routerForAdmin];
+  return [router, routerForAdmin, routerForAuth];
 };

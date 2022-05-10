@@ -268,32 +268,32 @@ export const usePagePresentationModal = (
 
 
 /*
- * LegacyPrivatePagesMigrationModal
+ * PrivateLegacyPagesMigrationModal
  */
 
 export type ILegacyPrivatePage = { pageId: string, path: string };
 
-export type LegacyPrivatePagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
+export type PrivateLegacyPagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
 
-type LegacyPrivatePagesMigrationModalStatus = {
+type PrivateLegacyPagesMigrationModalStatus = {
   isOpened: boolean,
   pages?: ILegacyPrivatePage[],
-  onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler,
+  onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler,
 }
 
-type LegacyPrivatePagesMigrationModalStatusUtils = {
-  open(pages: ILegacyPrivatePage[], onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
-  close(): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+type PrivateLegacyPagesMigrationModalStatusUtils = {
+  open(pages: ILegacyPrivatePage[], onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
+  close(): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
 }
 
-export const useLegacyPrivatePagesMigrationModal = (
-    status?: LegacyPrivatePagesMigrationModalStatus,
-): SWRResponse<LegacyPrivatePagesMigrationModalStatus, Error> & LegacyPrivatePagesMigrationModalStatusUtils => {
-  const initialData: LegacyPrivatePagesMigrationModalStatus = {
+export const usePrivateLegacyPagesMigrationModal = (
+    status?: PrivateLegacyPagesMigrationModalStatus,
+): SWRResponse<PrivateLegacyPagesMigrationModalStatus, Error> & PrivateLegacyPagesMigrationModalStatusUtils => {
+  const initialData: PrivateLegacyPagesMigrationModalStatus = {
     isOpened: false,
     pages: [],
   };
-  const swrResponse = useStaticSWR<LegacyPrivatePagesMigrationModalStatus, Error>('legacyPrivatePagesMigrationModal', status, { fallbackData: initialData });
+  const swrResponse = useStaticSWR<PrivateLegacyPagesMigrationModalStatus, Error>('privateLegacyPagesMigrationModal', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,

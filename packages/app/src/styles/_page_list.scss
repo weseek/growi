@@ -49,15 +49,23 @@ body .page-list {
         margin-right: 2px;
       }
 
+      .footstamp-icon {
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
       .seen-users-count {
-        &.strength-1 {
+        &.strength-0,
+        &.strength-1,
+        &.strength-2 {
           font-weight: bold;
         }
-        &.strength-2 {
+        &.strength-3 {
           font-weight: normal;
         }
-        &.strength-3 {
-          opacity: 0.6;
+        &.strength-4 {
+          opacity: 0.5;
         }
       }
     }
@@ -77,17 +85,6 @@ body .page-list {
   .list-group {
     .list-group-item {
       min-height: 136px;
-
-      .page-list-meta {
-        .meta-icon {
-          width: 14px;
-          height: 14px;
-          margin-right: 14px;
-        }
-        .footstamp-icon {
-          margin-right: 2px;
-        }
-      }
 
       .page-list-updated-at {
         font-size: 12px;

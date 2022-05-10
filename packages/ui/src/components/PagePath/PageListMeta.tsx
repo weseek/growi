@@ -12,38 +12,38 @@ const { checkTemplatePath } = templateChecker;
 
 
 const SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT = 5;
-const MIN_STRENGTH_LEVEL = -3;
+const MAX_STRENGTH_LEVEL = 4;
 
 type SeenUsersCountProps = {
   count: number,
-  activeUsersCount?: number,
+  basisViewersCount?: number,
   shouldSpaceOutIcon?: boolean,
 }
 
 const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
 
-  const { count, shouldSpaceOutIcon, activeUsersCount } = props;
+  const { count, shouldSpaceOutIcon, basisViewersCount } = props;
 
   if (count === 0) {
     return <></>;
   }
 
-  if (activeUsersCount != null && activeUsersCount <= SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT) {
+  if (basisViewersCount != null && basisViewersCount <= SEEN_USERS_HIDE_THRES__ACTIVE_USERS_COUNT) {
     return <></>;
   }
 
-  const strengthLevel = Math.log(count / (activeUsersCount ?? count)); // Max: 0
+  const strengthLevel = Math.ceil(
+    Math.min(0, Math.log(count / (basisViewersCount ?? count))) // Max: 0
+    * 2 * -1,
+  );
 
-  if (strengthLevel <= MIN_STRENGTH_LEVEL) {
+  if (strengthLevel > MAX_STRENGTH_LEVEL) {
     return <></>;
   }
 
-  assert(strengthLevel > MIN_STRENGTH_LEVEL); // [0, MIN_STRENGTH_LEVEL)
+  assert(strengthLevel >= 0 && strengthLevel <= MAX_STRENGTH_LEVEL); // [0, MAX_STRENGTH_LEVEL)
 
-  let strengthClass = '';
-  if (strengthLevel < 0) {
-    strengthClass = `strength-${Math.ceil(strengthLevel * -1)}`; // strength-{0, 1, 2, 3}
-  }
+  const strengthClass = `strength-${strengthLevel}`; // strength-{0, 1, 2, 3, 4}
 
   return (
     <span className={`seen-users-count ${shouldSpaceOutIcon ? 'mr-3' : ''} ${strengthClass}`}>
@@ -60,12 +60,12 @@ type PageListMetaProps = {
   likerCount?: number,
   bookmarkCount?: number,
   shouldSpaceOutIcon?: boolean,
-  activeUsersCount?: number,
+  basisViewersCount?: number,
 }
 
 export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) => {
 
-  const { page, shouldSpaceOutIcon, activeUsersCount } = props;
+  const { page, shouldSpaceOutIcon, basisViewersCount } = props;
 
   // top check
   let topLabel;
@@ -103,7 +103,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
     <span className="page-list-meta">
       {topLabel}
       {templateLabel}
-      <SeenUsersCount count={page.seenUsers.length} activeUsersCount={activeUsersCount} />
+      <SeenUsersCount count={page.seenUsers.length} basisViewersCount={basisViewersCount} />
       {commentCount}
       {likerCount}
       {locked}
