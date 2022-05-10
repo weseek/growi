@@ -7609,10 +7609,10 @@ emittery@^0.8.1:
   resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.8.1.tgz#bb23cc86d03b30aa75a7f734819dee2e1ba70860"
   integrity sha512-uDfvUjVrfGJJhymx/kz6prltenw1u7WrCg1oa94zYY8xxVpLLUu045LAT0dhDZdXG58/EpPL/5kA180fQ/qudg==
 
-emoji-mart@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-3.0.1.tgz#9ce86706e02aea0506345f98464814a662ca54c6"
-  integrity sha512-sxpmMKxqLvcscu6mFn9ITHeZNkGzIvD0BSNFE/LJESPbCA8s1jM6bCDPjWbV31xHq7JXaxgpHxLB54RCbBZSlg==
+"emoji-mart@npm:panta82-emoji-mart@^3.0.1":
+  version "3.0.1003"
+  resolved "https://registry.yarnpkg.com/panta82-emoji-mart/-/panta82-emoji-mart-3.0.1003.tgz#8febed01a0a731ba84caaddf1ba5b1ac724562ac"
+  integrity sha512-JLCNrxoyOb/m/0kGWJZK7QGl/+t82cQrFgbbieeevBxp+lD8pnAb4Bsa4kJzV7xNwMYlNlHDAZJsM//Xb5eJ2Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     prop-types "^15.6.0"
