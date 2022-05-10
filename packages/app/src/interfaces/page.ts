@@ -18,7 +18,7 @@ export interface IPage {
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  grant: number,
+  grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
   lastUpdateUser: Ref<IUser>,

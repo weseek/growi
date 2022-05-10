@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta, PageGrant,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
@@ -162,7 +162,7 @@ export const useSWRxIsGrantNormalized = (
 };
 
 export type IApplicableGrant = {
-  grant: number
+  grant: PageGrant
   applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
 }
 export type IResApplicableGrant = {
