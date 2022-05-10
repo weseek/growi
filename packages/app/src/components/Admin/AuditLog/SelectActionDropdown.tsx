@@ -1,23 +1,30 @@
-import React, {
-  FC, useState, useCallback,
-} from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { SupportedActionType } from '~/interfaces/activity';
 
 type Props = {
   dropdownItems: Array<{actionType: string, actionNames: SupportedActionType[]}>
   checkedItems: Map<SupportedActionType, boolean>
-  onCheckItem: (action: SupportedActionType) => void
+  onSelectAction: (action: SupportedActionType) => void
+  onSelectAllACtion: (actions: SupportedActionType[], isChecked: boolean) => void
 }
 
 export const SelectActionDropdown: FC<Props> = (props: Props) => {
-  const { dropdownItems, checkedItems, onCheckItem } = props;
+  const {
+    dropdownItems, checkedItems, onSelectAction, onSelectAllACtion,
+  } = props;
 
-  const [checkedAllItems, setCheckedAllItems] = useState(true);
+  const selectActionCheckboxChangedHandler = useCallback((action) => {
+    if (onSelectAction != null) {
+      onSelectAction(action);
+    }
+  }, [onSelectAction]);
 
-  const handleChange = useCallback((action: SupportedActionType) => {
-    onCheckItem(action);
-  }, [onCheckItem]);
+  const selectAllActionCheckboxChangedHandler = useCallback((actions, isChecked) => {
+    if (onSelectAllACtion) {
+      onSelectAllACtion(actions, isChecked);
+    }
+  }, [onSelectAllACtion]);
 
   return (
     <div className="btn-group mr-2 mb-3">
@@ -33,8 +40,8 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                   <input
                     type="checkbox"
                     className="form-check-input"
-                    checked={checkedAllItems}
-                    onChange={() => setCheckedAllItems(!checkedAllItems)}
+                    defaultChecked
+                    onChange={(e) => { selectAllActionCheckboxChangedHandler(item.actionNames, e.target.checked) }}
                   />
                   <label className="form-check-label">{item.actionType}</label>
                 </div>
@@ -47,7 +54,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                         type="checkbox"
                         className="form-check-input"
                         id={`checkbox${action}`}
-                        onChange={() => { handleChange(action) }}
+                        onChange={() => { selectActionCheckboxChangedHandler(action) }}
                         checked={checkedItems.get(action)}
                       />
                       <label

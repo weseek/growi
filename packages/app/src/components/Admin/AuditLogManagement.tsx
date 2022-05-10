@@ -3,7 +3,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  SUPPORTED_TARGET_MODEL_TYPE, SupportedActionType, AllSupportedPageAction, AllSupportedCommentAction, AllSupportedActionType,
+  SupportedActionType, AllSupportedPageAction, AllSupportedCommentAction, AllSupportedActionType,
 } from '~/interfaces/activity';
 import { useSWRxActivityList } from '~/stores/activity';
 
@@ -46,8 +46,13 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const checkActionNameHandler = useCallback((action: SupportedActionType) => {
-    setCheckedItems(new Map(checkedItems.set(action, !checkedItems.get(action))));
+  const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
+    setCheckedItems(prev => new Map([...prev, [action, !checkedItems.get(action)]]));
+  }, [checkedItems, setCheckedItems]);
+
+  const selectAllActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
+    actions.forEach(action => checkedItems.set(action, isChecked));
+    setCheckedItems(new Map(checkedItems.entries()));
   }, [checkedItems, setCheckedItems]);
 
   return (
@@ -60,7 +65,8 @@ export const AuditLogManagement: FC = () => {
           { actionType: 'Comment', actionNames: AllSupportedCommentAction },
         ]}
         checkedItems={checkedItems}
-        onCheckItem={checkActionNameHandler}
+        onSelectAction={selectActionCheckboxChangedHandler}
+        onSelectAllACtion={selectAllActionCheckboxChangedHandler}
       />
 
       { isLoading
