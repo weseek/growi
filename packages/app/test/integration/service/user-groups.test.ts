@@ -143,7 +143,7 @@ describe('UserGroupService', () => {
   * forceUpdateParents: true
   */
   test('User should be included to parent group (2 groups ver)', async() => {
-    const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
+    const userGroup4 = await UserGroup.findOne({ _id: groupId4, parent: null });
     const userGroup4Relation = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
 
     const forceUpdateParents = true;
