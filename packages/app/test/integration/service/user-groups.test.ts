@@ -133,7 +133,7 @@ describe('UserGroupService', () => {
   * forceUpdateParents: false
   */
   test('Should throw an error when users in child group do not exist in parent group', async() => {
-    const userGroup4 = await UserGroup.findOne({ _id: groupId4 });
+    const userGroup4 = await UserGroup.findOne({ _id: groupId4, parent: null });
     const result = crowi.userGroupService.updateGroup(userGroup4._id, userGroup4.name, userGroup4.description, groupId5);
 
     await expect(result).rejects.toThrow('The parent group does not contain the users in this group.');
@@ -158,7 +158,7 @@ describe('UserGroupService', () => {
   });
 
   test('User should be included to parent group (3 groups ver)', async() => {
-    const userGroup8 = await UserGroup.findOne({ _id: groupId8 });
+    const userGroup8 = await UserGroup.findOne({ _id: groupId8, parent: null });
     const forceUpdateParents = true;
 
     await crowi.userGroupService.updateGroup(
