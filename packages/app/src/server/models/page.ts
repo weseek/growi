@@ -21,7 +21,7 @@ import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } fr
 import { PageRedirectModel } from './page-redirect';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
-const { isTopPage, collectAncestorPaths } = pagePathUtils;
+const { isTopPage, collectAncestorPaths, hasSlash } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 /*
@@ -114,22 +114,6 @@ const schema = new Schema<PageDocument, PageModel>({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-export const hasSlash = (str: string): boolean => {
-  return str.includes('/');
-};
-
-/*
- * Generate RegExp instance for one level lower path
- */
-export const generateChildrenRegExp = (path: string): RegExp => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
-};
 
 export class PageQueryBuilder {
 
@@ -433,6 +417,16 @@ export class PageQueryBuilder {
         },
       });
 
+    return this;
+  }
+
+  addConditionToListByRegexp(regexp) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: regexp,
+        },
+      });
     return this;
   }
 
