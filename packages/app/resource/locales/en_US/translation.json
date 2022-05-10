@@ -445,7 +445,7 @@
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
     "empty_the_trash_button": "Empty The Trash",
-    "not_deletable_notice": "Some pages cannot be removed due to lack of rights.",
+    "not_deletable_notice": "Some pages cannot be removed due to lack of permission.",
     "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
