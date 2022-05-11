@@ -15,7 +15,7 @@ type ModalProps = {
   isOpen: boolean
   pageId: string
   dataApplicableGrant: IResApplicableGrant
-  close(): Promise<void> | void
+  close(): void
 }
 
 const FixPageGrantModal = (props: ModalProps): JSX.Element => {
