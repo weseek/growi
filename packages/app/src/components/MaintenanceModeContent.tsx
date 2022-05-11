@@ -25,10 +25,15 @@ const MaintenanceModeContent = () => {
 
   return (
     <div className="text-left">
-      <p>
-        <i className="icon-arrow-right"></i>
-        <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
-      </p>
+      {currentUser?.admin
+      && (
+        <p>
+          <i className="icon-arrow-right"></i>
+          <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
+        </p>
+      )
+
+      }
       {currentUser != null
         ? (
           <p>
