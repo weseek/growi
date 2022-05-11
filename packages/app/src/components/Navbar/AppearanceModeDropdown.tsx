@@ -8,10 +8,10 @@ import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SunIcon from '../Icons/SunIcon';
 
-type GuestDropdownProps = {
+type AppearanceModeDropdownProps = {
   isAuthenticated: boolean,
 }
-const AppearanceModeDropdown:FC<GuestDropdownProps> = (props: GuestDropdownProps) => {
+const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: AppearanceModeDropdownProps) => {
 
   const { t } = useTranslation();
 
@@ -29,26 +29,26 @@ const AppearanceModeDropdown:FC<GuestDropdownProps> = (props: GuestDropdownProps
     </>
   );
 
-  const renderSidebarModeSwitch = (isEdit: boolean) => {
+  const renderSidebarModeSwitch = (isEditMode: boolean) => {
     return (
       <>
-        <h6 className="dropdown-header">{t(isEdit ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
+        <h6 className="dropdown-header">{t(isEditMode ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id={isEdit ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
+              <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
-                  id={isEdit ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
+                  id={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
                   className="custom-control-input"
                   type="checkbox"
                   onChange={() => console.log('changed!')}
                 />
-                <label className="custom-control-label" htmlFor={isEdit ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
+                <label className="custom-control-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
               </div>
-              <IconWithTooltip id={isEdit ? 'iwt-sidebar-editor-dock' : 'iwt-sidebar-dock'} label="Dock" additionalClasses="grw-sidebar-mode-icon">
+              <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-dock' : 'iwt-sidebar-dock'} label="Dock" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDockIcon />
               </IconWithTooltip>
             </div>
