@@ -2,7 +2,7 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { IActivity } from '~/interfaces/activity';
+import { IActivity, AllSupportedActionType } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -20,7 +20,7 @@ const validator = {
   list: [
     query('limit').optional().isInt({ max: 100 }).withMessage('limit must be a number less than or equal to 100'),
     query('offset').optional().isInt().withMessage('page must be a number'),
-    query('query').optional().isString().withMessage('query must be a string'),
+    query('searchFilter').optional().isString().withMessage('query must be a string'),
   ],
 };
 
@@ -43,15 +43,15 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/', apiLimiter, accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
-    const query = req.query.query as string || '';
+    const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
 
-    const parsedQuery = JSON.parse(query);
-    const q = {
-      action: parsedQuery.action,
+    const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
+    const query = {
+      action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
     };
 
     try {
-      const paginationResult = await Activity.getPaginatedActivity(limit, offset, q);
+      const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
       const User = crowi.model('User');
       const serializedDocs = paginationResult.docs.map((doc: IActivity) => {

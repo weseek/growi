@@ -32,10 +32,9 @@ export const AuditLogManagement: FC = () => {
    * Fetch
    */
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
-  const query = {
-    action: selectedActionList,
-  };
-  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, query);
+  const searchFilter = { action: selectedActionList };
+
+  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
   const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
   const isLoading = activityListData === undefined && error == null;

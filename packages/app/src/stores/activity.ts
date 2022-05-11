@@ -2,18 +2,19 @@ import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { IActivityHasId } from '../interfaces/activity';
+import { IActivityHasId, SupportedActionType } from '../interfaces/activity';
 import { PaginateResult } from '../interfaces/mongoose-utils';
 
-type IQuery = {
-  action?: string[]
+
+type ISearchFilter = {
+  action?: SupportedActionType[]
 }
 
-export const useSWRxActivityList = (limit?: number, offset?: number, query?: IQuery): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
-  const stringifiedQuery = JSON.stringify(query);
+export const useSWRxActivityList = (limit?: number, offset?: number, searchFilter?: ISearchFilter): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
+  const stringifiedSearchFilter = JSON.stringify(searchFilter);
   return useSWRImmutable(
-    ['/activity', limit, offset, stringifiedQuery],
-    (endpoint, limit, offset, stringifiedQuery) => apiv3Get(endpoint, { limit, offset, query: stringifiedQuery })
+    ['/activity', limit, offset, stringifiedSearchFilter],
+    (endpoint, limit, offset, stringifiedSearchFilter) => apiv3Get(endpoint, { limit, offset, searchFilter: stringifiedSearchFilter })
       .then(result => result.data.serializedPaginationResult),
   );
 };
