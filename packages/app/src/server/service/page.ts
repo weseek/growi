@@ -30,7 +30,9 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType, PageOperationAutoUpdateTimerType } from '../models/page-operation';
+import PageOperation, {
+  PageActionStage, PageActionType, PageOperationAutoUpdateTimerType,
+} from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -3084,6 +3086,14 @@ class PageService {
   }
 
   /**
+   * it's processable if unprocessableExpiryDate is null or current time is past unprocessableExpiryDate
+   */
+  isPageOperationProcessable(pageOperation): boolean {
+    const expiryDate = pageOperation.unprocessableExpiryDate;
+    return expiryDate == null || (expiryDate != null && new Date() > expiryDate);
+  }
+
+  /**
    * Find all children by parent's path or id. Using id should be prioritized
    */
   async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
@@ -3130,13 +3140,18 @@ class PageService {
       return page;
     });
 
+    const filter = { actionType: PageActionType.Rename, path: { $ne: '/' } }; // exclude root page
+    const sortOpt = { sort: { createdAt: -1 } };
+    const renameSubOpsInfoMap = await this.crowi.pageOperationService.getRenameSubOpsInfoMap(filter, {}, sortOpt);
+    const newPages = await this.crowi.pageOperationService.addShouldResumeRenameOpInfoToPages(pages, renameSubOpsInfoMap);
+
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
      */
     const pathToChildren: Record<string, PageDocument[]> = {};
     const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
     sortedPaths.every((path) => {
-      const children = pages.filter(page => pathlib.dirname(page.path) === path);
+      const children = newPages.filter(page => pathlib.dirname(page.path) === path);
       if (children.length === 0) {
         return false; // break when children do not exist
       }
