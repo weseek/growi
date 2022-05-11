@@ -6,12 +6,12 @@ type Props = {
   dropdownItems: Array<{actionCategory: string, actionNames: SupportedActionType[]}>
   actionMap: Map<SupportedActionType, boolean>
   onSelectAction: (action: SupportedActionType) => void
-  onSelectAllACtion: (actions: SupportedActionType[], isChecked: boolean) => void
+  onSelectMultipleAction: (actions: SupportedActionType[], isChecked: boolean) => void
 }
 
 export const SelectActionDropdown: FC<Props> = (props: Props) => {
   const {
-    dropdownItems, actionMap, onSelectAction, onSelectAllACtion,
+    dropdownItems, actionMap, onSelectAction, onSelectMultipleAction,
   } = props;
 
   const selectActionCheckboxChangedHandler = useCallback((action) => {
@@ -20,11 +20,11 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
     }
   }, [onSelectAction]);
 
-  const selectAllActionCheckboxChangedHandler = useCallback((actions, isChecked) => {
-    if (onSelectAllACtion != null) {
-      onSelectAllACtion(actions, isChecked);
+  const selectMultipleActionCheckboxChangedHandler = useCallback((actions, isChecked) => {
+    if (onSelectMultipleAction != null) {
+      onSelectMultipleAction(actions, isChecked);
     }
-  }, [onSelectAllACtion]);
+  }, [onSelectMultipleAction]);
 
   return (
     <div className="btn-group mr-2 mb-3">
@@ -40,7 +40,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                   type="checkbox"
                   className="form-check-input"
                   defaultChecked
-                  onChange={(e) => { selectAllActionCheckboxChangedHandler(item.actionNames, e.target.checked) }}
+                  onChange={(e) => { selectMultipleActionCheckboxChangedHandler(item.actionNames, e.target.checked) }}
                 />
                 <label className="form-check-label">{item.actionCategory}</label>
               </div>

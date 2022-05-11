@@ -50,7 +50,7 @@ export const AuditLogManagement: FC = () => {
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
-  const selectAllActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
+  const selectMultipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
     setActivePage(1);
     actions.forEach(action => actionMap.set(action, isChecked));
     setActionMap(new Map(actionMap.entries()));
@@ -67,7 +67,7 @@ export const AuditLogManagement: FC = () => {
         ]}
         actionMap={actionMap}
         onSelectAction={selectActionCheckboxChangedHandler}
-        onSelectAllACtion={selectAllActionCheckboxChangedHandler}
+        onSelectMultipleAction={selectMultipleActionCheckboxChangedHandler}
       />
 
       { isLoading
