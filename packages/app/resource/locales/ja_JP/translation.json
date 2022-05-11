@@ -188,8 +188,7 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "title_required": "タイトルを入力してください"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -442,8 +441,11 @@
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
+  "empty_trash": "ゴミ箱を空にしました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
+    "empty_the_trash_button": "空にする",
+    "not_deletable_notice": "権限がないため、いくつかのページは削除できません",
     "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
@@ -653,6 +655,11 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "toaster": {
+      "page_migration_succeeded": "選択されたページの v5 互換形式への変換が正常に終了しました。",
+      "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+      "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
     },
     "by_path_modal": {
       "title": "新しい v5 互換形式への変換",
