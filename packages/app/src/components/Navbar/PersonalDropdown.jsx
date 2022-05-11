@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import {
+  isUserPreferenceExists,
+  isDarkMode as isDarkModeByUtil,
+  applyColorScheme,
+  removeUserPreference,
+  updateUserPreference,
+  updateUserPreferenceWithOsSettings,
+} from '~/client/util/color-scheme';
 import { useCurrentUser } from '~/stores/context';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 const PersonalDropdown = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const user = currentUser || {};
+
+  // const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
+  // const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+
+  // const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  // const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
+  // const { scheduleToPut } = useUserUISettings();
 
   const logoutHandler = async() => {
     try {
@@ -22,6 +40,50 @@ const PersonalDropdown = () => {
       toastError(err);
     }
   };
+
+  // const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
+  //   mutatePreferDrawerMode(bool);
+  //   scheduleToPut({ preferDrawerModeByUser: bool });
+  // }, [mutatePreferDrawerMode, scheduleToPut]);
+
+  // const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
+  //   mutatePreferDrawerModeOnEdit(bool);
+  //   scheduleToPut({ preferDrawerModeOnEditByUser: bool });
+  // }, [mutatePreferDrawerModeOnEdit, scheduleToPut]);
+
+  // const followOsCheckboxModifiedHandler = (bool) => {
+  //   if (bool) {
+  //     removeUserPreference();
+  //   }
+  //   else {
+  //     updateUserPreferenceWithOsSettings();
+  //   }
+  //   applyColorScheme();
+
+  //   // update states
+  //   setOsSettings(bool);
+  //   setIsDarkMode(isDarkModeByUtil());
+  // };
+
+  // const userPreferenceSwitchModifiedHandler = (bool) => {
+  //   updateUserPreference(bool);
+  //   applyColorScheme();
+
+  //   // update state
+  //   setIsDarkMode(isDarkModeByUtil());
+  // };
+
+
+  // /* eslint-disable react/prop-types */
+  // const IconWithTooltip = ({
+  //   id, label, children, additionalClasses,
+  // }) => (
+  //   <>
+  //     <div id={id} className={`px-2 grw-icon-container ${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
+  //     <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
+  //   </>
+  // );
+  // /* eslint-enable react/prop-types */
 
   return (
     <>
