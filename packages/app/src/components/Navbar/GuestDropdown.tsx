@@ -26,11 +26,12 @@ const GuestDropdown = (): JSX.Element => {
   );
 
   return (
+
     <>
       {/* setting button */}
-      <a className="px-md-3 nav-link waves-effect waves-light" data-toggle="dropdown">
+      <button className="dropdown-toggle bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" aria-haspopup="true">
         <i className="material-icons">settings</i>
-      </a>
+      </button>
 
       {/* dropdown */}
       <div className="dropdown-menu dropdown-menu-right">
