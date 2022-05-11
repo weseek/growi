@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta, PageGrant,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
@@ -145,4 +145,35 @@ export const useSWRxPageInfoForList = (
       });
     },
   };
+};
+
+/*
+ * Grant normalization fetching hooks
+ */
+export type IResIsGrantNormalized = { isGrantNormalized: boolean };
+export const useSWRxIsGrantNormalized = (
+    pageId: string | null | undefined,
+): SWRResponse<IResIsGrantNormalized, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/is-grant-normalized', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export type IApplicableGrant = {
+  grant: PageGrant
+  applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
+}
+export type IResApplicableGrant = {
+  data: IApplicableGrant[]
+}
+export const useSWRxApplicableGrant = (
+    pageId: string | null | undefined,
+): SWRResponse<IResApplicableGrant, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/applicable-grant', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
 };

@@ -18,7 +18,7 @@ export interface IPage {
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  grant: number,
+  grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
   lastUpdateUser: Ref<IUser>,
@@ -31,6 +31,15 @@ export interface IPage {
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
+
+export const PageGrant = {
+  GRANT_PUBLIC: 1,
+  GRANT_RESTRICTED: 2,
+  GRANT_SPECIFIED: 3,
+  GRANT_OWNER: 4,
+  GRANT_USER_GROUP: 5,
+};
+export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
 export type IPageHasId = IPage & HasObjectId;
 
