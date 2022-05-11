@@ -183,22 +183,8 @@ const PersonalDropdown = () => {
         {/* Color Mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
         <form className="px-4">
-          <div className="form-row">
-            <div className="form-group col-auto">
-              <div className="custom-control custom-checkbox">
-                <input
-                  id="cbFollowOs"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={useOsSettings}
-                  onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
-                />
-                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
-              </div>
-            </div>
-          </div>
           <div className="form-row justify-content-center">
-            <div className="form-group col-auto mb-0 d-flex align-items-center">
+            <div className="form-group col-auto d-flex align-items-center">
               <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                 <SunIcon />
               </IconWithTooltip>
@@ -216,6 +202,20 @@ const PersonalDropdown = () => {
               <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                 <MoonIcon />
               </IconWithTooltip>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group mb-0 col-auto">
+              <div className="custom-control custom-checkbox">
+                <input
+                  id="cbFollowOs"
+                  className="custom-control-input"
+                  type="checkbox"
+                  checked={useOsSettings}
+                  onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
+                />
+                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+              </div>
             </div>
           </div>
         </form>
