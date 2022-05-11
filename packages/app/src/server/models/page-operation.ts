@@ -139,6 +139,4 @@ schema.statics.cleanup = async function(excludeActionTypeList: PageActionType[],
   await this.deleteMany({ actionType: { $nin: excludeActionTypeList }, actionStage: { $ne: excludeStage } });
 };
 
-//
-
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
