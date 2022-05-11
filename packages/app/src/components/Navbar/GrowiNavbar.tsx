@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import GrowiLogo from '../Icons/GrowiLogo';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppearanceModeDropdown from './AppearanceModeDropdown';
+import { AppearanceModeDropdown } from './AppearanceModeDropdown';
 import GlobalSearch from './GlobalSearch';
 import PersonalDropdown from './PersonalDropdown';
 
@@ -30,7 +30,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { currentUser } = props;
   const isAuthenticated = currentUser != null;
 
-  const authenticatedNavItem = () => {
+  const authenticatedNavItem = useMemo(() => {
     return (
       <>
         <li className="nav-item">
@@ -54,11 +54,11 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         </li>
       </>
     );
-  };
+  }, [t, currentPagePath, openCreateModal]);
 
-  const notAuthenticatedNavItem = () => {
+  const notAuthenticatedNavItem = useMemo(() => {
     return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
-  };
+  }, []);
 
   return (
     <>
@@ -66,7 +66,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
       </li>
 
-      {isAuthenticated ? authenticatedNavItem() : notAuthenticatedNavItem()}
+      {isAuthenticated ? authenticatedNavItem : notAuthenticatedNavItem}
     </>
   );
 });

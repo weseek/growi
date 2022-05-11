@@ -11,7 +11,7 @@ import SunIcon from '../Icons/SunIcon';
 type AppearanceModeDropdownProps = {
   isAuthenticated: boolean,
 }
-const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: AppearanceModeDropdownProps) => {
+export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: AppearanceModeDropdownProps) => {
 
   const { t } = useTranslation();
 
@@ -122,5 +122,3 @@ const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Appearanc
   );
 
 };
-
-export default AppearanceModeDropdown;
