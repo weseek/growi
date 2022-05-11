@@ -3,7 +3,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  SupportedActionType, AllSupportedPageAction, AllSupportedCommentAction, AllSupportedActionType,
+  SupportedActionType, AllSupportedActionType, PageActions, CommentActions,
 } from '~/interfaces/activity';
 import { useSWRxActivityList } from '~/stores/activity';
 
@@ -11,7 +11,6 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
-
 
 const PAGING_LIMIT = 10;
 
@@ -63,8 +62,8 @@ export const AuditLogManagement: FC = () => {
 
       <SelectActionDropdown
         dropdownItems={[
-          { actionCategory: 'Page', actionNames: AllSupportedPageAction },
-          { actionCategory: 'Comment', actionNames: AllSupportedCommentAction },
+          { actionCategory: 'Page', actionNames: PageActions },
+          { actionCategory: 'Comment', actionNames: CommentActions },
         ]}
         actionMap={actionMap}
         onSelectAction={selectActionCheckboxChangedHandler}

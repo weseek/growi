@@ -47,7 +47,11 @@ export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_
 export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 
-export const AllSupportedPageAction = Object.values({
+
+/*
+ * For AuditLogManagement.tsx
+ */
+export const PageActions = Object.values({
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
   ACTION_PAGE_CREATE,
@@ -59,10 +63,11 @@ export const AllSupportedPageAction = Object.values({
   ACTION_PAGE_REVERT,
 } as const);
 
-export const AllSupportedCommentAction = Object.values({
+export const CommentActions = Object.values({
   ACTION_COMMENT_CREATE,
   ACTION_COMMENT_UPDATE,
 } as const);
+
 
 export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof typeof SUPPORTED_TARGET_MODEL_TYPE];
 // type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
