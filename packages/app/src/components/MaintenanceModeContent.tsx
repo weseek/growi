@@ -31,9 +31,7 @@ const MaintenanceModeContent = () => {
           <i className="icon-arrow-right"></i>
           <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
         </p>
-      )
-
-      }
+      )}
       {currentUser != null
         ? (
           <p>
