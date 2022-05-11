@@ -11,6 +11,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import PageService from '../../service/page';
+
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
@@ -51,6 +52,9 @@ export default (crowi: Crowi): Router => {
 
 
   router.get('/root', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    if (crowi.pageOperationService == null) {
+      throw Error('crowi is not set up');
+    }
     const Page: PageModel = crowi.model('Page');
 
     let rootPage;
@@ -60,6 +64,8 @@ export default (crowi: Crowi): Router => {
     catch (err) {
       return res.apiv3Err(new ErrorV3('rootPage not found'));
     }
+
+    rootPage = await crowi.pageOperationService.addShouldResumeRenameOpInfoToRootPage(rootPage);
 
     return res.apiv3({ rootPage });
   });
