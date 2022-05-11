@@ -133,7 +133,7 @@ const PersonalDropdown = () => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id="iwt-sidebar-drawer" label="Drawer">
+              <IconWithTooltip id="iwt-sidebar-drawer" label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
@@ -146,7 +146,7 @@ const PersonalDropdown = () => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
               </div>
-              <IconWithTooltip id="iwt-sidebar-dock" label="Dock">
+              <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDockIcon />
               </IconWithTooltip>
             </div>
@@ -158,7 +158,7 @@ const PersonalDropdown = () => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id="iwt-sidebar-editor-drawer" label="Drawer">
+              <IconWithTooltip id="iwt-sidebar-editor-drawer" label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
@@ -171,7 +171,7 @@ const PersonalDropdown = () => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
               </div>
-              <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock">
+              <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDockIcon />
               </IconWithTooltip>
             </div>
@@ -199,7 +199,7 @@ const PersonalDropdown = () => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
+              <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                 <SunIcon />
               </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
@@ -213,7 +213,7 @@ const PersonalDropdown = () => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
+              <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                 <MoonIcon />
               </IconWithTooltip>
             </div>
