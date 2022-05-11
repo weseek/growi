@@ -18,25 +18,18 @@ import {
 import { useCurrentUser } from '~/stores/context';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
-
-import MoonIcon from '../Icons/MoonIcon';
-import SidebarDockIcon from '../Icons/SidebarDockIcon';
-import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
-import SunIcon from '../Icons/SunIcon';
-
-
 const PersonalDropdown = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const user = currentUser || {};
 
-  const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
-  const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+  // const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
+  // const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
-  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
-  const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
-  const { scheduleToPut } = useUserUISettings();
+  // const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  // const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
+  // const { scheduleToPut } = useUserUISettings();
 
   const logoutHandler = async() => {
     try {
@@ -48,49 +41,49 @@ const PersonalDropdown = () => {
     }
   };
 
-  const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
-    mutatePreferDrawerMode(bool);
-    scheduleToPut({ preferDrawerModeByUser: bool });
-  }, [mutatePreferDrawerMode, scheduleToPut]);
+  // const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
+  //   mutatePreferDrawerMode(bool);
+  //   scheduleToPut({ preferDrawerModeByUser: bool });
+  // }, [mutatePreferDrawerMode, scheduleToPut]);
 
-  const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
-    mutatePreferDrawerModeOnEdit(bool);
-    scheduleToPut({ preferDrawerModeOnEditByUser: bool });
-  }, [mutatePreferDrawerModeOnEdit, scheduleToPut]);
+  // const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
+  //   mutatePreferDrawerModeOnEdit(bool);
+  //   scheduleToPut({ preferDrawerModeOnEditByUser: bool });
+  // }, [mutatePreferDrawerModeOnEdit, scheduleToPut]);
 
-  const followOsCheckboxModifiedHandler = (bool) => {
-    if (bool) {
-      removeUserPreference();
-    }
-    else {
-      updateUserPreferenceWithOsSettings();
-    }
-    applyColorScheme();
+  // const followOsCheckboxModifiedHandler = (bool) => {
+  //   if (bool) {
+  //     removeUserPreference();
+  //   }
+  //   else {
+  //     updateUserPreferenceWithOsSettings();
+  //   }
+  //   applyColorScheme();
 
-    // update states
-    setOsSettings(bool);
-    setIsDarkMode(isDarkModeByUtil());
-  };
+  //   // update states
+  //   setOsSettings(bool);
+  //   setIsDarkMode(isDarkModeByUtil());
+  // };
 
-  const userPreferenceSwitchModifiedHandler = (bool) => {
-    updateUserPreference(bool);
-    applyColorScheme();
+  // const userPreferenceSwitchModifiedHandler = (bool) => {
+  //   updateUserPreference(bool);
+  //   applyColorScheme();
 
-    // update state
-    setIsDarkMode(isDarkModeByUtil());
-  };
+  //   // update state
+  //   setIsDarkMode(isDarkModeByUtil());
+  // };
 
 
-  /* eslint-disable react/prop-types */
-  const IconWithTooltip = ({
-    id, label, children, additionalClasses,
-  }) => (
-    <>
-      <div id={id} className={`px-2 grw-icon-container ${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
-    </>
-  );
-  /* eslint-enable react/prop-types */
+  // /* eslint-disable react/prop-types */
+  // const IconWithTooltip = ({
+  //   id, label, children, additionalClasses,
+  // }) => (
+  //   <>
+  //     <div id={id} className={`px-2 grw-icon-container ${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
+  //     <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
+  //   </>
+  // );
+  // /* eslint-enable react/prop-types */
 
   return (
     <>
@@ -129,7 +122,7 @@ const PersonalDropdown = () => {
         <div className="dropdown-divider"></div>
 
         {/* Sidebar Mode */}
-        <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
+        {/* <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -151,10 +144,10 @@ const PersonalDropdown = () => {
               </IconWithTooltip>
             </div>
           </div>
-        </form>
+        </form> */}
 
         {/* Sidebar Mode on Editor */}
-        <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode_editor')}</h6>
+        {/* <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode_editor')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -176,12 +169,12 @@ const PersonalDropdown = () => {
               </IconWithTooltip>
             </div>
           </div>
-        </form>
+        </form> */}
 
-        <div className="dropdown-divider"></div>
+        {/* <div className="dropdown-divider"></div> */}
 
         {/* Color Mode */}
-        <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
+        {/* <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
         <form className="px-4">
           <div className="form-row">
             <div className="form-group col-auto">
@@ -218,9 +211,7 @@ const PersonalDropdown = () => {
               </IconWithTooltip>
             </div>
           </div>
-        </form>
-
-        <div className="dropdown-divider"></div>
+        </form> */}
 
         <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</button>
       </div>
