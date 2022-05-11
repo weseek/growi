@@ -27,7 +27,6 @@ export const AuditLogManagement: FC = () => {
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
 
-
   /*
    * Fetch
    */
@@ -47,7 +46,8 @@ export const AuditLogManagement: FC = () => {
   }, []);
 
   const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
-    setActionMap(prev => new Map([...prev, [action, !actionMap.get(action)]]));
+    actionMap.set(action, !actionMap.get(action));
+    setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
   const selectAllActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
