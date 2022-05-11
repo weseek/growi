@@ -1,5 +1,5 @@
-import data from 'emoji-mart/data/apple.json';
 import { Emoji } from 'emoji-mart';
+import data from 'emoji-mart/data/apple.json';
 
 const DEFAULT_EMOJI_SIZE = 24;
 
@@ -59,8 +59,14 @@ const getNativeEmoji = async(emojis) => {
  */
 
 export const emojiMartData = () => {
+
   const emojis = Object.entries(data.emojis).map((emoji) => {
     return emoji;
+  });
+
+  Object.entries(data.aliases).forEach((alias) => {
+    const emoji = emojis.filter(emoji => emoji[0] === alias[1]);
+    emojis.push([alias[0], emoji[0][1]]);
   });
   return getNativeEmoji(emojis);
 };
