@@ -55,6 +55,7 @@ export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectId
 export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
+  findSubOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -124,20 +125,20 @@ schema.statics.findMainOps = async function(
   );
 };
 
+schema.statics.findSubOps = async function(
+    filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions,
+): Promise<PageOperationDocumentHasId[]> {
+  return this.find(
+    { ...filter, actionStage: PageActionStage.Sub },
+    projection,
+    options,
+  );
+};
+
 schema.statics.cleanup = async function(excludeActionTypeList: PageActionType[], excludeStage: PageActionStage): Promise<void> {
   await this.deleteMany({ actionType: { $nin: excludeActionTypeList }, actionStage: { $ne: excludeStage } });
 };
 
-schema.statics.findByActionType = async function(pageActionType: PageActionType): Promise<PageOperationDocument[]> {
-  return this.find({ actionType: pageActionType });
-};
-
-/**
- * it's processable if unprocessableExpiryDate is null or current time is past unprocessableExpiryDate
- */
-schema.statics.isProcessable = function(pageOperation): boolean {
-  const expiryDate = pageOperation.unprocessableExpiryDate;
-  return expiryDate == null || (expiryDate != null && new Date() > expiryDate);
-};
+//
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
