@@ -3,7 +3,7 @@ import React, { FC, useCallback } from 'react';
 import { SupportedActionType } from '~/interfaces/activity';
 
 type Props = {
-  dropdownItems: Array<{actionType: string, actionNames: SupportedActionType[]}>
+  dropdownItems: Array<{actionCategory: string, actionNames: SupportedActionType[]}>
   actionMap: Map<SupportedActionType, boolean>
   onSelectAction: (action: SupportedActionType) => void
   onSelectAllACtion: (actions: SupportedActionType[], isChecked: boolean) => void
@@ -34,7 +34,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {dropdownItems.map(item => (
-            <div key={item.actionType}>
+            <div key={item.actionCategory}>
               <div className="dropdown-item">
                 <div className="form-group px-2 m-0">
                   <input
@@ -43,7 +43,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                     defaultChecked
                     onChange={(e) => { selectAllActionCheckboxChangedHandler(item.actionNames, e.target.checked) }}
                   />
-                  <label className="form-check-label">{item.actionType}</label>
+                  <label className="form-check-label">{item.actionCategory}</label>
                 </div>
               </div>
               {

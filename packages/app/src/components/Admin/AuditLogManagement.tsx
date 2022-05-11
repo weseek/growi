@@ -43,7 +43,7 @@ export const AuditLogManagement: FC = () => {
   /*
    * Functions
    */
-  const setActivePageBySelectedPageNum = useCallback((selectedPageNum: number) => {
+  const setActivePageHandler = useCallback((selectedPageNum: number) => {
     setActivePage(selectedPageNum);
   }, []);
 
@@ -62,8 +62,8 @@ export const AuditLogManagement: FC = () => {
 
       <SelectActionDropdown
         dropdownItems={[
-          { actionType: 'Page', actionNames: AllSupportedPageAction },
-          { actionType: 'Comment', actionNames: AllSupportedCommentAction },
+          { actionCategory: 'Page', actionNames: AllSupportedPageAction },
+          { actionCategory: 'Comment', actionNames: AllSupportedCommentAction },
         ]}
         actionMap={actionMap}
         onSelectAction={selectActionCheckboxChangedHandler}
@@ -81,7 +81,7 @@ export const AuditLogManagement: FC = () => {
             <ActivityTable activityList={activityList} />
             <PaginationWrapper
               activePage={activePage}
-              changePage={setActivePageBySelectedPageNum}
+              changePage={setActivePageHandler}
               totalItemsCount={totalActivityNum}
               pagingLimit={PAGING_LIMIT}
               align="center"
