@@ -56,10 +56,12 @@ export const AuditLogManagement: FC = () => {
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
+  // eslint-disable-next-line max-len
+  const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
+
   return (
     <div data-testid="admin-auditlog">
-      <h2>{t('AuditLog')}</h2>
-
+      <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
       <SelectActionDropdown
         dropdownItems={[
           { actionCategory: 'Page', actionNames: PageActions },
@@ -78,6 +80,11 @@ export const AuditLogManagement: FC = () => {
         )
         : (
           <>
+            <p
+              className="ml-2"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: activityCounter }}
+            />
             <ActivityTable activityList={activityList} />
             <PaginationWrapper
               activePage={activePage}
