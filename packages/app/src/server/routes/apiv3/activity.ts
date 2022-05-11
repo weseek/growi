@@ -26,7 +26,6 @@ const validator = {
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  // todo restore 100000 -> 30
   max: 30, // limit each IP to 30 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes.',
@@ -43,14 +42,14 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/', apiLimiter, accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
-    const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
-
-    const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
-    const query = {
-      action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
-    };
 
     try {
+      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
+      const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
+      const query = {
+        action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
+      };
+
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
       const User = crowi.model('User');
