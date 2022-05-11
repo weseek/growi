@@ -14,8 +14,8 @@ import GrowiLogo from '../Icons/GrowiLogo';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+import AppearanceModeDropdown from './AppearanceModeDropdown';
 import GlobalSearch from './GlobalSearch';
-import GuestDropdown from './GuestDropdown';
 import PersonalDropdown from './PersonalDropdown';
 
 
@@ -28,40 +28,45 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { open: openCreateModal } = usePageCreateModal();
 
   const { currentUser } = props;
+  const isAuthenticated = currentUser != null;
 
-  // render login button
-  if (currentUser == null) {
+  const authenticatedNavItem = () => {
     return (
       <>
-        <li className="grw-personal-dropdown nav-item nav-link dropdown">
-          <GuestDropdown />
+        <li className="nav-item">
+          <InAppNotificationDropdown />
         </li>
-        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
+
+        <li className="nav-item d-none d-md-block">
+          <button
+            className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
+            type="button"
+            data-testid="newPageBtn"
+            onClick={() => openCreateModal(currentPagePath || '')}
+          >
+            <i className="icon-pencil mr-2"></i>
+            <span className="d-none d-lg-block">{ t('New') }</span>
+          </button>
+        </li>
+
+        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
+          <PersonalDropdown />
+        </li>
       </>
     );
-  }
+  };
+
+  const notAuthenticatedNavItem = () => {
+    return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+  };
 
   return (
     <>
-      <li className="nav-item">
-        <InAppNotificationDropdown />
+      <li className="grw-personal-dropdown nav-item dropdown">
+        <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
       </li>
 
-      <li className="nav-item d-none d-md-block">
-        <button
-          className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
-          type="button"
-          data-testid="newPageBtn"
-          onClick={() => openCreateModal(currentPagePath || '')}
-        >
-          <i className="icon-pencil mr-2"></i>
-          <span className="d-none d-lg-block">{ t('New') }</span>
-        </button>
-      </li>
-
-      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
-        <PersonalDropdown />
-      </li>
+      {isAuthenticated ? authenticatedNavItem() : notAuthenticatedNavItem()}
     </>
   );
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -8,10 +8,14 @@ import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SunIcon from '../Icons/SunIcon';
 
-
-const GuestDropdown = (): JSX.Element => {
+type GuestDropdownProps = {
+  isAuthenticated: boolean,
+}
+const AppearanceModeDropdown:FC<GuestDropdownProps> = (props: GuestDropdownProps) => {
 
   const { t } = useTranslation();
+
+  const { isAuthenticated } = props;
 
   const [useOsSettings, setOsSettings] = useState(false);
 
@@ -25,40 +29,52 @@ const GuestDropdown = (): JSX.Element => {
     </>
   );
 
-  return (
+  const renderSidebarModeSwitch = (isEdit: boolean) => {
+    return (
+      <>
+        <h6 className="dropdown-header">{t(isEdit ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
+        <form className="px-4">
+          <div className="form-row justify-content-center">
+            <div className="form-group col-auto mb-0 d-flex align-items-center">
+              <IconWithTooltip id={isEdit ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
+                <SidebarDrawerIcon />
+              </IconWithTooltip>
+              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                <input
+                  id={isEdit ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
+                  className="custom-control-input"
+                  type="checkbox"
+                  onChange={() => console.log('changed!')}
+                />
+                <label className="custom-control-label" htmlFor={isEdit ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
+              </div>
+              <IconWithTooltip id={isEdit ? 'iwt-sidebar-editor-dock' : 'iwt-sidebar-dock'} label="Dock" additionalClasses="grw-sidebar-mode-icon">
+                <SidebarDockIcon />
+              </IconWithTooltip>
+            </div>
+          </div>
+        </form>
+      </>
+    );
+  };
 
+  return (
     <>
       {/* setting button */}
-      <button className="dropdown-toggle bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" aria-haspopup="true">
-        <i className="material-icons">settings</i>
+      <button className="bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" aria-haspopup="true">
+        <i className="icon-settings"></i>
       </button>
 
       {/* dropdown */}
       <div className="dropdown-menu dropdown-menu-right">
 
         {/* sidebar mode */}
-        <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
-        <form className="px-4">
-          <div className="form-row justify-content-center">
-            <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id="iwt-sidebar-drawer" label="Drawer" additionalClasses="grw-sidebar-mode-icon">
-                <SidebarDrawerIcon />
-              </IconWithTooltip>
-              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
-                <input
-                  id="swSidebarMode"
-                  className="custom-control-input"
-                  type="checkbox"
-                  onChange={() => console.log('changed!')}
-                />
-                <label className="custom-control-label" htmlFor="swSidebarMode"></label>
-              </div>
-              <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses="grw-sidebar-mode-icon">
-                <SidebarDockIcon />
-              </IconWithTooltip>
-            </div>
-          </div>
-        </form>
+        {renderSidebarModeSwitch(false)}
+
+        <div className="dropdown-divider"></div>
+
+        {/* side bar mode on editor */}
+        {isAuthenticated && renderSidebarModeSwitch(true)}
 
         <div className="dropdown-divider"></div>
 
@@ -107,4 +123,4 @@ const GuestDropdown = (): JSX.Element => {
 
 };
 
-export default GuestDropdown;
+export default AppearanceModeDropdown;
