@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -63,9 +64,16 @@ export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRRespo
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageInfo, Error> => {
-  return useSWR(
-    ['/page/info', pageId],
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+export const useSWRxPageInfo = (
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+): SWRResponse<IPageInfo, Error> => {
+
+  // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
+  const fixedShareLinkId = shareLinkId ?? null;
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
