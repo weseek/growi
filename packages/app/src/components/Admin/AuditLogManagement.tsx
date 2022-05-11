@@ -46,11 +46,13 @@ export const AuditLogManagement: FC = () => {
   }, []);
 
   const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
+    setActivePage(1);
     actionMap.set(action, !actionMap.get(action));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
   const selectAllActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
+    setActivePage(1);
     actions.forEach(action => actionMap.set(action, isChecked));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
