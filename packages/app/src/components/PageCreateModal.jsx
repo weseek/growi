@@ -1,24 +1,22 @@
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { pagePathUtils, pathUtils } from '@growi/core';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-
-import { pagePathUtils, pathUtils } from '@growi/core';
-
 
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-
 import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 
 const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
@@ -84,14 +82,6 @@ const PageCreateModal = (props) => {
   }
 
   /**
-   * change pageNameInput
-   * @param {string} value
-   */
-  function onChangePageNameInputHandler(value) {
-    setPageNameInput(value);
-  }
-
-  /**
    * change template
    * @param {string} value
    */
@@ -129,10 +119,6 @@ const PageCreateModal = (props) => {
    */
   function createInputPage() {
     redirectToEditor(pageNameInput);
-  }
-
-  function ppacInputChangeHandler(value) {
-    setPageNameInput(value);
   }
 
   function ppacSubmitHandler(input) {
@@ -212,7 +198,7 @@ const PageCreateModal = (props) => {
                     initializedPath={pageNameInput}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
-                    onInputChange={ppacInputChangeHandler}
+                    onInputChange={value => setPageNameInput(value)}
                     autoFocus
                   />
                 )
@@ -223,7 +209,7 @@ const PageCreateModal = (props) => {
                       value={pageNameInput}
                       className="form-control flex-fill"
                       placeholder={t('Input page name')}
-                      onChange={e => onChangePageNameInputHandler(e.target.value)}
+                      onChange={e => setPageNameInput(e.target.value)}
                       required
                     />
                   </form>

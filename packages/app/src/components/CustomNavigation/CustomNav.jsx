@@ -1,6 +1,7 @@
 import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
+
 import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink,
@@ -87,7 +88,7 @@ export const CustomNavTab = (props) => {
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
   const {
-    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown,
+    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown, navRightElement,
   } = props;
 
   const navTabRefs = useMemo(() => {
@@ -149,7 +150,7 @@ export const CustomNavTab = (props) => {
 
   return (
     <div className="grw-custom-nav-tab">
-      <div ref={navContainer}>
+      <div ref={navContainer} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
 
@@ -169,6 +170,7 @@ export const CustomNavTab = (props) => {
             );
           })}
         </Nav>
+        {navRightElement}
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
@@ -183,6 +185,7 @@ CustomNavTab.propTypes = {
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  navRightElement: PropTypes.node,
 };
 
 CustomNavTab.defaultProps = {

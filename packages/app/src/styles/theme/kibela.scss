@@ -107,21 +107,4 @@ html[dark] {
       @include btn-page-editor-mode-manager(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
     }
   }
-
-  /*
- * GROWI Sidebar
- */
-  .grw-sidebar {
-    // Pagetree
-    .grw-pagetree {
-      @include override-list-group-item-for-pagetree(
-        $color-list,
-        $bgcolor-sidebar-list-group,
-        $color-list-hover,
-        $bgcolor-list-hover,
-        $color-list-active,
-        lighten($bgcolor-list-active, 55%)
-      );
-    }
-  }
 }
