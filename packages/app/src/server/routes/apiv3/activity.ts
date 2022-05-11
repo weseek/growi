@@ -2,7 +2,7 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { IActivity } from '~/interfaces/activity';
+import { IActivity, AllSupportedActionType } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -20,12 +20,13 @@ const validator = {
   list: [
     query('limit').optional().isInt({ max: 100 }).withMessage('limit must be a number less than or equal to 100'),
     query('offset').optional().isInt().withMessage('page must be a number'),
+    query('searchFilter').optional().isString().withMessage('query must be a string'),
   ],
 };
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  max: 30, // limit each IP to 30 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes.',
 });
@@ -43,7 +44,13 @@ module.exports = (crowi: Crowi): Router => {
     const offset = req.query.offset || 1;
 
     try {
-      const paginationResult = await Activity.getPaginatedActivity(limit, offset);
+      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
+      const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
+      const query = {
+        action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
+      };
+
+      const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
       const User = crowi.model('User');
       const serializedDocs = paginationResult.docs.map((doc: IActivity) => {
