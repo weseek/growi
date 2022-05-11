@@ -21,7 +21,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onSelectAction]);
 
   const selectAllActionCheckboxChangedHandler = useCallback((actions, isChecked) => {
-    if (onSelectAllACtion) {
+    if (onSelectAllACtion != null) {
       onSelectAllACtion(actions, isChecked);
     }
   }, [onSelectAllACtion]);
