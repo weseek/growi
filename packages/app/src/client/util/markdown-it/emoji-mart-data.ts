@@ -1,6 +1,20 @@
 import { Emoji } from 'emoji-mart';
 import data from 'emoji-mart/data/apple.json';
 
+// Custom mapping for unavailable emoji name
+const customEmojiAliasesMapping = {
+  family_man_boy: 'man-boy',
+  family_man_girl: 'man-girl',
+  family_man_girl_girl: 'man-girl-girl',
+  family_man_girl_boy: 'man-girl-boy',
+  family_man_boy_boy: 'man-boy-boy',
+  family_woman_boy: 'woman-boy',
+  family_woman_girl: 'woman-girl',
+  family_woman_girl_girl: 'woman-girl-girl',
+  family_woman_girl_boy: 'woman-girl-boy',
+  family_woman_boy_boy: 'woman-boy-boy',
+};
+
 const DEFAULT_EMOJI_SIZE = 24;
 
 /**
@@ -42,7 +56,19 @@ const getNativeEmoji = async(emojis) => {
       emoji: emojiName,
       size: DEFAULT_EMOJI_SIZE,
     });
-    if (elem) {
+    if (elem != null) {
+      emojiData[emojiName] = elem.props['aria-label'].split(',')[0];
+      if (hasSkinVariation) {
+        const emojiWithSkinTone = await getEmojiSkinTone(emojiName);
+        Object.assign(emojiData, emojiWithSkinTone);
+      }
+    }
+    // Get emoji by alias if emoji not available
+    else {
+      const elem = Emoji({
+        emoji: customEmojiAliasesMapping[emojiName],
+        size: DEFAULT_EMOJI_SIZE,
+      });
       emojiData[emojiName] = elem.props['aria-label'].split(',')[0];
       if (hasSkinVariation) {
         const emojiWithSkinTone = await getEmojiSkinTone(emojiName);
@@ -59,12 +85,13 @@ const getNativeEmoji = async(emojis) => {
  */
 
 export const emojiMartData = () => {
-
-  const emojis = Object.entries(data.emojis).map((emoji) => {
+  const emojiData = data;
+  Object.assign(emojiData.aliases, customEmojiAliasesMapping);
+  const emojis = Object.entries(emojiData.emojis).map((emoji) => {
     return emoji;
   });
 
-  Object.entries(data.aliases).forEach((alias) => {
+  Object.entries(emojiData.aliases).forEach((alias) => {
     const emoji = emojis.filter(emoji => emoji[0] === alias[1]);
     emojis.push([alias[0], emoji[0][1]]);
   });
