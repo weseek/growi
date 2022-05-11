@@ -23,16 +23,17 @@ export const AuditLogManagement: FC = () => {
    */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
-
   const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
 
+
   /*
    * Fetch
    */
+  const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
   const query = {
-    action: ['PAGE_LIKE'],
+    action: selectedActionList,
   };
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, query);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
