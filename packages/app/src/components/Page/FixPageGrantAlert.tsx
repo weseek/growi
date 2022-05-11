@@ -4,16 +4,17 @@ import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant } from '~/interfaces/page';
-
 import { useCurrentPageId } from '~/stores/context';
 import { IResApplicableGrant, useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
   pageId: string
+  dataApplicableGrant: IResApplicableGrant
   close(): Promise<void> | void
 }
 
@@ -21,7 +22,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, pageId, close,
+    isOpen, pageId, dataApplicableGrant, close,
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
@@ -30,15 +31,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
 
-  // const { data: applicableGrantData } = useSWRxApplicableGrant(pageId);
-  const applicableGrantData: IResApplicableGrant = {
-    data: [
-      { grant: PageGrant.GRANT_OWNER },
-      { grant: PageGrant.GRANT_USER_GROUP, applicableGroups: [{ _id: 'testid1', name: 'testgroup1' }, { _id: 'testid2', name: 'testgroup2' }] },
-    ],
-  };
-
-  const applicableGroups = applicableGrantData.data.find(d => d.grant === PageGrant.GRANT_USER_GROUP)?.applicableGroups;
+  const applicableGroups = dataApplicableGrant.data.find(d => d.grant === PageGrant.GRANT_USER_GROUP)?.applicableGroups;
 
   // Reset state when opened
   useEffect(() => {
@@ -71,7 +64,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   };
 
   const renderModalBody = () => {
-    const isGrantAvailable = applicableGrantData.data.length > 0;
+    const isGrantAvailable = dataApplicableGrant.data.length > 0;
 
     if (!isGrantAvailable) {
       return (
@@ -179,9 +172,10 @@ const FixPageGrantAlert = (): JSX.Element => {
   const [isOpen, setOpen] = useState<boolean>(false);
 
   const { data: pageId } = useCurrentPageId();
-  const { data } = useSWRxIsGrantNormalized(pageId);
+  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(pageId);
+  const { data: dataApplicableGrant } = useSWRxApplicableGrant(pageId);
 
-  if (data?.isGrantNormalized == null || data.isGrantNormalized) {
+  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
@@ -200,10 +194,11 @@ const FixPageGrantAlert = (): JSX.Element => {
       </div>
 
       {
-        pageId != null && (
+        pageId != null && dataApplicableGrant != null && (
           <FixPageGrantModal
             isOpen={isOpen}
             pageId={pageId}
+            dataApplicableGrant={dataApplicableGrant}
             close={() => setOpen(false)}
           />
         )
