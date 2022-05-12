@@ -183,18 +183,15 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
       $color-list,
-      $bgcolor-sidebar-list-group,
-      $color-list-hover,
-      $bgcolor-list-hover,
-      $color-list-active,
-      $bgcolor-list-active
+      darken($bgcolor-sidebar-context, 5%),
+      darken($bgcolor-sidebar-context, 12%),
+      $gray-500,
+      $gray-600,
+      darken($bgcolor-sidebar-context, 15%),
+      darken($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
       @include button-outline-svg-icon-variant($gray-400, $primary);
-    }
-    .grw-count-badge {
-      color: $gray-500;
-      background: $gray-200;
     }
   }
   .private-legacy-pages-link {

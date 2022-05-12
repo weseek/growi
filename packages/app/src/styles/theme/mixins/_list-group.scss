@@ -18,14 +18,7 @@
   }
 }
 
-@mixin override-list-group-item-for-pagetree(
-  $color,
-  $bgcolor,
-  $color-hover: $color,
-  $bgcolor-hover: $bgcolor,
-  $color-active: $color,
-  $bgcolor-active: $bgcolor
-) {
+@mixin override-list-group-item-for-pagetree($color, $bgcolor-hover, $bgcolor-active, $btn-color, $btn-color-hover, $btn-bgcolor-hover, $btn-bgcolor-active) {
   .grw-pagetree-is-over {
     background: $bgcolor-hover;
   }
@@ -34,6 +27,25 @@
     background-color: transparent;
     border-color: $border-color-global;
 
+    .grw-count-badge {
+      color: $btn-color;
+      background: $bgcolor-hover;
+    }
+
+    .btn.btn-page-item-control {
+      color: $btn-color;
+      background-color: transparent;
+      @include hover() {
+        color: $btn-color-hover;
+        background-color: $btn-bgcolor-hover;
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        color: $btn-color-hover;
+        background-color: $btn-bgcolor-active;
+      }
+    }
+
     &.grw-pagetree-current-page-item {
       background: $bgcolor-hover;
     }
@@ -41,9 +53,15 @@
     &.list-group-item-action {
       &:hover {
         background-color: $bgcolor-hover;
+        .grw-count-badge {
+          background: $bgcolor-active;
+        }
       }
       &:active {
         background-color: $bgcolor-active;
+        .grw-count-badge {
+          background: $bgcolor-active;
+        }
       }
     }
   }
