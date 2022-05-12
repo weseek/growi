@@ -3,7 +3,19 @@ import { FilterQuery, QueryOptions } from 'mongoose';
 
 import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
 
+import { PageDocument } from '../models/page';
+
+
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
+
+type ParentId = string;
+type RenameSubOperationInfo = {
+  parentId: string,
+  targtPageId: string,
+  isProcessing: boolean,
+}
+
+type RenameSubOperationInfoMap = Map<ParentId, RenameSubOperationInfo[]>;
 
 class PageOperationService {
 
@@ -79,23 +91,24 @@ class PageOperationService {
    *    ]
    * }
    */
-  async getRenameSubOpsInfoMap(
+  async getRenameSubOpInfoMap(
       filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions,
-  ): Promise<any> {
+  ): Promise<RenameSubOperationInfoMap> {
 
     const renamePageSubOps = await PageOperation.findSubOps(filter, projection, options); // asc
 
     const parentIdToPageOpsInfo = new Map();
 
     for (const op of renamePageSubOps) {
-      const parentId = op.page.parent?.toString(); // key for the map
-      const pageOpId = op._id;
+      if (op.page.parent == null) {
+        continue;
+      }
+      const parentId = op.page.parent.toString(); // key for the map
       const targetPageId = op.page._id;
-      const path = op.page.path;
       const isProcessing = this.isProcessingPageOperation(op);
 
       const pageOpInfo = {
-        pageOpId, targetPageId, isProcessing, path, parentId,
+        targetPageId, isProcessing, parentId,
       };
 
       // replace existing data with new data including new info if the key already exists
@@ -115,7 +128,7 @@ class PageOperationService {
   /**
    * add RenameOperationInfo to page documents as a new property
    */
-  addShouldResumeRenameOpInfoToPages(pages, renameSubOpsInfoMap): any {
+  addShouldResumeRenameOpInfoToPages(pages: PageDocument[], renameSubOpsInfoMap: RenameSubOperationInfoMap): PageDocument[] {
     const newPages = [...pages]; // copy
 
     renameSubOpsInfoMap.forEach((value, parentId) => {
@@ -123,16 +136,12 @@ class PageOperationService {
         const pageId = page._id.toString();
 
         if (pageId === parentId) {
-          if (page._doc != null) {
-            page._doc.shouldResumeOpInfo = value;
-          }
-          else {
-            page.shouldResumeOpInfo = value;
-          }
+          page.renameOperationInfo = value;
           continue;
         }
       }
     });
+
     return newPages;
   }
 
@@ -141,7 +150,7 @@ class PageOperationService {
    */
   async addShouldResumeRenameOpInfoToRootPage(rootPage) {
     const filter = { actionType: PageActionType.Rename, path: '/' }; // exclude root page
-    const renameSubOpsInfoMap = await this.getRenameSubOpsInfoMap(filter);
+    const renameSubOpsInfoMap = await this.getRenameSubOpInfoMap(filter);
     const pages = await this.addShouldResumeRenameOpInfoToPages([rootPage], renameSubOpsInfoMap);
 
     const modifiedRootPage = pages[0];
