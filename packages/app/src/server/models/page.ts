@@ -1197,14 +1197,13 @@ export default (crowi: Crowi): any => {
    * @param {UserDocument} user
    * @param options
    */
-  schema.statics.updateGrant = async function(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}, shouldUseV4Process: boolean) {
+  schema.statics.updateGrant = async function(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}) {
     const { grant, grantedGroup } = grantData;
 
     const options = {
       grant,
       grantUserGroupId: grantedGroup,
       isSyncRevisionToHackmd: false,
-      shouldUseV4Process,
     };
 
     return this.updatePage(page, null, null, user, options);
@@ -1215,7 +1214,7 @@ export default (crowi: Crowi): any => {
       body: string | null,
       previousBody: string | null,
       user,
-      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean, shouldUseV4Process?: boolean} = {},
+      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean} = {},
   ) {
     if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
@@ -1225,7 +1224,7 @@ export default (crowi: Crowi): any => {
     const exParent = pageData.parent;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
-    const shouldUseV4Process = options.shouldUseV4Process ?? shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
+    const shouldUseV4Process = shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
     if (shouldUseV4Process) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
