@@ -221,12 +221,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
 
   const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
 
-  if (swrResponse.data == null) {
-    swrResponse.data = localStorage.preferDrawerModeByUser;
-  }
-
   return {
     ...swrResponse,
+    data: currentUser != null ? swrResponse.data : localStorage.preferDrawerModeByUser === 'true',
     update: (preferDrawerMode: boolean) => {
       // update SWR
       swrResponse.mutate(preferDrawerMode);
