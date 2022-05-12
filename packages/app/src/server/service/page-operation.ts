@@ -102,7 +102,9 @@ class PageOperationService {
       if (op.page.parent == null) {
         continue;
       }
-      const parentId = op.page.parent.toString(); // key for the map
+      // key for the map
+      const parentId = op.page.parent.toString();
+      // values for the key
       const targetPageId = op.page._id;
       const isProcessing = this.isProcessingPageOperation(op);
 
@@ -119,7 +121,7 @@ class PageOperationService {
         continue;
       }
       // set new data if the key does not exist
-      parentIdToPageOpsInfo.set(parentId, [pageOpInfo]); // value should be array because it's possible that multiple data with same key exist
+      parentIdToPageOpsInfo.set(parentId, [pageOpInfo]); // value should be array because it's possible that multiple data with same key(parentid) exist
     }
     return parentIdToPageOpsInfo;
   }
