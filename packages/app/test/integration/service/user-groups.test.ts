@@ -16,6 +16,8 @@ describe('UserGroupService', () => {
   const groupId6 = new mongoose.Types.ObjectId();
   const groupId7 = new mongoose.Types.ObjectId();
   const groupId8 = new mongoose.Types.ObjectId();
+  const groupId9 = new mongoose.Types.ObjectId();
+  const groupId10 = new mongoose.Types.ObjectId();
 
   const userId1 = new mongoose.Types.ObjectId();
 
@@ -76,6 +78,17 @@ describe('UserGroupService', () => {
         name: 'v5_group8',
         description: 'description8',
       },
+      {
+        _id: groupId9,
+        name: 'v5_group9',
+        description: 'description9',
+      },
+      {
+        _id: groupId10,
+        name: 'v5_group10',
+        description: 'description10',
+        parent: groupId9,
+      },
     ]);
 
     // Create UserGroupRelations
@@ -90,6 +103,14 @@ describe('UserGroupService', () => {
       },
       {
         relatedGroup: groupId8,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId9,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId10,
         relatedUser: userId1,
       },
     ]);
@@ -190,6 +211,21 @@ describe('UserGroupService', () => {
     // userGroup7 should have userId1
     expect(userGroupRelation7AfterUpdate).not.toBeNull();
     expect(userGroupRelation8AfterUpdate).not.toBeNull();
+  });
+
+  test('Should throw an error when trying to choose parent from descendant groups.', async() => {
+    const userGroup9 = await UserGroup.findOne({ _id: groupId9, parent: null });
+    const userGroup10 = await UserGroup.findOne({ _id: groupId10, parent: groupId9 });
+
+    const userGroupRelation9BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup9._id, relatedUser: userId1 });
+    const userGroupRelation10BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup10._id, relatedUser: userId1 });
+    expect(userGroupRelation9BeforeUpdate).not.toBeNull();
+    expect(userGroupRelation10BeforeUpdate).not.toBeNull();
+
+    const result = crowi.userGroupService.updateGroup(
+      userGroup9._id, userGroup9.name, userGroup9.description, userGroup10._id,
+    );
+    await expect(result).rejects.toThrow('It is not allowed to choose parent from descendant groups.');
   });
 
 });
