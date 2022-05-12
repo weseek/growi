@@ -225,14 +225,11 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
     ...swrResponse,
     data: currentUser != null ? swrResponse.data : localStorage.preferDrawerModeByUser === 'true',
     update: (preferDrawerMode: boolean) => {
-      // update SWR
       swrResponse.mutate(preferDrawerMode);
 
-      // save to local storage
       localStorage.preferDrawerModeByUser = preferDrawerMode;
 
       if (currentUser != null) {
-        // save to DB
         scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
       }
     },
