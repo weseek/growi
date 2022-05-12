@@ -1,7 +1,18 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+
+import { useUserUISettings } from '~/client/services/user-ui-settings';
+import {
+  isUserPreferenceExists,
+  isDarkMode as isDarkModeByUtil,
+  applyColorScheme,
+  removeUserPreference,
+  updateUserPreference,
+  updateUserPreferenceWithOsSettings,
+} from '~/client/util/color-scheme';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 import MoonIcon from '../Icons/MoonIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
@@ -17,7 +28,45 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
   const { isAuthenticated } = props;
 
-  const [useOsSettings, setOsSettings] = useState(false);
+  const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
+  const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+
+  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
+  const { scheduleToPut } = useUserUISettings();
+
+  const preferDrawerModeSwitchModifiedHandler = useCallback((preferDrawerMode: boolean, isEditMode: boolean) => {
+    if (isEditMode) {
+      mutatePreferDrawerModeOnEdit(preferDrawerMode);
+      scheduleToPut({ preferDrawerModeOnEditByUser: preferDrawerMode });
+    }
+    else {
+      mutatePreferDrawerMode(preferDrawerMode);
+      scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
+    }
+  }, [mutatePreferDrawerMode, mutatePreferDrawerModeOnEdit, scheduleToPut]);
+
+  const followOsCheckboxModifiedHandler = useCallback((useOsSettings: boolean) => {
+    if (useOsSettings) {
+      removeUserPreference();
+    }
+    else {
+      updateUserPreferenceWithOsSettings();
+    }
+    applyColorScheme();
+
+    // update states
+    setOsSettings(useOsSettings);
+    setIsDarkMode(isDarkModeByUtil());
+  }, []);
+
+  const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
+    updateUserPreference(isDarkMode);
+    applyColorScheme();
+
+    // update state
+    setIsDarkMode(isDarkModeByUtil());
+  }, []);
 
   /* eslint-disable react/prop-types */
   const IconWithTooltip = ({
@@ -29,7 +78,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     </>
   );
 
-  const renderSidebarModeSwitch = (isEditMode: boolean) => {
+  const renderSidebarModeSwitch = useCallback((isEditMode: boolean) => {
     return (
       <>
         <h6 className="dropdown-header">{t(isEditMode ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
@@ -44,7 +93,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   id={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
                   className="custom-control-input"
                   type="checkbox"
-                  onChange={() => console.log('changed!')}
+                  checked={isEditMode ? !isPreferDrawerModeOnEdit : !isPreferDrawerMode}
+                  onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked, isEditMode)}
                 />
                 <label className="custom-control-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
               </div>
@@ -56,7 +106,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
         </form>
       </>
     );
-  };
+  }, [isPreferDrawerMode, isPreferDrawerModeOnEdit, preferDrawerModeSwitchModifiedHandler, t]);
 
   return (
     <>
@@ -91,7 +141,9 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   id="swUserPreference"
                   className="custom-control-input"
                   type="checkbox"
-                  onChange={() => console.log('changed!')}
+                  checked={isDarkMode}
+                  disabled={useOsSettings}
+                  onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
@@ -107,15 +159,14 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   id="cbFollowOs"
                   className="custom-control-input"
                   type="checkbox"
-                  onChange={() => console.log('changed!')}
+                  checked={useOsSettings}
+                  onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                 />
                 <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
               </div>
             </div>
           </div>
         </form>
-
-
       </div>
 
     </>
