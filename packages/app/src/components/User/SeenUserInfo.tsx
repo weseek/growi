@@ -4,6 +4,7 @@ import { Button, Popover, PopoverBody } from 'reactstrap';
 
 import UserPictureList from './UserPictureList';
 import FootstampIcon from '../FootstampIcon';
+import { useShareLinkId } from '~/stores/context';
 import { useSWRxPageInfo } from '~/stores/page';
 import { useSWRxUsersList } from '~/stores/user';
 
@@ -17,10 +18,11 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { data: pageInfo } = useSWRxPageInfo(pageId);
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: pageInfo } = useSWRxPageInfo(pageId, shareLinkId);
   const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
   const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
-  const sumOfSeenUserIds = pageInfo?.seenUserIds.length || 0;
+  const sumOfSeenUsers = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.length : 0;
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
@@ -34,7 +36,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
-        <span className="seen-user-count">{sumOfSeenUserIds}</span>
+        <span className="seen-user-count">{sumOfSeenUsers}</span>
       </Button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="seen-user-popover">
