@@ -31,7 +31,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
-  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  const { data: isPreferDrawerMode, update: updatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
 
@@ -41,10 +41,9 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
       scheduleToPut({ preferDrawerModeOnEditByUser: preferDrawerMode });
     }
     else {
-      mutatePreferDrawerMode(preferDrawerMode);
-      scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
+      updatePreferDrawerMode(preferDrawerMode);
     }
-  }, [mutatePreferDrawerMode, mutatePreferDrawerModeOnEdit, scheduleToPut]);
+  }, [updatePreferDrawerMode, mutatePreferDrawerModeOnEdit, scheduleToPut]);
 
   const followOsCheckboxModifiedHandler = useCallback((useOsSettings: boolean) => {
     if (useOsSettings) {
