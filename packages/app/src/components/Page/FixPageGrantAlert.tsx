@@ -61,7 +61,6 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       toastSuccess(t('Successfully updated'));
     }
     catch (err) {
-      console.error(err);
       toastError(t('Failed to update'));
     }
   };
