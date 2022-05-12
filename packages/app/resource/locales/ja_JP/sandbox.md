@@ -12,7 +12,7 @@
   </div>
 </div>
 
-# :pencil: Block Elements
+# :memo: Block Elements
 
 ## Headers 見出し
 
@@ -159,7 +159,7 @@ ___
 
 
 
-# :pencil: Typography
+# :memo: Typography
 
 ## 強調
 
@@ -199,7 +199,7 @@ ___
 これは ***イタリック＆ボールド*** です
 これは ___イタリック＆ボールド___ です
 
-# :pencil: Images
+# :memo: Images
 
 `![Alt文字列](URL)` で`<img>`タグを挿入できます。
 
@@ -220,7 +220,7 @@ ___
 <img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
 
 
-# :pencil: Link
+# :memo: Link
 
 ## Markdown 標準
 
@@ -258,7 +258,7 @@ Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 [[./Bootstrap4]]  
 Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 
-# :pencil: Lists
+# :memo: Lists
 
 ## Ul 箇条書きリスト
 
@@ -318,7 +318,7 @@ Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 - [x] タスク2
 
 
-# :pencil: Table
+# :memo: Table
 
 ## Markdown 標準
 
@@ -414,7 +414,7 @@ Content Cell,Content Cell
 :::
 
 
-# :pencil: Footnote
+# :memo: Footnote
 
 脚注への参照[^1]を書くことができます。また、インラインの脚注^[インラインで記述できる脚注です]を入れる事も出来ます。
 
@@ -427,15 +427,13 @@ Content Cell,Content Cell
     後続の段落はインデントされて、前の脚注に属します。
 
 
-# :pencil: Emoji
-
-See [emojione](https://www.emojione.com/)
+# :memo: Emoji
 
 :smiley: :smile: :laughing: :innocent: :drooling_face:
 
-:family: :family_man_boy: :family_man_girl: :family_man_girl_girl: :family_woman_girl_girl:
+:family: :man-boy: :man-girl: :man-girl-girl: :woman-girl-girl:
 
-:thumbsup: :thumbsdown: :open_hands: :raised_hands: :point_right:
+:+1: :-1: :open_hands: :raised_hands: :point_right:
 
 :apple: :green_apple: :strawberry: :cake: :hamburger:
 
@@ -443,7 +441,7 @@ See [emojione](https://www.emojione.com/)
 
 :hearts: :broken_heart: :heartbeat: :heartpulse: :heart_decoration:
 
-:watch: :gear: :gem: :wrench: :envelope:
+:watch: :gear: :gem: :wrench: :email:
 
 
 
