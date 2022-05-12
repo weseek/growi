@@ -27,7 +27,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
-  const [selectedGroupName, setSelectedGroupName] = useState<string | undefined>(undefined);
+  const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
@@ -38,14 +38,14 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   useEffect(() => {
     if (isOpen) {
       setSelectedGrant(PageGrant.GRANT_OWNER);
-      setSelectedGroupName(undefined);
+      setSelectedGroup(undefined);
       setShowModalAlert(false);
     }
   }, [isOpen]);
 
   const submit = async() => {
     // Validate input values
-    if (selectedGrant === PageGrant.GRANT_USER_GROUP && selectedGroupName == null) {
+    if (selectedGrant === PageGrant.GRANT_USER_GROUP && selectedGroup == null) {
       setShowModalAlert(true);
       return;
     }
@@ -55,13 +55,14 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroupName: selectedGroupName,
+        grantedGroup: selectedGroup?._id,
       });
+
+      toastSuccess(t('Successfully updated'));
     }
     catch (err) {
-      toastError();
+      toastError(t('Failed to update'));
     }
-    toastSuccess();
   };
 
   const renderModalBodyAndFooter = () => {
@@ -86,13 +87,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
               <div className="custom-control custom-radio mb-3">
                 <input
                   className="custom-control-input"
-                  name="grantUser"
-                  id="grantUser"
+                  name="grantRestricted"
+                  id="grantRestricted"
                   type="radio"
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
-                <label className="custom-control-label" htmlFor="grantUser">
+                <label className="custom-control-label" htmlFor="grantRestricted">
                   { t('fix_page_grant.modal.radio_btn.restrected') }
                 </label>
               </div>
@@ -131,9 +132,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     >
                       <span className="float-left">
                         {
-                          selectedGroupName == null
+                          selectedGroup == null
                             ? t('fix_page_grant.modal.select_group_default_text')
-                            : selectedGroupName
+                            : selectedGroup.name
                         }
                       </span>
                     </button>
@@ -143,7 +144,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                           <button
                             className="dropdown-item"
                             type="button"
-                            onClick={() => setSelectedGroupName(g.name)}
+                            onClick={() => setSelectedGroup(g)}
                           >
                             {g.name}
                           </button>
