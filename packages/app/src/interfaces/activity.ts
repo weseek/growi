@@ -43,5 +43,5 @@ export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 // type supportedActionType = typeof SUPPORTED_ACTION_NAMES[keyof typeof SUPPORTED_ACTION_NAMES];
 
 export type ISnapshot = {
-  username: Pick<IUser, 'username'>
+  username?: Pick<IUser, 'username'>
 }
