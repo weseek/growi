@@ -128,7 +128,7 @@ class PageOperationService {
   /**
    * add RenameOperationInfo to page documents as a new property
    */
-  addShouldResumeRenameOpInfoToPages(pages: PageDocument[], renameSubOpsInfoMap: RenameSubOperationInfoMap): PageDocument[] {
+  addRenameOperationInfoToPages(pages: PageDocument[], renameSubOpsInfoMap: RenameSubOperationInfoMap): PageDocument[] {
     const newPages = [...pages]; // copy
 
     renameSubOpsInfoMap.forEach((value, parentId) => {
@@ -148,10 +148,10 @@ class PageOperationService {
   /**
    * add RenameOperationInfo to root page document as a new property
    */
-  async addShouldResumeRenameOpInfoToRootPage(rootPage: PageDocument): Promise<PageDocument> {
+  async addRenameOperationInfoToRootPage(rootPage: PageDocument): Promise<PageDocument> {
     const filter = { actionType: PageActionType.Rename, path: '/' }; // only root page
     const renameSubOpsInfoMap = await this.getRenameSubOpInfoMap(filter);
-    const pages = await this.addShouldResumeRenameOpInfoToPages([rootPage], renameSubOpsInfoMap);
+    const pages = await this.addRenameOperationInfoToPages([rootPage], renameSubOpsInfoMap);
 
     const modifiedRootPage = pages[0];
     return modifiedRootPage;
