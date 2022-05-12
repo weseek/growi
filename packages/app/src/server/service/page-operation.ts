@@ -81,12 +81,12 @@ class PageOperationService {
   /**
    * return Map data that are something like this
    * {
-   *    'parentPageIdA': [
-   *       {pageOpId: '001', targtPageId: 'xxx', isProcessing: true},
-   *       {pageOpId: '002', targtPageId: 'xxx', isProcessing: true}
+   *    'parentPageId1': [
+   *       {targtPageId: 'xxx', isProcessing: true},
+   *       {targtPageId: 'xxx', isProcessing: true}
    *    ],
-   *    'parentPageIdB': [
-   *       {pageOpId: '003', targtPageId: 'yyy', isProcessing: false}
+   *    'parentPageId2': [
+   *       {targtPageId: 'yyy', isProcessing: false}
    *    ]
    * }
    */
