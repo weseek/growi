@@ -89,6 +89,19 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantUser"
                   id="grantUser"
                   type="radio"
+                  checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
+                  onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
+                />
+                <label className="custom-control-label" htmlFor="grantUser">
+                  { t('fix_page_grant.modal.radio_btn.restrected') }
+                </label>
+              </div>
+              <div className="custom-control custom-radio mb-3">
+                <input
+                  className="custom-control-input"
+                  name="grantUser"
+                  id="grantUser"
+                  type="radio"
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
