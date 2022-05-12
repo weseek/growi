@@ -1,12 +1,13 @@
 import useSWR, { SWRResponse } from 'swr';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRImmutable from 'swr/immutable';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta, PageGrant,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
+import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiGet } from '../client/util/apiv1-client';
@@ -161,16 +162,9 @@ export const useSWRxIsGrantNormalized = (
   );
 };
 
-export type IApplicableGrant = {
-  grant: PageGrant
-  applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
-}
-export type IResApplicableGrant = {
-  data: IApplicableGrant[]
-}
 export const useSWRxApplicableGrant = (
     pageId: string | null | undefined,
-): SWRResponse<IResApplicableGrant, Error> => {
+): SWRResponse<IRecordApplicableGrant, Error> => {
 
   return useSWRImmutable(
     pageId != null ? ['/page/applicable-grant', pageId] : null,

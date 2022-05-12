@@ -999,6 +999,10 @@ schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLik
   });
 };
 
+schema.statics.findParent = async function(pageId): Promise<PageDocument | null> {
+  return this.findOne({ _id: pageId });
+};
+
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(

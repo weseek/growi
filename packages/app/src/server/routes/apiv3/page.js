@@ -1,8 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
+
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -12,7 +13,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath } = pagePathUtils;
+const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -180,6 +181,9 @@ module.exports = (crowi) => {
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
     isGrantNormalized: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
     export: [
@@ -437,6 +441,33 @@ module.exports = (crowi) => {
 
     return res.apiv3({ isGrantNormalized });
   });
+
+  router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+
+    const Page = crowi.model('Page');
+    const page = await Page.findByIdAndViewer(pageId, req.user, null);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    let data;
+    try {
+      data = await crowi.pageGrantService.calcApplicableGrantData(page, req.user);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing calcApplicableGrantData.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3(data);
+  });
+
+  // TODO: implement
+  // router.put('/:pageId/grant', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  //   return;
+  // });
 
   /**
   * @swagger
