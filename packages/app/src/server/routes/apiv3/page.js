@@ -475,7 +475,7 @@ module.exports = (crowi) => {
 
     const Page = crowi.model('Page');
 
-    const page = await Page.findByIdAndViewer(pageId, req.user, false);
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
