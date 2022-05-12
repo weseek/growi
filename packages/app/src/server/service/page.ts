@@ -3135,7 +3135,7 @@ class PageService {
     const filter = { actionType: PageActionType.Rename, path: { $ne: '/' } }; // exclude root page
     const sortOpt = { sort: { createdAt: -1 } };
     const renameSubOpsInfoMap = await this.crowi.pageOperationService.getRenameSubOpInfoMap(filter, {}, sortOpt);
-    const newPages = await this.crowi.pageOperationService.addShouldResumeRenameOpInfoToPages(pages, renameSubOpsInfoMap);
+    const newPages = await this.crowi.pageOperationService.addRenameOperationInfoToPages(pages, renameSubOpsInfoMap);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
