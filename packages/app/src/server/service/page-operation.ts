@@ -110,7 +110,7 @@ class PageOperationService {
         targetPageId, isProcessing,
       };
 
-      // replace existing data with new data including new info if the key already exists
+      // replace existing data with old and new data combined if the key already exists
       if (parentIdToPageOpsInfo.has(parentId)) {
         const oldValue = parentIdToPageOpsInfo.get(parentId);
         const newValue = [...oldValue, pageOpInfo];
