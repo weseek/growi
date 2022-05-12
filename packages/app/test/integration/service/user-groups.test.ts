@@ -147,7 +147,7 @@ describe('UserGroupService', () => {
     const userGroup5 = await UserGroup.findOne({ _id: groupId5, parent: null });
     // userGroup4 has userId1
     const userGroupRelation4 = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
-    expect(userGroupRelation4).toBeTruthy();
+    expect(userGroupRelation4).not.toBeNull();
 
     // userGroup5 has not userId1
     const userGroupRelation5BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup5, relatedUser: userId1 });
@@ -162,7 +162,7 @@ describe('UserGroupService', () => {
     expect(updatedUserGroup.parent).toStrictEqual(groupId5);
     // userGroup5 should have userId1
     const userGroupRelation5AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroupRelation4.relatedUser });
-    expect(userGroupRelation5AfterUpdate).toBeTruthy();
+    expect(userGroupRelation5AfterUpdate).not.toBeNull();
   });
 
   test('User should be included to parent group (3 groups ver)', async() => {
@@ -181,10 +181,10 @@ describe('UserGroupService', () => {
     const userGroupRelation6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
     const userGroupRelation7AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
     const userGroupRelation8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
-    expect(userGroupRelation6).toBeTruthy();
+    expect(userGroupRelation6).not.toBeNull();
     // userGroup7 should have userId1
-    expect(userGroupRelation7AfterUpdate).toBeTruthy();
-    expect(userGroupRelation8).toBeTruthy();
+    expect(userGroupRelation7AfterUpdate).not.toBeNull();
+    expect(userGroupRelation8).not.toBeNull();
   });
 
 });
