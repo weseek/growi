@@ -3086,14 +3086,6 @@ class PageService {
   }
 
   /**
-   * it's processable if unprocessableExpiryDate is null or current time is past unprocessableExpiryDate
-   */
-  isPageOperationProcessable(pageOperation): boolean {
-    const expiryDate = pageOperation.unprocessableExpiryDate;
-    return expiryDate == null || (expiryDate != null && new Date() > expiryDate);
-  }
-
-  /**
    * Find all children by parent's path or id. Using id should be prioritized
    */
   async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
