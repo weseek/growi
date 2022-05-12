@@ -18,8 +18,6 @@ setStyle = ():CSSProperties => {
   const emojiPickerHeight = 420;
   const cursorPos = this.editor.cursorCoords(true);
   const editorPos = this.editor.getWrapperElement().getBoundingClientRect();
-  // Prevent body scrolls up when modal opened
-  document.body.style.position = 'static';
   // Emoji Picker bottom position exceed editor's bottom position
   if (cursorPos.bottom + emojiPickerHeight > editorPos.bottom) {
     return {
