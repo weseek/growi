@@ -21,7 +21,7 @@ import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } fr
 import { PageRedirectModel } from './page-redirect';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
-const { isTopPage, collectAncestorPaths } = pagePathUtils;
+const { isTopPage, collectAncestorPaths, hasSlash } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 /*
@@ -116,22 +116,6 @@ const schema = new Schema<PageDocument, PageModel>({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-export const hasSlash = (str: string): boolean => {
-  return str.includes('/');
-};
-
-/*
- * Generate RegExp instance for one level lower path
- */
-export const generateChildrenRegExp = (path: string): RegExp => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
-};
 
 export class PageQueryBuilder {
 
@@ -360,6 +344,18 @@ export class PageQueryBuilder {
     this.addConditionToExcludeTrashed();
     await this.addConditionForParentNormalization(user);
 
+    return this;
+  }
+
+  // add viewer condition to PageQueryBuilder instance
+  async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
+      const UserGroupRelation: any = mongoose.model('UserGroupRelation');
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, false);
     return this;
   }
 
@@ -667,17 +663,6 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
   return createdParent;
 };
 
-// Utility function to add viewer condition to PageQueryBuilder instance
-export const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
-  let relatedUserGroups = userGroups;
-  if (user != null && relatedUserGroups == null) {
-    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-    relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-  }
-
-  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
-};
-
 /*
  * Find pages by ID and viewer.
  */
@@ -685,7 +670,7 @@ schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, user
   const baseQuery = this.find({ _id: { $in: pageIds } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   return queryBuilder.query.exec();
 };
@@ -703,7 +688,7 @@ schema.statics.findByPathAndViewer = async function(
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   return queryBuilder.query.exec();
 };
@@ -730,7 +715,7 @@ schema.statics.findRecentUpdatedPages = async function(
 
   queryBuilder.addConditionToListWithDescendants(path, options);
   queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-  await addViewerCondition(queryBuilder, user);
+  await queryBuilder.addViewerCondition(user);
   const pages = await Page.paginate(queryBuilder.query.clone(), {
     lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
   });
@@ -763,7 +748,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find(), true);
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionAsMigrated()

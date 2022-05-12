@@ -22,7 +22,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder, addViewerCondition, generateChildrenRegExp, hasSlash,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -43,7 +43,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath,
+  collectAncestorPaths, isMovablePage, canMoveByPath, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -3091,16 +3091,18 @@ class PageService {
   async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     let queryBuilder: PageQueryBuilder;
+    queryBuilder = new PageQueryBuilder(Page.find(), true);
     if (hasSlash(parentPathOrId)) {
       const path = parentPathOrId;
       const regexp = generateChildrenRegExp(path);
-      queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+      queryBuilder.addConditionToListByPathsArray(regexp);
     }
     else {
       const parentId = parentPathOrId;
       queryBuilder = new PageQueryBuilder(Page.find({ parent: parentId } as any), true); // TODO: improve type
+      queryBuilder.addConditionToFilteringByParentId(parentId);
     }
-    await addViewerCondition(queryBuilder, user, userGroups);
+    await queryBuilder.addViewerCondition(user, userGroups);
 
     return queryBuilder
       .addConditionToSortPagesByAscPath()
@@ -3112,12 +3114,13 @@ class PageService {
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
-    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+    const regexp = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
     // get pages at once
-    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
-    await addViewerCondition(queryBuilder, user, userGroups);
+    const queryBuilder = new PageQueryBuilder(Page.find(), true);
+    await queryBuilder.addViewerCondition(user, userGroups);
     const _pages = await queryBuilder
+      .addConditionToListByPathsArray(regexp)
       .addConditionAsMigrated()
       .addConditionToMinimizeDataForRendering()
       .addConditionToSortPagesByAscPath()
