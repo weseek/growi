@@ -10,7 +10,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
@@ -185,6 +185,11 @@ module.exports = (crowi) => {
     ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    updateGrant: [
+      param('pageId').isMongoId().withMessage('pageId is required'),
+      body('grant').isInt().withMessage('grant is required'),
+      body('grantedGroup').optional().isMongoId().withMessage('grantedGroup must be a mongo id'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -464,10 +469,31 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  // TODO: implement
-  // router.put('/:pageId/grant', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
-  //   return;
-  // });
+  router.put('/:pageId/grant', loginRequiredStrictly, validator.updateGrant, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.params;
+    const { grant, grantedGroup } = req.body;
+
+    const Page = crowi.model('Page');
+
+    const page = await Page.findByIdAndViewer(pageId, req.user, false);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    let data;
+    try {
+      const shouldUseV4Process = false;
+      const grantData = { grant, grantedGroup };
+      data = await Page.updateGrant(page, req.user, grantData, shouldUseV4Process);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing calcApplicableGrantData.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3(data);
+  });
 
   /**
   * @swagger

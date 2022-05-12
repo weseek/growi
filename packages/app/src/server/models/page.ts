@@ -13,7 +13,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
-import { IPage, IPageHasId } from '../../interfaces/page';
+import { IPage, IPageHasId, PageGrant } from '../../interfaces/page';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
@@ -1191,7 +1191,32 @@ export default (crowi: Crowi): any => {
     pageEvent.emit('update', page, user);
   };
 
-  schema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+  /**
+   * A wrapper method of schema.statics.updatePage for updating grant only.
+   * @param {PageDocument} page
+   * @param {UserDocument} user
+   * @param options
+   */
+  schema.statics.updateGrant = async function(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}, shouldUseV4Process: boolean) {
+    const { grant, grantedGroup } = grantData;
+
+    const options = {
+      grant,
+      grantUserGroupId: grantedGroup,
+      isSyncRevisionToHackmd: false,
+      shouldUseV4Process,
+    };
+
+    return this.updatePage(page, null, null, user, options);
+  };
+
+  schema.statics.updatePage = async function(
+      pageData,
+      body: string | null,
+      previousBody: string | null,
+      user,
+      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean, shouldUseV4Process?: boolean} = {},
+  ) {
     if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
     }
@@ -1200,16 +1225,15 @@ export default (crowi: Crowi): any => {
     const exParent = pageData.parent;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
-    const shouldUseV4Process = shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
+    const shouldUseV4Process = options.shouldUseV4Process ?? shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
     if (shouldUseV4Process) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
 
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const grant = options.grant || pageData.grant; // use the previous data if absence
+    const grant = options.grant ?? pageData.grant; // use the previous data if absence
     const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+
     const grantedUserIds = pageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== GRANT_RESTRICTED;
     const isChildrenExist = await this.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(pageData.path))}`), parent: { $ne: null } });
@@ -1252,13 +1276,22 @@ export default (crowi: Crowi): any => {
 
     // update existing page
     let savedPage = await newPageData.save();
-    const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
-    savedPage = await pushRevision(savedPage, newRevision, user);
-    await savedPage.populateDataToShowRevision();
 
-    if (isSyncRevisionToHackmd) {
-      savedPage = await this.syncRevisionToHackmd(savedPage);
+    // Update body
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+    const isBodyPresent = body != null && previousBody != null;
+    const shouldUpdateBody = isBodyPresent;
+    if (shouldUpdateBody) {
+      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+      savedPage = await pushRevision(savedPage, newRevision, user);
+      await savedPage.populateDataToShowRevision();
+
+      if (isSyncRevisionToHackmd) {
+        savedPage = await this.syncRevisionToHackmd(savedPage);
+      }
     }
+
 
     this.emitPageEventUpdate(savedPage, user);
 
@@ -1296,7 +1329,6 @@ export default (crowi: Crowi): any => {
     }
 
     // 2. Delete unnecessary empty pages
-
     const shouldRemoveLeafEmpPages = wasOnTree && !isChildrenExist;
     if (shouldRemoveLeafEmpPages) {
       await this.removeLeafEmptyPagesRecursively(exParent);
