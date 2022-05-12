@@ -148,8 +148,8 @@ class PageOperationService {
   /**
    * add RenameOperationInfo to root page document as a new property
    */
-  async addShouldResumeRenameOpInfoToRootPage(rootPage) {
-    const filter = { actionType: PageActionType.Rename, path: '/' }; // exclude root page
+  async addShouldResumeRenameOpInfoToRootPage(rootPage: PageDocument): Promise<PageDocument> {
+    const filter = { actionType: PageActionType.Rename, path: '/' }; // only root page
     const renameSubOpsInfoMap = await this.getRenameSubOpInfoMap(filter);
     const pages = await this.addShouldResumeRenameOpInfoToPages([rootPage], renameSubOpsInfoMap);
 
