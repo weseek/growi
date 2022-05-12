@@ -37,7 +37,7 @@ const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {
-  renameOperationInfo?: { parentId: string; targtPageId: string; isProcessing: boolean; }[];
+  renameOperationInfo?: { targtPageId: string; isProcessing: boolean; }[];
 }
 
 

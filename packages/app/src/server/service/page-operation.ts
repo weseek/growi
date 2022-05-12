@@ -10,7 +10,6 @@ const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUt
 
 type ParentId = string;
 type RenameSubOperationInfo = {
-  parentId: string,
   targtPageId: string,
   isProcessing: boolean,
 }
@@ -108,7 +107,7 @@ class PageOperationService {
       const isProcessing = this.isProcessingPageOperation(op);
 
       const pageOpInfo = {
-        targetPageId, isProcessing, parentId,
+        targetPageId, isProcessing,
       };
 
       // replace existing data with new data including new info if the key already exists
