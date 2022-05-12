@@ -408,6 +408,29 @@ class PageGrantService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
+    // Increment an object (type IRecordApplicableGrant)
+    // grant is never public, anyone with the link, nor specified
+    const data: IRecordApplicableGrant = {
+      [Page.GRANT_RESTRICTED]: null, // any page can be restricted
+    };
+
+    // -- Public only if top page
+    const isOnlyPublicApplicable = isTopPage(page.path);
+    if (isOnlyPublicApplicable) {
+      data[Page.GRANT_PUBLIC] = null;
+      return data;
+    }
+
+    // -- Any grant is allowed if parent is null
+    const isAnyGrantApplicable = page.parent == null;
+    if (isAnyGrantApplicable) {
+      data[Page.GRANT_PUBLIC] = null;
+      data[Page.GRANT_OWNER] = null;
+      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      return data;
+    }
+
+    // -- Public is not applicable below
     const parent = await Page.findById(page.parent);
     if (parent == null) {
       throw Error('The page\'s parent does not exist.');
@@ -416,10 +439,6 @@ class PageGrantService {
     const {
       grant, grantedUsers, grantedGroup,
     } = parent;
-
-    // Increment an object (type IRecordApplicableGrant)
-    // grant is never public, anyone with the link, nor specified
-    const data: IRecordApplicableGrant = {};
 
     if (grant === Page.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];

@@ -451,9 +451,6 @@ module.exports = (crowi) => {
     if (page == null) {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
-    if (isTopPage(page.path) || page.parent == null) {
-      return res.apiv3();
-    }
 
     let data;
     try {
