@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.19...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.20...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.20](https://github.com/weseek/growi/compare/v4.5.19...v4.5.20) - 2022-05-12
+
+### 🐛 Bug Fixes
+
+- fix: Guest user cannot access share link pages (#5819) @kaoritokashiki
 
 ## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
 
