@@ -65,7 +65,8 @@ export default (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('rootPage not found'));
     }
 
-    rootPage = await crowi.pageOperationService.addShouldResumeRenameOpInfoToRootPage(rootPage);
+    rootPage = rootPage.toObject(); // do this to add new property later in the next method(addRenameOperationInfoToRootPage)
+    rootPage = await crowi.pageOperationService.addRenameOperationInfoToRootPage(rootPage);
 
     return res.apiv3({ rootPage });
   });
