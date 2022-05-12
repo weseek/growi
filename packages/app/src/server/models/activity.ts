@@ -33,21 +33,21 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
-    require: true,
+    required: true,
   },
   targetModel: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    require: true,
+    required: true,
   },
   action: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSupportedActionType,
   },
   snapshot: {
