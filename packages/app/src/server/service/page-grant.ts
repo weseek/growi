@@ -440,7 +440,12 @@ class PageGrantService {
       grant, grantedUsers, grantedGroup,
     } = parent;
 
-    if (grant === Page.GRANT_OWNER) {
+    if (grant === Page.GRANT_PUBLIC) {
+      data[Page.GRANT_PUBLIC] = null;
+      data[Page.GRANT_OWNER] = null;
+      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    else if (grant === Page.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];
 
       const isUserApplicable = grantedUser.toString() === user._id.toString();
@@ -449,7 +454,6 @@ class PageGrantService {
         data[Page.GRANT_OWNER] = null;
       }
     }
-
     else if (grant === Page.GRANT_USER_GROUP) {
       const group = await UserGroup.findById(grantedGroup);
       if (group == null) {
