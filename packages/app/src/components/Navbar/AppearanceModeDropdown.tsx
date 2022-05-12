@@ -46,7 +46,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     }
   }, [mutatePreferDrawerMode, mutatePreferDrawerModeOnEdit, scheduleToPut]);
 
-  const followOsCheckboxModifiedHandler = (useOsSettings: boolean) => {
+  const followOsCheckboxModifiedHandler = useCallback((useOsSettings: boolean) => {
     if (useOsSettings) {
       removeUserPreference();
     }
@@ -58,15 +58,15 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     // update states
     setOsSettings(useOsSettings);
     setIsDarkMode(isDarkModeByUtil());
-  };
+  }, []);
 
-  const userPreferenceSwitchModifiedHandler = (isDarkMode: boolean) => {
+  const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
     updateUserPreference(isDarkMode);
     applyColorScheme();
 
     // update state
     setIsDarkMode(isDarkModeByUtil());
-  };
+  }, []);
 
   /* eslint-disable react/prop-types */
   const IconWithTooltip = ({
@@ -78,7 +78,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     </>
   );
 
-  const renderSidebarModeSwitch = (isEditMode: boolean) => {
+  const renderSidebarModeSwitch = useCallback((isEditMode: boolean) => {
     return (
       <>
         <h6 className="dropdown-header">{t(isEditMode ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
@@ -106,7 +106,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
         </form>
       </>
     );
-  };
+  }, [isPreferDrawerMode, isPreferDrawerModeOnEdit, preferDrawerModeSwitchModifiedHandler, t]);
 
   return (
     <>
