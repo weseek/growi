@@ -15,11 +15,15 @@ import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/co
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
 }
+
 module.exports = async() => {
   initMongooseGlobalSettings();
+
   mongoose.connect(getMongoUri(), mongoOptions);
+
   // drop database
   await mongoose.connection.dropDatabase();
+
   // init DB
   const pageCollection = mongoose.connection.collection('pages');
   const userCollection = mongoose.connection.collection('users');
@@ -36,5 +40,6 @@ module.exports = async() => {
     creator: globalUser,
     lastUpdateUser: globalUser,
   }]);
+
   await mongoose.disconnect();
 };
