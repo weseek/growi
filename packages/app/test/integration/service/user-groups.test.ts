@@ -169,8 +169,13 @@ describe('UserGroupService', () => {
     const userGroup8 = await UserGroup.findOne({ _id: groupId8, parent: null });
 
     // userGroup7 has not userId1
+    const userGroupRelation6BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  groupId6, relatedUser: userId1 });
     const userGroupRelation7BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  groupId7, relatedUser: userId1 });
+    const userGroupRelation8BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  groupId8, relatedUser: userId1 });
+    expect(userGroupRelation6BeforeUpdate).not.toBeNull();
+    // userGroup7 does not have userId1
     expect(userGroupRelation7BeforeUpdate).toBeNull();
+    expect(userGroupRelation8BeforeUpdate).not.toBeNull();
 
     // update userGroup8's parent with userGroup7 (forceUpdate: true)
     const forceUpdateParents = true;
@@ -178,13 +183,13 @@ describe('UserGroupService', () => {
       userGroup8._id, userGroup8.name, userGroup8.description, groupId7, forceUpdateParents,
     );
 
-    const userGroupRelation6 = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
+    const userGroupRelation6AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId6, relatedUser: userId1 });
     const userGroupRelation7AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId7, relatedUser: userId1 });
-    const userGroupRelation8 = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
-    expect(userGroupRelation6).not.toBeNull();
+    const userGroupRelation8AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId8, relatedUser: userId1 });
+    expect(userGroupRelation6AfterUpdate).not.toBeNull();
     // userGroup7 should have userId1
     expect(userGroupRelation7AfterUpdate).not.toBeNull();
-    expect(userGroupRelation8).not.toBeNull();
+    expect(userGroupRelation8AfterUpdate).not.toBeNull();
   });
 
 });
