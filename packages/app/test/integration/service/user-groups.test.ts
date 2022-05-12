@@ -146,8 +146,8 @@ describe('UserGroupService', () => {
     const userGroup4 = await UserGroup.findOne({ _id: groupId4, parent: null });
     const userGroup5 = await UserGroup.findOne({ _id: groupId5, parent: null });
     // userGroup4 has userId1
-    const userGroupRelation4 = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
-    expect(userGroupRelation4).not.toBeNull();
+    const userGroupRelation4BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup4, relatedUser: userId1 });
+    expect(userGroupRelation4BeforeUpdate).not.toBeNull();
 
     // userGroup5 has not userId1
     const userGroupRelation5BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup5, relatedUser: userId1 });
@@ -161,7 +161,7 @@ describe('UserGroupService', () => {
 
     expect(updatedUserGroup.parent).toStrictEqual(groupId5);
     // userGroup5 should have userId1
-    const userGroupRelation5AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroupRelation4.relatedUser });
+    const userGroupRelation5AfterUpdate = await UserGroupRelation.findOne({ relatedGroup: groupId5, relatedUser: userGroupRelation4BeforeUpdate.relatedUser });
     expect(userGroupRelation5AfterUpdate).not.toBeNull();
   });
 
