@@ -1,5 +1,5 @@
-import data from 'emoji-mart/data/apple.json';
 import { Emoji } from 'emoji-mart';
+import data from 'emoji-mart/data/apple.json';
 
 const DEFAULT_EMOJI_SIZE = 24;
 
@@ -42,7 +42,7 @@ const getNativeEmoji = async(emojis) => {
       emoji: emojiName,
       size: DEFAULT_EMOJI_SIZE,
     });
-    if (elem) {
+    if (elem != null) {
       emojiData[emojiName] = elem.props['aria-label'].split(',')[0];
       if (hasSkinVariation) {
         const emojiWithSkinTone = await getEmojiSkinTone(emojiName);
