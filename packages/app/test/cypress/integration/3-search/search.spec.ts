@@ -13,6 +13,7 @@ context('Access to search result page', () => {
   it('/_search with "q" param is successfully loaded', () => {
     cy.visit('/_search', { qs: { q: 'labels alerts cards blocks' } });
 
+    cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
 
@@ -24,6 +25,7 @@ context('Access to search result page', () => {
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
 
     cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}-the-first-checkbox-on`);

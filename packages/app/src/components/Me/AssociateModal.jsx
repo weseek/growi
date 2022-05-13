@@ -1,21 +1,22 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class AssociateModal extends React.Component {
 
@@ -70,7 +71,7 @@ class AssociateModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg" data-testid="grw-associate-modal">
         <ModalHeader className="bg-primary text-light" toggle={this.props.onClose}>
           { t('admin:user_management.create_external_account') }
         </ModalHeader>

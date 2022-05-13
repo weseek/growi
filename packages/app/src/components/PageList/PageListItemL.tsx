@@ -3,24 +3,18 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { CustomInput } from 'reactstrap';
 
-import Clamp from 'react-multiline-clamp';
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import Clamp from 'react-multiline-clamp';
+import { CustomInput } from 'reactstrap';
 import urljoin from 'url-join';
 
-import { UserPicture, PageListMeta } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
-
-import { useSWRxPageInfo } from '../../stores/page';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
-import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
-} from '~/stores/modal';
 import {
   IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
 } from '~/interfaces/page';
@@ -29,7 +23,12 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
+import {
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+} from '~/stores/modal';
+import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
+import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
