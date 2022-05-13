@@ -79,7 +79,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     return (
       <>
         <ModalBody>
-          <div className="form-group grw-scrollable-modal-body">
+          <div className="form-group">
             {/* eslint-disable-next-line react/no-danger */}
             <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
             <div className="ml-2">
@@ -128,7 +128,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     data-toggle="dropdown"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                   >
-                    <span className="float-left">
+                    <span className="float-left ml-2">
                       {
                         selectedGroup == null
                           ? t('fix_page_grant.modal.select_group_default_text')
