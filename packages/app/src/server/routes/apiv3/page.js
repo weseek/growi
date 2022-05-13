@@ -1,5 +1,8 @@
 import { pagePathUtils } from '@growi/core';
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
@@ -590,6 +593,10 @@ module.exports = (crowi) => {
 
     try {
       const fromPage = await Page.findByPath(fromPath);
+      if (fromPage == null) {
+        return res.apiv3Err(new ErrorV3('fromPage is Null'), 400);
+      }
+
       const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {

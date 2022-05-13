@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import PageListIcon from './Icons/PageListIcon';
+
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import EmptyTrashButton from './EmptyTrashButton';
+import PageListIcon from './Icons/PageListIcon';
 
 
 const TrashPageList = (props) => {
@@ -20,9 +23,13 @@ const TrashPageList = (props) => {
     };
   }, [t]);
 
+  const emptyTrashButton = useMemo(() => {
+    return <EmptyTrashButton />;
+  }, [t]);
+
   return (
     <div data-testid="trash-page-list" className="mt-5 d-edit-none">
-      <CustomNavAndContents navTabMapping={navTabMapping} />
+      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={emptyTrashButton} />
     </div>
   );
 };
