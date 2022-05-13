@@ -105,14 +105,16 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
-        attachmentId: customizeParams.attachmentLogoId,
+        attachmentId: customizeParams.attachmentId,
         isDefaultLogo: customizeParams.isDefaultLogo,
         uploadedLogoSrc: customizeParams.uploadedLogoSrc,
         isUploadedLogo: customizeParams.uploadedLogoSrc,
       });
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
-
+      if (customizeParams.attachmentId == null) {
+        this.setState({ isDefaultLogo: true, uploadedLogoSrc: DEFAULT_LOGO, isUploadedLogo: false });
+      }
 
     }
     catch (err) {

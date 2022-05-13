@@ -453,7 +453,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, 'WIKI_PAGE');
     }
     catch (err) {
       logger.error(err);
@@ -735,7 +735,7 @@ module.exports = function(crowi, app) {
     try {
       attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
       const attachmentConfigParams = {
-        'customize:attachmentLogoId': attachment.id,
+        'customize:attachmentId': attachment.id,
         'customize:uploadedLogoSrc': attachment.filePathProxied,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
@@ -763,9 +763,9 @@ module.exports = function(crowi, app) {
 
     try {
       await attachmentService.removeAttachment(attachmentObjectId);
-      // update attachmentLogoId immediately
+      // update attachmentId immediately
       const attachmentConfigParams = {
-        'customize:attachmentLogoId': null,
+        'customize:attachmentId': null,
         'customize:isDefaultLogo': true,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
