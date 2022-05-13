@@ -2,7 +2,7 @@ import { Ref, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
-import { IResTag } from './tag';
+import { ITag } from './tag';
 import { IUser } from './user';
 
 
@@ -10,7 +10,7 @@ export interface IPage {
   path: string,
   status: string,
   revision: Ref<IRevision>,
-  tags: Ref<IResTag>[],
+  tags: Ref<ITag>[],
   creator: Ref<IUser>,
   createdAt: Date,
   updatedAt: Date,

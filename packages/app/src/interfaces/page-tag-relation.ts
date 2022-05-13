@@ -1,7 +1,7 @@
 import { IPage } from './page';
-import { IResTag } from './tag';
+import { ITag } from './tag';
 
 export type IPageTagRelation = {
   relatedPage: IPage,
-  relatedTag: IResTag,
+  relatedTag: ITag,
 }
