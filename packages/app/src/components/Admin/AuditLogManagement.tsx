@@ -62,6 +62,7 @@ export const AuditLogManagement: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
+
       <SelectActionDropdown
         dropdownItems={[
           { actionCategory: 'Page', actionNames: PageActions },
