@@ -100,6 +100,7 @@
   "Connected": "接続されています",
   "Show": "公開",
   "Hide": "非公開",
+  "Loading": "読み込み中...",
   "Disclose E-mail": "メールアドレスの公開",
   "page exists": "このページはすでに存在しています",
   "Error occurred": "エラーが発生しました",
@@ -147,7 +148,8 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
-  "Check All tags": "全てのタグをチェックする",
+  "popular_tags": "人気のタグ",
+  "Check All tags": "全てのタグを見る",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -186,8 +188,7 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "title_required": "タイトルを入力してください"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -393,7 +394,7 @@
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
-    "already_exists": "新しいページが既に存在しています。",
+    "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが削除できます"
   },
@@ -440,8 +441,11 @@
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
+  "empty_trash": "ゴミ箱を空にしました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
+    "empty_the_trash_button": "空にする",
+    "not_deletable_notice": "権限がないため、いくつかのページは削除できません",
     "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
@@ -639,7 +643,8 @@
   "private_legacy_pages": {
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
-    "alert_title": "古い v4 互換形式のプライベートページを表示しています",
+    "input_path_to_convert": "パスを入力して変換",
+    "alert_title": "古い v4 互換形式のプライベートページが存在します",
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
     "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
@@ -650,6 +655,21 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "toaster": {
+      "page_migration_succeeded": "選択されたページの v5 互換形式への変換が正常に終了しました。",
+      "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+      "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
+    },
+    "by_path_modal": {
+      "title": "新しい v5 互換形式への変換",
+      "description": "パスを入力することで、そのパスの配下のページを全て v5 互換形式に変換します",
+      "button_label": "変換",
+      "success": "正常に変換を開始しました",
+      "error": "変換を開始できませんでした",
+      "error_grant_invalid": "ページの権限が正しくありません。修正してから再度実行してください",
+      "error_page_not_found": "ページが見つかりませんでした",
+      "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
   "security_setting": {

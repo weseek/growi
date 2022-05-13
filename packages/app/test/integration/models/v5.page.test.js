@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
@@ -7,7 +8,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -35,7 +35,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -53,13 +52,22 @@ describe('Page', () => {
     const pModelUserId3 = new mongoose.Types.ObjectId();
     await User.insertMany([
       {
-        _id: pModelUserId1, name: 'pmodelUser1', username: 'pmodelUser1', email: 'pmodelUser1@example.com',
+        _id: pModelUserId1,
+        name: 'pmodelUser1',
+        username: 'pmodelUser1',
+        email: 'pmodelUser1@example.com',
       },
       {
-        _id: pModelUserId2, name: 'pmodelUser2', username: 'pmodelUser2', email: 'pmodelUser2@example.com',
+        _id: pModelUserId2,
+        name: 'pmodelUser2',
+        username: 'pmodelUser2',
+        email: 'pmodelUser2@example.com',
       },
       {
-        _id: pModelUserId3, name: 'pModelUser3', username: 'pModelUser3', email: 'pModelUser3@example.com',
+        _id: pModelUserId3,
+        name: 'pModelUser3',
+        username: 'pModelUser3',
+        email: 'pModelUser3@example.com',
       },
     ]);
     pModelUser1 = await User.findOne({ _id: pModelUserId1 });
@@ -473,6 +481,30 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
       },
+      {
+        path: '/get_parent_A',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_A/get_parent_B',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_C',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/get_parent_C/get_parent_D',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
     ]);
 
   });
@@ -834,7 +866,7 @@ describe('Page', () => {
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
     });
-    test("should find parent while NOT updating private legacy page's parent", async() => {
+    test('should find parent while NOT updating private legacy page\'s parent', async() => {
       const path1 = '/emp_anc4';
       const path2 = '/emp_anc4/PAF4';
       const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
@@ -857,6 +889,103 @@ describe('Page', () => {
       expect(page1._id).toStrictEqual(parent._id);
       expect(page2.parent).toStrictEqual(parent._id);
 
+    });
+    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
+      // All pages does not have parent (v4 schema)
+      const _pageA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _pageAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _emptyA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageA).not.toBeNull();
+      expect(_pageAB).not.toBeNull();
+      expect(_emptyA).toBeNull();
+      expect(_emptyAB).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors('/get_parent_A/get_parent_B/get_parent_C', dummyUser1);
+
+      const pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageA).not.toBeNull();
+      expect(pageAB).not.toBeNull();
+      expect(emptyA).toBeNull();
+      expect(emptyAB).toBeNull();
+
+      // -- Check parent
+      expect(pageA.parent).not.toBeNull();
+      expect(pageAB.parent).not.toBeNull();
+    });
+    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
+      const _pageC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: { $ne: null },
+      });
+      const _pageCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+      });
+      const _emptyC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageC).not.toBeNull();
+      expect(_pageCD).not.toBeNull();
+      expect(_emptyC).toBeNull();
+      expect(_emptyCD).toBeNull();
+
+      const parent = await Page.getParentAndFillAncestors('/get_parent_C/get_parent_D/get_parent_E', dummyUser1);
+
+      const pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageC).not.toBeNull();
+      expect(pageCD).not.toBeNull();
+      expect(emptyC).toBeNull();
+      expect(emptyCD).toBeNull();
+
+      // -- Check parent attribute
+      expect(pageC.parent).toStrictEqual(rootPage._id);
+      expect(pageCD.parent).toStrictEqual(pageC._id);
+
+      // -- Check the found parent
+      expect(parent).toStrictEqual(pageCD);
     });
   });
 });

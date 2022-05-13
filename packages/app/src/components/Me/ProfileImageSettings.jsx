@@ -116,14 +116,14 @@ class ProfileImageSettings extends React.Component {
                   onChange={() => { personalContainer.changeIsGravatarEnabled(true) }}
                 />
                 <label className="custom-control-label" htmlFor="radioGravatar">
-                  <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
+                  <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" data-hide-in-vrt /> Gravatar
                 </label>
                 <a href="https://gravatar.com/">
                   <small><i className="icon-arrow-right-circle" aria-hidden="true"></i></small>
                 </a>
               </div>
             </h4>
-            <img src={this.generateGravatarSrc()} width="64" />
+            <img src={this.generateGravatarSrc()} width="64" data-hide-in-vrt />
           </div>
 
           <div className="col-md-6 col-12">

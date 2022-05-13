@@ -1,33 +1,41 @@
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import {
-  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IFormattedSearchResult } from '~/interfaces/search';
-import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { toastSuccess } from '~/client/util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import { IFormattedSearchResult } from '~/interfaces/search';
+import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
 import {
-  useSWRxNamedQuerySearch,
-} from '~/stores/search';
-import {
-  ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
+  ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import {
+  useSWRxSearch,
+} from '~/stores/search';
+import { useGlobalSocket } from '~/stores/websocket';
 
-import PaginationWrapper from './PaginationWrapper';
-import { OperateAllControl } from './SearchPage/OperateAllControl';
-
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
-import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
+import PaginationWrapper from './PaginationWrapper';
+import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
+import { OperateAllControl } from './SearchPage/OperateAllControl';
+import SearchControl from './SearchPage/SearchControl';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
-const INITIAL_PAGIONG_SIZE = 20;
+const INITIAL_PAGING_SIZE = 20;
+
+const initQ = '/';
 
 
 /**
@@ -39,6 +47,7 @@ type SearchResultListHeadProps = {
   offset: number,
   pagingSize: number,
   onPagingSizeChanged: (size: number) => void,
+  migrationStatus?: V5MigrationStatus,
 }
 
 const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
@@ -46,14 +55,24 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   const {
     searchResult, offset, pagingSize,
-    onPagingSizeChanged,
+    onPagingSizeChanged, migrationStatus,
   } = props;
+
+  if (migrationStatus == null) {
+    return (
+      <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      </div>
+    );
+  }
 
   const { took, total, hitsCount } = searchResult.meta;
   const leftNum = offset + 1;
   const rightNum = offset + hitsCount;
 
-  if (total === 0) {
+  const isSuccess = migrationStatus.migratablePagesCount === 0;
+
+  if (isSuccess) {
     return (
       <div className="card border-success mt-3">
         <div className="card-body">
@@ -108,6 +127,38 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+/*
+ * ConvertByPathModal
+ */
+type ConvertByPathModalProps = {
+  isOpen: boolean,
+  close?: () => void,
+  onSubmit?: (convertPath: string) => Promise<void> | void,
+}
+const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const [currentInput, setInput] = useState<string>('');
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
+        { t('private_legacy_pages.by_path_modal.title') }
+      </ModalHeader>
+      <ModalBody>
+        <p>{t('private_legacy_pages.by_path_modal.description')}</p>
+        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
+      </ModalBody>
+      <ModalFooter>
+        <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(currentInput)}>
+          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          { t('private_legacy_pages.by_path_modal.button_label') }
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+});
+
 
 /**
  * LegacyPage
@@ -117,7 +168,7 @@ type Props = {
   appContainer: AppContainer,
 }
 
-export const PrivateLegacyPages = (props: Props): JSX.Element => {
+const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -125,20 +176,56 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   } = props;
 
 
+  const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [limit, setLimit] = useState<number>(INITIAL_PAGING_SIZE);
+  const [isOpenConvertModal, setOpenConvertModal] = useState<boolean>(false);
 
   const [isControlEnabled, setControlEnabled] = useState(false);
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data, conditions, mutate } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
+  const { data, conditions, mutate } = useSWRxSearch(keyword, 'PrivateLegacyPages', {
     offset,
     limit,
+    includeUserPages: true,
+    includeTrashPages: false,
   });
 
-  const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
+  const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
+
+  const searchInvokedHandler = useCallback((_keyword: string) => {
+    mutateMigrationStatus();
+    setKeyword(_keyword);
+    setOffset(0);
+  }, []);
+
+  const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
+  const { data: socket } = useGlobalSocket();
+
+  useEffect(() => {
+    socket?.on(SocketEventName.PageMigrationSuccess, () => {
+      toastSuccess(t('private_legacy_pages.toaster.page_migration_succeeded'));
+    });
+
+    socket?.on(SocketEventName.PageMigrationError, (data?: PageMigrationErrorData) => {
+      if (data == null || data.paths.length === 0) {
+        toastError(t('private_legacy_pages.toaster.page_migration_failed'));
+      }
+      else {
+        const errorPaths = data.paths.length > 3
+          ? `${data.paths.slice(0, 3).join(', ')}...`
+          : data.paths.join(', ');
+        toastError(t('private_legacy_pages.toaster.page_migration_failed_with_paths', { paths: errorPaths }));
+      }
+    });
+
+    return () => {
+      socket?.off(SocketEventName.PageMigrationSuccess);
+      socket?.off(SocketEventName.PageMigrationError);
+    };
+  }, [socket]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -206,10 +293,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       () => {
         toastSuccess(t('Successfully requested'));
         closeModal();
+        mutateMigrationStatus();
         mutate();
       },
     );
-  }, [data, mutate, openModal, closeModal]);
+  }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
     setOffset(0);
@@ -224,41 +312,57 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
-  const searchControl = useMemo(() => {
+  const searchControlAllAction = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
 
     return (
-      <div className="shadow-sm">
-        <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-          <div className="d-flex pl-md-2">
-            <OperateAllControl
-              ref={selectAllControlRef}
-              isCheckboxDisabled={isCheckboxDisabled}
-              onCheckboxChanged={selectAllCheckboxChangedHandler}
-            >
-              <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="outline-primary" disabled={!isControlEnabled}>
-                  {t('private_legacy_pages.bulk_operation')}
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem onClick={convertMenuItemClickedHandler}>
-                    <i className="icon-fw icon-refresh"></i>
-                    {t('private_legacy_pages.convert_all_selected_pages')}
-                  </DropdownItem>
-                  <DropdownItem onClick={deleteAllButtonClickedHandler}>
-                    <span className="text-danger">
-                      <i className="icon-fw icon-trash"></i>
-                      {t('search_result.delete_all_selected_page')}
-                    </span>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledButtonDropdown>
-            </OperateAllControl>
-          </div>
+      <div className="search-control d-flex align-items-center">
+        <div className="d-flex pl-md-2">
+          <OperateAllControl
+            ref={selectAllControlRef}
+            isCheckboxDisabled={isCheckboxDisabled}
+            onCheckboxChanged={selectAllCheckboxChangedHandler}
+          >
+            <UncontrolledButtonDropdown>
+              <DropdownToggle caret color="outline-primary" disabled={!isControlEnabled}>
+                {t('private_legacy_pages.bulk_operation')}
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={convertMenuItemClickedHandler}>
+                  <i className="icon-fw icon-refresh"></i>
+                  {t('private_legacy_pages.convert_all_selected_pages')}
+                </DropdownItem>
+                <DropdownItem onClick={deleteAllButtonClickedHandler}>
+                  <span className="text-danger">
+                    <i className="icon-fw icon-trash"></i>
+                    {t('search_result.delete_all_selected_page')}
+                  </span>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
+          </OperateAllControl>
+        </div>
+        <div className="d-flex pl-md-2">
+          <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
+            {t('private_legacy_pages.input_path_to_convert')}
+          </button>
         </div>
       </div>
     );
   }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+
+  const searchControl = useMemo(() => {
+    return (
+      <SearchControl
+        isSearchServiceReachable
+        isEnableSort={false}
+        isEnableFilter={false}
+        initialSearchConditions={{ keyword: initQ, limit: INITIAL_PAGING_SIZE }}
+        onSearchInvoked={searchInvokedHandler}
+        allControl={searchControlAllAction}
+      />
+    );
+  }, [searchInvokedHandler, searchControlAllAction]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -270,9 +374,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
+        migrationStatus={migrationStatus}
       />
     );
-  }, [data, limit, offset, pagingSizeChangedHandler]);
+  }, [data, limit, offset, pagingSizeChangedHandler, migrationStatus]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
@@ -307,7 +412,42 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         searchPager={searchPager}
       />
 
-      <LegacyPrivatePagesMigrationModal />
+      <PrivateLegacyPagesMigrationModal />
+      <ConvertByPathModal
+        isOpen={isOpenConvertModal}
+        close={() => setOpenConvertModal(false)}
+        onSubmit={async(convertPath: string) => {
+          try {
+            await apiv3Post<void>('/pages/legacy-pages-migration', {
+              convertPath,
+            });
+            toastSuccess(t('private_legacy_pages.by_path_modal.success'));
+            setOpenConvertModal(false);
+          }
+          catch (errs) {
+            if (errs.length === 1) {
+              switch (errs[0].code) {
+                case V5ConversionErrCode.GRANT_INVALID:
+                  toastError(t('private_legacy_pages.by_path_modal.error_grant_invalid'));
+                  break;
+                case V5ConversionErrCode.PAGE_NOT_FOUND:
+                  toastError(t('private_legacy_pages.by_path_modal.error_page_not_found'));
+                  break;
+                case V5ConversionErrCode.DUPLICATE_PAGES_FOUND:
+                  toastError(t('private_legacy_pages.by_path_modal.error_duplicate_pages_found'));
+                  break;
+                default:
+                  toastError(t('private_legacy_pages.by_path_modal.error'));
+              }
+            }
+            else {
+              toastError(t('private_legacy_pages.by_path_modal.error'));
+            }
+          }
+        }}
+      />
     </>
   );
 };
+
+export default PrivateLegacyPages;
