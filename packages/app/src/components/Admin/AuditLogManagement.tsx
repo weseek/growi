@@ -10,6 +10,7 @@ import { useSWRxActivityList } from '~/stores/activity';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
+import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
 const PAGING_LIMIT = 10;
@@ -22,6 +23,7 @@ export const AuditLogManagement: FC = () => {
    */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
@@ -62,6 +64,11 @@ export const AuditLogManagement: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
+
+      <DateRangePicker
+        startDate={startDate}
+        setStartDate={setStartDate}
+      />
 
       <SelectActionDropdown
         dropdownItems={[
