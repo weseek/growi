@@ -1,8 +1,4 @@
 import { pagePathUtils } from '@growi/core';
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
