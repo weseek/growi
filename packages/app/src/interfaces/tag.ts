@@ -1,9 +1,10 @@
 export type ITag<ID = string> = {
   _id: ID
   name: string,
-  createdAt: Date;
-  count: number;
 }
+
+export type ITagCount = ITag & {count: number}
+
 
 export type ITagsSearchApiv1Result = {
   ok: boolean,
@@ -12,6 +13,6 @@ export type ITagsSearchApiv1Result = {
 
 export type ITagsListApiv1Result = {
   ok: boolean,
-  data: ITag[],
+  data: ITagCount[],
   totalCount: number,
 }

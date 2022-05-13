@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { ITag } from '~/interfaces/tag';
+import { ITagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import TagCloudBox from './TagCloudBox';
@@ -15,7 +15,7 @@ const TagPage: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
-  const tagData: ITag[] = tagDataList?.data || [];
+  const tagData: ITagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
 
