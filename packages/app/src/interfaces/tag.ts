@@ -1,9 +1,9 @@
-export type ITag<ID = string> = {
+export type IResTag<ID = string> = {
   _id: ID
   name: string,
 }
 
-export type ITagCount = ITag & {count: number}
+export type IDataTagCount = IResTag & {count: number}
 
 
 export type ITagsSearchApiv1Result = {
@@ -13,6 +13,6 @@ export type ITagsSearchApiv1Result = {
 
 export type ITagsListApiv1Result = {
   ok: boolean,
-  data: ITagCount[],
+  data: IDataTagCount[],
   totalCount: number,
 }

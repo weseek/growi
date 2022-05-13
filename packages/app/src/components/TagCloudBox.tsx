@@ -2,10 +2,10 @@ import React, { FC, memo } from 'react';
 
 import { TagCloud } from 'react-tagcloud';
 
-import { ITagCount } from '~/interfaces/tag';
+import { IDataTagCount } from '~/interfaces/tag';
 
 type Props = {
-  tags:ITagCount[],
+  tags:IDataTagCount[],
   minSize?: number,
   maxSize?: number,
   maxTagTextLength?: number,
@@ -31,7 +31,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
       <TagCloud
         minSize={minSize ?? MIN_FONT_SIZE}
         maxSize={maxSize ?? MAX_FONT_SIZE}
-        tags={tags.map((tag:ITagCount) => {
+        tags={tags.map((tag:IDataTagCount) => {
           return {
             // text truncation
             value: (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name,
