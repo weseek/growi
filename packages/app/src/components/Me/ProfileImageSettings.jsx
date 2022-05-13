@@ -168,6 +168,7 @@ class ProfileImageSettings extends React.Component {
           src={this.state.src}
           onModalClose={this.cancelModal}
           onCropCompleted={this.onCropCompleted}
+          circular
         />
 
         <div className="row my-3">

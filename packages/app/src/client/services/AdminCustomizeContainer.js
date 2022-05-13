@@ -107,21 +107,13 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeScript: customizeParams.customizeScript,
         attachmentId: customizeParams.attachmentLogoId,
         isDefaultLogo: customizeParams.isDefaultLogo,
+        uploadedLogoSrc: customizeParams.uploadedLogoSrc,
+        isUploadedLogo: customizeParams.uploadedLogoSrc,
       });
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
 
-      // set current uploaded logo
-      if (customizeParams.attachmentLogoId) {
-        const logoPath = `/attachment/${customizeParams.attachmentLogoId}`;
 
-        this.setState({ isUploadedLogo: true });
-        this.setState({ uploadedLogoSrc: logoPath });
-      }
-      else {
-        this.setState({ isUploadedLogo: false });
-        this.setState({ uploadedLogoSrc: DEFAULT_LOGO });
-      }
     }
     catch (err) {
       this.setState({ retrieveError: err });

@@ -1,7 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
-const mongoose = require('mongoose');
 const fs = require('fs');
+
+const mongoose = require('mongoose');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AttachmentService');
@@ -15,7 +16,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType = null) {
+  async createAttachment(file, user, pageId = null, attachmentType = 'UNCATEGORIZED') {
     const { fileUploadService } = this.crowi;
 
     // check limit

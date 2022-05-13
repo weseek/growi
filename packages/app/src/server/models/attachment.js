@@ -6,10 +6,10 @@ import loggerFactory from '~/utils/logger';
 // eslint-disable-next-line no-unused-vars
 const path = require('path');
 
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-const mongoosePaginate = require('mongoose-paginate-v2');
 const { addSeconds } = require('date-fns');
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -37,8 +37,8 @@ module.exports = function(crowi) {
     temporaryUrlExpiredAt: { type: Date },
     attachmentType: {
       type: String,
-      enum: ['BRAND_LOGO', 'WIKI_PAGE', 'USER_PAGE', 'PROFILE_IMAGE', null],
-      default: null,
+      enum: ['BRAND_LOGO', 'WIKI_PAGE', 'USER_PAGE', 'PROFILE_IMAGE', 'UNCATEGORIZED'],
+      default: 'UNCATEGORIZED',
     },
   });
   attachmentSchema.plugin(uniqueValidator);
@@ -56,7 +56,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType = null) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType = 'UNCATEGORIZED') {
     const Attachment = this;
 
     const extname = path.extname(originalName);

@@ -33,12 +33,13 @@ type Props = {
   show: boolean,
   src: string | ArrayBuffer | null,
   onModalClose: () => void,
-  onCropCompleted: (res: any) => void
+  onCropCompleted: (res: any) => void,
+  circular: boolean,
 }
 const ImageCropModal: FC<Props> = (props: Props) => {
 
   const {
-    show, src, onModalClose, onCropCompleted,
+    show, src, onModalClose, onCropCompleted, circular,
   } = props;
 
   const [imageRef, setImageRef] = useState<HTMLImageElement>();
@@ -106,7 +107,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
-        <ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} />
+        <ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={circular} />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>

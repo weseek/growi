@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { getOrCreateModel } from '@growi/core';
 
 export interface Config {
   _id: Types.ObjectId;

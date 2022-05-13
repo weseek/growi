@@ -709,14 +709,14 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-    const attachmentType = req.body.attachmentType;
+    const { attachmentType, attachmentId } = req.body;
 
-    let attachmentId;
-    if (req.body.attachmentId === 'null' || req.body.attachmentId === 'undefined') {
-      attachmentId = null;
+    let previousAttachmentId;
+    if (attachmentId === 'null' || attachmentId === 'undefined') {
+      previousAttachmentId = null;
     }
     else {
-      attachmentId = mongoose.Types.ObjectId(req.body.attachmentId);
+      previousAttachmentId = mongoose.Types.ObjectId(attachmentId);
     }
 
     // check type
@@ -725,9 +725,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
     }
 
-    // remove previous attachment
-    if (attachmentId) {
-      await attachmentService.removeAttachment(attachmentId);
+    // Check if previous attachment exists and remove it
+    const previousAttachment = await Attachment.findById(previousAttachmentId);
+    if (previousAttachment !== null) {
+      await attachmentService.removeAttachment(previousAttachmentId);
     }
 
     let attachment;
@@ -752,15 +753,16 @@ module.exports = function(crowi, app) {
   };
 
   api.removeBrandLogo = async function(req, res) {
-    const attachmentId = mongoose.Types.ObjectId(req.body.attachmentId);
-    const attachment = await Attachment.findById(attachmentId);
+    const { attachmentId } = req.body;
+    const attachmentObjectId = mongoose.Types.ObjectId(attachmentId);
+    const attachment = await Attachment.findById(attachmentObjectId);
 
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
     try {
-      await attachmentService.removeAttachment(attachmentId);
+      await attachmentService.removeAttachment(attachmentObjectId);
       // update attachmentLogoId immediately
       const attachmentConfigParams = {
         'customize:attachmentLogoId': null,
