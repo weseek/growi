@@ -1,3 +1,4 @@
+import { parse, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
@@ -51,6 +52,17 @@ module.exports = (crowi: Crowi): Router => {
       const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
       if (canContainActionFilterToQuery) {
         Object.assign(query, { action: parsedSearchFilter.action });
+      }
+
+      const startDate = parse(parsedSearchFilter.date.startDate, 'yyyy/MM/dd', new Date());
+      const endDate = parse(parsedSearchFilter.date.endDate, 'yyyy/MM/dd', new Date());
+      if (isValid(startDate) && isValid(endDate)) {
+        Object.assign(query, {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        });
       }
 
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);

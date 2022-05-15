@@ -1,5 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,6 +13,14 @@ import PaginationWrapper from '../PaginationWrapper';
 import { ActivityTable } from './AuditLog/ActivityTable';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
+
+
+const formatDate = (date: Date | null) => {
+  if (date == null) {
+    return '';
+  }
+  return format(new Date(date), 'yyyy/MM/dd');
+};
 
 const PAGING_LIMIT = 10;
 
@@ -32,8 +41,9 @@ export const AuditLogManagement: FC = () => {
   /*
    * Fetch
    */
+  const selectedDate = { startDate: formatDate(startDate), endDate: formatDate(endDate) };
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
-  const searchFilter = { action: selectedActionList };
+  const searchFilter = { action: selectedActionList, date: selectedDate };
 
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
