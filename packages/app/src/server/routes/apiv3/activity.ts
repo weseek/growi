@@ -45,10 +45,13 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
+
+      const query = {};
+
       const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
-      const query = {
-        action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
-      };
+      if (canContainActionFilterToQuery) {
+        Object.assign(query, { action: parsedSearchFilter.action });
+      }
 
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
