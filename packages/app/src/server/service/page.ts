@@ -6,7 +6,9 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, ISnapshot } from '~/interfaces/activity';
+import {
+  SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, SupportedActionType, ISnapshot,
+} from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -2231,7 +2233,7 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(user, target, action) {
+  private async createAndSendNotifications(user: IUserHasId, target: IPage, action: SupportedActionType) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     // Create activity

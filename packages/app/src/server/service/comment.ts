@@ -1,7 +1,11 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, ISnapshot } from '~/interfaces/activity';
+import {
+  SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, SupportedActionType, ISnapshot,
+} from '~/interfaces/activity';
+import { IPage } from '~/interfaces/page';
+import { IUserHasId } from '~/interfaces/user';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
@@ -79,7 +83,7 @@ class CommentService {
     });
   }
 
-  private createActivity = async function(user, target, action) {
+  private createActivity = async function(user: IUserHasId, target: IPage, action: SupportedActionType) {
     const snapshot: ISnapshot = { username: user.username };
     const parameters = {
       user: user._id,
@@ -92,7 +96,7 @@ class CommentService {
     return activity;
   };
 
-  private createAndSendNotifications = async function(activity, page) {
+  private createAndSendNotifications = async function(activity, page: IPage) {
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
