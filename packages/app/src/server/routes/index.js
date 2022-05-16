@@ -138,6 +138,9 @@ module.exports = function(crowi, app) {
   app.get('/admin/user-groups'                          , loginRequiredStrictly, adminRequired, admin.userGroup.index);
   app.get('/admin/user-group-detail/:id'                , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
+  // auditLog admin
+  app.get('/admin/audit-log'                            , loginRequiredStrictly, adminRequired, admin.auditLog.index);
+
   // importer management for admin
   app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
