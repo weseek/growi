@@ -31,8 +31,9 @@ describe('UserGroupService', () => {
     UserGroupRelation = mongoose.model('UserGroupRelation');
 
     await User.insertMany([
+      // ug -> User Group
       {
-        _id: userId1, name: 'someone1', username: 'someone1', email: 'someone1@example.com',
+        _id: userId1, name: 'ug_test_user1', username: 'ug_test_user1', email: 'ug_test_user1@example.com',
       },
     ]);
 
@@ -269,7 +270,7 @@ describe('UserGroupService', () => {
 
     // remove user1 from the parent group
     await crowi.userGroupService.removeUserByUsername(
-      userGroup11._id, 'someone1',
+      userGroup11._id, 'ug_test_user1',
     );
 
     // Both groups have not user1
