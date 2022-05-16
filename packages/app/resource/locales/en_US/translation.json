@@ -1060,7 +1060,7 @@
       "title": "Modify authority"
     },
     "alert": {
-      "description": "The permissions tied to this page need to be modified.",
+      "description": "You need to modify the permission settings for this page.",
       "btn_label": "Revision"
     }
   }

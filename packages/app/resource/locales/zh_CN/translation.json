@@ -1063,7 +1063,7 @@
       "title": "修改后的授权书"
     },
     "alert": {
-      "description": "与此页面绑定的权限需要修改。",
+      "description": "本页的授权设置需要修改。",
       "btn_label": "修改"
     }
   }
