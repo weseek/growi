@@ -1,8 +1,9 @@
+import Tag from './tag';
+
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
 const flatMap = require('array.prototype.flatmap');
-
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -110,8 +111,7 @@ class PageTagRelation {
       .flatMap(result => result.tagIds); // map + flatten
     const distinctTagIds = Array.from(new Set(allTagIds));
 
-    // retrieve tag documents
-    const Tag = mongoose.model('Tag');
+    // TODO: set IdToNameMap type by 93933
     const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
 
     // convert to map
@@ -135,8 +135,6 @@ class PageTagRelation {
     // filter empty string
     // eslint-disable-next-line no-param-reassign
     tags = tags.filter((tag) => { return tag !== '' });
-
-    const Tag = mongoose.model('Tag');
 
     // get relations for this page
     const relations = await this.findByPageId(pageId, { nullable: true });

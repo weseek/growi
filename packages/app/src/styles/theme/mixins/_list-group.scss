@@ -28,8 +28,7 @@
     border-color: $border-color-global;
 
     .grw-count-badge {
-      color: $btn-color;
-      background: $bgcolor-hover;
+      @include count-badge($btn-color, $bgcolor-hover, 28px);
     }
 
     .btn.btn-page-item-control {
@@ -53,15 +52,14 @@
     &.list-group-item-action {
       &:hover {
         background-color: $bgcolor-hover;
-        .grw-count-badge {
-          background: $bgcolor-active;
-        }
       }
       &:active {
         background-color: $bgcolor-active;
-        .grw-count-badge {
-          background: $bgcolor-active;
-        }
+      }
+    }
+    .grw-pagetree-title-anchor {
+      .grw-sidebar-text-muted {
+        color: rgba(desaturate($color, 50%), 0.6);
       }
     }
   }
