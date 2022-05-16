@@ -2285,7 +2285,7 @@ class PageService {
 
     let page;
 
-    const shouldCreateNewPage = pages[0] == null && emptyPage != null;
+    const shouldCreateNewPage = pages[0] == null;
     if (shouldCreateNewPage) {
       const notEmptyParent = await Page.findNotEmptyParentRecursively(emptyPage);
 
