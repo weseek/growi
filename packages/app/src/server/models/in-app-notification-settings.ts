@@ -1,5 +1,5 @@
-import { Schema, Model, Document } from 'mongoose';
 import { getOrCreateModel } from '@growi/core';
+import { Schema, Model, Document } from 'mongoose';
 
 import { IInAppNotificationSettings, subscribeRuleNames } from '~/interfaces/in-app-notification';
 
@@ -10,7 +10,7 @@ const inAppNotificationSettingsSchema = new Schema<InAppNotificationSettingsDocu
   userId: { type: Schema.Types.ObjectId },
   subscribeRules: [
     {
-      name: { type: String, require: true, enum: subscribeRuleNames },
+      name: { type: String, required: true, enum: subscribeRuleNames },
       isEnabled: { type: Boolean },
     },
   ],

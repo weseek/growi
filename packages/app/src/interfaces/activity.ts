@@ -3,7 +3,6 @@ import { IUser } from './user';
 
 // Model
 const MODEL_PAGE = 'Page';
-const MODEL_COMMENT = 'Comment';
 
 // Action
 const ACTION_PAGE_LIKE = 'PAGE_LIKE';
@@ -21,11 +20,6 @@ const ACTION_COMMENT_UPDATE = 'COMMENT_UPDATE';
 
 export const SUPPORTED_TARGET_MODEL_TYPE = {
   MODEL_PAGE,
-  MODEL_COMMENT,
-} as const;
-
-export const SUPPORTED_EVENT_MODEL_TYPE = {
-  MODEL_COMMENT,
 } as const;
 
 export const SUPPORTED_ACTION_TYPE = {
@@ -44,9 +38,7 @@ export const SUPPORTED_ACTION_TYPE = {
 
 
 export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
-export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
-
 
 /*
  * For AuditLogManagement.tsx
@@ -73,6 +65,7 @@ export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof 
 // type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
+
 export type IActivity = {
   user?: IUser
   targetModel: SupportedTargetModelType
@@ -82,3 +75,5 @@ export type IActivity = {
 }
 
 export type IActivityHasId = IActivity & HasObjectId;
+
+export type ISnapshot = Pick<IUser, 'username'>

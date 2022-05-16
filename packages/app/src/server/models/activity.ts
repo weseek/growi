@@ -4,7 +4,7 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedTargetModelType, AllSupportedActionType, ISnapshot } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -19,8 +19,7 @@ export interface ActivityDocument extends Document {
   targetModel: string
   target: Types.ObjectId
   action: string
-  event: Types.ObjectId
-  eventModel: string
+  snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
 }
@@ -29,39 +28,40 @@ export interface ActivityModel extends Model<ActivityDocument> {
   [x:string]: any
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
+
+const snapshotSchema = new Schema<ISnapshot>({
+  username: { type: String },
+});
+
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
-    require: true,
+    required: true,
   },
   targetModel: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    require: true,
+    required: true,
   },
   action: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSupportedActionType,
   },
-  event: {
-    type: Schema.Types.ObjectId,
-    refPath: 'eventModel',
-  },
-  eventModel: {
-    type: String,
-    enum: AllSupportedEventModelType,
-  },
+  snapshot: snapshotSchema,
 }, {
-  timestamps: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
+  },
 });
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({

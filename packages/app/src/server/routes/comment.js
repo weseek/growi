@@ -242,7 +242,7 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-      commentEvent.emit('create', createdComment);
+      commentEvent.emit('create', req.user, createdComment);
     }
     catch (err) {
       logger.error(err);
@@ -379,7 +379,7 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
-      commentEvent.emit('update', updatedComment);
+      commentEvent.emit('update', req.user, updatedComment);
     }
     catch (err) {
       logger.error(err);
