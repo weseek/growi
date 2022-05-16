@@ -700,10 +700,10 @@ module.exports = (crowi) => {
     const { id: userGroupId, username } = req.params;
 
     try {
-      const result = await crowi.userGroupService.removeUserByUsername(userGroupId, username);
-      const serializedUser = serializeUserSecurely(result.user);
+      const removedUserRes = await crowi.userGroupService.removeUserByUsername(userGroupId, username);
+      const serializedUser = serializeUserSecurely(removedUserRes.user);
 
-      return res.apiv3({ user: serializedUser, deletedGroupsCount: result.deletedGroupsCount });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: removedUserRes.deletedGroupsCount });
     }
     catch (err) {
       const msg = 'Error occurred while removing the user from groups.';
