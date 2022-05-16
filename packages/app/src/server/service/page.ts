@@ -2256,12 +2256,25 @@ class PageService {
   async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    let emptyPage: PageDocument | null = null;
+
     const pages = await Page.findByPathAndViewer(path, user, null, false);
     if (pages == null || !Array.isArray(pages)) {
       throw Error('Something went wrong while converting pages.');
     }
+
+
     if (pages.length === 0) {
-      throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
+      const isForbidden = await Page.count({ path, isEmpty: false }) > 0;
+      if (isForbidden) {
+        throw new V5ConversionError('It is not allowed to convert this page.', V5ConversionErrCode.FORBIDDEN);
+      }
+
+      emptyPage = await Page.findEmptyPageByPath(path);
+
+      if (emptyPage == null) {
+        throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
+      }
     }
     if (pages.length > 1) {
       throw new V5ConversionError(
@@ -2270,10 +2283,26 @@ class PageService {
       );
     }
 
-    const page = pages[0];
-    const {
-      grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
-    } = page;
+    let page;
+
+    const shouldCreateNewPage = pages[0] == null && emptyPage != null;
+    if (shouldCreateNewPage) {
+      const notEmptyParent = await Page.findNotEmptyParentRecursively(emptyPage);
+
+      page = await Page.create(
+        path,
+        '',
+        user,
+        { grant: notEmptyParent.grant, grantedUsers: notEmptyParent.grantedUsers, grantedGroup: notEmptyParent.grantedGroup },
+      );
+    }
+    else {
+      page = page[0];
+    }
+
+    const grant = page.grant;
+    const grantedUserIds = page.grantedUsers;
+    const grantedGroupId = page.grantedGroup;
 
     /*
      * UserGroup & Owner validation
