@@ -1,10 +1,11 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
+
+import { IUser } from '~/interfaces/user';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
-
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -131,11 +132,11 @@ class UserGroupService {
     return deletedGroups;
   }
 
-  async removeUserByUsername(id: Types.ObjectId, username: string) {
+  async removeUserByUsername(userGroupId: ObjectIdLike, username: string): Promise<{user: IUser, deletedGroupsCount: number}> {
     const User = this.crowi.model('User');
 
     const [userGroup, user] = await Promise.all([
-      UserGroup.findById(id),
+      UserGroup.findById(userGroupId),
       User.findUserByUsername(username),
     ]);
 
@@ -143,9 +144,8 @@ class UserGroupService {
     const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
 
     const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
-    const serializedUser = serializeUserSecurely(user);
 
-    return { user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount };
+    return { user, deletedGroupsCount: deleteManyRes.deletedCount };
   }
 
 }

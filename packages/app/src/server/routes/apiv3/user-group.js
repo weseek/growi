@@ -697,12 +697,13 @@ module.exports = (crowi) => {
    *                      description: the associative entity between user and userGroup
    */
   router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, apiV3FormValidator, async(req, res) => {
-    const { id, username } = req.params;
+    const { id: userGroupId, username } = req.params;
 
     try {
-      const result = await crowi.userGroupService.removeUserByUsername(id, username);
+      const result = await crowi.userGroupService.removeUserByUsername(userGroupId, username);
+      const serializedUser = serializeUserSecurely(result.user);
 
-      return res.apiv3(result);
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: result.deletedGroupsCount });
     }
     catch (err) {
       const msg = 'Error occurred while removing the user from groups.';
