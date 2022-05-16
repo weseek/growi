@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
@@ -131,7 +131,7 @@ class UserGroupService {
     return deletedGroups;
   }
 
-  async removeUserByUsername(id, username) {
+  async removeUserByUsername(id: Types.ObjectId, username: string) {
     const User = this.crowi.model('User');
 
     const [userGroup, user] = await Promise.all([
