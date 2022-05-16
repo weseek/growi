@@ -5,7 +5,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/apiNotification';
-import { ITagsSearchApiv1Result } from '~/interfaces/tag';
+import { IResTagsSearchApiv1 } from '~/interfaces/tag';
 
 type TypeaheadInstance = {
   _handleMenuItemSelect: (activeItem: string, event: React.KeyboardEvent) => void,
@@ -36,7 +36,7 @@ const TagsInput: FC<Props> = (props: Props) => {
     setLoading(true);
     try {
       // TODO: 91698 SWRize
-      const res = await apiGet('/tags.search', { q: query }) as ITagsSearchApiv1Result;
+      const res = await apiGet('/tags.search', { q: query }) as IResTagsSearchApiv1;
       res.tags.unshift(query);
       setResultTags(Array.from(new Set(res.tags)));
     }

@@ -350,9 +350,9 @@ module.exports = (crowi) => {
         user: req.user._id,
         targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
         target: createdPage,
-        action: SUPPORTED_ACTION_TYPE.PAGE_CREATE,
+        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
       };
-      await crowi.activityService.createByParameter(parameters);
+      await crowi.activityService.createByParameters(parameters);
     }
     catch (err) {
       logger.error('Failed to create activity', err);
@@ -562,15 +562,38 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    try {
-      const pages = await crowi.pageService.emptyTrashPage(req.user, options);
-      return res.apiv3({ pages });
+    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+
+    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
+
+    if (deletablePages.length === 0) {
+      const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
     }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+
+    // when some pages are not deletable
+    if (deletablePages.length < pagesInTrash.length) {
+      try {
+        const options = { isCompletely: true, isRecursively: true };
+        await crowi.pageService.deleteMultiplePages(deletablePages, req.user, options);
+        return res.apiv3({ deletablePages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
+    }
+    // when all pages are deletable
+    else {
+      try {
+        const pages = await crowi.pageService.emptyTrashPage(req.user, options);
+        return res.apiv3({ pages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
     }
   });
 
@@ -834,7 +857,12 @@ module.exports = (crowi) => {
     }
 
     try {
-      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
+      if (isRecursively) {
+        await crowi.pageService.normalizeParentByPageIdsRecursively(pageIds, req.user);
+      }
+      else {
+        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
+      }
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
