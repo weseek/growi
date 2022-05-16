@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
-
 import mongoose from 'mongoose';
 
+import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with non-public pages', () => {
@@ -22,7 +22,6 @@ describe('PageService page operations with non-public pages', () => {
   let User;
   let UserGroup;
   let UserGroupRelation;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -93,7 +92,6 @@ describe('PageService page operations with non-public pages', () => {
     UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -1044,7 +1042,7 @@ describe('PageService page operations with non-public pages', () => {
       const trashedPage = await Page.findOne({ path: '/trash/np_revert1', status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag1' });
-      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag?._id, isPageTrashed: true });
       expect(trashedPage).toBeTruthy();
       expect(revision).toBeTruthy();
       expect(tag).toBeTruthy();
@@ -1054,7 +1052,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag?._id });
       expect(revertedPage).toBeTruthy();
       expect(pageTagRelation).toBeTruthy();
       expect(deltedPageBeforeRevert).toBeNull();
@@ -1071,7 +1069,7 @@ describe('PageService page operations with non-public pages', () => {
       const trashedPage = await Page.findOne({ path: beforeRevertPath, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag2' });
-      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: trashedPage._id, relatedTag: tag?._id, isPageTrashed: true });
       expect(trashedPage).toBeTruthy();
       expect(revision).toBeTruthy();
       expect(tag).toBeTruthy();
@@ -1081,7 +1079,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
       const trashedPageBR = await Page.findOne({ path: beforeRevertPath });
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag._id });
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag?._id });
       expect(revertedPage).toBeTruthy();
       expect(pageTagRelation).toBeTruthy();
       expect(trashedPageBR).toBeNull();
