@@ -1,6 +1,6 @@
-import loggerFactory from '~/utils/logger';
-import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import UserGroup from '~/server/models/user-group';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -12,12 +12,10 @@ const router = express.Router();
 
 const { body, param, query } = require('express-validator');
 const { sanitizeQuery } = require('express-validator');
-
 const mongoose = require('mongoose');
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
-
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 const { ObjectId } = mongoose.Types;
@@ -702,18 +700,9 @@ module.exports = (crowi) => {
     const { id, username } = req.params;
 
     try {
-      const [userGroup, user] = await Promise.all([
-        UserGroup.findById(id),
-        User.findUserByUsername(username),
-      ]);
+      const result = await crowi.userGroupService.removeUserByUsername(id, username);
 
-      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
-
-      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
-      const serializedUser = serializeUserSecurely(user);
-
-      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
+      return res.apiv3(result);
     }
     catch (err) {
       const msg = 'Error occurred while removing the user from groups.';

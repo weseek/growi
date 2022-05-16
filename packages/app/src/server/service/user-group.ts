@@ -4,6 +4,8 @@ import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
 
@@ -127,6 +129,24 @@ class UserGroupService {
     await UserGroupRelation.removeAllByUserGroups(groupsToDelete);
 
     return deletedGroups;
+  }
+
+  async removeUserByUsername(id, username) {
+    const User = this.crowi.model('User');
+
+    const [userGroup, user] = await Promise.all([
+      UserGroup.findById(id),
+      User.findUserByUsername(username),
+    ]);
+
+    const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+    const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+    const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
+    const serializedUser = serializeUserSecurely(user);
+
+    return { user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount };
+
   }
 
 }
