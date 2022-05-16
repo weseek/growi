@@ -220,7 +220,7 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: [localStorageMiddleware] });
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
 
   return {
     ...swrResponse,
