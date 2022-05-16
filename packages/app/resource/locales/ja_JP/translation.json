@@ -188,8 +188,7 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "title_required": "タイトルを入力してください"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -442,8 +441,11 @@
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
+  "empty_trash": "ゴミ箱を空にしました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
+    "empty_the_trash_button": "空にする",
+    "not_deletable_notice": "権限がないため、いくつかのページは削除できません",
     "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
@@ -641,6 +643,7 @@
   "private_legacy_pages": {
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
+    "input_path_to_convert": "パスを入力して変換",
     "alert_title": "古い v4 互換形式のプライベートページが存在します",
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
@@ -652,6 +655,21 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "toaster": {
+      "page_migration_succeeded": "選択されたページの v5 互換形式への変換が正常に終了しました。",
+      "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+      "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
+    },
+    "by_path_modal": {
+      "title": "新しい v5 互換形式への変換",
+      "description": "パスを入力することで、そのパスの配下のページを全て v5 互換形式に変換します",
+      "button_label": "変換",
+      "success": "正常に変換を開始しました",
+      "error": "変換を開始できませんでした",
+      "error_grant_invalid": "ページの権限が正しくありません。修正してから再度実行してください",
+      "error_page_not_found": "ページが見つかりませんでした",
+      "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
   "security_setting": {
@@ -996,6 +1014,36 @@
     "success_to_send_email": "メールを送信しました",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
+  },
+  "emoji" :{
+    "title": "絵文字を選択",
+    "search": "探す",
+    "clear": "リセット",
+    "notfound": "絵文字が見つかりません",
+    "skintext": "デフォルトの肌の色を選択",
+    "categories": {
+      "search": "検索結果",
+      "recent": "最新履歴",
+      "smileys": "スマイリーと感情",
+      "people": "人と体",
+      "nature": "動物と自然",
+      "foods": "食べ物や飲み物",
+      "activity": "アクティビティ",
+      "places": "旅行と場所",
+      "objects": "オブジェクト",
+      "symbols": "シンボル",
+      "flags": "国旗",
+      "custom": "カスタマイズ"
+    },
+    "categorieslabel": "絵文字カテゴリ",
+    "skintones": {
+      "1": "デフォルトの肌の色",
+      "2": "明るい肌のトーン",
+      "3": "ミディアム-明るい肌のトーン",
+      "4": "ミディアムスキントーン",
+      "5": "ミディアムダークスキントーン",
+      "6": "肌の色が濃い"
+    }
   },
   "maintenance_mode":{
     "maintenance_mode": "メンテナンスモード",

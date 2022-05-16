@@ -186,8 +186,7 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "目前还不支持包含斜线的标题"
+    "title_required": "标题是必需的。"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -421,8 +420,11 @@
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
+  "empty_trash": "清空垃圾",
 	"modal_empty": {
-		"empty_the_trash": "Empty The Trash",
+		"empty_the_trash": "清空垃圾",
+    "empty_the_trash_button": "清空垃圾",
+    "not_deletable_notice": "由于缺乏权限，一些页面不能被删除",
 		"notice": "完全删除的页面是不可恢复的。"
 	},
 	"modal_duplicate": {
@@ -928,6 +930,7 @@
   "private_legacy_pages": {
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
+		"input_path_to_convert": "输入一个转换页面的路径",
     "alert_title": "存在旧的v4兼容格式的私人网页。",
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
@@ -939,6 +942,21 @@
       "convert_recursively_label": "递归地转换子页面。",
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
+    },
+    "toaster": {
+      "page_migration_succeeded": "已成功将所选页面转换为 v5 兼容格式。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
+    },
+    "by_path_modal": {
+      "title": "转换为新的v5兼容格式",
+      "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
+      "button_label": "转换",
+      "success": "成功地请求转换。",
+      "error": "请求转换失败。",
+      "error_grant_invalid": "页面权限不正确。请更正并重试。",
+      "error_page_not_found": "没有找到页面。",
+      "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
@@ -1006,6 +1024,36 @@
     "success_to_send_email": "我发了一封电子邮件",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+  },
+  "emoji" :{
+    "title": "选择一个表情符号",
+    "search": "搜索",
+    "clear": "重置",
+    "notfound": "找不到表情符号",
+    "skintext": "选择您的默认肤色",
+    "categories": {
+      "search": "搜索结果",
+      "recent": "经常使用",
+      "smileys": "笑脸和情感",
+      "people": "人和身体",
+      "nature": "动物与自然",
+      "foods": "食物和饮料",
+      "activity": "活动",
+      "places": "旅行和地方",
+      "objects": "对象",
+      "symbols": "符号",
+      "flags": "旗帜",
+      "custom": "定制"
+    },
+    "categorieslabel": "表情符号类别",
+    "skintones": {
+      "1": "默认肤色",
+      "2": "浅肤色",
+      "3": "中浅肤色",
+      "4": "中等肤色",
+      "5": "中深肤色",
+      "6": "深色肤色"
+    }
   },
   "maintenance_mode":{
     "maintenance_mode": "维护模式",

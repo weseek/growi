@@ -278,18 +278,15 @@ ul.pagination {
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
       $gray-200,
-      $bgcolor-sidebar-list-group,
-      $gray-200,
       lighten($bgcolor-sidebar-context, 8%),
+      lighten($bgcolor-sidebar-context, 15%),
+      $gray-500,
       $gray-200,
-      lighten($bgcolor-sidebar-context, 15%)
+      lighten($bgcolor-sidebar-context, 18%),
+      lighten($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
       @include button-outline-svg-icon-variant($secondary, $gray-200);
-    }
-    .grw-count-badge {
-      color: $gray-400;
-      background: lighten($bgcolor-sidebar-context, 15%);
     }
     .btn-page-item-control {
       @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
@@ -482,8 +479,7 @@ ul.pagination {
 */
 .grw-side-contents-sticky-container {
   .grw-count-badge {
-    color: $gray-400;
-    background: $gray-700;
+    @include count-badge($gray-400, $gray-700);
   }
 
   .grw-border-vr {

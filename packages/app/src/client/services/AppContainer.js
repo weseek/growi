@@ -3,7 +3,6 @@ import { Container } from 'unstated';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import { i18nFactory } from '../util/i18n';
 
 /**
@@ -187,9 +186,6 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-  getEmojiStrategy() {
-    return emojiStrategy;
-  }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;

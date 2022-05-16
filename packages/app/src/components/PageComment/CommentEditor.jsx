@@ -278,7 +278,6 @@ class CommentEditor extends React.Component {
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
-    const emojiStrategy = appContainer.getEmojiStrategy();
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
@@ -312,7 +311,6 @@ class CommentEditor extends React.Component {
                 isMobile={isMobile}
                 isUploadable={this.state.isUploadable}
                 isUploadableFile={this.state.isUploadableFile}
-                emojiStrategy={emojiStrategy}
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}

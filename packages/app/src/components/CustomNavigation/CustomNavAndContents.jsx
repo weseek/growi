@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import PropTypes from 'prop-types';
 
 import CustomNav, { CustomNavTab, CustomNavDropdown } from './CustomNav';
@@ -7,7 +8,7 @@ import CustomTabContent from './CustomTabContent';
 
 const CustomNavAndContents = (props) => {
   const {
-    navTabMapping, defaultTabIndex, navigationMode, tabContentClasses, breakpointToHideInactiveTabsDown,
+    navTabMapping, defaultTabIndex, navigationMode, tabContentClasses, breakpointToHideInactiveTabsDown, navRightElement,
   } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
 
@@ -31,6 +32,7 @@ const CustomNavAndContents = (props) => {
         navTabMapping={navTabMapping}
         onNavSelected={setActiveTab}
         breakpointToHideInactiveTabsDown={breakpointToHideInactiveTabsDown}
+        navRightElement={navRightElement}
       />
       <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} additionalClassNames={tabContentClasses} />
     </>
@@ -43,6 +45,7 @@ CustomNavAndContents.propTypes = {
   navigationMode: PropTypes.oneOf(['both', 'tab', 'dropdown']),
   tabContentClasses: PropTypes.arrayOf(PropTypes.string),
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  navRightElement: PropTypes.node,
 };
 CustomNavAndContents.defaultProps = {
   navigationMode: 'tab',
