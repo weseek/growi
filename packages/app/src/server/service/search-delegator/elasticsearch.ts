@@ -1,22 +1,24 @@
+import { Writable, Transform } from 'stream';
+import { URL } from 'url';
+
 import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
 import mongoose from 'mongoose';
-
-import { URL } from 'url';
-
-import { Writable, Transform } from 'stream';
 import streamToPromise from 'stream-to-promise';
 
-import { createBatchStream } from '../../util/batch-stream';
-import loggerFactory from '~/utils/logger';
-import { PageModel } from '../../models/page';
-import {
-  SearchDelegator, SearchableData, QueryTerms,
-} from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
+import loggerFactory from '~/utils/logger';
+
+import {
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
+} from '../../interfaces/search';
+import { PageModel } from '../../models/page';
+import { createBatchStream } from '../../util/batch-stream';
+
+
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -38,9 +40,11 @@ const ES_SORT_ORDER = {
   [ASC]: 'asc',
 };
 
+const AVAILABLE_KEYS = ['match', 'not_match', 'phrase', 'not_phrase', 'prefix', 'not_prefix', 'tag', 'not_tag'];
+
 type Data = any;
 
-class ElasticsearchDelegator implements SearchDelegator<Data> {
+class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
 
   name!: SearchDelegatorName.DEFAULT
 
@@ -737,7 +741,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     return query;
   }
 
-  appendCriteriaForQueryString(query, parsedKeywords: QueryTerms) {
+  appendCriteriaForQueryString(query, parsedKeywords: ESQueryTerms): void {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
     if (parsedKeywords.match.length > 0) {
@@ -855,26 +859,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const {
-      GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
+      GRANT_PUBLIC, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
     } = Page;
 
     const grantConditions: any[] = [
       { term: { grant: GRANT_PUBLIC } },
     ];
-
-    // ensure to hit to GRANT_RESTRICTED pages that the user specified at own
-    if (user != null) {
-      grantConditions.push(
-        {
-          bool: {
-            must: [
-              { term: { grant: GRANT_RESTRICTED } },
-              { term: { granted_users: user._id.toString() } },
-            ],
-          },
-        },
-      );
-    }
 
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
@@ -962,8 +952,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
+
+    if (terms == null) {
+      throw Error('Cannnot process search since terms is undefined.');
+    }
 
     const from = option.offset || null;
     const size = option.limit || null;
@@ -982,6 +976,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendHighlight(query);
 
     return this.searchKeyword(query);
+  }
+
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is ESQueryTerms {
+    const entries = Object.entries(terms);
+
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && typeof val?.length === 'number' && val.length > 0);
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
+    const entries = Object.entries(terms);
+
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
   async syncPageUpdated(page, user) {

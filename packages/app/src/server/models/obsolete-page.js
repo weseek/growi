@@ -9,12 +9,13 @@ import loggerFactory from '~/utils/logger';
 /* eslint-disable no-use-before-define */
 
 const debug = require('debug')('growi:models:page');
-const nodePath = require('path');
-const urljoin = require('url-join');
-const mongoose = require('mongoose');
-const differenceInYears = require('date-fns/differenceInYears');
 
+const nodePath = require('path');
+
+const differenceInYears = require('date-fns/differenceInYears');
 const escapeStringRegexp = require('escape-string-regexp');
+const mongoose = require('mongoose');
+const urljoin = require('url-join');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
@@ -253,7 +254,7 @@ export const getPageSchema = (crowi) => {
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
+    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP && grant !== GRANT_RESTRICTED) {
       this.grantedUsers.push(user._id);
     }
 
@@ -484,7 +485,6 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const User = crowi.model('User');
-
     const opt = Object.assign({ sort: 'updatedAt', desc: -1 }, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
@@ -504,7 +504,6 @@ export const getPageSchema = (crowi) => {
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.lean().clone().exec('find');
-
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
     };

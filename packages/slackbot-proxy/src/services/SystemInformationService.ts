@@ -1,11 +1,11 @@
 import { Inject, Service } from '@tsed/di';
-
 import readPkgUp from 'read-pkg-up';
 
 import { SystemInformation } from '~/entities/system-information';
 import { SystemInformationRepository } from '~/repositories/system-information';
-import { RelationsService } from './RelationsService';
 import loggerFactory from '~/utils/logger';
+
+import { RelationsService } from './RelationsService';
 
 const logger = loggerFactory('slackbot-proxy:services:SystemInformationService');
 

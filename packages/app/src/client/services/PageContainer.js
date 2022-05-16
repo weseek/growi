@@ -17,6 +17,7 @@ import {
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
+import { emojiMartData } from '../util/markdown-it/emoji-mart-data';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -194,10 +195,30 @@ export default class PageContainer extends Container {
     this.setState(newState);
   }
 
-  setTocHtml(tocHtml) {
+  async setTocHtml(tocHtml) {
     if (this.state.tocHtml !== tocHtml) {
-      this.setState({ tocHtml });
+      const tocHtmlWithEmoji = await this.colonsToEmoji(tocHtml);
+      this.setState({ tocHtml: tocHtmlWithEmoji });
     }
+  }
+
+  /**
+   *
+   * @param {*} html TOC html string
+   * @returns TOC html with emoji (emoji-mart) in URL
+   */
+  async colonsToEmoji(html) {
+    // Emoji colons matching
+    const colons = ':[a-zA-Z0-9-_+]+:';
+    // Emoji with skin tone matching
+    const skin = ':skin-tone-[2-6]:';
+    const colonsRegex = new RegExp(`(${colons}${skin}|${colons})`, 'g');
+    const emojiData = await emojiMartData();
+    return html.replace(colonsRegex, (index, match) => {
+      const emojiName = match.slice(1, -1);
+      return emojiData[emojiName];
+    });
+
   }
 
   /**

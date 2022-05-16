@@ -1,4 +1,3 @@
-import { Inject, Service } from '@tsed/di';
 
 import {
   getInteractionIdRegexpFromCommandName,
@@ -6,11 +5,12 @@ import {
   InteractionHandledResult, markdownSectionBlock, replaceOriginal, respond, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
+import { Inject, Service } from '@tsed/di';
 
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
-import { RelationRepository } from '~/repositories/relation';
 import { InstallationRepository } from '~/repositories/installation';
+import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
