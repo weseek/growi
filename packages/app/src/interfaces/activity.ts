@@ -76,6 +76,4 @@ export type IActivity = {
 
 export type IActivityHasId = IActivity & HasObjectId;
 
-export type ISnapshot = {
-  username?: Pick<IUser, 'username'>
-}
+export type ISnapshot = Pick<IUser, 'username'>
