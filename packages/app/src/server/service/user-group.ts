@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
