@@ -1,36 +1,35 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import urljoin from 'url-join';
-import * as codemirror from 'codemirror';
-import { Button } from 'reactstrap';
-
-import { JSHINT } from 'jshint';
-
-import * as loadScript from 'simple-load-script';
-import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import * as codemirror from 'codemirror';
+import { JSHINT } from 'jshint';
+import * as loadCssSync from 'load-css-file';
+import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
+import * as loadScript from 'simple-load-script';
+import urljoin from 'url-join';
+
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import AbstractEditor from './AbstractEditor';
-import SimpleCheatsheet from './SimpleCheatsheet';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
-import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
-import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-import mlu from './MarkdownLinkUtil';
-import mtu from './MarkdownTableUtil';
-import mdu from './MarkdownDrawioUtil';
-import geu from './GridEditorUtil';
-import GridEditModal from './GridEditModal';
-import LinkEditModal from './LinkEditModal';
-import HandsontableModal from './HandsontableModal';
-import EditorIcon from './EditorIcon';
+import AbstractEditor from './AbstractEditor';
+import CommentMentionHelper from './CommentMentionHelper';
 import DrawioModal from './DrawioModal';
+import EditorIcon from './EditorIcon';
+import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+import GridEditModal from './GridEditModal';
+import geu from './GridEditorUtil';
+import HandsontableModal from './HandsontableModal';
+import LinkEditModal from './LinkEditModal';
+import mdu from './MarkdownDrawioUtil';
+import mlu from './MarkdownLinkUtil';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mtu from './MarkdownTableUtil';
+import pasteHelper from './PasteHelper';
+import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
+import SimpleCheatsheet from './SimpleCheatsheet';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -191,6 +190,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+
+    // initialize commentMentionHelper if comment editor is opened
+    if (this.props.isComment) {
+      this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror());
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -571,6 +575,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // Emoji AutoComplete
     if (this.state.isEnabledEmojiAutoComplete) {
       this.emojiAutoCompleteHelper.showHint(editor);
+    }
+    // Show username hint on comment editor
+    if (this.props.isComment) {
+      this.commentMentionHelper.showUsernameHint();
     }
   }
 
