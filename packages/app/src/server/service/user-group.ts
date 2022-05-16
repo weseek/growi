@@ -146,7 +146,6 @@ class UserGroupService {
     const serializedUser = serializeUserSecurely(user);
 
     return { user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount };
-
   }
 
 }
