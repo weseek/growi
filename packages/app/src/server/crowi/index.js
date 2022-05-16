@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
-import path from 'path';
 import http from 'http';
-import mongoose from 'mongoose';
+import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
+import mongoose from 'mongoose';
+
+
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -15,26 +16,25 @@ import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-import ConfigManager from '../service/config-manager';
-import AppService from '../service/app';
+import Activity from '../models/activity';
+import PageRedirect from '../models/page-redirect';
+import Tag from '../models/tag';
+import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
-import SearchService from '../service/search';
+import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
+import ConfigManager from '../service/config-manager';
+import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { InstallerService } from '../service/installer';
-import Activity from '../models/activity';
-import UserGroup from '../models/user-group';
-import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
-
 const models = require('../models');
-
 const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
@@ -281,6 +281,7 @@ Crowi.prototype.setupModels = async function() {
 
   // include models that independent from crowi
   allModels.Activity = Activity;
+  allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
 
