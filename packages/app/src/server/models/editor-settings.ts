@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 
 export interface ILintRule {
@@ -17,6 +17,11 @@ export interface ITextlintSettings {
 
 export interface IEditorSettings {
   userId: Schema.Types.ObjectId;
+  theme: undefined | string,
+  keymapMode: undefined | 'vim' | 'emacs' | 'sublime',
+  styleActiveLine: boolean,
+  renderMathJaxInRealtime: boolean,
+  renderDrawioInRealtime: boolean,
   textlintSettings: ITextlintSettings;
 }
 
@@ -34,6 +39,11 @@ const textlintSettingsSchema = new Schema<ITextlintSettings>({
 
 const editorSettingsSchema = new Schema<EditorSettingsDocument, EditorSettingsModel>({
   userId: { type: Schema.Types.ObjectId },
+  theme: { type: String },
+  keymapMode: { type: String },
+  styleActiveLine: { type: Boolean, default: false },
+  renderMathJaxInRealtime: { type: Boolean, default: true },
+  renderDrawioInRealtime: { type: Boolean, default: true },
   textlintSettings: textlintSettingsSchema,
 });
 
