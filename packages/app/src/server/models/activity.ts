@@ -29,6 +29,10 @@ export interface ActivityModel extends Model<ActivityDocument> {
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
 
+const snapshotSchema = new Schema<ISnapshot>({
+  username: { type: String },
+});
+
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   user: {
@@ -52,11 +56,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     required: true,
     enum: AllSupportedActionType,
   },
-  snapshot: {
-    type: {
-      username: String,
-    },
-  },
+  snapshot: snapshotSchema,
 }, {
   timestamps: {
     createdAt: true,
