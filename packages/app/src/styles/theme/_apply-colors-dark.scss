@@ -479,8 +479,7 @@ ul.pagination {
 */
 .grw-side-contents-sticky-container {
   .grw-count-badge {
-    color: $gray-400;
-    background: $gray-700;
+    @include count-badge($gray-400, $gray-700);
   }
 
   .grw-border-vr {
