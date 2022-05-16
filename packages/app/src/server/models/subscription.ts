@@ -37,17 +37,17 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   },
   targetModel: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    require: true,
+    required: true,
   },
   status: {
     type: String,
-    require: true,
+    required: true,
     enum: AllSubscriptionStatusType,
   },
   createdAt: { type: Date, default: new Date() },

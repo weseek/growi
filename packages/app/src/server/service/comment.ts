@@ -1,7 +1,11 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import {
+  SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, SupportedActionType, ISnapshot,
+} from '~/interfaces/activity';
+import { IPage } from '~/interfaces/page';
+import { IUserHasId } from '~/interfaces/user';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import loggerFactory from '../../utils/logger';
@@ -33,7 +37,7 @@ class CommentService {
 
   initCommentEventListeners(): void {
     // create
-    this.commentEvent.on('create', async(savedComment) => {
+    this.commentEvent.on('create', async(user, savedComment) => {
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
@@ -45,7 +49,7 @@ class CommentService {
           return;
         }
 
-        const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
+        const activity = await this.createActivity(user, savedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
@@ -55,10 +59,10 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(updatedComment) => {
+    this.commentEvent.on('update', async(user, updatedComment) => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
+        await this.createActivity(user, updatedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -66,8 +70,8 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('remove', async(comment) => {
-      this.commentEvent.onRemove();
+    this.commentEvent.on('delete', async(comment) => {
+      this.commentEvent.onDelete();
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
@@ -79,27 +83,27 @@ class CommentService {
     });
   }
 
-  private createActivity = async function(comment, action) {
+  private createActivity = async function(user: IUserHasId, target: IPage, action: SupportedActionType) {
+    const snapshot: ISnapshot = { username: user.username };
     const parameters = {
-      user: comment.creator,
+      user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: comment.page,
-      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
-      event: comment._id,
+      target,
       action,
+      snapshot,
     };
     const activity = await this.activityService.createByParameters(parameters);
     return activity;
   };
 
-  private createAndSendNotifications = async function(activity, page) {
-    const snapshot = stringifySnapshot(page);
+  private createAndSendNotifications = async function(activity, page: IPage) {
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
+    const snapshot = stringifySnapshot(page);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };

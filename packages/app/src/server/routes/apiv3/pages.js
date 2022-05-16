@@ -351,6 +351,7 @@ module.exports = (crowi) => {
         targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
         target: createdPage,
         action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
+        snapshot: { username: req.user.username },
       };
       await crowi.activityService.createByParameters(parameters);
     }

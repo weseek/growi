@@ -4,12 +4,12 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
-import { ITagCountHasId } from '~/interfaces/tag';
+import { IDataTagCount } from '~/interfaces/tag';
 
 import PaginationWrapper from './PaginationWrapper';
 
 type TagListProps = {
-  tagData: ITagCountHasId[],
+  tagData: IDataTagCount[],
   totalTags: number,
   activePage: number,
   onChangePage?: (selectedPageNumber: number) => void,
@@ -29,7 +29,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   const { t } = useTranslation('');
 
   const generateTagList = useCallback((tagData) => {
-    return tagData.map((tag:ITagCountHasId, index:number) => {
+    return tagData.map((tag:IDataTagCount, index:number) => {
       const tagListClasses: string = index === 0 ? 'list-group-item d-flex' : 'list-group-item d-flex border-top-0';
 
       return (
