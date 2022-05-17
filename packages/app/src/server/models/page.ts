@@ -10,15 +10,17 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import { IPage, IPageHasId } from '~/interfaces/page';
 import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
-import { IPage, IPageHasId } from '../../interfaces/page';
+
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 import { PageRedirectModel } from './page-redirect';
+import assert from 'assert';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
@@ -51,11 +53,12 @@ type PaginatedPages = {
   offset: number
 }
 
-export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
+export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, andFilter?): Promise<void>
-  getParentAndFillAncestors(path: string, user): Promise<PageDocument & { _id: any }>
+  // eslint-disable-next-line max-len
+  createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, onlyGrantedAsExistingPages?: boolean, andFilter?): Promise<void>
+  getParentAndFillAncestors(path: string, user, options?: { isSystematically?: boolean }): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -65,6 +68,7 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
+  createSystematically(path: string, mrkdwn: string, options: PageCreateOptions): Promise<PageDocument | null>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
@@ -486,7 +490,13 @@ export class PageQueryBuilder {
  * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
  * an empty page will not be created at that page's path.
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: any | null, onlyMigratedAsExistingPages = true, filter?): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(
+    paths: string[],
+    user: any | null,
+    onlyMigratedAsExistingPages = true,
+    onlyGrantedAsExistingPages = true,
+    andFilter?,
+): Promise<void> {
   const aggregationPipeline: any[] = [];
   // 1. Filter by paths
   aggregationPipeline.push({ $match: { path: { $in: paths } } });
@@ -503,17 +513,19 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], user: a
     });
   }
   // 3. Add custom pipeline
-  if (filter != null) {
-    aggregationPipeline.push({ $match: filter });
+  if (andFilter != null) {
+    aggregationPipeline.push({ $match: andFilter });
   }
   // 4. Add grant conditions
   let userGroups = null;
-  if (user != null) {
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
-    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  if (onlyGrantedAsExistingPages) {
+    if (user != null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    const grantCondition = this.generateGrantCondition(user, userGroups);
+    aggregationPipeline.push({ $match: grantCondition });
   }
-  const grantCondition = this.generateGrantCondition(user, userGroups);
-  aggregationPipeline.push({ $match: grantCondition });
 
   // Run aggregation
   const existingPages = await this.aggregate(aggregationPipeline);
@@ -606,7 +618,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
  * @param path string
  * @returns Promise<PageDocument>
  */
-schema.statics.getParentAndFillAncestors = async function(path: string, user): Promise<PageDocument> {
+schema.statics.getParentAndFillAncestors = async function(path: string, user, options?: { isSystematically?: boolean }): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
 
   const builder1 = new PageQueryBuilder(this.find({ path: parentPath }), true);
@@ -625,7 +637,8 @@ schema.statics.getParentAndFillAncestors = async function(path: string, user): P
   const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
   // just create ancestors with empty pages
-  await this.createEmptyPagesByPaths(ancestorPaths, user);
+  const onlyGrantedAsExistingPages = options?.isSystematically;
+  await this.createEmptyPagesByPaths(ancestorPaths, user, true, onlyGrantedAsExistingPages);
 
   // find ancestors
   const builder2 = new PageQueryBuilder(this.find(), true);
@@ -848,11 +861,11 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 /*
  * Utils from obsolete-page.js
  */
-async function pushRevision(pageData, newRevision, user) {
+async function pushRevision(pageData, newRevision, user, options?: { isSystematically?: boolean }) {
   await newRevision.save();
 
   pageData.revision = newRevision;
-  pageData.lastUpdateUser = user;
+  pageData.lastUpdateUser = options?.isSystematically ? null : user;
   pageData.updatedAt = Date.now();
 
   return pageData.save();
@@ -1063,7 +1076,9 @@ schema.statics.generateGrantCondition = generateGrantCondition;
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
+  grantedUserIds?: ObjectIdLike[]
   grant?: number
+  isSystematically?: boolean
 }
 
 /*
@@ -1075,7 +1090,32 @@ export default (crowi: Crowi): any => {
     pageEvent = crowi.event('page');
   }
 
+  /**
+   * Use this method when the system needs to create a page. Only available when v5 compatible
+   */
+  schema.statics.createSystematically = async function(path: string, mrkdwn: string, options: PageCreateOptions) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
+      throw Error('Crowi is not setup');
+    }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible) {
+      throw Error('This method is only available when v5 compatibale.');
+    }
+
+    const user = null;
+
+    options.isSystematically = true;
+    return (this.create as CreateMethod)(path, mrkdwn, user, options);
+  };
+
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
+    const { isSystematically } = options;
+
+    if (user == null && !isSystematically) {
+      throw Error('Cannot call create() without a parameter "user" when shouldSkipUserValidation is false.');
+    }
+
     if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null || crowi.pageOperationService == null) {
       throw Error('Crowi is not setup');
     }
@@ -1094,7 +1134,7 @@ export default (crowi: Crowi): any => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', grantUserGroupId,
+      format = 'markdown', grantUserGroupId, grantedUserIds,
     } = options;
     let grant = options.grant;
 
@@ -1116,7 +1156,7 @@ export default (crowi: Crowi): any => {
     /*
      * UserGroup & Owner validation
      */
-    if (grant !== GRANT_RESTRICTED) {
+    if (!isSystematically && grant !== GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
         // It must check descendants as well if emptyTarget is not null
@@ -1160,11 +1200,12 @@ export default (crowi: Crowi): any => {
       page.parent = null;
     }
     else {
-      const parent = await Page.getParentAndFillAncestors(path, user);
+      const options = { isSystematically };
+      const parent = await Page.getParentAndFillAncestors(path, user, options);
       page.parent = parent._id;
     }
 
-    page.applyScope(user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupId, grantedUserIds, { isSystematically });
 
     let savedPage = await page.save();
 
@@ -1182,8 +1223,8 @@ export default (crowi: Crowi): any => {
       logger.error('Failed to delete PageRedirect');
     }
 
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    savedPage = await pushRevision(savedPage, newRevision, user);
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format, isSystematically });
+    savedPage = await pushRevision(savedPage, newRevision, user, { isSystematically });
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);

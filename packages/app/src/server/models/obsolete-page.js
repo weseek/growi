@@ -247,15 +247,23 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
-  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
-    // reset
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId, grantedUsers, options = {}) {
+    // Validate
+    if (grant === GRANT_OWNER && options.isSystematically && grantedUsers?.length !== 1) {
+      throw Error('The grantedUsers must exist when (GRANT_OWNER && isSystematically).');
+    }
+    if (grant === GRANT_OWNER && !options.isSystematically && user == null) {
+      throw Error('The user must exist when (GRANT_OWNER && !isSystematically).');
+    }
+
+    // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP && grant !== GRANT_RESTRICTED) {
-      this.grantedUsers.push(user._id);
+    if (grant === GRANT_OWNER) {
+      this.grantedUsers.push(options.isSystematically ? grantedUsers[0] : user._id);
     }
 
     if (grant === GRANT_USER_GROUP) {

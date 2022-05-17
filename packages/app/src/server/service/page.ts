@@ -1741,6 +1741,11 @@ class PageService {
     return;
   }
 
+  // TODO: implement this method
+  async deleteCompletelySystematically() {
+    return;
+  }
+
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
 
@@ -2284,17 +2289,24 @@ class PageService {
     }
 
     let page;
+    let systematicallyCreatedPage;
 
     const shouldCreateNewPage = pages[0] == null;
     if (shouldCreateNewPage) {
       const notEmptyParent = await Page.findNotEmptyParentRecursively(emptyPage);
 
-      page = await Page.create(
+      // TODO: implement systematicallyDeletePage method on PageService
+      systematicallyCreatedPage = await Page.createSystematically(
         path,
-        '',
-        user,
-        { grant: notEmptyParent.grant, grantedUsers: notEmptyParent.grantedUsers, grantedGroup: notEmptyParent.grantedGroup },
+        'This page was created by GROWI.',
+        {
+          grant: notEmptyParent.grant,
+          grantedUserIds: notEmptyParent.grantedUsers,
+          grantUserGroupId: notEmptyParent.grantedGroup,
+          isSystematically: true,
+        },
       );
+      page = systematicallyCreatedPage;
     }
     else {
       page = page[0];
@@ -2314,6 +2326,7 @@ class PageService {
       isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
     }
     catch (err) {
+      // TODO: delete systematicallyCreatedPage
       logger.error(`Failed to validate grant of page at "${path}"`, err);
       throw err;
     }
@@ -2336,12 +2349,20 @@ class PageService {
       });
     }
     catch (err) {
+      // TODO: delete systematicallyCreatedPage
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
 
     // no await
-    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+    (async() => {
+      // Remove the created page if no page has converted
+      const count = await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+      if (count === 0) {
+        // TODO: delete systematicallyCreatedPage
+        // await this.deleteCompletelySystematically(systematicallyCreatedPage, user, {}, false);
+      }
+    })();
   }
 
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
@@ -2538,7 +2559,7 @@ class PageService {
     }
   }
 
-  async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
+  async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<number> {
     // Save prevDescendantCount for sub-operation
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2548,8 +2569,9 @@ class PageService {
     const exPage = await builder.query.exec();
     const options = { prevDescendantCount: exPage?.descendantCount ?? 0 };
 
+    let count: number;
     try {
-      await this.normalizeParentRecursively([page.path], user);
+      count = await this.normalizeParentRecursively([page.path], user);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2565,6 +2587,8 @@ class PageService {
     }
 
     await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id, options);
+
+    return count;
   }
 
   async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike, options: {prevDescendantCount: number}): Promise<void> {
@@ -2703,7 +2727,7 @@ class PageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null): Promise<void> {
+  async normalizeParentRecursively(paths: string[], user: any | null): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -2769,7 +2793,7 @@ class PageService {
 
   private async _normalizeParentRecursively(
       pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
-  ): Promise<void> {
+  ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
@@ -2846,7 +2870,7 @@ class PageService {
           { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
         ];
         const filterForApplicableAncestors = { $or: orFilters };
-        await Page.createEmptyPagesByPaths(parentPaths, user, false, filterForApplicableAncestors);
+        await Page.createEmptyPagesByPaths(parentPaths, user, false, true, filterForApplicableAncestors);
 
         // 3. Find parents
         const addGrantCondition = (builder) => {
@@ -2939,6 +2963,8 @@ class PageService {
 
     // End
     socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
+
+    return nextCount;
   }
 
   private async _v5NormalizeIndex() {
