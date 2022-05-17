@@ -5,7 +5,7 @@ import {
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
-import Tag, { TagDocument } from './tag';
+import Tag, { TagDocument, TagIdToTagNameMap } from './tag';
 
 const flatMap = require('array.prototype.flatmap');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -120,7 +120,7 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
     .flatMap(result => result.tagIds); // map + flatten
   const distinctTagIds = Array.from(new Set(allTagIds));
 
-  const tagIdToNameMap: PageIdToTagNamesMap = await Tag.getIdToNameMap(distinctTagIds);
+  const tagIdToNameMap: TagIdToTagNameMap = await Tag.getIdToNameMap(distinctTagIds);
 
   // convert to map
   const idToTagNamesMap = {};

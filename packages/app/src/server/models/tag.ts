@@ -14,10 +14,10 @@ export interface TagDocument {
   name: string;
 }
 
-export type IdToNameMap = {[key: string] : string }
+export type TagIdToTagNameMap = {[key: string] : string }
 
 export interface TagModel extends Model<TagDocument>{
-  getIdToNameMap(tagIds: ObjectIdLike[]): IdToNameMap
+  getIdToNameMap(tagIds: ObjectIdLike[]): TagIdToTagNameMap
   findOrCreateMany(tagNames: string[]): Promise<TagDocument[]>
 }
 
@@ -33,7 +33,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
+tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<TagIdToTagNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
