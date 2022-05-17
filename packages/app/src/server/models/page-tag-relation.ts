@@ -28,7 +28,7 @@ export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
 
 }
 
-export type PageIdToTagNamesMap = {[key: string] : string[] }
+export type PageIdToTagNamesMap = {[key:string]: ObjectIdLike[]}
 
 const pageTagRelationSchema = new Schema<PageTagRelationDocument, PageTagRelationModel>({
   relatedPage: {
