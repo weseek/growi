@@ -70,8 +70,8 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 
     if (!isGrantAvailable) {
       return (
-        <p className="mb-2">
-          No grant is available for this page. Please fix the parent page&apos;s grant first.
+        <p className="m-5">
+          { t('fix_page_grant.modal.no_grant_available') }
         </p>
       );
     }
@@ -79,10 +79,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     return (
       <>
         <ModalBody>
-          <div className="form-group grw-scrollable-modal-body">
-            <p className="mb-2">
-              You need to fix the grant of this page. Select new grant from below.
-            </p>
+          <div className="form-group">
+            {/* eslint-disable-next-line react/no-danger */}
+            <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
             <div className="ml-2">
               <div className="custom-control custom-radio mb-3">
                 <input
@@ -123,34 +122,32 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   { t('fix_page_grant.modal.radio_btn.grant_group') }
                 </label>
                 <div className="dropdown ml-2">
-                  <div className="d-flex">
-                    <button
-                      type="button"
-                      className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
-                      data-toggle="dropdown"
-                      disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
-                    >
-                      <span className="float-left">
-                        {
-                          selectedGroup == null
-                            ? t('fix_page_grant.modal.select_group_default_text')
-                            : selectedGroup.name
-                        }
-                      </span>
-                    </button>
-                    <div className="dropdown-menu">
+                  <button
+                    type="button"
+                    className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                    data-toggle="dropdown"
+                    disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
+                  >
+                    <span className="float-left ml-2">
                       {
-                        applicableGroups != null && applicableGroups.map(g => (
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            onClick={() => setSelectedGroup(g)}
-                          >
-                            {g.name}
-                          </button>
-                        ))
+                        selectedGroup == null
+                          ? t('fix_page_grant.modal.select_group_default_text')
+                          : selectedGroup.name
                       }
-                    </div>
+                    </span>
+                  </button>
+                  <div className="dropdown-menu">
+                    {
+                      applicableGroups != null && applicableGroups.map(g => (
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => setSelectedGroup(g)}
+                        >
+                          {g.name}
+                        </button>
+                      ))
+                    }
                   </div>
                 </div>
               </div>
@@ -166,7 +163,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-primary" onClick={submit}>
-            { t('fix_page_grant.modal.button_label') }
+            { t('fix_page_grant.modal.btn_label') }
           </button>
         </ModalFooter>
       </>
@@ -204,12 +201,12 @@ const FixPageGrantAlert = (): JSX.Element => {
   return (
     <>
       <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
-        <div className="flex-grow-1">
+        <div className="flex-grow-1 d-flex align-items-center">
           <i className="icon-fw icon-exclamation ml-1" aria-hidden="true" />
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">
-          <button type="button" className="btn btn-info btn-sm rounded-pill" onClick={() => setOpen(true)}>
+          <button type="button" className="btn btn-info btn-sm rounded-pill px-3" onClick={() => setOpen(true)}>
             {t('fix_page_grant.alert.btn_label')}
           </button>
         </div>
