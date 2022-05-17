@@ -2,6 +2,8 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
+
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
@@ -22,7 +24,6 @@ describe('PageService page operations with non-public pages', () => {
   let User;
   let UserGroup;
   let UserGroupRelation;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -92,7 +93,6 @@ describe('PageService page operations with non-public pages', () => {
     UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');

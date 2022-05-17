@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
 import Tag from '~/server/models/tag';
 
 const mongoose = require('mongoose');
@@ -66,7 +67,6 @@ describe('PageService', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');

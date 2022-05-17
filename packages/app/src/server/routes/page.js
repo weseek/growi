@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -142,7 +143,6 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');

@@ -1,5 +1,6 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
 import loggerFactory from '~/utils/logger';
 
 
@@ -129,7 +130,6 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.findRelatedTagsById = async function() {
-    const PageTagRelation = mongoose.model('PageTagRelation');
     const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
     return relations.map((relation) => { return relation.relatedTag.name });
   };

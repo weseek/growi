@@ -1,5 +1,6 @@
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import loggerFactory from '~/utils/logger';
 
 
@@ -148,7 +149,6 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -404,7 +404,6 @@ module.exports = (crowi) => {
         }
       });
 
-      const PageTagRelation = mongoose.model('PageTagRelation');
       const ids = result.pages.map((page) => { return page._id });
       const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
 

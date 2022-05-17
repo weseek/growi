@@ -18,6 +18,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
+import PageTagRelation from '../models/page-tag-relation';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
@@ -282,6 +283,7 @@ Crowi.prototype.setupModels = async function() {
   // include models that independent from crowi
   allModels.Activity = Activity;
   allModels.Tag = Tag;
+  allModels.PageTagRelation = PageTagRelation;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
 

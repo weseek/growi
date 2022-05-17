@@ -22,6 +22,7 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -916,7 +917,6 @@ class PageService {
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     if (!isRecursively && page.isEmpty) {
       throw Error('Page not found.');
@@ -1068,7 +1068,6 @@ class PageService {
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
@@ -1108,8 +1107,6 @@ class PageService {
    * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
   private async duplicateTags(pageIdMapping) {
-    const PageTagRelation = mongoose.model('PageTagRelation');
-
     // convert pageId from string to ObjectId
     const pageIds = Object.keys(pageIdMapping);
     const stage = { $or: pageIds.map((pageId) => { return { relatedPage: new mongoose.Types.ObjectId(pageId) } }) };
@@ -1418,7 +1415,6 @@ class PageService {
 
   private async deleteNonEmptyTarget(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const newPath = Page.getDeletedPageName(page.path);
 
@@ -1462,7 +1458,6 @@ class PageService {
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
     const Page = mongoose.model('Page') as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
@@ -1627,7 +1622,6 @@ class PageService {
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
@@ -1886,7 +1880,6 @@ class PageService {
      * Common Operation
      */
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     // 1. Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4ProcessForRevert(page);
@@ -1997,7 +1990,6 @@ class PageService {
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 import { getInstance } from '../setup-crowi';
 
@@ -35,7 +36,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');

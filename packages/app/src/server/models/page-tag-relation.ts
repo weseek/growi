@@ -5,9 +5,9 @@ import {
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
-import Tag from './tag';
+import Tag, { TagDocument } from './tag';
 
-
+const flatMap = require('array.prototype.flatmap');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
@@ -19,27 +19,25 @@ export interface PageTagRelationDocument {
   isPageTrashed: boolean,
 }
 
-// export type IdToNameMap = {[key: string] : string }
-
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
   createTagListWithCount()
-  findByPageId()
-  listTagNamesByPage()
-  getIdToTagNamesMap()
-  updatePageTags()
+  findByPageId(pageId: ObjectIdLike, options?)
+  listTagNamesByPage(pageId: ObjectIdLike)
+  getIdToTagNamesMap(pageIds: ObjectIdLike[])
+  updatePageTags(pageId: ObjectIdLike, tags: TagDocument[])
 
 }
 
 
 const pageTagRelationSchema = new Schema<PageTagRelationDocument, PageTagRelationModel>({
   relatedPage: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
     index: true,
   },
   relatedTag: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Tag',
     required: true,
     index: true,
@@ -80,23 +78,22 @@ pageTagRelationSchema.statics.createTagListWithCount = async function(option) {
 
   return { data: tags, totalCount };
 };
-pageTagRelationSchema.statics.createTagListWithCount = async function(option) {
+
+pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options = {}) {
   const isAcceptRelatedTagNull = options.nullable || null;
   const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('relatedTag');
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
 
-pageTagRelationSchema.statics.findByPageId = async function(pageId, options = {}) {
+pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId) {
   const relations = await this.findByPageId(pageId);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
 
-pageTagRelationSchema.statics.listTagNamesByPage = async function(option) {
-  const relations = await this.findByPageId(pageId);
-  return relations.map((relation) => { return relation.relatedTag.name });
-};
-
-pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds) {
+/**
+   * @return {object} key: Page._id, value: array of tag names
+   */
+pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: ObjectIdLike[]) {
   /**
      * @see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
      *
@@ -150,8 +147,8 @@ pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLi
   // get relations for this page
   const relations = await this.findByPageId(pageId, { nullable: true });
 
-  const unlinkTagRelationIds = [];
-  const relatedTagNames = [];
+  const unlinkTagRelationIds: ObjectIdLike[] = [];
+  const relatedTagNames: string[] = [];
 
   relations.forEach((relation) => {
     if (relation.relatedTag == null) {

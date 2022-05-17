@@ -1,6 +1,7 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
+
 import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
 import mongoose from 'mongoose';
@@ -10,6 +11,7 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import loggerFactory from '~/utils/logger';
 
 import {
@@ -462,7 +464,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
     const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
     const socket = this.socketIoService.getAdminSocket();
 
