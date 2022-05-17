@@ -1012,8 +1012,11 @@ schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLik
   });
 };
 
-schema.statics.findEmptyPageByPath = async function(path: string): Promise<PageDocument | null> {
-  return this.findOne({ path, isEmpty: true });
+// TODO: implement this method
+schema.statics.findNotEmptyParentByPathRecursively = async function(path: string) {
+  // Find a page on the tree by path
+  // Find not empty parent
+  return;
 };
 
 schema.statics.findNotEmptyParentRecursively = async function(target: PageDocument): Promise<PageDocument | null> {

@@ -2261,8 +2261,6 @@ class PageService {
   async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    let emptyPage: PageDocument | null = null;
-
     const pages = await Page.findByPathAndViewer(path, user, null, false);
     if (pages == null || !Array.isArray(pages)) {
       throw Error('Something went wrong while converting pages.');
@@ -2273,12 +2271,6 @@ class PageService {
       const isForbidden = await Page.count({ path, isEmpty: false }) > 0;
       if (isForbidden) {
         throw new V5ConversionError('It is not allowed to convert this page.', V5ConversionErrCode.FORBIDDEN);
-      }
-
-      emptyPage = await Page.findEmptyPageByPath(path);
-
-      if (emptyPage == null) {
-        throw new V5ConversionError(`Could not find the page "${path}" to convert.`, V5ConversionErrCode.PAGE_NOT_FOUND);
       }
     }
     if (pages.length > 1) {
@@ -2293,9 +2285,8 @@ class PageService {
 
     const shouldCreateNewPage = pages[0] == null;
     if (shouldCreateNewPage) {
-      const notEmptyParent = await Page.findNotEmptyParentRecursively(emptyPage);
+      const notEmptyParent = await Page.findNotEmptyParentByPathRecursively(path);
 
-      // TODO: implement systematicallyDeletePage method on PageService
       systematicallyCreatedPage = await Page.createSystematically(
         path,
         'This page was created by GROWI.',
