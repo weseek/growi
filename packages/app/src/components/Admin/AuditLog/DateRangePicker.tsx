@@ -1,7 +1,10 @@
 import React, { FC, useRef, forwardRef } from 'react';
 
-import DatePicker from 'react-datepicker';
+import { ja, enUS, zhCN } from 'date-fns/locale';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+import { useCurrentUser } from '~/stores/context';
 
 
 type CustomInputProps = {
@@ -23,6 +26,12 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
 });
 
 
+const DateFnslocal = {
+  ja_JP: ['ja', ja],
+  en_US: ['enUS', enUS],
+  zh_CN: ['zhCN', zhCN],
+} as const;
+
 type DateRangePickerProps = {
   startDate: Date | null
   endDate: Date | null
@@ -31,11 +40,18 @@ type DateRangePickerProps = {
 
 export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePickerProps) => {
   const { startDate, endDate } = props;
+
+  const { data: currentUser } = useCurrentUser();
+  const currentUserLang = currentUser != null ? currentUser.lang : 'en_US';
+  const dateFnslocal = DateFnslocal[currentUserLang];
+  registerLocale(dateFnslocal[0], dateFnslocal[1]);
+
   const buttonRef = useRef(null);
 
   return (
     <div className="btn-group mr-2 mb-3">
       <DatePicker
+        locale={dateFnslocal[0]}
         selectsRange
         startDate={startDate}
         endDate={endDate}
