@@ -2,8 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
-import PageTagRelation from '~/server/models/page-tag-relation';
-
+import PageTagRelation from '../../../src/server/models/page-tag-relation';
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 

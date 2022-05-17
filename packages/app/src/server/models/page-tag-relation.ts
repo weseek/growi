@@ -20,7 +20,7 @@ export interface PageTagRelationDocument {
 }
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
-  createTagListWithCount()
+  createTagListWithCount(option)
   findByPageId(pageId: ObjectIdLike, options?)
   listTagNamesByPage(pageId: ObjectIdLike)
   getIdToTagNamesMap(pageIds: ObjectIdLike[])
@@ -28,6 +28,7 @@ export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
 
 }
 
+export type PageIdToTagNamesMap = {[key: ObjectIdLike] : string[] }
 
 const pageTagRelationSchema = new Schema<PageTagRelationDocument, PageTagRelationModel>({
   relatedPage: {
@@ -93,7 +94,7 @@ pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId) {
 /**
    * @return {object} key: Page._id, value: array of tag names
    */
-pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: ObjectIdLike[]) {
+pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: ObjectIdLike[]): PageIdToTagNamesMap {
   /**
      * @see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
      *
@@ -119,8 +120,7 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
     .flatMap(result => result.tagIds); // map + flatten
   const distinctTagIds = Array.from(new Set(allTagIds));
 
-  // TODO: set IdToNameMap type by 93933
-  const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
+  const tagIdToNameMap: PageIdToTagNamesMap = await Tag.getIdToNameMap(distinctTagIds);
 
   // convert to map
   const idToTagNamesMap = {};
