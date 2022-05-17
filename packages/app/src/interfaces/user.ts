@@ -1,5 +1,6 @@
 import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
+import { Lang } from './lang';
 
 export type IUser = {
   name: string;
@@ -8,6 +9,7 @@ export type IUser = {
   password: string;
   imageUrlCached: string;
   admin: boolean;
+  lang: Lang;
 }
 
 export type IUserGroupRelation = {
