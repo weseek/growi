@@ -1,3 +1,4 @@
+import { apiv3Get } from '~/client/util/apiv3-client';
 
 export default class CommentMentionHelper {
 
@@ -5,9 +6,10 @@ export default class CommentMentionHelper {
 
   pattern: RegExp;
 
+
   constructor(editor) {
     this.editor = editor;
-    this.pattern = /@[A-Za-z0-9._-]*/;
+    this.pattern = /@[A-Za-z0-9._-]{1,}/;
   }
 
   showUsernameHint = () => {
@@ -28,13 +30,22 @@ export default class CommentMentionHelper {
       hint: () => {
         const mention = this.editor.getDoc().getRange(sc.from(), sc.to());
         const username = mention.replace('@', '');
+        const users = this.getUsersList(username);
+
         return {
-          list: ['username1', 'username2'],
+          list: users,
           from: sc.from(),
           to: sc.to(),
         };
       },
     });
+  }
+
+  getUsersList = async(username) => {
+    const { data } = await apiv3Get('/users/list', { username });
+    return data.users.map(user => ({
+      ...user,
+    }));
   }
 
 }
