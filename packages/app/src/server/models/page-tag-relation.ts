@@ -94,7 +94,7 @@ pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId) {
 /**
    * @return {object} key: Page._id, value: array of tag names
    */
-pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: ObjectIdLike[]): PageIdToTagNamesMap {
+pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: ObjectIdLike[]): Promise<PageIdToTagNamesMap> {
   /**
      * @see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
      *
