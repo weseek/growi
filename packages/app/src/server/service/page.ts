@@ -2294,7 +2294,6 @@ class PageService {
           grant: notEmptyParent.grant,
           grantedUserIds: notEmptyParent.grantedUsers,
           grantUserGroupId: notEmptyParent.grantedGroup,
-          isSystematically: true,
         },
       );
       page = systematicallyCreatedPage;

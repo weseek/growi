@@ -46,7 +46,7 @@ module.exports = function(crowi) {
     }
     const format = options.format || 'markdown';
 
-    if (!options.isSystematically && !user._id) {
+    if (!user._id) {
       throw new Error('Error: user should have _id');
     }
 

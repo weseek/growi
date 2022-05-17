@@ -861,11 +861,11 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 /*
  * Utils from obsolete-page.js
  */
-async function pushRevision(pageData, newRevision, user, options?: { isSystematically?: boolean }) {
+async function pushRevision(pageData, newRevision, user) {
   await newRevision.save();
 
   pageData.revision = newRevision;
-  pageData.lastUpdateUser = options?.isSystematically ? null : user;
+  pageData.lastUpdateUser = user._id;
   pageData.updatedAt = Date.now();
 
   return pageData.save();
@@ -1102,10 +1102,10 @@ export default (crowi: Crowi): any => {
       throw Error('This method is only available when v5 compatibale.');
     }
 
-    const user = null;
+    const dummyUser = { _id: new mongoose.Types.ObjectId() };
 
     options.isSystematically = true;
-    return (this.create as CreateMethod)(path, mrkdwn, user, options);
+    return (this.create as CreateMethod)(path, mrkdwn, dummyUser, options);
   };
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
@@ -1204,7 +1204,7 @@ export default (crowi: Crowi): any => {
       page.parent = parent._id;
     }
 
-    page.applyScope(user, grant, grantUserGroupId, grantedUserIds, { isSystematically });
+    page.applyScope(user, grant, grantUserGroupId, grantedUserIds);
 
     let savedPage = await page.save();
 
@@ -1222,8 +1222,8 @@ export default (crowi: Crowi): any => {
       logger.error('Failed to delete PageRedirect');
     }
 
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format, isSystematically });
-    savedPage = await pushRevision(savedPage, newRevision, user, { isSystematically });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
