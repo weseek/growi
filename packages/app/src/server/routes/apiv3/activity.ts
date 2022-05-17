@@ -1,4 +1,4 @@
-import { parse, isValid } from 'date-fns';
+import { parse, addMinutes, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
@@ -60,7 +60,17 @@ module.exports = (crowi: Crowi): Router => {
         Object.assign(query, {
           createdAt: {
             $gte: startDate,
-            $lte: endDate,
+            // + 23 hours 59 minutes
+            $lt: addMinutes(endDate, 1439),
+          },
+        });
+      }
+      else if (isValid(startDate) && !isValid(endDate)) {
+        Object.assign(query, {
+          createdAt: {
+            $gte: startDate,
+            // + 23 hours 59 minutes
+            $lt: addMinutes(startDate, 1439),
           },
         });
       }
