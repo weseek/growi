@@ -27,11 +27,10 @@ export default class CommentMentionHelper {
 
     this.editor.showHint({
       completeSingle: false,
-      hint: () => {
+      hint: async() => {
         const mention = this.editor.getDoc().getRange(sc.from(), sc.to());
         const username = mention.replace('@', '');
-        const users = this.getUsersList(username);
-
+        const users = await this.getUsersList(username);
         return {
           list: users,
           from: sc.from(),
@@ -42,10 +41,12 @@ export default class CommentMentionHelper {
   }
 
   getUsersList = async(username) => {
-    const { data } = await apiv3Get('/users/list', { username });
+    const { data } = await apiv3Get('/users/list');
     return data.users.map(user => ({
-      ...user,
-    }));
+      text: `@${user.username} `,
+      displayText: user.username,
+    }))
+      .filter(user => user.displayText.includes(username));
   }
 
 }

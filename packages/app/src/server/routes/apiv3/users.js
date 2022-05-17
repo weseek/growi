@@ -13,6 +13,7 @@ const path = require('path');
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -898,13 +899,10 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
-    const username = req.query.username || null;
+
     let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
       userFetcher = User.findAllUsers();
-    }
-    else if (username !== null) {
-      userFetcher = User.find({ username: { $regex: username } });
     }
     else {
       userFetcher = User.findUsersByIds(userIds.split(','));
