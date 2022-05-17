@@ -15,7 +15,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 export interface PageTagRelationDocument {
   _id: Types.ObjectId;
   relatedPage: Types.ObjectId,
-  relatedTag: Types.ObjectId,
+  relatedTag: TagDocument,
   isPageTrashed: boolean,
 }
 
@@ -55,13 +55,13 @@ pageTagRelationSchema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true })
 pageTagRelationSchema.plugin(mongoosePaginate);
 pageTagRelationSchema.plugin(uniqueValidator);
 
-pageTagRelationSchema.statics.createTagListWithCount = async function(option): {data: TagDocument, totalCount: number} {
+pageTagRelationSchema.statics.createTagListWithCount = async function(option): Promise<{data: TagDocument[], totalCount: number}> {
   const opt = option || {};
   const sortOpt = opt.sortOpt || {};
   const offset = opt.offset;
   const limit = opt.limit;
 
-  const tags = await this.aggregate()
+  const tags: TagDocument[] = await this.aggregate()
     .match({ isPageTrashed: false })
     .lookup({
       from: 'tags',
@@ -86,7 +86,7 @@ pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
 
-pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<{[key: string]: string[]}> {
+pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<string[]> {
   const relations = await this.findByPageId(pageId);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
@@ -135,17 +135,17 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
   return idToTagNamesMap;
 };
 
-pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tags: TagDocument[]): Promise<void> {
+pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tags: string[]) {
   if (pageId == null || tags == null) {
     throw new Error('args \'pageId\' and \'tags\' are required.');
   }
 
   // filter empty string
   // eslint-disable-next-line no-param-reassign
-  tags = tags.filter((tag) => { return tag !== '' });
+  tags = tags.filter((tag) => { return tag != null });
 
   // get relations for this page
-  const relations = await this.findByPageId(pageId, { nullable: true });
+  const relations: PageTagRelationDocument[] = await this.findByPageId(pageId, { nullable: true });
 
   const unlinkTagRelationIds: ObjectIdLike[] = [];
   const relatedTagNames: string[] = [];
