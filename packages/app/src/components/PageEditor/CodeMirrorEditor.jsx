@@ -18,7 +18,10 @@ import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
 import DrawioModal from './DrawioModal';
 import EditorIcon from './EditorIcon';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+import DrawioModal from './DrawioModal';
+import EditorIcon from './EditorIcon';
+import EmojiPicker from './EmojiPicker';
+import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
 import HandsontableModal from './HandsontableModal';
@@ -108,11 +111,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
-      isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
+      isEmojiPickerShown: false,
+      emojiSearchText: null,
     };
 
     this.gridEditModal = React.createRef();
@@ -137,6 +141,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+    this.keyUpHandler = this.keyUpHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -151,6 +156,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
+
   }
 
   init() {
@@ -168,11 +175,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    if (this.props.emojiStrategy != null) {
-      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({ isEnabledEmojiAutoComplete: true });
-    }
-
     this.initializeTextlint();
   }
 
@@ -195,6 +197,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.isComment) {
       this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror());
     }
+    this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -255,7 +259,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // update state
     this.setState({
       isGfmMode: bool,
-      isEnabledEmojiAutoComplete: bool,
     });
 
     this.updateCheatsheetStates(bool, null);
@@ -572,9 +575,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.updateCheatsheetStates(null, value);
 
-    // Emoji AutoComplete
-    if (this.state.isEnabledEmojiAutoComplete) {
-      this.emojiAutoCompleteHelper.showHint(editor);
+  }
+
+  keyUpHandler(editor, event) {
+    if (event.key !== 'Backspace') {
+      this.checkWhetherEmojiPickerShouldBeShown();
     }
     // Show username hint on comment editor
     if (this.props.isComment) {
@@ -601,6 +606,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
+  }
+
+  /**
+   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
+   * eg `:a`, `:ap`
+   */
+  checkWhetherEmojiPickerShouldBeShown() {
+    const searchWord = this.emojiPickerHelper.getEmoji();
+
+    if (searchWord == null) {
+      this.setState({ isEmojiPickerShown: false });
+      this.setState({ emojiSearchText: null });
+    }
+    else {
+      this.setState({ emojiSearchText: searchWord });
+      // Show emoji picker after user stop typing
+      setTimeout(() => {
+        this.setState({ isEmojiPickerShown: true });
+      }, 700);
+    }
   }
 
   /**
@@ -673,6 +698,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
         }
       </div>
     );
+  }
+
+  renderEmojiPicker() {
+    const { emojiSearchText } = this.state;
+    return this.state.isEmojiPickerShown
+      ? (
+        <div className="text-left">
+          <div className="mb-2 d-none d-md-block">
+            <EmojiPicker
+              onClose={() => this.setState({ isEmojiPickerShown: false, emojiSearchText: null })}
+              emojiSearchText={emojiSearchText}
+              emojiPickerHelper={this.emojiPickerHelper}
+              isOpen={this.state.isEmojiPickerShown}
+            />
+          </div>
+        </div>
+      )
+      : '';
   }
 
   /**
@@ -758,6 +801,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
+
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
@@ -773,6 +817,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection();
     return range;
   }
+
 
   getNavbarItems() {
     return [
@@ -911,8 +956,18 @@ export default class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Drawio" />
       </Button>,
+      <Button
+        key="nav-item-emoji"
+        color={null}
+        bssize="small"
+        title="Emoji"
+        onClick={() => this.setState({ isEmojiPickerShown: true })}
+      >
+        <EditorIcon icon="Emoji" />
+      </Button>,
     ];
   }
+
 
   render() {
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
@@ -948,6 +1003,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             autoCloseTags: true,
             placeholder,
             matchBrackets: true,
+            emoji: true,
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
@@ -980,11 +1036,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
+          onKeyUp={this.keyUpHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
+        { this.renderEmojiPicker() }
 
         <GridEditModal
           ref={this.gridEditModal}
@@ -1014,7 +1072,6 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
   isTextlintEnabled: PropTypes.bool,
   textlintRules: PropTypes.array,
-  emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
