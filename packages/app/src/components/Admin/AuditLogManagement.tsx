@@ -32,7 +32,7 @@ export const AuditLogManagement: FC = () => {
    */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
@@ -58,9 +58,18 @@ export const AuditLogManagement: FC = () => {
   }, []);
 
   const selectDateChangeHandler = useCallback((dateList: Date[] | null[]) => {
+    setActivePage(1);
     const [start, end] = dateList;
-    setStartDate(start);
-    setEndDate(end);
+
+    const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
+    if (isSameTime) {
+      setStartDate(null);
+      setEndDate(null);
+    }
+    else {
+      setStartDate(start);
+      setEndDate(end);
+    }
   }, []);
 
   const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
