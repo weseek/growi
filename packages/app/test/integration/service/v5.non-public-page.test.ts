@@ -1060,7 +1060,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.parent).toBeNull();
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
     test('should revert single deleted page with GRANT_USER_GROUP', async() => {
       const beforeRevertPath = '/trash/np_revert2';
@@ -1087,7 +1087,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
       expect(revertedPage.grantedGroup).toStrictEqual(groupIdA);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
     test(`revert multiple pages: only target page should be reverted.
           Non-existant middle page and leaf page with GRANT_RESTRICTED shoud not be reverted`, async() => {

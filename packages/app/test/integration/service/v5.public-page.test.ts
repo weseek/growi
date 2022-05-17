@@ -1469,13 +1469,13 @@ describe('PageService page operations with only public pages', () => {
       expect(pageRelation2).toBeTruthy();
       const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
-      const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
-      const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
+      const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1?._id });
+      const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2?._id });
 
       expect(page).toBe(null);
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
-      expect(deletedTagRelation1.isPageTrashed).toBe(true);
-      expect(deletedTagRelation2.isPageTrashed).toBe(true);
+      expect(deletedTagRelation1?.isPageTrashed).toBe(true);
+      expect(deletedTagRelation2?.isPageTrashed).toBe(true);
     });
   });
   describe('Delete completely', () => {
@@ -1547,7 +1547,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
       const tags = await Tag.find({ _id: { $in: [tag1?._id, tag2?._id] } });
-      const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1._id, pageTagRelation2._id] } });
+      const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1?._id, pageTagRelation2?._id] } });
       const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
       const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
@@ -1641,7 +1641,7 @@ describe('PageService page operations with only public pages', () => {
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.path).toBe('/v5_revert1');
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
 
     });
 
