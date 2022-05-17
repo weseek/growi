@@ -20,11 +20,11 @@ export interface PageTagRelationDocument {
 }
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
-  createTagListWithCount(option)
-  findByPageId(pageId: ObjectIdLike, options?)
-  listTagNamesByPage(pageId: ObjectIdLike)
-  getIdToTagNamesMap(pageIds: ObjectIdLike[])
-  updatePageTags(pageId: ObjectIdLike, tags: TagDocument[])
+  createTagListWithCount(option): Promise<{data: TagDocument, totalCount: number}>
+  findByPageId(pageId: ObjectIdLike, options?): Promise<PageTagRelationDocument[]>
+  listTagNamesByPage(pageId: ObjectIdLike): Promise<{[key: string]: string[]}>
+  getIdToTagNamesMap(pageIds: ObjectIdLike[]): Promise<PageIdToTagNamesMap>
+  updatePageTags(pageId: ObjectIdLike, tags: TagDocument[]): Promise<void>
 
 }
 
@@ -55,7 +55,7 @@ pageTagRelationSchema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true })
 pageTagRelationSchema.plugin(mongoosePaginate);
 pageTagRelationSchema.plugin(uniqueValidator);
 
-pageTagRelationSchema.statics.createTagListWithCount = async function(option) {
+pageTagRelationSchema.statics.createTagListWithCount = async function(option): {data: TagDocument, totalCount: number} {
   const opt = option || {};
   const sortOpt = opt.sortOpt || {};
   const offset = opt.offset;
@@ -80,13 +80,13 @@ pageTagRelationSchema.statics.createTagListWithCount = async function(option) {
   return { data: tags, totalCount };
 };
 
-pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options = {}) {
+pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options = {}): Promise<PageTagRelationDocument[]> {
   const isAcceptRelatedTagNull = options.nullable || null;
   const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('relatedTag');
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
 
-pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId) {
+pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<{[key: string]: string[]}> {
   const relations = await this.findByPageId(pageId);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
@@ -135,7 +135,7 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
   return idToTagNamesMap;
 };
 
-pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tags) {
+pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tags: TagDocument[]): Promise<void> {
   if (pageId == null || tags == null) {
     throw new Error('args \'pageId\' and \'tags\' are required.');
   }
