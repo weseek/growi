@@ -22,7 +22,7 @@ export interface PageTagRelationDocument {
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
   createTagListWithCount(option): Promise<{data: TagDocument, totalCount: number}>
   findByPageId(pageId: ObjectIdLike, options?): Promise<PageTagRelationDocument[]>
-  listTagNamesByPage(pageId: ObjectIdLike): Promise<{[key: string]: string[]}>
+  listTagNamesByPage(pageId: ObjectIdLike): Promise<string[]>
   getIdToTagNamesMap(pageIds: ObjectIdLike[]): Promise<PageIdToTagNamesMap>
   updatePageTags(pageId: ObjectIdLike, tags: TagDocument[]): Promise<void>
 

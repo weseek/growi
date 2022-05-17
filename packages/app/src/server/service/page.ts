@@ -992,7 +992,7 @@ class PageService {
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
-    let savedTags = [];
+    let savedTags: string[] = [];
     if (originTags.length !== 0) {
       await PageTagRelation.updatePageTags(duplicatedTarget._id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(duplicatedTarget._id);
@@ -1090,7 +1090,7 @@ class PageService {
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
-    let savedTags = [];
+    let savedTags: string[] = [];
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
