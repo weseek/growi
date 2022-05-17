@@ -49,11 +49,13 @@ module.exports = (crowi: Crowi): Router => {
 
       const query = {};
 
+      // add action to query
       const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
       if (canContainActionFilterToQuery) {
         Object.assign(query, { action: parsedSearchFilter.action });
       }
 
+      // add date to query
       const startDate = parse(parsedSearchFilter.date.startDate, 'yyyy/MM/dd', new Date());
       const endDate = parse(parsedSearchFilter.date.endDate, 'yyyy/MM/dd', new Date());
       if (isValid(startDate) && isValid(endDate)) {
