@@ -110,7 +110,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   return (
     <>
       {/* setting button */}
-      <button className="bg-transparent border-0 nav-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true">
+      <button className="bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" aria-haspopup="true">
         <i className="icon-settings"></i>
       </button>
 
