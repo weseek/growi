@@ -135,7 +135,8 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
   return idToTagNamesMap;
 };
 
-pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tagNames: string[]) {
+pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tagNames: string[])
+: Promise<[{deletedCount: number}, PageTagRelationDocument[]]> {
   if (pageId == null || tagNames == null) {
     throw new Error('args \'pageId\' and \'tags\' are required.');
   }
