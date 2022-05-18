@@ -49,23 +49,31 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
           </button>
         </li>
 
+        <li className="grw-personal-dropdown nav-item dropdown">
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        </li>
+
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
           <PersonalDropdown />
         </li>
       </>
     );
-  }, [t, currentPagePath, openCreateModal]);
+  }, [t, currentPagePath, openCreateModal, isAuthenticated]);
 
   const notAuthenticatedNavItem = useMemo(() => {
-    return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+    return (
+      <>
+        <li className="grw-personal-dropdown nav-item dropdown">
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        </li>
+
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+      </>
+    );
   }, []);
 
   return (
     <>
-      <li className="grw-personal-dropdown nav-item dropdown">
-        <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
-      </li>
-
       {isAuthenticated ? authenticatedNavItem : notAuthenticatedNavItem}
     </>
   );
