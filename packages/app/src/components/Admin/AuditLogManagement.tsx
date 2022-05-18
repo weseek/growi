@@ -57,20 +57,20 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const selectDateChangedHandler = useCallback((dateList: Date[] | null[]) => {
+  const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
     console.log(dateList);
     setActivePage(1);
     setStartDate(dateList[0]);
     setEndDate(dateList[1]);
   }, []);
 
-  const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
+  const actionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
     setActivePage(1);
     actionMap.set(action, !actionMap.get(action));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
-  const selectMultipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
+  const multipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
     setActivePage(1);
     actions.forEach(action => actionMap.set(action, isChecked));
     setActionMap(new Map(actionMap.entries()));
@@ -86,7 +86,7 @@ export const AuditLogManagement: FC = () => {
       <DateRangePicker
         startDate={startDate}
         endDate={endDate}
-        onChangeDate={selectDateChangedHandler}
+        onChangeDatePicker={datePickerChangedHandler}
       />
 
       <SelectActionDropdown
@@ -95,8 +95,8 @@ export const AuditLogManagement: FC = () => {
           { actionCategory: 'Comment', actionNames: CommentActions },
         ]}
         actionMap={actionMap}
-        onSelectAction={selectActionCheckboxChangedHandler}
-        onSelectMultipleAction={selectMultipleActionCheckboxChangedHandler}
+        onChangeAction={actionCheckboxChangedHandler}
+        onChangeMultipleAction={multipleActionCheckboxChangedHandler}
       />
 
       { isLoading

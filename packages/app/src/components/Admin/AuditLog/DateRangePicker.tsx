@@ -26,7 +26,7 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
 type DateRangePickerProps = {
   startDate: Date | null
   endDate: Date | null
-  onChangeDate: (dateList: Date[] | null[]) => void
+  onChangeDatePicker: (dateList: Date[] | null[]) => void
 }
 
 export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePickerProps) => {
@@ -34,15 +34,15 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
 
   const buttonRef = useRef(null);
 
-  const changeDateHandler = useCallback((dateList: Date[] | null[]) => {
-    if (props.onChangeDate != null) {
+  const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
+    if (props.onChangeDatePicker != null) {
       const [start, end] = dateList;
       const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
       if (isSameTime) {
-        props.onChangeDate([null, null]);
+        props.onChangeDatePicker([null, null]);
       }
       else {
-        props.onChangeDate(dateList);
+        props.onChangeDatePicker(dateList);
       }
     }
   }, []);
@@ -53,7 +53,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
         selectsRange
         startDate={startDate}
         endDate={endDate}
-        onChange={changeDateHandler}
+        onChange={datePickerChangedHandler}
         customInput={<CustomInput buttonRef={buttonRef} />}
       />
     </div>
