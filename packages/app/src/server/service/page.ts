@@ -559,7 +559,6 @@ class PageService {
     return renamedPage;
   }
 
-
   async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
