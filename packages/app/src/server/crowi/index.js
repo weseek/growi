@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
-import http from 'http';
 import path from 'path';
-
-import { createTerminus } from '@godaddy/terminus';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
+import http from 'http';
 import mongoose from 'mongoose';
 
+import { createTerminus } from '@godaddy/terminus';
+
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -15,25 +15,26 @@ import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-import Activity from '../models/activity';
-import PageOperation, { PageActionType, PageActionStage } from '../models/page-operation';
-import PageRedirect from '../models/page-redirect';
-import UserGroup from '../models/user-group';
-import AclService from '../service/acl';
-import AppService from '../service/app';
-import AttachmentService from '../service/attachment';
 import ConfigManager from '../service/config-manager';
-import { InstallerService } from '../service/installer';
+import AppService from '../service/app';
+import AclService from '../service/acl';
+import SearchService from '../service/search';
+import AttachmentService from '../service/attachment';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
-import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
+import { InstallerService } from '../service/installer';
+import Activity from '../models/activity';
+import UserGroup from '../models/user-group';
+import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
+
 const models = require('../models');
+
 const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
@@ -424,9 +425,6 @@ Crowi.prototype.start = async function() {
 
   await this.init();
   await this.buildServer();
-  // cleanup if PageOperationDocuments exist
-  await this.cleanupPageOperation();
-
 
   const { express, configManager } = this;
 
@@ -684,6 +682,8 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
+    // TODO: Remove this code when resuming feature is implemented
+    await this.pageOperationService.init();
   }
 };
 
@@ -729,15 +729,6 @@ Crowi.prototype.setupSlackIntegrationService = async function() {
   if (this.s2sMessagingService != null) {
     this.s2sMessagingService.addMessageHandler(this.slackIntegrationService);
   }
-};
-
-Crowi.prototype.cleanupPageOperation = async function() {
-  if (PageOperation == null) return;
-
-  const excludeList = [PageActionType.Rename]; // list of ActionType to avoid being cleaned up
-  const excludeStage = PageActionStage.Sub;
-  await PageOperation.cleanup(excludeList, excludeStage);
-  logger.info('cleanupPageOperation has been finished');
 };
 
 export default Crowi;
