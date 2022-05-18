@@ -1,3 +1,4 @@
+import { parse, addMinutes, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
@@ -43,13 +44,45 @@ module.exports = (crowi: Crowi): Router => {
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
 
-    try {
-      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
-      const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
-      const query = {
-        action: canContainActionFilterToQuery ? parsedSearchFilter.action : [],
-      };
+    const query = {};
 
+    try {
+      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string);
+
+      // add action to query
+      const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
+      if (canContainActionFilterToQuery) {
+        Object.assign(query, { action: parsedSearchFilter.action });
+      }
+
+      // add date to query
+      const startDate = parse(parsedSearchFilter.date.startDate, 'yyyy/MM/dd', new Date());
+      const endDate = parse(parsedSearchFilter.date.endDate, 'yyyy/MM/dd', new Date());
+      if (isValid(startDate) && isValid(endDate)) {
+        Object.assign(query, {
+          createdAt: {
+            $gte: startDate,
+            // + 23 hours 59 minutes
+            $lt: addMinutes(endDate, 1439),
+          },
+        });
+      }
+      else if (isValid(startDate) && !isValid(endDate)) {
+        Object.assign(query, {
+          createdAt: {
+            $gte: startDate,
+            // + 23 hours 59 minutes
+            $lt: addMinutes(startDate, 1439),
+          },
+        });
+      }
+    }
+    catch (err) {
+      logger.error('Invalid value', err);
+      return res.apiv3Err(err, 400);
+    }
+
+    try {
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
       const User = crowi.model('User');
@@ -69,7 +102,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error('Failed to get paginated activity', err);
-      return res.apiv3Err(err);
+      return res.apiv3Err(err, 500);
     }
   });
 

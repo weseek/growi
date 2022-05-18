@@ -1,5 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -10,7 +11,16 @@ import { useSWRxActivityList } from '~/stores/activity';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
+import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
+
+
+const formatDate = (date: Date | null) => {
+  if (date == null) {
+    return '';
+  }
+  return format(new Date(date), 'yyyy/MM/dd');
+};
 
 const PAGING_LIMIT = 10;
 
@@ -22,6 +32,8 @@ export const AuditLogManagement: FC = () => {
    */
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
@@ -29,8 +41,9 @@ export const AuditLogManagement: FC = () => {
   /*
    * Fetch
    */
+  const selectedDate = { startDate: formatDate(startDate), endDate: formatDate(endDate) };
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
-  const searchFilter = { action: selectedActionList };
+  const searchFilter = { action: selectedActionList, date: selectedDate };
 
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
@@ -44,13 +57,20 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
+  const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
+    console.log(dateList);
+    setActivePage(1);
+    setStartDate(dateList[0]);
+    setEndDate(dateList[1]);
+  }, []);
+
+  const actionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
     setActivePage(1);
     actionMap.set(action, !actionMap.get(action));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
-  const selectMultipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
+  const multipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
     setActivePage(1);
     actions.forEach(action => actionMap.set(action, isChecked));
     setActionMap(new Map(actionMap.entries()));
@@ -62,14 +82,21 @@ export const AuditLogManagement: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
+
+      <DateRangePicker
+        startDate={startDate}
+        endDate={endDate}
+        onChangeDatePicker={datePickerChangedHandler}
+      />
+
       <SelectActionDropdown
         dropdownItems={[
           { actionCategory: 'Page', actionNames: PageActions },
           { actionCategory: 'Comment', actionNames: CommentActions },
         ]}
         actionMap={actionMap}
-        onSelectAction={selectActionCheckboxChangedHandler}
-        onSelectMultipleAction={selectMultipleActionCheckboxChangedHandler}
+        onChangeAction={actionCheckboxChangedHandler}
+        onChangeMultipleAction={multipleActionCheckboxChangedHandler}
       />
 
       { isLoading
