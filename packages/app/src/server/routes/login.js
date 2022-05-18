@@ -28,10 +28,6 @@ module.exports = function(crowi, app) {
             logger.error(`updateLastLoginAt dumps error: ${err}`);
           }
         });
-
-        if (!userData.password) {
-          return res.redirect('/me/password');
-        }
       }
       const { redirectTo } = req.session;
       // remove session.redirectTo
