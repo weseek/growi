@@ -24,7 +24,7 @@ export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
   findByPageId(pageId: ObjectIdLike, options?): Promise<PageTagRelationDocument[]>
   listTagNamesByPage(pageId: ObjectIdLike): Promise<string[]>
   getIdToTagNamesMap(pageIds: ObjectIdLike[]): Promise<PageIdToTagNamesMap>
-  updatePageTags(pageId: ObjectIdLike, tags: TagDocument[]): Promise<void>
+  updatePageTags(pageId: ObjectIdLike, tags: TagDocument[]): Promise<[{deletedCount: number}, PageTagRelationDocument[]]>
 
 }
 
