@@ -573,15 +573,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.updateCheatsheetStates(null, value);
 
+    // Show username hint on comment editor
+    if (this.props.isComment) {
+      this.commentMentionHelper.showUsernameHint();
+    }
+
   }
 
   keyUpHandler(editor, event) {
     if (event.key !== 'Backspace') {
       this.checkWhetherEmojiPickerShouldBeShown();
-    }
-    // Show username hint on comment editor
-    if (this.props.isComment) {
-      this.commentMentionHelper.showUsernameHint();
     }
   }
 
