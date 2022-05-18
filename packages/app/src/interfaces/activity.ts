@@ -66,7 +66,7 @@ export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof 
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
 
-export type ISnapshot =  Pick<IUser, 'username'>
+export type ISnapshot =  Partial<Pick<IUser, 'username'>>
 
 export type IActivity = {
   user?: IUser
@@ -74,7 +74,7 @@ export type IActivity = {
   target: string
   action: SupportedActionType
   createdAt: Date
-  snapshot: ISnapshot
+  snapshot?: ISnapshot
 }
 
 export type IActivityHasId = IActivity & HasObjectId;
