@@ -16,6 +16,6 @@ export const useSWRxActivityList = (limit?: number, offset?: number, searchFilte
   return useSWRImmutable(
     ['/activity', limit, offset, stringifiedSearchFilter],
     (endpoint, limit, offset, stringifiedSearchFilter) => apiv3Get(endpoint, { limit, offset, searchFilter: stringifiedSearchFilter })
-      .then(result => result.data.serializedPaginationResult),
+      .then(result => result.data.paginationResult),
   );
 };
