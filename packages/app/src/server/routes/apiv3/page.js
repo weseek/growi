@@ -425,6 +425,7 @@ module.exports = (crowi) => {
 
     const Page = crowi.model('Page');
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
+    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
 
     if (page == null) {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
@@ -443,7 +444,33 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    return res.apiv3({ isGrantNormalized });
+    const currentPageGrant = {
+      grant,
+      grantedGroup: grantedGroup != null
+        ? {
+          id: grantedGroup._id,
+          name: grantedGroup.name,
+        }
+        : null,
+    };
+
+    const parentPageGrant = {
+      grant: parentPage.grant,
+      grantedGroup: parentPage.grantedGroup != null
+        ? {
+          id: parentPage.grantedGroup._id,
+          name: parentPage.grantedGroup.name,
+        }
+        : null,
+    };
+
+    const grantData = {
+      isForbidden: parentPage != null,
+      currentPageGrant,
+      parentPageGrant: parentPage != null ? parentPageGrant : null,
+    };
+
+    return res.apiv3({ isGrantNormalized, grantData });
   });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {

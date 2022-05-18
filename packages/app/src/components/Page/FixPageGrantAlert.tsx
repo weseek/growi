@@ -8,7 +8,7 @@ import {
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant } from '~/interfaces/page';
-import { IRecordApplicableGrant } from '~/interfaces/page-grant';
+import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentPageId, useHasParent } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
@@ -16,6 +16,7 @@ type ModalProps = {
   isOpen: boolean
   pageId: string
   dataApplicableGrant: IRecordApplicableGrant
+  grantData: IResIsGrantNormalizedGrantData
   close(): void
 }
 
@@ -194,7 +195,7 @@ const FixPageGrantAlert = (): JSX.Element => {
   if (!hasParent) {
     return <></>;
   }
-  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
+  if (dataIsGrantNormalized?.grantData == null || dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
@@ -218,6 +219,7 @@ const FixPageGrantAlert = (): JSX.Element => {
             isOpen={isOpen}
             pageId={pageId}
             dataApplicableGrant={dataApplicableGrant}
+            grantData={dataIsGrantNormalized.grantData}
             close={() => setOpen(false)}
           />
         )
