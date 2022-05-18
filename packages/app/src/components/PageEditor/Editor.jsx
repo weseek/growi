@@ -384,7 +384,6 @@ Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
-  emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
