@@ -28,7 +28,10 @@ module.exports = function(crowi, app) {
 
     req.login(userData, (err) => {
       if (err != null) { debug(err) }
-      return res.safeRedirect('/');
+      const { redirectTo } = req.session;
+      // remove session.redirectTo
+      delete req.session.redirectTo;
+      return res.safeRedirect(redirectTo);
     });
   };;
 
