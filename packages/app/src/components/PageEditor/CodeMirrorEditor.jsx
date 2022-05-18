@@ -10,6 +10,7 @@ import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
+import { useEditorSettings } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -207,13 +208,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   async initializeTextlint() {
-    if (this.props.onInitializeTextlint != null) {
-      await this.props.onInitializeTextlint();
-      // If database has empty array, pass null instead to enable all default rules
-      const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
-      this.textlintValidator = createValidator(rulesForValidator);
-      this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+    const { editorSettings } = this.props;
+
+    if (editorSettings == null) {
+      return;
     }
+
+    // If database has empty array, pass null instead to enable all default rules
+    const rulesForValidator = editorSettings.textlintRules?.length !== 0 ? editorSettings.textlintRules : null;
+    this.textlintValidator = createValidator(rulesForValidator);
+    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
@@ -958,7 +962,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 
   render() {
-    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
+    const { editorSettings } = this.props;
+    const isTextlintEnabled = editorSettings?.isTextlintEnabled;
+
+    const lint = isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
@@ -966,7 +973,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.props.isTextlintEnabled === true) {
+    if (isTextlintEnabled) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -1058,15 +1065,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
-  isTextlintEnabled: PropTypes.bool,
-  textlintRules: PropTypes.array,
+  // isTextlintEnabled: PropTypes.bool,
+  // textlintRules: PropTypes.array,
   lineNumbers: PropTypes.bool,
+  editorSettings: PropTypes.object,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
-  onInitializeTextlint: PropTypes.func,
+  // onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
-  isTextlintEnabled: false,
+  // isTextlintEnabled: false,
+};
+
+const CodeMirrorEditorWrapper = (props) => {
+  const { editorSettings } = useEditorSettings();
+
+  return <CodeMirrorEditor {...props} editorSettings={editorSettings} />;
 };

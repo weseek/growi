@@ -17,7 +17,7 @@ export default class EditorContainer extends Container {
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
-    this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
+    // this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
 
     const mainContent = document.querySelector('#content-main');
 
@@ -33,8 +33,8 @@ export default class EditorContainer extends Container {
       previewOptions: {},
 
       // Defaults to null to show modal when not in DB
-      isTextlintEnabled: null,
-      textlintRules: [],
+      // isTextlintEnabled: null,
+      // textlintRules: [],
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
@@ -181,24 +181,24 @@ export default class EditorContainer extends Container {
   /**
    * Retrieve Editor Settings
    */
-  async retrieveEditorSettings() {
-    if (this.appContainer.isGuestUser) {
-      return;
-    }
+  // async retrieveEditorSettings() {
+  //   if (this.appContainer.isGuestUser) {
+  //     return;
+  //   }
 
-    const { data } = await apiv3Get('/personal-setting/editor-settings');
+  //   const { data } = await apiv3Get('/personal-setting/editor-settings');
 
-    if (data?.textlintSettings == null) {
-      return;
-    }
+  //   if (data?.textlintSettings == null) {
+  //     return;
+  //   }
 
-    // Defaults to null to show modal when not in DB
-    const { isTextlintEnabled = null, textlintRules = [] } = data.textlintSettings;
+  //   // Defaults to null to show modal when not in DB
+  //   const { isTextlintEnabled = null, textlintRules = [] } = data.textlintSettings;
 
-    this.setState({
-      isTextlintEnabled,
-      textlintRules,
-    });
-  }
+  //   this.setState({
+  //     isTextlintEnabled,
+  //     textlintRules,
+  //   });
+  // }
 
 }

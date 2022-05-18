@@ -1,24 +1,24 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { Subscribe } from 'unstated';
-
+import Dropzone from 'react-dropzone';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
+import { Subscribe } from 'unstated';
 
-import Dropzone from 'react-dropzone';
 
-import EditorContainer from '~/client/services/EditorContainer';
 import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
+import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
+import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
-import pasteHelper from './PasteHelper';
 
 class Editor extends AbstractEditor {
 
@@ -285,7 +285,9 @@ class Editor extends AbstractEditor {
       flexDirection: 'column',
     };
 
-    const isMobile = this.props.isMobile;
+    const {
+      isMobile,
+    } = this.props;
 
     return (
       <>
@@ -320,9 +322,6 @@ class Editor extends AbstractEditor {
                           ref={(c) => { this.cmEditor = c }}
                           indentSize={editorContainer.state.indentSize}
                           editorOptions={editorContainer.state.editorOptions}
-                          isTextlintEnabled={editorContainer.state.isTextlintEnabled}
-                          textlintRules={editorContainer.state.textlintRules}
-                          onInitializeTextlint={editorContainer.retrieveEditorSettings}
                           onPasteFiles={this.pasteFilesHandler}
                           onDragEnter={this.dragEnterHandler}
                           onMarkdownHelpButtonClicked={this.showMarkdownHelp}
@@ -389,5 +388,6 @@ Editor.propTypes = Object.assign({
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 }, AbstractEditor.propTypes);
+
 
 export default withUnstatedContainers(Editor, [EditorContainer, AppContainer]);
