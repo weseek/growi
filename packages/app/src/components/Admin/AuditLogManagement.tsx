@@ -57,19 +57,11 @@ export const AuditLogManagement: FC = () => {
     setActivePage(selectedPageNum);
   }, []);
 
-  const selectDateChangeHandler = useCallback((dateList: Date[] | null[]) => {
+  const selectDateChangedHandler = useCallback((dateList: Date[] | null[]) => {
+    console.log(dateList);
     setActivePage(1);
-    const [start, end] = dateList;
-
-    const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
-    if (isSameTime) {
-      setStartDate(null);
-      setEndDate(null);
-    }
-    else {
-      setStartDate(start);
-      setEndDate(end);
-    }
+    setStartDate(dateList[0]);
+    setEndDate(dateList[1]);
   }, []);
 
   const selectActionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
@@ -94,7 +86,7 @@ export const AuditLogManagement: FC = () => {
       <DateRangePicker
         startDate={startDate}
         endDate={endDate}
-        onChangeDate={selectDateChangeHandler}
+        onChangeDate={selectDateChangedHandler}
       />
 
       <SelectActionDropdown

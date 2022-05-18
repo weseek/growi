@@ -1,4 +1,4 @@
-import React, { FC, useRef, forwardRef } from 'react';
+import React, { FC, useRef, forwardRef, useCallback } from 'react';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -34,13 +34,26 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
 
   const buttonRef = useRef(null);
 
+  const changeDateHandler = useCallback((dateList: Date[] | null[]) => {
+    if (props.onChangeDate != null) {
+      const [start, end] = dateList;
+      const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
+      if (isSameTime) {
+        props.onChangeDate([null, null]);
+      }
+      else {
+        props.onChangeDate(dateList);
+      }
+    }
+  }, []);
+
   return (
     <div className="btn-group mr-2 mb-3">
       <DatePicker
         selectsRange
         startDate={startDate}
         endDate={endDate}
-        onChange={props.onChangeDate}
+        onChange={changeDateHandler}
         customInput={<CustomInput buttonRef={buttonRef} />}
       />
     </div>
