@@ -135,14 +135,14 @@ pageTagRelationSchema.statics.getIdToTagNamesMap = async function(pageIds: Objec
   return idToTagNamesMap;
 };
 
-pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tags: string[]) {
-  if (pageId == null || tags == null) {
+pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLike, tagNames: string[]) {
+  if (pageId == null || tagNames == null) {
     throw new Error('args \'pageId\' and \'tags\' are required.');
   }
 
   // filter empty string
   // eslint-disable-next-line no-param-reassign
-  tags = tags.filter((tag) => { return tag != null });
+  tagNames = tagNames.filter((tagName) => { return tagName != null });
 
   // get relations for this page
   const relations: PageTagRelationDocument[] = await this.findByPageId(pageId, { nullable: true });
@@ -156,15 +156,15 @@ pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLi
     }
     else {
       relatedTagNames.push(relation.relatedTag.name);
-      if (!tags.includes(relation.relatedTag.name)) {
+      if (!tagNames.includes(relation.relatedTag.name)) {
         unlinkTagRelationIds.push(relation._id);
       }
     }
   });
   const bulkDeletePromise = this.deleteMany({ _id: { $in: unlinkTagRelationIds } });
   // find or create tags
-  const tagsToCreate = tags.filter((tag) => { return !relatedTagNames.includes(tag) });
-  const tagEntities = await Tag.findOrCreateMany(tagsToCreate);
+  const tagNamesToCreate = tagNames.filter((tagName) => { return !relatedTagNames.includes(tagName) });
+  const tagEntities = await Tag.findOrCreateMany(tagNamesToCreate);
 
   // create relations
   const bulkCreatePromise = this.insertMany(
