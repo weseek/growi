@@ -14,27 +14,19 @@ module.exports = function(crowi, app) {
 
   const actions = {};
 
-  const loginSuccess = function(req, res, userData) {
-    // transforming attributes
-    // see User model
-    req.user = req.session.user = userData.toObject();
-
+  const registerSuccessHandler = function(req, res, userData) {
     // update lastLoginAt
-    userData.updateLastLoginAt(new Date(), (err, uData) => {
+    userData.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
         logger.error(`updateLastLoginAt dumps error: ${err}`);
       }
     });
 
-    if (!userData.password) {
-      return res.redirect('/me/password');
-    }
-
-    const { redirectTo } = req.session;
-    // remove session.redirectTo
-    delete req.session.redirectTo;
-    return res.safeRedirect(redirectTo);
-  };
+    req.login(userData, (err) => {
+      if (err != null) { debug(err) }
+      return res.safeRedirect('/');
+    });
+  };;
 
   actions.error = function(req, res) {
     const reason = req.params.reason;
@@ -141,7 +133,7 @@ module.exports = function(crowi, app) {
           //      because `req.login()` prepared by passport is not called.
           req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
-          return loginSuccess(req, res, userData);
+          return registerSuccessHandler(req, res, userData);
         });
       });
     }
