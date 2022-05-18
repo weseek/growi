@@ -865,7 +865,7 @@ async function pushRevision(pageData, newRevision, user) {
   await newRevision.save();
 
   pageData.revision = newRevision;
-  pageData.lastUpdateUser = user._id;
+  pageData.lastUpdateUser = user?._id ?? user;
   pageData.updatedAt = Date.now();
 
   return pageData.save();
