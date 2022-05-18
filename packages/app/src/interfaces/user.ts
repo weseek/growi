@@ -1,4 +1,4 @@
-import { Ref } from './common';
+import { RefUsingLegacyHasObjectId } from './common';
 import { HasObjectId } from './has-object-id';
 
 export type IUser = {
@@ -11,8 +11,8 @@ export type IUser = {
 }
 
 export type IUserGroupRelation = {
-  relatedGroup: Ref<IUserGroup>,
-  relatedUser: Ref<IUser>,
+  relatedGroup: RefUsingLegacyHasObjectId<IUserGroup>,
+  relatedUser: RefUsingLegacyHasObjectId<IUser>,
   createdAt: Date,
 }
 
@@ -20,7 +20,7 @@ export type IUserGroup = {
   name: string;
   createdAt: Date;
   description: string;
-  parent: Ref<IUserGroupHasId> | null;
+  parent: RefUsingLegacyHasObjectId<IUserGroupHasId> | null;
 }
 
 export type IUserHasId = IUser & HasObjectId;

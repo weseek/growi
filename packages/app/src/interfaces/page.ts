@@ -1,4 +1,4 @@
-import { Ref, Nullable } from './common';
+import { RefUsingLegacyHasObjectId, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
@@ -9,26 +9,26 @@ import { IUser } from './user';
 export interface IPage {
   path: string,
   status: string,
-  revision: Ref<IRevision>,
-  tags: Ref<ITag>[],
-  creator: Ref<IUser>,
+  revision: RefUsingLegacyHasObjectId<IRevision>,
+  tags: RefUsingLegacyHasObjectId<ITag>[],
+  creator: RefUsingLegacyHasObjectId<IUser>,
   createdAt: Date,
   updatedAt: Date,
-  seenUsers: Ref<IUser>[],
-  parent: Ref<IPage> | null,
+  seenUsers: RefUsingLegacyHasObjectId<IUser>[],
+  parent: RefUsingLegacyHasObjectId<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
   grant: number,
-  grantedUsers: Ref<IUser>[],
-  grantedGroup: Ref<any>,
-  lastUpdateUser: Ref<IUser>,
-  liker: Ref<IUser>[],
+  grantedUsers: RefUsingLegacyHasObjectId<IUser>[],
+  grantedGroup: RefUsingLegacyHasObjectId<any>,
+  lastUpdateUser: RefUsingLegacyHasObjectId<IUser>,
+  liker: RefUsingLegacyHasObjectId<IUser>[],
   commentCount: number
   slackChannels: string,
   pageIdOnHackmd: string,
-  revisionHackmdSynced: Ref<IRevision>,
+  revisionHackmdSynced: RefUsingLegacyHasObjectId<IRevision>,
   hasDraftOnHackmd: boolean,
-  deleteUser: Ref<IUser>,
+  deleteUser: RefUsingLegacyHasObjectId<IUser>,
   deletedAt: Date,
 }
 

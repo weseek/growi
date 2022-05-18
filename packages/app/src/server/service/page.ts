@@ -7,7 +7,7 @@ import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
-import { Ref } from '~/interfaces/common';
+import { RefUsingLegacyHasObjectId } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
@@ -2112,8 +2112,8 @@ class PageService {
     }
   }
 
-  private extractStringIds(refs: Ref<HasObjectId>[]) {
-    return refs.map((ref: Ref<HasObjectId>) => {
+  private extractStringIds(refs: RefUsingLegacyHasObjectId<HasObjectId>[]) {
+    return refs.map((ref: RefUsingLegacyHasObjectId<HasObjectId>) => {
       return (typeof ref === 'string') ? ref : ref._id.toString();
     });
   }
@@ -2132,8 +2132,8 @@ class PageService {
       };
     }
 
-    const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
-    const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+    const likers = page.liker.slice(0, 15) as RefUsingLegacyHasObjectId<IUserHasId>[];
+    const seenUsers = page.seenUsers.slice(0, 15) as RefUsingLegacyHasObjectId<IUserHasId>[];
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,

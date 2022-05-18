@@ -1,15 +1,16 @@
 import React, { FC, memo } from 'react';
 
-import AuthorInfo from './Navbar/AuthorInfo';
 
-import { Ref } from '../interfaces/common';
+import { RefUsingLegacyHasObjectId } from '../interfaces/common';
 import { IUser } from '../interfaces/user';
+
+import AuthorInfo from './Navbar/AuthorInfo';
 
 type Props = {
   createdAt: Date,
   updatedAt: Date,
-  creator: Ref<IUser>,
-  revisionAuthor: Ref<IUser>,
+  creator: RefUsingLegacyHasObjectId<IUser>,
+  revisionAuthor: RefUsingLegacyHasObjectId<IUser>,
 }
 
 const PageContentFooter:FC<Props> = memo((props:Props):JSX.Element => {

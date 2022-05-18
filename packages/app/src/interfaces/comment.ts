@@ -1,8 +1,8 @@
-import { Nullable, Ref } from './common';
-import { IPage } from './page';
-import { IUser } from './user';
-import { IRevision } from './revision';
+import { Nullable, RefUsingLegacyHasObjectId } from './common';
 import { HasObjectId } from './has-object-id';
+import { IPage } from './page';
+import { IRevision } from './revision';
+import { IUser } from './user';
 
 export type IComment = {
   comment: string;
@@ -11,8 +11,8 @@ export type IComment = {
   replyTo: Nullable<string>,
   createdAt: Date,
   updatedAt: Date,
-  page: Ref<IPage>,
-  revision: Ref<IRevision>,
+  page: RefUsingLegacyHasObjectId<IPage>,
+  revision: RefUsingLegacyHasObjectId<IRevision>,
   creator: IUser,
 };
 

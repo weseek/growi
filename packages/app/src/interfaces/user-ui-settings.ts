@@ -1,10 +1,10 @@
+import { RefUsingLegacyHasObjectId } from './common';
+import { SidebarContentsType } from './ui';
 import { IUser } from './user';
 
-import { SidebarContentsType } from './ui';
-import { Ref } from './common';
 
 export interface IUserUISettings {
-  user: Ref<IUser> | null;
+  user: RefUsingLegacyHasObjectId<IUser> | null;
   isSidebarCollapsed: boolean,
   currentSidebarContents: SidebarContentsType,
   currentProductNavWidth: number,
