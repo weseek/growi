@@ -3,13 +3,12 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { IActivity, AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedActionType } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
