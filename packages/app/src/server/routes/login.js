@@ -135,9 +135,7 @@ module.exports = function(crowi, app) {
             sendEmailToAllAdmins(userData);
           }
 
-          // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-          // cz. loginSuccess method doesn't work on it's own when using passport
-          //      because `req.login()` prepared by passport is not called.
+          //I created a flash message in case the user information that processing was successful is not stored in the session.
           req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
           return registerSuccessHandler(req, res, userData);
