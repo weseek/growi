@@ -1,12 +1,11 @@
-import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
+import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
-
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 type IObjectId = mongoose.Types.ObjectId;
@@ -28,11 +27,6 @@ export const PageActionStage = {
 } as const;
 export type PageActionStage = typeof PageActionStage[keyof typeof PageActionStage];
 
-export const PageOperationAutoUpdateTimerType = {
-  ExtendSec: 5, // add this second(s) to current time
-  IntervalSec: 5, // every this second(s)
-} as const;
-
 /*
  * Main Schema
  */
@@ -45,7 +39,6 @@ export interface IPageOperation {
   user: IUserForResuming,
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
-  unprocessableExpiryDate?: Date,
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -101,7 +94,6 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
-  unprocessableExpiryDate: { type: Date, default: null },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
@@ -122,10 +114,6 @@ schema.statics.findMainOps = async function(
     projection,
     options,
   );
-};
-
-schema.statics.cleanup = async function(excludeActionTypeList: PageActionType[], excludeStage: PageActionStage): Promise<void> {
-  await this.deleteMany({ actionType: { $nin: excludeActionTypeList }, actionStage: { $ne: excludeStage } });
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
