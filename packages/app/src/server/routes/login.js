@@ -22,6 +22,10 @@ module.exports = function(crowi, app) {
       }
     });
 
+    if (!userData.password) {
+      return res.redirect('/me/password');
+    }
+
     req.login(userData, (err) => {
       if (err != null) { debug(err) }
       return res.safeRedirect('/');
