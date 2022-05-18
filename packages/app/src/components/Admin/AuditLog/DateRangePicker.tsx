@@ -1,5 +1,5 @@
 import React, {
-  FC, useRef, forwardRef, useCallback
+  FC, useRef, forwardRef, useCallback,
 } from 'react';
 
 import DatePicker from 'react-datepicker';
