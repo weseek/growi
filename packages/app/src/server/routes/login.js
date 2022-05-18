@@ -15,19 +15,23 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   const registerSuccessHandler = function(req, res, userData) {
-    // update lastLoginAt
-    userData.updateLastLoginAt(new Date(), (err, userData) => {
-      if (err) {
-        logger.error(`updateLastLoginAt dumps error: ${err}`);
-      }
-    });
-
-    if (!userData.password) {
-      return res.redirect('/me/password');
-    }
-
     req.login(userData, (err) => {
-      if (err != null) { debug(err) }
+      if (err) {
+        debug(err);
+        //I created a flash message in case the user information that processing was successful is not stored in the session.
+        req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
+      } else {
+        // update lastLoginAt
+        userData.updateLastLoginAt(new Date(), (err, userData) => {
+          if (err) {
+            logger.error(`updateLastLoginAt dumps error: ${err}`);
+          }
+        });
+
+        if (!userData.password) {
+          return res.redirect('/me/password');
+        }
+      }
       const { redirectTo } = req.session;
       // remove session.redirectTo
       delete req.session.redirectTo;
@@ -135,8 +139,7 @@ module.exports = function(crowi, app) {
             sendEmailToAllAdmins(userData);
           }
 
-          //I created a flash message in case the user information that processing was successful is not stored in the session.
-          req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
+
 
           return registerSuccessHandler(req, res, userData);
         });
