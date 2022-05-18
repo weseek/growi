@@ -3,24 +3,25 @@ import loggerFactory from '~/utils/logger';
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
 
-/* eslint-disable */
-
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
-  const { configManager, appService, aclService, mailService } = crowi;
+  const {
+    configManager, appService, aclService, mailService,
+  } = crowi;
 
   const actions = {};
 
   const registerSuccessHandler = function(req, res, userData) {
     req.login(userData, (err) => {
       if (err) {
-        debug(err);
-        //I created a flash message in case the user information that processing was successful is not stored in the session.
-        req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
-      } else {
+        logger.debug(err);
+        // I created a flash message in case the user information that processing was successful is not stored in the session.
+        req.flash('successMessage', req.t('message.successfully_created', { username: userData.username }));
+      }
+      else {
         // update lastLoginAt
         userData.updateLastLoginAt(new Date(), (err, userData) => {
           if (err) {
@@ -37,7 +38,7 @@ module.exports = function(crowi, app) {
       delete req.session.redirectTo;
       return res.safeRedirect(redirectTo);
     });
-  };;
+  };
 
   actions.error = function(req, res) {
     const reason = req.params.reason;
@@ -73,7 +74,7 @@ module.exports = function(crowi, app) {
     }
 
     next();
-  }
+  };
 
   actions.login = function(req, res) {
     if (req.form) {
@@ -89,11 +90,11 @@ module.exports = function(crowi, app) {
     }
 
     // config で closed ならさよなら
-    if (configManager.getConfig('crowi', 'security:registrationMode') == aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
+    if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.redirect('/');
     }
 
-    if (req.method == 'POST' && req.form.isValid) {
+    if (req.method === 'POST' && req.form.isValid) {
       const registerForm = req.form.registerForm || {};
 
       const name = registerForm.name;
@@ -140,7 +141,6 @@ module.exports = function(crowi, app) {
           }
 
 
-
           return registerSuccessHandler(req, res, userData);
         });
       });
@@ -170,7 +170,7 @@ module.exports = function(crowi, app) {
           appTitle,
         },
       });
-    })
+    });
 
     const results = await Promise.allSettled(promises);
     results
@@ -183,7 +183,7 @@ module.exports = function(crowi, app) {
       return res.redirect('/login');
     }
 
-    if (req.method == 'POST' && req.form.isValid) {
+    if (req.method === 'POST' && req.form.isValid) {
       const user = req.user;
       const invitedForm = req.form.invitedForm || {};
       const username = invitedForm.username;
