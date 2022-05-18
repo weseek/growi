@@ -1,4 +1,4 @@
-import { query, body } from 'express-validator';
+import { body } from 'express-validator';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
@@ -107,7 +107,6 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      query('userId').isString(),
       body('theme').optional().isString(),
       body('keymapMode').optional().isString(),
       body('styleActiveLine').optional().isBoolean(),
@@ -515,7 +514,7 @@ module.exports = (crowi) => {
 
     const document = {
       theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime,
-    }.filter(e => e != null);
+    };
 
     if (textlintSettings != null) {
       if (textlintSettings.isTextlintEnabled != null) {
