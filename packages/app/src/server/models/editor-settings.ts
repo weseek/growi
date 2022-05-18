@@ -3,29 +3,12 @@ import {
   Schema, Model, Document,
 } from 'mongoose';
 
+import { IEditorSettings, ITextlintSettings } from '~/interfaces/editor-settings';
 
-export interface ILintRule {
-  name: string;
-  options?: unknown;
-  isEnabled?: boolean;
+
+export interface EditorSettingsDocument extends IEditorSettings, Document {
+  userId: Schema.Types.ObjectId,
 }
-
-export interface ITextlintSettings {
-  isTextlintEnabled: boolean;
-  textlintRules: ILintRule[];
-}
-
-export interface IEditorSettings {
-  userId: Schema.Types.ObjectId;
-  theme: undefined | string,
-  keymapMode: undefined | 'vim' | 'emacs' | 'sublime',
-  styleActiveLine: boolean,
-  renderMathJaxInRealtime: boolean,
-  renderDrawioInRealtime: boolean,
-  textlintSettings: ITextlintSettings;
-}
-
-export interface EditorSettingsDocument extends IEditorSettings, Document {}
 export type EditorSettingsModel = Model<EditorSettingsDocument>
 
 const textlintSettingsSchema = new Schema<ITextlintSettings>({
