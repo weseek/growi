@@ -44,10 +44,10 @@ module.exports = (crowi: Crowi): Router => {
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
 
-    try {
-      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string || '');
+    const query = {};
 
-      const query = {};
+    try {
+      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string);
 
       // add action to query
       const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
@@ -76,7 +76,13 @@ module.exports = (crowi: Crowi): Router => {
           },
         });
       }
+    }
+    catch (err) {
+      logger.error('Invalid value', err);
+      return res.apiv3Err(err, 400);
+    }
 
+    try {
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
 
       const User = crowi.model('User');
@@ -96,7 +102,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error('Failed to get paginated activity', err);
-      return res.apiv3Err(err);
+      return res.apiv3Err(err, 500);
     }
   });
 
