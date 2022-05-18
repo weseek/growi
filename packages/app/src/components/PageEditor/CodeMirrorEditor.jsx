@@ -10,7 +10,7 @@ import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
-import { useEditorSettings } from '~/stores/editor';
+import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -101,7 +101,7 @@ require('codemirror/mode/yaml/yaml');
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
-export default class CodeMirrorEditor extends AbstractEditor {
+export class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
@@ -208,9 +208,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   async initializeTextlint() {
-    const { editorSettings } = this.props;
+    const { isTextlintEnabled, editorSettings } = this.props;
 
-    if (editorSettings == null) {
+    if (!isTextlintEnabled || editorSettings == null) {
       return;
     }
 
@@ -962,8 +962,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 
   render() {
-    const { editorSettings } = this.props;
-    const isTextlintEnabled = editorSettings?.isTextlintEnabled;
+    const { isTextlintEnabled } = this.props;
 
     const lint = isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
@@ -1065,7 +1064,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
-  // isTextlintEnabled: PropTypes.bool,
+  isTextlintEnabled: PropTypes.bool,
   // textlintRules: PropTypes.array,
   lineNumbers: PropTypes.bool,
   editorSettings: PropTypes.object,
@@ -1079,8 +1078,11 @@ CodeMirrorEditor.defaultProps = {
   // isTextlintEnabled: false,
 };
 
-const CodeMirrorEditorWrapper = (props) => {
-  const { editorSettings } = useEditorSettings();
+const CodeMirrorEditorWrapper = React.forwardRef((props, ref) => {
+  const { data: editorSettings } = useEditorSettings();
+  const { data: idTextlintEnabled } = useIsTextlintEnabled();
 
-  return <CodeMirrorEditor {...props} editorSettings={editorSettings} />;
-};
+  return <CodeMirrorEditor ref={ref} {...props} idTextlintEnabled={idTextlintEnabled} editorSettings={editorSettings} />;
+});
+
+export default CodeMirrorEditorWrapper;

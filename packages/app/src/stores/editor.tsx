@@ -19,3 +19,7 @@ export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> => {
     endpoint => apiv3Get(endpoint).then(result => result.data),
   );
 };
+
+export const useIsTextlintEnabled = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isTextlintEnabled', undefined, { fallbackData: false });
+};
