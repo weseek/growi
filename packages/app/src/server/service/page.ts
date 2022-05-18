@@ -1,9 +1,7 @@
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
-import { clearInterval } from 'timers';
 
 import { pagePathUtils, pathUtils } from '@growi/core';
-import { addSeconds } from 'date-fns';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -30,7 +28,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType, PageOperationAutoUpdateTimerType } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -416,33 +414,6 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  /**
-   * set interval to keep updating the property unprocessableExpiryDate until the renaming process is complete
-   * to avoid the same PageOperation being processed by multiple processes.
-   * -Until the time of unprocessableExpiryDate, the PageOperation is considered being processed thus new process for it cannot be made-
-   * @param pageOperationId
-   * @param extendTimeSec time to add on current time every intervalSec
-   * @param intervalSec interval time in sec
-   * @returns tiemr id
-   */
-  async setIntervalUpdatePageOperationExpiryDate(
-      pageOperationId: ObjectIdLike, extendTimeSec: number, intervalSec: number,
-  ): Promise<NodeJS.Timeout> {
-    const pageOp = await PageOperation.findByIdAndUpdate(pageOperationId, { unprocessableExpiryDate: addSeconds(new Date(), extendTimeSec) }, { new: true });
-    if (pageOp == null) throw Error('setinterval cannot be set as page operation is not found');
-
-    // https://github.com/Microsoft/TypeScript/issues/30128#issuecomment-467968688
-    const timerId = global.setInterval(async(): Promise<void> => {
-      pageOp.unprocessableExpiryDate = addSeconds(new Date(), extendTimeSec);
-      await pageOp.save();
-      logger.info(`property unprocessableExpiryDate of page operation(${pageOperationId}) is updated`);
-    }, intervalSec * 1000);
-
-    logger.info(`autoUpdateInterval(${timerId}) for page operation process is set.`);
-
-    return timerId;
-  }
-
   async renamePage(page, newPagePath, user, options) {
     /*
      * Common Operation
@@ -498,7 +469,6 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-
     const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
 
     return renamedPage;
@@ -590,31 +560,13 @@ class PageService {
   }
 
 
-  async renameSubOperation(
-      page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike,
-  ): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
 
-    const extendTimeSec = PageOperationAutoUpdateTimerType.ExtendSec;
-    const intervalSec = PageOperationAutoUpdateTimerType.IntervalSec;
-    const autoUpdateIntervalTimerId = await this.setIntervalUpdatePageOperationExpiryDate(pageOpId, extendTimeSec, intervalSec);
-
-    try {
-      // update descendants first
-      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
-      // clear interval
-      clearInterval(autoUpdateIntervalTimerId);
-      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
-    }
-    catch (err) {
-      // clear interval if failed
-      clearInterval(autoUpdateIntervalTimerId);
-      logger.info(`autoUpdateInterval(${autoUpdateIntervalTimerId}) is now cleared.`);
-      logger.error('renameDescendantsWithStream Failed:', err);
-      throw Error(err);
-    }
+    // update descendants first
+    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -631,32 +583,6 @@ class PageService {
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
-  }
-
-  async resumePageRenameOperation(pageId: ObjectIdLike): Promise<void> {
-    if (pageId == null) {
-      throw Error('it did not restart rename operation because pageId is missing.');
-    }
-
-    const pageOperation = await PageOperation.findOne({ 'page._id': pageId, actionType: PageActionType.Rename });
-
-    if (pageOperation == null || pageOperation.toPath == null) {
-      throw Error('it did not restart rename operation because page operation to be processed was not found');
-    }
-
-    const { unprocessableExpiryDate } = pageOperation;
-    if (unprocessableExpiryDate != null && unprocessableExpiryDate > new Date()) {
-      throw Error('it did not restart rename operation because it is currently being processed');
-    }
-
-    const {
-      page, toPath, user, options,
-    } = pageOperation;
-
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
-
-    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOperation._id);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
