@@ -1,4 +1,6 @@
-import React, { FC, useRef, forwardRef, useCallback } from 'react';
+import React, {
+  FC, useRef, forwardRef, useCallback
+} from 'react';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
