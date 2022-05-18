@@ -1,8 +1,8 @@
-import { body } from 'express-validator';
-
-import loggerFactory from '~/utils/logger';
+import { query, body } from 'express-validator';
 
 import { listLocaleIds } from '~/utils/locale-utils';
+import loggerFactory from '~/utils/logger';
+
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
@@ -11,7 +11,6 @@ import InAppNotificationSettings from '../../models/in-app-notification-settings
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
-
 const passport = require('passport');
 
 const router = express.Router();
@@ -108,6 +107,12 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
+      query('userId').isString(),
+      body('theme').optional().isString(),
+      body('keymapMode').optional().isString(),
+      body('styleActiveLine').optional().isBoolean(),
+      body('renderMathJaxInRealtime').optional().isBoolean(),
+      body('renderDrawioInRealtime').optional().isBoolean(),
       body('textlintSettings.isTextlintEnabled').optional().isBoolean(),
       body('textlintSettings.textlintRules.*.name').optional().isString(),
       body('textlintSettings.textlintRules.*.options').optional(),
@@ -501,18 +506,24 @@ module.exports = (crowi) => {
    */
   router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
-    const textlintSettings = req.body.textlintSettings;
-    const document = {};
+    const { body } = req;
 
-    if (textlintSettings == null) {
-      return res.apiv3Err('no-settings-found');
-    }
+    const {
+      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime,
+      textlintSettings,
+    } = body;
 
-    if (textlintSettings.isTextlintEnabled != null) {
-      Object.assign(document, { 'textlintSettings.isTextlintEnabled': textlintSettings.isTextlintEnabled });
-    }
-    if (textlintSettings.textlintRules != null) {
-      Object.assign(document, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
+    const document = {
+      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime,
+    }.filter(e => e != null);
+
+    if (textlintSettings != null) {
+      if (textlintSettings.isTextlintEnabled != null) {
+        Object.assign(document, { 'textlintSettings.isTextlintEnabled': textlintSettings.isTextlintEnabled });
+      }
+      if (textlintSettings.textlintRules != null) {
+        Object.assign(document, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
+      }
     }
 
     // Insert if document does not exist, and return new values
