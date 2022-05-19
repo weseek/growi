@@ -12,7 +12,6 @@ export interface ShareLinkDocument {
   relatedPage: Types.ObjectId;
   description: string;
   expiredAt: Date;
-  createdAt: Date;
 
   isExpired(): boolean
 }
@@ -30,7 +29,6 @@ const shareLinkSchema = new Schema<ShareLinkDocument, ShareLinkModel>({
   },
   expiredAt: { type: Date },
   description: { type: String },
-  createdAt: { type: Date, default: Date.now, required: true },
 });
 shareLinkSchema.plugin(mongoosePaginate);
 shareLinkSchema.plugin(uniqueValidator);
