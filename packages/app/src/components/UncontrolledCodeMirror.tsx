@@ -1,6 +1,8 @@
 import React, { forwardRef, ReactNode, Ref } from 'react';
+
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
 import { Container, Subscribe } from 'unstated';
+
 import EditorContainer from '~/client/services/EditorContainer';
 import AbstractEditor, { AbstractEditorProps } from '~/components/PageEditor/AbstractEditor';
 
@@ -28,7 +30,8 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
       value, isGfmMode, lineNumbers, editorContainer, options, forwardedRef, ...rest
     } = this.props;
 
-    const { editorOptions } = editorContainer.state;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const editorOptions = (editorContainer.state as any).editorOptions;
 
     return (
       <CodeMirror

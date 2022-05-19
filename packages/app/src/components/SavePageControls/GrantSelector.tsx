@@ -157,10 +157,8 @@ const GrantSelector = (props: Props): JSX.Element => {
       return <></>;
     }
 
-    const isLoading = myUserGroupRelations == null;
-
     // show spinner
-    if (isLoading) {
+    if (myUserGroupRelations == null) {
       return (
         <div className="my-3 text-center">
           <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
