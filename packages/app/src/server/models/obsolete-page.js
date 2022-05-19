@@ -247,12 +247,7 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
-  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId, grantedUsers) {
-    // Validate
-    if (grant === GRANT_OWNER && (user == null && grantedUsers?.length !== 1)) {
-      throw Error('The "user" or "grantedUsers" must exist when the grant is GRANT_OWNER.');
-    }
-
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
     // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
@@ -260,7 +255,7 @@ export const getPageSchema = (crowi) => {
     this.grant = grant || GRANT_PUBLIC;
 
     if (grant === GRANT_OWNER) {
-      this.grantedUsers.push(grantedUsers[0] ?? user._id);
+      this.grantedUsers.push(user?._id ?? user);
     }
 
     if (grant === GRANT_USER_GROUP) {
