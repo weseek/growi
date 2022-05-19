@@ -2,8 +2,6 @@ import { debounce } from 'throttle-debounce';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-const USERNAME_PATTERN = new RegExp(/@[A-Za-z0-9._-]{1,}/);
-
 export default class CommentMentionHelper {
 
   editor;
@@ -13,34 +11,36 @@ export default class CommentMentionHelper {
 
   constructor(editor) {
     this.editor = editor;
-    this.pattern = USERNAME_PATTERN;
-
   }
 
   getUsernamHint = () => {
+    // Get word that contains `@` character at the begining
     const currentPos = this.editor.getCursor();
-    const sc = this.editor.getSearchCursor(this.pattern, currentPos, { multiline:  false });
-    if (sc.findPrevious()) {
-      const isMentioning = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-      if (!isMentioning) {
-        return;
-      }
-    }
-    else {
+    const wordStart = this.editor.findWordAt(currentPos).anchor.ch - 1;
+    const wordEnd = this.editor.findWordAt(currentPos).head.ch;
+
+    const searchFrom = { line: currentPos.line, ch: wordStart };
+    const searchTo = { line: currentPos.line, ch: wordEnd };
+
+    const searchMention = this.editor.getRange(searchFrom, searchTo);
+    const isMentioning = searchMention.charAt(0) === '@';
+
+    // Return nothing if not mentioning
+    if (!isMentioning) {
       return;
     }
 
+    // Get username after `@` character and search username
+    const mention = searchMention.substr(1);
     this.editor.showHint({
       completeSingle: false,
       hint: async() => {
-        const mention = this.editor.getDoc().getRange(sc.from(), sc.to());
-        const username = mention.replace('@', '');
-        if (username.length > 0) {
-          const users = await this.getUsersList(username);
+        if (mention.length > 0) {
+          const users = await this.getUsersList(mention);
           return {
             list: users,
-            from: sc.from(),
-            to: sc.to(),
+            from: searchFrom,
+            to: searchTo,
           };
         }
       },

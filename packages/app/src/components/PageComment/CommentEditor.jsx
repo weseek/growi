@@ -62,6 +62,7 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       isSlackConfigured: config.isSlackConfigured,
+      isComment: true,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -311,7 +312,7 @@ class CommentEditor extends React.Component {
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
-                isComment
+                isComment={this.state.isComment}
               />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
