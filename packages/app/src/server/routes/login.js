@@ -29,7 +29,8 @@ module.exports = function(crowi, app) {
           }
         });
       }
-
+      // RegisterFormValidator.registerRule had code to guarantee that there was a password,
+      // but login.register did not. However, the /me/password routing does not exist and needs to be rewritten.
       if (!userData.password) {
         return res.redirect('/me/password');
       }
