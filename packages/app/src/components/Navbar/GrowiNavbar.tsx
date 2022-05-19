@@ -91,7 +91,7 @@ interface NavbarLogoProps {
 const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
 
   const { logoSrc } = props;
-  return logoSrc
+  return logoSrc != null
     ? (<img src={logoSrc} className="picture picture-lg " id="settingBrandLogo" width="32" />)
     : <GrowiLogo />;
 

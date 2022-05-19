@@ -30,16 +30,16 @@ interface ICropOptions {
 type CropOptions = ICropOptions | null
 
 type Props = {
-  show: boolean,
+  isShow: boolean,
   src: string | ArrayBuffer | null,
   onModalClose: () => void,
   onCropCompleted: (res: any) => void,
-  circular: boolean,
+  isCircular: boolean,
 }
 const ImageCropModal: FC<Props> = (props: Props) => {
 
   const {
-    show, src, onModalClose, onCropCompleted, circular,
+    isShow, src, onModalClose, onCropCompleted, isCircular,
   } = props;
 
   const [imageRef, setImageRef] = useState<HTMLImageElement>();
@@ -102,12 +102,12 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   };
 
   return (
-    <Modal isOpen={show} toggle={onModalClose}>
+    <Modal isOpen={isShow} toggle={onModalClose}>
       <ModalHeader tag="h4" toggle={onModalClose} className="bg-info text-light">
         {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
-        <ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={circular} />
+        <ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={isCircular} />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>

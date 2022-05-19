@@ -68,7 +68,7 @@ export default class AdminCustomizeContainer extends Container {
     this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
     this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
     this.deleteLogo = this.deleteLogo.bind(this);
-    this.uploadAttachment = this.uploadAttachment.bind(this);
+    this.uploadBrandLogo = this.uploadBrandLogo.bind(this);
 
   }
 
@@ -467,7 +467,7 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  async uploadAttachment(file) {
+  async uploadBrandLogo(file) {
     try {
       const formData = new FormData();
       formData.append('file', file);

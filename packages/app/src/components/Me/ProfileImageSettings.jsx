@@ -164,11 +164,11 @@ class ProfileImageSettings extends React.Component {
         </div>
 
         <ImageCropModal
-          show={this.state.show}
+          isShow={this.state.show}
           src={this.state.src}
           onModalClose={this.cancelModal}
           onCropCompleted={this.onCropCompleted}
-          circular
+          isCircular
         />
 
         <div className="row my-3">

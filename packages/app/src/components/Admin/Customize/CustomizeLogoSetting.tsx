@@ -67,7 +67,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
 
   const onCropCompleted = async(croppedImage) => {
     try {
-      await adminCustomizeContainer.uploadAttachment(croppedImage);
+      await adminCustomizeContainer.uploadBrandLogo(croppedImage);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
@@ -149,11 +149,11 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
       </div>
 
       <ImageCropModal
-        show={isShow}
+        isShow={isShow}
         src={src}
         onModalClose={cancelModal}
         onCropCompleted={onCropCompleted}
-        circular={false}
+        isCircular={false}
       />
     </React.Fragment>
   );
