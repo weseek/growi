@@ -1,5 +1,6 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
