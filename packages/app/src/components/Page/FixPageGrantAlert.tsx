@@ -66,7 +66,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   };
 
-  const grantLabel = useCallback((isForbidden: boolean, grantData?: IPageGrantData): string => {
+  const getGrantLabel = useCallback((isForbidden: boolean, grantData?: IPageGrantData): string => {
 
     if (!isForbidden) {
       return t('fix_page_grant.modal.grant_label.isNotForbidden');
@@ -93,8 +93,8 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const renderGrantDataLabel = useCallback(() => {
     const { isForbidden, currentPageGrant, parentPageGrant } = currentAndParentPageGrantData;
 
-    const currentGrantLabel = grantLabel(true, currentPageGrant);
-    const parentGrantLabel = grantLabel(isForbidden, parentPageGrant);
+    const currentGrantLabel = getGrantLabel(true, currentPageGrant);
+    const parentGrantLabel = getGrantLabel(isForbidden, parentPageGrant);
 
     return (
       <>
@@ -104,7 +104,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
         <p dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.grant_label.docLink') }} />
       </>
     );
-  }, [t, currentAndParentPageGrantData, grantLabel]);
+  }, [t, currentAndParentPageGrantData, getGrantLabel]);
 
   const renderModalBodyAndFooter = () => {
     const isGrantAvailable = Object.keys(dataApplicableGrant || {}).length > 0;
