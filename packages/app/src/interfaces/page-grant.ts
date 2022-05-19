@@ -1,4 +1,4 @@
-import { PageGrant } from './page';
+import { PageGrant, IPageGrantData } from './page';
 
 export type IDataApplicableGroup = {
   applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
@@ -8,13 +8,6 @@ export type IDataApplicableGrant = null | IDataApplicableGroup;
 export type IRecordApplicableGrant = Record<PageGrant, IDataApplicableGrant>
 export type IResApplicableGrant = {
   data?: IRecordApplicableGrant
-}
-export type IPageGrantData = {
-  grant: number,
-  grantedGroup?: {
-    id: string,
-    name: string
-  }
 }
 export type IResIsGrantNormalizedGrantData = {
   isForbidden: boolean,

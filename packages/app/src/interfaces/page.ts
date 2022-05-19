@@ -1,9 +1,9 @@
 import { Ref, Nullable } from './common';
-import { IUser } from './user';
-import { IRevision, HasRevisionShortbody } from './revision';
-import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
+import { ITag } from './tag';
+import { IUser } from './user';
 
 
 export interface IPage {
@@ -116,6 +116,14 @@ export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
 export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
 export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+
+export type IPageGrantData = {
+  grant: number,
+  grantedGroup?: {
+    id: string,
+    name: string
+  }
+}
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean
