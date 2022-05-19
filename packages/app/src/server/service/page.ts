@@ -584,6 +584,37 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  async resumeRenamePageOperation(): Promise<void> {
+    /* eslint-disable no-await-in-loop */
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub };
+    const pageOps = await PageOperation.find(filter);
+
+    if (pageOps == null || pageOps.length === 0) {
+      throw Error('There is nothing to be processed right now');
+    }
+
+    // resume multiple rename operations almost parallelly
+    for (const po of pageOps) {
+      const {
+        page, toPath, user, options,
+      } = po;
+
+      if (toPath == null) {
+        throw Error(`Property toPath is needed to resume renaming this page operation(${po._id})`);
+      }
+
+      const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
+      if (renamedPage == null) {
+        throw Error(`Renamed page(${page._id} is not found)`);
+      }
+
+      await this.renameSubOperation(page, toPath, user, options, renamedPage, po._id);
+    }
+
+  }
+
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
     const pathToTest = escapeStringRegexp(addTrailingSlash(fromPath));
     const pathToBeTested = toPath;
