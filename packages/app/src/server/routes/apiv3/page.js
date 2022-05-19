@@ -426,7 +426,6 @@ module.exports = (crowi) => {
 
     const Page = crowi.model('Page');
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
-    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
 
     if (page == null) {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
@@ -456,6 +455,19 @@ module.exports = (crowi) => {
         : null,
     };
 
+    // page doesn't have parent page
+    if (page.parent == null) {
+      const grantData = {
+        isForbidden: false,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+
+    // user isn't allowed to see parent's grant
     if (parentPage == null) {
       const grantData = {
         isForbidden: true,
