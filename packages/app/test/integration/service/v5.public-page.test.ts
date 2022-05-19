@@ -1552,7 +1552,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
       const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
-      const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
+      const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1?._id, shareLink2?._id] } });
 
       // page should be null
       expect(deletedPages.length).toBe(0);
