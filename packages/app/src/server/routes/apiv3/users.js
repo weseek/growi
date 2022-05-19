@@ -12,9 +12,9 @@ const path = require('path');
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
-
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const PAGE_ITEMS = 50;
