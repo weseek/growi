@@ -19,6 +19,11 @@ export interface PageTagRelationDocument {
   isPageTrashed: boolean,
 }
 
+type TagName = string
+type PageIdToTagNamesMap = {
+    [pageId:string]: TagName[]
+}
+
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
   createTagListWithCount(option): Promise<{data: TagDocument, totalCount: number}>
   findByPageId(pageId: ObjectIdLike, options?): Promise<PageTagRelationDocument[]>
