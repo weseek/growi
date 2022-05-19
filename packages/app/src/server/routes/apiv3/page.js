@@ -458,7 +458,7 @@ module.exports = (crowi) => {
 
     if (parentPage == null) {
       const grantData = {
-        isForbidden: false,
+        isForbidden: true,
         currentPageGrant,
         parentPageGrant: null,
       };
@@ -477,7 +477,7 @@ module.exports = (crowi) => {
     };
 
     const grantData = {
-      isForbidden: true,
+      isForbidden: false,
       currentPageGrant,
       parentPageGrant,
     };
