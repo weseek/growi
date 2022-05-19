@@ -1,15 +1,16 @@
 import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
+
+import { TFunctionResult } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-import { TFunctionResult } from 'i18next';
 
-import { Ref } from '~/interfaces/common';
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { RefUsingLegacyHasObjectId } from '~/interfaces/common';
 import { CustomWindow } from '~/interfaces/global';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
 
 type Props = {
@@ -34,7 +35,7 @@ const UserGroupModal: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState('');
   const [currentDescription, setDescription] = useState('');
-  const [currentParent, setParent] = useState<Ref<IUserGroup> | null>(null);
+  const [currentParent, setParent] = useState<RefUsingLegacyHasObjectId<IUserGroup> | null>(null);
 
   /*
    * Function
