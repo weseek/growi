@@ -73,7 +73,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData == null) {
-      return '';
+      return t('fix_page_grant.modal.grant_label.isNotForbidden');
     }
 
     if (grantData.grant === 4) {
@@ -81,11 +81,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.grantedGroup == null) { return '' }
+      if (grantData.grantedGroup == null) {
+        return t('fix_page_grant.modal.grant_label.isNotForbidden');
+      }
       return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
     }
 
-    return '';
+    return t('fix_page_grant.modal.grant_label.isNotForbidden');
   };
 
   const renderGrantDataLabel = () => {
