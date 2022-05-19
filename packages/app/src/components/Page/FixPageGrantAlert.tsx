@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -66,7 +66,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   };
 
-  const grantLabel = (isForbidden: boolean, grantData?: IPageGrantData): string => {
+  const grantLabel = useCallback((isForbidden: boolean, grantData?: IPageGrantData): string => {
 
     if (!isForbidden) {
       return t('fix_page_grant.modal.grant_label.isNotForbidden');
@@ -88,9 +88,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     return t('fix_page_grant.modal.grant_label.isNotForbidden');
-  };
+  }, [t]);
 
-  const renderGrantDataLabel = () => {
+  const renderGrantDataLabel = useCallback(() => {
     const { isForbidden, currentPageGrant, parentPageGrant } = currentAndParentPageGrantData;
 
     const currentGrantLabel = grantLabel(true, currentPageGrant);
@@ -104,7 +104,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
         <p dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.grant_label.docLink') }} />
       </>
     );
-  };
+  }, [t, currentAndParentPageGrantData, grantLabel]);
 
   const renderModalBodyAndFooter = () => {
     const isGrantAvailable = Object.keys(dataApplicableGrant || {}).length > 0;
