@@ -19,9 +19,8 @@ export interface PageTagRelationDocument {
   isPageTrashed: boolean,
 }
 
-type TagName = string
 type PageIdToTagNamesMap = {
-    [pageId:string]: TagName[]
+    [pageId:string]: TagDocument['name'][]
 }
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
