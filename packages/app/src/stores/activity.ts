@@ -19,3 +19,10 @@ export const useSWRxActivityList = (limit?: number, offset?: number, searchFilte
       .then(result => result.data.paginationResult),
   );
 };
+
+export const useSWRxUsernameList = (q: string): SWRResponse<string[], Error> => {
+  return useSWRImmutable(
+    ['/activity/usernames', q],
+    (endpoint, q) => apiv3Get(endpoint, { q }).then(result => result.data.usernames),
+  );
+};
