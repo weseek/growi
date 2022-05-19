@@ -446,8 +446,6 @@ module.exports = (crowi) => {
     }
 
     const currentPageUserGroup = await UserGroup.findOne({ _id: grantedGroup });
-    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
-
     const currentPageGrant = {
       grant,
       grantedGroup: currentPageUserGroup != null
@@ -458,6 +456,16 @@ module.exports = (crowi) => {
         : null,
     };
 
+    if (parentPage == null) {
+      const grantData = {
+        isForbidden: false,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
     const parentPageGrant = {
       grant: parentPage.grant,
       grantedGroup: parentPageUserGroup != null
@@ -469,9 +477,9 @@ module.exports = (crowi) => {
     };
 
     const grantData = {
-      isForbidden: parentPage != null,
+      isForbidden: true,
       currentPageGrant,
-      parentPageGrant: parentPage != null ? parentPageGrant : null,
+      parentPageGrant,
     };
 
     return res.apiv3({ isGrantNormalized, grantData });

@@ -375,7 +375,7 @@ export const getPageSchema = (crowi) => {
 
     const builder = new this.PageQueryBuilder(this.findOne({ path }), includeEmpty);
 
-    return builder.query;
+    return builder.query.exec();
   };
 
   /**
