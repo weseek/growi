@@ -19,8 +19,6 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import { PageRedirectModel } from './page-redirect';
-import assert from 'assert';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
@@ -58,7 +56,6 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   // eslint-disable-next-line max-len
   createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, onlyGrantedAsExistingPages?: boolean, andFilter?): Promise<void>
-  getParentAndFillAncestors(path: string, user, options?: { isSystematically?: boolean }): Promise<PageDocument & { _id: any }>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -612,74 +609,6 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   return this.findById(newTarget._id);
 };
 
-/**
- * Find parent or create parent if not exists.
- * It also updates parent of ancestors
- * @param path string
- * @returns Promise<PageDocument>
- */
-schema.statics.getParentAndFillAncestors = async function(path: string, user, options?: { isSystematically?: boolean }): Promise<PageDocument> {
-  const parentPath = nodePath.dirname(path);
-
-  const builder1 = new PageQueryBuilder(this.find({ path: parentPath }), true);
-  const pagesCanBeParent = await builder1
-    .addConditionAsMigrated()
-    .query
-    .exec();
-
-  if (pagesCanBeParent.length >= 1) {
-    return pagesCanBeParent[0]; // the earliest page will be the result
-  }
-
-  /*
-   * Fill parents if parent is null
-   */
-  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
-
-  // just create ancestors with empty pages
-  const onlyGrantedAsExistingPages = options?.isSystematically;
-  await this.createEmptyPagesByPaths(ancestorPaths, user, true, onlyGrantedAsExistingPages);
-
-  // find ancestors
-  const builder2 = new PageQueryBuilder(this.find(), true);
-
-  // avoid including not normalized pages
-  builder2.addConditionToFilterByApplicableAncestors(ancestorPaths);
-
-  const ancestors = await builder2
-    .addConditionToListByPathsArray(ancestorPaths)
-    .addConditionToSortPagesByDescPath()
-    .query
-    .exec();
-
-  const ancestorsMap = new Map(); // Map<path, page>
-  ancestors.forEach(page => !ancestorsMap.has(page.path) && ancestorsMap.set(page.path, page)); // the earlier element should be the true ancestor
-
-  // bulkWrite to update ancestors
-  const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
-  const operations = nonRootAncestors.map((page) => {
-    const parentPath = nodePath.dirname(page.path);
-    return {
-      updateOne: {
-        filter: {
-          _id: page._id,
-        },
-        update: {
-          parent: ancestorsMap.get(parentPath)._id,
-        },
-      },
-    };
-  });
-  await this.bulkWrite(operations);
-
-  const parentId = ancestorsMap.get(parentPath)._id; // get parent page id to fetch updated parent parent
-  const createdParent = await this.findOne({ _id: parentId });
-  if (createdParent == null) {
-    throw Error('updated parent not Found');
-  }
-  return createdParent;
-};
-
 // Utility function to add viewer condition to PageQueryBuilder instance
 const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
   let relatedUserGroups = userGroups;
@@ -861,7 +790,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 /*
  * Utils from obsolete-page.js
  */
-async function pushRevision(pageData, newRevision, user) {
+export async function pushRevision(pageData, newRevision, user) {
   await newRevision.save();
 
   pageData.revision = newRevision;
@@ -1105,133 +1034,7 @@ export default (crowi: Crowi): any => {
     const dummyUser = { _id: new mongoose.Types.ObjectId() };
 
     options.isSystematically = true;
-    return (this.create as CreateMethod)(path, mrkdwn, dummyUser, options);
-  };
-
-  schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    const { isSystematically } = options;
-
-    if (user == null && !isSystematically) {
-      throw Error('Cannot call create() without a parameter "user" when shouldSkipUserValidation is false.');
-    }
-
-    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null || crowi.pageOperationService == null) {
-      throw Error('Crowi is not setup');
-    }
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    // v4 compatible process
-    if (!isV5Compatible) {
-      return this.createV4(path, body, user, options);
-    }
-
-    const canOperate = await crowi.pageOperationService.canOperate(false, null, path);
-    if (!canOperate) {
-      throw Error(`Cannot operate create to path "${path}" right now.`);
-    }
-
-    const Page = this;
-    const Revision = crowi.model('Revision');
-    const {
-      format = 'markdown', grantUserGroupId, grantedUserIds,
-    } = options;
-    let grant = options.grant;
-
-    // sanitize path
-    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
-    // throw if exists
-    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
-    if (isExist) {
-      throw new Error('Cannot create new page to existed path');
-    }
-    // force public
-    if (isTopPage(path)) {
-      grant = GRANT_PUBLIC;
-    }
-
-    // find an existing empty page
-    const emptyPage = await Page.findOne({ path, isEmpty: true });
-
-    /*
-     * UserGroup & Owner validation
-     */
-    if (!isSystematically && grant !== GRANT_RESTRICTED) {
-      let isGrantNormalized = false;
-      try {
-        // It must check descendants as well if emptyTarget is not null
-        const shouldCheckDescendants = emptyPage != null;
-        const newGrantedUserIds = grant === GRANT_OWNER ? [user._id] as IObjectId[] : undefined;
-
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
-      }
-      catch (err) {
-        logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
-        throw err;
-      }
-      if (!isGrantNormalized) {
-        throw Error('The selected grant or grantedGroup is not assignable to this page.');
-      }
-    }
-
-    /*
-     * update empty page if exists, if not, create a new page
-     */
-    let page;
-    if (emptyPage != null && grant !== GRANT_RESTRICTED) {
-      page = emptyPage;
-      const descendantCount = await this.recountDescendantCount(page._id);
-
-      page.descendantCount = descendantCount;
-      page.isEmpty = false;
-    }
-    else {
-      page = new Page();
-    }
-
-    page.path = path;
-    page.creator = user;
-    page.lastUpdateUser = user;
-    page.status = STATUS_PUBLISHED;
-
-    // set parent to null when GRANT_RESTRICTED
-    const isGrantRestricted = grant === GRANT_RESTRICTED;
-    if (isTopPage(path) || isGrantRestricted) {
-      page.parent = null;
-    }
-    else {
-      const options = { isSystematically };
-      const parent = await Page.getParentAndFillAncestors(path, user, options);
-      page.parent = parent._id;
-    }
-
-    page.applyScope(user, grant, grantUserGroupId, grantedUserIds);
-
-    let savedPage = await page.save();
-
-    /*
-     * After save
-     */
-    // Delete PageRedirect if exists
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-    try {
-      await PageRedirect.deleteOne({ fromPath: path });
-      logger.warn(`Deleted page redirect after creating a new page at path "${path}".`);
-    }
-    catch (err) {
-      // no throw
-      logger.error('Failed to delete PageRedirect');
-    }
-
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    savedPage = await pushRevision(savedPage, newRevision, user);
-    await savedPage.populateDataToShowRevision();
-
-    pageEvent.emit('create', savedPage, user);
-
-    // update descendantCount asynchronously
-    await crowi.pageService.updateDescendantCountOfAncestors(savedPage._id, 1, false);
-
-    return savedPage;
+    return (crowi.pageService.create as CreateMethod)(path, mrkdwn, dummyUser, options);
   };
 
   const shouldUseUpdatePageV4 = (grant: number, isV5Compatible: boolean, isOnTree: boolean): boolean => {
@@ -1282,7 +1085,7 @@ export default (crowi: Crowi): any => {
       }
 
       if (!wasOnTree) {
-        const newParent = await this.getParentAndFillAncestors(newPageData.path, user);
+        const newParent = await crowi.pageService.getParentAndFillAncestors(newPageData.path, user);
         newPageData.parent = newParent._id;
       }
     }

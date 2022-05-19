@@ -212,7 +212,7 @@ module.exports = (crowi) => {
   async function createPageAction({
     path, body, user, options,
   }) {
-    const createdPage = await Page.create(path, body, user, options);
+    const createdPage = await crowi.pageService.create(path, body, user, options);
     return createdPage;
   }
 
