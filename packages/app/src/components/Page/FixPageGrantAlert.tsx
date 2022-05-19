@@ -68,7 +68,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 
   const getGrantLabel = useCallback((isForbidden: boolean, grantData?: IPageGrantData): string => {
 
-    if (!isForbidden) {
+    if (isForbidden) {
       return t('fix_page_grant.modal.grant_label.isNotForbidden');
     }
 
@@ -93,7 +93,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const renderGrantDataLabel = useCallback(() => {
     const { isForbidden, currentPageGrant, parentPageGrant } = currentAndParentPageGrantData;
 
-    const currentGrantLabel = getGrantLabel(true, currentPageGrant);
+    const currentGrantLabel = getGrantLabel(false, currentPageGrant);
     const parentGrantLabel = getGrantLabel(isForbidden, parentPageGrant);
 
     return (
