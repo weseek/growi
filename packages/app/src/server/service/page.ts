@@ -602,7 +602,7 @@ class PageService {
       } = po;
 
       if (toPath == null) {
-        throw Error(`Property toPath is needed to resume renaming this page operation(${po._id})`);
+        throw Error(`Property toPath is missing which is needed to resume renaming this page operation(${po._id})`);
       }
 
       const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
@@ -610,7 +610,7 @@ class PageService {
         throw Error(`Renamed page(${page._id} is not found)`);
       }
 
-      await this.renameSubOperation(page, toPath, user, options, renamedPage, po._id);
+      this.renameSubOperation(page, toPath, user, options, renamedPage, po._id);
     }
 
   }
@@ -846,6 +846,7 @@ class PageService {
   }
 
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
+    // throw Error();
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
