@@ -69,7 +69,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const grantLabel = (isForbidden: boolean, grantData?: IPageGrantData): string => {
 
     if (!isForbidden) {
-      return '権限の表示が許可されていません';
+      return t('fix_page_grant.modal.grant_label.isNotForbidden');
     }
 
     if (grantData == null) {
@@ -96,8 +96,8 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 
     return (
       <>
-        <p>親のページの権限: {parentGrantLabel}</p>
-        <p>このページの権限: {currentGrantLabel}</p>
+        <p>{ t('fix_page_grant.modal.grant_label.parentPageGrantLabel') + parentGrantLabel }</p>
+        <p>{ t('fix_page_grant.modal.grant_label.currentPageGrantLabel') + currentGrantLabel }</p>
       </>
     );
   };
