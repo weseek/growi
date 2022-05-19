@@ -15,8 +15,7 @@ export interface TagDocument {
 }
 
 
-type TagName = string
-export type TagIdToTagNameMap = {[tagId: string] : TagName }
+export type TagIdToTagNameMap = {[tagId: string] : TagDocument['name'] }
 
 export interface TagModel extends Model<TagDocument>{
   getIdToNameMap(tagIds: ObjectIdLike[]): TagIdToTagNameMap
@@ -38,7 +37,7 @@ tagSchema.plugin(uniqueValidator);
 tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<TagIdToTagNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
-  const idToNameMap = {};
+  const idToNameMap: TagIdToTagNameMap = {};
   tags.forEach((tag) => {
     idToNameMap[tag._id.toString()] = tag.name;
   });
