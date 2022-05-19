@@ -15,6 +15,13 @@ const uniqueValidator = require('mongoose-unique-validator');
 export interface PageTagRelationDocument {
   _id: Types.ObjectId;
   relatedPage: Types.ObjectId,
+  relatedTag: Types.ObjectId,
+  isPageTrashed: boolean,
+}
+
+export interface populatedPageTagRelation {
+  _id: Types.ObjectId;
+  relatedPage: Types.ObjectId,
   relatedTag: TagDocument,
   isPageTrashed: boolean,
 }
@@ -32,7 +39,6 @@ export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
 
 }
 
-export type PageIdToTagNamesMap = {[key:string]: ObjectIdLike[]}
 
 const pageTagRelationSchema = new Schema<PageTagRelationDocument, PageTagRelationModel>({
   relatedPage: {
@@ -84,14 +90,15 @@ pageTagRelationSchema.statics.createTagListWithCount = async function(option): P
   return { data: tags, totalCount };
 };
 
-pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options = {}): Promise<PageTagRelationDocument[]> {
-  const isAcceptRelatedTagNull = options.nullable || null;
+pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options?: {nullable: boolean}): Promise<populatedPageTagRelation[]> {
+  const isAcceptRelatedTagNull = options?.nullable || false;
   const relations = await this.find({ relatedPage: pageId }).populate<{ relatedTag: TagDocument }>('relatedTag').select('relatedTag');
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
 
 pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<string[]> {
   const relations = await this.findByPageId(pageId);
+  console.log('relations', relations);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
 
