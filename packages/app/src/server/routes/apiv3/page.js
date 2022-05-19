@@ -2,6 +2,7 @@ import { pagePathUtils } from '@growi/core';
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
+import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -444,22 +445,25 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+    const currentPageUserGroup = await UserGroup.findOne({ _id: grantedGroup });
+    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
+
     const currentPageGrant = {
       grant,
-      grantedGroup: grantedGroup != null
+      grantedGroup: currentPageUserGroup != null
         ? {
-          id: grantedGroup._id,
-          name: grantedGroup.name,
+          id: currentPageUserGroup._id,
+          name: currentPageUserGroup.name,
         }
         : null,
     };
 
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedGroup: parentPage.grantedGroup != null
+      grantedGroup: parentPageUserGroup != null
         ? {
-          id: parentPage.grantedGroup._id,
-          name: parentPage.grantedGroup.name,
+          id: parentPageUserGroup._id,
+          name: parentPageUserGroup.name,
         }
         : null,
     };

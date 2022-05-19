@@ -9,7 +9,7 @@ export type IRecordApplicableGrant = Record<PageGrant, IDataApplicableGrant>
 export type IResApplicableGrant = {
   data?: IRecordApplicableGrant
 }
-type IPageGrantData = {
+export type IPageGrantData = {
   grant: number,
   grantedGroup?: {
     id: string,

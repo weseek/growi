@@ -8,7 +8,7 @@ import {
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant } from '~/interfaces/page';
-import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData, IPageGrantData } from '~/interfaces/page-grant';
 import { useCurrentPageId, useHasParent } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
@@ -16,7 +16,7 @@ type ModalProps = {
   isOpen: boolean
   pageId: string
   dataApplicableGrant: IRecordApplicableGrant
-  grantData: IResIsGrantNormalizedGrantData
+  currentAndParentPageGrantData: IResIsGrantNormalizedGrantData
   close(): void
 }
 
@@ -24,7 +24,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, pageId, dataApplicableGrant, close,
+    isOpen, pageId, dataApplicableGrant, currentAndParentPageGrantData, close,
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
@@ -66,6 +66,42 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   };
 
+  const grantLabel = (isForbidden: boolean, grantData?: IPageGrantData): string => {
+
+    if (!isForbidden) {
+      return '権限の表示が許可されていません';
+    }
+
+    if (grantData == null) {
+      return '';
+    }
+
+    if (grantData.grant === 4) {
+      return t('fix_page_grant.modal.radio_btn.only_me');
+    }
+
+    if (grantData.grant === 5) {
+      if (grantData.grantedGroup == null) { return '' }
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
+    }
+
+    return '';
+  };
+
+  const renderGrantDataLabel = () => {
+    const { isForbidden, currentPageGrant, parentPageGrant } = currentAndParentPageGrantData;
+
+    const currentGrantLabel = grantLabel(true, currentPageGrant);
+    const parentGrantLabel = grantLabel(isForbidden, parentPageGrant);
+
+    return (
+      <>
+        <p>親のページの権限: {parentGrantLabel}</p>
+        <p>このページの権限: {currentGrantLabel}</p>
+      </>
+    );
+  };
+
   const renderModalBodyAndFooter = () => {
     const isGrantAvailable = Object.keys(dataApplicableGrant || {}).length > 0;
 
@@ -83,6 +119,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
           <div className="form-group">
             {/* eslint-disable-next-line react/no-danger */}
             <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
+
+            {/* grant data label */}
+            {renderGrantDataLabel()}
+
             <div className="ml-2">
               <div className="custom-control custom-radio mb-3">
                 <input
@@ -195,7 +235,7 @@ const FixPageGrantAlert = (): JSX.Element => {
   if (!hasParent) {
     return <></>;
   }
-  if (dataIsGrantNormalized?.grantData == null || dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
+  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
@@ -219,7 +259,7 @@ const FixPageGrantAlert = (): JSX.Element => {
             isOpen={isOpen}
             pageId={pageId}
             dataApplicableGrant={dataApplicableGrant}
-            grantData={dataIsGrantNormalized.grantData}
+            currentAndParentPageGrantData={dataIsGrantNormalized.grantData}
             close={() => setOpen(false)}
           />
         )
