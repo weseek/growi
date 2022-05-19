@@ -1,3 +1,4 @@
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 
 const url = require('url');
@@ -24,7 +25,6 @@ module.exports = (crowi) => {
     const fileId = req.params.id || null;
 
     const Attachment = crowi.model('Attachment');
-    const ShareLink = crowi.model('ShareLink');
 
     const attachment = await Attachment.findOne({ _id: fileId });
 

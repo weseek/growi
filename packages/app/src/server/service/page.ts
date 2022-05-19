@@ -1,6 +1,7 @@
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
+
 import { pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
@@ -22,6 +23,7 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument,
 } from '~/server/models/page';
+import ShareLink from '~/server/models/share-link';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -1628,7 +1630,6 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;

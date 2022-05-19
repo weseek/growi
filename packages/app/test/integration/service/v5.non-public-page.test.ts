@@ -2,6 +2,8 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
+import ShareLink from '~/server/models/share-link';
+
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
@@ -25,7 +27,6 @@ describe('PageService page operations with non-public pages', () => {
   let PageTagRelation;
   let Bookmark;
   let Comment;
-  let ShareLink;
   let PageRedirect;
   let xssSpy;
 
@@ -95,7 +96,6 @@ describe('PageService page operations with non-public pages', () => {
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');

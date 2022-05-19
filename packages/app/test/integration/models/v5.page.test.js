@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import ShareLink from '~/server/models/share-link';
+
 
 import { getInstance } from '../setup-crowi';
 
@@ -11,7 +13,6 @@ describe('Page', () => {
   let PageTagRelation;
   let Bookmark;
   let Comment;
-  let ShareLink;
   let PageRedirect;
   let UserGroup;
   let UserGroupRelation;
@@ -38,7 +39,6 @@ describe('Page', () => {
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');

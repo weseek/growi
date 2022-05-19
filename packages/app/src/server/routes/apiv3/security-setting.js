@@ -1,9 +1,10 @@
+import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
-
-import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -12,6 +13,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
@@ -694,7 +696,6 @@ module.exports = (crowi) => {
    *                      description: suceed to get all share links
    */
   router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
@@ -732,7 +733,6 @@ module.exports = (crowi) => {
    */
 
   router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     try {
       const removedAct = await ShareLink.remove({});
       const removeTotal = await removedAct.n;

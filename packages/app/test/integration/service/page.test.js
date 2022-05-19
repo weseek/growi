@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
 
+import ShareLink from '~/server/models/share-link';
 import Tag from '~/server/models/tag';
 
 const mongoose = require('mongoose');
@@ -56,7 +57,6 @@ describe('PageService', () => {
   let PageTagRelation;
   let Bookmark;
   let Comment;
-  let ShareLink;
   let xssSpy;
 
   beforeAll(async() => {
@@ -69,7 +69,6 @@ describe('PageService', () => {
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
 
     await User.insertMany([
       { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
