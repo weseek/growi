@@ -846,7 +846,6 @@ class PageService {
   }
 
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
-    // throw Error();
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
