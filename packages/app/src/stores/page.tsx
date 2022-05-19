@@ -7,7 +7,7 @@ import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
-import { IRecordApplicableGrant } from '~/interfaces/page-grant';
+import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiGet } from '../client/util/apiv1-client';
@@ -151,7 +151,6 @@ export const useSWRxPageInfoForList = (
 /*
  * Grant normalization fetching hooks
  */
-export type IResIsGrantNormalized = { isGrantNormalized: boolean };
 export const useSWRxIsGrantNormalized = (
     pageId: string | null | undefined,
 ): SWRResponse<IResIsGrantNormalized, Error> => {

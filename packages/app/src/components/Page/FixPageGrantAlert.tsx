@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -7,8 +7,8 @@ import {
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { PageGrant } from '~/interfaces/page';
-import { IRecordApplicableGrant } from '~/interfaces/page-grant';
+import { PageGrant, IPageGrantData } from '~/interfaces/page';
+import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentPageId, useHasParent } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
@@ -16,6 +16,7 @@ type ModalProps = {
   isOpen: boolean
   pageId: string
   dataApplicableGrant: IRecordApplicableGrant
+  currentAndParentPageGrantData: IResIsGrantNormalizedGrantData
   close(): void
 }
 
@@ -23,7 +24,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, pageId, dataApplicableGrant, close,
+    isOpen, pageId, dataApplicableGrant, currentAndParentPageGrantData, close,
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
@@ -65,6 +66,46 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   };
 
+  const getGrantLabel = useCallback((isForbidden: boolean, grantData?: IPageGrantData): string => {
+
+    if (isForbidden) {
+      return t('fix_page_grant.modal.grant_label.isForbidden');
+    }
+
+    if (grantData == null) {
+      return t('fix_page_grant.modal.grant_label.isForbidden');
+    }
+
+    if (grantData.grant === 4) {
+      return t('fix_page_grant.modal.radio_btn.only_me');
+    }
+
+    if (grantData.grant === 5) {
+      if (grantData.grantedGroup == null) {
+        return t('fix_page_grant.modal.grant_label.isForbidden');
+      }
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
+    }
+
+    throw Error('cannnot get grant label'); // this error can't be throwed
+  }, [t]);
+
+  const renderGrantDataLabel = useCallback(() => {
+    const { isForbidden, currentPageGrant, parentPageGrant } = currentAndParentPageGrantData;
+
+    const currentGrantLabel = getGrantLabel(false, currentPageGrant);
+    const parentGrantLabel = getGrantLabel(isForbidden, parentPageGrant);
+
+    return (
+      <>
+        <p className="mt-3">{ t('fix_page_grant.modal.grant_label.parentPageGrantLabel') + parentGrantLabel }</p>
+        <p>{ t('fix_page_grant.modal.grant_label.currentPageGrantLabel') + currentGrantLabel }</p>
+        {/* eslint-disable-next-line react/no-danger */}
+        <p dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.grant_label.docLink') }} />
+      </>
+    );
+  }, [t, currentAndParentPageGrantData, getGrantLabel]);
+
   const renderModalBodyAndFooter = () => {
     const isGrantAvailable = Object.keys(dataApplicableGrant || {}).length > 0;
 
@@ -82,6 +123,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
           <div className="form-group">
             {/* eslint-disable-next-line react/no-danger */}
             <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
+
+            {/* grant data label */}
+            {renderGrantDataLabel()}
+
             <div className="ml-2">
               <div className="custom-control custom-radio mb-3">
                 <input
@@ -218,6 +263,7 @@ const FixPageGrantAlert = (): JSX.Element => {
             isOpen={isOpen}
             pageId={pageId}
             dataApplicableGrant={dataApplicableGrant}
+            currentAndParentPageGrantData={dataIsGrantNormalized.grantData}
             close={() => setOpen(false)}
           />
         )

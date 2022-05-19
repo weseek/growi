@@ -2,6 +2,7 @@ import { pagePathUtils } from '@growi/core';
 
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
+import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -443,7 +444,57 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    return res.apiv3({ isGrantNormalized });
+    const currentPageUserGroup = await UserGroup.findOne({ _id: grantedGroup });
+    const currentPageGrant = {
+      grant,
+      grantedGroup: currentPageUserGroup != null
+        ? {
+          id: currentPageUserGroup._id,
+          name: currentPageUserGroup.name,
+        }
+        : null,
+    };
+
+    // page doesn't have parent page
+    if (page.parent == null) {
+      const grantData = {
+        isForbidden: false,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+
+    // user isn't allowed to see parent's grant
+    if (parentPage == null) {
+      const grantData = {
+        isForbidden: true,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
+    const parentPageGrant = {
+      grant: parentPage.grant,
+      grantedGroup: parentPageUserGroup != null
+        ? {
+          id: parentPageUserGroup._id,
+          name: parentPageUserGroup.name,
+        }
+        : null,
+    };
+
+    const grantData = {
+      isForbidden: false,
+      currentPageGrant,
+      parentPageGrant,
+    };
+
+    return res.apiv3({ isGrantNormalized, grantData });
   });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {

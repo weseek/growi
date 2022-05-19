@@ -1049,6 +1049,12 @@
     "modal": {
       "no_grant_available": "The list of selectable permissions could not be found. Please modify the permissions on the parent page first and try again.",
       "need_to_fix_grant": "The permissions associated with this page must be modified in order to use the functionality correctly. <br> Please select from the options below to make the change.",
+      "grant_label": {
+        "isForbidden": "Authority not allowed to view",
+        "currentPageGrantLabel": "Authorization for this page: ",
+        "parentPageGrantLabel": "Authority of parent page: ",
+        "docLink": "For more information on modifying permissions, please refer to <a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>"
+      },
       "radio_btn": {
         "restrected": "Only those who know the link",
         "only_me": "only to oneself",
