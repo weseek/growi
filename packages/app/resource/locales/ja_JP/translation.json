@@ -1045,7 +1045,8 @@
       "grant_label": {
         "isNotForbidden": "権限の閲覧が許可されていません",
         "currentPageGrantLabel": "このページの権限: ",
-        "parentPageGrantLabel": "親のページの権限: "
+        "parentPageGrantLabel": "親のページの権限: ",
+        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>を参照してください"
       },
       "radio_btn": {
         "restrected": "リンクを知っている人のみ",

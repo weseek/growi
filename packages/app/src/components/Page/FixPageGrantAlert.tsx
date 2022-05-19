@@ -98,8 +98,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 
     return (
       <>
-        <p>{ t('fix_page_grant.modal.grant_label.parentPageGrantLabel') + parentGrantLabel }</p>
+        <p className="mt-3">{ t('fix_page_grant.modal.grant_label.parentPageGrantLabel') + parentGrantLabel }</p>
         <p>{ t('fix_page_grant.modal.grant_label.currentPageGrantLabel') + currentGrantLabel }</p>
+        {/* eslint-disable-next-line react/no-danger */}
+        <p dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.grant_label.docLink') }} />
       </>
     );
   };
