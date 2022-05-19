@@ -186,6 +186,16 @@ class PageService {
       }
     });
 
+    // path recovery
+    this.pageEvent.on('pathRecovery', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_PATHRECOVERY);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
