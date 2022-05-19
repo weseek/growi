@@ -1,3 +1,6 @@
+import escapeStringRegexp from 'escape-string-regexp';
+
+import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -924,6 +927,31 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3(data);
+  });
+
+  router.get('/usernames', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const q = req.query.q;
+    const escapedString = escapeStringRegexp(q);
+
+    try {
+      const undeletedUsernames = await User.find({
+        status: { $ne: User.STATUS_DELETED },
+        username: new RegExp(`^${escapedString}`, 'i'),
+      }).distinct('username');
+
+      const activitySnapshotUsernames = await Activity.find({
+        $and: [
+          { 'snapshot.username': { $nin: undeletedUsernames } },
+          { 'snapshot.username': new RegExp(`^${escapedString}`, 'i') },
+        ],
+      }).distinct('snapshot.username');
+
+      return res.apiv3({ usernames: [...undeletedUsernames, ...activitySnapshotUsernames] });
+    }
+    catch (err) {
+      logger.error('failed to get usernames', err);
+      return res.apiv3Err(err);
+    }
   });
 
   return router;
