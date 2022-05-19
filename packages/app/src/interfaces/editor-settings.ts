@@ -9,11 +9,21 @@ export interface ITextlintSettings {
   textlintRules: ILintRule[];
 }
 
+const KeyMapMode = {
+  default: 'default',
+  vim: 'vim',
+  emacs: 'emacs',
+  sublime: 'sublime',
+} as const;
+
+export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];
+
 export interface IEditorSettings {
   theme: undefined | string,
-  keymapMode: undefined | 'vim' | 'emacs' | 'sublime',
+  keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
   renderMathJaxInRealtime: boolean,
   renderDrawioInRealtime: boolean,
-  textlintSettings: ITextlintSettings;
+  autoFormatMarkdownTable: boolean,
+  textlintSettings: undefined | ITextlintSettings;
 }

@@ -112,7 +112,8 @@ module.exports = (crowi) => {
       body('styleActiveLine').optional().isBoolean(),
       body('renderMathJaxInRealtime').optional().isBoolean(),
       body('renderDrawioInRealtime').optional().isBoolean(),
-      body('textlintSettings.isTextlintEnabled').optional().isBoolean(),
+      body('autoFormatMarkdownTable').optional().isBoolean(),
+      body('textlintSettings.neverAskBeforeDownloadLargeFiles').optional().isBoolean(),
       body('textlintSettings.textlintRules.*.name').optional().isString(),
       body('textlintSettings.textlintRules.*.options').optional(),
       body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
@@ -508,17 +509,17 @@ module.exports = (crowi) => {
     const { body } = req;
 
     const {
-      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime,
+      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime, autoFormatMarkdownTable,
       textlintSettings,
     } = body;
 
     const document = {
-      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime,
+      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime, autoFormatMarkdownTable,
     };
 
     if (textlintSettings != null) {
-      if (textlintSettings.isTextlintEnabled != null) {
-        Object.assign(document, { 'textlintSettings.isTextlintEnabled': textlintSettings.isTextlintEnabled });
+      if (textlintSettings.neverAskBeforeDownloadLargeFiles != null) {
+        Object.assign(document, { 'textlintSettings.neverAskBeforeDownloadLargeFiles': textlintSettings.neverAskBeforeDownloadLargeFiles });
       }
       if (textlintSettings.textlintRules != null) {
         Object.assign(document, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
@@ -562,8 +563,8 @@ module.exports = (crowi) => {
   router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     try {
       const query = { userId: req.user.id };
-      const response = await EditorSettings.findOne(query);
-      return res.apiv3(response);
+      const editorSettings = await EditorSettings.findOne(query) ?? new EditorSettings();
+      return res.apiv3(editorSettings);
     }
     catch (err) {
       logger.error(err);

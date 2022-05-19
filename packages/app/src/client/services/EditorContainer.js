@@ -6,13 +6,25 @@ import { apiv3Get } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:services:EditorContainer');
 
+
+const defaultEditorOptions = {
+  theme: 'elegant',
+  keymapMode: 'default',
+  styleActiveLine: false,
+};
+
+const defaultPreviewOptions = {
+  renderMathJaxInRealtime: false,
+  renderDrawioInRealtime: true,
+};
+
 /**
  * Service container related to options for Editor/Preview
  * @extends {Container} unstated Container
  */
 export default class EditorContainer extends Container {
 
-  constructor(appContainer, defaultEditorOptions, defaultPreviewOptions) {
+  constructor(appContainer) {
     super();
 
     this.appContainer = appContainer;
@@ -29,8 +41,8 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      editorOptions: {},
-      previewOptions: {},
+      editorOptions: defaultEditorOptions,
+      previewOptions: defaultPreviewOptions,
 
       // Defaults to null to show modal when not in DB
       // isTextlintEnabled: null,
@@ -43,9 +55,6 @@ export default class EditorContainer extends Container {
 
     this.initDrafts();
 
-    this.editorOptions = null;
-    this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
-    this.initEditorOptions('previewOptions', 'previewOptions', defaultPreviewOptions);
   }
 
   /**
@@ -78,30 +87,6 @@ export default class EditorContainer extends Container {
         this.state.markdown = draft;
       }
     }
-  }
-
-  initEditorOptions(stateKey, localStorageKey, defaultOptions) {
-    // load from localStorage
-    const optsStr = window.localStorage[localStorageKey];
-
-    let loadedOpts = {};
-    // JSON.parseparse
-    if (optsStr != null) {
-      try {
-        loadedOpts = JSON.parse(optsStr);
-      }
-      catch (e) {
-        this.localStorage.removeItem(localStorageKey);
-      }
-    }
-
-    // set to state obj
-    this.state[stateKey] = Object.assign(defaultOptions, loadedOpts);
-  }
-
-  saveOptsToLocalStorage() {
-    window.localStorage.setItem('editorOptions', JSON.stringify(this.state.editorOptions));
-    window.localStorage.setItem('previewOptions', JSON.stringify(this.state.previewOptions));
   }
 
   setCaretLine(line) {
@@ -176,29 +161,5 @@ export default class EditorContainer extends Container {
 
     return null;
   }
-
-
-  /**
-   * Retrieve Editor Settings
-   */
-  // async retrieveEditorSettings() {
-  //   if (this.appContainer.isGuestUser) {
-  //     return;
-  //   }
-
-  //   const { data } = await apiv3Get('/personal-setting/editor-settings');
-
-  //   if (data?.textlintSettings == null) {
-  //     return;
-  //   }
-
-  //   // Defaults to null to show modal when not in DB
-  //   const { isTextlintEnabled = null, textlintRules = [] } = data.textlintSettings;
-
-  //   this.setState({
-  //     isTextlintEnabled,
-  //     textlintRules,
-  //   });
-  // }
 
 }
