@@ -82,7 +82,7 @@ pageTagRelationSchema.statics.createTagListWithCount = async function(option): P
 
 pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options = {}): Promise<PageTagRelationDocument[]> {
   const isAcceptRelatedTagNull = options.nullable || null;
-  const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('relatedTag');
+  const relations = await this.find({ relatedPage: pageId }).populate<{ relatedTag: TagDocument }>('relatedTag').select('relatedTag');
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
 
