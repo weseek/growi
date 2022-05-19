@@ -3082,8 +3082,8 @@ class PageService {
     const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
     // just create ancestors with empty pages
-    const onlyGrantedAsExistingPages = options?.isSystematically;
-    await this.createEmptyPagesByPaths(ancestorPaths, user, true, onlyGrantedAsExistingPages);
+    // TODO: separate process
+    await this.createEmptyPagesByPaths(ancestorPaths, user, true);
 
     // find ancestors
     const builder2 = new PageQueryBuilder(Page.find(), true);
@@ -3125,6 +3125,7 @@ class PageService {
     return createdParent;
   }
 
+  // TODO: separate processes for systematical and manual operations
   /**
    * Create empty pages if the page in paths didn't exist
    * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
@@ -3134,7 +3135,6 @@ class PageService {
       paths: string[],
       user: any | null,
       onlyMigratedAsExistingPages = true,
-      onlyGrantedAsExistingPages = true,
       andFilter?,
   ): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -3159,15 +3159,14 @@ class PageService {
       aggregationPipeline.push({ $match: andFilter });
     }
     // 4. Add grant conditions
+    // TODO: need to separate here
     let userGroups = null;
-    if (onlyGrantedAsExistingPages) {
-      if (user != null) {
-        const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
-        userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-      }
-      const grantCondition = Page.generateGrantCondition(user, userGroups);
-      aggregationPipeline.push({ $match: grantCondition });
+    if (user != null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
+    const grantCondition = Page.generateGrantCondition(user, userGroups);
+    aggregationPipeline.push({ $match: grantCondition });
 
     // Run aggregation
     const existingPages = await Page.aggregate(aggregationPipeline);
