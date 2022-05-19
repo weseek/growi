@@ -54,8 +54,6 @@ type PaginatedPages = {
 export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  // eslint-disable-next-line max-len
-  createEmptyPagesByPaths(paths: string[], user: any | null, onlyMigratedAsExistingPages?: boolean, onlyGrantedAsExistingPages?: boolean, andFilter?): Promise<void>
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -481,66 +479,6 @@ export class PageQueryBuilder {
   }
 
 }
-
-/**
- * Create empty pages if the page in paths didn't exist
- * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
- * an empty page will not be created at that page's path.
- */
-schema.statics.createEmptyPagesByPaths = async function(
-    paths: string[],
-    user: any | null,
-    onlyMigratedAsExistingPages = true,
-    onlyGrantedAsExistingPages = true,
-    andFilter?,
-): Promise<void> {
-  const aggregationPipeline: any[] = [];
-  // 1. Filter by paths
-  aggregationPipeline.push({ $match: { path: { $in: paths } } });
-  // 2. Normalized condition
-  if (onlyMigratedAsExistingPages) {
-    aggregationPipeline.push({
-      $match: {
-        $or: [
-          { grant: GRANT_PUBLIC },
-          { parent: { $ne: null } },
-          { path: '/' },
-        ],
-      },
-    });
-  }
-  // 3. Add custom pipeline
-  if (andFilter != null) {
-    aggregationPipeline.push({ $match: andFilter });
-  }
-  // 4. Add grant conditions
-  let userGroups = null;
-  if (onlyGrantedAsExistingPages) {
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-    const grantCondition = this.generateGrantCondition(user, userGroups);
-    aggregationPipeline.push({ $match: grantCondition });
-  }
-
-  // Run aggregation
-  const existingPages = await this.aggregate(aggregationPipeline);
-
-
-  const existingPagePaths = existingPages.map(page => page.path);
-  // paths to create empty pages
-  const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
-
-  // insertMany empty pages
-  try {
-    await this.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
-  }
-  catch (err) {
-    logger.error('Failed to insert empty pages.', err);
-    throw err;
-  }
-};
 
 schema.statics.createEmptyPage = async function(
     path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506

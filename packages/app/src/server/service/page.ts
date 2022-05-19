@@ -2821,6 +2821,8 @@ class PageService {
     let nextCount = count;
     let nextSkiped = skiped;
 
+    const createEmptyPagesByPaths = this.createEmptyPagesByPaths.bind(this);
+
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
@@ -2859,7 +2861,7 @@ class PageService {
           { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
         ];
         const filterForApplicableAncestors = { $or: orFilters };
-        await Page.createEmptyPagesByPaths(parentPaths, user, false, true, filterForApplicableAncestors);
+        await createEmptyPagesByPaths(parentPaths, user, false, true, filterForApplicableAncestors);
 
         // 3. Find parents
         const addGrantCondition = (builder) => {
@@ -3081,7 +3083,7 @@ class PageService {
 
     // just create ancestors with empty pages
     const onlyGrantedAsExistingPages = options?.isSystematically;
-    await Page.createEmptyPagesByPaths(ancestorPaths, user, true, onlyGrantedAsExistingPages);
+    await this.createEmptyPagesByPaths(ancestorPaths, user, true, onlyGrantedAsExistingPages);
 
     // find ancestors
     const builder2 = new PageQueryBuilder(Page.find(), true);
@@ -3121,6 +3123,68 @@ class PageService {
       throw Error('updated parent not Found');
     }
     return createdParent;
+  }
+
+  /**
+   * Create empty pages if the page in paths didn't exist
+   * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
+   * an empty page will not be created at that page's path.
+   */
+  async createEmptyPagesByPaths(
+      paths: string[],
+      user: any | null,
+      onlyMigratedAsExistingPages = true,
+      onlyGrantedAsExistingPages = true,
+      andFilter?,
+  ): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const aggregationPipeline: any[] = [];
+    // 1. Filter by paths
+    aggregationPipeline.push({ $match: { path: { $in: paths } } });
+    // 2. Normalized condition
+    if (onlyMigratedAsExistingPages) {
+      aggregationPipeline.push({
+        $match: {
+          $or: [
+            { grant: Page.GRANT_PUBLIC },
+            { parent: { $ne: null } },
+            { path: '/' },
+          ],
+        },
+      });
+    }
+    // 3. Add custom pipeline
+    if (andFilter != null) {
+      aggregationPipeline.push({ $match: andFilter });
+    }
+    // 4. Add grant conditions
+    let userGroups = null;
+    if (onlyGrantedAsExistingPages) {
+      if (user != null) {
+        const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+        userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      }
+      const grantCondition = Page.generateGrantCondition(user, userGroups);
+      aggregationPipeline.push({ $match: grantCondition });
+    }
+
+    // Run aggregation
+    const existingPages = await Page.aggregate(aggregationPipeline);
+
+
+    const existingPagePaths = existingPages.map(page => page.path);
+    // paths to create empty pages
+    const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
+
+    // insertMany empty pages
+    try {
+      await Page.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
+    }
+    catch (err) {
+      logger.error('Failed to insert empty pages.', err);
+      throw err;
+    }
   }
 
 
