@@ -19,11 +19,9 @@ export interface PageTagRelationDocument {
   isPageTrashed: boolean,
 }
 
-export interface populatedPageTagRelation {
+export interface PopulatedPageTagRelation {
   _id: Types.ObjectId;
-  relatedPage: Types.ObjectId,
   relatedTag: TagDocument,
-  isPageTrashed: boolean,
 }
 
 type PageIdToTagNamesMap = {
@@ -32,7 +30,7 @@ type PageIdToTagNamesMap = {
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument>{
   createTagListWithCount(option): Promise<{data: TagDocument, totalCount: number}>
-  findByPageId(pageId: ObjectIdLike, options?): Promise<PageTagRelationDocument[]>
+  findByPageId(pageId: ObjectIdLike, options?): Promise<PopulatedPageTagRelation[]>
   listTagNamesByPage(pageId: ObjectIdLike): Promise<string[]>
   getIdToTagNamesMap(pageIds: ObjectIdLike[]): Promise<PageIdToTagNamesMap>
   updatePageTags(pageId: ObjectIdLike, tags: TagDocument[]): Promise<[{deletedCount: number}, PageTagRelationDocument[]]>
@@ -90,15 +88,16 @@ pageTagRelationSchema.statics.createTagListWithCount = async function(option): P
   return { data: tags, totalCount };
 };
 
-pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options?: {nullable: boolean}): Promise<populatedPageTagRelation[]> {
+pageTagRelationSchema.statics.findByPageId = async function(pageId: ObjectIdLike, options?: {nullable: boolean}): Promise<PopulatedPageTagRelation[]> {
   const isAcceptRelatedTagNull = options?.nullable || false;
-  const relations = await this.find({ relatedPage: pageId }).populate<{ relatedTag: TagDocument }>('relatedTag').select('relatedTag');
-  return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
+  const relations = await this.find({ relatedPage: pageId })
+    .populate<{ relatedTag: TagDocument }>('relatedTag').select('relatedTag');
+
+  return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation._id !== null });
 };
 
-pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<string[]> {
+pageTagRelationSchema.statics.listTagNamesByPage = async function(pageId): Promise<TagDocument['name'][]> {
   const relations = await this.findByPageId(pageId);
-  console.log('relations', relations);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
 
@@ -157,7 +156,7 @@ pageTagRelationSchema.statics.updatePageTags = async function(pageId: ObjectIdLi
   tagNames = tagNames.filter((tagName) => { return tagName != null });
 
   // get relations for this page
-  const relations: PageTagRelationDocument[] = await this.findByPageId(pageId, { nullable: true });
+  const relations: PopulatedPageTagRelation[] = await this.findByPageId(pageId, { nullable: true });
 
   const unlinkTagRelationIds: ObjectIdLike[] = [];
   const relatedTagNames: string[] = [];
