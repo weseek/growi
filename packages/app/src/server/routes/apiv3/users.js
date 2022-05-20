@@ -900,13 +900,14 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
     const username = req.query.username || null;
+    const limit = req.query.limit || 20;
 
     let userFetcher;
     if (userIds !== null && userIds.split(',').length > 0) {
       userFetcher = User.findUsersByIds(userIds.split(','));
     }
     else if (username !== null) {
-      userFetcher = User.findUserByUsernameRegex(username);
+      userFetcher = User.findUserByUsernameRegex(username, limit);
     }
     else {
       userFetcher = User.findAllUsers();

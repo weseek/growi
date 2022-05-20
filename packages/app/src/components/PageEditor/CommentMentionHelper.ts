@@ -1,3 +1,4 @@
+import i18n from 'i18next';
 import { debounce } from 'throttle-debounce';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -38,7 +39,7 @@ export default class CommentMentionHelper {
         if (mention.length > 0) {
           const users = await this.getUsersList(mention);
           return {
-            list: users,
+            list: users.length > 0 ? users : [{ text: '', displayText: i18n.t('page_comment.no_user_found') }],
             from: searchFrom,
             to: searchTo,
           };
@@ -48,7 +49,8 @@ export default class CommentMentionHelper {
   }
 
   getUsersList = async(username) => {
-    const { data } = await apiv3Get('/users/list', { username });
+    const limit = 20;
+    const { data } = await apiv3Get('/users/list', { username, limit });
     return data.users.map(user => ({
       text: `@${user.username} `,
       displayText: user.username,
