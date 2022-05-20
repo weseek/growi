@@ -16,7 +16,6 @@ import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMobile } from '~/stores/ui';
 
-
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
@@ -314,6 +313,7 @@ class CommentEditor extends React.Component {
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
+                isComment
               />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.

@@ -79,10 +79,14 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 // Dropdown
 .grw-personal-dropdown {
-  .grw-icon-container svg {
+
+  .grw-sidebar-mode-icon svg {
+    fill: $secondary;
+  }
+  .grw-color-mode-icon svg {
     fill: $color-global;
   }
-  .grw-icon-container-muted svg {
+  .grw-color-mode-icon-muted svg {
     fill: $secondary;
   }
 }
