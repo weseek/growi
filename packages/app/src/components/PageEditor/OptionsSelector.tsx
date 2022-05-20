@@ -11,7 +11,7 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
 
-import { KeyMapMode } from '../../interfaces/editor-settings';
+import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import { DownloadDictModal } from './DownloadDictModal';
@@ -36,7 +36,7 @@ const ThemeSelector = (): JSX.Element => {
     </>
   ), [update]);
 
-  const selectedTheme = editorSettings?.theme ?? 'elegant';
+  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
 
   return (
     <div className="input-group flex-nowrap">

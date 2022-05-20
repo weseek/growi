@@ -181,13 +181,7 @@ class CodeMirrorEditor extends AbstractEditor {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
 
-    // load theme
-    const theme = this.props.editorOptions.theme;
-    this.loadTheme(theme);
-
-    // set keymap
-    const keymapMode = this.props.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    this.initializeEditorSettings(this.props.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
@@ -201,16 +195,28 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillReceiveProps(nextProps) {
-    // load theme
-    const theme = nextProps.editorOptions.theme;
-    this.loadTheme(theme);
-
-    // set keymap
-    const keymapMode = nextProps.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    this.initializeEditorSettings(nextProps.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
+  }
+
+  initializeEditorSettings(editorSettings) {
+    if (editorSettings == null) {
+      return;
+    }
+
+    // load theme
+    const theme = editorSettings.theme;
+    if (theme != null) {
+      this.loadTheme(theme);
+    }
+
+    // set keymap
+    const keymapMode = editorSettings.keymapMode;
+    if (keymapMode != null) {
+      this.setKeymapMode(keymapMode);
+    }
   }
 
   async initializeTextlint() {

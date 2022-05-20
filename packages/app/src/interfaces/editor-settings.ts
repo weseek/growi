@@ -9,6 +9,8 @@ export interface ITextlintSettings {
   textlintRules: ILintRule[];
 }
 
+export const DEFAULT_THEME = 'elegant';
+
 const KeyMapMode = {
   default: 'default',
   vim: 'vim',
