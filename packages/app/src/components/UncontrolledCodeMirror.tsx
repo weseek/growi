@@ -3,8 +3,6 @@ import React, { forwardRef, ReactNode, Ref } from 'react';
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
 
 import AbstractEditor, { AbstractEditorProps } from '~/components/PageEditor/AbstractEditor';
-import { DEFAULT_THEME } from '~/interfaces/editor-settings';
-import { useEditorSettings } from '~/stores/editor';
 
 window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
@@ -19,8 +17,6 @@ export interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
 
 interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
   forwardedRef: Ref<UncontrolledCodeMirrorCore>;
-  theme?: string,
-  styleActiveLine?: boolean,
 }
 
 class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
@@ -29,7 +25,6 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
 
     const {
       value, isGfmMode, lineNumbers, options, forwardedRef,
-      theme, styleActiveLine,
       ...rest
     } = this.props;
 
@@ -40,8 +35,6 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
         options={{
           lineNumbers: lineNumbers ?? true,
           mode: isGfmMode ? 'gfm-growi' : undefined,
-          theme: theme ?? DEFAULT_THEME,
-          styleActiveLine,
           tabSize: 4,
           ...options,
         }}
@@ -53,14 +46,10 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
 }
 
 export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
-  const { data: editorSettings } = useEditorSettings();
-
   return (
     <UncontrolledCodeMirrorCore
       {...props}
       forwardedRef={ref}
-      theme={editorSettings?.theme}
-      styleActiveLine={editorSettings?.styleActiveLine}
     />
   );
 });

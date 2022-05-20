@@ -519,7 +519,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
-      editorOptions: this.props.editorOptions,
+      editorSettings: this.props.editorSettings,
     };
 
     const interceptorManager = this.interceptorManager;
@@ -1008,6 +1008,8 @@ class CodeMirrorEditor extends AbstractEditor {
           value={this.state.value}
           options={{
             indentUnit: this.props.indentSize,
+            theme: this.props.editorSettings.theme ?? 'elegant',
+            styleActiveLine: this.props.editorSettings.styleActiveLine,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
@@ -1066,7 +1068,7 @@ class CodeMirrorEditor extends AbstractEditor {
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
-          ignoreAutoFormatting={this.props.editorOptions.ignoreMarkdownTableAutoFormatting}
+          autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
         />
         <DrawioModal
           ref={this.drawioModal}
@@ -1080,11 +1082,10 @@ class CodeMirrorEditor extends AbstractEditor {
 }
 
 CodeMirrorEditor.propTypes = Object.assign({
-  editorOptions: PropTypes.object.isRequired,
   isTextlintEnabled: PropTypes.bool,
   // textlintRules: PropTypes.array,
   lineNumbers: PropTypes.bool,
-  editorSettings: PropTypes.object,
+  editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
   // onInitializeTextlint: PropTypes.func,
@@ -1092,14 +1093,6 @@ CodeMirrorEditor.propTypes = Object.assign({
 
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
-  // isTextlintEnabled: false,
 };
 
-const CodeMirrorEditorWrapper = React.forwardRef((props, ref) => {
-  const { data: editorSettings } = useEditorSettings();
-  const { data: idTextlintEnabled } = useIsTextlintEnabled();
-
-  return <CodeMirrorEditor ref={ref} {...props} idTextlintEnabled={idTextlintEnabled} editorSettings={editorSettings} />;
-});
-
-export default CodeMirrorEditorWrapper;
+export default CodeMirrorEditor;

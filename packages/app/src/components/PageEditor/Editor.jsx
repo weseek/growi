@@ -10,6 +10,7 @@ import { Subscribe } from 'unstated';
 
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -321,7 +322,6 @@ class Editor extends AbstractEditor {
                         <CodeMirrorEditor
                           ref={(c) => { this.cmEditor = c }}
                           indentSize={editorContainer.state.indentSize}
-                          editorOptions={editorContainer.state.editorOptions}
                           onPasteFiles={this.pasteFilesHandler}
                           onDragEnter={this.dragEnterHandler}
                           onMarkdownHelpButtonClicked={this.showMarkdownHelp}
@@ -383,11 +383,26 @@ Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
+  idTextlintEnabled: PropTypes.bool,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorSettings: PropTypes.object.isRequired,
 }, AbstractEditor.propTypes);
 
 
-export default withUnstatedContainers(Editor, [EditorContainer, AppContainer]);
+const EditorWithContainer = withUnstatedContainers(Editor, [EditorContainer, AppContainer]);
+
+const EditorWrapper = React.forwardRef((props, ref) => {
+  const { data: editorSettings } = useEditorSettings();
+  const { data: idTextlintEnabled } = useIsTextlintEnabled();
+
+  if (editorSettings == null) {
+    return <></>;
+  }
+
+  return <EditorWithContainer ref={ref} {...props} idTextlintEnabled={idTextlintEnabled} editorSettings={editorSettings} />;
+});
+
+export default EditorWrapper;

@@ -7,12 +7,6 @@ import { apiv3Get } from '../util/apiv3-client';
 const logger = loggerFactory('growi:services:EditorContainer');
 
 
-const defaultEditorOptions = {
-  theme: 'elegant',
-  keymapMode: 'default',
-  styleActiveLine: false,
-};
-
 const defaultPreviewOptions = {
   renderMathJaxInRealtime: false,
   renderDrawioInRealtime: true,
@@ -41,7 +35,6 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      editorOptions: defaultEditorOptions,
       previewOptions: defaultPreviewOptions,
 
       // Defaults to null to show modal when not in DB
