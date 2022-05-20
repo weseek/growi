@@ -101,7 +101,7 @@ require('codemirror/mode/yaml/yaml');
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
-export class CodeMirrorEditor extends AbstractEditor {
+class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
