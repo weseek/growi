@@ -4,7 +4,8 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 
-import { useIsGuestUser } from './context';
+import { useCurrentUser, useIsGuestUser } from './context';
+import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
 export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
@@ -18,11 +19,13 @@ type EditorSettingsOperation = {
 }
 
 export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & EditorSettingsOperation => {
+  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
   const swrResult = useSWRImmutable<IEditorSettings>(
-    isGuestUser ? null : '/personal-setting/editor-settings',
+    isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
     endpoint => apiv3Get(endpoint).then(result => result.data),
+    { use: [localStorageMiddleware] }, // store to localStorage for initialization fastly
   );
 
   return {
