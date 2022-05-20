@@ -27,7 +27,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     isOpen, pageId, dataApplicableGrant, currentAndParentPageGrantData, close,
   } = props;
 
-  const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_OWNER);
+  const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
   const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
 
   // Alert message state
@@ -38,7 +38,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   // Reset state when opened
   useEffect(() => {
     if (isOpen) {
-      setSelectedGrant(PageGrant.GRANT_OWNER);
+      setSelectedGrant(PageGrant.GRANT_RESTRICTED);
       setSelectedGroup(undefined);
       setShowModalAlert(false);
     }
@@ -134,6 +134,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantRestricted"
                   id="grantRestricted"
                   type="radio"
+                  disabled={!(PageGrant.GRANT_RESTRICTED in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
@@ -147,6 +148,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantUser"
                   id="grantUser"
                   type="radio"
+                  disabled={!(PageGrant.GRANT_OWNER in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
@@ -160,6 +162,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantUserGroup"
                   id="grantUserGroup"
                   type="radio"
+                  disabled={!(PageGrant.GRANT_USER_GROUP in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
                 />
