@@ -906,6 +906,7 @@ module.exports = (crowi) => {
     if (userIds !== null && userIds.split(',').length > 0) {
       userFetcher = User.findUsersByIds(userIds.split(','));
     }
+    // Get username list by matching pattern from username mention
     else if (username !== null) {
       userFetcher = User.findUserByUsernameRegex(username, limit);
     }
