@@ -27,8 +27,6 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     isOpen, pageId, dataApplicableGrant, currentAndParentPageGrantData, close,
   } = props;
 
-  const applicableGrants = Object.keys(dataApplicableGrant);
-
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
   const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
 
@@ -136,7 +134,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantRestricted"
                   id="grantRestricted"
                   type="radio"
-                  disabled={!applicableGrants.includes(PageGrant.GRANT_RESTRICTED.toString())}
+                  disabled={!(PageGrant.GRANT_RESTRICTED in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
@@ -150,7 +148,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantUser"
                   id="grantUser"
                   type="radio"
-                  disabled={!applicableGrants.includes(PageGrant.GRANT_OWNER.toString())}
+                  disabled={!(PageGrant.GRANT_OWNER in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
@@ -164,7 +162,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   name="grantUserGroup"
                   id="grantUserGroup"
                   type="radio"
-                  disabled={!applicableGrants.includes(PageGrant.GRANT_USER_GROUP.toString())}
+                  disabled={!(PageGrant.GRANT_USER_GROUP in dataApplicableGrant)}
                   checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
                 />
