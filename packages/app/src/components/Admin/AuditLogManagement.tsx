@@ -58,7 +58,6 @@ export const AuditLogManagement: FC = () => {
   }, []);
 
   const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
-    console.log(dateList);
     setActivePage(1);
     setStartDate(dateList[0]);
     setEndDate(dateList[1]);

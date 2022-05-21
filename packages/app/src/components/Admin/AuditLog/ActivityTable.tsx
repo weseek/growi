@@ -28,7 +28,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
           {props.activityList.map((activity) => {
             return (
               <tr data-testid="activity-table" key={activity._id}>
-                <td>{activity.user?.username}</td>
+                <td>{activity.snapshot?.username}</td>
                 <td>{activity.targetModel}</td>
                 <td>{activity.action}</td>
                 <td>{formatDate(activity.createdAt)}</td>
