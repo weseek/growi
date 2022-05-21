@@ -1,5 +1,4 @@
 import { parse, addMinutes, isValid } from 'date-fns';
-import escapeStringRegexp from 'escape-string-regexp';
 import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
@@ -96,31 +95,6 @@ module.exports = (crowi: Crowi): Router => {
     catch (err) {
       logger.error('Failed to get paginated activity', err);
       return res.apiv3Err(err, 500);
-    }
-  });
-
-  router.get('/usernames', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
-    const q = req.query.q as string;
-    const escapedString = escapeStringRegexp(q);
-
-    try {
-      const undeletedUsernames = await User.find({
-        status: { $ne: User.STATUS_DELETED },
-        username: new RegExp(`^${escapedString}`, 'i'),
-      }).distinct('username');
-
-      const activitySnapshotUsernames = await Activity.find({
-        $and: [
-          { 'snapshot.username': { $nin: undeletedUsernames } },
-          { 'snapshot.username': new RegExp(`^${escapedString}`, 'i') },
-        ],
-      }).distinct('snapshot.username');
-
-      return res.apiv3({ usernames: [...undeletedUsernames, ...activitySnapshotUsernames] });
-    }
-    catch (err) {
-      logger.error('failed to get usernames', err);
-      return res.apiv3Err(err);
     }
   });
 
