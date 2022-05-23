@@ -134,7 +134,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 type ConvertByPathModalProps = {
   isOpen: boolean,
   close?: () => void,
-  onSubmit?: (convertPath: string) => Promise<void> | void,
+  onSubmit?: (convertPath: string) => void,
 }
 const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Element => {
   const { t } = useTranslation();
@@ -153,6 +153,40 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(currentInput)}>
+          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          { t('private_legacy_pages.by_path_modal.button_label') }
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+});
+
+/*
+ * ConvertByPathConfirmModal
+ */
+type ConfirmModalData = {
+  isOpen: boolean,
+  path: string
+}
+type ConvertByPathConfirmModalProps = {
+  confirmModalData: ConfirmModalData,
+  close?: () => void,
+  onSubmit?: (convertPath: string) => Promise<void> | void,
+}
+
+const ConvertByPathConfirmModal = React.memo((props: ConvertByPathConfirmModalProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal size="lg" isOpen={props.confirmModalData.isOpen} toggle={props.close} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
+        { t('private_legacy_pages.by_path_modal.title') }
+      </ModalHeader>
+      <ModalBody>
+        <p> {props.confirmModalData.path} 以下のページを全て変換します。よろしいですか？</p>
+      </ModalBody>
+      <ModalFooter>
+        <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(props.confirmModalData.path)}>
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
@@ -185,6 +219,10 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(INITIAL_PAGING_SIZE);
   const [isOpenConvertModal, setOpenConvertModal] = useState<boolean>(false);
+  const [confirmModalData, setconfirmModalData] = useState<ConfirmModalData>({
+    isOpen: false,
+    path: '',
+  });
 
   const [isControlEnabled, setControlEnabled] = useState(false);
 
@@ -320,6 +358,15 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
     setOpenConvertModal(true);
   }, [isAdmin]);
 
+  const openConvertConfirmModalHandler = useCallback((path: string) => {
+    setOpenConvertModal(false);
+    const confirmModalData: ConfirmModalData = {
+      isOpen: true,
+      path,
+    };
+    setconfirmModalData(confirmModalData);
+  }, []);
+
   const hitsCount = data?.meta.hitsCount;
 
   const searchControlAllAction = useMemo(() => {
@@ -426,6 +473,11 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
       <ConvertByPathModal
         isOpen={isOpenConvertModal}
         close={() => setOpenConvertModal(false)}
+        onSubmit={(path: string) => openConvertConfirmModalHandler(path)}
+      />
+      <ConvertByPathConfirmModal
+        confirmModalData={confirmModalData}
+        close={() => setconfirmModalData({ isOpen: false, path: '' })}
         onSubmit={async(convertPath: string) => {
           try {
             await apiv3Post<void>('/pages/legacy-pages-migration', {
