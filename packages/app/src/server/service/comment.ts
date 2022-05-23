@@ -104,6 +104,18 @@ class CommentService {
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
+  private getMentionedUsers = async(comment: string) => {
+    // TODO extract users from comment
+    // return User ObjectID array
+  }
+
+  private sendNotificationToMentionedUsers = async(mentionedUsers: Types.ObjectId[], activity:any, page:any) => {
+    // TODO implement inAppNotificationService with target mentioned users
+    // inAppNotificationService.upsertByActivity
+    // Call inAppNotificationService.emitSocketIo;
+  }
+
 }
+
 
 module.exports = CommentService;
