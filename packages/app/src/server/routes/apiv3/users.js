@@ -1,5 +1,3 @@
-import escapeStringRegexp from 'escape-string-regexp';
-
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -935,24 +933,26 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.get('/usernames', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/usernames', accessTokenParser, loginRequired, async(req, res) => {
     const q = req.query.q;
-    const escapedString = escapeStringRegexp(q);
+    const limit = req.query.limit || 10;
 
     try {
-      const undeletedUsernames = await User.find({
-        status: { $ne: User.STATUS_DELETED },
-        username: new RegExp(`^${escapedString}`, 'i'),
-      }).distinct('username');
+      const activeUsers = await User.find({
+        status: User.STATUS_ACTIVE,
+        username: { $regex: q, $options: 'i' },
+      }).limit(limit);
 
-      const activitySnapshotUsernames = await Activity.find({
-        $and: [
-          { 'snapshot.username': { $nin: undeletedUsernames } },
-          { 'snapshot.username': new RegExp(`^${escapedString}`, 'i') },
-        ],
-      }).distinct('snapshot.username');
+      const inactiveUsers = await User.find({
+        status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] },
+        username: { $regex: q, $options: 'i' },
+      }).limit(limit);
 
-      return res.apiv3({ usernames: [...undeletedUsernames, ...activitySnapshotUsernames] });
+      const userActivies = await Activity.find({
+        'snapshot.username': { $regex: q, $options: 'i' },
+      });
+
+      return res.apiv3({ activeUsers, inactiveUsers, userActivies });
     }
     catch (err) {
       logger.error('failed to get usernames', err);
