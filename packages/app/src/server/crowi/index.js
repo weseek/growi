@@ -17,6 +17,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
+import PageOperation, { PageActionType } from '../models/page-operation';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
@@ -145,6 +146,8 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
   ]);
+
+  await PageOperation.clearAll([PageActionType.Rename]);
 
   await this.autoInstall();
 };
@@ -683,8 +686,6 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
-    // TODO: Remove this code when resuming feature is implemented
-    await this.pageOperationService.init();
   }
 };
 
