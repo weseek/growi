@@ -151,9 +151,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
       </ModalBody>
-      <ModalFooter
-        className="justify-content-between"
-      >
+      <ModalFooter className="justify-content-between">
         <div className="form-check">
           <input
             className="form-check-input"
@@ -468,8 +466,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
               toastError(t('private_legacy_pages.by_path_modal.error'));
             }
           }
-        }
-        }
+        }}
       />
     </>
   );
