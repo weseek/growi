@@ -15,6 +15,7 @@ import loggerFactory from '~/utils/logger';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
+import CommentMentionHelper from './CommentMentionHelper';
 import DrawioModal from './DrawioModal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
@@ -30,7 +31,6 @@ import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import SimpleCheatsheet from './SimpleCheatsheet';
-
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -190,7 +190,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+
+    // initialize commentMentionHelper if comment editor is opened
+    if (this.props.isComment) {
+      this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror());
+    }
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -566,6 +572,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
+
+    // Show username hint on comment editor
+    if (this.props.isComment) {
+      this.commentMentionHelper.showUsernameHint();
+    }
 
   }
 
