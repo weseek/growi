@@ -12,11 +12,6 @@ class PageOperationService {
     this.crowi = crowi;
   }
 
-  // TODO: Remove this code when resuming feature is implemented
-  async init():Promise<void> {
-    await PageOperation.deleteMany({});
-  }
-
   /**
    * Check if the operation is operatable
    * @param isRecursively Boolean that determines whether the operation is recursive or not
