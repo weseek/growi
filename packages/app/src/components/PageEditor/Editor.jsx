@@ -383,7 +383,7 @@ Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
-  idTextlintEnabled: PropTypes.bool,
+  isTextlintEnabled: PropTypes.bool,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
@@ -396,13 +396,13 @@ const EditorWithContainer = withUnstatedContainers(Editor, [EditorContainer, App
 
 const EditorWrapper = React.forwardRef((props, ref) => {
   const { data: editorSettings } = useEditorSettings();
-  const { data: idTextlintEnabled } = useIsTextlintEnabled();
+  const { data: isTextlintEnabled } = useIsTextlintEnabled();
 
   if (editorSettings == null) {
     return <></>;
   }
 
-  return <EditorWithContainer ref={ref} {...props} idTextlintEnabled={idTextlintEnabled} editorSettings={editorSettings} />;
+  return <EditorWithContainer ref={ref} {...props} isTextlintEnabled={isTextlintEnabled} editorSettings={editorSettings} />;
 });
 
 export default EditorWrapper;
