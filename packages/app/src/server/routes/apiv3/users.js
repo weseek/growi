@@ -124,6 +124,9 @@ module.exports = (crowi) => {
   validator.usernames = [
     query('q').isString().withMessage('q is required'),
     query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 100 or not to set limit.'),
+    query('isIncludeActiveUsernames').optional().isBoolean(),
+    query('isIncludeInactiveUsernames').optional().isBoolean(),
+    query('isIncludeActivitySnapshotUsernames').optional().isBoolean(),
   ];
 
   const sendEmailByUserList = async(userList) => {
@@ -942,22 +945,36 @@ module.exports = (crowi) => {
     const q = req.query.q;
     const limit = req.query.limit || 10;
 
+    const data = {};
+    console.log(req.query);
+
     try {
-      const activeUsers = await User.find({
-        status: User.STATUS_ACTIVE,
-        username: { $regex: q, $options: 'i' },
-      }).limit(limit);
+      if (req.query.isIncludeActiveUsernames) {
+        const activeUsers = await User.find({
+          status: User.STATUS_ACTIVE,
+          username: { $regex: q, $options: 'i' },
+        }).limit(limit);
+        const activeUsernames = activeUsers.map(user => user.username);
+        Object.assign(data, { activeUsernames });
+      }
 
-      const inactiveUsers = await User.find({
-        status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] },
-        username: { $regex: q, $options: 'i' },
-      }).limit(limit);
+      if (req.query.isIncludeInactiveUsernames) {
+        const inactiveUsers = await User.find({
+          status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] },
+          username: { $regex: q, $options: 'i' },
+        }).limit(limit);
+        const inactiveUsernames = inactiveUsers.map(user => user.username);
+        Object.assign(data, { inactiveUsernames });
+      }
 
-      const userActivies = await Activity.find({
-        'snapshot.username': { $regex: q, $options: 'i' },
-      });
+      if (req.query.isIncludeActivitySnapshotUsernames) {
+        const userActivies = await Activity.find({
+          'snapshot.username': { $regex: q, $options: 'i' },
+        });
+        Object.assign(data, { userActivies });
+      }
 
-      return res.apiv3({ activeUsers, inactiveUsers, userActivies });
+      return res.apiv3({ data });
     }
     catch (err) {
       logger.error('failed to get usernames', err);
