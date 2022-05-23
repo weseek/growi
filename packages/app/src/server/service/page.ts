@@ -2861,7 +2861,7 @@ class PageService {
           { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
         ];
         const filterForApplicableAncestors = { $or: orFilters };
-        await createEmptyPagesByPaths(parentPaths, user, false, true, filterForApplicableAncestors);
+        await createEmptyPagesByPaths(parentPaths, user, false, filterForApplicableAncestors);
 
         // 3. Find parents
         const addGrantCondition = (builder) => {
