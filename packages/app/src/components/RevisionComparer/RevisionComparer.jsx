@@ -51,6 +51,21 @@ const RevisionComparer = (props) => {
     return encodeSpaces(decodeURI(url));
   };
 
+  const permalink = () => {
+    const { origin } = window.location;
+    const { pageId } = revisionComparerContainer.pageContainer.state;
+    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
+
+    const url = new URL(pageId, origin);
+
+    if (sourceRevision != null && targetRevision != null) {
+      const urlParams = `${sourceRevision._id}...${targetRevision._id}`;
+      url.searchParams.set('compare', urlParams);
+    }
+
+    return encodeSpaces(decodeURI(url));
+  };
+
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
   if (sourceRevision == null || targetRevision == null) {
@@ -79,6 +94,11 @@ const RevisionComparer = (props) => {
             <CopyToClipboard text={pagePathUrl()}>
               <DropdownItem className="px-3">
                 <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+              </DropdownItem>
+            </CopyToClipboard>
+            <CopyToClipboard text={permalink()}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink()} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
