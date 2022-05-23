@@ -104,7 +104,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   shouldIndexed(page) {
-    return page.revision != null;
+    return page.revision != null && page.redirectTo == null;
   }
 
   initClient() {
@@ -464,8 +464,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const shouldIndexed = this.shouldIndexed.bind(this);
     const bulkWrite = this.client.bulk.bind(this.client);
 
-    const findQuery = new PageQueryBuilder(queryFactory()).query;
-    const countQuery = new PageQueryBuilder(queryFactory()).query;
+    const findQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+    const countQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
 
     const totalCount = await countQuery.count();
 
