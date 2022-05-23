@@ -418,7 +418,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
       return pageData; // { pageData, pageMeta } at dev/5.0.x
     });
 
-    result.data = result.data.filter(d => d != null);
     return result;
   }
 
