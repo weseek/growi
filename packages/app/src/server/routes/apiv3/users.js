@@ -121,6 +121,11 @@ module.exports = (crowi) => {
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
+  validator.usernames = [
+    query('q').isString().withMessage('q is required'),
+    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 100 or not to set limit.'),
+  ];
+
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
@@ -933,7 +938,7 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.get('/usernames', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
     const limit = req.query.limit || 10;
 
