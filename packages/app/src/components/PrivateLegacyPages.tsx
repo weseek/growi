@@ -148,6 +148,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       </ModalHeader>
       <ModalBody>
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
+        <p className="text-danger">{ t('private_legacy_pages.by_path_modal.notice') }</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
       </ModalBody>
       <ModalFooter>

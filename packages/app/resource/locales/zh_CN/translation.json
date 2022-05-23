@@ -950,6 +950,7 @@
     },
     "by_path_modal": {
       "title": "转换为新的v5兼容格式",
+      "notice": "",
       "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
       "button_label": "转换",
       "success": "成功地请求转换。",
