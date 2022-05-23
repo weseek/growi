@@ -15,6 +15,7 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
+import { useCurrentUser } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
@@ -170,6 +171,9 @@ type Props = {
 
 const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
+
+  const isAdmin = currentUser?.admin;
 
   const {
     appContainer,
@@ -310,6 +314,11 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
     mutate();
   }, [limit, mutate]);
 
+  const openConvertModalHandler = useCallback(() => {
+    if (!isAdmin) { return }
+    setOpenConvertModal(true);
+  }, [isAdmin]);
+
   const hitsCount = data?.meta.hitsCount;
 
   const searchControlAllAction = useMemo(() => {
@@ -343,7 +352,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
           </OperateAllControl>
         </div>
         <div className="d-flex pl-md-2">
-          <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
+          <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
             {t('private_legacy_pages.input_path_to_convert')}
           </button>
         </div>
