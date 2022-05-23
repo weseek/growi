@@ -39,11 +39,11 @@ const RevisionComparer = (props) => {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const urlGenerator = (content) => {
+  const generateURL = (pathName) => {
     const { origin } = window.location;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-    const url = new URL(content, origin);
+    const url = new URL(pathName, origin);
 
     if (sourceRevision != null && targetRevision != null) {
       const urlParams = `${sourceRevision._id}...${targetRevision._id}`;
@@ -79,15 +79,15 @@ const RevisionComparer = (props) => {
           </DropdownToggle>
           <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
             {/* Page path URL */}
-            <CopyToClipboard text={urlGenerator(path)}>
+            <CopyToClipboard text={generateURL(path)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={urlGenerator(path)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={generateURL(path)} />
               </DropdownItem>
             </CopyToClipboard>
             {/* Permanent Link URL */}
-            <CopyToClipboard text={urlGenerator(pageId)}>
+            <CopyToClipboard text={generateURL(pageId)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={urlGenerator(pageId)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={generateURL(pageId)} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
