@@ -148,7 +148,6 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       </ModalHeader>
       <ModalBody>
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
-        <p className="text-danger">{ t('private_legacy_pages.by_path_modal.notice') }</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
       </ModalBody>
       <ModalFooter>
@@ -184,6 +183,7 @@ const ConvertByPathConfirmModal = React.memo((props: ConvertByPathConfirmModalPr
       </ModalHeader>
       <ModalBody>
         <p> {props.confirmModalData.path} 以下のページを全て変換します。よろしいですか？</p>
+        <p className="text-danger">{ t('private_legacy_pages.by_path_modal.alert') }</p>
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(props.confirmModalData.path)}>
@@ -359,6 +359,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, [isAdmin]);
 
   const openConvertConfirmModalHandler = useCallback((path: string) => {
+    if (path === '') { return }
     setOpenConvertModal(false);
     const confirmModalData: ConfirmModalData = {
       isOpen: true,
