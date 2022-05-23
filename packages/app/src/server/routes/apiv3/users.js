@@ -967,7 +967,7 @@ module.exports = (crowi) => {
         Object.assign(data, { inactiveUsernames });
       }
 
-      if (stringToBoolean(req.query.isIncludeActivitySnapshotUsernames)) {
+      if (stringToBoolean(req.query.isIncludeActivitySnapshotUsernames) && req.user.admin) {
         const userActivies = await Activity.find({
           'snapshot.username': { $regex: q, $options: 'i' },
         });
