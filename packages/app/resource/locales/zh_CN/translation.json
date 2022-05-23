@@ -950,7 +950,8 @@
     },
     "by_path_modal": {
       "title": "转换为新的v5兼容格式",
-      "alert": "这一操作不能被撤销。 你确定吗？",
+      "alert": "这一操作不能被撤销，用户不能查看的页面也要进行处理。",
+      "checkbox_label": "明白了",
       "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
       "button_label": "转换",
       "success": "成功地请求转换。",

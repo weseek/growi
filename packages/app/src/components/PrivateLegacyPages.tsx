@@ -150,15 +150,18 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       <ModalBody>
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
+        <div className="alert alert-danger mt-3" role="alert">
+          { t('private_legacy_pages.by_path_modal.alert') }
+        </div>
       </ModalBody>
-      <ModalFooter className="justify-content-between">
+      <ModalFooter>
         <div className="form-check">
           <input
             className="form-check-input"
             type="checkbox"
             onChange={e => setChecked(e.target.checked)}
           />
-          <label className="form-check-label">{ t('private_legacy_pages.by_path_modal.alert') }</label>
+          <label className="form-check-label">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
         </div>
         <button
           type="button"

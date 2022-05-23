@@ -663,7 +663,8 @@
     },
     "by_path_modal": {
       "title": "Convert to new v5 compatible format",
-      "alert": "This operation cannot be undone. Are you sure?",
+      "alert": "This operation cannot be undone, and pages that the user cannot view are also subject to processing.",
+      "checkbox_label": "Understood",
       "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
       "button_label": "Convert",
       "success": "Successfully requested conversion.",
