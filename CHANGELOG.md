@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.20...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.21...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.21](https://github.com/weseek/growi/compare/v4.5.20...v4.5.21) - 2022-05-23
+
+### 🐛 Bug Fixes
+
+- fix: Can not toggle textlint function on v4.5.x (https://github.com/weseek/growi/pull/5855) @kaoritokashiki
+- fix: Error on searching (https://github.com/weseek/growi/pull/5873) @miya
 
 ## [v4.5.20](https://github.com/weseek/growi/compare/v4.5.19...v4.5.20) - 2022-05-12
 
