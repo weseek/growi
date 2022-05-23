@@ -1,12 +1,16 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
+
+import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
+const logger = loggerFactory('growi:models:page-operation');
 
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -114,6 +118,13 @@ schema.statics.findMainOps = async function(
     projection,
     options,
   );
+};
+
+schema.statics.clearAll = async function(
+    typesToExclude: PageActionType[],
+): Promise<void> {
+  await this.deleteMany({ actionType: { $nin: typesToExclude } });
+  logger.info(`Deleted all PageOperation documents except actionType: ${typesToExclude}`);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
