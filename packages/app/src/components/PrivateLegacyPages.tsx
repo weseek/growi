@@ -182,7 +182,7 @@ const ConvertByPathConfirmModal = React.memo((props: ConvertByPathConfirmModalPr
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
       <ModalBody>
-        <p> {props.confirmModalData.path} 以下のページを全て変換します。よろしいですか？</p>
+        <p>{`${props.confirmModalData.path} ${t('private_legacy_pages.by_path_modal.confirm')}`}</p>
         <p className="text-danger">{ t('private_legacy_pages.by_path_modal.alert') }</p>
       </ModalBody>
       <ModalFooter>
