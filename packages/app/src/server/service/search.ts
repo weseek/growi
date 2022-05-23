@@ -387,10 +387,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
         return pageData.id === data._id;
       });
 
-      if (pageData == null) {
-        return null;
-      }
-
       // add tags and seenUserCount to pageData
       pageData._doc.tags = data._source.tag_names;
       pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
