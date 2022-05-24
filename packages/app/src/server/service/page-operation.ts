@@ -14,7 +14,10 @@ class PageOperationService {
 
   // TODO: Remove this code when resuming feature is implemented
   async init() {
-    const deleteTypes = Object.values(PageActionType).filter(type => type !== PageActionType.Rename);
+    const {
+      Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
+    } = PageActionType;
+    const deleteTypes = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteAllByPageActionType(deleteTypes);
   }
 
