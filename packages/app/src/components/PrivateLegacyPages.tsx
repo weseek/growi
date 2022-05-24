@@ -447,7 +447,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         close={() => setOpenConvertModal(false)}
         onSubmit={async(convertPath: string) => {
           try {
-            await apiv3Post<void>('/pages/legacy-pages-migration', {
+            await apiv3Post<void>('/pages/convert-pages-by-path', {
               convertPath,
             });
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));

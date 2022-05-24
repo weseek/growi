@@ -1740,11 +1740,6 @@ class PageService {
     return;
   }
 
-  // TODO 93939: implement this method
-  async deleteCompletelySystematically() {
-    return;
-  }
-
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
 
@@ -2259,6 +2254,16 @@ class PageService {
 
   async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    // This validation is not 100% correct since it ignores user to count
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionAsNotMigrated();
+    builder.addConditionToListWithDescendants(path);
+    const nEstimatedNormalizationTarget: number = await builder.query.exec('count');
+    if (nEstimatedNormalizationTarget === 0) {
+      throw Error('No page is available for conversion');
+    }
 
     const pages = await Page.findByPathAndViewer(path, user, null, false);
     if (pages == null || !Array.isArray(pages)) {
@@ -2300,7 +2305,7 @@ class PageService {
       page = systematicallyCreatedPage;
     }
     else {
-      page = page[0];
+      page = pages[0];
     }
 
     const grant = page.grant;
@@ -2317,7 +2322,6 @@ class PageService {
       isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
     }
     catch (err) {
-      // TODO 93939: delete systematicallyCreatedPage
       logger.error(`Failed to validate grant of page at "${path}"`, err);
       throw err;
     }
@@ -2340,20 +2344,11 @@ class PageService {
       });
     }
     catch (err) {
-      // TODO 93939: delete systematicallyCreatedPage
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
 
-    // no await
-    (async() => {
-      // Remove the created page if no page has converted
-      const count = await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
-      if (count === 0) {
-        // TODO 93939: delete systematicallyCreatedPage
-        // await this.deleteCompletelySystematically(systematicallyCreatedPage, user, {}, false);
-      }
-    })();
+    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
   }
 
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
