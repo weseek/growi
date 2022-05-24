@@ -2,15 +2,8 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { apiv3Get } from '../util/apiv3-client';
-
 const logger = loggerFactory('growi:services:EditorContainer');
 
-
-const defaultPreviewOptions = {
-  renderMathJaxInRealtime: false,
-  renderDrawioInRealtime: true,
-};
 
 /**
  * Service container related to options for Editor/Preview
@@ -33,8 +26,6 @@ export default class EditorContainer extends Container {
 
     this.state = {
       tags: null,
-
-      previewOptions: defaultPreviewOptions,
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
