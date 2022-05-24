@@ -944,7 +944,7 @@ module.exports = (crowi) => {
     const limit = +req.query.limit || 10;
 
     try {
-      const options = JSON.parse(req.query.options);
+      const options = JSON.parse(req.query.options || '{}');
       const data = {};
 
       if (options.isIncludeActiveUsernames == null || options.isIncludeActiveUsernames) {
