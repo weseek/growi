@@ -173,15 +173,9 @@ class CodeMirrorEditor extends AbstractEditor {
     this.loadedKeymapSet = new Set();
   }
 
-  componentWillMount() {
-    this.initializeTextlint();
-  }
-
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
-
-    this.initializeEditorSettings(this.props.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
@@ -196,6 +190,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
   componentWillReceiveProps(nextProps) {
     this.initializeEditorSettings(nextProps.editorSettings);
+
+    this.initializeTextlint(nextProps.isTextlintEnabled, nextProps.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
@@ -219,15 +215,15 @@ class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
-  async initializeTextlint() {
-    const { isTextlintEnabled, editorSettings } = this.props;
-
+  async initializeTextlint(isTextlintEnabled, editorSettings) {
     if (!isTextlintEnabled || editorSettings == null) {
       return;
     }
 
+    const textlintRules = editorSettings.textlintSettings.textlintRules;
+
     // If database has empty array, pass null instead to enable all default rules
-    const rulesForValidator = editorSettings.textlintRules?.length !== 0 ? editorSettings.textlintRules : null;
+    const rulesForValidator = textlintRules?.length !== 0 ? textlintRules : null;
     this.textlintValidator = createValidator(rulesForValidator);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
