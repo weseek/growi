@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core';
 
-import PageOperation from '~/server/models/page-operation';
+import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 
@@ -10,6 +10,12 @@ class PageOperationService {
 
   constructor(crowi) {
     this.crowi = crowi;
+  }
+
+  // TODO: Remove this code when resuming feature is implemented
+  async init() {
+    const deleteTypes = Object.values(PageActionType).filter(type => type !== PageActionType.Rename);
+    await PageOperation.deleteAllByPageActionType(deleteTypes);
   }
 
   /**
