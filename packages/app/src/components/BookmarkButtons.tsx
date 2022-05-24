@@ -38,7 +38,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     }
   };
 
-  const tooltipMessage = useCallback(() => {
+  const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
       return 'Not available for guest';
     }
@@ -62,7 +62,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
       </button>
 
       <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
-        {t(tooltipMessage())}
+        {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
       { !hideTotalNumber && (

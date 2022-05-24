@@ -21,7 +21,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
   const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
 
-  const tooltipMessage = useCallback(() => {
+  const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
       return 'Not available for guest';
     }
@@ -44,7 +44,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       </button>
 
       <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
-        {t(tooltipMessage())}
+        {t(getTooltipMessage())}
       </UncontrolledTooltip>
     </>
   );

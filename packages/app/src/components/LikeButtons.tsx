@@ -34,7 +34,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
   } = props;
 
-  const tooltipMessage = useCallback(() => {
+  const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
       return 'Not available for guest';
     }
@@ -58,7 +58,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
       </button>
 
       <UncontrolledTooltip placement="top" target="like-button" fade={false}>
-        {t(tooltipMessage())}
+        {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
       { !hideTotalNumber && (
