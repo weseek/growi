@@ -16,7 +16,7 @@ const contributors = [
           { position: 'Knight', name: 'Yohei-Shiina' },
           { position: 'Titan', name: 'ryoh15' },
           { position: 'Haberion', name: 'hakumizuki' },
-          { position: 'Undefind', name: 'miya' },
+          { position: 'Undefined', name: 'miya' },
         ],
       },
       {
