@@ -124,7 +124,7 @@ module.exports = (crowi) => {
 
   validator.usernames = [
     query('q').isString().withMessage('q is required'),
-    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 100 or not to set limit.'),
+    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
     query('isIncludeActiveUsernames').optional().isBoolean(),
     query('isIncludeInactiveUsernames').optional().isBoolean(),
     query('isIncludeActivitySnapshotUsernames').optional().isBoolean(),
