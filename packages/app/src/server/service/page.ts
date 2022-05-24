@@ -3330,7 +3330,7 @@ class PageService {
     }
 
     // Prepare a page document
-    const shouldNew = !isGrantRestricted;
+    const shouldNew = isGrantRestricted;
     const page = await this.preparePageDocumentToCreate(path, shouldNew);
 
     // Set field

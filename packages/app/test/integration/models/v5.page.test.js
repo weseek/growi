@@ -985,7 +985,7 @@ describe('Page', () => {
       expect(pageCD.parent).toStrictEqual(pageC._id);
 
       // -- Check the found parent
-      expect(parent).toStrictEqual(pageCD);
+      expect(parent.toObject()).toStrictEqual(pageCD.toObject());
     });
   });
 });
