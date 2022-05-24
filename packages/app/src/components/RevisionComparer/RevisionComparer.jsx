@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
+
+import { pagePathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { withTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { pagePathUtils } from '@growi/core';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 const { encodeSpaces } = pagePathUtils;
 
@@ -32,16 +33,17 @@ const RevisionComparer = (props) => {
 
   const { t, revisionComparerContainer } = props;
 
+  const { path, pageId } = revisionComparerContainer.pageContainer.state;
+
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const pagePathUrl = () => {
+  const generateURL = (pathName) => {
     const { origin } = window.location;
-    const { path } = revisionComparerContainer.pageContainer.state;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-    const url = new URL(path, origin);
+    const url = new URL(pathName, origin);
 
     if (sourceRevision != null && targetRevision != null) {
       const urlParams = `${sourceRevision._id}...${targetRevision._id}`;
@@ -49,6 +51,7 @@ const RevisionComparer = (props) => {
     }
 
     return encodeSpaces(decodeURI(url));
+
   };
 
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
@@ -76,9 +79,15 @@ const RevisionComparer = (props) => {
           </DropdownToggle>
           <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
             {/* Page path URL */}
-            <CopyToClipboard text={pagePathUrl()}>
+            <CopyToClipboard text={generateURL(path)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={generateURL(path)} />
+              </DropdownItem>
+            </CopyToClipboard>
+            {/* Permanent Link URL */}
+            <CopyToClipboard text={generateURL(pageId)}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={generateURL(pageId)} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
