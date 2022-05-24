@@ -947,7 +947,7 @@ module.exports = (crowi) => {
       const options = JSON.parse(req.query.options);
       const data = {};
 
-      if (options.isIncludeActiveUsernames) {
+      if (options.isIncludeActiveUsernames == null || options.isIncludeActiveUsernames) {
         const activeUsers = await User.findUserByUsernameRegex(q, limit, [User.STATUS_ACTIVE]);
         const activeUsernames = activeUsers.map(user => user.username);
         Object.assign(data, { activeUsernames });
