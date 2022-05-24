@@ -563,6 +563,8 @@ module.exports = function(crowi, app) {
     const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
     const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
 
+    console.log('isSameEmailTreatedAsIdenticalUser', isSameEmailTreatedAsIdenticalUser);
+
     try {
       // find or register(create) user
       const externalAccount = await ExternalAccount.findOrRegister(
