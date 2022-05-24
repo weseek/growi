@@ -2864,7 +2864,6 @@ class PageService {
           { path: { $nin: publicPathsToNormalize }, status: Page.STATUS_PUBLISHED },
         ];
         const filterForApplicableAncestors = { $or: orFilters };
-        // TODOT: fix or create another method for this
         const aggregationPipeline = await buildPipelineToCreateEmptyPagesByUser(user, parentPaths, false, filterForApplicableAncestors);
         await Page.createEmptyPagesByPaths(parentPaths, aggregationPipeline);
 
