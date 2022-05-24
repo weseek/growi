@@ -3035,7 +3035,7 @@ class PageService {
 
     const pages = await this.injectPageOperationProcessInfo(_pages);
 
-    return _pages;
+    return pages;
   }
 
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -3087,6 +3087,7 @@ class PageService {
   async injectPageOperationProcessInfo(
       pages: (PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo, })[],
   ): Promise<(PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo})[]> {
+
     const copyPages = [...pages];
     const pageOperations = await PageOperation.find({ actionType: PageActionType.Rename });
     const pageOpTargetPageIds = pageOperations.map(op => op.page._id.toString());
