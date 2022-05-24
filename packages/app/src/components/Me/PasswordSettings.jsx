@@ -98,9 +98,6 @@ class PasswordSettings extends React.Component {
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
             <div className="col-md-5">
-              {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
-              {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
-              <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
               <input
                 className="form-control"
                 type="password"
@@ -114,6 +111,9 @@ class PasswordSettings extends React.Component {
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
           <div className="col-md-5">
+            {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
+            {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
+            <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
             <input
               className="form-control"
               type="password"
