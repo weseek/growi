@@ -124,6 +124,7 @@ schema.statics.findMainOps = async function(
 schema.statics.deleteByActionTypes = async function(
     actionTypes: PageActionType[],
 ): Promise<void> {
+
   await this.deleteMany({ actionType: { $in: actionTypes } });
   logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
 };
