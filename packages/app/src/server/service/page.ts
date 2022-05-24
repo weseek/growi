@@ -11,7 +11,7 @@ import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
+  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta, IPageOperationProcessInfo,
 } from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
@@ -3027,11 +3027,15 @@ class PageService {
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
-    return queryBuilder
+    const _pages = await queryBuilder
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
+
+    const pages = await this.injectPageOperationProcessInfo(_pages);
+
+    return _pages;
   }
 
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -3051,12 +3055,15 @@ class PageService {
       .lean()
       .exec();
     // mark target
-    const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
+    const markedPages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
       if (page.path === path) {
         page.isTarget = true;
       }
       return page;
     });
+
+    // inject page operation info that need fixing
+    const pages = await this.injectPageOperationProcessInfo(markedPages);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3073,6 +3080,33 @@ class PageService {
     });
 
     return pathToChildren;
+  }
+
+  // Todo: change isProcessing dynamically
+  // https://redmine.weseek.co.jp/issues/95971
+  async injectPageOperationProcessInfo(
+      pages: (PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo, })[],
+  ): Promise<(PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo})[]> {
+    const copyPages = [...pages];
+    const pageOperations = await PageOperation.find({ actionType: PageActionType.Rename });
+    const pageOpTargetPageIds = pageOperations.map(op => op.page._id.toString());
+
+    for (const targetPageid of pageOpTargetPageIds) {
+
+      for (const pageItem of copyPages) {
+        const pageItemId = pageItem._id.toString();
+
+        if (targetPageid === pageItemId) {
+          const pageOperationProcessInfo = {
+            [PageActionType.Rename]: { isProcessing: true },
+          };
+          pageItem.pageOperationProcessInfo = pageOperationProcessInfo;
+
+          break;
+        }
+      }
+    }
+    return copyPages;
   }
 
 }
