@@ -915,20 +915,35 @@ schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLik
   });
 };
 
-// TODO 93939: implement this method
-// schema.statics.findNotEmptyParentByPathRecursively = async function(path: string): Promise<PageDocument | null> {
-// Find a page on the tree by path
-// Find not empty parent
-//   const parent = await this.findById(target.parent);
+/**
+ * Find a not empty parent recursively.
+ * @param {string} path
+ * @returns {Promise<PageDocument | null>}
+ */
+schema.statics.findNotEmptyParentByPathRecursively = async function(path: string): Promise<PageDocument | null> {
+  const parent = await this.findParentByPath(path);
+  if (parent == null) {
+    return null;
+  }
 
-//   const shouldContinue = parent != null && parent.isEmpty;
+  const recursive = async(page: PageDocument): Promise<PageDocument> => {
+    if (!page.isEmpty) {
+      return page;
+    }
 
-//   if (shouldContinue) {
-//     return this.findNotEmptyParentByPathRecursively(parent);
-//   }
+    const next = await this.findById(page.parent);
 
-//   return target;
-// };
+    if (next == null || isTopPage(next.path)) {
+      return page;
+    }
+
+    return recursive(next);
+  };
+
+  const notEmptyParent = await recursive(parent);
+
+  return notEmptyParent;
+};
 
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
