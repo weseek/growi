@@ -1,27 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import { UserPicture } from '@growi/ui';
+import PropTypes from 'prop-types';
 import {
   Button,
   TabContent, TabPane,
 } from 'reactstrap';
-
 import * as toastr from 'toastr';
 
-import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import NotAvailableForGuest from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import CommentPreview from './CommentPreview';
-import NotAvailableForGuest from '../NotAvailableForGuest';
-import { CustomNavTab } from '../CustomNavigation/CustomNav';
 
 
 const navTabMapping = {
@@ -276,7 +275,6 @@ class CommentEditor extends React.Component {
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
-    const emojiStrategy = appContainer.getEmojiStrategy();
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
@@ -310,10 +308,10 @@ class CommentEditor extends React.Component {
                 isMobile={appContainer.isMobile}
                 isUploadable={this.state.isUploadable}
                 isUploadableFile={this.state.isUploadableFile}
-                emojiStrategy={emojiStrategy}
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
+                isComment
               />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.

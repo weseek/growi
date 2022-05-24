@@ -1,10 +1,12 @@
 import { SWRResponse } from 'swr';
-import { useStaticSWR } from './use-static-swr';
+
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IUserGroupHasId } from '~/interfaces/user';
+
+import { useStaticSWR } from './use-static-swr';
 
 
 /*
@@ -31,6 +33,9 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   };
 };
 
+/*
+* PageDeleteModal
+*/
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
 }
@@ -61,6 +66,47 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     open: (
         pages?: IPageToDeleteWithMeta[],
         opts?: IDeleteModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, pages, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* EmptyTrashModal
+*/
+type IEmptyTrashModalOption = {
+  onEmptiedTrash?: () => void,
+  canDelepeAllPages: boolean,
+}
+
+type EmptyTrashModalStatus = {
+  isOpened: boolean,
+  pages?: IPageToDeleteWithMeta[],
+  opts?: IEmptyTrashModalOption,
+}
+
+type EmptyTrashModalStatusUtils = {
+  open(
+    pages?: IPageToDeleteWithMeta[],
+    opts?: IEmptyTrashModalOption,
+  ): Promise<EmptyTrashModalStatus | undefined>,
+  close(): Promise<EmptyTrashModalStatus | undefined>,
+}
+
+export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<EmptyTrashModalStatus, Error> & EmptyTrashModalStatusUtils => {
+  const initialData: EmptyTrashModalStatus = {
+    isOpened: false,
+    pages: [],
+  };
+  const swrResponse = useStaticSWR<EmptyTrashModalStatus, Error>('emptyTrashModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        pages?: IPageToDeleteWithMeta[],
+        opts?: IEmptyTrashModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
     }),
