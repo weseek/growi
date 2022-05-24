@@ -457,7 +457,7 @@ module.exports = (crowi) => {
       googleOAuth: {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       },
       githubOAuth: {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
@@ -1065,7 +1065,7 @@ module.exports = (crowi) => {
     const requestParams = {
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
-      'security:passport-google:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
     };
 
     try {
@@ -1074,7 +1074,7 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       };
       return res.apiv3({ securitySettingParams });
     }

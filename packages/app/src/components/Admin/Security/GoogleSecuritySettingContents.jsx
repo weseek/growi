@@ -135,8 +135,8 @@ class GoogleSecurityManagementContents extends React.Component {
                     id="bindByUserNameGoogle"
                     className="custom-control-input"
                     type="checkbox"
-                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                    onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
+                    onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
                     className="custom-control-label"
