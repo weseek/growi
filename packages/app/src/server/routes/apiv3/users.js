@@ -946,23 +946,19 @@ module.exports = (crowi) => {
     const q = req.query.q;
     const limit = +req.query.limit || 10;
 
-    const data = {};
-
     try {
+      const data = {};
+
       if (stringToBoolean(req.query.isIncludeActiveUsernames)) {
-        const activeUsers = await User.find({
-          status: User.STATUS_ACTIVE,
-          username: { $regex: q, $options: 'i' },
-        }).limit(limit);
+        const additionalQuery = { status: User.STATUS_ACTIVE };
+        const activeUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const activeUsernames = activeUsers.map(user => user.username);
         Object.assign(data, { activeUsernames });
       }
 
       if (stringToBoolean(req.query.isIncludeInactiveUsernames)) {
-        const inactiveUsers = await User.find({
-          status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] },
-          username: { $regex: q, $options: 'i' },
-        }).limit(limit);
+        const additionalQuery = { status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] } };
+        const inactiveUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const inactiveUsernames = inactiveUsers.map(user => user.username);
         Object.assign(data, { inactiveUsernames });
       }
