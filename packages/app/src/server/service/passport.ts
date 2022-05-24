@@ -1069,7 +1069,6 @@ class PassportService implements S2sMessageHandlable {
 
   isSameEmailTreatedAsIdenticalUser(providerType) {
     const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
-    console.log('key', key);
     return this.crowi.configManager.getConfig('crowi', key);
   }
 
