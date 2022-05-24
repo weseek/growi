@@ -11,7 +11,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
-import { useCurrentIndentSize, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -340,6 +340,7 @@ class PageEditor extends React.Component {
             isMobile={this.props.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
+            isTextlintEnabled={this.props.isTextlintEnabled}
             indentSize={this.props.indentSize}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
@@ -387,6 +388,7 @@ PageEditor.propTypes = {
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
   mutateGrant: PropTypes.func,
+  isTextlintEnabled: PropTypes.bool,
   isIndentSizeForced: PropTypes.bool,
   indentSize: PropTypes.number,
   mutateCurrentIndentSize: PropTypes.func,
@@ -406,6 +408,7 @@ const PageEditorWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
@@ -425,6 +428,7 @@ const PageEditorWrapper = (props) => {
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
       mutateGrant={mutateGrant}
+      isTextlintEnabled={isTextlintEnabled}
       isIndentSizeForced={isIndentSizeForced}
       indentSize={indentSize}
       mutateCurrentIndentSize={mutateCurrentIndentSize}

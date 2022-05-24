@@ -219,10 +219,10 @@ class CodeMirrorEditor extends AbstractEditor {
       return;
     }
 
-    const textlintRules = editorSettings.textlintSettings.textlintRules;
+    const textlintRules = editorSettings.textlintSettings?.textlintRules;
 
     // If database has empty array, pass null instead to enable all default rules
-    const rulesForValidator = textlintRules?.length !== 0 ? textlintRules : null;
+    const rulesForValidator = (textlintRules == null || textlintRules.length === 0) ? null : textlintRules;
     this.textlintValidator = createValidator(rulesForValidator);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }

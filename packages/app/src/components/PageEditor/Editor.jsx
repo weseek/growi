@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import { useDefaultIndentSize } from '~/stores/context';
-import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
+import { useEditorSettings } from '~/stores/editor';
 
 import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
@@ -375,7 +375,6 @@ Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
-  isTextlintEnabled: PropTypes.bool,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
   editorSettings: PropTypes.object.isRequired,
@@ -385,7 +384,6 @@ Editor.propTypes = Object.assign({
 
 const EditorWrapper = React.forwardRef((props, ref) => {
   const { data: editorSettings } = useEditorSettings();
-  const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: defaultIndentSize } = useDefaultIndentSize();
 
   if (editorSettings == null) {
@@ -396,7 +394,6 @@ const EditorWrapper = React.forwardRef((props, ref) => {
     <Editor
       ref={ref}
       {...props}
-      isTextlintEnabled={isTextlintEnabled}
       editorSettings={editorSettings}
       // eslint-disable-next-line react/prop-types
       indentSize={props.indentSize ?? defaultIndentSize}
