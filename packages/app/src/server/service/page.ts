@@ -3033,6 +3033,7 @@ class PageService {
       .lean()
       .exec();
 
+    // inject page operation process info
     const pages = await this.injectPageOperationProcessInfo(_pages);
 
     return pages;
@@ -3062,7 +3063,7 @@ class PageService {
       return page;
     });
 
-    // inject page operation info that need fixing
+    // inject page operation process info
     const pages = await this.injectPageOperationProcessInfo(markedPages);
 
     /*
