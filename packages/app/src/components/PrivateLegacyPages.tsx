@@ -142,6 +142,10 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   const [currentInput, setInput] = useState<string>('');
   const [checked, setChecked] = useState<boolean>(false);
 
+  useEffect(() => {
+    setChecked(false);
+  }, [props.isOpen]);
+
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
