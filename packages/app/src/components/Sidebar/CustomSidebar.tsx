@@ -13,7 +13,11 @@ const logger = loggerFactory('growi:cli:CustomSidebar');
 
 const SidebarNotFound = () => {
   return (
-    <div className="grw-sidebar-content-header h5 text-center p-3"></div>
+    <div className="grw-sidebar-content-header h5 text-center p-3">
+      <a href="/Sidebar#edit">
+        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
+      </a>
+    </div>
   );
 };
 
