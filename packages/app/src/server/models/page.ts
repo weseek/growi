@@ -36,7 +36,9 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export interface PageDocument extends IPage, Document { }
+export interface PageDocument extends IPage, Document {
+  [x:string]: any // for obsolete methods
+}
 
 
 type TargetAndAncestorsResult = {
@@ -53,7 +55,7 @@ type PaginatedPages = {
 
 export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
-  [x: string]: any; // for obsolete methods
+  [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -63,7 +65,6 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
-  createSystematically(path: string, mrkdwn: string, options: PageCreateOptions): Promise<PageDocument | null>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
@@ -391,7 +392,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionAsMigrated() {
+  addConditionAsOnTree() {
     this.query = this.query
       .and(
         {
@@ -646,7 +647,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   await addViewerCondition(queryBuilder, user, userGroups);
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
-    .addConditionAsMigrated()
+    .addConditionAsOnTree()
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortPagesByDescPath()
@@ -694,7 +695,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }), true);
   await addViewerCondition(queryBuilder, user, userGroups);
   const _pages = await queryBuilder
-    .addConditionAsMigrated()
+    .addConditionAsOnTree()
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortPagesByAscPath()
     .query
@@ -723,6 +724,41 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   });
 
   return pathToChildren;
+};
+
+/**
+ * Create empty pages at paths at which no pages exist
+ * @param paths Page paths
+ * @param aggrPipelineForExistingPages AggregationPipeline object to find existing pages at paths
+ */
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], aggrPipelineForExistingPages: any[]): Promise<void> {
+  const existingPages = await this.aggregate(aggrPipelineForExistingPages);
+
+  const existingPagePaths = existingPages.map(page => page.path);
+  const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
+
+  await this.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
+};
+
+/**
+ * Find a parent page by path
+ * @param {string} path
+ * @returns {Promise<PageDocument | null>}
+ */
+schema.statics.findParentByPath = async function(path: string): Promise<PageDocument | null> {
+  const parentPath = nodePath.dirname(path);
+
+  const builder = new PageQueryBuilder(this.find({ path: parentPath }), true);
+  const pagesCanBeParent = await builder
+    .addConditionAsOnTree()
+    .query
+    .exec();
+
+  if (pagesCanBeParent.length >= 1) {
+    return pagesCanBeParent[0]; // the earliest page will be the result
+  }
+
+  return null;
 };
 
 /*
@@ -879,7 +915,7 @@ schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLik
   });
 };
 
-// TODO: implement this method
+// TODO 93939: implement this method
 // schema.statics.findNotEmptyParentByPathRecursively = async function(path: string): Promise<PageDocument | null> {
 // Find a page on the tree by path
 // Find not empty parent
@@ -942,9 +978,7 @@ schema.statics.generateGrantCondition = generateGrantCondition;
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
-  grantedUserIds?: ObjectIdLike[]
   grant?: number
-  isSystematically?: boolean
 }
 
 /*
@@ -955,25 +989,6 @@ export default (crowi: Crowi): any => {
   if (crowi != null) {
     pageEvent = crowi.event('page');
   }
-
-  /**
-   * Use this method when the system needs to create a page. Only available when v5 compatible
-   */
-  schema.statics.createSystematically = async function(path: string, mrkdwn: string, options: PageCreateOptions) {
-    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
-      throw Error('Crowi is not setup');
-    }
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible) {
-      throw Error('This method is only available when v5 compatibale.');
-    }
-
-    const dummyUser = { _id: new mongoose.Types.ObjectId() };
-
-    options.isSystematically = true;
-    return (crowi.pageService.create as CreateMethod)(path, mrkdwn, dummyUser, options);
-  };
 
   const shouldUseUpdatePageV4 = (grant: number, isV5Compatible: boolean, isOnTree: boolean): boolean => {
     const isRestricted = grant === GRANT_RESTRICTED;
@@ -1023,7 +1038,7 @@ export default (crowi: Crowi): any => {
       }
 
       if (!wasOnTree) {
-        const newParent = await crowi.pageService.getParentAndFillAncestors(newPageData.path, user);
+        const newParent = await crowi.pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
         newPageData.parent = newParent._id;
       }
     }
