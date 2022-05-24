@@ -715,6 +715,10 @@ module.exports = function(crowi) {
     return users;
   };
 
+  userSchema.statics.findUserByUsernameRegex = async function(username, limit) {
+    return this.find({ username: { $regex: username, $options: 'i' } }).limit(limit);
+  };
+
   class UserUpperLimitException {
 
     constructor() {
