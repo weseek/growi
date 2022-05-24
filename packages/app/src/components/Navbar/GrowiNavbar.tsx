@@ -102,11 +102,11 @@ const GrowiNavbar = (props) => {
   const { appContainer } = props;
   const { currentUser } = appContainer;
   const {
-    crowi, isSearchServiceConfigured, isDefaultLogo, uploadedLogoSrc,
+    crowi, isSearchServiceConfigured, isDefaultLogo, isUploadedLogo, uploadedLogoSrc,
   } = appContainer.config;
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
-  const logoSrc = !isDefaultLogo ? uploadedLogoSrc : null;
+  const logoSrc = (isUploadedLogo && !isDefaultLogo) ? uploadedLogoSrc : null;
   return (
     <>
       {/* Brand Logo  */}

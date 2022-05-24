@@ -185,6 +185,7 @@ module.exports = (crowi) => {
       attachmentId: await crowi.configManager.getConfig('crowi', 'customize:attachmentId'),
       isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
       uploadedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
+      isUploadedLogo: await crowi.configManager.getConfig('crowi', 'customize:isUploadedLogo'),
     };
 
     return res.apiv3({ customizeParams });
@@ -619,17 +620,23 @@ module.exports = (crowi) => {
 
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
-    const { isDefaultLogo, attachmentId } = req.body;
+    const {
+      isDefaultLogo, attachmentId, uploadedLogoSrc, isUploadedLogo,
+    } = req.body;
 
     const requestParams = {
       'customize:attachmentId': attachmentId,
       'customize:isDefaultLogo': isDefaultLogo,
+      'customize:uploadedLogoSrc': uploadedLogoSrc,
+      'customize:isUploadedLogo': isUploadedLogo,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         attachmentId: await crowi.configManager.getConfig('crowi', 'customize:attachmentId'),
         isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+        uploadedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
+        isUploadedLogo: await crowi.configManager.getConfig('crowi', 'customize:isUploadedLogo'),
       };
       return res.apiv3({ customizedParams });
     }

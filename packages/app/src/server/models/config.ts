@@ -137,6 +137,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isSearchScopeChildrenAsDefault': false,
   'customize:isDefaultLogo': true,
   'customize:uploadedLogoSrc': undefined,
+  'customize:isUploadedLogo': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,
@@ -246,6 +247,7 @@ schema.statics.getLocalconfig = function(crowi) {
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
     isDefaultLogo:  crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
     uploadedLogoSrc: crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
+    isUploadedLogo: crowi.configManager.getConfig('crowi', 'customize:isUploadedLogo'),
   };
 
   return localConfig;

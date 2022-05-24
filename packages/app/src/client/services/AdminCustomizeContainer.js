@@ -113,7 +113,7 @@ export default class AdminCustomizeContainer extends Container {
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
       if (customizeParams.attachmentId == null) {
-        this.setState({ isDefaultLogo: true, uploadedLogoSrc: DEFAULT_LOGO, isUploadedLogo: false });
+        this.setState({ uploadedLogoSrc: DEFAULT_LOGO, isUploadedLogo: false });
       }
 
     }
@@ -456,7 +456,6 @@ export default class AdminCustomizeContainer extends Container {
         isUploadedLogo: false,
         uploadedLogoSrc: DEFAULT_LOGO,
         attachmentId: null,
-        isDefaultLogo: true,
       });
 
     }
@@ -498,11 +497,15 @@ export default class AdminCustomizeContainer extends Container {
       const response = await this.appContainer.apiv3.put('/customize-setting/customize-logo', {
         isDefaultLogo: this.state.isDefaultLogo,
         attachmentId: this.state.attachmentId,
+        uploadedLogoSrc: this.state.uploadedLogoSrc,
+        isUploadedLogo: this.state.isUploadedLogo,
       });
       const { customizedParams } = response.data;
       this.setState({
         isDefaultLogo: customizedParams.isDefaultLogo,
         attachmentId:  customizedParams.attachmentId,
+        uploadedLogoSrc: customizedParams.uploadedLogoSrc,
+        isUploadedLogo: customizedParams.isUploaded,
       });
     }
     catch (err) {
