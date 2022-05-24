@@ -100,7 +100,7 @@ require('codemirror/mode/yaml/yaml');
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
-export default class CodeMirrorEditor extends AbstractEditor {
+class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
@@ -172,21 +172,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.loadedKeymapSet = new Set();
   }
 
-  componentWillMount() {
-    this.initializeTextlint();
-  }
-
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
-
-    // load theme
-    const theme = this.props.editorOptions.theme;
-    this.loadTheme(theme);
-
-    // set keymap
-    const keymapMode = this.props.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
 
     // fold drawio section
     this.foldDrawioSection();
@@ -200,26 +188,43 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillReceiveProps(nextProps) {
-    // load theme
-    const theme = nextProps.editorOptions.theme;
-    this.loadTheme(theme);
+    this.initializeEditorSettings(nextProps.editorSettings);
 
-    // set keymap
-    const keymapMode = nextProps.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    this.initializeTextlint(nextProps.isTextlintEnabled, nextProps.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
   }
 
-  async initializeTextlint() {
-    if (this.props.onInitializeTextlint != null) {
-      await this.props.onInitializeTextlint();
-      // If database has empty array, pass null instead to enable all default rules
-      const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
-      this.textlintValidator = createValidator(rulesForValidator);
-      this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+  initializeEditorSettings(editorSettings) {
+    if (editorSettings == null) {
+      return;
     }
+
+    // load theme
+    const theme = editorSettings.theme;
+    if (theme != null) {
+      this.loadTheme(theme);
+    }
+
+    // set keymap
+    const keymapMode = editorSettings.keymapMode;
+    if (keymapMode != null) {
+      this.setKeymapMode(keymapMode);
+    }
+  }
+
+  async initializeTextlint(isTextlintEnabled, editorSettings) {
+    if (!isTextlintEnabled || editorSettings == null) {
+      return;
+    }
+
+    const textlintRules = editorSettings.textlintSettings?.textlintRules;
+
+    // If database has empty array, pass null instead to enable all default rules
+    const rulesForValidator = (textlintRules == null || textlintRules.length === 0) ? null : textlintRules;
+    this.textlintValidator = createValidator(rulesForValidator);
+    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
@@ -509,7 +514,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
-      editorOptions: this.props.editorOptions,
+      editorSettings: this.props.editorSettings,
     };
 
     const interceptorManager = this.interceptorManager;
@@ -969,7 +974,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 
   render() {
-    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
+    const { isTextlintEnabled } = this.props;
+
+    const lint = isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
@@ -977,7 +984,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.props.isTextlintEnabled === true) {
+    if (isTextlintEnabled) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -996,6 +1003,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           value={this.state.value}
           options={{
             indentUnit: this.props.indentSize,
+            theme: this.props.editorSettings.theme ?? 'elegant',
+            styleActiveLine: this.props.editorSettings.styleActiveLine,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
@@ -1054,7 +1063,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
-          ignoreAutoFormatting={this.props.editorOptions.ignoreMarkdownTableAutoFormatting}
+          autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
         />
         <DrawioModal
           ref={this.drawioModal}
@@ -1068,16 +1077,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
 }
 
 CodeMirrorEditor.propTypes = Object.assign({
-  editorOptions: PropTypes.object.isRequired,
   isTextlintEnabled: PropTypes.bool,
-  textlintRules: PropTypes.array,
   lineNumbers: PropTypes.bool,
+  editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
-  onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
-  isTextlintEnabled: false,
 };
+
+export default CodeMirrorEditor;

@@ -2,19 +2,7 @@ import { Container } from 'unstated';
 
 import InterceptorManager from '~/services/interceptor-manager';
 
-import {
-  apiDelete, apiGet, apiPost, apiRequest,
-} from '../util/apiv1-client';
-import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
-} from '../util/apiv3-client';
 import GrowiRenderer from '../util/GrowiRenderer';
-
-import {
-  mediaQueryListForDarkMode,
-  applyColorScheme,
-} from '../util/color-scheme';
-
 import { i18nFactory } from '../util/i18n';
 
 /**
@@ -26,19 +14,12 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
-    this.state = {
-      preferDarkModeByMediaQuery: false,
-    };
-
     // get csrf token from body element
     // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
     const body = document.querySelector('body');
     this.csrfToken = body.dataset.csrftoken;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
-
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    this.isMobile = /iphone|ipad|android/.test(userAgent);
 
     const currentUserElem = document.getElementById('growi-current-user');
     if (currentUserElem != null) {
@@ -57,23 +38,6 @@ export default class AppContainer extends Container {
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
-
-    this.apiGet = apiGet;
-    this.apiPost = apiPost;
-    this.apiDelete = apiDelete;
-    this.apiRequest = apiRequest;
-
-    this.apiv3Get = apiv3Get;
-    this.apiv3Post = apiv3Post;
-    this.apiv3Put = apiv3Put;
-    this.apiv3Delete = apiv3Delete;
-
-    this.apiv3 = {
-      get: apiv3Get,
-      post: apiv3Post,
-      put: apiv3Put,
-      delete: apiv3Delete,
-    };
   }
 
   /**
@@ -84,15 +48,11 @@ export default class AppContainer extends Container {
   }
 
   initApp() {
-    this.initMediaQueryForColorScheme();
-
     this.injectToWindow();
   }
 
   initContents() {
     const body = document.querySelector('body');
-
-    this.isAdmin = body.dataset.isAdmin === 'true';
 
     this.isDocSaved = true;
 
@@ -100,29 +60,12 @@ export default class AppContainer extends Container {
 
     this.interceptorManager = new InterceptorManager();
 
-    if (this.currentUser != null) {
-      // remove old user cache
-      this.removeOldUserCache();
-    }
-
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
     }
 
     this.injectToWindow();
-  }
-
-  async initMediaQueryForColorScheme() {
-    const switchStateByMediaQuery = async(mql) => {
-      const preferDarkMode = mql.matches;
-      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
-
-      applyColorScheme();
-    };
-
-    // add event listener
-    mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
   }
 
   initPlugins() {
@@ -221,28 +164,6 @@ export default class AppContainer extends Container {
     return this.componentInstances[id];
   }
 
-  /**
-   *
-   * @param {string} breakpoint id of breakpoint
-   * @param {function} handler event handler for media query
-   * @param {boolean} invokeOnInit invoke handler after the initialization if true
-   */
-  addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
-    document.addEventListener('DOMContentLoaded', () => {
-      // get the value of '--breakpoint-*'
-      const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);
-
-      const mediaQuery = window.matchMedia(`(min-width: ${breakpointPixel}px)`);
-
-      // add event listener
-      mediaQuery.addListener(handler);
-      // initialize
-      if (invokeOnInit) {
-        handler(mediaQuery);
-      }
-    });
-  }
-
   getOriginRenderer() {
     return this.originRenderer;
   }
@@ -265,18 +186,6 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-
-  removeOldUserCache() {
-    if (window.localStorage.userByName == null) {
-      return;
-    }
-
-    const keys = ['userByName', 'userById', 'users', 'lastFetched'];
-
-    keys.forEach((key) => {
-      window.localStorage.removeItem(key);
-    });
-  }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
