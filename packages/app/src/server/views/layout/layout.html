@@ -60,10 +60,10 @@
 
 {% block html_body %}
 {% if getConfig('crowi', 'customize:isContainerFluid') %}
-  {% set additionalBodyClass = 'growi-layout-fluid' %}
+  {% set fluidBodyClass = 'growi-layout-fluid' %}
 {% endif %}
 <body
-  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
+  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }} {{ fluidBodyClass }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
