@@ -2305,7 +2305,7 @@ class PageService {
       page = systematicallyCreatedPage;
     }
     else {
-      page = page[0];
+      page = pages[0];
     }
 
     const grant = page.grant;
