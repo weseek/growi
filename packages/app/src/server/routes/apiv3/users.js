@@ -915,7 +915,7 @@ module.exports = (crowi) => {
     }
     // Get username list by matching pattern from username mention
     else if (username !== null) {
-      userFetcher = User.findUserByUsernameRegex(username, limit);
+      userFetcher = User.findUserByUsernameRegex(username, limit, [User.STATUS_ACTIVE]);
     }
     else {
       userFetcher = User.findAllUsers();
