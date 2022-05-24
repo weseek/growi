@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+
 import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 
@@ -20,6 +21,17 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
   const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
 
+  const tooltipMessage = useCallback(() => {
+    if (isGuestUser) {
+      return 'Not available for guest';
+    }
+
+    if (isSubscribing) {
+      return 'cancel_subscribe';
+    }
+    return 'subscribe';
+  }, [isGuestUser, isSubscribing]);
+
   return (
     <>
       <button
@@ -31,11 +43,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         <i className={iconClass}></i>
       </button>
 
-      {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
+      <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
+        {t(tooltipMessage())}
+      </UncontrolledTooltip>
     </>
   );
 
