@@ -37,26 +37,36 @@ class PageOperationService {
     if (isRecursively) {
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
         const fromFlag = fromPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
+        if (fromFlag) return false;
+
         const toFlag = toPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
-        if (fromFlag || toFlag) return false;
+        if (toFlag) return false;
       }
+
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (fromFlag) return false;
+
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (fromFlag || toFlag) return false;
+        if (toFlag) return false;
       }
 
     }
     else {
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
+        if (fromFlag) return false;
+
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
-        if (fromFlag || toFlag) return false;
+        if (toFlag) return false;
       }
+
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (fromFlag) return false;
+
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (fromFlag || toFlag) return false;
+        if (toFlag) return false;
       }
     }
 
