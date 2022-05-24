@@ -20,7 +20,6 @@ export const MenuItemType = {
   DUPLICATE: 'duplicate',
   DELETE: 'delete',
   REVERT: 'revert',
-  PATHRECOVERY: 'pathrecovery',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
