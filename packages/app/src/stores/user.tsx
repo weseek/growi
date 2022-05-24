@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IUserHasId } from '~/interfaces/user';
@@ -12,5 +13,35 @@ export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], E
       return response.data.users;
     }),
     { use: [checkAndUpdateImageUrlCached] },
+  );
+};
+
+type usernameResponse = {
+  data: {
+    activeUsernames?: string[]
+    inactiveUsernames?: string[]
+    activitySnapshotUsernames?: string[]
+  }
+}
+
+export const useSWRxUsernames = (
+    q: string,
+    limit?: number,
+    isIncludeActiveUsernames?: boolean,
+    isIncludeInactiveUsernames?: boolean,
+    isIncludeActivitySnapshotUsernames?: boolean,
+): SWRResponse<usernameResponse, Error> => {
+  return useSWRImmutable(
+    q != null ? ['/users/usernames', q, limit, isIncludeActiveUsernames, isIncludeInactiveUsernames, isIncludeActivitySnapshotUsernames] : null,
+    (
+        endpoint,
+        q,
+        limit,
+        isIncludeActiveUsernames,
+        isIncludeInactiveUsernames,
+        isIncludeActivitySnapshotUsernames,
+    ) => apiv3Get(endpoint, {
+      q, limit, isIncludeActiveUsernames, isIncludeInactiveUsernames, isIncludeActivitySnapshotUsernames,
+    }).then(result => result.data),
   );
 };
