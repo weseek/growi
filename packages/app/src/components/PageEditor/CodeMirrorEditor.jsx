@@ -1078,12 +1078,10 @@ class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   isTextlintEnabled: PropTypes.bool,
-  // textlintRules: PropTypes.array,
   lineNumbers: PropTypes.bool,
   editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
-  // onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
