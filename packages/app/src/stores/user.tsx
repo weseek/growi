@@ -16,6 +16,12 @@ export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], E
   );
 };
 
+type usernameOptions = {
+  isIncludeActiveUsernames?: boolean,
+  isIncludeInactiveUsernames?: boolean,
+  isIncludeActivitySnapshotUsernames?: boolean,
+}
+
 type usernameResponse = {
   data: {
     activeUsernames?: string[]
@@ -24,24 +30,9 @@ type usernameResponse = {
   }
 }
 
-export const useSWRxUsernames = (
-    q: string,
-    limit?: number,
-    isIncludeActiveUsernames?: boolean,
-    isIncludeInactiveUsernames?: boolean,
-    isIncludeActivitySnapshotUsernames?: boolean,
-): SWRResponse<usernameResponse, Error> => {
+export const useSWRxUsernames = (q: string, limit?: number, options?: usernameOptions): SWRResponse<usernameResponse, Error> => {
   return useSWRImmutable(
-    q != null ? ['/users/usernames', q, limit, isIncludeActiveUsernames, isIncludeInactiveUsernames, isIncludeActivitySnapshotUsernames] : null,
-    (
-        endpoint,
-        q,
-        limit,
-        isIncludeActiveUsernames,
-        isIncludeInactiveUsernames,
-        isIncludeActivitySnapshotUsernames,
-    ) => apiv3Get(endpoint, {
-      q, limit, isIncludeActiveUsernames, isIncludeInactiveUsernames, isIncludeActivitySnapshotUsernames,
-    }).then(result => result.data),
+    q != null ? ['/users/usernames', q, limit, options] : null,
+    (endpoint, q, limit, options) => apiv3Get(endpoint, { q, limit, options: JSON.stringify(options) }).then(result => result.data),
   );
 };

@@ -124,9 +124,7 @@ module.exports = (crowi) => {
   validator.usernames = [
     query('q').isString().withMessage('q is required'),
     query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
-    query('isIncludeActiveUsernames').optional().isBoolean(),
-    query('isIncludeInactiveUsernames').optional().isBoolean(),
-    query('isIncludeActivitySnapshotUsernames').optional().isBoolean(),
+    query('options').optional().isString().withMessage('options must be string'),
   ];
 
   const sendEmailByUserList = async(userList) => {
@@ -946,23 +944,24 @@ module.exports = (crowi) => {
     const limit = +req.query.limit || 10;
 
     try {
+      const options = JSON.parse(req.query.options);
       const data = {};
 
-      if (req.query.isIncludeActiveUsernames === 'true') {
+      if (options.isIncludeActiveUsernames) {
         const additionalQuery = { status: User.STATUS_ACTIVE };
         const activeUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const activeUsernames = activeUsers.map(user => user.username);
         Object.assign(data, { activeUsernames });
       }
 
-      if (req.query.isIncludeInactiveUsernames === 'true') {
+      if (options.isIncludeInactiveUsernames) {
         const additionalQuery = { status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] } };
         const inactiveUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const inactiveUsernames = inactiveUsers.map(user => user.username);
         Object.assign(data, { inactiveUsernames });
       }
 
-      if (req.query.isIncludeActivitySnapshotUsernames === 'true' && req.user.admin) {
+      if (options.isIncludeActivitySnapshotUsernames && req.user.admin) {
         const activitySnapshotUsernames = await Activity.getSnapshotUsernames(q, limit);
         Object.assign(data, { activitySnapshotUsernames });
       }
