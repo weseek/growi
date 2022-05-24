@@ -105,4 +105,15 @@ schema.statics.findByIdAndUpdatePageActionStage = async function(
   }, { new: true });
 };
 
+schema.statics.findMainOps = async function(
+    filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions,
+): Promise<PageOperationDocumentHasId[]> {
+
+  return this.find(
+    { ...filter, actionStage: PageActionStage.Main },
+    projection,
+    options,
+  );
+};
+
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
