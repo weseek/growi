@@ -1090,8 +1090,6 @@ module.exports = (crowi) => {
       'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
     };
 
-    console.log('req.body¥', req.body);
-
 
     try {
       await updateAndReloadStrategySettings('google', requestParams);
