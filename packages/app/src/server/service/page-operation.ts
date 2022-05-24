@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core';
 
-import PageOperation from '~/server/models/page-operation';
+import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 
@@ -13,8 +13,12 @@ class PageOperationService {
   }
 
   // TODO: Remove this code when resuming feature is implemented
-  async init():Promise<void> {
-    await PageOperation.deleteMany({});
+  async init() {
+    const {
+      Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
+    } = PageActionType;
+    const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
+    await PageOperation.deleteByActionTypes(types);
   }
 
   /**
