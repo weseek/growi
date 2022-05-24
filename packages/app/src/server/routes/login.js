@@ -32,7 +32,7 @@ module.exports = function(crowi, app) {
       // RegisterFormValidator.registerRule had code to guarantee that there was a password,
       // but login.register did not. so I wrote this code.
       if (!userData.password) {
-        return res.redirect('/');
+        return res.redirect('/me#password');
       }
 
       const { redirectTo } = req.session;
