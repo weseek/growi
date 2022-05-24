@@ -1,16 +1,17 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
 import { withTranslation } from 'react-i18next';
-
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import { DownloadDictModal } from './DownloadDictModal';
 
 
@@ -146,9 +147,7 @@ class OptionsSelector extends React.Component {
     const { editorContainer } = this.props;
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
-    if (this.state.isSkipAskingAgainChecked) {
-      this.updateIsTextlintEnabledToDB(newVal);
-    }
+    this.updateIsTextlintEnabledToDB(newVal);
   }
 
   switchTextlintEnabledHandler() {

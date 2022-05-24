@@ -1,21 +1,18 @@
-import { HasObjectId } from './has-object-id';
-
-export type ITag = {
+export type ITag<ID = string> = {
+  _id: ID
   name: string,
-  createdAt: Date;
 }
 
-export type ITagCount = Omit<ITag, 'createdAt'> & {count: number}
+export type IDataTagCount = ITag & {count: number}
 
-export type ITagCountHasId = ITagCount & HasObjectId
 
-export type ITagsSearchApiv1Result = {
+export type IResTagsSearchApiv1 = {
   ok: boolean,
   tags: string[]
 }
 
-export type ITagsListApiv1Result = {
+export type IResTagsListApiv1 = {
   ok: boolean,
-  data: ITagCountHasId[],
+  data: IDataTagCount[],
   totalCount: number,
 }
