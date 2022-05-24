@@ -1,11 +1,12 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
+
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 type IObjectId = mongoose.Types.ObjectId;
@@ -47,7 +48,6 @@ export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectId
 
 export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
-  findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
