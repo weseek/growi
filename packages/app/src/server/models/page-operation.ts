@@ -52,7 +52,7 @@ export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectId
 export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
-  deleteAllByPageActionType(deleteTypeList: PageActionType[]): Promise<void>
+  deleteByActionTypes(deleteTypeList: PageActionType[]): Promise<void>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -121,11 +121,11 @@ schema.statics.findMainOps = async function(
   );
 };
 
-schema.statics.deleteAllByPageActionType = async function(
-    deleteTypeList: PageActionType[],
+schema.statics.deleteByActionTypes = async function(
+    actionTypes: PageActionType[],
 ): Promise<void> {
-  await this.deleteMany({ actionType: { $in: deleteTypeList } });
-  logger.info(`Deleted all PageOperation documents with actionType: [${deleteTypeList}]`);
+  await this.deleteMany({ actionType: { $in: actionTypes } });
+  logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
