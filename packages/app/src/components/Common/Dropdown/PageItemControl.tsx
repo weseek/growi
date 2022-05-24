@@ -182,7 +182,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid=""
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-?? grw-page-control-dropdown-icon"></i>
+            <i className="icon-fw ti-ruler-alt grw-page-control-dropdown-icon"></i>
             {t('PathRecovery')}
           </DropdownItem>
         ) }
