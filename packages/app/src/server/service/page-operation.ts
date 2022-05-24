@@ -29,39 +29,49 @@ class PageOperationService {
    * @returns boolean
    */
   async canOperate(isRecursively: boolean, fromPathToOp: string | null, toPathToOp: string | null): Promise<boolean> {
-    const mainOps = await PageOperation.findMainOps();
+    const pageOperations = await PageOperation.find();
 
-    if (mainOps.length === 0) {
+    if (pageOperations.length === 0) {
       return true;
     }
 
-    const toPaths = mainOps.map(op => op.toPath).filter((p): p is string => p != null);
+    const fromPaths = pageOperations.map(op => op.fromPath).filter((p): p is string => p != null);
+    const toPaths = pageOperations.map(op => op.toPath).filter((p): p is string => p != null);
 
     if (isRecursively) {
-
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
-        const flag = toPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
-        if (flag) return false;
+        const fromFlag = fromPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
+        if (fromFlag) return false;
+
+        const toFlag = toPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
+        if (toFlag) return false;
       }
 
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
-        const flag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (flag) return false;
+        const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (fromFlag) return false;
+
+        const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (toFlag) return false;
       }
 
     }
     else {
-
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
-        const flag = toPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
-        if (flag) return false;
+        const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
+        if (fromFlag) return false;
+
+        const toFlag = toPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
+        if (toFlag) return false;
       }
 
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
-        const flag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (flag) return false;
-      }
+        const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (fromFlag) return false;
 
+        const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
+        if (toFlag) return false;
+      }
     }
 
     return true;
