@@ -116,4 +116,13 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
   return paginateResult;
 };
 
+activitySchema.statics.getSnapshotUsernames = async function(q: string, limit: number) {
+  const result = await this.aggregate([
+    { $match: { 'snapshot.username': new RegExp(q) } },
+    { $group: { _id: '$snapshot.username' } },
+    { $limit: limit },
+  ]);
+  return result.map(r => r._id);
+};
+
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);

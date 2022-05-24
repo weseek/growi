@@ -968,10 +968,8 @@ module.exports = (crowi) => {
       }
 
       if (stringToBoolean(req.query.isIncludeActivitySnapshotUsernames) && req.user.admin) {
-        const userActivies = await Activity.find({
-          'snapshot.username': { $regex: q, $options: 'i' },
-        });
-        Object.assign(data, { userActivies });
+        const activitySnapshotUsernames = await Activity.getSnapshotUsernames(q, limit);
+        Object.assign(data, { activitySnapshotUsernames });
       }
 
       return res.apiv3({ data });
