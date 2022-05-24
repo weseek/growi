@@ -1,8 +1,10 @@
 import { pagePathUtils } from '@growi/core';
 
-import PageOperation from '~/server/models/page-operation';
+import { PageDocument } from '~/server/models/page';
+import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
+
 
 class PageOperationService {
 
@@ -61,6 +63,24 @@ class PageOperationService {
     }
 
     return true;
+  }
+
+  async injectShouldFixPath(pages: any) {
+    const filter = { actionType: PageActionType.Rename };
+    const pageOperations = await PageOperation.find(filter);
+
+    const _pageOperationIds = pageOperations.map(op => op.page._id.toString());
+    const pageOperationIds = Array.from(new Set(_pageOperationIds)); // remove duplicate ids
+
+    for (const pageOperationId of pageOperationIds) {
+      for (const page of pages) {
+        const pageId = page._id.toString();
+        if (pageOperationId === pageId) {
+          page.shouldFixPath = true;
+        }
+      }
+    }
+
   }
 
 }
