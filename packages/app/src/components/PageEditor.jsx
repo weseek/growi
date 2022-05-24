@@ -10,8 +10,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
+import { useCurrentIndentSize, useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -75,10 +75,10 @@ class PageEditor extends React.Component {
 
     // Detect indent size from contents (only when users are allowed to change it)
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5368
-    if (!this.props.appContainer.config.isIndentSizeForced && this.state.markdown) {
+    if (!props.isIndentSizeForced && this.state.markdown) {
       const detectedIndent = detectIndent(this.state.markdown);
       if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-        this.props.editorContainer.setState({ indentSize: detectedIndent.amount });
+        props.mutateCurrentIndentSize(detectedIndent.amount);
       }
     }
   }
@@ -340,6 +340,7 @@ class PageEditor extends React.Component {
             isMobile={this.props.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
+            indentSize={this.props.indentSize}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
@@ -370,6 +371,27 @@ class PageEditor extends React.Component {
 
 }
 
+PageEditor.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  isEditable: PropTypes.bool.isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
+  isIndentSizeForced: PropTypes.bool,
+  indentSize: PropTypes.number,
+  mutateCurrentIndentSize: PropTypes.func,
+};
+
 /**
  * Wrapper component for using unstated
  */
@@ -384,6 +406,8 @@ const PageEditorWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -401,26 +425,12 @@ const PageEditorWrapper = (props) => {
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
       mutateGrant={mutateGrant}
+      isIndentSizeForced={isIndentSizeForced}
+      indentSize={indentSize}
+      mutateCurrentIndentSize={mutateCurrentIndentSize}
+
     />
   );
-};
-
-PageEditor.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  isEditable: PropTypes.bool.isRequired,
-
-  // TODO: remove this when omitting unstated is completed
-  editorMode: PropTypes.string.isRequired,
-  isMobile: PropTypes.bool,
-  isSlackEnabled: PropTypes.bool.isRequired,
-  slackChannels: PropTypes.string.isRequired,
-  grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
-  mutateGrant: PropTypes.func,
 };
 
 export default PageEditorWrapper;

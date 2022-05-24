@@ -8,8 +8,8 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
+import { useIsIndentSizeForced } from '~/stores/context';
+import { useEditorSettings, useIsTextlintEnabled, useCurrentIndentSize } from '~/stores/editor';
 
 import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -344,19 +344,20 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
 
 type Props = {
   appContainer: AppContainer
-  editorContainer: EditorContainer,
 };
 
 const OptionsSelector = (props: Props): JSX.Element => {
-  const { appContainer, editorContainer } = props;
-  const config = appContainer.getConfig();
+  const { appContainer } = props;
+  const config = appContainer.config;
 
   const [isDownloadDictModalShown, setDownloadDictModalShown] = useState(false);
 
   const { data: editorSettings, turnOffAskingBeforeDownloadLargeFiles } = useEditorSettings();
   const { mutate: mutateTextlintEnabled } = useIsTextlintEnabled();
+  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
-  if (editorSettings == null) {
+  if (editorSettings == null || isIndentSizeForced == null || currentIndentSize == null) {
     return <></>;
   }
 
@@ -371,9 +372,9 @@ const OptionsSelector = (props: Props): JSX.Element => {
         </span>
         <span className="ml-2 ml-sm-4">
           <IndentSizeSelector
-            isIndentSizeForced={config.isIndentSizeForced}
-            selectedIndentSize={editorContainer.state.indentSize}
-            onChange={newIndentSize => editorContainer.setState({ indentSize: newIndentSize })}
+            isIndentSizeForced={isIndentSizeForced}
+            selectedIndentSize={currentIndentSize}
+            onChange={newValue => mutateCurrentIndentSize(newValue)}
           />
         </span>
         <span className="ml-2 ml-sm-4">
@@ -405,5 +406,5 @@ const OptionsSelector = (props: Props): JSX.Element => {
 };
 
 
-const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [AppContainer, EditorContainer]);
+const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [AppContainer]);
 export default OptionsSelectorWrapper;

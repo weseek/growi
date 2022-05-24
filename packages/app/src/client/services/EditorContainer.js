@@ -17,17 +17,8 @@ export default class EditorContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    const mainContent = document.querySelector('#content-main');
-
-    if (mainContent == null) {
-      logger.debug('#content-main element is not exists');
-      return;
-    }
-
     this.state = {
       tags: null,
-
-      indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
 
     this.isSetBeforeunloadEventHandler = false;

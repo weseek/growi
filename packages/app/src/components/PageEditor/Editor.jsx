@@ -5,14 +5,9 @@ import Dropzone from 'react-dropzone';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
-import { Subscribe } from 'unstated';
 
-
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
+import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
@@ -288,6 +283,7 @@ class Editor extends AbstractEditor {
 
     const {
       isMobile,
+      indentSize,
     } = this.props;
 
     return (
@@ -316,20 +312,16 @@ class Editor extends AbstractEditor {
 
                   {/* for PC */}
                   { !isMobile && (
-                    <Subscribe to={[EditorContainer]}>
-                      { editorContainer => (
-                        // eslint-disable-next-line arrow-body-style
-                        <CodeMirrorEditor
-                          ref={(c) => { this.cmEditor = c }}
-                          indentSize={editorContainer.state.indentSize}
-                          onPasteFiles={this.pasteFilesHandler}
-                          onDragEnter={this.dragEnterHandler}
-                          onMarkdownHelpButtonClicked={this.showMarkdownHelp}
-                          onAddAttachmentButtonClicked={this.addAttachmentHandler}
-                          {...this.props}
-                        />
-                      )}
-                    </Subscribe>
+                    // eslint-disable-next-line arrow-body-style
+                    <CodeMirrorEditor
+                      ref={(c) => { this.cmEditor = c }}
+                      indentSize={indentSize}
+                      onPasteFiles={this.pasteFilesHandler}
+                      onDragEnter={this.dragEnterHandler}
+                      onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                      onAddAttachmentButtonClicked={this.addAttachmentHandler}
+                      {...this.props}
+                    />
                   )}
 
                   {/* for mobile */}
@@ -386,23 +378,30 @@ Editor.propTypes = Object.assign({
   isTextlintEnabled: PropTypes.bool,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorSettings: PropTypes.object.isRequired,
+  indentSize: PropTypes.number,
 }, AbstractEditor.propTypes);
 
-
-const EditorWithContainer = withUnstatedContainers(Editor, [EditorContainer, AppContainer]);
 
 const EditorWrapper = React.forwardRef((props, ref) => {
   const { data: editorSettings } = useEditorSettings();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
+  const { data: defaultIndentSize } = useDefaultIndentSize();
 
   if (editorSettings == null) {
     return <></>;
   }
 
-  return <EditorWithContainer ref={ref} {...props} isTextlintEnabled={isTextlintEnabled} editorSettings={editorSettings} />;
+  return (
+    <Editor
+      ref={ref}
+      {...props}
+      isTextlintEnabled={isTextlintEnabled}
+      editorSettings={editorSettings}
+      // eslint-disable-next-line react/prop-types
+      indentSize={props.indentSize ?? defaultIndentSize}
+    />
+  );
 });
 
 export default EditorWrapper;
