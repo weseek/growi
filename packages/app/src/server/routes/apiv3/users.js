@@ -944,7 +944,7 @@ module.exports = (crowi) => {
 
   router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
-    const limit = req.query.limit || 10;
+    const limit = +req.query.limit || 10;
 
     const data = {};
 
