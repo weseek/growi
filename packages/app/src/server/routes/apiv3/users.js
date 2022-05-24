@@ -1,6 +1,5 @@
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
-import { stringToBoolean } from '~/utils/string-to-boolean';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -949,21 +948,21 @@ module.exports = (crowi) => {
     try {
       const data = {};
 
-      if (stringToBoolean(req.query.isIncludeActiveUsernames)) {
+      if (req.query.isIncludeActiveUsernames === 'true') {
         const additionalQuery = { status: User.STATUS_ACTIVE };
         const activeUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const activeUsernames = activeUsers.map(user => user.username);
         Object.assign(data, { activeUsernames });
       }
 
-      if (stringToBoolean(req.query.isIncludeInactiveUsernames)) {
+      if (req.query.isIncludeInactiveUsernames === 'true') {
         const additionalQuery = { status: { $nin: [User.STATUS_ACTIVE, User.STATUS_DELETED] } };
         const inactiveUsers = await User.findUserByUsernameRegex(q, limit, additionalQuery);
         const inactiveUsernames = inactiveUsers.map(user => user.username);
         Object.assign(data, { inactiveUsernames });
       }
 
-      if (stringToBoolean(req.query.isIncludeActivitySnapshotUsernames) && req.user.admin) {
+      if (req.query.isIncludeActivitySnapshotUsernames === 'true' && req.user.admin) {
         const activitySnapshotUsernames = await Activity.getSnapshotUsernames(q, limit);
         Object.assign(data, { activitySnapshotUsernames });
       }
