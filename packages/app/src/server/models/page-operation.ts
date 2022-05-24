@@ -125,7 +125,7 @@ schema.statics.deleteAllByPageActionType = async function(
     deleteTypeList: PageActionType[],
 ): Promise<void> {
   await this.deleteMany({ actionType: { $in: deleteTypeList } });
-  logger.info(`Deleted all PageOperation documents except actionType: ${deleteTypeList}`);
+  logger.info(`Deleted all PageOperation documents with actionType: [${deleteTypeList}]`);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
