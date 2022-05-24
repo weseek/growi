@@ -7,7 +7,6 @@ import {
   SupportedActionType, AllSupportedActionType, PageActions, CommentActions,
 } from '~/interfaces/activity';
 import { useSWRxActivityList } from '~/stores/activity';
-import { useSWRxUsernames } from '~/stores/user';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -50,9 +49,6 @@ export const AuditLogManagement: FC = () => {
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
   const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
   const isLoading = activityListData === undefined && error == null;
-
-  const { data: usernameListData } = useSWRxUsernames('a', 10, true, true, true);
-  console.log(usernameListData);
 
   /*
    * Functions
