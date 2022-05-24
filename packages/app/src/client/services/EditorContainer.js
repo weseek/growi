@@ -23,7 +23,6 @@ export default class EditorContainer extends Container {
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
-    // this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
 
     const mainContent = document.querySelector('#content-main');
 
@@ -36,10 +35,6 @@ export default class EditorContainer extends Container {
       tags: null,
 
       previewOptions: defaultPreviewOptions,
-
-      // Defaults to null to show modal when not in DB
-      // isTextlintEnabled: null,
-      // textlintRules: [],
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
@@ -96,18 +91,10 @@ export default class EditorContainer extends Container {
     }
   }
 
-  // TODO: Remove when SWR is complete
   getCurrentOptionsToSave() {
     const opt = {
-      // isSlackEnabled: this.state.isSlackEnabled,
-      // slackChannels: this.state.slackChannels,
-      // grant: this.state.grant,
       pageTags: this.state.tags,
     };
-
-    // if (this.state.grantGroupId != null) {
-    //   opt.grantUserGroupId = this.state.grantGroupId;
-    // }
 
     return opt;
   }

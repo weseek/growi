@@ -10,7 +10,6 @@ import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
-import { useEditorSettings, useIsTextlintEnabled } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
