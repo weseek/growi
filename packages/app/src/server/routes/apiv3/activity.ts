@@ -36,8 +36,6 @@ module.exports = (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
-  const User = crowi.model('User');
-
   const router = express.Router();
 
   // eslint-disable-next-line max-len
