@@ -15,6 +15,7 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
+import { useCurrentUser } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
@@ -139,6 +140,11 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   const { t } = useTranslation();
 
   const [currentInput, setInput] = useState<string>('');
+  const [checked, setChecked] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChecked(false);
+  }, [props.isOpen]);
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
@@ -148,9 +154,25 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
       <ModalBody>
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
         <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
+        <div className="alert alert-danger mt-3" role="alert">
+          { t('private_legacy_pages.by_path_modal.alert') }
+        </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={() => props.onSubmit?.(currentInput)}>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            onChange={e => setChecked(e.target.checked)}
+          />
+          <label className="form-check-label">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={!checked}
+          onClick={() => props.onSubmit?.(currentInput)}
+        >
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
@@ -158,7 +180,6 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
     </Modal>
   );
 });
-
 
 /**
  * LegacyPage
@@ -170,6 +191,9 @@ type Props = {
 
 const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
+
+  const isAdmin = currentUser?.admin;
 
   const {
     appContainer,
@@ -310,6 +334,11 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
     mutate();
   }, [limit, mutate]);
 
+  const openConvertModalHandler = useCallback(() => {
+    if (!isAdmin) { return }
+    setOpenConvertModal(true);
+  }, [isAdmin]);
+
   const hitsCount = data?.meta.hitsCount;
 
   const searchControlAllAction = useMemo(() => {
@@ -343,7 +372,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
           </OperateAllControl>
         </div>
         <div className="d-flex pl-md-2">
-          <button type="button" className="btn btn-light" onClick={() => setOpenConvertModal(true)}>
+          <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
             {t('private_legacy_pages.input_path_to_convert')}
           </button>
         </div>
