@@ -4,7 +4,6 @@ import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 
-
 class PageOperationService {
 
   crowi: any;
