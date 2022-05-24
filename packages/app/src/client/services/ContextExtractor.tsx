@@ -18,6 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
+  useDefaultIndentSize, useIsIndentSizeForced,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -109,6 +110,8 @@ const ContextExtractorOnce: FC = () => {
   useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
   useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
+  useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
+  useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
 
 
   // Page
