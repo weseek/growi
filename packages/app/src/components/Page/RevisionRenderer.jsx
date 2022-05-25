@@ -33,8 +33,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
-      // -- prevent memory leak temporary -- 2022.05.25 Yuki Takei
-      // editorSettings: this.editorSettings,
+      renderMathJaxInRealtime: this.props.editorSettings.renderMathJaxInRealtime,
+      renderDrawioInRealtime: this.props.editorSettings.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
@@ -179,7 +179,7 @@ LegacyRevisionRenderer.propTypes = {
   pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
-  editorSettings: PropTypes.any,
+  editorSettings: PropTypes.any.isRequired,
 };
 
 /**
