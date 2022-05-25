@@ -100,7 +100,7 @@ class PageOperationService {
    * This is used to prevent the same page operation from being processed multiple times at once
    */
   autoUpdateExpiryDate(operationId: ObjectIdLike): NodeJS.Timeout {
-    const timerObj = setInterval(async() => {
+    const timerObj = global.setInterval(async() => {
       await this.extendExpiryDate(operationId);
     }, AUTO_UPDATE_INTERVAL_SEC * 1000);
     return timerObj;
