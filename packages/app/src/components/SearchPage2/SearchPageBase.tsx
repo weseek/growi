@@ -255,7 +255,16 @@ export const usePageDeleteModalForBulkDeletion = (
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {
-        toastSuccess(args[2] ? t('deleted_pages_completely', { path: args[0] }) : t('deleted_pages', { path: args[0] }));
+        // ここにargs[2]が存在しなかった際の条件分岐を記述
+        // descendantPagelistと同様の処理を記述
+        const path = args[0];
+        const isCompletely = args[2];
+        if (path == null || isCompletely == null) {
+          toastSuccess(t('deleted_page'));
+        }
+        else {
+          toastSuccess(t('deleted_pages_completely', { path }));
+        }
         advancePt();
 
         if (onDeleted != null) {
