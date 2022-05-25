@@ -1,4 +1,5 @@
 import { getOrCreateModel } from '@growi/core';
+import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
@@ -43,6 +44,7 @@ export interface IPageOperation {
   user: IUserForResuming,
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
+  unprocessableExpiryDate: Date,
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -99,6 +101,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
+  unprocessableExpiryDate: { type: Date, default: addSeconds(new Date(), 10) },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
