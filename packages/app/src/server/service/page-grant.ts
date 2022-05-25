@@ -1,9 +1,9 @@
+import mongoose from 'mongoose';
 import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose from 'mongoose';
 
-import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
+import { PageDocument, PageModel } from '~/server/models/page';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
