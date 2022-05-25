@@ -40,7 +40,7 @@ export const useSWRxUsernames = (q: string, offset?: number, limit?: number, opt
   return useSWRImmutable(
     q != null ? ['/users/usernames', q, offset, limit, options] : null,
     (endpoint, q, offset, limit, options) => apiv3Get(endpoint, {
-      q, offset, limit, options: JSON.stringify(options),
+      q, offset, limit, options,
     }).then(result => result.data),
   );
 };
