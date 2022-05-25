@@ -584,7 +584,10 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenamePageOperation(): Promise<void> {
+  async resumeRenamePageOperation(user): Promise<void> {
+    if (user == null) {
+      throw Error('Only logged-in user can execute this operation');
+    }
     /* eslint-disable no-await-in-loop */
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -598,7 +601,7 @@ class PageService {
     // resume multiple rename operations almost parallelly
     for (const po of pageOps) {
       const {
-        page, toPath, user, options,
+        page, toPath, options,
       } = po;
 
       if (toPath == null) {
