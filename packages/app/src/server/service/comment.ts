@@ -99,11 +99,22 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
+    // TODO get mentioned users from comment
+    // const mentionedUsers = await this.getMentionedUsers(page.event);
+    // targetUsers = targetUsers.concat(mentionedUsers);
     // Create and send notifications
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
+  private getMentionedUsers = async(comment: Types.ObjectId) => {
+    // TODO extract users from comment model
+    // Implement User model to find users ID
+
+    // return User ObjectID array
+  }
+
 }
+
 
 module.exports = CommentService;
