@@ -118,18 +118,20 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
 
 activitySchema.statics.getSnapshotUsernames = async function(q: string, option) {
   const opt = option || {};
-  const sortOpt = opt.sortOpt || { 'snapshot.username': 'asc' };
+  const sortOpt = opt.sortOpt || { _id: 1 };
   const offset = opt.offset || 0;
   const limit = opt.limit || 10;
 
+  const conditions = { 'snapshot.username': { $regex: q, $options: 'i' } };
+
   const usernames = await this.aggregate()
-    .match({ 'snapshot.username': { $regex: q, $options: 'i' } })
+    .match(conditions)
     .group({ _id: '$snapshot.username' })
     .sort(sortOpt)
     .skip(offset)
     .limit(limit);
 
-  const totalCount = (await this.find({ 'snapshot.username': { $regex: q, $options: 'i' } }).distinct('snapshot.username')).length;
+  const totalCount = (await this.find(conditions).distinct('snapshot.username')).length;
 
   return { usernames: usernames.map(r => r._id), totalCount };
 };
