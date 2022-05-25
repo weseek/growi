@@ -1,8 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.5](https://github.com/weseek/growi/compare/v5.0.4...v5.0.5) - 2022-05-16
+
+### 💎 Features
+
+- feat: Empty trash button in trash page (#5816) @yukendev
+
+### 🚀 Improvement
+
+- imprv: Count badge colors (#5835) @shukmos
+- imprv: List group background colors on PageTree (#5812) @shukmos
+- imprv: Page path auto complete function for page rename modal (#5805) @kaoritokashiki
+- imprv: Show toastr when converting is completed on Private Legacy Page (#5810) @yukendev
+- imprv: Create parent pages as needed by path that includes slash (#5809) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Change the execution user of the official docker image to root (#5846) @yuki-takei
+- fix: Display admin link only with logged in (#5799) @hirokei-camel
+- fix: Error when renaming (#5793) @miya
+
+### 🧰 Maintenance
+
+- support: Typescriptize tag model (#5778) @kaoritokashiki
 
 ## [v5.0.4](https://github.com/weseek/growi/compare/v5.0.3...v5.0.4) - 2022-04-28
 
@@ -176,7 +200,6 @@
 - support: dependabot dot-drop (#5204) @LuqmanHakim-Grune
 - support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
 - support: update validator version (#5562) @LuqmanHakim-Grune
-
 
 ## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
 

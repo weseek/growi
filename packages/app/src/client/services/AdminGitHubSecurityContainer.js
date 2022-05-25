@@ -1,9 +1,11 @@
-import { Container } from 'unstated';
-
 import { pathUtils } from '@growi/core';
+import { Container } from 'unstated';
 import urljoin from 'url-join';
+
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
@@ -16,7 +18,6 @@ export default class AdminGitHubSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.appContainer = appContainer;
     this.dummyGithubClientId = 0;
     this.dummyGithubClientIdForError = 1;
 
@@ -36,7 +37,7 @@ export default class AdminGitHubSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { githubOAuth } = response.data.securityParams;
       this.setState({
         githubClientId: githubOAuth.githubClientId,
@@ -88,7 +89,7 @@ export default class AdminGitHubSecurityContainer extends Container {
     let requestParams = { githubClientId, githubClientSecret, isSameUsernameTreatedAsIdenticalUser };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/github-oauth', requestParams);
+    const response = await apiv3Put('/security-setting/github-oauth', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

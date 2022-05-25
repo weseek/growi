@@ -2,6 +2,8 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiGet } from '../util/apiv1-client';
+
 const logger = loggerFactory('growi:services:TagContainer');
 
 /**
@@ -48,7 +50,7 @@ export default class TagContainer extends Container {
     let tags = [];
     // when the page exists or shared page
     if (pageId != null && shareLinkId == null) {
-      const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
+      const res = await apiGet('/pages.getPageTag', { pageId });
       tags = res.tags;
     }
     // when the page not exist

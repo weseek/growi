@@ -12,9 +12,9 @@ const path = require('path');
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const PAGE_ITEMS = 50;
@@ -899,13 +899,19 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
+    const username = req.query.username || null;
+    const limit = req.query.limit || 20;
 
     let userFetcher;
-    if (!userIds || userIds.split(',').length <= 0) {
-      userFetcher = User.findAllUsers();
+    if (userIds !== null && userIds.split(',').length > 0) {
+      userFetcher = User.findUsersByIds(userIds.split(','));
+    }
+    // Get username list by matching pattern from username mention
+    else if (username !== null) {
+      userFetcher = User.findUserByUsernameRegex(username, limit);
     }
     else {
-      userFetcher = User.findUsersByIds(userIds.split(','));
+      userFetcher = User.findAllUsers();
     }
 
     const data = {};

@@ -129,7 +129,6 @@ const PageDeleteModal: FC = () => {
         if (onDeleted != null) {
           onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
-
         closeDeleteModal();
       }
       catch (err) {
@@ -239,7 +238,6 @@ const PageDeleteModal: FC = () => {
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
         { isDeletable && renderDeleteRecursivelyForm()}
@@ -253,7 +251,7 @@ const PageDeleteModal: FC = () => {
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
         >
-          <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </ModalFooter>

@@ -1,7 +1,9 @@
 import { Container } from 'unstated';
-import loggerFactory from '~/utils/logger';
 
+import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
@@ -11,10 +13,9 @@ const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
  */
 export default class AdminBasicSecurityContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
-    this.appContainer = appContainer;
     this.dummyIsSameUsernameTreatedAsIdenticalUser = 0;
     this.dummyIsSameUsernameTreatedAsIdenticalUserForError = 1;
 
@@ -31,7 +32,7 @@ export default class AdminBasicSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { basicAuth } = response.data.securityParams;
       this.setState({
         isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser,
@@ -65,7 +66,7 @@ export default class AdminBasicSecurityContainer extends Container {
     let requestParams = { isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/basic', requestParams);
+    const response = await apiv3Put('/security-setting/basic', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({
