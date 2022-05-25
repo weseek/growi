@@ -1,6 +1,6 @@
+import { envUtils } from '@growi/core';
 import { parseISO } from 'date-fns';
 
-import { envUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
@@ -610,6 +610,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  MIN_PASSWORD_LENGTH: {
+    ns: 'crowi',
+    key: 'app:minPasswordLength',
+    type: ValueType.NUMBER,
+    default: null,
+  },
 };
 
 
@@ -694,6 +700,7 @@ export default class ConfigLoader {
         const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
         config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
+      // console.log('Here is nth envVars', config[configInfo.ns][configInfo.key]);
     }
 
     logger.debug('ConfigLoader#loadFromEnvVars', config);
@@ -718,6 +725,7 @@ export default class ConfigLoader {
       }
       const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
       config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
+      // console.log('Here is nth contents of envVars', config[ENV_VAR_NAME]);
     }
 
     logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
