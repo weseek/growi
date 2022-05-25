@@ -179,7 +179,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.PATHRECOVERY) && isEnableActions && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
-            data-testid=""
             className="grw-page-control-dropdown-item"
           >
             <i className="icon-fw icon-wrench grw-page-control-dropdown-icon"></i>
