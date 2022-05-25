@@ -948,21 +948,21 @@ module.exports = (crowi) => {
       const data = {};
 
       if (options.isIncludeActiveUsernames == null || options.isIncludeActiveUsernames) {
-        const activeUsers = await User.findUserByUsernameRegex(q, limit, [User.STATUS_ACTIVE]);
-        const activeUsernames = activeUsers.map(user => user.username);
-        Object.assign(data, { activeUsernames });
+        const activeUserData = await User.findUserByUsernameRegex(q, [User.STATUS_ACTIVE]);
+        const activeUsernames = activeUserData.users.map(user => user.username);
+        Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
       }
 
       if (options.isIncludeInactiveUsernames) {
         const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
-        const inactiveUsers = await User.findUserByUsernameRegex(q, limit, inactiveUserStates);
-        const inactiveUsernames = inactiveUsers.map(user => user.username);
-        Object.assign(data, { inactiveUsernames });
+        const inactiveUserData = await User.findUserByUsernameRegex(q, inactiveUserStates);
+        const inactiveUsernames = inactiveUserData.users.map(user => user.username);
+        Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
       }
 
       if (options.isIncludeActivitySnapshotUsernames && req.user.admin) {
-        const activitySnapshotUsernames = await Activity.getSnapshotUsernames(q, limit);
-        Object.assign(data, { activitySnapshotUsernames });
+        const activitySnapshotUserData = await Activity.getSnapshotUsernames(q);
+        Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
       }
 
       return res.apiv3({ data });
