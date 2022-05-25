@@ -255,8 +255,6 @@ export const usePageDeleteModalForBulkDeletion = (
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {
-        // ここにargs[2]が存在しなかった際の条件分岐を記述
-        // descendantPagelistと同様の処理を記述
         const path = args[0];
         const isCompletely = args[2];
         if (path == null || isCompletely == null) {
