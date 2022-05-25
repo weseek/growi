@@ -1,6 +1,11 @@
-import { Container } from 'unstated';
 import { debounce } from 'throttle-debounce';
+import { Container } from 'unstated';
+
 import loggerFactory from '~/utils/logger';
+
+import {
+  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+} from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -135,7 +140,7 @@ export default class AdminUsersContainer extends Container {
       // Even if email is hidden, it will be displayed on admin page.
       forceIncludeAttributes: ['email'],
     };
-    const { data } = await this.appContainer.apiv3.get('/users', params);
+    const { data } = await apiv3Get('/users', params);
 
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');
@@ -159,7 +164,7 @@ export default class AdminUsersContainer extends Container {
    * @param {bool} sendEmail
    */
   async createUserInvited(shapedEmailList, sendEmail) {
-    const response = await this.appContainer.apiv3.post('/users/invite', {
+    const response = await apiv3Post('/users/invite', {
       shapedEmailList,
       sendEmail,
     });
@@ -205,7 +210,7 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async giveUserAdmin(userId) {
-    const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
+    const response = await apiv3Put(`/users/${userId}/giveAdmin`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
@@ -218,7 +223,7 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async removeUserAdmin(userId) {
-    const response = await this.appContainer.apiv3.put(`/users/${userId}/removeAdmin`);
+    const response = await apiv3Put(`/users/${userId}/removeAdmin`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
@@ -231,7 +236,7 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async activateUser(userId) {
-    const response = await this.appContainer.apiv3.put(`/users/${userId}/activate`);
+    const response = await apiv3Put(`/users/${userId}/activate`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
@@ -244,7 +249,7 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async deactivateUser(userId) {
-    const response = await this.appContainer.apiv3.put(`/users/${userId}/deactivate`);
+    const response = await apiv3Put(`/users/${userId}/deactivate`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
@@ -257,7 +262,7 @@ export default class AdminUsersContainer extends Container {
    * @return {object} removedUserData
    */
   async removeUser(userId) {
-    const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
+    const response = await apiv3Delete(`/users/${userId}/remove`);
     const removedUserData = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return removedUserData;

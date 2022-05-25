@@ -1,19 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
+import { SlackbotType } from '@growi/slack';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { SlackbotType } from '@growi/slack';
 
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import {
+  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+} from '~/client/util/apiv3-client';
 
-import OfficialBotSettings from './OfficialBotSettings';
-import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
-import CustomBotWithProxySettings from './CustomBotWithProxySettings';
-import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import BotTypeCard from './BotTypeCard';
+import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import CustomBotWithProxySettings from './CustomBotWithProxySettings';
+import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import OfficialBotSettings from './OfficialBotSettings';
+
 
 const botTypes = Object.values(SlackbotType);
 
@@ -40,7 +46,7 @@ const SlackIntegration = (props) => {
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
-      const { data } = await appContainer.apiv3.get('/slack-integration-settings');
+      const { data } = await apiv3Get('/slack-integration-settings');
       const {
         slackSigningSecret,
         slackBotToken,
@@ -71,11 +77,11 @@ const SlackIntegration = (props) => {
     finally {
       setIsLoading(false);
     }
-  }, [appContainer.apiv3]);
+  }, []);
 
   const resetAllSettings = async() => {
     try {
-      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
+      await apiv3Delete('/slack-integration-settings/bot-type');
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
     }
@@ -86,7 +92,7 @@ const SlackIntegration = (props) => {
 
   const createSlackIntegrationData = async() => {
     try {
-      await appContainer.apiv3.post('/slack-integration-settings/slack-app-integrations');
+      await apiv3Post('/slack-integration-settings/slack-app-integrations');
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
     }
@@ -106,7 +112,7 @@ const SlackIntegration = (props) => {
 
   const changeCurrentBotSettings = async(botType) => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+      await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
       setSelectedBotType(null);

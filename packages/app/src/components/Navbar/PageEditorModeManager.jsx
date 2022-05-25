@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
+import { useCurrentUser } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -45,8 +46,9 @@ function PageEditorModeManager(props) {
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = appContainer.isAdmin;
+  const isAdmin = currentUser?.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
 
