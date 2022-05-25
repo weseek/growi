@@ -56,8 +56,7 @@ export default class AdminCustomizeContainer extends Container {
         'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
-      uploadedLogoSrc: '',
-      isUploadedLogo: false,
+      uploadedLogoSrc: null,
       defaultLogoSrc: DEFAULT_LOGO,
       isDefaultLogo: false,
       attachmentId: '',
@@ -108,13 +107,9 @@ export default class AdminCustomizeContainer extends Container {
         attachmentId: customizeParams.attachmentId,
         isDefaultLogo: customizeParams.isDefaultLogo,
         uploadedLogoSrc: customizeParams.uploadedLogoSrc,
-        isUploadedLogo: customizeParams.uploadedLogoSrc,
       });
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
-      if (customizeParams.attachmentId == null) {
-        this.setState({ uploadedLogoSrc: DEFAULT_LOGO, isUploadedLogo: false });
-      }
 
     }
     catch (err) {
@@ -453,8 +448,7 @@ export default class AdminCustomizeContainer extends Container {
       };
       await this.appContainer.apiPost('/attachments.removeBrandLogo', formData);
       this.setState({
-        isUploadedLogo: false,
-        uploadedLogoSrc: DEFAULT_LOGO,
+        uploadedLogoSrc: null,
         attachmentId: null,
       });
 
@@ -476,7 +470,6 @@ export default class AdminCustomizeContainer extends Container {
       const response = await this.appContainer.apiPost('/attachments.uploadBrandLogo', formData);
 
       this.setState({
-        isUploadedLogo: true,
         uploadedLogoSrc: response.attachment.filePathProxied,
         attachmentId: response.attachment.id,
       });
@@ -498,14 +491,12 @@ export default class AdminCustomizeContainer extends Container {
         isDefaultLogo: this.state.isDefaultLogo,
         attachmentId: this.state.attachmentId,
         uploadedLogoSrc: this.state.uploadedLogoSrc,
-        isUploadedLogo: this.state.isUploadedLogo,
       });
       const { customizedParams } = response.data;
       this.setState({
         isDefaultLogo: customizedParams.isDefaultLogo,
         attachmentId:  customizedParams.attachmentId,
         uploadedLogoSrc: customizedParams.uploadedLogoSrc,
-        isUploadedLogo: customizedParams.isUploaded,
       });
     }
     catch (err) {
