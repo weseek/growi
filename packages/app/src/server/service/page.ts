@@ -554,7 +554,7 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    await this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
@@ -564,8 +564,18 @@ class PageService {
 
     const exParentId = page.parent;
 
+    const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
+    try {
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    }
+    catch (err) {
+      logger.warn(err);
+      throw Error(err);
+    }
+    finally {
+      this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
+    }
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -582,6 +592,44 @@ class PageService {
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
+  async resumeRenamePageOperation(user: any): Promise<void> {
+    if (user == null) {
+      throw Error('Guest user cannot execute this operation');
+    }
+
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub };
+    const pageOps = await PageOperation.find(filter);
+
+    if (pageOps == null || pageOps.length === 0) {
+      throw Error('There is nothing to be processed right now');
+    }
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    // resume multiple rename operations parallelly
+    await Promise.all(pageOps.map(async(pageOp) => {
+      const {
+        page, toPath, options,
+      } = pageOp;
+
+      const isProcessable = this.crowi.pageOperationService.isProcessable(pageOp);
+      if (!isProcessable) {
+        throw Error(`PageOperation(${pageOp._id}) is currently being processed`);
+      }
+
+      if (toPath == null) {
+        throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+      }
+
+      const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
+      if (renamedPage == null) {
+        throw Error(`Renamed page(${page._id} is not found)`);
+      }
+
+      await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    }));
+
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
