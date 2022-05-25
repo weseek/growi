@@ -42,11 +42,12 @@ const Preview = (props: Props): JSX.Element => {
     return {
       markdown,
       pagePath,
-      editorSettings,
+      // -- prevent memory leak temporary -- 2022.05.25 Yuki Takei
+      // editorSettings,
       currentPathname: decodeURIComponent(window.location.pathname),
       parsedHTML: null,
     };
-  }, [markdown, pagePath, editorSettings]);
+  }, [markdown, pagePath]);
 
   const renderPreview = useCallback(async() => {
     if (interceptorManager != null) {

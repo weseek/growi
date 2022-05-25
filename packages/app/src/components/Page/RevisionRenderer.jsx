@@ -33,7 +33,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
-      editorSettings: this.editorSettings,
+      // -- prevent memory leak temporary -- 2022.05.25 Yuki Takei
+      // editorSettings: this.editorSettings,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
