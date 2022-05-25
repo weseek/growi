@@ -599,7 +599,6 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     // resume multiple rename operations parallelly
     await Promise.all(pageOps.map(async(pageOp) => {
-
       const {
         page, toPath, options,
       } = pageOp;
