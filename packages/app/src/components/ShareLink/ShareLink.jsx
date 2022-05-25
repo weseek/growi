@@ -1,16 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+
+import PageContainer from '~/client/services/PageContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-
-import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import ShareLinkList from './ShareLinkList';
 
 class ShareLink extends React.Component {
 
@@ -31,11 +32,11 @@ class ShareLink extends React.Component {
   }
 
   async retrieveShareLinks() {
-    const { appContainer, pageContainer } = this.props;
+    const { pageContainer } = this.props;
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
+      const res = await apiv3Get('/share-links/', { relatedPage: pageId });
       const { shareLinksResult } = res.data;
       this.setState({ shareLinks: shareLinksResult });
     }
@@ -51,11 +52,11 @@ class ShareLink extends React.Component {
   }
 
   async deleteAllLinksButtonHandler() {
-    const { t, appContainer, pageContainer } = this.props;
+    const { t, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
+      const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
       toastSuccess(t('toaster.remove_share_link', { count }));
     }
@@ -67,10 +68,10 @@ class ShareLink extends React.Component {
   }
 
   async deleteLinkById(shareLinkId) {
-    const { t, appContainer } = this.props;
+    const { t } = this.props;
 
     try {
-      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
@@ -114,11 +115,10 @@ class ShareLink extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ShareLinkWrapper = withUnstatedContainers(ShareLink, [AppContainer, PageContainer]);
+const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
 
 ShareLink.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 

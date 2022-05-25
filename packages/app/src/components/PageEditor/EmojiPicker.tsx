@@ -23,14 +23,11 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   // Set search emoji input and trigger search
   const searchEmoji = () => {
     const input = window.document.querySelector('[id^="emoji-mart-search"]') as HTMLInputElement;
-    if (emojiSearchText !== null) {
-
-      const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
-      valueSetter?.call(input, emojiSearchText);
-      const event = new Event('input', { bubbles: true });
-      input.dispatchEvent(event);
-      input.focus();
-    }
+    const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+    valueSetter?.call(input, emojiSearchText);
+    const event = new Event('input', { bubbles: true });
+    input.dispatchEvent(event);
+    input.focus();
   };
 
   const selectEmoji = (emoji) => {

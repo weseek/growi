@@ -1,16 +1,19 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 
-import StatusTable from './StatusTable';
-import ReconnectControls from './ReconnectControls';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
+import ReconnectControls from './ReconnectControls';
+import StatusTable from './StatusTable';
 
 class ElasticsearchManagement extends React.Component {
 
@@ -70,7 +73,7 @@ class ElasticsearchManagement extends React.Component {
     const { appContainer } = this.props;
 
     try {
-      const { data } = await appContainer.apiv3Get('/search/indices');
+      const { data } = await apiv3Get('/search/indices');
       const { info } = data;
 
       this.setState({
@@ -105,7 +108,7 @@ class ElasticsearchManagement extends React.Component {
     this.setState({ isReconnectingProcessing: true });
 
     try {
-      await appContainer.apiv3Post('/search/connection');
+      await apiv3Post('/search/connection');
     }
     catch (e) {
       toastError(e);
@@ -120,7 +123,7 @@ class ElasticsearchManagement extends React.Component {
     const { appContainer } = this.props;
 
     try {
-      await appContainer.apiv3Put('/search/indices', { operation: 'normalize' });
+      await apiv3Put('/search/indices', { operation: 'normalize' });
     }
     catch (e) {
       toastError(e);
@@ -137,7 +140,7 @@ class ElasticsearchManagement extends React.Component {
     this.setState({ isRebuildingProcessing: true });
 
     try {
-      await appContainer.apiv3Put('/search/indices', { operation: 'rebuild' });
+      await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
     }
     catch (e) {
