@@ -553,12 +553,11 @@ module.exports = (crowi) => {
 
   router.post('/resume-rename-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
     try {
-      const { pageId } = req.body;
-      await crowi.pageService.resumeRenamePageOperation(req.user, pageId);
+      await crowi.pageService.resumeRenamePageOperation(req.user);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to resume rename operation'), 500);
+      return res.apiv3Err(new ErrorV3(`Failed to resume rename operation. ${err}`), 500);
     }
     return res.apiv3();
   });

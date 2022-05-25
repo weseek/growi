@@ -584,15 +584,9 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenamePageOperation(user: any, pageId: ObjectIdLike): Promise<void> {
-
+  async resumeRenamePageOperation(user: any): Promise<void> {
     if (user == null) {
       throw Error('Guest user cannot execute this operation');
-    }
-
-    const isExistPageOp = await PageOperation.exists({ 'page._id': pageId });
-    if (isExistPageOp == null || !isExistPageOp) {
-      throw Error('PageOperation is not found');
     }
 
     const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub };
