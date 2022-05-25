@@ -18,6 +18,7 @@ export const MenuItemType = {
   BOOKMARK: 'bookmark',
   RENAME: 'rename',
   DUPLICATE: 'duplicate',
+  PATHRECOVERY: 'pathRecovery',
   DELETE: 'delete',
   REVERT: 'revert',
 } as const;
@@ -35,6 +36,7 @@ type CommonProps = {
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickRenameMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickPathRecoveryMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
@@ -54,7 +56,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickPathRecoveryMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
 
@@ -86,6 +88,13 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickDuplicateMenuItem(pageId);
   }, [onClickDuplicateMenuItem, pageId]);
+
+  const pathRecoveryItemClickedHandler = useCallback(async() => {
+    if (onClickPathRecoveryMenuItem == null) {
+      return;
+    }
+    await onClickPathRecoveryMenuItem(pageId);
+  }, [onClickPathRecoveryMenuItem, pageId]);
 
   const revertItemClickedHandler = useCallback(async() => {
     if (onClickRevertMenuItem == null) {
@@ -167,9 +176,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType) && isEnableActions && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATHRECOVERY) && isEnableActions && (
           <DropdownItem
-            onClick={}
+            onClick={pathRecoveryItemClickedHandler}
             data-testid=""
             className="grw-page-control-dropdown-item"
           >
