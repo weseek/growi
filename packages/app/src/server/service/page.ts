@@ -586,7 +586,7 @@ class PageService {
 
   async resumeRenamePageOperation(user): Promise<void> {
     if (user == null) {
-      throw Error('Only logged-in user can execute this operation');
+      throw Error('Guest user cannot execute this operation');
     }
     /* eslint-disable no-await-in-loop */
     const Page = mongoose.model('Page') as unknown as PageModel;
