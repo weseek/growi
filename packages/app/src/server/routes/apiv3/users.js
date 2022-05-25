@@ -963,7 +963,7 @@ module.exports = (crowi) => {
       }
 
       if (options.isIncludeActivitySnapshotUsernames && req.user.admin) {
-        const activitySnapshotUserData = await Activity.getSnapshotUsernames(q, { offset, limit });
+        const activitySnapshotUserData = await Activity.findSnapshotUsernamesByUsernameRegex(q, { offset, limit });
         Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
       }
 
@@ -978,7 +978,7 @@ module.exports = (crowi) => {
       return res.apiv3(data);
     }
     catch (err) {
-      logger.error('failed to get usernames', err);
+      logger.error('Failed to get usernames', err);
       return res.apiv3Err(err);
     }
   });

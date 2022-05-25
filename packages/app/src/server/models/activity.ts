@@ -116,7 +116,7 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
   return paginateResult;
 };
 
-activitySchema.statics.getSnapshotUsernames = async function(q: string, option) {
+activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(q: string, option) {
   const opt = option || {};
   const sortOpt = opt.sortOpt || { _id: 1 };
   const offset = opt.offset || 0;
