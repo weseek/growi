@@ -605,7 +605,7 @@ class PageService {
       } = pageOp;
 
       if (toPath == null) {
-        throw Error(`Property toPath is missing which is needed to resume renaming this page operation(${pageOp._id})`);
+        throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
       }
 
       const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
