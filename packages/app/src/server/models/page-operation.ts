@@ -1,12 +1,16 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
+
+import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
+const logger = loggerFactory('growi:models:page-operation');
 
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -48,6 +52,7 @@ export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectId
 export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
+  deleteByActionTypes(deleteTypeList: PageActionType[]): Promise<void>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -114,6 +119,14 @@ schema.statics.findMainOps = async function(
     projection,
     options,
   );
+};
+
+schema.statics.deleteByActionTypes = async function(
+    actionTypes: PageActionType[],
+): Promise<void> {
+
+  await this.deleteMany({ actionType: { $in: actionTypes } });
+  logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
