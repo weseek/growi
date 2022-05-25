@@ -584,11 +584,16 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenamePageOperation(user: any): Promise<void> {
+  async resumeRenamePageOperation(user: any, pageId: ObjectIdLike): Promise<void> {
+
     if (user == null) {
       throw Error('Guest user cannot execute this operation');
     }
-    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const isExistPageOp = await PageOperation.exists({ 'page._id': pageId });
+    if (isExistPageOp == null || !isExistPageOp) {
+      throw Error('PageOperation is not found');
+    }
 
     const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub };
     const pageOps = await PageOperation.find(filter);
@@ -597,7 +602,8 @@ class PageService {
       throw Error('There is nothing to be processed right now');
     }
 
-    // resume multiple rename operations almost parallelly
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    // resume multiple rename operations parallelly
     await Promise.all(pageOps.map(async(pageOp) => {
 
       const {
