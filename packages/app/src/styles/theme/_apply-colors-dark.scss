@@ -234,7 +234,7 @@ ul.pagination {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: theme-color('light');
+      color: darken($body-color, 5%);
     }
   }
 }
