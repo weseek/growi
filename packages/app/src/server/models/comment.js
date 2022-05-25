@@ -94,6 +94,9 @@ module.exports = function(crowi) {
     return commentData;
   };
 
+  commentSchema.statics.findCommentById = async function(commentId) {
+    return this.findOne({ commentId });
+  };
 
   /**
    * post remove hook

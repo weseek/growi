@@ -107,11 +107,10 @@ class CommentService {
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
-  private getMentionedUsers = async(comment: Types.ObjectId) => {
-    // TODO extract users from comment model
-    // Implement User model to find users ID
-
-    // return User ObjectID array
+  getMentionedUsers = async(commentId: Types.ObjectId) => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const comment = await Comment.findCommentById(commentId);
+    // TODO  get users from comment
   }
 
 }
