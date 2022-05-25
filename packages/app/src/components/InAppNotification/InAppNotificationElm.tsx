@@ -107,10 +107,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'duplicated';
       actionIcon = 'icon-docs';
       break;
-    case 'PAGE_PATHRECOVERY':
-      actionMsg = 'path recovered';
-      actionIcon = 'ti-ruler-alt';
-      break;
     case 'PAGE_DELETE':
       actionMsg = 'deleted';
       actionIcon = 'icon-trash';
