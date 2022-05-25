@@ -1,4 +1,4 @@
-export const IPageActionType = {
+export const PageActionType = {
   Rename: 'Rename',
   Duplicate: 'Duplicate',
   Delete: 'Delete',
@@ -6,4 +6,4 @@ export const IPageActionType = {
   Revert: 'Revert',
   NormalizeParent: 'NormalizeParent',
 } as const;
-export type IPageActionType = typeof IPageActionType[keyof typeof IPageActionType]
+export type PageActionType = typeof PageActionType[keyof typeof PageActionType]
