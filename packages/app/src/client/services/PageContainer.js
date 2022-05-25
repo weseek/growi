@@ -1,22 +1,23 @@
+import { pagePathUtils } from '@growi/core';
+import * as entities from 'entities';
+import * as toastr from 'toastr';
 import { Container } from 'unstated';
 
 
-import * as entities from 'entities';
-import * as toastr from 'toastr';
-import { pagePathUtils } from '@growi/core';
-
-import loggerFactory from '~/utils/logger';
 import { EditorMode } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Post } from '../util/apiv3-client';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
-
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
+import { emojiMartData } from '../util/markdown-it/emoji-mart-data';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -120,7 +121,7 @@ export default class PageContainer extends Container {
     if (unlinkPageButton != null) {
       unlinkPageButton.addEventListener('click', async() => {
         try {
-          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          const res = await apiPost('/pages.unlink', { path });
           window.location.href = encodeURI(`${res.path}?unlinked=true`);
         }
         catch (err) {
@@ -194,10 +195,30 @@ export default class PageContainer extends Container {
     this.setState(newState);
   }
 
-  setTocHtml(tocHtml) {
+  async setTocHtml(tocHtml) {
     if (this.state.tocHtml !== tocHtml) {
-      this.setState({ tocHtml });
+      const tocHtmlWithEmoji = await this.colonsToEmoji(tocHtml);
+      this.setState({ tocHtml: tocHtmlWithEmoji });
     }
+  }
+
+  /**
+   *
+   * @param {*} html TOC html string
+   * @returns TOC html with emoji (emoji-mart) in URL
+   */
+  async colonsToEmoji(html) {
+    // Emoji colons matching
+    const colons = ':[a-zA-Z0-9-_+]+:';
+    // Emoji with skin tone matching
+    const skin = ':skin-tone-[2-6]:';
+    const colonsRegex = new RegExp(`(${colons}${skin}|${colons})`, 'g');
+    const emojiData = await emojiMartData();
+    return html.replace(colonsRegex, (index, match) => {
+      const emojiName = match.slice(1, -1);
+      return emojiData[emojiName];
+    });
+
   }
 
   /**
@@ -350,7 +371,7 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiv3Post('/pages/', params);
+    const res = await apiv3Post('/pages/', params);
     const { page, tags, revision } = res.data;
 
     return { page, tags, revision };
@@ -366,7 +387,7 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiPost('/pages.update', params);
+    const res = await apiPost('/pages.update', params);
     if (!res.ok) {
       throw new Error(res.error);
     }

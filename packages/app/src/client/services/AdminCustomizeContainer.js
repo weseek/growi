@@ -3,6 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminCustomizeContainer');
@@ -14,10 +15,9 @@ const DEFAULT_LOGO = '/images/logo.svg';
  */
 export default class AdminCustomizeContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
-    this.appContainer = appContainer;
     this.dummyCurrentTheme = 0;
     this.dummyCurrentThemeForError = 1;
 
@@ -83,7 +83,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async retrieveCustomizeData() {
     try {
-      const response = await this.appContainer.apiv3.get('/customize-setting/');
+      const response = await apiv3Get('/customize-setting/');
       const { customizeParams } = response.data;
 
       this.setState({
@@ -256,7 +256,7 @@ export default class AdminCustomizeContainer extends Container {
   async previewTheme(themeName) {
     try {
       // get theme asset path
-      const response = await this.appContainer.apiv3.get('/customize-setting/theme/asset-path', { themeName });
+      const response = await apiv3Get('/customize-setting/theme/asset-path', { themeName });
       const { assetPath } = response.data;
 
       const themeLink = document.getElementById('grw-theme-link');
@@ -284,7 +284,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeTheme() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/theme', {
+      const response = await apiv3Put('/customize-setting/theme', {
         themeType: this.state.currentTheme,
       });
       const { customizedParams } = response.data;
@@ -304,7 +304,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeFunction() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/function', {
+      const response = await apiv3Put('/customize-setting/function', {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
@@ -342,7 +342,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateHighlightJsStyle() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
+      const response = await apiv3Put('/customize-setting/highlight', {
         highlightJsStyle: this.state.currentHighlightJsStyleId,
         highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
       });
@@ -364,7 +364,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeTitle() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
+      const response = await apiv3Put('/customize-setting/customize-title', {
         customizeTitle: this.state.currentCustomizeTitle,
       });
       const { customizedParams } = response.data;
@@ -384,7 +384,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeHeader() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
+      const response = await apiv3Put('/customize-setting/customize-header', {
         customizeHeader: this.state.currentCustomizeHeader,
       });
       const { customizedParams } = response.data;
@@ -404,7 +404,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeCss() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
+      const response = await apiv3Put('/customize-setting/customize-css', {
         customizeCss: this.state.currentCustomizeCss,
       });
       const { customizedParams } = response.data;
@@ -425,7 +425,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeScript() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
+      const response = await apiv3Put('/customize-setting/customize-script', {
         customizeScript: this.state.currentCustomizeScript,
       });
       const { customizedParams } = response.data;

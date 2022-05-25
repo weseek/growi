@@ -2,6 +2,9 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -47,7 +50,7 @@ export default class PersonalContainer extends Container {
    */
   async retrievePersonalData() {
     try {
-      const response = await this.appContainer.apiv3.get('/personal-setting/');
+      const response = await apiv3Get('/personal-setting/');
       const { currentUser } = response.data;
       this.setState({
         name: currentUser.name,
@@ -90,7 +93,7 @@ export default class PersonalContainer extends Container {
    */
   async retrieveExternalAccounts() {
     try {
-      const response = await this.appContainer.apiv3.get('/personal-setting/external-accounts');
+      const response = await apiv3Get('/personal-setting/external-accounts');
       const { externalAccounts } = response.data;
 
       this.setState({ externalAccounts });
@@ -151,7 +154,7 @@ export default class PersonalContainer extends Container {
    */
   async updateBasicInfo() {
     try {
-      const response = await this.appContainer.apiv3.put('/personal-setting/', {
+      const response = await apiv3Put('/personal-setting/', {
         name: this.state.name,
         email: this.state.email,
         isEmailPublished: this.state.isEmailPublished,
@@ -181,7 +184,7 @@ export default class PersonalContainer extends Container {
    */
   async updateProfileImage() {
     try {
-      const response = await this.appContainer.apiv3.put('/personal-setting/image-type', {
+      const response = await apiv3Put('/personal-setting/image-type', {
         isGravatarEnabled: this.state.isGravatarEnabled,
       });
       const { userData } = response.data;
@@ -205,7 +208,7 @@ export default class PersonalContainer extends Container {
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
       formData.append('attachmentType', 'PROFILE_IMAGE');
-      const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
+      const response = await apiPost('/attachments.uploadProfileImage', formData);
       this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
     }
     catch (err) {
@@ -220,7 +223,7 @@ export default class PersonalContainer extends Container {
    */
   async deleteProfileImage() {
     try {
-      await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
+      await apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
       this.setState({ isUploadedPicture: false, uploadedPictureSrc: DEFAULT_IMAGE });
     }
     catch (err) {
@@ -235,7 +238,7 @@ export default class PersonalContainer extends Container {
    */
   async associateLdapAccount(account) {
     try {
-      await this.appContainer.apiv3.put('/personal-setting/associate-ldap', account);
+      await apiv3Put('/personal-setting/associate-ldap', account);
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -249,7 +252,7 @@ export default class PersonalContainer extends Container {
    */
   async disassociateLdapAccount(account) {
     try {
-      await this.appContainer.apiv3.put('/personal-setting/disassociate-ldap', account);
+      await apiv3Put('/personal-setting/disassociate-ldap', account);
     }
     catch (err) {
       this.setState({ retrieveError: err });
