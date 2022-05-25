@@ -3034,7 +3034,7 @@ class PageService {
       .exec();
 
     // inject page operation process info
-    const pages = await this.injectPageOperationProcessInfo(_pages);
+    const pages = await this.injectProcessInfoIntoPages(_pages);
 
     return pages;
   }
@@ -3064,7 +3064,7 @@ class PageService {
     });
 
     // inject page operation process info
-    const pages = await this.injectPageOperationProcessInfo(markedPages);
+    const pages = await this.injectProcessInfoIntoPages(markedPages);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3085,20 +3085,19 @@ class PageService {
 
   // Todo: change isProcessing dynamically
   // https://redmine.weseek.co.jp/issues/95971
-  async injectPageOperationProcessInfo(
+  async injectProcessInfoIntoPages(
       pages: (PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo, })[],
   ): Promise<(PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo})[]> {
 
-    const copyPages = [...pages];
     const pageOperations = await PageOperation.find({ actionType: PageActionType.Rename });
-    const pageOpTargetPageIds = pageOperations.map(op => op.page._id.toString());
 
-    for (const targetPageid of pageOpTargetPageIds) {
+    for (const pageOp of pageOperations) {
 
-      for (const pageItem of copyPages) {
+      for (const pageItem of pages) {
         const pageItemId = pageItem._id.toString();
+        const operatingPageId = pageOp.page._id.toString();
 
-        if (targetPageid === pageItemId) {
+        if (operatingPageId === pageItemId) {
           const pageOperationProcessInfo = {
             [PageActionType.Rename]: { isProcessing: true },
           };
@@ -3108,7 +3107,7 @@ class PageService {
         }
       }
     }
-    return copyPages;
+    return pages;
   }
 
 }
