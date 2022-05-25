@@ -47,10 +47,6 @@ class CommentService {
 
         const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
-
-        // TODO:   Send inAppNotification to mentioned users
-        // const mentionedUsers = await this.getMentionedUsers(savedComment.comment);
-        // await this.sendNotificationToMentionedUsers(mentionedUsers, activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -103,27 +99,19 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
+    // TODO get mentioned users from comment
+    // const mentionedUsers = await this.getMentionedUsers(page.event);
+    // targetUsers = targetUsers.concat(mentionedUsers);
     // Create and send notifications
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
-  private getMentionedUsers = async(comment: string) => {
-    // TODO extract users from comment
+  private getMentionedUsers = async(comment: Types.ObjectId) => {
+    // TODO extract users from comment model
     // Implement User model to find users ID
 
     // return User ObjectID array
-  }
-
-  private sendNotificationToMentionedUsers = async(mentionedUsers: Types.ObjectId[], activity:any, page:any) => {
-    // TODO implement inAppNotificationService with target mentioned users
-    // inAppNotificationService.upsertByActivity
-    // Call inAppNotificationService.emitSocketIo;
-  }
-
-  private getUserModel = () => {
-    // TODO get users model
-    // return users Model
   }
 
 }
