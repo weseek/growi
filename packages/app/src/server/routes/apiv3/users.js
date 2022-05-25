@@ -123,6 +123,7 @@ module.exports = (crowi) => {
 
   validator.usernames = [
     query('q').isString().withMessage('q is required'),
+    query('offset').optional().isInt().withMessage('offset must be a number'),
     query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
     query('options').optional().isString().withMessage('options must be string'),
   ];
@@ -941,6 +942,7 @@ module.exports = (crowi) => {
 
   router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
+    const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 10;
 
     try {
@@ -948,24 +950,24 @@ module.exports = (crowi) => {
       const data = {};
 
       if (options.isIncludeActiveUsernames == null || options.isIncludeActiveUsernames) {
-        const activeUserData = await User.findUserByUsernameRegex(q, [User.STATUS_ACTIVE]);
+        const activeUserData = await User.findUserByUsernameRegex(q, [User.STATUS_ACTIVE], { offset, limit });
         const activeUsernames = activeUserData.users.map(user => user.username);
         Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
       }
 
       if (options.isIncludeInactiveUsernames) {
         const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
-        const inactiveUserData = await User.findUserByUsernameRegex(q, inactiveUserStates);
+        const inactiveUserData = await User.findUserByUsernameRegex(q, inactiveUserStates, { offset, limit });
         const inactiveUsernames = inactiveUserData.users.map(user => user.username);
         Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
       }
 
       if (options.isIncludeActivitySnapshotUsernames && req.user.admin) {
-        const activitySnapshotUserData = await Activity.getSnapshotUsernames(q);
+        const activitySnapshotUserData = await Activity.getSnapshotUsernames(q, { offset, limit });
         Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
       }
 
-      return res.apiv3({ data });
+      return res.apiv3(data);
     }
     catch (err) {
       logger.error('failed to get usernames', err);
