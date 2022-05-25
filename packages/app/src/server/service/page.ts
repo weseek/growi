@@ -3091,20 +3091,18 @@ class PageService {
 
     const pageOperations = await PageOperation.find({ actionType: PageActionType.Rename });
 
-    for (const pageOp of pageOperations) {
+    const operatingPageIds = pageOperations.map(pageOp => pageOp.page._id.toString());
 
-      for (const pageItem of pages) {
-        const pageItemId = pageItem._id.toString();
-        const operatingPageId = pageOp.page._id.toString();
+    for (const pageItem of pages) {
+      const pageItemId = pageItem._id.toString();
 
-        if (operatingPageId === pageItemId) {
-          const pageOperationProcessInfo = {
-            [PageActionType.Rename]: { isProcessing: true },
-          };
-          pageItem.pageOperationProcessInfo = pageOperationProcessInfo;
+      if (operatingPageIds.includes(pageItemId)) {
+        const pageOperationProcessInfo = {
+          [PageActionType.Rename]: { isProcessing: true },
+        };
+        pageItem.pageOperationProcessInfo = pageOperationProcessInfo;
 
-          break;
-        }
+        break;
       }
     }
     return pages;
