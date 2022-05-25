@@ -20,6 +20,7 @@ type usernameRequertOptions = {
   isIncludeActiveUsernames?: boolean,
   isIncludeInactiveUsernames?: boolean,
   isIncludeActivitySnapshotUsernames?: boolean,
+  isIncludeMixedUsernames?: boolean,
 }
 
 type userData = {
@@ -31,6 +32,7 @@ type usernameResponse = {
   activeUser?: userData
   inactiveUser?: userData
   activitySnapshotUser?: userData
+  mixedUsernames: string[]
 }
 
 export const useSWRxUsernames = (q: string, offset?: number, limit?: number, options?: usernameRequertOptions): SWRResponse<usernameResponse, Error> => {

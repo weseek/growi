@@ -967,6 +967,14 @@ module.exports = (crowi) => {
         Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
       }
 
+      // eslint-disable-next-line max-len
+      const canIncludeMixedUsernames = (options.isIncludeMixedUsernames && req.user.admin) || (options.isIncludeMixedUsernames && !options.isIncludeActivitySnapshotUsernames);
+      if (canIncludeMixedUsernames) {
+        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || [], ...data?.activitySnapshotUser?.usernames || []];
+        const distinctUsernames = Array.from(new Set(allUsernames));
+        Object.assign(data, { mixedUsernames: distinctUsernames });
+      }
+
       return res.apiv3(data);
     }
     catch (err) {
