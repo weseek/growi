@@ -15,16 +15,8 @@ import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
 import * as userActivation from './user-activation';
 
-const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
-  message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
-});
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -76,11 +68,11 @@ module.exports = function(crowi, app) {
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
-  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
+  app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
+  app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
@@ -90,7 +82,7 @@ module.exports = function(crowi, app) {
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , apiLimiter , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, installer.install);
+    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, installer.install);
     return;
   }
 
@@ -107,7 +99,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
-  app.post('/_api/login/testLdap'    , apiLimiter , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // security admin
   app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
@@ -226,15 +218,15 @@ module.exports = function(crowi, app) {
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
     .get('/', forgotPassword.forgotPassword)
-    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
+    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleErrosMiddleware));
 
   app.use('/_private-legacy-pages', express.Router()
     .get('/', injectUserUISettings, privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
-    .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
+    .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
-  app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
+  app.post('/user-activation/register', applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
 
