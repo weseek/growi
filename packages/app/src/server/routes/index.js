@@ -15,16 +15,8 @@ import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
 import * as userActivation from './user-activation';
 
-// const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
-
-// const apiLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 10, // limit each IP to 10 requests per windowMs
-//   message:
-//     'Too many requests sent from this IP, please try again after 15 minutes',
-// });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
