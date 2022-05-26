@@ -1,12 +1,13 @@
 import useSWR, { SWRResponse } from 'swr';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRImmutable from 'swr/immutable';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
 } from '~/interfaces/page';
+import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiGet } from '../client/util/apiv1-client';
@@ -145,4 +146,27 @@ export const useSWRxPageInfoForList = (
       });
     },
   };
+};
+
+/*
+ * Grant normalization fetching hooks
+ */
+export const useSWRxIsGrantNormalized = (
+    pageId: string | null | undefined,
+): SWRResponse<IResIsGrantNormalized, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/is-grant-normalized', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export const useSWRxApplicableGrant = (
+    pageId: string | null | undefined,
+): SWRResponse<IRecordApplicableGrant, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/applicable-grant', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
 };

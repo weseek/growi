@@ -742,13 +742,20 @@ export const getPageSchema = (crowi) => {
 
     // update existing page
     let savedPage = await pageData.save();
-    const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
-    savedPage = await pushRevision(savedPage, newRevision, user);
-    await savedPage.populateDataToShowRevision();
 
-    if (isSyncRevisionToHackmd) {
-      savedPage = await this.syncRevisionToHackmd(savedPage);
+    // Update revision
+    const isBodyPresent = body != null && previousBody != null;
+    const shouldUpdateBody = isBodyPresent;
+    if (shouldUpdateBody) {
+      const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
+      savedPage = await pushRevision(savedPage, newRevision, user);
+      await savedPage.populateDataToShowRevision();
+
+      if (isSyncRevisionToHackmd) {
+        savedPage = await this.syncRevisionToHackmd(savedPage);
+      }
     }
+
 
     pageEvent.emit('update', savedPage, user);
 
