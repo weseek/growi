@@ -33,7 +33,6 @@ const EditorNavbarBottom = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels('/aa');
-  const { data: slackChannelsHoge, mutate: mutateSlackChannelsHoge } = useSlackChannels();
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
   const [slackChannels, setSlackChannels] = useState<string>('');
@@ -51,8 +50,7 @@ const EditorNavbarBottom = (props) => {
 
   const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
     setSlackChannels(slackChannels);
-    mutateSlackChannelsHoge(slackChannels);
-  }, [mutateSlackChannelsHoge]);
+  }, []);
 
 
   const renderDrawerButton = () => (
