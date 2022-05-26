@@ -551,7 +551,7 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  router.put('/path-recovery-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
+  router.post('/path-recovery-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
 
     const { pageId } = req.body;
     try {
