@@ -15,13 +15,6 @@
   "Move/Rename": "Move/Rename",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
-  "Like!": "Like!",
-  "cancel_like": "Cancel like",
-  "bookmark": "Bookmark",
-  "cancel_bookmark": "Cancel Bookmark",
-  "subscribe": "Receive notifications",
-  "cancel_subscribe": "No notification",
-  "Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
@@ -1080,5 +1073,14 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
+  },
+  "tooltip": {
+    "like": "Like!",
+    "cancel_like": "Cancel Like",
+    "bookmark": "Bookmark",
+    "cancel_bookmark": "Cancel Bookmark",
+    "subscribe": "Receive Notifications",
+    "cancel_subscribe": "No Notification",
+    "footprints": "Footprints"
   }
 }

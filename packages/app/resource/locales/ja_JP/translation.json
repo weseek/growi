@@ -15,13 +15,6 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
-  "Like!": "いいね！",
-  "cancel_like": "いいねを取り消す",
-  "bookmark": "ブックマーク",
-  "cancel_bookmark": "ブックマークを取り消す",
-  "subscribe": "通知を受け取る",
-  "cancel_subscribe": "通知をしない",
-  "Seen by": "見た人",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -1073,5 +1066,14 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
+  },
+  "tooltip": {
+    "like": "いいね！",
+    "cancel_like": "いいねを取り消す",
+    "bookmark": "ブックマーク",
+    "cancel_bookmark": "ブックマークを取り消す",
+    "subscribe": "通知を受け取る",
+    "cancel_subscribe": "通知をしない",
+    "footprints": "あしあと"
   }
 }

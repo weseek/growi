@@ -16,13 +16,6 @@
 	"Move/Rename": "移动/重命名",
 	"Redirected": "重定向",
 	"Unlinked": "Unlinked",
-	"Like!": "Like!",
-  "cancel_like": "取消“喜欢",
-  "bookmark": "书签",
-  "cancel_bookmark": "取消书签",
-  "subscribe": "接收通知",
-  "cancel_subscribe": "不通知",
-	"Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
@@ -1083,5 +1076,14 @@
     "select_group": "选择组别",
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
+  },
+  "tooltip": {
+    "like": "很好!",
+    "cancel_like": "取消喜欢",
+    "bookmark": "书签",
+    "cancel_bookmark": "取消书签",
+    "subscribe": "接收通知",
+    "cancel_subscribe": "不通知",
+    "footprints": "脚印"
   }
 }
