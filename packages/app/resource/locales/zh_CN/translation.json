@@ -952,6 +952,8 @@
     },
     "by_path_modal": {
       "title": "转换为新的v5兼容格式",
+      "alert": "这一操作不能被撤销，用户不能查看的页面也要进行处理。",
+      "checkbox_label": "明白了",
       "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
       "button_label": "转换",
       "success": "成功地请求转换。",
@@ -1079,5 +1081,30 @@
     "select_group": "选择组别",
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "无法找到可选择的权限列表。 请先修改父页的权限，然后再试一次。",
+      "need_to_fix_grant": "为了正确使用该功能，需要修改与该页面相关的权限。 <br> 请从以下选项中选择进行更改。",
+      "grant_label": {
+        "isForbidden": "无权查看的机构",
+        "currentPageGrantLabel": "本页的权限: ",
+        "parentPageGrantLabel": "父页的权限: ",
+        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>此链接</a>"
+      },
+      "radio_btn": {
+        "restrected": "只有那些知道链接的人",
+        "only_me": "只对自己说",
+        "grant_group": "仅限特定群体"
+      },
+      "select_group_default_text": "选择组别",
+      "alert_message_select_group": "未选择组别",
+      "btn_label": "蜕变",
+      "title": "修改后的授权书"
+    },
+    "alert": {
+      "description": "本页的授权设置需要修改。",
+      "btn_label": "修改"
+    }
   }
 }

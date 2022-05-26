@@ -2,18 +2,16 @@ import React, {
   UIEventHandler, useCallback, useEffect, useMemo, useState,
 } from 'react';
 
-import { Subscribe } from 'unstated';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-import RevisionBody from '../Page/RevisionBody';
 
 import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
+import { useEditorSettings } from '~/stores/editor';
+
+import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 type Props = {
   appContainer: AppContainer,
-  editorContainer: EditorContainer,
 
   markdown?: string,
   pagePath?: string,
@@ -35,6 +33,8 @@ const Preview = (props: Props): JSX.Element => {
 
   const [html, setHtml] = useState('');
 
+  const { data: editorSettings } = useEditorSettings();
+
   const { interceptorManager } = appContainer;
   const growiRenderer = props.appContainer.getRenderer('editor');
 
@@ -42,10 +42,11 @@ const Preview = (props: Props): JSX.Element => {
     return {
       markdown,
       pagePath,
+      editorSettings,
       currentPathname: decodeURIComponent(window.location.pathname),
       parsedHTML: null,
     };
-  }, [markdown, pagePath]);
+  }, [markdown, pagePath, editorSettings]);
 
   const renderPreview = useCallback(async() => {
     if (interceptorManager != null) {
@@ -85,21 +86,17 @@ const Preview = (props: Props): JSX.Element => {
   }, [context, html, interceptorManager]);
 
   return (
-    <Subscribe to={[EditorContainer]}>
-      { editorContainer => (
-        <div
-          className="page-editor-preview-body"
-          ref={inputRef}
-          onScroll={onScroll}
-        >
-          <RevisionBody
-            {...props}
-            html={html}
-            renderMathJaxInRealtime={editorContainer.state.previewOptions.renderMathJaxInRealtime}
-          />
-        </div>
-      ) }
-    </Subscribe>
+    <div
+      className="page-editor-preview-body"
+      ref={inputRef}
+      onScroll={onScroll}
+    >
+      <RevisionBody
+        {...props}
+        html={html}
+        renderMathJaxInRealtime={editorSettings?.renderMathJaxInRealtime}
+      />
+    </div>
   );
 
 };

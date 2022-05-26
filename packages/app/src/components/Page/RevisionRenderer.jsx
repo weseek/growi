@@ -1,13 +1,17 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { blinkElem } from '~/client/util/blink-section-header';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { useEditorSettings } from '~/stores/editor';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from './RevisionBody';
+
 import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
@@ -29,6 +33,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
+      editorSettings: this.editorSettings,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
@@ -173,6 +178,7 @@ LegacyRevisionRenderer.propTypes = {
   pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
+  editorSettings: PropTypes.any,
 };
 
 /**
@@ -183,7 +189,13 @@ const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRende
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const RevisionRenderer = (props) => {
-  return <LegacyRevisionRendererWrapper {...props} />;
+  const { data: editorSettings } = useEditorSettings();
+
+  if (editorSettings == null) {
+    return <></>;
+  }
+
+  return <LegacyRevisionRendererWrapper {...props} editorSettings={editorSettings} />;
 };
 
 RevisionRenderer.propTypes = {
