@@ -116,8 +116,9 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
   return paginateResult;
 };
 
-// eslint-disable-next-line max-len
-activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(q: string, option: { sortOpt: number | string, offset: number, limit: number}): Promise<{usernames: string[], totalCount: number}> {
+activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(
+    q: string, option: { sortOpt: number | string, offset: number, limit: number},
+): Promise<{usernames: string[], totalCount: number}> {
   const opt = option || {};
   const sortOpt = opt.sortOpt || 1;
   const offset = opt.offset || 0;
