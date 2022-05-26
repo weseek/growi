@@ -5,14 +5,11 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
+import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import { useCurrentUser, useDefaultIndentSize, useIsGuestUser } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-
-export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
-};
 
 
 type EditorSettingsOperation = {
@@ -72,10 +69,18 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
   );
 };
 
+/*
+* Slack Notification
+*/
+
+export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
+};
+
 export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {
   const shouldFetch: boolean = path != null;
   return useSWR(
     shouldFetch ? ['/pages.updatePost', path] : null,
-    (endpoint, path) => apiGet(endpoint, { path }).then((response: {[updatePost: string]: string[]}) => response.updatePost),
+    (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
   );
 };
