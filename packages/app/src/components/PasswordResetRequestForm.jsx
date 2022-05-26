@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 
@@ -23,7 +26,7 @@ const PasswordResetRequestForm = (props) => {
     }
 
     try {
-      await appContainer.apiv3Post('/forgot-password', { email });
+      await apiv3Post('/forgot-password', { email });
       toastSuccess(t('forgot_password.success_to_send_email'));
     }
     catch (err) {

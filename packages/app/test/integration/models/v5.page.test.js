@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
@@ -7,7 +8,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -35,7 +35,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
