@@ -42,11 +42,11 @@ const Preview = (props: Props): JSX.Element => {
     return {
       markdown,
       pagePath,
-      editorSettings,
+      renderDrawioInRealtime: editorSettings?.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
       parsedHTML: null,
     };
-  }, [markdown, pagePath, editorSettings]);
+  }, [markdown, pagePath, editorSettings?.renderDrawioInRealtime]);
 
   const renderPreview = useCallback(async() => {
     if (interceptorManager != null) {
