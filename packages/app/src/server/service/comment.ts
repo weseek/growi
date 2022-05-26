@@ -7,7 +7,8 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
-const USERNAME_PATTERN = new RegExp(/@[\w@.-]+/g);
+// https://regex101.com/r/Ztxj2j/1
+const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 
 const logger = loggerFactory('growi:service:CommentService');
 
