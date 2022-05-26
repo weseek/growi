@@ -128,10 +128,11 @@ activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(
 
   const usernames = await this.aggregate()
     .skip(offset)
-    .limit(limit)
+    .limit(10000)
     .match(conditions)
     .group({ _id: '$snapshot.username' })
-    .sort({ _id: sortOpt }); // Sort "snapshot.username" in ascending order
+    .sort({ _id: sortOpt }) // Sort "snapshot.username" in ascending order
+    .limit(limit);
 
   const totalCount = (await this.find(conditions).distinct('snapshot.username')).length;
 
