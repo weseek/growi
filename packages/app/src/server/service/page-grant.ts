@@ -430,7 +430,6 @@ class PageGrantService {
       return data;
     }
 
-    // -- Public is not applicable below
     const parent = await Page.findById(page.parent);
     if (parent == null) {
       throw Error('The page\'s parent does not exist.');
@@ -462,7 +461,11 @@ class PageGrantService {
 
       const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
 
-      data[Page.GRANT_OWNER] = null;
+      const isUserExistInGroup = await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+
+      if (isUserExistInGroup) {
+        data[Page.GRANT_OWNER] = null;
+      }
       data[Page.GRANT_USER_GROUP] = { applicableGroups };
     }
 
