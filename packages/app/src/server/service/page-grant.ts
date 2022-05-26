@@ -227,7 +227,7 @@ class PageGrantService {
      */
     const builderForAncestors = new PageQueryBuilder(Page.find(), false);
     if (!includeNotMigratedPages) {
-      builderForAncestors.addConditionAsMigrated();
+      builderForAncestors.addConditionAsOnTree();
     }
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)

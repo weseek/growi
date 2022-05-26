@@ -248,14 +248,14 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
-    // reset
+    // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP && grant !== GRANT_RESTRICTED) {
-      this.grantedUsers.push(user._id);
+    if (grant === GRANT_OWNER) {
+      this.grantedUsers.push(user?._id ?? user);
     }
 
     if (grant === GRANT_USER_GROUP) {
