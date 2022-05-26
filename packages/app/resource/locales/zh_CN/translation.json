@@ -1082,8 +1082,8 @@
     "cancel_like": "取消喜欢",
     "bookmark": "书签",
     "cancel_bookmark": "取消书签",
-    "subscribe": "接收通知",
-    "cancel_subscribe": "不通知",
+    "receive_notifications": "接收通知",
+    "stop_notification": "停止通知",
     "footprints": "脚印"
   }
 }

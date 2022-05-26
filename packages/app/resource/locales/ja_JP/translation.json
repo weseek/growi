@@ -1072,8 +1072,8 @@
     "cancel_like": "いいねを取り消す",
     "bookmark": "ブックマーク",
     "cancel_bookmark": "ブックマークを取り消す",
-    "subscribe": "通知を受け取る",
-    "cancel_subscribe": "通知をしない",
-    "footprints": "あしあと"
+    "receive_notifications": "通知を受け取る",
+    "stop_notification": "通知を止める",
+    "footprints": "足跡"
   }
 }

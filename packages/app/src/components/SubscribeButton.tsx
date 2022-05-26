@@ -27,9 +27,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     }
 
     if (isSubscribing) {
-      return 'tooltip.cancel_subscribe';
+      return 'tooltip.stop_notification';
     }
-    return 'tooltip.subscribe';
+    return 'tooltip.receive_notifications';
   }, [isGuestUser, isSubscribing]);
 
   return (

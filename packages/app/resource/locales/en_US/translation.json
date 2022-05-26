@@ -1079,8 +1079,8 @@
     "cancel_like": "Cancel Like",
     "bookmark": "Bookmark",
     "cancel_bookmark": "Cancel Bookmark",
-    "subscribe": "Receive Notifications",
-    "cancel_subscribe": "No Notification",
+    "receive_notifications": "Receive Notifications",
+    "stop_notification": "Stop Notification",
     "footprints": "Footprints"
   }
 }
