@@ -33,7 +33,6 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
-      renderMathJaxInRealtime: this.props.editorSettings.renderMathJaxInRealtime,
       renderDrawioInRealtime: this.props.editorSettings.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
