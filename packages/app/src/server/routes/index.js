@@ -18,6 +18,7 @@ import * as userActivation from './user-activation';
 const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -25,6 +26,13 @@ const apiLimiter = rateLimit({
   message:
     'Too many requests sent from this IP, please try again after 15 minutes',
 });
+
+const opts = {
+  points: 10, // set default value
+  duration: 100, // set default value
+};
+
+const rateLimiter = new RateLimiterMemory(opts);
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -53,6 +61,7 @@ module.exports = function(crowi, app) {
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
+  const apiRateLimiter = require('../middlewares/api-rate-limiter')(crowi, rateLimiter);
 
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
@@ -70,6 +79,9 @@ module.exports = function(crowi, app) {
 
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
+
+  // API rate limiter
+  app.use(apiRateLimiter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
