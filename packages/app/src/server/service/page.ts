@@ -594,6 +594,37 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  async resumeRenameSubOperation(user: any, pageId: ObjectIdLike): Promise<void> {
+    if (user == null) {
+      throw Error('Guest user cannot execute this operation');
+    }
+
+    // findOne PageOperation
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': pageId };
+    const pageOp = await PageOperation.findOne(filter);
+    if (pageOp == null) {
+      throw Error('There is nothing to be processed right now');
+    }
+
+    const { page, toPath, options } = pageOp;
+
+    // check property
+    if (toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+    }
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    // findOne renamed page
+    const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs renamed page
+    if (renamedPage == null) {
+      throw Error(`Renamed page(${page._id} is not found)`);
+    }
+
+    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+
+  }
+
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
     const pathToTest = escapeStringRegexp(addTrailingSlash(fromPath));
     const pathToBeTested = toPath;

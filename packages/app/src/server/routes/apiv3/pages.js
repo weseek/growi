@@ -551,6 +551,19 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
+  router.put('/path-recovery-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
+
+    const { pageId } = req.body;
+    try {
+      await crowi.pageService.resumeRenameSubOperation(req.user, pageId);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3(`Failed to resume rename operation. ${err}`), 500);
+    }
+    return res.apiv3();
+  });
+
   /**
    * @swagger
    *
