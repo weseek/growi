@@ -36,7 +36,7 @@ const EditorNavbarBottom = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
-  const [slackChannels, setSlackChannels] = useState<string>('');
+  const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
   const isSlackEnabledToggleHandler = useCallback(
     (bool: boolean) => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
@@ -44,13 +44,13 @@ const EditorNavbarBottom = (props) => {
 
   useEffect(() => {
     if (slackChannelsData != null) {
-      setSlackChannels(slackChannelsData[0]);
+      setSlackChannelsStr(slackChannelsData.toString());
     }
   }, [slackChannelsData]);
 
 
   const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
-    setSlackChannels(slackChannels);
+    setSlackChannelsStr(slackChannels);
   }, []);
 
 
@@ -87,7 +87,7 @@ const EditorNavbarBottom = (props) => {
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
               isSlackEnabled={isSlackEnabled ?? false}
-              slackChannels={slackChannels}
+              slackChannels={slackChannelsStr}
               onEnabledFlagChange={isSlackEnabledToggleHandler}
               onChannelChange={slackChannelsChangedHandler}
               id="idForEditorNavbarBottomForMobile"
@@ -118,14 +118,14 @@ const EditorNavbarBottom = (props) => {
             <div className="mr-2">
               <SlackNotification
                 isSlackEnabled={isSlackEnabled ?? false}
-                slackChannels={slackChannels}
+                slackChannels={slackChannelsStr}
                 onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
                 id="idForEditorNavbarBottom"
               />
             </div>
           ))}
-          <SavePageControls slackChannels={slackChannels} />
+          <SavePageControls slackChannels={slackChannelsStr} />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
