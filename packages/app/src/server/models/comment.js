@@ -95,7 +95,7 @@ module.exports = function(crowi) {
   };
 
   commentSchema.statics.findCommentById = async function(commentId) {
-    return this.findOne({ commentId });
+    return this.findOne({ _id: commentId });
   };
 
   /**

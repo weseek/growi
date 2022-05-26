@@ -7,6 +7,7 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
+const USERNAME_PATTERN = new RegExp(/@[\w@.-]+/g);
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -99,18 +100,32 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // TODO get mentioned users from comment
-    // const mentionedUsers = await this.getMentionedUsers(page.event);
-    // targetUsers = targetUsers.concat(mentionedUsers);
-    // Create and send notifications
+    // Add mentioned users to targetUsers
+    const mentionedUsers = await this.getMentionedUsers(activity.event);
+    targetUsers = targetUsers.concat(mentionedUsers);
+
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
-  getMentionedUsers = async(commentId: Types.ObjectId) => {
+  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
     const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
-    const comment = await Comment.findCommentById(commentId);
-    // TODO  get users from comment
+    const User = getModelSafely('User') || require('../models/user')(this.crowi);
+
+    // Get comment by comment ID
+    const commentData = await Comment.findCommentById(commentId);
+    const { comment } = commentData;
+
+    // Get username from comment
+    const mentionedUsernames = comment.match(USERNAME_PATTERN)?.map((username) => {
+      return username.slice(1);
+    });
+
+    // Get mentioned users ID
+    const mentionedUserIDs = await User.findUserByUsernames(mentionedUsernames);
+    return mentionedUserIDs?.map((user) => {
+      return user._id;
+    });
   }
 
 }
