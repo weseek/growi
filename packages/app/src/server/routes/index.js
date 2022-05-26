@@ -20,8 +20,8 @@ const autoReap = require('multer-autoreap');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const opts = {
-  points: 6, // 6 points
-  duration: 1, // Per second
+  points: 100, // set default value
+  duration: 1, // set default value
 };
 
 const rateLimiter = new RateLimiterMemory(opts);
@@ -39,6 +39,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
+  const apiRateLimiter = require('../middlewares/api-rate-limiter')(rateLimiter, 10);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const page = require('./page')(crowi, app);
@@ -53,7 +54,6 @@ module.exports = function(crowi, app) {
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
-  const apiRateLimiter = require('../middlewares/api-rate-limiter')(crowi, rateLimiter);
 
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);

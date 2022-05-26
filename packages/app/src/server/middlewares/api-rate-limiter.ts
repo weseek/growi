@@ -1,34 +1,35 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request } from 'express';
 
 import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
 
-module.exports = (crowi, rateLimiter) => {
 
-  return async(req: Request, res: Response, next: NextFunction) => {
+// API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
+// API_RATE_LIMIT_010_FOO_METHODS=GET,POST
+// API_RATE_LIMIT_010_FOO_CONSUME_POINTS=10
+
+module.exports = (rateLimiter, defaultPoints: number) => {
+
+  return async(req: Request, next: NextFunction) => {
 
     const endpoint = req.url.replace(/\?.*$/, '');
     const key = req.ip + endpoint;
 
-    const defaultPoints = 10;
-
     const consumePoints = async(points: number = defaultPoints) => {
       await rateLimiter.consume(key, points)
         .then(() => {
-          logger.info(`${key}: consume 2 points!!!`);
-          return next();
+          next();
         })
         .catch(() => {
-          logger.error(`${key}: point is not enough!`);
-          return next();
+          logger.error(`too many request at ${endpoint}`);
         });
     };
 
-    // pick up API_RATE_LIMIT_*_ENDPOINT from env var
+    // pick up API_RATE_LIMIT_*_ENDPOINT from ENV
     const apiRateEndpointKeys = Object.keys(process.env).filter((key) => {
-      const endpointRegExp = /^API_RATE_LIMIT_*_ENDPOINT/;
+      const endpointRegExp = /^API_RATE_LIMIT_.*_ENDPOINT/;
       return endpointRegExp.test(key);
     });
 
@@ -36,12 +37,10 @@ module.exports = (crowi, rateLimiter) => {
       return process.env[key] === endpoint;
     });
 
-    // return default
     if (matchedEndpointKeys.length === 0) {
-      logger.info(`endpoint: ${endpoint} => return default api limit1`);
       await consumePoints();
+      return;
     }
-
 
     let prioritizedTarget: [string, string] | null = null; // priprity and keyword
     matchedEndpointKeys.forEach((key) => {
@@ -54,7 +53,6 @@ module.exports = (crowi, rateLimiter) => {
     });
 
     if (prioritizedTarget === null) {
-      logger.info(`endpoint: ${endpoint} => return default api limit2`);
       await consumePoints();
       return;
     }
@@ -63,16 +61,14 @@ module.exports = (crowi, rateLimiter) => {
     const targetConsumePointsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_CONSUME_POINTS`;
 
     const targetMethods = process.env[targetMethodsKey];
-    if (targetMethods === undefined || targetMethods.includes(req.method)) {
+    if (targetMethods === undefined || !targetMethods.includes(req.method)) {
       await consumePoints();
       return;
     }
 
     const customizedConsumePoints = process.env[targetConsumePointsKey];
-    if (typeof customizedConsumePoints !== 'number') {
-      await consumePoints();
-    }
 
     await consumePoints(Number(customizedConsumePoints));
+    return;
   };
 };
