@@ -114,16 +114,18 @@ class CommentService {
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 
     // Get comment by comment ID
-    const commentData = await Comment.findCommentById(commentId);
+    const commentData = await Comment.findOne({ _id: commentId });
     const { comment } = commentData;
 
-    // Get username from comment
-    const mentionedUsernames = comment.match(USERNAME_PATTERN)?.map((username) => {
+    const usernamesFromComment = comment.match(USERNAME_PATTERN);
+
+    // Get username from comment and remove duplicate username
+    const mentionedUsernames = [...new Set(usernamesFromComment?.map((username) => {
       return username.slice(1);
-    });
+    }))];
 
     // Get mentioned users ID
-    const mentionedUserIDs = await User.findUserByUsernames(mentionedUsernames);
+    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
