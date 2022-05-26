@@ -163,10 +163,10 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
           <input
             className="form-check-input"
             type="checkbox"
-            id="understoodLabel"
+            id="understoodCheckbox"
             onChange={e => setChecked(e.target.checked)}
           />
-          <label className="form-check-label" htmlFor="understoodLabel">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+          <label className="form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
         </div>
         <button
           type="button"
