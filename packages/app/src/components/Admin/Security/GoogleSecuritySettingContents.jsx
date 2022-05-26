@@ -1,14 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GoogleSecurityManagementContents extends React.Component {
 
@@ -135,8 +137,8 @@ class GoogleSecurityManagementContents extends React.Component {
                     id="bindByUserNameGoogle"
                     className="custom-control-input"
                     type="checkbox"
-                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                    onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
+                    onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
                     className="custom-control-label"
