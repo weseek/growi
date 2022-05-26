@@ -584,36 +584,34 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenamePageOperation(user: any): Promise<void> {
+  async resumeRenameSubOperation(user: any, pageId: ObjectIdLike): Promise<void> {
     if (user == null) {
       throw Error('Guest user cannot execute this operation');
     }
 
-    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub };
-    const pageOps = await PageOperation.find(filter);
-
-    if (pageOps == null || pageOps.length === 0) {
+    // findOne PageOperation
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': pageId };
+    const pageOp = await PageOperation.findOne(filter);
+    if (pageOp == null) {
       throw Error('There is nothing to be processed right now');
     }
 
+    const { page, toPath, options } = pageOp;
+
+    // check property
+    if (toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
-    // resume multiple rename operations parallelly
-    await Promise.all(pageOps.map(async(pageOp) => {
-      const {
-        page, toPath, options,
-      } = pageOp;
 
-      if (toPath == null) {
-        throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
-      }
+    // findOne renamed page
+    const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs renamed page
+    if (renamedPage == null) {
+      throw Error(`Renamed page(${page._id} is not found)`);
+    }
 
-      const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs updated page
-      if (renamedPage == null) {
-        throw Error(`Renamed page(${page._id} is not found)`);
-      }
-
-      this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
-    }));
+    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
 
   }
 
