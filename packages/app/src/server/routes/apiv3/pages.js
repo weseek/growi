@@ -551,9 +551,11 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  router.post('/resume-rename-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
+  router.put('/path-recovery-operation', accessTokenParser, loginRequiredStrictly, csrf, apiV3FormValidator, async(req, res) => {
+
+    const { pageId } = req.body;
     try {
-      await crowi.pageService.resumeRenamePageOperation(req.user);
+      await crowi.pageService.resumeRenameSubOperation(req.user, pageId);
     }
     catch (err) {
       logger.error(err);
