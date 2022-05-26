@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react';
+
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
+
+import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -170,7 +173,7 @@ PermissionSettingForEachPermissionTypeComponent.propTypes = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcess = ({
-  apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions,
+  slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions,
 }) => {
   const { t } = useTranslation();
 
@@ -401,7 +404,6 @@ const ManageCommandsProcess = ({
 };
 
 ManageCommandsProcess.propTypes = {
-  apiv3Put: PropTypes.func,
   slackAppIntegrationId: PropTypes.string.isRequired,
   permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
   permissionsForSingleUseCommands: PropTypes.object.isRequired,

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
-
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 
 const isDarkMode = isDarkModeByUtil();
@@ -18,14 +19,14 @@ const CustomizeLayoutSetting = (props) => {
 
   const retrieveData = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/customize-setting/layout');
+      const res = await apiv3Get('/customize-setting/layout');
       setIsContainerFluid(res.data.isContainerFluid);
     }
     catch (err) {
       setRetrieveError(err);
       toastError(err);
     }
-  }, [appContainer]);
+  }, []);
 
   useEffect(() => {
     retrieveData();
@@ -33,7 +34,7 @@ const CustomizeLayoutSetting = (props) => {
 
   const onClickSubmit = async() => {
     try {
-      await appContainer.apiv3Put('/customize-setting/layout', { isContainerFluid });
+      await apiv3Put('/customize-setting/layout', { isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
       retrieveData();
     }

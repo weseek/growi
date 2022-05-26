@@ -1,6 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import path from 'path';
+
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -9,20 +12,17 @@ import {
   Popover,
   PopoverBody,
 } from 'reactstrap';
-
-import path from 'path';
 import validator from 'validator';
-import { withTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import Linker from '~/client/models/Linker';
+import PageContainer from '~/client/services/PageContainer';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
-import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
+
+import PreviewWithSuspense from './PreviewWithSuspense';
 
 
 class LinkEditModal extends React.PureComponent {
@@ -164,7 +164,7 @@ class LinkEditModal extends React.PureComponent {
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { data } = await this.props.appContainer.apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
+        const { data } = await apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
         const { page } = data;
         markdown = page.revision.body;
         pagePath = page.path;
@@ -460,7 +460,6 @@ class LinkEditModal extends React.PureComponent {
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
@@ -468,6 +467,6 @@ LinkEditModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
 
 export default withTranslation('translation', { withRef: true })(LinkEditModalWrapper);

@@ -1,11 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
+
+import { apiv3Get } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 /**
  * Page staff credit component
@@ -86,7 +88,7 @@ class StaffCredit extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await this.props.appContainer.apiv3Get('/staffs');
+    const res = await apiv3Get('/staffs');
     const contributors = res.data.contributors;
     this.setState({ contributors });
 
@@ -134,11 +136,8 @@ class StaffCredit extends React.Component {
 
 }
 
-const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
-
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default StaffCreditWrapper;
+export default StaffCredit;
