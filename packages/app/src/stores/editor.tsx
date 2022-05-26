@@ -1,7 +1,9 @@
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 
 import { useCurrentUser, useDefaultIndentSize, useIsGuestUser } from './context';
@@ -67,5 +69,13 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
     defaultIndentSize == null ? null : 'currentIndentSize',
     undefined,
     { fallbackData: defaultIndentSize },
+  );
+};
+
+export const useSWRxSlackChannels = (path: string): SWRResponse<Nullable<string>, Error> => {
+  const shouldFetch: boolean = path != null;
+  return useSWRImmutable(
+    shouldFetch ? ['/pages.updatePost', path] : null,
+    (endpoint, path) => apiGet(endpoint, { path }).then(response => response.updatePost),
   );
 };

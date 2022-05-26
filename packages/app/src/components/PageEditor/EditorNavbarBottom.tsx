@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { Collapse, Button } from 'reactstrap';
+
 
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -31,17 +32,28 @@ const EditorNavbarBottom = (props) => {
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsNew } = useSWRxSlackChannels('/aa');
-  const { data: slackChannels, mutate: mutateSlackChannels } = useSlackChannels();
+  const { data: slackChannelsData } = useSWRxSlackChannels('/aa');
+  const { data: slackChannelsHoge, mutate: mutateSlackChannelsHoge } = useSlackChannels();
   const additionalClasses = ['grw-editor-navbar-bottom'];
+
+  const [slackChannels, setSlackChannels] = useState<string>('');
 
   const isSlackEnabledToggleHandler = useCallback(
     (bool: boolean) => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
   );
 
-  const slackChannelsChangedHandler = useCallback(
-    (slackChannels: string) => mutateSlackChannels(slackChannels), [mutateSlackChannels],
-  );
+  useEffect(() => {
+    if (slackChannelsData != null) {
+      setSlackChannels(slackChannelsData[0]);
+    }
+  }, [slackChannelsData]);
+
+
+  const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
+    setSlackChannels(slackChannels);
+    mutateSlackChannelsHoge(slackChannels);
+  }, [mutateSlackChannelsHoge]);
+
 
   const renderDrawerButton = () => (
     <button
@@ -76,7 +88,7 @@ const EditorNavbarBottom = (props) => {
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
               isSlackEnabled={isSlackEnabled ?? false}
-              slackChannels={slackChannelsNew && slackChannelsNew?.length > 0 ? slackChannelsNew[0] : ''}
+              slackChannels={slackChannels}
               onEnabledFlagChange={isSlackEnabledToggleHandler}
               onChannelChange={slackChannelsChangedHandler}
               id="idForEditorNavbarBottomForMobile"
@@ -107,14 +119,14 @@ const EditorNavbarBottom = (props) => {
             <div className="mr-2">
               <SlackNotification
                 isSlackEnabled={isSlackEnabled ?? false}
-                slackChannels={slackChannelsNew && slackChannelsNew?.length > 0 ? slackChannelsNew[0] : ''}
+                slackChannels={slackChannels}
                 onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
                 id="idForEditorNavbarBottom"
               />
             </div>
           ))}
-          <SavePageControls />
+          <SavePageControls slackChannels={slackChannels} />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
