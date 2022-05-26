@@ -40,9 +40,9 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     }
 
     if (isLiked) {
-      return 'cancel_like';
+      return 'tooltip.cancel_like';
     }
-    return 'Like!';
+    return 'tooltip.like';
   }, [isGuestUser, isLiked]);
 
   return (

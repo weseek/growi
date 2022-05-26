@@ -44,9 +44,9 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     }
 
     if (isBookmarked) {
-      return 'cancel_bookmark';
+      return 'tooltip.cancel_bookmark';
     }
-    return 'bookmark';
+    return 'tooltip.bookmark';
   }, [isGuestUser, isBookmarked]);
 
   return (
