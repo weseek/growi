@@ -7,28 +7,23 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 
 module.exports = (crowi, rateLimiter) => {
 
-  // API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
-  // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
-  // API_RATE_LIMIT_010_FOO_CONSUME_POINTS=100
-
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.url.replace(/\?.*$/, '');
     const key = req.ip + endpoint;
 
     const defaultPoints = 10;
 
-    const consumePoints = (points: number = defaultPoints) => {
-      rateLimiter.consume(key, points)
-        .then((rateLimiterRes) => {
+    const consumePoints = async(points: number = defaultPoints) => {
+      await rateLimiter.consume(key, points)
+        .then(() => {
           logger.info(`${key}: consume 2 points!!!`);
-          next();
+          return next();
         })
-        .catch((rateLimiterRes) => {
+        .catch(() => {
           logger.error(`${key}: point is not enough!`);
-          next();
+          return next();
         });
-      next();
     };
 
     // pick up API_RATE_LIMIT_*_ENDPOINT from env var
@@ -44,7 +39,7 @@ module.exports = (crowi, rateLimiter) => {
     // return default
     if (matchedEndpointKeys.length === 0) {
       logger.info(`endpoint: ${endpoint} => return default api limit1`);
-      consumePoints();
+      await consumePoints();
     }
 
 
@@ -60,8 +55,8 @@ module.exports = (crowi, rateLimiter) => {
 
     if (prioritizedTarget === null) {
       logger.info(`endpoint: ${endpoint} => return default api limit2`);
-      consumePoints();
-      return; // delete and find solution
+      await consumePoints();
+      return;
     }
 
     const targetMethodsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_METHODS`;
@@ -69,14 +64,15 @@ module.exports = (crowi, rateLimiter) => {
 
     const targetMethods = process.env[targetMethodsKey];
     if (targetMethods === undefined || targetMethods.includes(req.method)) {
-      consumePoints();
+      await consumePoints();
+      return;
     }
 
     const customizedConsumePoints = process.env[targetConsumePointsKey];
     if (typeof customizedConsumePoints !== 'number') {
-      consumePoints();
+      await consumePoints();
     }
 
-    consumePoints(Number(customizedConsumePoints));
+    await consumePoints(Number(customizedConsumePoints));
   };
 };
