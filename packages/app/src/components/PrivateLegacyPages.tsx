@@ -163,9 +163,10 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
           <input
             className="form-check-input"
             type="checkbox"
+            id="understoodCheckbox"
             onChange={e => setChecked(e.target.checked)}
           />
-          <label className="form-check-label">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+          <label className="form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
         </div>
         <button
           type="button"
@@ -341,6 +342,16 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
+  const renderOpenModalButton = useCallback(() => {
+    return (
+      <div className="d-flex pl-md-2">
+        <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
+          {t('private_legacy_pages.input_path_to_convert')}
+        </button>
+      </div>
+    );
+  }, [t, openConvertModalHandler]);
+
   const searchControlAllAction = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
 
@@ -371,11 +382,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
             </UncontrolledButtonDropdown>
           </OperateAllControl>
         </div>
-        <div className="d-flex pl-md-2">
-          <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
-            {t('private_legacy_pages.input_path_to_convert')}
-          </button>
-        </div>
+        {isAdmin && renderOpenModalButton()}
       </div>
     );
   }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
