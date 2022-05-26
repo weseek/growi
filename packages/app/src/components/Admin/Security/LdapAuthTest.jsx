@@ -1,13 +1,15 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiPost } from '~/client/util/apiv1-client';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
-import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
@@ -41,7 +43,7 @@ class LdapAuthTest extends React.Component {
    */
   async testLdapCredentials() {
     try {
-      const response = await this.props.appContainer.apiPost('/login/testLdap', {
+      const response = await apiPost('/login/testLdap', {
         loginForm: {
           username: this.props.username,
           password: this.props.password,
