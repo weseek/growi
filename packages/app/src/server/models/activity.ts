@@ -129,7 +129,7 @@ activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(
   const usernames = await this.aggregate()
     .match(conditions)
     .group({ _id: '$snapshot.username' })
-    .sort({ _id: sortOpt }) // Sort "snapshot.username" in ascending order
+    .sort({ _id: sortOpt }); // Sort "snapshot.username" in ascending order
     .skip(offset)
     .limit(limit);
 

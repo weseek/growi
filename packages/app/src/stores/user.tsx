@@ -18,9 +18,9 @@ export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], E
 
 
 type usernameRequestOptions = {
-  isIncludeActiveUsernames?: boolean,
-  isIncludeInactiveUsernames?: boolean,
-  isIncludeActivitySnapshotUsernames?: boolean,
+  isIncludeActiveUser?: boolean,
+  isIncludeInactiveUser?: boolean,
+  isIncludeActivitySnapshotUser?: boolean,
   isIncludeMixedUsernames?: boolean,
 }
 
@@ -33,7 +33,7 @@ type usernameResult = {
   activeUser?: userData
   inactiveUser?: userData
   activitySnapshotUser?: userData
-  mixedUsernames: string[]
+  mixedUsernames?: string[]
 }
 
 export const useSWRxUsernames = (q: string, offset?: number, limit?: number, options?: usernameRequestOptions): SWRResponse<usernameResult, Error> => {
