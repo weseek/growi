@@ -700,7 +700,6 @@ export default class ConfigLoader {
         const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
         config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
-      // console.log('Here is nth envVars', config[configInfo.ns][configInfo.key]);
     }
 
     logger.debug('ConfigLoader#loadFromEnvVars', config);
@@ -725,7 +724,6 @@ export default class ConfigLoader {
       }
       const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
       config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
-      // console.log('Here is nth contents of envVars', config[ENV_VAR_NAME]);
     }
 
     logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
