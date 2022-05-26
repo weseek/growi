@@ -11,6 +11,8 @@ import {
 import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
+const TIME_TO_ADD_SEC = 10;
+
 const logger = loggerFactory('growi:models:page-operation');
 
 type IObjectId = mongoose.Types.ObjectId;
@@ -55,6 +57,8 @@ export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
   deleteByActionTypes(deleteTypeList: PageActionType[]): Promise<void>
+  isProcessable(pageOp: PageOperationDocument): boolean
+  extendExpiryDate(operationId: ObjectIdLike): Promise<void>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -130,6 +134,19 @@ schema.statics.deleteByActionTypes = async function(
 
   await this.deleteMany({ actionType: { $in: actionTypes } });
   logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
+};
+
+schema.statics.isProcessable = function(pageOp: PageOperationDocument): boolean {
+  const { unprocessableExpiryDate } = pageOp;
+  return unprocessableExpiryDate == null || (unprocessableExpiryDate != null && new Date() > unprocessableExpiryDate);
+};
+
+/**
+ * add TIME_TO_ADD_SEC to current time and update unprocessableExpiryDate with it
+ */
+schema.statics.extendExpiryDate = async function(operationId: ObjectIdLike): Promise<void> {
+  const date = addSeconds(new Date(), TIME_TO_ADD_SEC);
+  await this.findByIdAndUpdate(operationId, { unprocessableExpiryDate: date });
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
