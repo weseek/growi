@@ -1,4 +1,4 @@
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -72,10 +72,10 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
   );
 };
 
-export const useSWRxSlackChannels = (path: string): SWRResponse<Nullable<string>, Error> => {
+export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {
   const shouldFetch: boolean = path != null;
-  return useSWRImmutable(
+  return useSWR(
     shouldFetch ? ['/pages.updatePost', path] : null,
-    (endpoint, path) => apiGet(endpoint, { path }).then(response => response.updatePost),
+    (endpoint, path) => apiGet(endpoint, { path }).then((response: {[updatePost: string]: string[]}) => response.updatePost),
   );
 };
