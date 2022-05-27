@@ -943,14 +943,14 @@ module.exports = (crowi) => {
       const data = {};
 
       if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
-        const activeUserData = await User.findUserByUsernameRegex(q, [User.STATUS_ACTIVE], { offset, limit });
+        const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
         const activeUsernames = activeUserData.users.map(user => user.username);
         Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
       }
 
       if (options.isIncludeInactiveUser) {
         const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
-        const inactiveUserData = await User.findUserByUsernameRegex(q, inactiveUserStates, { offset, limit });
+        const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
         const inactiveUsernames = inactiveUserData.users.map(user => user.username);
         Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
       }
