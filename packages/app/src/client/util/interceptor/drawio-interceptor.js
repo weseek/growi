@@ -104,7 +104,7 @@ export class DrawioInterceptor extends BasicInterceptor {
    */
   drawioPostRender(contextName, context) {
     const isPreview = (contextName === 'postRenderPreviewHtml');
-    const renderDrawioInRealtime = context.editorSettings?.renderDrawioInRealtime;
+    const renderDrawioInRealtime = context.renderDrawioInRealtime;
 
     Object.keys(context.DrawioMap).forEach((domId) => {
       const elem = document.getElementById(domId);
