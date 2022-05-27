@@ -38,6 +38,9 @@ const EditorNavbarBottom = (props) => {
   const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
 
+  console.log({ isSlackEnabledByDefault });
+  console.log({ isSlackEnabled });
+
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
   useEffect(() => {
@@ -118,7 +121,7 @@ const EditorNavbarBottom = (props) => {
           ) : (
             <div className="mr-2">
               <SlackNotification
-                isSlackEnabled={isSlackEnabled}
+                isSlackEnabled={isSlackEnabled || false}
                 slackChannels={slackChannelsStr}
                 onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
@@ -126,7 +129,7 @@ const EditorNavbarBottom = (props) => {
               />
             </div>
           ))}
-          <SavePageControls slackChannels={slackChannelsStr} isSlackEnabled={isSlackEnabled} />
+          <SavePageControls slackChannels={slackChannelsStr} isSlackEnabled={isSlackEnabled || false} />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
