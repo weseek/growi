@@ -1,12 +1,16 @@
 import React, { useState, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const ArchiveCreateModal = (props) => {
@@ -56,7 +60,7 @@ const ArchiveCreateModal = (props) => {
 
   async function done() {
     try {
-      await appContainer.apiv3Post('/page/archive', {
+      await apiv3Post('/page/archive', {
         rootPagePath: props.path,
         isCommentDownload,
         isAttachmentFileDownload,

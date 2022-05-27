@@ -1,15 +1,16 @@
 import { Container } from 'unstated';
 
+import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
+
 /**
  * Service container for admin app setting page (AppSettings.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminAppContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
-    this.appContainer = appContainer;
     this.dummyTitle = 0;
     this.dummyTitleForError = 1;
 
@@ -75,7 +76,7 @@ export default class AdminAppContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveAppSettingsData() {
-    const response = await this.appContainer.apiv3.get('/app-settings/');
+    const response = await apiv3Get('/app-settings/');
     const { appSettingsParams } = response.data;
 
     this.setState({
@@ -326,7 +327,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateAppSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/app-setting', {
+    const response = await apiv3Put('/app-settings/app-setting', {
       title: this.state.title,
       confidential: this.state.confidential,
       globalLang: this.state.globalLang,
@@ -344,7 +345,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateSiteUrlSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/site-url-setting', {
+    const response = await apiv3Put('/app-settings/site-url-setting', {
       siteUrl: this.state.siteUrl,
     });
     const { siteUrlSettingParams } = response.data;
@@ -369,7 +370,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateSmtpSetting() {
-    const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
+    const response = await apiv3Put('/app-settings/smtp-setting', {
       fromAddress: this.state.fromAddress,
       transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
@@ -388,7 +389,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateSesSetting() {
-    const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+    const response = await apiv3Put('/app-settings/ses-setting', {
       fromAddress: this.state.fromAddress,
       transmissionMethod: this.state.transmissionMethod,
       sesAccessKeyId: this.state.sesAccessKeyId,
@@ -404,7 +405,7 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async sendTestEmail() {
-    return this.appContainer.apiv3.post('/app-settings/smtp-test');
+    return apiv3Post('/app-settings/smtp-test');
   }
 
   /**
@@ -434,7 +435,7 @@ export default class AdminAppContainer extends Container {
       requestParams.s3ReferenceFileWithRelayMode = this.state.s3ReferenceFileWithRelayMode;
     }
 
-    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-setting', requestParams);
+    const response = await apiv3Put('/app-settings/file-upload-setting', requestParams);
     const { responseParams } = response.data;
     return this.setState(responseParams);
   }
@@ -445,7 +446,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updatePluginSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/plugin-setting', {
+    const response = await apiv3Put('/app-settings/plugin-setting', {
       isEnabledPlugins: this.state.isEnabledPlugins,
     });
     const { pluginSettingParams } = response.data;
@@ -457,17 +458,17 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async v5PageMigrationHandler() {
-    const response = await this.appContainer.apiv3.post('/app-settings/v5-schema-migration');
+    const response = await apiv3Post('/app-settings/v5-schema-migration');
     const { isV5Compatible } = response.data;
     return { isV5Compatible };
   }
 
   async startMaintenanceMode() {
-    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: true });
+    await apiv3Post('/app-settings/maintenance-mode', { flag: true });
   }
 
   async endMaintenanceMode() {
-    await this.appContainer.apiv3.post('/app-settings/maintenance-mode', { flag: false });
+    await apiv3Post('/app-settings/maintenance-mode', { flag: false });
   }
 
 }

@@ -43,14 +43,9 @@ export class InstallerService {
   }
 
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
-
-    // TODO typescriptize models/user.js and remove eslint-disable-next-line
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Page = mongoose.model('Page') as any;
-
     try {
       const markdown = fs.readFileSync(filePath);
-      return Page.create(pagePath, markdown, owner, {}) as IPage;
+      return this.crowi.pageService.create(pagePath, markdown, owner, {}) as IPage;
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);

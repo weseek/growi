@@ -6,11 +6,14 @@ import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
+
 
 class PageAttachment extends React.Component {
 
@@ -40,7 +43,7 @@ class PageAttachment extends React.Component {
 
     if (!pageId) { return }
 
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, page });
+    const res = await apiv3Get('/attachment/list', { pageId, page });
     const attachments = res.data.paginateResult.docs;
     const totalAttachments = res.data.paginateResult.totalDocs;
     const pagingLimit = res.data.paginateResult.limit;
@@ -88,7 +91,7 @@ class PageAttachment extends React.Component {
       deleting: true,
     });
 
-    this.props.appContainer.apiPost('/attachments.remove', { attachment_id: attachmentId })
+    apiPost('/attachments.remove', { attachment_id: attachmentId })
       .then((res) => {
         this.setState({
           attachments: this.state.attachments.filter((at) => {
