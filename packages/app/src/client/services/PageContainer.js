@@ -52,7 +52,6 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
-      tocHtml: '',
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -107,7 +106,6 @@ export default class PageContainer extends Container {
 
     this.initStateMarkdown();
 
-    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
@@ -192,12 +190,6 @@ export default class PageContainer extends Container {
     }
 
     this.setState(newState);
-  }
-
-  async setTocHtml(tocHtml) {
-    if (this.state.tocHtml !== tocHtml) {
-      this.setState({ tocHtml });
-    }
   }
 
   /**
