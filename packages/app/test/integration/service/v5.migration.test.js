@@ -3,6 +3,16 @@ const mongoose = require('mongoose');
 
 const { getInstance } = require('../setup-crowi');
 
+const public = filter => ({ grant: Page.GRANT_PUBLIC, ...filter });
+const owned = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
+const root = filter => ({ grantedUsers: [rootUser._id], ...filter });
+const rootUserGroup = filter => ({ grantedGroup: rootUserGroupId, ...filter });
+const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
+
+const normalized = { parent: { $ne: null } };
+const notNormalized = { parent: null };
+const empty = { isEmpty: true };
+
 describe('V5 page migration', () => {
   let crowi;
   let Page;
@@ -392,14 +402,6 @@ describe('V5 page migration', () => {
      *     - /normalize_g/normalize_i/normalize_k (only me) is normalized
      */
 
-    const public = filter => ({ grant: Page.GRANT_PUBLIC, ...filter });
-    const owned = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
-    const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
-
-    const normalized = { parent: { $ne: null } };
-    const notNormalized = { parent: null };
-    const empty = { isEmpty: true };
-
     beforeAll(async() => {
       // Prepare data
       const id1 = new mongoose.Types.ObjectId();
@@ -654,15 +656,6 @@ describe('V5 page migration', () => {
      *     - An empty page at "/normalize_A_owned/normalize_B_owned/normalize_C_owned" does NOT exist (removed)
      *     - E and F are NOT normalized
      */
-
-    const owned = filter => ({ grantedUsers: [testUser1._id], ...filter });
-    const root = filter => ({ grantedUsers: [rootUser._id], ...filter });
-    const rootUserGroup = filter => ({ grantedGroup: rootUserGroupId, ...filter });
-    const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
-
-    const normalized = { parent: { $ne: null } };
-    const notNormalized = { parent: null };
-    const empty = { isEmpty: true };
 
     beforeAll(async() => {
       // Prepare data
