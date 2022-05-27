@@ -1,3 +1,7 @@
+// API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
+// API_RATE_LIMIT_010_FOO_METHODS=GET,POST
+// API_RATE_LIMIT_010_FOO_CONSUME_POINTS=10
+
 const generateEnvVarDicForApiRateLimiter = (): {[key: string]: string} => {
   const envVarDic = process.env;
 
@@ -16,6 +20,10 @@ const generateEnvVarDicForApiRateLimiter = (): {[key: string]: string} => {
   });
 
   // default setting e.g. healthchack
+  apiRateEndpointDic.API_RATE_LIMIT_010_HEALTHCHECK_ENDPOINT = '/_api/v3/healthcheck';
+  apiRateEndpointDic.API_RATE_LIMIT_010_HEALTHCHECK_METHODS = 'GET';
+  apiRateEndpointDic.API_RATE_LIMIT_010_HEALTHCHECK_CONSUME_POINTS = '0';
+
 
   return apiRateEndpointDic;
 };
