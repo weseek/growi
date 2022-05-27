@@ -1,13 +1,13 @@
+import { pagePathUtils } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { pagePathUtils } from '@growi/core';
 
+import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
 
 type Nullable<T> = T | null;
 
@@ -154,6 +154,18 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
 
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+};
+
+export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('hasParent', initialData);
+};
+
+export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData);
+};
+
+export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
 

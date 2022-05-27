@@ -4,17 +4,19 @@ import React, {
 
 import { Button } from 'reactstrap';
 
-import CommentEditor from './PageComment/CommentEditor';
-import Comment from './PageComment/Comment';
-import ReplayComments from './PageComment/ReplayComments';
-import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
-
-import { useSWRxPageComment } from '../stores/comment';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
+import { useSWRxPageComment } from '../stores/comment';
+
+
+import Comment from './PageComment/Comment';
+import CommentEditor from './PageComment/CommentEditor';
+import DeleteCommentModal from './PageComment/DeleteCommentModal';
+import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
   appContainer: AppContainer,
@@ -97,14 +99,14 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   const onDeleteComment = useCallback(async() => {
     if (commentToBeDeleted == null) return;
     try {
-      await appContainer.apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
+      await apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
       onDeleteCommentAfterOperation();
     }
     catch (error:unknown) {
       setErrorMessageOnDelete(error as string);
       toastError(`error: ${error}`);
     }
-  }, [appContainer, commentToBeDeleted, onDeleteCommentAfterOperation]);
+  }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
