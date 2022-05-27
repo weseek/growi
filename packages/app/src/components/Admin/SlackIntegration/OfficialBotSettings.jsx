@@ -1,17 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
+import { SlackbotType } from '@growi/slack';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { SlackbotType } from '@growi/slack';
 
-import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import loggerFactory from '~/utils/logger';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
+
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
-import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
+import WithProxyAccordions from './WithProxyAccordions';
 
 const logger = loggerFactory('growi:cli:SlackIntegration:OfficialBotSettings');
 
@@ -38,7 +43,7 @@ const OfficialBotSettings = (props) => {
     }
 
     try {
-      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
+      await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
       if (onPrimaryUpdated != null) {
         onPrimaryUpdated();
       }
@@ -48,10 +53,10 @@ const OfficialBotSettings = (props) => {
       toastError(err, 'Failed to change isPrimary');
       logger.error('Failed to change isPrimary', err);
     }
-  }, [appContainer.apiv3, t, onPrimaryUpdated]);
+  }, [t, onPrimaryUpdated]);
 
   const deleteSlackAppIntegrationHandler = async() => {
-    await appContainer.apiv3.delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
+    await apiv3Delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
     try {
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();

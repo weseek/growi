@@ -1,10 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 
 class UploadForm extends React.Component {
 
@@ -32,7 +35,7 @@ class UploadForm extends React.Component {
     formData.append('file', this.inputRef.current.files[0]);
 
     try {
-      const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+      const { data } = await apiv3Post('/import/upload', formData);
       // TODO: toastSuccess, toastError
       this.props.onUpload(data);
     }

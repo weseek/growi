@@ -33,6 +33,7 @@ import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationS
 import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
 import NotFoundAlert from '../components/Page/NotFoundAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
@@ -40,7 +41,6 @@ import TrashPageAlert from '../components/Page/TrashPageAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
-import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
 import BookmarkList from '../components/PageList/BookmarkList';
 import PageStatusAlert from '../components/PageStatusAlert';
 import PageTimeline from '../components/PageTimeline';
@@ -66,7 +66,7 @@ const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
-const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
+const editorContainer = new EditorContainer(appContainer);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
@@ -98,6 +98,8 @@ Object.assign(componentMappings, {
   'maintenance-mode-content': <MaintenanceModeContent />,
 
   'trash-page-alert': <TrashPageAlert />,
+
+  'fix-page-grant-alert': <FixPageGrantAlert />,
 
   'trash-page-list-container': <TrashPageList />,
 
