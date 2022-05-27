@@ -127,11 +127,12 @@ activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = asyn
   const conditions = { 'snapshot.username': { $regex: q, $options: 'i' } };
 
   const usernames = await this.aggregate()
-    .skip(offset)
-    .limit(10000)
+    .skip(0)
+    .limit(10000) // Narrow down the search target
     .match(conditions)
     .group({ _id: '$snapshot.username' })
     .sort({ _id: sortOpt }) // Sort "snapshot.username" in ascending order
+    .skip(offset)
     .limit(limit);
 
   const totalCount = (await this.find(conditions).distinct('snapshot.username')).length;
