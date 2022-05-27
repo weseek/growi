@@ -9,7 +9,7 @@ import * as registerFormValidator from '../middlewares/register-form-validator';
 import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
-import generateEnvVarDicForApiRateLimiter from '../util/generateEnvVarDicForApiRateLimiter';
+import { generateApiRateLimitConfig } from '../util/generateApiRateLimitConfig';
 
 
 import * as allInAppNotifications from './all-in-app-notifications';
@@ -29,8 +29,8 @@ const opts = {
 };
 const rateLimiter = new RateLimiterMemory(opts);
 
-// generate EnvVarDic for api rate limiter
-const envVarDicForApiRateLimiter = generateEnvVarDicForApiRateLimiter();
+// generate ApiRateLimitConfig for api rate limiter
+const apiRateLimitConfig = generateApiRateLimitConfig();
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -45,7 +45,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
-  const apiRateLimiter = require('../middlewares/api-rate-limiter')(rateLimiter, defaultConsumePoints, envVarDicForApiRateLimiter);
+  const apiRateLimiter = require('../middlewares/api-rate-limiter')(rateLimiter, defaultConsumePoints, apiRateLimitConfig);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const page = require('./page')(crowi, app);
