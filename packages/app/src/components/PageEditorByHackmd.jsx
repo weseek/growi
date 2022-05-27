@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -9,8 +9,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useSlackChannels } from '~/stores/context';
-// import { useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxSlackChannels, useSWRxIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -431,11 +431,21 @@ const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, 
 
 const PageEditorByHackmdWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
-  // const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
+  const { data: isSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+
+  const [slackChannelsStr, setSlackChannelsStr] = useState('');
+
+  useEffect(() => {
+    if (slackChannelsData != null) {
+      setSlackChannelsStr(slackChannelsData.toString());
+    }
+  }, [slackChannelsData]);
 
   if (editorMode == null) {
     return null;
@@ -445,8 +455,8 @@ const PageEditorByHackmdWrapper = (props) => {
     <PageEditorByHackmdHOCWrapper
       {...props}
       editorMode={editorMode}
-      // isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannelsStr}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

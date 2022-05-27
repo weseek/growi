@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
@@ -10,8 +10,12 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
-import { useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled } from '~/stores/editor';
+import {
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath,
+} from '~/stores/context';
+import {
+  useCurrentIndentSize, useSWRxSlackChannels, useSWRxIsSlackEnabled, useIsTextlintEnabled,
+} from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -404,13 +408,24 @@ const PageEditorWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   // const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
+  const { data: isSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+
+  const [slackChannelsStr, setSlackChannelsStr] = useState('');
+
+  useEffect(() => {
+    if (slackChannelsData != null) {
+      setSlackChannelsStr(slackChannelsData.toString());
+    }
+  }, [slackChannelsData]);
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -422,8 +437,8 @@ const PageEditorWrapper = (props) => {
       isEditable={isEditable}
       editorMode={editorMode}
       isMobile={isMobile}
-      // isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannelsStr}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

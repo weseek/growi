@@ -16,7 +16,7 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
   useDefaultIndentSize, useIsIndentSizeForced,
 } from '../../stores/context';
@@ -156,7 +156,6 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSlackChannels(slackChannels);
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);

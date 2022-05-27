@@ -9,7 +9,6 @@ import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useSWRxIsSlackEnabled } from '~/stores/editor';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageByPath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -45,10 +44,6 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: currentPage } = useSWRxPageByPath(currentPagePath);
-
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
-  const { data: isSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
 
   const { data: editorMode } = useEditorMode();
 
@@ -113,7 +108,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
-              <Page isSlackEnabled={isSlackEnabled} />
+              <Page />
             </div>
 
           </div>
@@ -121,14 +116,14 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
             <div data-testid="page-editor" id="page-editor">
-              <Editor isSlackEnabled={isSlackEnabled} />
+              <Editor />
             </div>
           </TabPane>
         ) }
         { isEditable && (
           <TabPane tabId={EditorMode.HackMD}>
             <div id="page-editor-with-hackmd">
-              <PageEditorByHackmd isSlackEnabled={isSlackEnabled} />
+              <PageEditorByHackmd />
             </div>
           </TabPane>
         ) }
