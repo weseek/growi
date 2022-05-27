@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import loggerFactory from '~/utils/logger';
 
@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 
 module.exports = (rateLimiter, defaultPoints: number) => {
 
-  return async(req: Request, next: NextFunction) => {
+  return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.url.replace(/\?.*$/, '');
     const key = req.ip + endpoint;
