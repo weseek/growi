@@ -77,6 +77,10 @@ export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Err
   return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
 };
 
+export const useSWRxIsSlackEnabled = (isEnabled: boolean): SWRResponse<boolean, Error> => {
+  return useSWR('isSlackEnabled', (isEnabled: boolean) => isEnabled);
+};
+
 export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {
   const shouldFetch: boolean = path != null;
   return useSWR(
