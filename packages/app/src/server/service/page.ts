@@ -585,6 +585,17 @@ class PageService {
   }
 
   async resumeRenameSubOperation(user: any, pageId: ObjectIdLike): Promise<void> {
+    // findOne renamed page
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const renamedPage = await Page.findById(pageId); // sub operation needs renamed page
+
+    if (renamedPage == null) {
+      /**
+       * Todo: This error means that the PageOperation doc remains while operating Page doc does not exist(deleted somehow).
+       * This needs to be taken care of later probably by using system to create a page that imitates the original deleted page.
+       */
+      throw Error(`Renamed page(${pageId} is not found)`);
+    }
     if (user == null) {
       throw Error('Guest user cannot execute this operation');
     }
@@ -601,14 +612,6 @@ class PageService {
     // check property
     if (toPath == null) {
       throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
-    }
-
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    // findOne renamed page
-    const renamedPage = await Page.findOne({ _id: page._id }); // sub operation needs renamed page
-    if (renamedPage == null) {
-      throw Error(`Renamed page(${page._id} is not found)`);
     }
 
     this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
