@@ -1206,12 +1206,17 @@ describe('V5 page migration', () => {
 
       await normalizeParentByPath('/norm_parent_by_path_B', rootUser);
 
-      const pageB = await Page.findOne({ path: '/norm_parent_by_path_B' });
-      const pageBC = await Page.findOne(root({ path: '/norm_parent_by_path_B/norm_parent_by_path_C' }));
+      const pagesB = await Page.find({ path: '/norm_parent_by_path_B' }); // did not exist before running normalizeParentByPath
+      const pageBC = await Page.findById(_pageBC._id);
+
+      // -- check count
+      expect(pagesB.length).toBe(1);
+
+      const pageB = pagesB[0];
 
       // -- check existance
-      expect(pageB).not.toBeNull();
-      expect(pageBC).not.toBeNull();
+      expect(pageB.path).toBe('/norm_parent_by_path_B');
+      expect(pageBC.path).toBe('/norm_parent_by_path_B/norm_parent_by_path_C');
 
       // -- check parent
       expect(pageB.parent).toStrictEqual(rootPage._id);
@@ -1238,16 +1243,17 @@ describe('V5 page migration', () => {
       // -- check count
       expect(countD).toBe(1);
 
-      const pageD = await Page.findOne({ path: '/norm_parent_by_path_D' });
-      const pageDE = await Page.findOne(public({ path: '/norm_parent_by_path_D/norm_parent_by_path_E' }));
-      const pageDF = await Page.findOne(root({ path: '/norm_parent_by_path_D/norm_parent_by_path_F' }));
+      const pageD = await Page.findById(_emptyD._id);
+      const pageDE = await Page.findById(_pageDE._id);
+      const pageDF = await Page.findById(_pageDF._id);
 
       // -- check existance
-      expect(pageD).not.toBeNull();
-      expect(pageDE).not.toBeNull();
-      expect(pageDF).not.toBeNull();
+      expect(pageD.path).toBe('/norm_parent_by_path_D');
+      expect(pageDE.path).toBe('/norm_parent_by_path_D/norm_parent_by_path_E');
+      expect(pageDF.path).toBe('/norm_parent_by_path_D/norm_parent_by_path_F');
 
-      // -- check isEmpty
+      // -- check isEmpty of pageD
+      // pageD should not be empty because growi system will create a non-empty page while running normalizeParentByPath
       expect(pageD.isEmpty).toBe(false);
 
       // -- check parent
@@ -1277,17 +1283,14 @@ describe('V5 page migration', () => {
       // -- check count
       expect(countG).toBe(1);
 
-      const pageG = await Page.findOne(public({ path: '/norm_parent_by_path_G' }));
-      const pageGH = await Page.findOne(public({ path: '/norm_parent_by_path_G/norm_parent_by_path_H' }));
-      const pageGI = await Page.findOne(root({ path: '/norm_parent_by_path_G/norm_parent_by_path_I' }));
+      const pageG = await Page.findById(_pageG._id);
+      const pageGH = await Page.findById(_pageGH._id);
+      const pageGI = await Page.findById(_pageGI._id);
 
       // -- check existance
-      expect(pageG).not.toBeNull();
-      expect(pageGH).not.toBeNull();
-      expect(pageGI).not.toBeNull();
-
-      // -- check isEmpty
-      expect(pageG.isEmpty).toBe(false);
+      expect(pageG.path).toBe('/norm_parent_by_path_G');
+      expect(pageGH.path).toBe('/norm_parent_by_path_G/norm_parent_by_path_H');
+      expect(pageGI.path).toBe('/norm_parent_by_path_G/norm_parent_by_path_I');
 
       // -- check parent
       expect(pageG.parent).toStrictEqual(rootPage._id);
