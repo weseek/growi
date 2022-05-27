@@ -1,4 +1,4 @@
-const getCustomApiRateLimit = (matchedEndpointKeys: string[], method: string): number | null => {
+const getCustomApiRateLimit = (matchedEndpointKeys: string[], method: string, envVarDic: {[key: string]: string}): number | null => {
 
   let prioritizedTarget: [string, string] | null = null; // priprity and keyword
   matchedEndpointKeys.forEach((key) => {
@@ -13,8 +13,6 @@ const getCustomApiRateLimit = (matchedEndpointKeys: string[], method: string): n
   if (prioritizedTarget === null) {
     return null;
   }
-
-  const envVarDic = process.env;
 
   const targetMethodsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_METHODS`;
   const targetConsumePointsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_CONSUME_POINTS`;

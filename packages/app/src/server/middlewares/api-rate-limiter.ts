@@ -23,21 +23,12 @@ const consumePoints = async(rateLimiter: RateLimiterMemory, key: string, points:
     });
 };
 
-module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number) => {
+module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number, envVarDic: {[key: string]: string}) => {
 
   return async(req: Request, res: Response, next: NextFunction) => {
 
-    // e.g. /_api/v3/page/info?pageId=628c64f2b78c8d7e084ee979 => /_api/v3/page/info
-    const endpoint = req.url.replace(/\?.*$/, '');
+    const endpoint = req.path;
     const key = req.ip + req.url;
-
-    const envVarDic = process.env;
-
-    // pick up API_RATE_LIMIT_*_ENDPOINT from ENV
-    const apiRateEndpointKeys = Object.keys(envVarDic).filter((key) => {
-      const endpointRegExp = /^API_RATE_LIMIT_.*_ENDPOINT/;
-      return endpointRegExp.test(key);
-    });
 
     const matchedEndpointKeys = apiRateEndpointKeys.filter((key) => {
       return envVarDic[key] === endpoint;
@@ -48,7 +39,7 @@ module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number) => {
       return;
     }
 
-    const customizedConsumePoints = getCustomApiRateLimit(matchedEndpointKeys, req.method);
+    const customizedConsumePoints = getCustomApiRateLimit(matchedEndpointKeys, req.method, envVarDic);
 
     await consumePoints(rateLimiter, key, customizedConsumePoints ?? defaultPoints, next);
     return;
