@@ -73,12 +73,13 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 * Slack Notification
 */
 
-export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
-};
+// export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
+//   return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
+// };
 
 export const useSWRxIsSlackEnabled = (isEnabled: boolean): SWRResponse<boolean, Error> => {
-  return useSWR('isSlackEnabled', (isEnabled: boolean) => isEnabled);
+  console.log({ isEnabled });
+  return useSWR(['isSlackEnabled', isEnabled], (isEnabled: boolean) => isEnabled);
 };
 
 export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {

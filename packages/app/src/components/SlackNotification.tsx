@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { FC } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
 
@@ -21,6 +22,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
   const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
     const value = event.target.checked;
     if (onEnabledFlagChange != null) {
+      console.log('value', value);
       onEnabledFlagChange(value);
     }
   };

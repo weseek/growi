@@ -31,11 +31,12 @@ const EditorNavbarBottom = (props) => {
 
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
-  const isSlackEnabledByDefault = (isSlackConfigured && slackChannelsData != null && slackChannelsData.length > 0) || false;
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
+  // const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');

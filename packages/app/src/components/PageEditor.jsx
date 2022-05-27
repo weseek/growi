@@ -403,7 +403,7 @@ const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
+  // const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
@@ -422,7 +422,7 @@ const PageEditorWrapper = (props) => {
       isEditable={isEditable}
       editorMode={editorMode}
       isMobile={isMobile}
-      isSlackEnabled={isSlackEnabled}
+      // isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
       grant={grant}
       grantGroupId={grantGroupId}
