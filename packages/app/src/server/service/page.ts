@@ -39,7 +39,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath, hasSlash, generateChildrenRegExp,
+  collectAncestorPaths, isMovablePage, canMoveByPath,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
