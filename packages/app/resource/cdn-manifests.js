@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'basis',
       // eslint-disable-next-line max-len
-      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.4.0,npm/popper.js@1.15.0,npm/bootstrap@4.5.0/dist/js/bootstrap.min.js,npm/scrollpos-styler@0.7.1,npm/jquery-slimscroll@1.3.8/jquery.slimscroll.min.js',
+      url: 'https://cdn.jsdelivr.net/combine/npm/jquery@3.4.0,npm/popper.js@1.15.0,npm/bootstrap@4.5.0/dist/js/bootstrap.min.js,npm/scrollpos-styler@0.7.1,npm/jquery-slimscroll@1.3.8/jquery.slimscroll.min.js',
       groups: ['basis'],
       args: {
         integrity: '',
@@ -138,14 +138,7 @@ module.exports = {
         integrity: '',
       },
     },
-    {
-      name: 'emojione',
-      url: 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css',
-      groups: ['basis'],
-      args: {
-        integrity: '',
-      },
-    },
+
     {
       name: 'animate.css',
       url: 'https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css',

@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-pukiwiki-like-linker",
-  "version": "5.0.5",
+  "version": "5.0.6-RC.0",
   "description": "GROWI plugin to add PukiwikiLikeLinker",
   "license": "MIT",
   "keywords": [

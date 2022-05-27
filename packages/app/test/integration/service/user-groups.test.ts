@@ -5,6 +5,7 @@ import { getInstance } from '../setup-crowi';
 
 describe('UserGroupService', () => {
   let crowi;
+  let User;
   let UserGroup;
   let UserGroupRelation;
 
@@ -16,13 +17,25 @@ describe('UserGroupService', () => {
   const groupId6 = new mongoose.Types.ObjectId();
   const groupId7 = new mongoose.Types.ObjectId();
   const groupId8 = new mongoose.Types.ObjectId();
+  const groupId9 = new mongoose.Types.ObjectId();
+  const groupId10 = new mongoose.Types.ObjectId();
+  const groupId11 = new mongoose.Types.ObjectId();
+  const groupId12 = new mongoose.Types.ObjectId();
 
   const userId1 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     crowi = await getInstance();
+    User = mongoose.model('User');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
+
+    await User.insertMany([
+      // ug -> User Group
+      {
+        _id: userId1, name: 'ug_test_user1', username: 'ug_test_user1', email: 'ug_test_user1@example.com',
+      },
+    ]);
 
 
     // Create Groups
@@ -76,6 +89,28 @@ describe('UserGroupService', () => {
         name: 'v5_group8',
         description: 'description8',
       },
+      {
+        _id: groupId9,
+        name: 'v5_group9',
+        description: 'description9',
+      },
+      {
+        _id: groupId10,
+        name: 'v5_group10',
+        description: 'description10',
+        parent: groupId9,
+      },
+      {
+        _id: groupId11,
+        name: 'v5_group11',
+        description: 'descriptio11',
+      },
+      {
+        _id: groupId12,
+        name: 'v5_group12',
+        description: 'description12',
+        parent: groupId11,
+      },
     ]);
 
     // Create UserGroupRelations
@@ -90,6 +125,22 @@ describe('UserGroupService', () => {
       },
       {
         relatedGroup: groupId8,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId9,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId10,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId11,
+        relatedUser: userId1,
+      },
+      {
+        relatedGroup: groupId12,
         relatedUser: userId1,
       },
     ]);
@@ -190,6 +241,43 @@ describe('UserGroupService', () => {
     // userGroup7 should have userId1
     expect(userGroupRelation7AfterUpdate).not.toBeNull();
     expect(userGroupRelation8AfterUpdate).not.toBeNull();
+  });
+
+  test('Should throw an error when trying to choose parent from descendant groups.', async() => {
+    const userGroup9 = await UserGroup.findOne({ _id: groupId9, parent: null });
+    const userGroup10 = await UserGroup.findOne({ _id: groupId10, parent: groupId9 });
+
+    const userGroupRelation9BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup9._id, relatedUser: userId1 });
+    const userGroupRelation10BeforeUpdate = await UserGroupRelation.findOne({ relatedGroup:  userGroup10._id, relatedUser: userId1 });
+    expect(userGroupRelation9BeforeUpdate).not.toBeNull();
+    expect(userGroupRelation10BeforeUpdate).not.toBeNull();
+
+    const result = crowi.userGroupService.updateGroup(
+      userGroup9._id, userGroup9.name, userGroup9.description, userGroup10._id,
+    );
+    await expect(result).rejects.toThrow('It is not allowed to choose parent from descendant groups.');
+  });
+
+  test('User should be deleted from child groups when the user excluded from the parent group', async() => {
+    const userGroup11 = await UserGroup.findOne({ _id: groupId11, parent: null });
+    const userGroup12 = await UserGroup.findOne({ _id: groupId12, parent: groupId11 });
+
+    // Both groups have user1
+    const userGroupRelation11BeforeRemove = await UserGroupRelation.findOne({ relatedGroup:  userGroup11._id, relatedUser: userId1 });
+    const userGroupRelation12BeforeRemove = await UserGroupRelation.findOne({ relatedGroup:  userGroup12._id, relatedUser: userId1 });
+    expect(userGroupRelation11BeforeRemove).not.toBeNull();
+    expect(userGroupRelation12BeforeRemove).not.toBeNull();
+
+    // remove user1 from the parent group
+    await crowi.userGroupService.removeUserByUsername(
+      userGroup11._id, 'ug_test_user1',
+    );
+
+    // Both groups have not user1
+    const userGroupRelation11AfterRemove = await UserGroupRelation.findOne({ relatedGroup:  userGroup11._id, relatedUser: userId1 });
+    const userGroupRelation12AfterRemove = await UserGroupRelation.findOne({ relatedGroup:  userGroup12._id, relatedUser: userId1 });
+    await expect(userGroupRelation11AfterRemove).toBeNull();
+    await expect(userGroupRelation12AfterRemove).toBeNull();
   });
 
 });

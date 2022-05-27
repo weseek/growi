@@ -15,8 +15,6 @@
   "Move/Rename": "Move/Rename",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
-  "Like!": "Like!",
-  "Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
@@ -390,7 +388,8 @@
     }
   },
   "page_comment": {
-    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
+    "no_user_found": "No user found"
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
@@ -663,6 +662,8 @@
     },
     "by_path_modal": {
       "title": "Convert to new v5 compatible format",
+      "alert": "This operation cannot be undone, and pages that the user cannot view are also subject to processing.",
+      "checkbox_label": "Understood",
       "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
       "button_label": "Convert",
       "success": "Successfully requested conversion.",
@@ -1022,6 +1023,36 @@
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
+  "emoji" :{
+    "title": "Pick an Emoji",
+    "search": "Search",
+    "clear": "Clear",
+    "notfound": "No Emoji Found",
+    "skintext": "Choose your default skin tone",
+    "categories": {
+      "search": "Search Results",
+      "recent": "Frequently Used",
+      "smileys": "Smileys & Emotion",
+      "people": "People & Body",
+      "nature": "Animals & Nature",
+      "foods": "Food & Drink",
+      "activity": "Activity",
+      "places": "Travel & Places",
+      "objects": "Objects",
+      "symbols": "Symbols",
+      "flags": "Flags",
+      "custom": "Custom"
+    },
+    "categorieslabel": "Emoji categories",
+    "skintones": {
+      "1": "Default Skin Tone",
+      "2": "Light Skin Tone",
+      "3": "Medium-Light Skin Tone",
+      "4": "Medium Skin Tone",
+      "5": "Medium-Dark Skin Tone",
+      "6": "Dark Skin Tone"
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "Maintenance Mode",
     "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",
@@ -1044,5 +1075,39 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "The list of selectable permissions could not be found. Please modify the permissions on the parent page first and try again.",
+      "need_to_fix_grant": "The permissions associated with this page must be modified in order to use the functionality correctly. <br> Please select from the options below to make the change.",
+      "grant_label": {
+        "isForbidden": "Authority not allowed to view",
+        "currentPageGrantLabel": "Authorization for this page: ",
+        "parentPageGrantLabel": "Authority of parent page: ",
+        "docLink": "For more information on modifying permissions, please refer to <a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>"
+      },
+      "radio_btn": {
+        "restrected": "Only those who know the link",
+        "only_me": "only to oneself",
+        "grant_group": "Only specific groups"
+      },
+      "select_group_default_text": "Select Group",
+      "alert_message_select_group": "No group selected",
+      "btn_label": "Conversion",
+      "title": "Modify authority"
+    },
+    "alert": {
+      "description": "You need to modify the permission settings for this page.",
+      "btn_label": "Revision"
+    }
+  },
+  "tooltip": {
+    "like": "Like!",
+    "cancel_like": "Cancel Like",
+    "bookmark": "Bookmark",
+    "cancel_bookmark": "Cancel Bookmark",
+    "receive_notifications": "Receive Notifications",
+    "stop_notification": "Stop Notification",
+    "footprints": "Footprints"
   }
 }

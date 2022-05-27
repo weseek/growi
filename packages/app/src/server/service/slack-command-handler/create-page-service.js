@@ -21,7 +21,7 @@ class CreatePageService {
 
     // generate a dummy id because Operation to create a page needs ObjectId
     const dummyObjectIdOfUser = userId != null ? userId : new mongoose.Types.ObjectId();
-    const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
+    const page = await this.crowi.pageService.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
     // Send a message when page creation is complete
     const growiUri = this.crowi.appService.getSiteUrl();
