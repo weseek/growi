@@ -943,8 +943,6 @@ module.exports = (crowi) => {
       const options = JSON.parse(req.query.options || '{}');
       const data = {};
 
-      console.log(options);
-
       if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
         const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
         const activeUsernames = activeUserData.users.map(user => user.username);
