@@ -1,13 +1,4 @@
-// API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
-// API_RATE_LIMIT_010_FOO_METHODS=GET,POST
-// API_RATE_LIMIT_010_FOO_CONSUME_POINTS=10
-
-export type ApiRateLimitConfig = {
-  [endpoint: string]: {
-    method: string,
-    consumePoints: number
-  }
-}
+import { IApiRateLimitConfig } from '../interfaces/api-rate-limit-config';
 
 const getKeyByValue = (object: Record<string, string>, value: string): string | undefined => {
   return Object.keys(object).find(key => object[key] === value);
@@ -28,7 +19,7 @@ const getHighPriorityKey = (key1: string, key2: string): string => {
 };
 
 // this method is called only one server starts
-export const generateApiRateLimitConfig = (): ApiRateLimitConfig => {
+export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   const envVar = process.env;
 
   const apiRateEndpointKeys = Object.keys(envVar).filter((key) => {
@@ -61,7 +52,7 @@ export const generateApiRateLimitConfig = (): ApiRateLimitConfig => {
     }
   });
 
-  const apiRateLimitConfig: ApiRateLimitConfig = {};
+  const apiRateLimitConfig: IApiRateLimitConfig = {};
   Object.keys(envVarEndpointFiltered).forEach((key) => {
     const target = key.replace('API_RATE_LIMIT_', '').replace('_ENDPOINT', '');
     const endpoint = envVarEndpointFiltered[`API_RATE_LIMIT_${target}_ENDPOINT`];
