@@ -100,9 +100,9 @@ export default class PageContainer extends Container {
     }
 
     const { interceptorManager } = this.appContainer;
-    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
-    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
-    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
 
     this.initStateMarkdown();
 
