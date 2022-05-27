@@ -24,14 +24,11 @@ module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number, apiRate
     const endpoint = req.path;
     const key = req.ip + req.url;
 
-    let points;
+    let points = defaultPoints;
     Object.keys(apiRateLimitConfig).forEach((endpointInConfig) => {
       if (endpointInConfig === endpoint) {
         const consumePointsInConfig = apiRateLimitConfig[endpointInConfig].consumePoints;
         points = consumePointsInConfig;
-      }
-      else {
-        points = defaultPoints;
       }
     });
 
