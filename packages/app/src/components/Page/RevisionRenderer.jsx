@@ -33,7 +33,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
-      editorSettings: this.editorSettings,
+      renderDrawioInRealtime: this.props.editorSettings.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
@@ -178,7 +178,7 @@ LegacyRevisionRenderer.propTypes = {
   pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
-  editorSettings: PropTypes.any,
+  editorSettings: PropTypes.any.isRequired,
 };
 
 /**

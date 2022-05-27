@@ -514,7 +514,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
-      editorSettings: this.props.editorSettings,
+      autoFormatMarkdownTable: this.props.editorSettings.autoFormatMarkdownTable,
     };
 
     const interceptorManager = this.interceptorManager;

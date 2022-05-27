@@ -15,8 +15,6 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
-  "Like!": "いいね！",
-  "Seen by": "見た人",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -1096,5 +1094,14 @@
       "description": "このページの権限設定を修正する必要があります。",
       "btn_label": "修正"
     }
+  },
+  "tooltip": {
+    "like": "いいね！",
+    "cancel_like": "いいねを取り消す",
+    "bookmark": "ブックマーク",
+    "cancel_bookmark": "ブックマークを取り消す",
+    "receive_notifications": "通知を受け取る",
+    "stop_notification": "通知を止める",
+    "footprints": "足跡"
   }
 }

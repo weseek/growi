@@ -1,8 +1,33 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.6](https://github.com/weseek/growi/compare/v5.0.5...v5.0.6) - 2022-05-27
+
+### 💎 Features
+
+- feat: Emoji - replace emojione to emojimart (#5668) @kaoritokashiki
+- feat: Show username suggestion for mention in comment (#5856) @mudana-grune
+- feat: Send in-app notification when containing username mention in comment  (#5906) @mudana-grune
+- feat: Customize menu in navbar for guest user (#5858) @yukendev
+- feat: Admin only page convert by path (#5902) @hakumizuki
+- feat: Fix grant alert (#5903) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Automatic login after registration (#5860) @hiroki-hgs
+- imprv: Add tooltip to SubNavButtons (#5887) @miya
+- imprv: Mixin of argument-of-override-list-group-item-for-pagetree for dark theme (#5904) @shukmos
+- imprv: Move code to the appropriate place for fix browser auto-complete email wiith username (#5892) @Yohei-Shiina
+- imprv: Initial rendering when opening Custom Sidebar (#5880) @Kami-jo
+- imprv: Add contributors to staff credit (#5841) @hiroki-hgs
+
+### 🐛 Bug Fixes
+
+- fix: Can not toggle textlint function on v5.0.x (#5854) @kaoritokashiki
+- fix(google-oauth2): Automatically bind external accounts  does not work on v5.0.x (#5886) @kaoritokashiki
 
 ## [v5.0.5](https://github.com/weseek/growi/compare/v5.0.4...v5.0.5) - 2022-05-16
 
