@@ -7,6 +7,9 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
+// TODO import and implement UserNotificationService
+// import UserNotificationService from './user-notification';
+
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 
@@ -105,6 +108,7 @@ class CommentService {
     const mentionedUsers = await this.getMentionedUsers(activity.event);
     targetUsers = targetUsers.concat(mentionedUsers);
 
+    // TODO send slack notification
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
@@ -114,6 +118,7 @@ class CommentService {
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 
     // Get comment by comment ID
+    // TODO implement getComment
     const commentData = await Comment.findOne({ _id: commentId });
     const { comment } = commentData;
 
@@ -125,11 +130,20 @@ class CommentService {
     }))];
 
     // Get mentioned users ID
+    // TODO return users Object instead of users ID
     const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
   }
+
+  getComment = async(commentId: Types.ObjectId): Promise<string> => {
+    // TODO get comment from commentID
+    // TODO Implement this method in getMentionedUsers
+    const comment = '';
+    return comment;
+  }
+
 
 }
 
