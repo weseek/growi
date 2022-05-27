@@ -10,7 +10,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-
 class PasswordSettings extends React.Component {
 
   constructor(appContainer) {
@@ -24,6 +23,7 @@ class PasswordSettings extends React.Component {
       newPassword: '',
       newPasswordConfirm: '',
       isPasswordSet: false,
+      minPasswordLength: null,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -36,8 +36,9 @@ class PasswordSettings extends React.Component {
 
     try {
       const res = await appContainer.apiv3Get('/personal-setting/is-password-set');
-      const { isPasswordSet } = res.data;
-      this.setState({ isPasswordSet });
+      const { passwordParams } = res.data;
+      this.setState({ isPasswordSet: passwordParams.isPasswordSet });
+      this.setState({ minPasswordLength: passwordParams.minPasswordLength });
     }
     catch (err) {
       toastError(err);
@@ -78,9 +79,8 @@ class PasswordSettings extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { newPassword, newPasswordConfirm } = this.state;
+    const { newPassword, newPasswordConfirm, minPasswordLength } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
-
     if (this.state.retrieveError != null) {
       throw new Error(this.state.retrieveError.message);
     }
@@ -135,7 +135,7 @@ class PasswordSettings extends React.Component {
               onChange={(e) => { this.onChangeNewPasswordConfirm(e.target.value) }}
             />
 
-            <p className="form-text text-muted">{t('page_register.form_help.password') }</p>
+            <p className="form-text text-muted">{t('page_register.form_help.password', { target: minPasswordLength }) }</p>
           </div>
         </div>
 

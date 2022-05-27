@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
 import InAppNotificationSettings from '../../models/in-app-notification-settings';
-import ConfigLoader from '../../service/config-loader';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -184,8 +183,11 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findUserByUsername(username);
-      const isPasswordSet = user.isPasswordSet();
-      return res.apiv3({ isPasswordSet });
+      const passwordParams = {
+        isPasswordSet: user.isPasswordSet(),
+        minPasswordLength: crowi.configManager.getConfig('crowi', 'app:minPasswordLength'),
+      };
+      return res.apiv3({ passwordParams });
     }
     catch (err) {
       logger.error(err);

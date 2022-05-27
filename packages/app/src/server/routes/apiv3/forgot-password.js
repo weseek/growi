@@ -4,11 +4,13 @@ import rateLimit from 'express-rate-limit';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
+import ConfigManager from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import httpErrorHandler from '../../middlewares/http-error-handler';
 import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
+
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
@@ -26,6 +28,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+  // console.log('minPassword Length is: ', minPasswordLength);
 
   const validator = {
     password: [
