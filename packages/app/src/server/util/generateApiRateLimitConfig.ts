@@ -59,7 +59,7 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
     const method = envVar[`API_RATE_LIMIT_${target}_METHODS`];
     const consumePoints = Number(envVar[`API_RATE_LIMIT_${target}_CONSUME_POINTS`]);
 
-    if (endpoint === undefined || method === undefined || consumePoints) { return }
+    if (endpoint === undefined || method === undefined || consumePoints === undefined) { return }
 
     const config = {
       method,
