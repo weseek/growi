@@ -950,7 +950,7 @@ module.exports = (crowi) => {
       }
 
       if (options.isIncludeInactiveUser) {
-        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
+        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_INVITED];
         const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
         const inactiveUsernames = inactiveUserData.users.map(user => user.username);
         Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
