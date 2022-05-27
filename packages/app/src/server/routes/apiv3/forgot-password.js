@@ -4,7 +4,6 @@ import rateLimit from 'express-rate-limit';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
-import ConfigManager from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
