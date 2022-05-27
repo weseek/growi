@@ -189,11 +189,9 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findUserByUsername(username);
-      const passwordParams = {
-        isPasswordSet: user.isPasswordSet(),
-        minPasswordLength: crowi.configManager.getConfig('crowi', 'app:minPasswordLength'),
-      };
-      return res.apiv3({ passwordParams });
+      const isPasswordSet = user.isPasswordSet();
+      const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+      return res.apiv3({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
       logger.error(err);

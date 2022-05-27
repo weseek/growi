@@ -27,7 +27,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
-  // console.log('minPassword Length is: ', minPasswordLength);
 
   const validator = {
     password: [
