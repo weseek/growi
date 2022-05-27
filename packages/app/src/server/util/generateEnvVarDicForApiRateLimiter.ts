@@ -7,9 +7,12 @@ const generateEnvVarDicForApiRateLimiter = (): {[key: string]: string} => {
     return endpointRegExp.test(key);
   });
 
-  let apiRateEndpointDic;
+  const apiRateEndpointDic: {[key: string]: string} = {};
   apiRateEndpointKeys.forEach((key) => {
-    apiRateEndpointDic[key] = envVarDic[key];
+    const value = envVarDic[key];
+    if (value != null) {
+      apiRateEndpointDic[key] = value;
+    }
   });
 
   // default setting e.g. healthchack

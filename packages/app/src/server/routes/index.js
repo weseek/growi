@@ -29,7 +29,7 @@ const opts = {
 };
 const rateLimiter = new RateLimiterMemory(opts);
 
-// generate EnvVarDic For
+// generate EnvVarDic for api rate limiter
 const envVarDicForApiRateLimiter = generateEnvVarDicForApiRateLimiter();
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs

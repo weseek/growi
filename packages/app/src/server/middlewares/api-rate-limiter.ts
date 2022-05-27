@@ -23,15 +23,15 @@ const consumePoints = async(rateLimiter: RateLimiterMemory, key: string, points:
     });
 };
 
-module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number, envVarDic: {[key: string]: string}) => {
+module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number, envVarDicForApiRateLimiter: {[key: string]: string}) => {
 
   return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.path;
     const key = req.ip + req.url;
 
-    const matchedEndpointKeys = apiRateEndpointKeys.filter((key) => {
-      return envVarDic[key] === endpoint;
+    const matchedEndpointKeys = Object.keys(envVarDicForApiRateLimiter).filter((key) => {
+      return envVarDicForApiRateLimiter[key] === endpoint;
     });
 
     if (matchedEndpointKeys.length === 0) {
@@ -39,7 +39,7 @@ module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number, envVarD
       return;
     }
 
-    const customizedConsumePoints = getCustomApiRateLimit(matchedEndpointKeys, req.method, envVarDic);
+    const customizedConsumePoints = getCustomApiRateLimit(matchedEndpointKeys, req.method, envVarDicForApiRateLimiter);
 
     await consumePoints(rateLimiter, key, customizedConsumePoints ?? defaultPoints, next);
     return;
