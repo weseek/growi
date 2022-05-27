@@ -1,3 +1,4 @@
+import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -118,6 +119,13 @@ module.exports = (crowi) => {
 
   validator.recentCreatedByUser = [
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
+  ];
+
+  validator.usernames = [
+    query('q').isString().withMessage('q is required'),
+    query('offset').optional().isInt().withMessage('offset must be a number'),
+    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
+    query('options').optional().isString().withMessage('options must be string'),
   ];
 
   const sendEmailByUserList = async(userList) => {
@@ -899,16 +907,10 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
-    const username = req.query.username || null;
-    const limit = req.query.limit || 20;
 
     let userFetcher;
     if (userIds !== null && userIds.split(',').length > 0) {
       userFetcher = User.findUsersByIds(userIds.split(','));
-    }
-    // Get username list by matching pattern from username mention
-    else if (username !== null) {
-      userFetcher = User.findUserByUsernameRegex(username, limit);
     }
     else {
       userFetcher = User.findAllUsers();
@@ -930,6 +932,49 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3(data);
+  });
+
+  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
+    const q = req.query.q;
+    const offset = +req.query.offset || 0;
+    const limit = +req.query.limit || 10;
+
+    try {
+      const options = JSON.parse(req.query.options || '{}');
+      const data = {};
+
+      if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
+        const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
+        const activeUsernames = activeUserData.users.map(user => user.username);
+        Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
+      }
+
+      if (options.isIncludeInactiveUser) {
+        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_INVITED];
+        const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
+        const inactiveUsernames = inactiveUserData.users.map(user => user.username);
+        Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
+      }
+
+      if (options.isIncludeActivitySnapshotUser && req.user.admin) {
+        const activitySnapshotUserData = await Activity.findSnapshotUsernamesByUsernameRegexWithTotalCount(q, { offset, limit });
+        Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
+      }
+
+      // eslint-disable-next-line max-len
+      const canIncludeMixedUsernames = (options.isIncludeMixedUsernames && req.user.admin) || (options.isIncludeMixedUsernames && !options.isIncludeActivitySnapshotUser);
+      if (canIncludeMixedUsernames) {
+        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || [], ...data?.activitySnapshotUser?.usernames || []];
+        const distinctUsernames = Array.from(new Set(allUsernames));
+        Object.assign(data, { mixedUsernames: distinctUsernames });
+      }
+
+      return res.apiv3(data);
+    }
+    catch (err) {
+      logger.error('Failed to get usernames', err);
+      return res.apiv3Err(err);
+    }
   });
 
   return router;

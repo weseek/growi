@@ -48,6 +48,11 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const parsedSearchFilter = JSON.parse(req.query.searchFilter as string);
 
+      // add username to query
+      if (typeof parsedSearchFilter.username === 'string') {
+        Object.assign(query, { 'snapshot.username': parsedSearchFilter.username });
+      }
+
       // add action to query
       const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
       if (canContainActionFilterToQuery) {
