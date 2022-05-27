@@ -116,7 +116,7 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
   return paginateResult;
 };
 
-activitySchema.statics.findSnapshotUsernamesByUsernameRegex = async function(
+activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(
     q: string, option: { sortOpt: number | string, offset: number, limit: number},
 ): Promise<{usernames: string[], totalCount: number}> {
   const opt = option || {};

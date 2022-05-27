@@ -715,7 +715,7 @@ module.exports = function(crowi) {
     return users;
   };
 
-  userSchema.statics.findUserByUsernameRegex = async function(username, status, option) {
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
     const opt = option || {};
     const sortOpt = opt.sortOpt || { username: 1 };
     const offset = opt.offset || 0;
