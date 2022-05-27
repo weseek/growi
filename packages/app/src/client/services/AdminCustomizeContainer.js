@@ -3,6 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
@@ -15,9 +16,10 @@ const DEFAULT_LOGO = '/images/logo.svg';
  */
 export default class AdminCustomizeContainer extends Container {
 
-  constructor() {
+  constructor(appContainer) {
     super();
 
+    this.appContainer = appContainer;
     this.dummyCurrentTheme = 0;
     this.dummyCurrentThemeForError = 1;
 
@@ -446,7 +448,7 @@ export default class AdminCustomizeContainer extends Container {
         _csrf:  this.appContainer.csrfToken,
         attachmentId: this.state.attachmentId,
       };
-      await this.appContainer.apiPost('/attachments.removeBrandLogo', formData);
+      await apiPost('/attachments.removeBrandLogo', formData);
       this.setState({
         uploadedLogoSrc: null,
         attachmentId: null,
@@ -467,7 +469,7 @@ export default class AdminCustomizeContainer extends Container {
       formData.append('_csrf', this.appContainer.csrfToken);
       formData.append('attachmentType', 'BRAND_LOGO');
       formData.append('attachmentId', this.state.attachmentId);
-      const response = await this.appContainer.apiPost('/attachments.uploadBrandLogo', formData);
+      const response = await apiPost('/attachments.uploadBrandLogo', formData);
 
       this.setState({
         uploadedLogoSrc: response.attachment.filePathProxied,
@@ -487,7 +489,7 @@ export default class AdminCustomizeContainer extends Container {
 
   async updateCustomizeLogo() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/customize-logo', {
+      const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo: this.state.isDefaultLogo,
         attachmentId: this.state.attachmentId,
         uploadedLogoSrc: this.state.uploadedLogoSrc,
