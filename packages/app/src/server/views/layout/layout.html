@@ -59,11 +59,13 @@
 {% endblock %}
 
 {% block html_body %}
+{% set additionalBodyClasses = []; %}
+{% block html_additional_body_classes %}{% endblock %}
 {% if getConfig('crowi', 'customize:isContainerFluid') %}
-  {% set additionalBodyClass = 'growi-layout-fluid' %}
+  {% set additionalBodyClasses = additionalBodyClasses|push('growi-layout-fluid') %}
 {% endif %}
 <body
-  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
+  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClasses|join(' ') }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
