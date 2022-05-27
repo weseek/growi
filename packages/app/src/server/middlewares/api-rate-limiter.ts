@@ -35,7 +35,7 @@ module.exports = () => {
   return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.path;
-    const key = req.ip + req.url;
+    const key = req.ip + endpoint;
 
     let points = defaultConsumePoints;
     Object.keys(apiRateLimitConfig).forEach((endpointInConfig) => {
