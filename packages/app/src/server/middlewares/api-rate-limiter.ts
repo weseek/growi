@@ -37,15 +37,14 @@ module.exports = () => {
     const endpoint = req.path;
     const key = req.ip + endpoint;
 
-    let points = defaultConsumePoints;
-    Object.keys(apiRateLimitConfig).forEach((endpointInConfig) => {
-      if (endpointInConfig === endpoint) {
-        const consumePointsInConfig = apiRateLimitConfig[endpointInConfig].consumePoints;
-        points = consumePointsInConfig;
-      }
-    });
+    const customizedConfig = apiRateLimitConfig[endpoint];
 
-    await consumePoints(rateLimiter, key, points, next);
+    if (customizedConfig === undefined) {
+      await consumePoints(rateLimiter, key, defaultConsumePoints, next);
+      return;
+    }
+
+    await consumePoints(rateLimiter, key, customizedConfig.consumePoints, next);
     return;
   };
 };
