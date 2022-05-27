@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -197,6 +197,21 @@ const PageWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
+  const pageRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchHandsontableModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchHandsontableModal', handler);
+    };
+  });
+
   if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
   }
@@ -204,6 +219,7 @@ const PageWrapper = (props) => {
   return (
     <Page
       {...props}
+      ref={pageRef}
       pagePath={currentPagePath}
       editorMode={editorMode}
       isGuestUser={isGuestUser}

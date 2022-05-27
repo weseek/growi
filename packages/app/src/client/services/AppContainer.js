@@ -180,17 +180,6 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-
-  launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
-    let targetComponent;
-    switch (componentKind) {
-      case 'page':
-        targetComponent = this.getComponentInstance('Page');
-        break;
-    }
-    targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
-  }
-
   launchDrawioModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
