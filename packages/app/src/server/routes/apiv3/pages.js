@@ -1,16 +1,17 @@
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
-import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
 const { pathUtils, pagePathUtils } = require('@growi/core');
-const mongoose = require('mongoose');
-
+const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
+const mongoose = require('mongoose');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -196,17 +197,22 @@ module.exports = (crowi) => {
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     legacyPagesMigration: [
-      body('pageIds').isArray().withMessage('pageIds is required'),
+      body('convertPath').optional().isString().withMessage('convertPath must be a string'),
+      body('pageIds').optional().isArray().withMessage('pageIds must be an array'),
       body('isRecursively')
+        .optional()
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
+    ],
+    convertPagesByPath: [
+      body('convertPath').optional().isString().withMessage('convertPath must be a string'),
     ],
   };
 
   async function createPageAction({
     path, body, user, options,
   }) {
-    const createdPage = await Page.create(path, body, user, options);
+    const createdPage = await crowi.pageService.create(path, body, user, options);
     return createdPage;
   }
 
@@ -341,6 +347,20 @@ module.exports = (crowi) => {
       }
     }
 
+    // create activity
+    try {
+      const parameters = {
+        user: req.user._id,
+        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+        target: createdPage,
+        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
+      };
+      await crowi.activityService.createByParameters(parameters);
+    }
+    catch (err) {
+      logger.error('Failed to create activity', err);
+    }
+
     // create subscription
     try {
       await crowi.inAppNotificationService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
@@ -366,18 +386,17 @@ module.exports = (crowi) => {
   router.get('/recent', accessTokenParser, loginRequired, async(req, res) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
-
+    const skip = offset > 0 ? (offset - 1) * limit : offset;
     const queryOptions = {
-      offset,
+      offset: skip,
       limit,
       includeTrashed: false,
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
     };
-
     try {
-      const result = await Page.findListWithDescendants('/', req.user, queryOptions);
+      const result = await Page.findRecentUpdatedPages('/', req.user, queryOptions);
       if (result.pages.length > limit) {
         result.pages.pop();
       }
@@ -546,15 +565,38 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    try {
-      const pages = await crowi.pageService.emptyTrashPage(req.user, options);
-      return res.apiv3({ pages });
+    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+
+    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
+
+    if (deletablePages.length === 0) {
+      const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
     }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+
+    // when some pages are not deletable
+    if (deletablePages.length < pagesInTrash.length) {
+      try {
+        const options = { isCompletely: true, isRecursively: true };
+        await crowi.pageService.deleteMultiplePages(deletablePages, req.user, options);
+        return res.apiv3({ deletablePages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
+    }
+    // when all pages are deletable
+    else {
+      try {
+        const pages = await crowi.pageService.emptyTrashPage(req.user, options);
+        return res.apiv3({ pages });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+      }
     }
   });
 
@@ -784,17 +826,50 @@ module.exports = (crowi) => {
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
 
+
+  // eslint-disable-next-line max-len
+  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
+    const { convertPath } = req.body;
+
+    // Convert by path
+    const normalizedPath = pathUtils.normalizePath(convertPath);
+    try {
+      await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
+    }
+    catch (err) {
+      logger.error(err);
+
+      if (isV5ConversionError(err)) {
+        return res.apiv3Err(new ErrorV3(err.message, err.code), 400);
+      }
+
+      return res.apiv3Err(new ErrorV3('Failed to convert pages.'), 400);
+    }
+
+    return res.apiv3({});
+  });
+
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
+
+    // Convert by pageIds
     const pageIds = _pageIds == null ? [] : _pageIds;
 
     if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
+    if (pageIds.length === 0) {
+      return res.apiv3Err(new ErrorV3('No page is selected.'), 400);
+    }
 
     try {
-      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
+      if (isRecursively) {
+        await crowi.pageService.normalizeParentByPageIdsRecursively(pageIds, req.user);
+      }
+      else {
+        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
+      }
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);

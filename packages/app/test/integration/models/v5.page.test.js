@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
@@ -7,7 +8,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -35,7 +35,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -53,13 +52,22 @@ describe('Page', () => {
     const pModelUserId3 = new mongoose.Types.ObjectId();
     await User.insertMany([
       {
-        _id: pModelUserId1, name: 'pmodelUser1', username: 'pmodelUser1', email: 'pmodelUser1@example.com',
+        _id: pModelUserId1,
+        name: 'pmodelUser1',
+        username: 'pmodelUser1',
+        email: 'pmodelUser1@example.com',
       },
       {
-        _id: pModelUserId2, name: 'pmodelUser2', username: 'pmodelUser2', email: 'pmodelUser2@example.com',
+        _id: pModelUserId2,
+        name: 'pmodelUser2',
+        username: 'pmodelUser2',
+        email: 'pmodelUser2@example.com',
       },
       {
-        _id: pModelUserId3, name: 'pModelUser3', username: 'pModelUser3', email: 'pModelUser3@example.com',
+        _id: pModelUserId3,
+        name: 'pModelUser3',
+        username: 'pModelUser3',
+        email: 'pModelUser3@example.com',
       },
     ]);
     pModelUser1 = await User.findOne({ _id: pModelUserId1 });
@@ -610,19 +618,43 @@ describe('Page', () => {
         lastUpdateUser: dummyUser1._id,
         isEmpty: false,
       },
+      {
+        path: '/get_parent_A',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_A/get_parent_B',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_C',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/get_parent_C/get_parent_D',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
     ]);
 
   });
   describe('create', () => {
 
     test('Should create single page', async() => {
-      const page = await Page.create('/v5_create1', 'create1', dummyUser1, {});
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
     });
 
     test('Should create empty-child and non-empty grandchild', async() => {
-      const grandchildPage = await Page.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
       const childPage = await Page.findOne({ path: '/v5_empty_create2' });
 
       expect(childPage.isEmpty).toBe(true);
@@ -636,7 +668,7 @@ describe('Page', () => {
       const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
       expect(beforeCreatePage.isEmpty).toBe(true);
 
-      const childPage = await Page.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
       const grandchildPage = await Page.findOne({ parent: childPage._id });
 
       expect(childPage).toBeTruthy();
@@ -662,7 +694,7 @@ describe('Page', () => {
         expect(page3).toBeNull();
 
         // use existing path
-        await Page.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await crowi.pageService.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
@@ -687,7 +719,7 @@ describe('Page', () => {
         expect(page1).toBeTruthy();
         expect(page2).toBeNull();
 
-        await Page.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await crowi.pageService.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
@@ -1074,7 +1106,7 @@ describe('Page', () => {
   describe('getParentAndFillAncestors', () => {
     test('return parent if exist', async() => {
       const page1 = await Page.findOne({ path: '/PAF1' });
-      const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, page1.path);
       expect(parent).toBeTruthy();
       expect(page1.parent).toStrictEqual(parent._id);
     });
@@ -1089,7 +1121,7 @@ describe('Page', () => {
       expect(_page2).toBeNull();
       expect(_page3).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors(path3, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, path3);
       const page1 = await Page.findOne({ path: path1 });
       const page2 = await Page.findOne({ path: path2 });
       const page3 = await Page.findOne({ path: path3 });
@@ -1114,7 +1146,7 @@ describe('Page', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
 
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
       const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
       const page2 = await Page.findOne({ path: path2, isEmpty: false });
 
@@ -1126,7 +1158,7 @@ describe('Page', () => {
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
     });
-    test("should find parent while NOT updating private legacy page's parent", async() => {
+    test('should find parent while NOT updating private legacy page\'s parent', async() => {
       const path1 = '/emp_anc4';
       const path2 = '/emp_anc4/PAF4';
       const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
@@ -1137,7 +1169,7 @@ describe('Page', () => {
       expect(_page3).toBeTruthy();
       expect(_page3.parent).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
       const page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
       const page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
       const page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
@@ -1149,6 +1181,103 @@ describe('Page', () => {
       expect(page1._id).toStrictEqual(parent._id);
       expect(page2.parent).toStrictEqual(parent._id);
 
+    });
+    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
+      // All pages does not have parent (v4 schema)
+      const _pageA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _pageAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _emptyA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageA).not.toBeNull();
+      expect(_pageAB).not.toBeNull();
+      expect(_emptyA).toBeNull();
+      expect(_emptyAB).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_A/get_parent_B/get_parent_C');
+
+      const pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageA).not.toBeNull();
+      expect(pageAB).not.toBeNull();
+      expect(emptyA).toBeNull();
+      expect(emptyAB).toBeNull();
+
+      // -- Check parent
+      expect(pageA.parent).not.toBeNull();
+      expect(pageAB.parent).not.toBeNull();
+    });
+    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
+      const _pageC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: { $ne: null },
+      });
+      const _pageCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+      });
+      const _emptyC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageC).not.toBeNull();
+      expect(_pageCD).not.toBeNull();
+      expect(_emptyC).toBeNull();
+      expect(_emptyCD).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_C/get_parent_D/get_parent_E');
+
+      const pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageC).not.toBeNull();
+      expect(pageCD).not.toBeNull();
+      expect(emptyC).toBeNull();
+      expect(emptyCD).toBeNull();
+
+      // -- Check parent attribute
+      expect(pageC.parent).toStrictEqual(rootPage._id);
+      expect(pageCD.parent).toStrictEqual(pageC._id);
+
+      // -- Check the found parent
+      expect(parent.toObject()).toStrictEqual(pageCD.toObject());
     });
   });
 });

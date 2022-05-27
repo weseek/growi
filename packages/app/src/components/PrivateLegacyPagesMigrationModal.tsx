@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useLegacyPrivatePagesMigrationModal } from '~/stores/modal';
+import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -14,10 +14,10 @@ type Props = {
 
 }
 
-export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
+export const PrivateLegacyPagesMigrationModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: status, close } = useLegacyPrivatePagesMigrationModal();
+  const { data: status, close } = usePrivateLegacyPagesMigrationModal();
 
   const isOpened = status?.isOpened ?? false;
 

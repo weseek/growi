@@ -1,9 +1,11 @@
 
+import React from 'react';
+
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import React from 'react';
 
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
@@ -57,10 +59,16 @@ export class Lsx extends React.Component {
     const pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
     try {
-      const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
+      const res = await axios.get('/_api/plugins/lsx', {
+        params: {
+          pagePath,
+          options: lsxContext.options,
+        },
+      });
 
-      if (res.ok) {
-        const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
+      if (res.data.ok) {
+        lsxContext.toppageViewersCount = res.data.toppageViewersCount;
+        const nodeTree = this.generatePageNodeTree(pagePath, res.data.pages);
         this.setState({ nodeTree });
       }
     }

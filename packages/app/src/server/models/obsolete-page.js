@@ -248,14 +248,14 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
-    // reset
+    // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP && grant !== GRANT_RESTRICTED) {
-      this.grantedUsers.push(user._id);
+    if (grant === GRANT_OWNER) {
+      this.grantedUsers.push(user?._id ?? user);
     }
 
     if (grant === GRANT_USER_GROUP) {
@@ -485,7 +485,6 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const User = crowi.model('User');
-
     const opt = Object.assign({ sort: 'updatedAt', desc: -1 }, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
@@ -505,7 +504,6 @@ export const getPageSchema = (crowi) => {
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.lean().clone().exec('find');
-
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
     };
@@ -744,13 +742,20 @@ export const getPageSchema = (crowi) => {
 
     // update existing page
     let savedPage = await pageData.save();
-    const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
-    savedPage = await pushRevision(savedPage, newRevision, user);
-    await savedPage.populateDataToShowRevision();
 
-    if (isSyncRevisionToHackmd) {
-      savedPage = await this.syncRevisionToHackmd(savedPage);
+    // Update revision
+    const isBodyPresent = body != null && previousBody != null;
+    const shouldUpdateBody = isBodyPresent;
+    if (shouldUpdateBody) {
+      const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
+      savedPage = await pushRevision(savedPage, newRevision, user);
+      await savedPage.populateDataToShowRevision();
+
+      if (isSyncRevisionToHackmd) {
+        savedPage = await this.syncRevisionToHackmd(savedPage);
+      }
     }
+
 
     pageEvent.emit('update', savedPage, user);
 

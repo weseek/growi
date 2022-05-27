@@ -1,10 +1,14 @@
-import { Types } from 'mongoose';
 import { getModelSafely } from '@growi/core';
+import { Types } from 'mongoose';
+
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+
 import loggerFactory from '../../utils/logger';
-import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+// https://regex101.com/r/Ztxj2j/1
+const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -43,7 +47,7 @@ class CommentService {
           return;
         }
 
-        const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
+        const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
@@ -56,7 +60,7 @@ class CommentService {
     this.commentEvent.on('update', async(updatedComment) => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
+        await this.createActivity(updatedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -80,9 +84,9 @@ class CommentService {
   private createActivity = async function(comment, action) {
     const parameters = {
       user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
+      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
       event: comment._id,
       action,
     };
@@ -97,11 +101,37 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // Create and send notifications
+    // Add mentioned users to targetUsers
+    const mentionedUsers = await this.getMentionedUsers(activity.event);
+    targetUsers = targetUsers.concat(mentionedUsers);
+
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
+  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const User = getModelSafely('User') || require('../models/user')(this.crowi);
+
+    // Get comment by comment ID
+    const commentData = await Comment.findOne({ _id: commentId });
+    const { comment } = commentData;
+
+    const usernamesFromComment = comment.match(USERNAME_PATTERN);
+
+    // Get username from comment and remove duplicate username
+    const mentionedUsernames = [...new Set(usernamesFromComment?.map((username) => {
+      return username.slice(1);
+    }))];
+
+    // Get mentioned users ID
+    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
+    return mentionedUserIDs?.map((user) => {
+      return user._id;
+    });
+  }
+
 }
+
 
 module.exports = CommentService;
