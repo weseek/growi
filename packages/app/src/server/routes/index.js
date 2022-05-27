@@ -1,4 +1,5 @@
 import express from 'express';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
@@ -17,7 +18,6 @@ import * as userActivation from './user-activation';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
-const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const opts = {
   points: 100, // set default value

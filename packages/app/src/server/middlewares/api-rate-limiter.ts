@@ -1,74 +1,56 @@
-import { NextFunction, Request, Response } from 'express';
+import e, { NextFunction, Request, Response } from 'express';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
+
+import getCustomApiRateLimit from '../util/getCustomApiRateLimit';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
 
-
+// e.g.
 // API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
 // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
 // API_RATE_LIMIT_010_FOO_CONSUME_POINTS=10
 
-module.exports = (rateLimiter, defaultPoints: number) => {
+const consumePoints = async(rateLimiter: RateLimiterMemory, key: string, points: number, next: NextFunction) => {
+  await rateLimiter.consume(key, points)
+    .then(() => {
+      next();
+    })
+    .catch(() => {
+      logger.error(`too many request at ${key}`);
+    });
+};
+
+module.exports = (rateLimiter: RateLimiterMemory, defaultPoints: number) => {
 
   return async(req: Request, res: Response, next: NextFunction) => {
 
+    // e.g. /_api/v3/page/info?pageId=628c64f2b78c8d7e084ee979 => /_api/v3/page/info
     const endpoint = req.url.replace(/\?.*$/, '');
-    const key = req.ip + endpoint;
+    const key = req.ip + req.url;
 
-    const consumePoints = async(points: number = defaultPoints) => {
-      await rateLimiter.consume(key, points)
-        .then(() => {
-          next();
-        })
-        .catch(() => {
-          logger.error(`too many request at ${endpoint}`);
-        });
-    };
+    const envVarDic = process.env;
 
     // pick up API_RATE_LIMIT_*_ENDPOINT from ENV
-    const apiRateEndpointKeys = Object.keys(process.env).filter((key) => {
+    const apiRateEndpointKeys = Object.keys(envVarDic).filter((key) => {
       const endpointRegExp = /^API_RATE_LIMIT_.*_ENDPOINT/;
       return endpointRegExp.test(key);
     });
 
     const matchedEndpointKeys = apiRateEndpointKeys.filter((key) => {
-      return process.env[key] === endpoint;
+      return envVarDic[key] === endpoint;
     });
 
     if (matchedEndpointKeys.length === 0) {
-      await consumePoints();
+      await consumePoints(rateLimiter, key, defaultPoints, next);
       return;
     }
 
-    let prioritizedTarget: [string, string] | null = null; // priprity and keyword
-    matchedEndpointKeys.forEach((key) => {
-      const target = key.replace('API_RATE_LIMIT_', '').replace('_ENDPOINT', '');
-      const priority = target.split('_')[0];
-      const keyword = target.split('_')[1];
-      if (prioritizedTarget === null || Number(priority) > Number(prioritizedTarget[0])) {
-        prioritizedTarget = [priority, keyword];
-      }
-    });
+    const customizedConsumePoints = getCustomApiRateLimit(matchedEndpointKeys, req.method);
 
-    if (prioritizedTarget === null) {
-      await consumePoints();
-      return;
-    }
-
-    const targetMethodsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_METHODS`;
-    const targetConsumePointsKey = `API_RATE_LIMIT_${prioritizedTarget[0]}_${prioritizedTarget[1]}_CONSUME_POINTS`;
-
-    const targetMethods = process.env[targetMethodsKey];
-    if (targetMethods === undefined || !targetMethods.includes(req.method)) {
-      await consumePoints();
-      return;
-    }
-
-    const customizedConsumePoints = process.env[targetConsumePointsKey];
-
-    await consumePoints(Number(customizedConsumePoints));
+    await consumePoints(rateLimiter, key, customizedConsumePoints ?? defaultPoints, next);
     return;
   };
 };
