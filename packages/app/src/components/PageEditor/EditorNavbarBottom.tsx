@@ -36,7 +36,6 @@ const EditorNavbarBottom = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
-  // const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
@@ -119,7 +118,7 @@ const EditorNavbarBottom = (props) => {
           ) : (
             <div className="mr-2">
               <SlackNotification
-                isSlackEnabled={isSlackEnabled ?? false}
+                isSlackEnabled={isSlackEnabled}
                 slackChannels={slackChannelsStr}
                 onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}

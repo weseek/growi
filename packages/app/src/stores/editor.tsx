@@ -78,8 +78,8 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 // };
 
 export const useSWRxIsSlackEnabled = (isEnabled: boolean): SWRResponse<boolean, Error> => {
-  console.log({ isEnabled });
-  return useSWR(['isSlackEnabled', isEnabled], (isEnabled: boolean) => isEnabled);
+  // console.log({ isEnabled });
+  return useSWR(['isSlackEnabled', isEnabled], (key: string, isEnabled: boolean) => isEnabled);
 };
 
 export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {
