@@ -180,14 +180,4 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-  launchDrawioModal(componentKind, beginLineNumber, endLineNumber) {
-    let targetComponent;
-    switch (componentKind) {
-      case 'page':
-        targetComponent = this.getComponentInstance('Page');
-        break;
-    }
-    targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
 }

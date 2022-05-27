@@ -49,10 +49,6 @@ class Page extends React.Component {
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
   }
 
-  componentWillMount() {
-    this.props.appContainer.registerComponentInstance('Page', this);
-  }
-
   /**
    * launch HandsontableModal with data specified by arguments
    * @param beginLineNumber
@@ -199,6 +195,21 @@ const PageWrapper = (props) => {
 
   const pageRef = useRef(null);
 
+  // set handler to open DrawioModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchDrawioModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchDrawioModal', handler);
+    };
+  }, []);
+
+  // set handler to open HandsontableModal
   useEffect(() => {
     const handler = (beginLineNumber, endLineNumber) => {
       if (pageRef?.current != null) {
@@ -210,7 +221,7 @@ const PageWrapper = (props) => {
     return function cleanup() {
       window.globalEmitter.removeListener('launchHandsontableModal', handler);
     };
-  });
+  }, []);
 
   if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
