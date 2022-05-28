@@ -407,11 +407,8 @@ const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
-  // const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  // const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
-  // const { data: isSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
   const { data: isSlackEnabled } = useSWRxIsSlackEnabled();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
