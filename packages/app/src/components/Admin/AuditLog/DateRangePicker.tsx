@@ -50,7 +50,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
   }, []);
 
   return (
-    <div className="btn-group mr-2 mb-3">
+    <div className="btn-group mr-2">
       <DatePicker
         selectsRange
         startDate={startDate}

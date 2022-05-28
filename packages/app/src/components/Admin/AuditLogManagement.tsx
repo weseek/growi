@@ -83,23 +83,25 @@ export const AuditLogManagement: FC = () => {
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
 
-      <SearchUsernameInput />
+      <div className="form-inline mb-3">
+        <SearchUsernameInput />
 
-      <DateRangePicker
-        startDate={startDate}
-        endDate={endDate}
-        onChangeDatePicker={datePickerChangedHandler}
-      />
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onChangeDatePicker={datePickerChangedHandler}
+        />
 
-      <SelectActionDropdown
-        dropdownItems={[
-          { actionCategory: 'Page', actionNames: PageActions },
-          { actionCategory: 'Comment', actionNames: CommentActions },
-        ]}
-        actionMap={actionMap}
-        onChangeAction={actionCheckboxChangedHandler}
-        onChangeMultipleAction={multipleActionCheckboxChangedHandler}
-      />
+        <SelectActionDropdown
+          dropdownItems={[
+            { actionCategory: 'Page', actionNames: PageActions },
+            { actionCategory: 'Comment', actionNames: CommentActions },
+          ]}
+          actionMap={actionMap}
+          onChangeAction={actionCheckboxChangedHandler}
+          onChangeMultipleAction={multipleActionCheckboxChangedHandler}
+        />
+      </div>
 
       { isLoading
         ? (
