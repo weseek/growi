@@ -33,8 +33,7 @@ class PasswordSettings extends React.Component {
     try {
       const res = await apiv3Get('/personal-setting/is-password-set');
       const { isPasswordSet, minPasswordLength } = res.data;
-      this.setState({ isPasswordSet });
-      this.setState({ minPasswordLength });
+      this.setState({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
       toastError(err);
