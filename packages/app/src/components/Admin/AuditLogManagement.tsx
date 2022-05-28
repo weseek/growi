@@ -12,6 +12,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
+import { SearchUsernameInput } from './AuditLog/SearchUsernameInput';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
 
@@ -81,6 +82,8 @@ export const AuditLogManagement: FC = () => {
   return (
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
+
+      <SearchUsernameInput />
 
       <DateRangePicker
         startDate={startDate}
