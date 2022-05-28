@@ -7,7 +7,9 @@ import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
-import { useCurrentUser, useDefaultIndentSize, useIsGuestUser } from './context';
+import {
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useCurrentPagePath,
+} from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
@@ -72,20 +74,30 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 /*
 * Slack Notification
 */
-
-// export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
-//   return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
-// };
-
-export const useSWRxIsSlackEnabled = (isEnabled: boolean): SWRResponse<boolean, Error> => {
-  // console.log({ isEnabled });
-  return useSWR(['isSlackEnabled', isEnabled], (key: string, isEnabled: boolean) => isEnabled);
+export const useSWRxSlackChannels = (): SWRResponse<Nullable<string[]>, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const shouldFetch: boolean = currentPagePath != null;
+  return useSWR(
+    shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
+    (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
+  );
 };
 
-export const useSWRxSlackChannels = (path: Nullable<string>): SWRResponse<Nullable<string[]>, Error> => {
-  const shouldFetch: boolean = path != null;
+export const useSWRxIsSlackEnabledBydefault = (): SWRResponse<boolean, Error> => {
+  // const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels();
+  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
   return useSWR(
-    shouldFetch ? ['/pages.updatePost', path] : null,
-    (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
+    ['isSlackEnabledByDefault', isSlackEnabledByDefault],
+    (key: string, isSlackEnabledByDefault: boolean) => isSlackEnabledByDefault,
+  );
+};
+
+export const useSWRxIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
+  console.log('useSWRxIsSlackEnabled', isEnabled);
+  const { data: isSlackEnabledByDefault } = useSWRxIsSlackEnabledBydefault();
+  return useSWR(
+    ['isSlackEnabled', isEnabled != null ? isEnabled : isSlackEnabledByDefault],
+    (key: string, isEnabled: boolean) => isEnabled,
   );
 };

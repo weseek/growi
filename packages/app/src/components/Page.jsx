@@ -191,9 +191,9 @@ const PageWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
-  const { data: isSlackEnabled } = useSWRxIsSlackEnabled(isSlackEnabledByDefault);
+  const { data: slackChannelsData } = useSWRxSlackChannels();
+  // const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
+  const { data: isSlackEnabled } = useSWRxIsSlackEnabled();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
