@@ -4,10 +4,10 @@ import loggerFactory from '~/utils/logger';
 // all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
 
-const { formatDistanceStrict } = require('date-fns');
 const { pathUtils } = require('@growi/core');
-const md5 = require('md5');
+const { formatDistanceStrict } = require('date-fns');
 const entities = require('entities');
+const md5 = require('md5');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:lib:middlewares');
@@ -151,6 +151,11 @@ module.exports = (crowi) => {
 
       swig.setFilter('slice', (list, start, end) => {
         return list.slice(start, end);
+      });
+
+      swig.setFilter('push', (list, element) => {
+        list.push(element);
+        return list;
       });
 
       next();

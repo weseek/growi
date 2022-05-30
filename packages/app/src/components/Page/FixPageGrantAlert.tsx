@@ -9,7 +9,7 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant, IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
-import { useCurrentPageId, useHasParent } from '~/stores/context';
+import { useCurrentPageId, useCurrentUser, useHasParent } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
 type ModalProps = {
@@ -231,12 +231,14 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 const FixPageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isOpen, setOpen] = useState<boolean>(false);
-
+  const { data: currentUser } = useCurrentUser();
   const { data: pageId } = useCurrentPageId();
   const { data: hasParent } = useHasParent();
-  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(pageId);
-  const { data: dataApplicableGrant } = useSWRxApplicableGrant(pageId);
+
+  const [isOpen, setOpen] = useState<boolean>(false);
+
+  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(currentUser != null ? pageId : null);
+  const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null ? pageId : null);
 
   // Dependencies
   if (!hasParent) {
