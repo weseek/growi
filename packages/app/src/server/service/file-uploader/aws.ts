@@ -5,6 +5,7 @@ import {
   DeleteObjectsCommand,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -210,13 +211,17 @@ module.exports = (crowi) => {
       throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
     }
 
+    let stream: GetObjectCommandOutput;
     try {
-      return (await s3.send(new GetObjectCommand(params))).Body;
+      stream = await s3.send(new GetObjectCommand(params));
     }
     catch (err) {
       logger.error(err);
       throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
+
+    // return stream.Readable
+    return stream.Body;
   };
 
   lib.checkLimit = async(uploadFileSize) => {
