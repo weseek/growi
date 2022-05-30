@@ -1,5 +1,16 @@
 export const SocketEventName = {
-  UpdateDescCount: 'UpdateDsecCount',
+  // Update descendantCount
+  UpdateDescCount: 'UpdateDescCount',
+
+  // Public migration
+  PMStarted: 'PublicMigrationStarted',
+  PMMigrating: 'PublicMigrationMigrating',
+  PMErrorCount: 'PublicMigrationErrorCount',
+  PMEnded: 'PublicMigrationEnded',
+
+  // Page migration
+  PageMigrationSuccess: 'PageMigrationSuccess',
+  PageMigrationError: 'PageMigrationError',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 
@@ -10,3 +21,10 @@ type DescendantCount = number;
  */
 export type UpdateDescCountRawData = Record<PageId, DescendantCount>;
 export type UpdateDescCountData = Map<PageId, DescendantCount>;
+
+export type PMStartedData = { total: number };
+export type PMMigratingData = { count: number };
+export type PMErrorCountData = { skip: number };
+export type PMEndedData = { isSucceeded: boolean };
+
+export type PageMigrationErrorData = { paths: string[] }

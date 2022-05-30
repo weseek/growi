@@ -9,6 +9,8 @@ on:
       checkout-ref:
         type: string
         default: ${{ github.head_ref }}
+      skip-reg-suit:
+        type: boolean
       cypress-report-artifact-name:
         required: true
         type: string
@@ -33,6 +35,8 @@ jobs:
     # https://github.com/weseek/growi/settings/environments/376165508/edit
     environment: VRT
 
+    if: ${{ !inputs.skip-reg-suit }}
+
     env:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -45,12 +49,12 @@ jobs:
       EXPECTED_IMAGES_EXIST: ${{ steps.check-expected-images.outputs.EXPECTED_IMAGES_EXIST }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ inputs.checkout-ref }}
         fetch-depth: 0
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -71,7 +75,7 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download screenshots taken by cypress
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: packages/app/test/cypress

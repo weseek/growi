@@ -4,8 +4,10 @@ import {
   PageSingleDeleteConfigValue, PageSingleDeleteCompConfigValue,
   PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
-import { toastError } from '../util/apiNotification';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { toastError } from '../util/apiNotification';
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 /**
  * Service container for admin security page (SecuritySetting.jsx)
@@ -16,7 +18,6 @@ export default class AdminGeneralSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.appContainer = appContainer;
     this.dummyCurrentRestrictGuestMode = 0;
     this.dummyCurrentRestrictGuestModeForError = 1;
 
@@ -30,6 +31,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
+      previousPageRecursiveDeletionAuthority: null,
+      previousPageRecursiveCompleteDeletionAuthority: null,
       expandOtherOptionsForDeletion: false,
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
@@ -55,12 +58,14 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
     this.changePageRecursiveDeletionAuthority = this.changePageRecursiveDeletionAuthority.bind(this);
     this.changePageRecursiveCompleteDeletionAuthority = this.changePageRecursiveCompleteDeletionAuthority.bind(this);
+    this.changePreviousPageRecursiveDeletionAuthority = this.changePreviousPageRecursiveDeletionAuthority.bind(this);
+    this.changePreviousPageRecursiveCompleteDeletionAuthority = this.changePreviousPageRecursiveCompleteDeletionAuthority.bind(this);
 
   }
 
   async retrieveSecurityData() {
     await this.retrieveSetupStratedies();
-    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const response = await apiv3Get('/security-setting/');
     const { generalSetting, shareLinkSetting, generalAuth } = response.data.securityParams;
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode,
@@ -150,17 +155,32 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch ExpandOtherOptionsForDeletion
+   * Change previousPageRecursiveDeletionAuthority
    */
-  switchExpandOtherOptionsForDeletion() {
-    this.setState({ expandOtherOptionsForDeletion:  !this.state.expandOtherOptionsForDeletion });
+  changePreviousPageRecursiveDeletionAuthority(val) {
+    this.setState({ previousPageRecursiveDeletionAuthority: val });
+  }
+
+
+  /**
+   * Change previousPageRecursiveCompleteDeletionAuthority
+   */
+  changePreviousPageRecursiveCompleteDeletionAuthority(val) {
+    this.setState({ previousPageRecursiveCompleteDeletionAuthority: val });
   }
 
   /**
    * Switch ExpandOtherOptionsForDeletion
    */
-  switchExpandOtherOptionsForCompleteDeletion() {
-    this.setState({ expandOtherOptionsForCompleteDeletion:  !this.state.expandOtherOptionsForCompleteDeletion });
+  switchExpandOtherOptionsForDeletion(bool) {
+    this.setState({ expandOtherOptionsForDeletion: bool });
+  }
+
+  /**
+   * Switch ExpandOtherOptionsForDeletion
+   */
+  switchExpandOtherOptionsForCompleteDeletion(bool) {
+    this.setState({ expandOtherOptionsForCompleteDeletion: bool });
   }
 
   /**
@@ -196,7 +216,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', requestParams);
+    const response = await apiv3Put('/security-setting/general-setting', requestParams);
     const { securitySettingParams } = response.data;
     return securitySettingParams;
   }
@@ -208,7 +228,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     const requestParams = {
       disableLinkSharing: !this.state.disableLinkSharing,
     };
-    const response = await this.appContainer.apiv3.put('/security-setting/share-link-setting', requestParams);
+    const response = await apiv3Put('/security-setting/share-link-setting', requestParams);
     this.setDisableLinkSharing(!this.state.disableLinkSharing);
     return response;
   }
@@ -219,7 +239,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async switchAuthentication(stateVariableName, authId) {
     const isEnabled = !this.state[stateVariableName];
     try {
-      await this.appContainer.apiv3.put('/security-setting/authentication/enabled', {
+      await apiv3Put('/security-setting/authentication/enabled', {
         isEnabled,
         authId,
       });
@@ -236,7 +256,7 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async retrieveSetupStratedies() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/authentication');
+      const response = await apiv3Get('/security-setting/authentication');
       const { setupStrategies } = response.data;
       this.setState({ setupStrategies });
     }
@@ -254,7 +274,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       page,
     };
 
-    const { data } = await this.appContainer.apiv3.get('/security-setting/all-share-links', params);
+    const { data } = await apiv3Get('/security-setting/all-share-links', params);
 
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');

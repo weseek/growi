@@ -1,11 +1,12 @@
-import axios, { AxiosError } from 'axios';
 
 import { WebClient } from '@slack/web-api';
+import axios, { AxiosError } from 'axios';
 
-import { generateWebClient } from './webclient-factory';
 import { ConnectionStatus } from '../interfaces/connection-status';
-import { requiredScopes } from './required-scopes';
+
 import { markdownSectionBlock } from './block-kit-builder';
+import { requiredScopes } from './required-scopes';
+import { generateWebClient } from './webclient-factory';
 
 /**
  * Check whether the HTTP server responds or not.

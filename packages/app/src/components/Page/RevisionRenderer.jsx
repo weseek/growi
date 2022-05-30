@@ -1,13 +1,17 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { blinkElem } from '~/client/util/blink-section-header';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { useEditorSettings } from '~/stores/editor';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from './RevisionBody';
+
 import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
@@ -28,7 +32,9 @@ class LegacyRevisionRenderer extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
-      currentPagePath: decodeURIComponent(window.location.pathname),
+      pagePath: this.props.pagePath,
+      renderDrawioInRealtime: this.props.editorSettings?.renderDrawioInRealtime,
+      currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
 
@@ -133,11 +139,11 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
     await interceptorManager.process('preRender', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = growiRenderer.preProcess(context.markdown);
+    context.markdown = growiRenderer.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = growiRenderer.process(context.markdown);
+    context.parsedHTML = growiRenderer.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
 
     const isMarkdownEmpty = context.markdown.trim().length === 0;
     if (highlightKeywords != null && highlightKeywords.length > 0 && !isMarkdownEmpty) {
@@ -169,8 +175,10 @@ LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
+  editorSettings: PropTypes.any,
 };
 
 /**
@@ -181,12 +189,15 @@ const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRende
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const RevisionRenderer = (props) => {
-  return <LegacyRevisionRendererWrapper {...props} />;
+  const { data: editorSettings } = useEditorSettings();
+
+  return <LegacyRevisionRendererWrapper {...props} editorSettings={editorSettings} />;
 };
 
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };

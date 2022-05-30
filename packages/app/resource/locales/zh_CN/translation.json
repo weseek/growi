@@ -16,8 +16,6 @@
 	"Move/Rename": "移动/重命名",
 	"Redirected": "重定向",
 	"Unlinked": "Unlinked",
-	"Like!": "Like!",
-	"Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
@@ -107,6 +105,7 @@
 	"Connected": "Connected",
 	"Show": "显示",
 	"Hide": "隐藏",
+  "Loading": "加载...",
 	"Reset": "重置",
 	"Disclose E-mail": "显示邮箱",
 	"page exists": "页面已存在",
@@ -156,6 +155,7 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
+  "popular_tags": "流行标签",
   "Check All tags": "检查所有标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
 	"Show latest": "显示最新",
@@ -177,12 +177,14 @@
   "Link sharing is disabled": "你不允许分享该链接",
   "successfully_saved_the_page": "成功地保存了该页面",
   "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
+  "not_allowed_to_see_this_page": "你不能看到这个页面",
+  "Confirm": "确定",
+  "Successfully requested": "进程成功接受",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "title_required": "标题是必需的。"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -210,7 +212,7 @@
 		},
 		"form_help": {
 			"email": "您必须有下面列出的电子邮件地址才能注册此wiki。",
-			"password": "密码长度必须至少为6个字符。",
+			"password": "密码长度必须至少为8个字符。",
 			"user_id": "您创建的网页的URL将包含您的用户ID。您的用户ID可以由字母、数字和一些符号组成。"
 		}
 	},
@@ -365,11 +367,12 @@
 		}
   },
   "page_comment": {
-    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
+    "no_user_found": "未找到用户名"
   },
 	"page_api_error": {
 		"notfound_or_forbidden": "未找到或禁止原始页。",
-		"already_exists": "新建页面已存在",
+		"already_exists": "具有该路径的页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以删除"
   },
@@ -413,11 +416,15 @@
 		"recursively": "Delete children of <code>%s</code> recursively.",
 		"completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_page": "移到了垃圾箱。",
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
+  "empty_trash": "清空垃圾",
 	"modal_empty": {
-		"empty_the_trash": "Empty The Trash",
+		"empty_the_trash": "清空垃圾",
+    "empty_the_trash_button": "清空垃圾",
+    "not_deletable_notice": "由于缺乏权限，一些页面不能被删除",
 		"notice": "完全删除的页面是不可恢复的。"
 	},
 	"modal_duplicate": {
@@ -642,7 +649,8 @@
     "max_age": "有效期间  (msec)",
     "max_age_desc": "指定使用户会话过期的数量(以毫秒为单位)。<br>默认值: 2592000000 (30天)",
     "max_age_caution": "修改该值后需要重启服务器。",
-    "page_delete_rights_caution": "\"包括后代的操作\" 的设置被迫强于 \"只对选定的页面进行操作\" 的设置。",
+    "forced_update_desc": "设置已被强行更改。以前的设置: ",
+    "page_delete_rights_caution": "\"删除/全部删除\"权限（包括后代页面）被强制强于\"删除/完全删除\"权限。 <br> <br> 仅管理员 > 管理员|作者 > 何人",
 		"Authentication mechanism settings": "身份验证机制设置",
 		"setup_is_not_yet_complete": "安装尚未完成",
 		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
@@ -922,7 +930,8 @@
   "private_legacy_pages": {
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
-    "alert_title": "你正在查看旧的v4兼容的私人网页。",
+		"input_path_to_convert": "输入一个转换页面的路径",
+    "alert_title": "存在旧的v4兼容格式的私人网页。",
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
     "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",
@@ -933,6 +942,23 @@
       "convert_recursively_label": "递归地转换子页面。",
       "convert_recursively_desc": "递归地转换该路径下的页面。",
       "button_label": "转换"
+    },
+    "toaster": {
+      "page_migration_succeeded": "已成功将所选页面转换为 v5 兼容格式。",
+      "page_migration_failed_with_paths": "将 {{paths}} 转换为 v5 兼容格式时出错",
+      "page_migration_failed": "将页面转换为 v5 兼容格式时出错。"
+    },
+    "by_path_modal": {
+      "title": "转换为新的v5兼容格式",
+      "alert": "这一操作不能被撤销，用户不能查看的页面也要进行处理。",
+      "checkbox_label": "明白了",
+      "description": "输入一个路径，该路径下的所有页面将被转换为v5兼容格式。",
+      "button_label": "转换",
+      "success": "成功地请求转换。",
+      "error": "请求转换失败。",
+      "error_grant_invalid": "页面权限不正确。请更正并重试。",
+      "error_page_not_found": "没有找到页面。",
+      "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
@@ -1001,6 +1027,36 @@
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
   },
+  "emoji" :{
+    "title": "选择一个表情符号",
+    "search": "搜索",
+    "clear": "重置",
+    "notfound": "找不到表情符号",
+    "skintext": "选择您的默认肤色",
+    "categories": {
+      "search": "搜索结果",
+      "recent": "经常使用",
+      "smileys": "笑脸和情感",
+      "people": "人和身体",
+      "nature": "动物与自然",
+      "foods": "食物和饮料",
+      "activity": "活动",
+      "places": "旅行和地方",
+      "objects": "对象",
+      "symbols": "符号",
+      "flags": "旗帜",
+      "custom": "定制"
+    },
+    "categorieslabel": "表情符号类别",
+    "skintones": {
+      "1": "默认肤色",
+      "2": "浅肤色",
+      "3": "中浅肤色",
+      "4": "中等肤色",
+      "5": "中深肤色",
+      "6": "深色肤色"
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "维护模式",
     "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
@@ -1018,5 +1074,44 @@
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
     "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
     "select_page_to_see" : "请在下面选择你想去的页面。"
+  },
+  "user_group": {
+    "select_group": "选择组别",
+    "belonging_to_no_group": "无法找到你所属的团体。",
+    "manage_user_groups": "管理用户组"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "无法找到可选择的权限列表。 请先修改父页的权限，然后再试一次。",
+      "need_to_fix_grant": "为了正确使用该功能，需要修改与该页面相关的权限。 <br> 请从以下选项中选择进行更改。",
+      "grant_label": {
+        "isForbidden": "无权查看的机构",
+        "currentPageGrantLabel": "本页的权限: ",
+        "parentPageGrantLabel": "父页的权限: ",
+        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>此链接</a>"
+      },
+      "radio_btn": {
+        "restrected": "只有那些知道链接的人",
+        "only_me": "只对自己说",
+        "grant_group": "仅限特定群体"
+      },
+      "select_group_default_text": "选择组别",
+      "alert_message_select_group": "未选择组别",
+      "btn_label": "蜕变",
+      "title": "修改后的授权书"
+    },
+    "alert": {
+      "description": "本页的授权设置需要修改。",
+      "btn_label": "修改"
+    }
+  },
+  "tooltip": {
+    "like": "很好!",
+    "cancel_like": "取消喜欢",
+    "bookmark": "书签",
+    "cancel_bookmark": "取消书签",
+    "receive_notifications": "接收通知",
+    "stop_notification": "停止通知",
+    "footprints": "脚印"
   }
 }

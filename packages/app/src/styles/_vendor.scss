@@ -18,6 +18,7 @@
 
 // import CodeMirror styles
 @import '~codemirror/lib/codemirror.css';
+@import '~codemirror/addon/hint/show-hint.css';
 @import '~codemirror/theme/elegant.css';
 @import '~codemirror/theme/eclipse.css';
 
@@ -26,3 +27,6 @@
 
 // import SimpleBar styles
 @import '~simplebar/dist/simplebar.min.css';
+
+// Emoji-mart style
+@import '~emoji-mart/css/emoji-mart.css';

@@ -1,22 +1,22 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useMemo } from 'react';
+
 import PropTypes from 'prop-types';
-
 import { useTranslation } from 'react-i18next';
-
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd } from '~/stores/ui';
-import { usePageCreateModal } from '~/stores/modal';
 import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
-
-import PersonalDropdown from './PersonalDropdown';
-import GlobalSearch from './GlobalSearch';
 import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import { AppearanceModeDropdown } from './AppearanceModeDropdown';
+import GlobalSearch from './GlobalSearch';
+import PersonalDropdown from './PersonalDropdown';
 
 
 type NavbarRightProps = {
@@ -28,33 +28,53 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { open: openCreateModal } = usePageCreateModal();
 
   const { currentUser } = props;
+  const isAuthenticated = currentUser != null;
 
-  // render login button
-  if (currentUser == null) {
-    return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
-  }
+  const authenticatedNavItem = useMemo(() => {
+    return (
+      <>
+        <li className="nav-item">
+          <InAppNotificationDropdown />
+        </li>
+
+        <li className="nav-item d-none d-md-block">
+          <button
+            className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
+            type="button"
+            data-testid="newPageBtn"
+            onClick={() => openCreateModal(currentPagePath || '')}
+          >
+            <i className="icon-pencil mr-2"></i>
+            <span className="d-none d-lg-block">{ t('New') }</span>
+          </button>
+        </li>
+
+        <li className="grw-personal-dropdown nav-item dropdown">
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        </li>
+
+        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
+          <PersonalDropdown />
+        </li>
+      </>
+    );
+  }, [t, currentPagePath, openCreateModal, isAuthenticated]);
+
+  const notAuthenticatedNavItem = useMemo(() => {
+    return (
+      <>
+        <li className="grw-personal-dropdown nav-item dropdown">
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        </li>
+
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+      </>
+    );
+  }, []);
 
   return (
     <>
-      <li className="nav-item">
-        <InAppNotificationDropdown />
-      </li>
-
-      <li className="nav-item d-none d-md-block">
-        <button
-          className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
-          type="button"
-          data-testid="newPageBtn"
-          onClick={() => openCreateModal(currentPagePath || '')}
-        >
-          <i className="icon-pencil mr-2"></i>
-          <span className="d-none d-lg-block">{ t('New') }</span>
-        </button>
-      </li>
-
-      <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
-        <PersonalDropdown />
-      </li>
+      {isAuthenticated ? authenticatedNavItem : notAuthenticatedNavItem}
     </>
   );
 });

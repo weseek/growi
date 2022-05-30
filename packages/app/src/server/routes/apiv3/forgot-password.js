@@ -1,18 +1,21 @@
+import { format, subSeconds } from 'date-fns';
 import rateLimit from 'express-rate-limit';
 
+import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
-import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
 
-import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
-import httpErrorHandler from '../../middlewares/http-error-handler';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import httpErrorHandler from '../../middlewares/http-error-handler';
+import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
+
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body } = require('express-validator');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
@@ -23,11 +26,13 @@ module.exports = (crowi) => {
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
 
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+
   const validator = {
     password: [
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 8 })
-        .withMessage('password must be at least 8 characters long'),
+        .isLength({ min: minPasswordLength })
+        .withMessage(`password must be at least ${minPasswordLength} characters long`),
       // checking if password confirmation matches password
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
@@ -45,23 +50,23 @@ module.exports = (crowi) => {
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
     return mailService.send({
       to: email,
-      subject: txtFileName,
+      subject: '[GROWI] Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
         url,
+        expiredAt,
       },
     });
   }
 
   router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
-    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -76,7 +81,10 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+      const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+      const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
+      const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
       return res.apiv3();
     }
     catch (err) {
@@ -91,7 +99,7 @@ module.exports = (crowi) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
+    const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
 
     const user = await User.findOne({ email });

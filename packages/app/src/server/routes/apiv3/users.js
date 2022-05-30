@@ -12,9 +12,9 @@ const path = require('path');
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const PAGE_ITEMS = 50;
@@ -118,6 +118,13 @@ module.exports = (crowi) => {
 
   validator.recentCreatedByUser = [
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
+  ];
+
+  validator.usernames = [
+    query('q').isString().withMessage('q is required'),
+    query('offset').optional().isInt().withMessage('offset must be a number'),
+    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
+    query('options').optional().isString().withMessage('options must be string'),
   ];
 
   const sendEmailByUserList = async(userList) => {
@@ -901,11 +908,11 @@ module.exports = (crowi) => {
     const userIds = req.query.userIds || null;
 
     let userFetcher;
-    if (!userIds || userIds.split(',').length <= 0) {
-      userFetcher = User.findAllUsers();
+    if (userIds !== null && userIds.split(',').length > 0) {
+      userFetcher = User.findUsersByIds(userIds.split(','));
     }
     else {
-      userFetcher = User.findUsersByIds(userIds.split(','));
+      userFetcher = User.findAllUsers();
     }
 
     const data = {};
@@ -924,6 +931,42 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3(data);
+  });
+
+  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
+    const q = req.query.q;
+    const offset = +req.query.offset || 0;
+    const limit = +req.query.limit || 10;
+
+    try {
+      const options = JSON.parse(req.query.options || '{}');
+      const data = {};
+
+      if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
+        const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
+        const activeUsernames = activeUserData.users.map(user => user.username);
+        Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
+      }
+
+      if (options.isIncludeInactiveUser) {
+        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
+        const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
+        const inactiveUsernames = inactiveUserData.users.map(user => user.username);
+        Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
+      }
+
+      if (options.isIncludeMixedUsername) {
+        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || []];
+        const distinctUsernames = Array.from(new Set(allUsernames));
+        Object.assign(data, { mixedUsernames: distinctUsernames });
+      }
+
+      return res.apiv3(data);
+    }
+    catch (err) {
+      logger.error('Failed to get usernames', err);
+      return res.apiv3Err(err);
+    }
   });
 
   return router;

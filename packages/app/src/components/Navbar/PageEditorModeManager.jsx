@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
+import { useCurrentUser } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -44,11 +46,11 @@ function PageEditorModeManager(props) {
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = appContainer.isAdmin;
+  const isAdmin = currentUser?.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
-  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled && editorMode !== EditorMode.HackMD;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
     if (isBtnDisabled) {
@@ -88,25 +90,27 @@ function PageEditorModeManager(props) {
           />
         )}
         {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && (
-          <PageEditorModeButtonWrapper
-            editorMode={editorMode}
-            isBtnDisabled={isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
-            targetMode={EditorMode.HackMD}
-            icon={<i className="fa fa-file-text-o" />}
-            label={t('hackmd.hack_md')}
-            id="grw-page-editor-mode-manager-hackmd-button"
-          />
+          <>
+            <PageEditorModeButtonWrapper
+              editorMode={editorMode}
+              isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
+              onClick={isHackmdEnabled ? pageEditorModeButtonClickedHandler : undefined}
+              targetMode={EditorMode.HackMD}
+              icon={<i className="fa fa-file-text-o" />}
+              label={t('hackmd.hack_md')}
+              id="grw-page-editor-mode-manager-hackmd-button"
+            />
+            { !isHackmdEnabled && (
+              <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
+                {t('hackmd.not_set_up')}
+              </UncontrolledTooltip>
+            )}
+          </>
         )}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
           {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
-      {!isBtnDisabled && showHackmdDisabledTooltip && (
-        <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
-          {t('hackmd.not_set_up')}
         </UncontrolledTooltip>
       )}
     </>

@@ -1,14 +1,15 @@
 /* eslint-disable no-use-before-define */
 import loggerFactory from '~/utils/logger';
 
+const crypto = require('crypto');
+
 const debug = require('debug')('growi:models:user');
+const md5 = require('md5');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
-const md5 = require('md5');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const crypto = require('crypto');
 
 const { listLocaleIds, migrateDeprecatedLocaleId } = require('~/utils/locale-utils');
 
@@ -47,6 +48,7 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
+    slackMemberId: { type: String, unique: true, sparse: true },
     // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
@@ -392,8 +394,16 @@ module.exports = function(crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = async function() {
-    return this.find({ admin: true });
+  userSchema.statics.findAdmins = async function(option) {
+    const sort = option?.sort ?? { createdAt: -1 };
+
+    let status = option?.status ?? [STATUS_ACTIVE];
+    if (!Array.isArray(status)) {
+      status = [status];
+    }
+
+    return this.find({ admin: true, status: { $in: status } })
+      .sort(sort);
   };
 
   userSchema.statics.findUserByUsername = function(username) {
@@ -687,6 +697,40 @@ module.exports = function(crowi) {
 
     user.isInvitationEmailSended = true;
     user.save();
+  };
+
+  userSchema.statics.findUserBySlackMemberId = async function(slackMemberId) {
+    const user = this.findOne({ slackMemberId });
+    if (user == null) {
+      throw new Error('User not found');
+    }
+    return user;
+  };
+
+  userSchema.statics.findUsersBySlackMemberIds = async function(slackMemberIds) {
+    const users = this.find({ slackMemberId: { $in: slackMemberIds } });
+    if (users.length === 0) {
+      throw new Error('No user found');
+    }
+    return users;
+  };
+
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
+    const opt = option || {};
+    const sortOpt = opt.sortOpt || { username: 1 };
+    const offset = opt.offset || 0;
+    const limit = opt.limit || 10;
+
+    const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status } };
+
+    const users = await this.find(conditions)
+      .sort(sortOpt)
+      .skip(offset)
+      .limit(limit);
+
+    const totalCount = (await this.find(conditions).distinct('username')).length;
+
+    return { users, totalCount };
   };
 
   class UserUpperLimitException {

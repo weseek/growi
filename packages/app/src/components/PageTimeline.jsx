@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PaginationWrapper from './PaginationWrapper';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
 import RevisionLoader from './Page/RevisionLoader';
+import PaginationWrapper from './PaginationWrapper';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 class PageTimeline extends React.Component {
@@ -34,7 +35,7 @@ class PageTimeline extends React.Component {
     const { path } = pageContainer.state;
     const page = selectedPage;
 
-    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+    const res = await apiv3Get('/pages/list', { path, page });
     const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
     const pagingLimit = res.data.limit;
@@ -84,6 +85,7 @@ class PageTimeline extends React.Component {
                     lazy
                     growiRenderer={this.growiRenderer}
                     pageId={page._id}
+                    pagePath={page.path}
                     revisionId={page.revision}
                   />
                 </div>

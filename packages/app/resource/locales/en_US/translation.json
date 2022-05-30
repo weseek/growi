@@ -15,8 +15,6 @@
   "Move/Rename": "Move/Rename",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
-  "Like!": "Like!",
-  "Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
@@ -100,6 +98,7 @@
   "Connected": "Connected",
   "Show": "Show",
   "Hide": "Hide",
+  "Loading": "Loading...",
   "Disclose E-mail": "Disclose E-mail",
   "page exists": "this page already exists",
   "Error occurred": "Error occurred",
@@ -148,6 +147,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "popular_tags": "Popular tags",
   "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
   "Show latest": "Show latest",
@@ -169,6 +169,9 @@
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
+  "not_allowed_to_see_this_page": "You cannot see this page",
+  "Confirm": "Confirm",
+  "Successfully requested": "Successfully requested.",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -181,9 +184,7 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required.",
-    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
-
+    "title_required": "Title is required."
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -211,7 +212,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 8 characters long.",
+      "password": "Your password must be at least {{target}} characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
@@ -387,11 +388,12 @@
     }
   },
   "page_comment": {
-    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
+    "no_user_found": "No user found"
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
-    "already_exists": "New page is already exists.",
+    "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete"
   },
@@ -435,11 +437,15 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_page": "Moved to the trash",
   "deleted_pages": "{{path}} has been deleted",
   "deleted_pages_completely": "{{path}} has been deleted completely",
   "renamed_pages": "{{path}} has been renamed",
+  "empty_trash": "The trash has been emptied",
   "modal_empty":{
     "empty_the_trash": "Empty The Trash",
+    "empty_the_trash_button": "Empty The Trash",
+    "not_deletable_notice": "Some pages cannot be removed due to lack of permission.",
     "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
@@ -637,7 +643,8 @@
   "private_legacy_pages": {
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
-    "alert_title": "You are viewing old v4 compatible private pages.",
+    "input_path_to_convert": "Input a path to convert pages",
+    "alert_title": "Old v4 compatible format private pages exist.",
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
     "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
@@ -648,11 +655,28 @@
       "convert_recursively_label": "Convert child pages recursively.",
       "convert_recursively_desc": "Convert pages under this path recursively.",
       "button_label": "Convert"
+    },
+    "toaster": {
+      "page_migration_succeeded": "Conversion of selected page to v5 has been successfully completed.",
+      "page_migration_failed_with_paths": "Conversion of {{paths}} to v5 has been failed.",
+      "page_migration_failed": "Conversion of page to v5 has been failed."
+    },
+    "by_path_modal": {
+      "title": "Convert to new v5 compatible format",
+      "alert": "This operation cannot be undone, and pages that the user cannot view are also subject to processing.",
+      "checkbox_label": "Understood",
+      "description": "Enter a path and all pages under that path will be converted to v5 compatible format.",
+      "button_label": "Convert",
+      "success": "Successfully requested conversion.",
+      "error": "Failed to request conversion.",
+      "error_grant_invalid": "Page permissions are incorrect. Please correct it and try again.",
+      "error_page_not_found": "Page not found.",
+      "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
-    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restriction of new users' registration",
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -684,7 +708,8 @@
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
     "max_age_caution": "Restarting the server is required after you modify this value.",
-    "page_delete_rights_caution": "The \"operation including the descendants\" setting is forced to be stronger than the \"operation for only the selected page\" setting.",
+    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
+    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Admin only > Admin and autor > Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
@@ -999,6 +1024,36 @@
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
+  "emoji" :{
+    "title": "Pick an Emoji",
+    "search": "Search",
+    "clear": "Clear",
+    "notfound": "No Emoji Found",
+    "skintext": "Choose your default skin tone",
+    "categories": {
+      "search": "Search Results",
+      "recent": "Frequently Used",
+      "smileys": "Smileys & Emotion",
+      "people": "People & Body",
+      "nature": "Animals & Nature",
+      "foods": "Food & Drink",
+      "activity": "Activity",
+      "places": "Travel & Places",
+      "objects": "Objects",
+      "symbols": "Symbols",
+      "flags": "Flags",
+      "custom": "Custom"
+    },
+    "categorieslabel": "Emoji categories",
+    "skintones": {
+      "1": "Default Skin Tone",
+      "2": "Light Skin Tone",
+      "3": "Medium-Light Skin Tone",
+      "4": "Medium Skin Tone",
+      "5": "Medium-Dark Skin Tone",
+      "6": "Dark Skin Tone"
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "Maintenance Mode",
     "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",
@@ -1016,5 +1071,44 @@
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
+  },
+  "user_group": {
+    "select_group": "Select group",
+    "belonging_to_no_group": "Could not find the groups you belong to.",
+    "manage_user_groups": "Manage user groups"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "The list of selectable permissions could not be found. Please modify the permissions on the parent page first and try again.",
+      "need_to_fix_grant": "The permissions associated with this page must be modified in order to use the functionality correctly. <br> Please select from the options below to make the change.",
+      "grant_label": {
+        "isForbidden": "Authority not allowed to view",
+        "currentPageGrantLabel": "Authorization for this page: ",
+        "parentPageGrantLabel": "Authority of parent page: ",
+        "docLink": "For more information on modifying permissions, please refer to <a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>"
+      },
+      "radio_btn": {
+        "restrected": "Only those who know the link",
+        "only_me": "only to oneself",
+        "grant_group": "Only specific groups"
+      },
+      "select_group_default_text": "Select Group",
+      "alert_message_select_group": "No group selected",
+      "btn_label": "Conversion",
+      "title": "Modify authority"
+    },
+    "alert": {
+      "description": "You need to modify the permission settings for this page.",
+      "btn_label": "Revision"
+    }
+  },
+  "tooltip": {
+    "like": "Like!",
+    "cancel_like": "Cancel Like",
+    "bookmark": "Bookmark",
+    "cancel_bookmark": "Cancel Bookmark",
+    "receive_notifications": "Receive Notifications",
+    "stop_notification": "Stop Notification",
+    "footprints": "Footprints"
   }
 }

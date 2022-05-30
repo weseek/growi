@@ -1,28 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import detectIndent from 'detect-indent';
 
-import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
+import detectIndent from 'detect-indent';
+import PropTypes from 'prop-types';
+import { throttle, debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { apiGet, apiPost } from '~/client/util/apiv1-client';
+import { getOptionsToSave } from '~/client/util/editor';
+import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
+import { useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled } from '~/stores/editor';
+import {
+  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import EditorContainer from '~/client/services/EditorContainer';
+import { withUnstatedContainers } from './UnstatedUtils';
 
-import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
-} from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -72,10 +75,10 @@ class PageEditor extends React.Component {
 
     // Detect indent size from contents (only when users are allowed to change it)
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5368
-    if (!this.props.appContainer.config.isIndentSizeForced && this.state.markdown) {
+    if (!props.isIndentSizeForced && this.state.markdown) {
       const detectedIndent = detectIndent(this.state.markdown);
       if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-        this.props.editorContainer.setState({ indentSize: detectedIndent.amount });
+        props.mutateCurrentIndentSize(detectedIndent.amount);
       }
     }
   }
@@ -168,7 +171,7 @@ class PageEditor extends React.Component {
     } = this.props;
 
     try {
-      let res = await appContainer.apiGet('/attachments.limit', {
+      let res = await apiGet('/attachments.limit', {
         fileSize: file.size,
       });
 
@@ -185,7 +188,7 @@ class PageEditor extends React.Component {
         formData.append('page_id', pageContainer.state.pageId);
       }
 
-      res = await appContainer.apiPost('/attachments.add', formData);
+      res = await apiPost('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
@@ -326,7 +329,6 @@ class PageEditor extends React.Component {
 
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
-    const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
       <div className="d-flex flex-wrap">
@@ -335,10 +337,11 @@ class PageEditor extends React.Component {
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
             noCdn={noCdn}
-            isMobile={this.props.appContainer.isMobile}
+            isMobile={this.props.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
-            emojiStrategy={emojiStrategy}
+            isTextlintEnabled={this.props.isTextlintEnabled}
+            indentSize={this.props.indentSize}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
@@ -356,44 +359,18 @@ class PageEditor extends React.Component {
             onScroll={this.onPreviewScroll}
           />
         </div>
+        <ConflictDiffModal
+          isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
+          onClose={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          appContainer={this.props.appContainer}
+          pageContainer={this.props.pageContainer}
+          markdownOnEdit={this.state.markdown}
+        />
       </div>
     );
   }
 
 }
-
-/**
- * Wrapper component for using unstated
- */
-const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
-
-const PageEditorWrapper = (props) => {
-  const { data: isEditable } = useIsEditable();
-  const { data: editorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
-  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
-
-  if (isEditable == null || editorMode == null) {
-    return null;
-  }
-
-  return (
-    <PageEditorHOCWrapper
-      {...props}
-      isEditable={isEditable}
-      editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
-      mutateGrant={mutateGrant}
-    />
-  );
-};
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -404,12 +381,60 @@ PageEditor.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
   mutateGrant: PropTypes.func,
+  isTextlintEnabled: PropTypes.bool,
+  isIndentSizeForced: PropTypes.bool,
+  indentSize: PropTypes.number,
+  mutateCurrentIndentSize: PropTypes.func,
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+  const { data: isMobile } = useIsMobile();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: isTextlintEnabled } = useIsTextlintEnabled();
+  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  return (
+    <PageEditorHOCWrapper
+      {...props}
+      isEditable={isEditable}
+      editorMode={editorMode}
+      isMobile={isMobile}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+      isTextlintEnabled={isTextlintEnabled}
+      isIndentSizeForced={isIndentSizeForced}
+      indentSize={indentSize}
+      mutateCurrentIndentSize={mutateCurrentIndentSize}
+
+    />
+  );
 };
 
 export default PageEditorWrapper;

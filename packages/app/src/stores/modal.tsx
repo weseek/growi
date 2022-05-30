@@ -1,9 +1,12 @@
 import { SWRResponse } from 'swr';
-import { useStaticSWR } from './use-static-swr';
+
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
+import { IUserGroupHasId } from '~/interfaces/user';
+
+import { useStaticSWR } from './use-static-swr';
 
 
 /*
@@ -30,6 +33,9 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   };
 };
 
+/*
+* PageDeleteModal
+*/
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
 }
@@ -60,6 +66,47 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     open: (
         pages?: IPageToDeleteWithMeta[],
         opts?: IDeleteModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, pages, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* EmptyTrashModal
+*/
+type IEmptyTrashModalOption = {
+  onEmptiedTrash?: () => void,
+  canDelepeAllPages: boolean,
+}
+
+type EmptyTrashModalStatus = {
+  isOpened: boolean,
+  pages?: IPageToDeleteWithMeta[],
+  opts?: IEmptyTrashModalOption,
+}
+
+type EmptyTrashModalStatusUtils = {
+  open(
+    pages?: IPageToDeleteWithMeta[],
+    opts?: IEmptyTrashModalOption,
+  ): Promise<EmptyTrashModalStatus | undefined>,
+  close(): Promise<EmptyTrashModalStatus | undefined>,
+}
+
+export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<EmptyTrashModalStatus, Error> & EmptyTrashModalStatusUtils => {
+  const initialData: EmptyTrashModalStatus = {
+    isOpened: false,
+    pages: [],
+  };
+  const swrResponse = useStaticSWR<EmptyTrashModalStatus, Error>('emptyTrashModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        pages?: IPageToDeleteWithMeta[],
+        opts?: IEmptyTrashModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
     }),
@@ -221,32 +268,32 @@ export const usePagePresentationModal = (
 
 
 /*
- * LegacyPrivatePagesMigrationModal
+ * PrivateLegacyPagesMigrationModal
  */
 
 export type ILegacyPrivatePage = { pageId: string, path: string };
 
-export type LegacyPrivatePagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
+export type PrivateLegacyPagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
 
-type LegacyPrivatePagesMigrationModalStatus = {
+type PrivateLegacyPagesMigrationModalStatus = {
   isOpened: boolean,
   pages?: ILegacyPrivatePage[],
-  onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler,
+  onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler,
 }
 
-type LegacyPrivatePagesMigrationModalStatusUtils = {
-  open(pages: ILegacyPrivatePage[], onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
-  close(): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+type PrivateLegacyPagesMigrationModalStatusUtils = {
+  open(pages: ILegacyPrivatePage[], onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
+  close(): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
 }
 
-export const useLegacyPrivatePagesMigrationModal = (
-    status?: LegacyPrivatePagesMigrationModalStatus,
-): SWRResponse<LegacyPrivatePagesMigrationModalStatus, Error> & LegacyPrivatePagesMigrationModalStatusUtils => {
-  const initialData: LegacyPrivatePagesMigrationModalStatus = {
+export const usePrivateLegacyPagesMigrationModal = (
+    status?: PrivateLegacyPagesMigrationModalStatus,
+): SWRResponse<PrivateLegacyPagesMigrationModalStatus, Error> & PrivateLegacyPagesMigrationModalStatusUtils => {
+  const initialData: PrivateLegacyPagesMigrationModalStatus = {
     isOpened: false,
     pages: [],
   };
-  const swrResponse = useStaticSWR<LegacyPrivatePagesMigrationModalStatus, Error>('legacyPrivatePagesMigrationModal', status, { fallbackData: initialData });
+  const swrResponse = useStaticSWR<PrivateLegacyPagesMigrationModalStatus, Error>('privateLegacyPagesMigrationModal', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -327,6 +374,39 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
         return;
       }
       swrResponse.mutate({ isOpened: false });
+    },
+  };
+};
+
+/*
+ * UpdateUserGroupConfirmModal
+ */
+type UpdateUserGroupConfirmModalStatus = {
+  isOpened: boolean,
+  targetGroup?: IUserGroupHasId,
+  updateData?: Partial<IUserGroupHasId>,
+  onConfirm?: (targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => any,
+}
+
+type UpdateUserGroupConfirmModalUtils = {
+  open(targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, onConfirm?: (...args: any[]) => any): Promise<void>,
+  close(): Promise<void>,
+}
+
+export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupConfirmModalStatus, Error> & UpdateUserGroupConfirmModalUtils => {
+
+  const initialStatus: UpdateUserGroupConfirmModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<UpdateUserGroupConfirmModalStatus, Error>('updateParentConfirmModal', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    async open(targetGroup: IUserGroupHasId, updateData: Partial<IUserGroupHasId>, onConfirm?: (...args: any[]) => any) {
+      await swrResponse.mutate({
+        isOpened: true, targetGroup, updateData, onConfirm,
+      });
+    },
+    async close() {
+      await swrResponse.mutate({ isOpened: false });
     },
   };
 };

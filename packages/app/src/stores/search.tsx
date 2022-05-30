@@ -50,8 +50,8 @@ const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeU
   return query;
 };
 
-export const useSWRxFullTextSearch = (
-    keyword: string | null, configurations: ISearchConfigurations, disableTermManager = false,
+export const useSWRxSearch = (
+    keyword: string | null, nqName: string | null, configurations: ISearchConfigurations, disableTermManager = false,
 ): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
   const { data: termNumber } = useFullTextSearchTermManager(disableTermManager);
 
@@ -69,8 +69,10 @@ export const useSWRxFullTextSearch = (
   };
   const rawQuery = createSearchQuery(keyword ?? '', fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
 
+  const isKeywordValid = keyword != null && keyword.length > 0;
+
   const swrResult = useSWRImmutable(
-    keyword == null ? null : ['/search', keyword, fixedConfigurations, termNumber],
+    isKeywordValid ? ['/search', keyword, fixedConfigurations, termNumber] : null,
     (endpoint, keyword, fixedConfigurations) => {
       const {
         limit, offset, sort, order,
@@ -79,6 +81,7 @@ export const useSWRxFullTextSearch = (
       return apiGet(
         endpoint, {
           q: encodeURIComponent(rawQuery),
+          nq: typeof nqName === 'string' ? encodeURIComponent(nqName) : null,
           limit,
           offset,
           sort,
@@ -97,17 +100,4 @@ export const useSWRxFullTextSearch = (
       ...fixedConfigurations,
     },
   };
-};
-
-export const useSWRxNamedQuerySearch = (
-    namedQuery: string, configurations: ISearchConfigurations,
-): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
-
-  const keyword = `[nq:${namedQuery}]`;
-  return useSWRxFullTextSearch(keyword, {
-    ...configurations,
-    includeTrashPages: true,
-    includeUserPages: true,
-  });
-
 };

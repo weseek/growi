@@ -1,12 +1,14 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
-import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import UserPictureList from './User/UserPictureList';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
+
 import { IUser } from '../interfaces/user';
+
+import { withUnstatedContainers } from './UnstatedUtils';
+import UserPictureList from './User/UserPictureList';
 
 type LikeButtonsProps = {
 
@@ -32,6 +34,17 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
   } = props;
 
+  const getTooltipMessage = useCallback(() => {
+    if (isGuestUser) {
+      return 'Not available for guest';
+    }
+
+    if (isLiked) {
+      return 'tooltip.cancel_like';
+    }
+    return 'tooltip.like';
+  }, [isGuestUser, isLiked]);
+
   return (
     <div className="btn-group" role="group" aria-label="Like buttons">
       <button
@@ -43,11 +56,10 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
-      { isGuestUser && (
-        <UncontrolledTooltip placement="top" target="like-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
+
+      <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+        {t(getTooltipMessage())}
+      </UncontrolledTooltip>
 
       { !hideTotalNumber && (
         <>

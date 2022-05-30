@@ -1,31 +1,30 @@
 import { RefObject } from 'react';
+
+import { isClient, pagePathUtils } from '@growi/core';
+import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import SimpleBar from 'simplebar-react';
-
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
-import { pagePathUtils } from '@growi/core';
-
+import { IFocusable } from '~/client/interfaces/focusable';
+import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { Nullable } from '~/interfaces/common';
 import { SidebarContentsType } from '~/interfaces/ui';
+import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { useStaticSWR } from './use-static-swr';
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
 } from './context';
-import { IFocusable } from '~/client/interfaces/focusable';
-import { Nullable } from '~/interfaces/common';
-import { UpdateDescCountData } from '~/interfaces/websocket';
+import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useStaticSWR } from './use-static-swr';
 
 const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
-
-const isServer = typeof window === 'undefined';
 
 
 /** **********************************************************
@@ -55,10 +54,10 @@ export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRRe
  *********************************************************** */
 
 export const useIsMobile = (): SWRResponse<boolean, Error> => {
-  const key = isServer ? null : 'isMobile';
+  const key = isClient() ? 'isMobile' : null;
 
   let configuration;
-  if (!isServer) {
+  if (isClient()) {
     const userAgent = window.navigator.userAgent.toLowerCase();
     configuration = {
       fallbackData: /iphone|ipad|android/.test(userAgent),
@@ -68,28 +67,28 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
+const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
   switch (newEditorMode) {
     case EditorMode.View:
       $('body').removeClass('on-edit');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
-      $('body').removeClass('pathname-sidebar');
+      $('body').removeClass('editing-sidebar');
       break;
     case EditorMode.Editor:
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
       $('body').removeClass('hackmd');
       // editing /Sidebar
-      if (window.location.pathname === '/Sidebar') {
-        $('body').addClass('pathname-sidebar');
+      if (isSidebar) {
+        $('body').addClass('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
       $('body').removeClass('builtin-editor');
-      $('body').removeClass('pathname-sidebar');
+      $('body').removeClass('editing-sidebar');
       break;
   }
 };
@@ -133,6 +132,9 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
+  const { data: currentPagePath } = useCurrentPagePath();
+  const isSidebar = currentPagePath === '/Sidebar';
+
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     null,
@@ -142,7 +144,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   // initial updating
   if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
     if (isEditable) {
-      updateBodyClassesByEditorMode(swrResponse.data);
+      updateBodyClassesByEditorMode(swrResponse.data, isSidebar);
     }
     isEditorModeLoaded = true;
   }
@@ -155,7 +157,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
       if (!isEditable) {
         return Promise.resolve(EditorMode.View); // fixed if not editable
       }
-      updateBodyClassesByEditorMode(editorMode);
+      updateBodyClassesByEditorMode(editorMode, isSidebar);
       updateHashByEditorMode(editorMode);
       return swrResponse.mutate(editorMode, shouldRevalidate);
     },
@@ -163,11 +165,11 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
+  const key: Key = isClient() ? 'isDeviceSmallerThanMd' : null;
 
   const { cache, mutate } = useSWRConfig();
 
-  if (!isServer) {
+  if (isClient()) {
     const mdOrAvobeHandler = function(this: MediaQueryList): void {
       // sm -> md: matches will be true
       // md -> sm: matches will be false
@@ -187,11 +189,11 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
 };
 
 export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
+  const key: Key = isClient() ? 'isDeviceSmallerThanLg' : null;
 
   const { cache, mutate } = useSWRConfig();
 
-  if (!isServer) {
+  if (isClient()) {
     const lgOrAvobeHandler = function(this: MediaQueryList): void {
       // md -> lg: matches will be true
       // lg -> md: matches will be false
@@ -210,8 +212,27 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   return useStaticSWR(key);
 };
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
+type PreferDrawerModeByUserUtils = {
+  update: (preferDrawerMode: boolean) => void
+}
+
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+  const { data: isGuestUser } = useIsGuestUser();
+  const { scheduleToPut } = useUserUISettings();
+
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+
+  return {
+    ...swrResponse,
+    data: swrResponse.data,
+    update: (preferDrawerMode: boolean) => {
+      swrResponse.mutate(preferDrawerMode);
+
+      if (!isGuestUser) {
+        scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
+      }
+    },
+  };
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {

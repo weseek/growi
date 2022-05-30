@@ -1,45 +1,42 @@
 import React, { useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
-
-
+import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
-import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
-} from '~/stores/ui';
-import {
-  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
-} from '~/stores/modal';
-
-
+import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiPost } from '~/client/util/apiv1-client';
+import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
+import {
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
 import { useSWRTagsInfo } from '~/stores/page';
+import {
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+} from '~/stores/ui';
 
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiPost } from '~/client/util/apiv1-client';
-
-import HistoryIcon from '../Icons/HistoryIcon';
-import AttachmentIcon from '../Icons/AttachmentIcon';
-import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
-import { SubNavButtons } from './SubNavButtons';
-import PageEditorModeManager from './PageEditorModeManager';
+import AttachmentIcon from '../Icons/AttachmentIcon';
+import HistoryIcon from '../Icons/HistoryIcon';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
+
 import { GrowiSubNavigation } from './GrowiSubNavigation';
+import PageEditorModeManager from './PageEditorModeManager';
+import { SubNavButtons } from './SubNavButtons';
+
 import PresentationIcon from '../Icons/PresentationIcon';
 import CreateTemplateModal from '../CreateTemplateModal';
-import { exportAsMarkdown } from '~/client/services/page-operation';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -75,14 +72,20 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openPresentationModal(hrefForPresentationModal)}
         data-testid="open-presentation-modal-btn"
+        className="grw-page-control-dropdown-item"
       >
-        <i className="icon-fw"><PresentationIcon /></i>
+        <i className="icon-fw grw-page-control-dropdown-icon">
+          <PresentationIcon />
+        </i>
         { t('Presentation Mode') }
       </DropdownItem>
 
       {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
+      <DropdownItem
+        onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
@@ -96,32 +99,45 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
         data-testid="open-page-accessories-modal-btn-with-history-tab"
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><HistoryIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <HistoryIcon />
+        </span>
         {t('History')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
         data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><AttachmentIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <AttachmentIcon />
+        </span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        className="grw-page-control-dropdown-item"
       >
-        <span className="mr-1"><ShareLinkIcon /></span>
+        <span className="grw-page-control-dropdown-icon">
+          <ShareLinkIcon />
+        </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
 
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={openPageTemplateModalHandler}>
-        <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
+      <DropdownItem
+        onClick={openPageTemplateModalHandler}
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
+        { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
   );

@@ -1,7 +1,9 @@
 import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
+
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
@@ -11,8 +13,8 @@ import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
-import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
@@ -181,8 +183,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                   <div className="page-list px-md-4">
                     <SearchResultList
                       ref={searchResultListRef}
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      pages={pages!}
+                      pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
@@ -254,7 +255,14 @@ export const usePageDeleteModalForBulkDeletion = (
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {
-        toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
+        const path = args[0];
+        const isCompletely = args[2];
+        if (path == null || isCompletely == null) {
+          toastSuccess(t('deleted_page'));
+        }
+        else {
+          toastSuccess(t('deleted_pages_completely', { path }));
+        }
         advancePt();
 
         if (onDeleted != null) {

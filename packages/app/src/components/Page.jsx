@@ -1,30 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import EditorContainer from '~/client/services/EditorContainer';
+import PropTypes from 'prop-types';
+
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import { getOptionsToSave } from '~/client/util/editor';
+import {
+  useCurrentPagePath, useIsGuestUser, useSlackChannels,
+} from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
+import {
+  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
-import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
+import DrawioModal from './PageEditor/DrawioModal';
 import GridEditModal from './PageEditor/GridEditModal';
 import HandsontableModal from './PageEditor/HandsontableModal';
-import DrawioModal from './PageEditor/DrawioModal';
-import mtu from './PageEditor/MarkdownTableUtil';
+import LinkEditModal from './PageEditor/LinkEditModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
-
-import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
-import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
-} from '~/stores/ui';
-import { useIsSlackEnabled } from '~/stores/editor';
-import { useSlackChannels } from '~/stores/context';
+import mtu from './PageEditor/MarkdownTableUtil';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:Page');
 
@@ -143,19 +143,19 @@ class Page extends React.Component {
   }
 
   render() {
-    const { appContainer, pageContainer } = this.props;
-    const { isMobile } = appContainer;
-    const isLoggedIn = appContainer.currentUser != null;
+    const {
+      pageContainer, pagePath, isMobile, isGuestUser,
+    } = this.props;
     const { markdown, revisionId } = pageContainer.state;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
-        { isLoggedIn && (
+        { !isGuestUser && (
           <>
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.LinkEditModal} />
@@ -170,12 +170,15 @@ class Page extends React.Component {
 }
 
 Page.propTypes = {
+  // TODO: remove this when omitting unstated is completed
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
-  // TODO: remove this when omitting unstated is completed
+  pagePath: PropTypes.string.isRequired,
   editorMode: PropTypes.string.isRequired,
+  isGuestUser: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
@@ -184,21 +187,27 @@ Page.propTypes = {
 };
 
 const PageWrapper = (props) => {
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: editorMode } = useEditorMode();
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
-  if (editorMode == null) {
+  if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
   }
 
   return (
     <Page
       {...props}
+      pagePath={currentPagePath}
       editorMode={editorMode}
+      isGuestUser={isGuestUser}
+      isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
       grant={grant}

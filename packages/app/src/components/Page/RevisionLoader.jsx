@@ -1,14 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import AppContainer from '~/client/services/AppContainer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import RevisionRenderer from './RevisionRenderer';
+
 
 /**
  * Load data from server and render RevisionBody component
@@ -20,7 +24,7 @@ class LegacyRevisionLoader extends React.Component {
     this.logger = loggerFactory('growi:Page:RevisionLoader');
 
     this.state = {
-      markdown: '',
+      markdown: null,
       isLoading: false,
       isLoaded: false,
       errors: null,
@@ -46,10 +50,10 @@ class LegacyRevisionLoader extends React.Component {
 
     // load data with REST API
     try {
-      const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
+      const res = await apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
-        markdown: res.data.revision.body,
+        markdown: res.data?.revision?.body,
         errors: null,
       });
 
@@ -94,18 +98,23 @@ class LegacyRevisionLoader extends React.Component {
     }
 
     // ----- after load -----
+    const isForbidden = this.state.errors != null && this.state.errors[0].code === 'forbidden-page';
     let markdown = this.state.markdown;
-    if (this.state.errors != null) {
+    if (isForbidden) {
+      markdown = `<i class="icon-exclamation p-1"></i>${this.props.t('not_allowed_to_see_this_page')}`;
+    }
+    else if (this.state.errors != null) {
       const errorMessages = this.state.errors.map((error) => {
-        return `<span class="text-muted"><em>${error.message}</em></span>`;
+        return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
       });
-      markdown = errorMessages.join('');
+      markdown = errorMessages.join('\n');
     }
 
     return (
       <RevisionRenderer
         growiRenderer={this.props.growiRenderer}
         markdown={markdown}
+        pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
       />
     );
@@ -116,13 +125,15 @@ class LegacyRevisionLoader extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LegacyRevisionLoaderWrapper = withUnstatedContainers(LegacyRevisionLoader, [AppContainer]);
+const LegacyRevisionLoaderWrapper = withTranslation()(withUnstatedContainers(LegacyRevisionLoader, [AppContainer]));
 
 LegacyRevisionLoader.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  t: PropTypes.func.isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   onRevisionLoaded: PropTypes.func,

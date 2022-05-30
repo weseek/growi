@@ -2,6 +2,9 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiGet, apiPost } from '../util/apiv1-client';
+import { apiv3Put } from '../util/apiv3-client';
+
 const logger = loggerFactory('growi:services:CommentContainer');
 
 /**
@@ -67,7 +70,7 @@ export default class CommentContainer extends Container {
     const { pageId } = this.getPageContainer().state;
 
     // get data (desc order array)
-    const res = await this.appContainer.apiGet('/comments.get', { page_id: pageId });
+    const res = await apiGet('/comments.get', { page_id: pageId });
     if (res.ok) {
       const comments = res.comments;
       this.setState({ comments });
@@ -89,7 +92,7 @@ export default class CommentContainer extends Container {
     }
 
     try {
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      await apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
     }
     catch (err) {
       // Error alert doesn't apear, because user don't need to notice this error.
@@ -103,7 +106,7 @@ export default class CommentContainer extends Container {
   postComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
-    return this.appContainer.apiPost('/comments.add', {
+    return apiPost('/comments.add', {
       commentForm: {
         comment,
         page_id: pageId,
@@ -129,7 +132,7 @@ export default class CommentContainer extends Container {
   putComment(comment, isMarkdown, commentId, author) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
-    return this.appContainer.apiPost('/comments.update', {
+    return apiPost('/comments.update', {
       commentForm: {
         comment,
         is_markdown: isMarkdown,
@@ -145,7 +148,7 @@ export default class CommentContainer extends Container {
   }
 
   deleteComment(comment) {
-    return this.appContainer.apiPost('/comments.remove', { comment_id: comment._id })
+    return apiPost('/comments.remove', { comment_id: comment._id })
       .then((res) => {
         if (res.ok) {
           this.findAndSplice(comment);
@@ -163,7 +166,7 @@ export default class CommentContainer extends Container {
     formData.append('path', pagePath);
     formData.append('page_id', pageId);
 
-    return this.appContainer.apiPost(endpoint, formData);
+    return apiPost(endpoint, formData);
   }
 
 }
