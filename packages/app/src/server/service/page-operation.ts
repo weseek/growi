@@ -85,7 +85,7 @@ class PageOperationService {
     return true;
   }
 
-  async generateProcessInfoByActionTypes(pageOps: PageOperationDocument[]): Promise<ProcessInfo> {
+  generateProcessInfoByActionTypes(pageOps: PageOperationDocument[]): Promise<ProcessInfo> {
     const processInfo = {};
 
     pageOps.forEach((pageOp) => {
