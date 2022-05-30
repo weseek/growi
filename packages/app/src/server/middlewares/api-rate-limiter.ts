@@ -44,7 +44,12 @@ module.exports = () => {
       return;
     }
 
-    await consumePoints(rateLimiter, key, customizedConfig.consumePoints, next);
+    if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
+      await consumePoints(rateLimiter, key, customizedConfig.consumePoints, next);
+      return;
+    }
+
+    await consumePoints(rateLimiter, key, defaultConsumePoints, next);
     return;
   };
 };
