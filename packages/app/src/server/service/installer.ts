@@ -104,7 +104,7 @@ export class InstallerService {
     initialConfig['app:globalLang'] = globalLang;
 
     if (options?.allowGuestMode) {
-      initialConfig['autoInstall:allowGuestMode'] = true;
+      initialConfig['security:restrictGuestMode'] = 'Readonly';
     }
 
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
