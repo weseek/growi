@@ -33,7 +33,7 @@ context('Open Page presentation Template Modal', () => {
     cy.getByTestid('page-presentation-modal').should('be.visible')
     cy.screenshot(`${ssPrefix}-open-page-presentation-bootstrap4`);
  });
-  it('CreateEditTemplatePage is shown successfully', () => {
+  it('Moving to Template editor Page for only child pages successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
@@ -42,6 +42,23 @@ context('Open Page presentation Template Modal', () => {
 
      cy.getByTestid('page-template-modal').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+     cy.getByTestid('template-button-children').click();
+     cy.url().should('include', '/_template#edit');
+     cy.screenshot();
   });
+
+  it('Moving to Template editor Page including decendants successfully', () => {
+    cy.visit('/Sandbox/Bootstrap4', {  });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-template-modal-btn').click();
+   });
+
+    cy.getByTestid('page-template-modal').should('be.visible')
+    cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+    cy.getByTestid('template-button-decendants').click();
+    cy.url().should('include', '/__template#edit');
+    cy.screenshot();
+ });
 
 });
