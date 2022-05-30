@@ -72,6 +72,8 @@ module.exports = (crowi) => {
 
   const { User, ExternalAccount } = crowi.models;
 
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+
   const validator = {
     personal: [
       body('name').isString().not().isEmpty(),
@@ -91,8 +93,8 @@ module.exports = (crowi) => {
     password: [
       body('oldPassword').isString(),
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 8 })
-        .withMessage('password must be at least 8 characters long'),
+        .isLength({ min: minPasswordLength })
+        .withMessage(`password must be at least ${minPasswordLength} characters long`),
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
           return (value === req.body.newPassword);
@@ -146,7 +148,6 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
-
     try {
       const user = await User.findUserByUsername(username);
 
@@ -189,7 +190,8 @@ module.exports = (crowi) => {
     try {
       const user = await User.findUserByUsername(username);
       const isPasswordSet = user.isPasswordSet();
-      return res.apiv3({ isPasswordSet });
+      const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+      return res.apiv3({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
       logger.error(err);
