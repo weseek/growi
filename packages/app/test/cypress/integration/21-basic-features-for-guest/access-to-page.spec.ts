@@ -37,10 +37,6 @@ context('Access to /me page', () => {
   const ssPrefix = 'access-to-me-page-by-guest-';
 
   beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
   });
@@ -55,6 +51,11 @@ context('Access to /me page', () => {
 
 context('Access to special pages by guest', () => {
   const ssPrefix = 'access-to-special-pages-by-guest-';
+
+  beforeEach(() => {
+    // collapse sidebar
+    cy.collapseSidebar(true);
+  });
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
