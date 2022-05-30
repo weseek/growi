@@ -1,12 +1,7 @@
-
-context('Access to page', () => {
-  const ssPrefix = 'access-to-page-';
+context('Access to page by guest', () => {
+  const ssPrefix = 'access-to-page-by-guest-';
 
   beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
   });
@@ -35,48 +30,29 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
-  it('/user/admin is successfully loaded', () => {
-    cy.visit('/user/admin', {  });
-    cy.screenshot(`${ssPrefix}-user-admin`);
-  });
-
 });
 
 
 context('Access to /me page', () => {
-  const ssPrefix = 'access-to-me-page-';
+  const ssPrefix = 'access-to-me-page-by-guest-';
 
   beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
   });
 
-  it('/me is successfully loaded', () => {
+  it('/me should be redirected to /login', () => {
     cy.visit('/me', {  });
     cy.screenshot(`${ssPrefix}-me`);
-  });
-
-  it('Draft page is successfully shown', () => {
-    cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`);
   });
 
 });
 
 
-
-context('Access to special pages', () => {
-  const ssPrefix = 'access-to-special-pages-';
+context('Access to special pages by guest', () => {
+  const ssPrefix = 'access-to-special-pages-by-guest-';
 
   beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
     // collapse sidebar
     cy.collapseSidebar(true);
   });
