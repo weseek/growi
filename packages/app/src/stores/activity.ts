@@ -7,6 +7,7 @@ import { PaginateResult } from '../interfaces/mongoose-utils';
 
 
 type ISearchFilter = {
+  username?: string[]
   date?: {startDate: string | null, endDate: string | null}
   action?: SupportedActionType[]
 }

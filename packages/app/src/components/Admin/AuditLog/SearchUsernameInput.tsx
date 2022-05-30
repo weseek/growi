@@ -10,18 +10,24 @@ import { useSWRxUsernames } from '~/stores/user';
 const Categories = {
   activeUser: 'Active User',
   inactiveUser: 'Inactive User',
-  activitySnapshotUser: 'ActivitySnapshot User',
+  activitySnapshotUser: 'Activity Snapshot User',
 } as const;
 
 type CategorieType = typeof Categories[keyof typeof Categories]
 
-type AllUser = {
+type UserDataType = {
   username: string
   category: CategorieType
 }
 
-export const SearchUsernameInput: FC = () => {
-  const [searchKeyword, setSearchKeyword] = useState('');
+type Props = {
+  onChange: (text) => void
+}
+
+export const SearchUsernameInput: FC<Props> = (props: Props) => {
+  const { onChange } = props;
+
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   const includeUserOptions = {
     isIncludeActiveUser: true,
@@ -34,7 +40,7 @@ export const SearchUsernameInput: FC = () => {
   const activitySnapshotUsernames = usernameData?.activitySnapshotUser?.usernames != null ? usernameData.activitySnapshotUser.usernames : [];
   const isLoading = usernameData === undefined && error == null;
 
-  const allUser: AllUser[] = [];
+  const allUser: UserDataType[] = [];
   const pushToAllUser = (usernames: string[], category: CategorieType) => {
     usernames.forEach(username => allUser.push({ username, category }));
   };
@@ -42,11 +48,18 @@ export const SearchUsernameInput: FC = () => {
   pushToAllUser(inactiveUsernames, Categories.inactiveUser);
   pushToAllUser(activitySnapshotUsernames, Categories.activitySnapshotUser);
 
-  const searchHandler = useCallback(async(text) => {
+  const changeHandler = useCallback((userData: UserDataType[]) => {
+    const usernames = userData.map(user => user.username);
+    if (onChange != null) {
+      onChange(usernames);
+    }
+  }, [onChange]);
+
+  const searchHandler = useCallback((text) => {
     setSearchKeyword(text);
   }, []);
 
-  const renderMenu = useCallback((allUser: AllUser[], menuProps) => {
+  const renderMenu = useCallback((allUser: UserDataType[], menuProps) => {
     if (allUser == null || allUser.length === 0) {
       return <></>;
     }
@@ -85,6 +98,8 @@ export const SearchUsernameInput: FC = () => {
       </div>
       <AsyncTypeahead
         id="auditlog-username-typeahead-asynctypeahead"
+        multiple
+        delay={1000}
         placeholder="username"
         labelKey={option => `${option.username}`}
         caseSensitive={false}
@@ -93,6 +108,7 @@ export const SearchUsernameInput: FC = () => {
         newSelectionPrefix=""
         options={allUser}
         onSearch={searchHandler}
+        onChange={changeHandler}
         renderMenu={renderMenu}
       />
     </div>
