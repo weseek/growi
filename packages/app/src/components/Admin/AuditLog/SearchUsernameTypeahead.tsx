@@ -105,6 +105,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         id="auditlog-username-typeahead-asynctypeahead"
         multiple
         delay={400}
+        minLength={0}
         placeholder="username"
         caseSensitive={false}
         isLoading={isLoading}
