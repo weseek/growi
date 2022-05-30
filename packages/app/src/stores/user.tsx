@@ -38,7 +38,7 @@ type usernameResult = {
 
 export const useSWRxUsernames = (q: string, offset?: number, limit?: number, options?: usernameRequestOptions): SWRResponse<usernameResult, Error> => {
   return useSWRImmutable(
-    q != null ? ['/users/usernames', q, offset, limit, options] : null,
+    (q != null && q.trim() !== '') ? ['/users/usernames', q, offset, limit, options] : null,
     (endpoint, q, offset, limit, options) => apiv3Get(endpoint, {
       q, offset, limit, options,
     }).then(result => result.data),
