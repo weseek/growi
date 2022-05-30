@@ -33,7 +33,7 @@ context('Open Page presentation Template Modal', () => {
     cy.getByTestid('page-presentation-modal').should('be.visible')
     cy.screenshot(`${ssPrefix}-open-page-presentation-bootstrap4`);
  });
-  it('Moving to Template editor Page for only child pages successfully', () => {
+  it('Moving to Template Editor mode for only child pages successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
@@ -47,7 +47,7 @@ context('Open Page presentation Template Modal', () => {
      cy.screenshot();
   });
 
-  it('Moving to Template editor Page including decendants successfully', () => {
+  it('Moving to Template Editor mode including decendants successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click();
