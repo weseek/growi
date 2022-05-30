@@ -20,7 +20,7 @@ export const MenuItemType = {
   DUPLICATE: 'duplicate',
   DELETE: 'delete',
   REVERT: 'revert',
-  PATHRECOVERY: 'pathRecovery',
+  PATH_RECOVERY: 'pathRecovery',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -195,7 +195,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATHRECOVERY) && isEnableActions && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
