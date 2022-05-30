@@ -5,6 +5,7 @@ import {
   DeleteObjectsCommand,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -44,7 +45,7 @@ module.exports = (crowi) => {
     };
   };
 
-  const S3Factory = () => {
+  const S3Factory = (): S3Client => {
     const config = getAwsConfig();
     return new S3Client(config);
   };
@@ -143,7 +144,7 @@ module.exports = (crowi) => {
       Bucket: awsConfig.bucket,
       Delete: { Objects: filePaths },
     };
-    await s3.send(new DeleteObjectsCommand(totalParams));
+    return s3.send(new DeleteObjectsCommand(totalParams));
   };
 
   lib.deleteFileByFilePath = async(filePath) => {
@@ -165,7 +166,7 @@ module.exports = (crowi) => {
       return;
     }
 
-    await s3.send(new DeleteObjectCommand(params));
+    return s3.send(new DeleteObjectCommand(params));
   };
 
   lib.uploadFile = async(fileStream, attachment) => {
@@ -187,7 +188,7 @@ module.exports = (crowi) => {
       ACL: 'public-read',
     };
 
-    await s3.send(new PutObjectCommand(params));
+    return s3.send(new PutObjectCommand(params));
   };
 
   lib.findDeliveryFile = async(attachment) => {
@@ -210,9 +211,9 @@ module.exports = (crowi) => {
       throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
     }
 
-    let stream;
+    let stream: GetObjectCommandOutput;
     try {
-      stream = s3.send(new GetObjectCommand(params));
+      stream = await s3.send(new GetObjectCommand(params));
     }
     catch (err) {
       logger.error(err);
