@@ -219,6 +219,7 @@ ul.pagination {
 .page-list {
   .page-list-ul {
     > li {
+      background-color: transparent;
       > span.page-list-meta {
         color: darken($color-global, 10%);
       }
