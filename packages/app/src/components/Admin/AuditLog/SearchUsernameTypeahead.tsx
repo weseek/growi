@@ -27,8 +27,14 @@ type Props = {
 export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   const { onChange } = props;
 
+  /*
+   * State
+   */
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
+  /*
+   * Fetch
+   */
   const requestOptions = { isIncludeActiveUser: true, isIncludeInactiveUser: true, isIncludeActivitySnapshotUser: true };
   const { data: usernameData, error } = useSWRxUsernames(searchKeyword, 0, 5, requestOptions);
   const activeUsernames = usernameData?.activeUser?.usernames != null ? usernameData.activeUser.usernames : [];
@@ -44,6 +50,9 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   pushToAllUser(inactiveUsernames, Categories.inactiveUser);
   pushToAllUser(activitySnapshotUsernames, Categories.activitySnapshotUser);
 
+  /*
+   * Functions
+   */
   const changeHandler = useCallback((userData: UserDataType[]) => {
     if (onChange != null) {
       const usernames = userData.map(user => user.username);
