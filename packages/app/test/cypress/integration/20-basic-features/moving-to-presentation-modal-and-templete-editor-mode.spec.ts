@@ -1,27 +1,12 @@
-context('Open Page presentation Template Modal', () => {
-
+context('Open Page Presentation Modal', () => {
   const ssPrefix = 'access-to-modal-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
-  });
-
 
   it('PresentationModal is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
@@ -33,6 +18,20 @@ context('Open Page presentation Template Modal', () => {
     cy.getByTestid('page-presentation-modal').should('be.visible')
     cy.screenshot(`${ssPrefix}-open-page-presentation-bootstrap4`);
  });
+
+});
+
+context('Move to Template Editing Mode', () => {
+  const ssPrefix = 'access-to-modal-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
+
   it('Moving to Template Editor mode for only child pages successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
@@ -62,3 +61,5 @@ context('Open Page presentation Template Modal', () => {
  });
 
 });
+
+
