@@ -3086,7 +3086,9 @@ class PageService {
 
 
   /**
-   * Inject PageOperation process info into pages if operating page id and id of element of id matchs
+   * It takes page documents
+   * Generate Process information of PageOperation
+   * Inject the information into page docuement if they are related based on page id
    */
   async injectProcessInfoIntoPagesByActionTypes(
       pages: (PageDocument & { processInfo?: IPageOperationProcessInfo })[],
