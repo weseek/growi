@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { ITagCountHasId } from '~/interfaces/tag';
+import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import TagCloudBox from '../TagCloudBox';
@@ -16,7 +16,7 @@ const Tag: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
   const { data: tagDataList, mutate: mutateTagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
-  const tagData: ITagCountHasId[] = tagDataList?.data || [];
+  const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
 
@@ -38,7 +38,7 @@ const Tag: FC = () => {
         <h3 className="mb-0">{t('Tags')}</h3>
         <button
           type="button"
-          className="btn btn-sm ml-auto grw-btn-reload-rc"
+          className="btn btn-sm ml-auto grw-btn-reload"
           onClick={onReload}
         >
           <i className="icon icon-reload"></i>

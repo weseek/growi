@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import Accordion from '../Common/Accordion';
+
 import AppContainer from '~/client/services/AppContainer';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import MessageBasedOnConnection from './MessageBasedOnConnection';
+import Accordion from '../Common/Accordion';
+
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
-import { addLogs } from './slak-integration-util';
 import ManageCommandsProcessWithoutProxy from './ManageCommandsProcessWithoutProxy';
+import MessageBasedOnConnection from './MessageBasedOnConnection';
+import { addLogs } from './slak-integration-util';
 
 
 export const botInstallationStep = {
@@ -34,7 +39,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 
   const testConnection = async() => {
     try {
-      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
+      await apiv3Post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
       setIsLatestConnectionSuccess(true);
       if (onTestConnectionInvoked != null) {
         onTestConnectionInvoked();
@@ -130,7 +135,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <ManageCommandsProcessWithoutProxy
           commandPermission={commandPermission}
           eventActionsPermission={eventActionsPermission}
-          apiv3Put={props.appContainer.apiv3.put}
         />
       </Accordion>
       <Accordion

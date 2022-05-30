@@ -15,8 +15,6 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
-  "Like!": "いいね！",
-  "Seen by": "見た人",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -188,8 +186,7 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
+    "title_required": "タイトルを入力してください"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -217,7 +214,7 @@
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、8文字以上の半角英数字または記号等を設定してください。",
+      "password": "パスワードには、{{target}}文字以上の半角英数字または記号等を設定してください。",
       "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
     }
   },
@@ -391,7 +388,8 @@
     }
   },
   "page_comment": {
-    "display_the_page_when_posting_this_comment": "投稿時のページを表示する"
+    "display_the_page_when_posting_this_comment": "投稿時のページを表示する",
+    "no_user_found": "ユーザー名が見つかりません"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
@@ -439,11 +437,15 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_page": "ゴミ箱に入れました",
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
+  "empty_trash": "ゴミ箱を空にしました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
+    "empty_the_trash_button": "空にする",
+    "not_deletable_notice": "権限がないため、いくつかのページは削除できません",
     "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
@@ -641,6 +643,7 @@
   "private_legacy_pages": {
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
+    "input_path_to_convert": "パスを入力して変換",
     "alert_title": "古い v4 互換形式のプライベートページが存在します",
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
@@ -652,6 +655,23 @@
       "convert_recursively_label": "再起的に変換",
       "convert_recursively_desc": "このページの配下のページを再起的に変換します",
       "button_label": "変換"
+    },
+    "toaster": {
+      "page_migration_succeeded": "選択されたページの v5 互換形式への変換が正常に終了しました。",
+      "page_migration_failed_with_paths": "{{paths}} の v5 互換形式への変換中にエラーが発生しました。",
+      "page_migration_failed": "ページの v5 互換形式への変換中にエラーが発生しました。"
+    },
+    "by_path_modal": {
+      "title": "新しい v5 互換形式への変換",
+      "alert": "この操作は取り消すことができず、ユーザーが閲覧できないページも処理の対象になります。",
+      "checkbox_label": "理解しました",
+      "description": "パスを入力することで、そのパスの配下のページを全て v5 互換形式に変換します",
+      "button_label": "変換",
+      "success": "正常に変換を開始しました",
+      "error": "変換を開始できませんでした",
+      "error_grant_invalid": "ページの権限が正しくありません。修正してから再度実行してください",
+      "error_page_not_found": "ページが見つかりませんでした",
+      "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
   "security_setting": {
@@ -997,6 +1017,36 @@
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
+  "emoji" :{
+    "title": "絵文字を選択",
+    "search": "探す",
+    "clear": "リセット",
+    "notfound": "絵文字が見つかりません",
+    "skintext": "デフォルトの肌の色を選択",
+    "categories": {
+      "search": "検索結果",
+      "recent": "最新履歴",
+      "smileys": "スマイリーと感情",
+      "people": "人と体",
+      "nature": "動物と自然",
+      "foods": "食べ物や飲み物",
+      "activity": "アクティビティ",
+      "places": "旅行と場所",
+      "objects": "オブジェクト",
+      "symbols": "シンボル",
+      "flags": "国旗",
+      "custom": "カスタマイズ"
+    },
+    "categorieslabel": "絵文字カテゴリ",
+    "skintones": {
+      "1": "デフォルトの肌の色",
+      "2": "明るい肌のトーン",
+      "3": "ミディアム-明るい肌のトーン",
+      "4": "ミディアムスキントーン",
+      "5": "ミディアムダークスキントーン",
+      "6": "肌の色が濃い"
+    }
+  },
   "maintenance_mode":{
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
@@ -1019,5 +1069,39 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "選択可能な権限のリストが見つかりませんでした。まず親ページの権限を修正したのちに再試行してください。",
+      "need_to_fix_grant": "正しく機能を使用するためにはこのページに紐づく権限を修正する必要があります。 <br> 下記の選択肢から選んで変更してください。",
+      "grant_label": {
+        "isForbidden": "権限の閲覧が許可されていません",
+        "currentPageGrantLabel": "このページの権限: ",
+        "parentPageGrantLabel": "親のページの権限: ",
+        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>を参照してください"
+      },
+      "radio_btn": {
+        "restrected": "リンクを知っている人のみ",
+        "only_me": "自分のみ",
+        "grant_group": "特定グループのみ"
+      },
+      "select_group_default_text": "グループを選択",
+      "alert_message_select_group": "グループが選択されていません",
+      "btn_label": "変換",
+      "title": "権限を修正"
+    },
+    "alert": {
+      "description": "このページの権限設定を修正する必要があります。",
+      "btn_label": "修正"
+    }
+  },
+  "tooltip": {
+    "like": "いいね！",
+    "cancel_like": "いいねを取り消す",
+    "bookmark": "ブックマーク",
+    "cancel_bookmark": "ブックマークを取り消す",
+    "receive_notifications": "通知を受け取る",
+    "stop_notification": "通知を止める",
+    "footprints": "足跡"
   }
 }

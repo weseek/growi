@@ -3,6 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiv3Get } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:PageHistoryContainer');
 
@@ -75,7 +76,7 @@ export default class RevisionComparerContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
     try {
-      const res = await this.appContainer.apiv3Get('/revisions/list', {
+      const res = await apiv3Get('/revisions/list', {
         pageId, shareLinkId, page: 1, limit: 1,
       });
       return res.data.docs[0];
@@ -96,7 +97,7 @@ export default class RevisionComparerContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
     try {
-      const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, {
+      const res = await apiv3Get(`/revisions/${revisionId}`, {
         pageId, shareLinkId,
       });
       return res.data.revision;

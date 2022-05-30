@@ -16,38 +16,39 @@ import PersonalContainer from '~/client/services/PersonalContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
-import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
+import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import ErrorBoundary from '../components/ErrorBoudary';
-import RedirectedAlert from '../components/Page/RedirectedAlert';
-import TrashPageList from '../components/TrashPageList';
-import TrashPageAlert from '../components/Page/TrashPageAlert';
-import NotFoundPage from '../components/NotFoundPage';
-import NotFoundAlert from '../components/Page/NotFoundAlert';
-import ForbiddenPage from '../components/ForbiddenPage';
-import PageStatusAlert from '../components/PageStatusAlert';
-import RecentCreated from '../components/RecentCreated/RecentCreated';
-import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
-import MyDraftList from '../components/MyDraftList/MyDraftList';
-import BookmarkList from '../components/PageList/BookmarkList';
 import Fab from '../components/Fab';
+import ForbiddenPage from '../components/ForbiddenPage';
+import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
 import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
+import MaintenanceModeContent from '../components/MaintenanceModeContent';
 import PersonalSettings from '../components/Me/PersonalSettings';
+import MyDraftList from '../components/MyDraftList/MyDraftList';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
+import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
+import NotFoundAlert from '../components/Page/NotFoundAlert';
+import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
+import TrashPageAlert from '../components/Page/TrashPageAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
-import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
+import BookmarkList from '../components/PageList/BookmarkList';
+import PageStatusAlert from '../components/PageStatusAlert';
 import PageTimeline from '../components/PageTimeline';
+import RecentCreated from '../components/RecentCreated/RecentCreated';
 import { SearchPage } from '../components/SearchPage';
 import Sidebar from '../components/Sidebar';
 import TagPage from '../components/TagPage';
+import TrashPageList from '../components/TrashPageList';
 
 import { appContainer, componentMappings } from './base';
 import { toastError } from './util/apiNotification';
@@ -65,7 +66,7 @@ const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
-const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
+const editorContainer = new EditorContainer(appContainer);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
@@ -94,7 +95,11 @@ Object.assign(componentMappings, {
 
   'grw-page-status-alert-container': <PageStatusAlert />,
 
+  'maintenance-mode-content': <MaintenanceModeContent />,
+
   'trash-page-alert': <TrashPageAlert />,
+
+  'fix-page-grant-alert': <FixPageGrantAlert />,
 
   'trash-page-list-container': <TrashPageList />,
 

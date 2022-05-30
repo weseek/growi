@@ -368,13 +368,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       };
     }
 
-    if (title.includes('/')) {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.slashed_are_not_yet_supported'),
-      };
-    }
-
     return null;
   };
 
@@ -446,7 +439,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
               </a>
             </>
           )}

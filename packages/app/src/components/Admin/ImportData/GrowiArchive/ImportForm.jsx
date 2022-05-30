@@ -1,20 +1,22 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
-import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
-import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
 import ErrorViewer from './ErrorViewer';
+import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
+import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
 
 
 const GROUPS_PAGE = [
@@ -300,8 +302,8 @@ class ImportForm extends React.Component {
     });
 
     try {
-      // TODO: use appContainer.apiv3.post
-      await appContainer.apiv3Post('/import', {
+      // TODO: use apiv3Post
+      await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
         optionsMap,
