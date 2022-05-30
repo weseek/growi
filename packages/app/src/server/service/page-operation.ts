@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core';
 
-import PageOperation, { PageActionType } from '~/server/models/page-operation';
+import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 
@@ -85,10 +85,9 @@ class PageOperationService {
     return true;
   }
 
-  async generateProcessInfoByActionTypes(actionTypes: PageActionType[]): Promise<ProcessInfo> {
-    const pageOps = await PageOperation.find({ actionType: { $in: actionTypes } });
-
+  async generateProcessInfoByActionTypes(pageOps: PageOperationDocument[]): Promise<ProcessInfo> {
     const processInfo = {};
+
     pageOps.forEach((pageOp) => {
       const pageId = pageOp.page._id.toString();
 
