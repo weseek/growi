@@ -1,11 +1,15 @@
 import { IApiRateLimitConfig } from '../interfaces/api-rate-limit-config';
 
+const getTargetFromKey = (key: string) => {
+  return key.replace(/^API_RATE_LIMIT_/, '').replace(/_ENDPOINT$/, '');
+};
+
 const sortApiRateEndpointKeys = (endpoints: string[]): string[] => {
   return endpoints.sort((a, b) => {
-    const targetA = a.replace('API_RATE_LIMIT_', '').replace('_ENDPOINT', '');
+    const targetA = getTargetFromKey(a);
     const priorityA = Number(targetA.split('_')[0]);
 
-    const targetB = b.replace('API_RATE_LIMIT_', '').replace('_ENDPOINT', '');
+    const targetB = getTargetFromKey(b);
     const priorityB = Number(targetB.split('_')[0]);
 
     if (Number.isNaN(priorityA) || Number.isNaN(priorityB)) {
@@ -26,15 +30,15 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
 
     const endpoint = envVar[key];
 
-    if (endpoint === undefined || Object.keys(apiRateLimitConfig).includes(endpoint)) {
+    if (endpoint == null || Object.keys(apiRateLimitConfig).includes(endpoint)) {
       return;
     }
 
-    const target = key.replace(/^API_RATE_LIMIT_/, '').replace(/_ENDPOINT$/, '');
+    const target = getTargetFromKey(key);
     const method = envVar[`API_RATE_LIMIT_${target}_METHODS`] ?? 'ALL';
     const consumePoints = Number(envVar[`API_RATE_LIMIT_${target}_CONSUME_POINTS`]);
 
-    if (endpoint === undefined || consumePoints === undefined) {
+    if (endpoint == null || consumePoints == null) {
       return;
     }
 
@@ -54,7 +58,7 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   const envVar = process.env;
 
   const apiRateEndpointKeys = Object.keys(envVar).filter((key) => {
-    const endpointRegExp = /^API_RATE_LIMIT_.*_ENDPOINT/;
+    const endpointRegExp = /^API_RATE_LIMIT_.+_.+_ENDPOINT/;
     return endpointRegExp.test(key);
   });
 
