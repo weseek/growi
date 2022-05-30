@@ -98,7 +98,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
     <div className="input-group mr-2">
       <div className="input-group-prepend">
         <span className="input-group-text">
-          <i className="icon-people"></i>
+          <i className="icon-people" />
         </span>
       </div>
       <AsyncTypeahead
@@ -106,14 +106,13 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         multiple
         delay={400}
         placeholder="username"
-        labelKey={option => `${option.username}`}
         caseSensitive={false}
         isLoading={isLoading}
-        minLength={0}
         options={allUser}
         onSearch={searchHandler}
         onChange={changeHandler}
         renderMenu={renderMenu}
+        labelKey={(option: UserDataType) => `${option.username}`}
       />
     </div>
   );
