@@ -21,7 +21,7 @@ type UserDataType = {
 }
 
 type Props = {
-  onChange: (text) => void
+  onChange: (text: string[]) => void
 }
 
 export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
@@ -29,12 +29,8 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
 
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
-  const includeUserOptions = {
-    isIncludeActiveUser: true,
-    isIncludeInactiveUser: true,
-    isIncludeActivitySnapshotUser: true,
-  };
-  const { data: usernameData, error } = useSWRxUsernames(searchKeyword, 0, 5, includeUserOptions);
+  const requestOptions = { isIncludeActiveUser: true, isIncludeInactiveUser: true, isIncludeActivitySnapshotUser: true };
+  const { data: usernameData, error } = useSWRxUsernames(searchKeyword, 0, 5, requestOptions);
   const activeUsernames = usernameData?.activeUser?.usernames != null ? usernameData.activeUser.usernames : [];
   const inactiveUsernames = usernameData?.inactiveUser?.usernames != null ? usernameData.inactiveUser.usernames : [];
   const activitySnapshotUsernames = usernameData?.activitySnapshotUser?.usernames != null ? usernameData.activitySnapshotUser.usernames : [];
@@ -55,7 +51,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
     }
   }, [onChange]);
 
-  const searchHandler = useCallback((text) => {
+  const searchHandler = useCallback((text: string) => {
     setSearchKeyword(text);
   }, []);
 
@@ -93,7 +89,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
     <div className="input-group mr-2">
       <div className="input-group-prepend">
         <span className="input-group-text">
-          <i className="icon-user"></i>
+          <i className="icon-people"></i>
         </span>
       </div>
       <AsyncTypeahead
@@ -105,7 +101,6 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         caseSensitive={false}
         isLoading={isLoading}
         minLength={0}
-        newSelectionPrefix=""
         options={allUser}
         onSearch={searchHandler}
         onChange={changeHandler}
