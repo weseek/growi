@@ -7,3 +7,5 @@ export const PageActionType = {
   NormalizeParent: 'NormalizeParent',
 } as const;
 export type PageActionType = typeof PageActionType[keyof typeof PageActionType]
+export type IPageOperationProcessData = Partial<Record<PageActionType, {isProcessing: boolean}>>
+export type IPageOperationProcessInfo = Partial<Record<string, IPageOperationProcessData>>
