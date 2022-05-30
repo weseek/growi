@@ -4,6 +4,14 @@ import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 
+type ProcessInfo = {
+  [pageId: string]: {
+    PageActionType: {
+      isProcessing: boolean
+    }
+  }
+}
+
 class PageOperationService {
 
   crowi: any;
@@ -17,7 +25,7 @@ class PageOperationService {
     const {
       Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
     } = PageActionType;
-    const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
+    const types = [Duplicate, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
   }
 
@@ -75,6 +83,32 @@ class PageOperationService {
     }
 
     return true;
+  }
+
+  async generateProcessInfoByActionTypes(actionTypes: PageActionType[]): Promise<ProcessInfo> {
+    const pageOps = await PageOperation.find({ actionType: { $in: actionTypes } });
+
+    const processInfo = {};
+    pageOps.forEach((pageOp) => {
+      const pageId = pageOp.page._id.toString();
+
+      const actionType = pageOp.actionType;
+      const isProcessing = true; // Todo: dynamically change the value based on PageOperation prop
+
+      // processData for processInfo
+      const processData = { [actionType]: { isProcessing } };
+
+      // Merge processData if other processData exist
+      if (processInfo[pageId] != null) {
+        const otherProcessData = processInfo[pageId];
+        processInfo[pageId] = { ...otherProcessData, ...processData };
+        return;
+      }
+      // add new process data to processInfo
+      processInfo[pageId] = processData;
+    });
+
+    return processInfo;
   }
 
 }
