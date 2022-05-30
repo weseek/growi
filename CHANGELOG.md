@@ -1,8 +1,22 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.7](https://github.com/weseek/growi/compare/v5.0.6...v5.0.7) - 2022-05-30
+
+### 💎 Features
+
+- feat: Set the min length of passwords by environment variable (#5899) @Shunm634-source
+- feat: API to find username (#5907) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Page is not rendered for guest (#5930) @yuki-takei
+- fix: Server error due to the canDeleteLogic method (#5927) @hakumizuki
+- fix: Show pagename on toastr when page deleted (#5772) @hirokei-camel
+- fix: Search result screen is broken under content 100% setting (#5917) @jam411
 
 ## [v5.0.6](https://github.com/weseek/growi/compare/v5.0.5...v5.0.6) - 2022-05-27
 
