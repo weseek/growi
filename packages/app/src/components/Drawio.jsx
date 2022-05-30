@@ -1,15 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 
+import NotAvailableForGuest from './NotAvailableForGuest';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import NotAvailableForGuest from './NotAvailableForGuest';
 
 class Drawio extends React.Component {
 
@@ -105,4 +105,11 @@ Drawio.propTypes = {
   rangeLineNumberOfMarkdown: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(withUnstatedContainers(Drawio, [AppContainer]));
+const DrawioWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <Drawio t={t} {...props} />;
+};
+
+const DrawioWrapper = withUnstatedContainers(DrawioWrapperFC, [AppContainer]);
+
+export default DrawioWrapper;

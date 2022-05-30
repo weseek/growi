@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -233,8 +233,6 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
-const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
-
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -245,4 +243,14 @@ ArchiveCreateModal.propTypes = {
   errorMessage: PropTypes.string,
 };
 
-export default withTranslation()(ArchiveCreateModalWrapper);
+const ArchiveCreateModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ArchiveCreateModal t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModalWrapperFC, [AppContainer]);
+
+export default ArchiveCreateModalWrapper;

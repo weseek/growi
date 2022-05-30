@@ -1,12 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-
-import { withTranslation } from 'react-i18next';
 import { pathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
-
 
 const CreateTemplateModal = (props) => {
   const { t, path } = props;
@@ -63,7 +61,6 @@ const CreateTemplateModal = (props) => {
   );
 };
 
-
 CreateTemplateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   path: PropTypes.string.isRequired,
@@ -71,4 +68,9 @@ CreateTemplateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(CreateTemplateModal);
+const CreateTemplateModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <CreateTemplateModal t={t} {...props} />;
+};
+
+export default CreateTemplateModalWrapperFC;

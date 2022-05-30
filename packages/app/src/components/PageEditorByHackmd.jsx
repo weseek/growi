@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
@@ -424,12 +424,8 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
-
-const PageEditorByHackmdWrapper = (props) => {
+const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
@@ -442,8 +438,10 @@ const PageEditorByHackmdWrapper = (props) => {
   }
 
   return (
-    <PageEditorByHackmdHOCWrapper
+    <PageEditorByHackmd
+      ref={ref}
       {...props}
+      t={t}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
@@ -452,7 +450,12 @@ const PageEditorByHackmdWrapper = (props) => {
       grantGroupName={grantGroupName}
     />
   );
-};
+});
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmdWrapperFC, [AppContainer, PageContainer, EditorContainer]);
 
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -470,4 +473,4 @@ PageEditorByHackmd.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default withTranslation()(PageEditorByHackmdWrapper);
+export default PageEditorByHackmdWrapper;

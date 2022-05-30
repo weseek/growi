@@ -2,7 +2,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -172,16 +172,20 @@ class PageAttachment extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer]);
-
-
 PageAttachment.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(PageAttachmentWrapper);
+const PageAttachmentWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageAttachment t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageAttachmentWrapper = withUnstatedContainers(PageAttachmentWrapperFC, [AppContainer, PageContainer]);
+
+export default PageAttachmentWrapper;

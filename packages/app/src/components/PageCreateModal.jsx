@@ -5,7 +5,7 @@ import React, {
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
@@ -307,16 +307,19 @@ const PageCreateModal = (props) => {
   );
 };
 
-
-/**
- * Wrapper component for using unstated
- */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
-
-
 PageCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(ModalControlWrapper);
+const PageCreateModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageCreateModal t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageCreateModalWrapper = withUnstatedContainers(PageCreateModalWrapperFC, [AppContainer]);
+
+export default PageCreateModalWrapper;
