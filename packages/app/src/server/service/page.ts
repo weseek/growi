@@ -11,11 +11,12 @@ import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta, IPageOperationProcessInfo,
+  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { IPageOperationProcessInfo } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
@@ -3034,7 +3035,7 @@ class PageService {
       .exec();
 
     // inject page operation process info
-    const pages = await this.injectProcessInfoIntoPages(_pages);
+    const pages = await this.injectProcessInfoIntoPagesByActionTypes(_pages, [PageActionType.Rename]);
 
     return pages;
   }
@@ -3064,7 +3065,7 @@ class PageService {
     });
 
     // inject page operation process info
-    const pages = await this.injectProcessInfoIntoPages(markedPages);
+    const pages = await this.injectProcessInfoIntoPagesByActionTypes(markedPages, [PageActionType.Rename]);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3083,18 +3084,42 @@ class PageService {
     return pathToChildren;
   }
 
-  // Todo: change isProcessing dynamically
-  // https://redmine.weseek.co.jp/issues/95971
-  async injectProcessInfoIntoPages(
-      pages: (PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo, })[],
-  ): Promise<(PageDocument & {pageOperationProcessInfo: IPageOperationProcessInfo})[]> {
 
-    const pageOperations = await PageOperation.find({ actionType: PageActionType.Rename });
+  /**
+   * Inject PageOperation process info into pages if operating page id and id of element of id matchs
+   */
+  async injectProcessInfoIntoPagesByActionTypes(
+      pages: (PageDocument & { processInfo?: IPageOperationProcessInfo })[],
+      actionTypes: PageActionType[],
+  ): Promise<(PageDocument & { processInfo?: IPageOperationProcessInfo })[]> {
 
-    const operatingPageIds = pageOperations.map(pageOp => pageOp.page._id.toString());
+    const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
+    if (pageOperations == null || pageOperations.length === 0) {
+      return pages;
+    }
 
-    const processInfo = ageOperationService.generateProcessInfoByActionTypes(pageOperations);
+    const processInfo = this.crowi.pageOperationService.generateProcessInfoByActionTypes(pageOperations);
+    const operatingPageids = Object.keys(processInfo);
 
+    // filter pages to inject processInfo
+    const operatingPages = pages.filter((page) => {
+      const pageId = page._id.toString();
+      return operatingPageids.includes(pageId);
+    });
+
+    // return if no pages found
+    if (operatingPages.length === 0) {
+      return pages;
+    }
+
+    // inject
+    operatingPages.forEach((page) => {
+      const pageId = page._id.toString();
+      const processData = processInfo[pageId];
+      page.processInfo = processData;
+    });
+
+    return pages;
   }
 
 }
