@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -6,8 +7,10 @@ import {
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import { apiPost } from '~/client/util/apiv1-client';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
@@ -67,8 +70,8 @@ class SelectCollectionsModal extends React.Component {
     e.preventDefault();
 
     try {
-      // TODO: use appContainer.apiv3.post
-      const result = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.selectedCollections) });
+      // TODO: use apiv3Post
+      const result = await apiPost('/v3/export', { collections: Array.from(this.state.selectedCollections) });
       // TODO: toastSuccess, toastError
 
       if (!result.ok) {

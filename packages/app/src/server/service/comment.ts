@@ -7,6 +7,8 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
+// https://regex101.com/r/Ztxj2j/1
+const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -99,11 +101,37 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // Create and send notifications
+    // Add mentioned users to targetUsers
+    const mentionedUsers = await this.getMentionedUsers(activity.event);
+    targetUsers = targetUsers.concat(mentionedUsers);
+
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
+  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const User = getModelSafely('User') || require('../models/user')(this.crowi);
+
+    // Get comment by comment ID
+    const commentData = await Comment.findOne({ _id: commentId });
+    const { comment } = commentData;
+
+    const usernamesFromComment = comment.match(USERNAME_PATTERN);
+
+    // Get username from comment and remove duplicate username
+    const mentionedUsernames = [...new Set(usernamesFromComment?.map((username) => {
+      return username.slice(1);
+    }))];
+
+    // Get mentioned users ID
+    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
+    return mentionedUserIDs?.map((user) => {
+      return user._id;
+    });
+  }
+
 }
+
 
 module.exports = CommentService;

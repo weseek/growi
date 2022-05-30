@@ -57,7 +57,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
       }
 
       {
-        !isLoading && markdown != null ? (
+        (!isLoading && markdown != null) && (
           <div className="p-3">
             <RevisionRenderer
               growiRenderer={renderer}
@@ -66,7 +66,11 @@ const CustomSidebar: FC<Props> = (props: Props) => {
               additionalClassName="grw-custom-sidebar-content"
             />
           </div>
-        ) : (
+        )
+      }
+
+      {
+        (!isLoading && markdown === undefined) && (
           <SidebarNotFound />
         )
       }

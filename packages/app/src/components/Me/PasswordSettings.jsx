@@ -4,19 +4,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 class PasswordSettings extends React.Component {
 
-  constructor(appContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
 
     this.state = {
       retrieveError: null,
@@ -32,10 +30,8 @@ class PasswordSettings extends React.Component {
   }
 
   async componentDidMount() {
-    const { appContainer } = this.props;
-
     try {
-      const res = await appContainer.apiv3Get('/personal-setting/is-password-set');
+      const res = await apiv3Get('/personal-setting/is-password-set');
       const { isPasswordSet } = res.data;
       this.setState({ isPasswordSet });
     }
@@ -47,11 +43,11 @@ class PasswordSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, appContainer, personalContainer } = this.props;
+    const { t, personalContainer } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
-      await appContainer.apiv3Put('/personal-setting/password', {
+      await apiv3Put('/personal-setting/password', {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
@@ -99,9 +95,6 @@ class PasswordSettings extends React.Component {
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
             <div className="col-md-5">
-              {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
-              {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
-              <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
               <input
                 className="form-control"
                 type="password"
@@ -115,6 +108,9 @@ class PasswordSettings extends React.Component {
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
           <div className="col-md-5">
+            {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
+            {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
+            <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
             <input
               className="form-control"
               type="password"
@@ -159,11 +155,10 @@ class PasswordSettings extends React.Component {
 }
 
 
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [AppContainer, PersonalContainer]);
+const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [PersonalContainer]);
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

@@ -1,8 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import React from 'react';
+
+import { BasicInterceptor } from '@growi/core';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
-import { BasicInterceptor } from '@growi/core';
 
 import Drawio from '~/components/Drawio';
 
@@ -103,8 +104,7 @@ export class DrawioInterceptor extends BasicInterceptor {
    */
   drawioPostRender(contextName, context) {
     const isPreview = (contextName === 'postRenderPreviewHtml');
-    const editorContainer = this.appContainer.getContainer('EditorContainer');
-    const renderDrawioInRealtime = editorContainer.state.previewOptions.renderDrawioInRealtime;
+    const renderDrawioInRealtime = context.renderDrawioInRealtime;
 
     Object.keys(context.DrawioMap).forEach((domId) => {
       const elem = document.getElementById(domId);

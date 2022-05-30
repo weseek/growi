@@ -1,24 +1,23 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
-
+import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
+import { useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
+
+import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -105,7 +104,7 @@ class PageEditorByHackmd extends React.Component {
     };
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+      const res = await apiPost('/hackmd.integrate', params);
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -147,7 +146,7 @@ class PageEditorByHackmd extends React.Component {
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.discard', { pageId });
+      const res = await apiPost('/hackmd.discard', { pageId });
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -220,7 +219,7 @@ class PageEditorByHackmd extends React.Component {
       pageId: pageContainer.state.pageId,
     };
     try {
-      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+      await apiPost('/hackmd.saveOnHackmd', params);
     }
     catch (err) {
       logger.error(err);
