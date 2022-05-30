@@ -1,16 +1,9 @@
 import { pagePathUtils } from '@growi/core';
 
+import { IPageOperationProcessInfo } from '~/interfaces/page-operation';
 import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
 
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
-
-type ProcessInfo = {
-  [pageId: string]: {
-    PageActionType: {
-      isProcessing: boolean
-    }
-  }
-}
 
 class PageOperationService {
 
@@ -85,17 +78,23 @@ class PageOperationService {
     return true;
   }
 
-  generateProcessInfoByActionTypes(pageOps: PageOperationDocument[]): Promise<ProcessInfo> {
+  /**
+   * Generate object that connects page id with processInfo of PageOperation
+   * processInfo is the combination of actionType as key with the infomation of whether it's processable as value
+   */
+  generateProcessInfoByActionTypes(pageOps: PageOperationDocument[]): IPageOperationProcessInfo {
     const processInfo = {};
 
     pageOps.forEach((pageOp) => {
       const pageId = pageOp.page._id.toString();
 
       const actionType = pageOp.actionType;
-      const isProcessing = true; // Todo: dynamically change the value based on PageOperation prop
+      // Todo: dynamically change the value based on PageOperation prop,
+      // https://redmine.weseek.co.jp/issues/95971
+      const isProcessable = true;
 
       // processData for processInfo
-      const processData = { [actionType]: { isProcessing } };
+      const processData = { [actionType]: { isProcessable } };
 
       // Merge processData if other processData exist
       if (processInfo[pageId] != null) {
