@@ -49,8 +49,8 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   pushToAllUser(activitySnapshotUsernames, Categories.activitySnapshotUser);
 
   const changeHandler = useCallback((userData: UserDataType[]) => {
-    const usernames = userData.map(user => user.username);
     if (onChange != null) {
+      const usernames = userData.map(user => user.username);
       onChange(usernames);
     }
   }, [onChange]);

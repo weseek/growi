@@ -45,7 +45,7 @@ export const AuditLogManagement: FC = () => {
    */
   const selectedDate = { startDate: formatDate(startDate), endDate: formatDate(endDate) };
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
-  const searchFilter = { action: selectedActionList, date: selectedDate, username: selectedUsernames };
+  const searchFilter = { actions: selectedActionList, dates: selectedDate, usernames: selectedUsernames };
 
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
