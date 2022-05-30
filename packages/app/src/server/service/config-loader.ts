@@ -217,6 +217,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  AUTO_INSTALL_ALLOW_GUEST_MODE: {
+    ns:      'crowi',
+    key:     'autoInstall:allowGuestMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   AUTO_INSTALL_SERVER_DATE: {
     ns:      'crowi',
     key:     'autoInstall:serverDate',
