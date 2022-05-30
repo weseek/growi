@@ -243,6 +243,7 @@ module.exports = function(crowi, app) {
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
       // TODO emit slackNotificationForm on comment create
+      // commentEvent.emit('cerate', (createdComment, slackNotificationForm))
       commentEvent.emit('create', createdComment);
     }
     catch (err) {
@@ -381,6 +382,7 @@ module.exports = function(crowi, app) {
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
       // TODO emit slackNotificationForm on comment update
+      // commentEvent.emit('cerate', (createdComment, slackNotificationForm))
       commentEvent.emit('update', updatedComment);
     }
     catch (err) {

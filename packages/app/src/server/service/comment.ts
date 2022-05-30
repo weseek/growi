@@ -105,10 +105,12 @@ class CommentService {
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Add mentioned users to targetUsers
+    // TODO update mentionedUsers
     const mentionedUsers = await this.getMentionedUsers(activity.event);
     targetUsers = targetUsers.concat(mentionedUsers);
 
-    // TODO send slack notification
+    // TODO send slack notification for each username if slack is enabled
+
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
