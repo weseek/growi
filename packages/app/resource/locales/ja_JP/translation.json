@@ -437,6 +437,7 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_page": "ゴミ箱に入れました",
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
