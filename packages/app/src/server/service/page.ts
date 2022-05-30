@@ -3093,19 +3093,8 @@ class PageService {
 
     const operatingPageIds = pageOperations.map(pageOp => pageOp.page._id.toString());
 
-    for (const pageItem of pages) {
-      const pageItemId = pageItem._id.toString();
+    const processInfo = ageOperationService.generateProcessInfoByActionTypes(pageOperations);
 
-      if (operatingPageIds.includes(pageItemId)) {
-        const pageOperationProcessInfo = {
-          [PageActionType.Rename]: { isProcessing: true },
-        };
-        pageItem.pageOperationProcessInfo = pageOperationProcessInfo;
-
-        break;
-      }
-    }
-    return pages;
   }
 
 }
