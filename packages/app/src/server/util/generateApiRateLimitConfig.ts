@@ -30,7 +30,7 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
       return;
     }
 
-    const target = key.replace('API_RATE_LIMIT_', '').replace('_ENDPOINT', '');
+    const target = key.replace(/^API_RATE_LIMIT_/, '').replace(/_ENDPOINT$/, '');
     const method = envVar[`API_RATE_LIMIT_${target}_METHODS`] ?? 'ALL';
     const consumePoints = Number(envVar[`API_RATE_LIMIT_${target}_CONSUME_POINTS`]);
 
