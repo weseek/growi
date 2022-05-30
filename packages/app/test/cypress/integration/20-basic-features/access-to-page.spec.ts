@@ -1,4 +1,3 @@
-
 context('Access to page', () => {
   const ssPrefix = 'access-to-page-';
 
