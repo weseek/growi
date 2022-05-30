@@ -1,6 +1,5 @@
 import { Ref, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
-import { PageActionType } from './page-operation';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
 import { ITag } from './tag';
@@ -34,8 +33,6 @@ export interface IPage {
 }
 
 export type IPageHasId = IPage & HasObjectId;
-
-export type IPageOperationProcessInfo = Partial<Record<PageActionType, {isProcessing: boolean}>>
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
