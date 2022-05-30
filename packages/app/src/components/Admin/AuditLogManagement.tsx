@@ -12,7 +12,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
-import { SearchUsernameInput } from './AuditLog/SearchUsernameInput';
+import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
 
@@ -89,7 +89,7 @@ export const AuditLogManagement: FC = () => {
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
 
       <div className="form-inline mb-3">
-        <SearchUsernameInput
+        <SearchUsernameTypeahead
           onChange={setUsernamesHandler}
         />
 

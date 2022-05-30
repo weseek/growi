@@ -24,7 +24,7 @@ type Props = {
   onChange: (text) => void
 }
 
-export const SearchUsernameInput: FC<Props> = (props: Props) => {
+export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   const { onChange } = props;
 
   const [searchKeyword, setSearchKeyword] = useState<string>('');
