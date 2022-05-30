@@ -18,7 +18,7 @@ class PageOperationService {
     const {
       Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
     } = PageActionType;
-    const types = [Duplicate, DeleteCompletely, Revert, NormalizeParent];
+    const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
   }
 
