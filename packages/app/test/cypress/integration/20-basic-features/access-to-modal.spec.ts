@@ -1,4 +1,4 @@
-context('Open Page Accessories Modal', () => {
+context('Access to Page Accessories Modal', () => {
 
   const ssPrefix = 'access-to-page-accessories-modal';
 
