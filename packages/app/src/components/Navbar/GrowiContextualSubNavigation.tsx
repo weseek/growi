@@ -135,6 +135,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={openPageTemplateModalHandler}
         className="grw-page-control-dropdown-item"
+        data-testid="open-page-template-modal-btn"
       >
         <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
         { t('template.option_label.create/edit') }
