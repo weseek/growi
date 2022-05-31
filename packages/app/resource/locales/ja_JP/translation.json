@@ -15,8 +15,6 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
-  "Like!": "いいね！",
-  "Seen by": "見た人",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -216,7 +214,7 @@
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、8文字以上の半角英数字または記号等を設定してください。",
+      "password": "パスワードには、{{target}}文字以上の半角英数字または記号等を設定してください。",
       "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
     }
   },
@@ -439,6 +437,7 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_page": "ゴミ箱に入れました",
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
@@ -664,6 +663,8 @@
     },
     "by_path_modal": {
       "title": "新しい v5 互換形式への変換",
+      "alert": "この操作は取り消すことができず、ユーザーが閲覧できないページも処理の対象になります。",
+      "checkbox_label": "理解しました",
       "description": "パスを入力することで、そのパスの配下のページを全て v5 互換形式に変換します",
       "button_label": "変換",
       "success": "正常に変換を開始しました",
@@ -1068,5 +1069,39 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
+  },
+  "fix_page_grant": {
+    "modal": {
+      "no_grant_available": "選択可能な権限のリストが見つかりませんでした。まず親ページの権限を修正したのちに再試行してください。",
+      "need_to_fix_grant": "正しく機能を使用するためにはこのページに紐づく権限を修正する必要があります。 <br> 下記の選択肢から選んで変更してください。",
+      "grant_label": {
+        "isForbidden": "権限の閲覧が許可されていません",
+        "currentPageGrantLabel": "このページの権限: ",
+        "parentPageGrantLabel": "親のページの権限: ",
+        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>を参照してください"
+      },
+      "radio_btn": {
+        "restrected": "リンクを知っている人のみ",
+        "only_me": "自分のみ",
+        "grant_group": "特定グループのみ"
+      },
+      "select_group_default_text": "グループを選択",
+      "alert_message_select_group": "グループが選択されていません",
+      "btn_label": "変換",
+      "title": "権限を修正"
+    },
+    "alert": {
+      "description": "このページの権限設定を修正する必要があります。",
+      "btn_label": "修正"
+    }
+  },
+  "tooltip": {
+    "like": "いいね！",
+    "cancel_like": "いいねを取り消す",
+    "bookmark": "ブックマーク",
+    "cancel_bookmark": "ブックマークを取り消す",
+    "receive_notifications": "通知を受け取る",
+    "stop_notification": "通知を止める",
+    "footprints": "足跡"
   }
 }

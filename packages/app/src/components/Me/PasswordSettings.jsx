@@ -10,7 +10,6 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-
 class PasswordSettings extends React.Component {
 
   constructor() {
@@ -22,6 +21,7 @@ class PasswordSettings extends React.Component {
       newPassword: '',
       newPasswordConfirm: '',
       isPasswordSet: false,
+      minPasswordLength: null,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -32,8 +32,8 @@ class PasswordSettings extends React.Component {
   async componentDidMount() {
     try {
       const res = await apiv3Get('/personal-setting/is-password-set');
-      const { isPasswordSet } = res.data;
-      this.setState({ isPasswordSet });
+      const { isPasswordSet, minPasswordLength } = res.data;
+      this.setState({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
       toastError(err);
@@ -74,9 +74,8 @@ class PasswordSettings extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { newPassword, newPasswordConfirm } = this.state;
+    const { newPassword, newPasswordConfirm, minPasswordLength } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
-
     if (this.state.retrieveError != null) {
       throw new Error(this.state.retrieveError.message);
     }
@@ -95,9 +94,6 @@ class PasswordSettings extends React.Component {
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
             <div className="col-md-5">
-              {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
-              {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
-              <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
               <input
                 className="form-control"
                 type="password"
@@ -111,6 +107,9 @@ class PasswordSettings extends React.Component {
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
           <div className="col-md-5">
+            {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
+            {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
+            <input type="password" autoComplete="new-password" style={{ display: 'none' }} />
             <input
               className="form-control"
               type="password"
@@ -131,7 +130,7 @@ class PasswordSettings extends React.Component {
               onChange={(e) => { this.onChangeNewPasswordConfirm(e.target.value) }}
             />
 
-            <p className="form-text text-muted">{t('page_register.form_help.password') }</p>
+            <p className="form-text text-muted">{t('page_register.form_help.password', { target: minPasswordLength }) }</p>
           </div>
         </div>
 

@@ -1,7 +1,8 @@
 import React, { FC, useState } from 'react';
 
-import { Popover, PopoverBody } from 'reactstrap';
 import { FootstampIcon } from '@growi/ui';
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { IUser } from '~/interfaces/user';
 
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const SeenUserInfo: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { seenUsers, sumOfSeenUsers, disabled } = props;
@@ -35,6 +37,9 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
           </div>
         </PopoverBody>
       </Popover>
+      <UncontrolledTooltip placement="top" target="btn-seen-user" fade={false}>
+        {t('tooltip.footprints')}
+      </UncontrolledTooltip>
     </div>
   );
 };
