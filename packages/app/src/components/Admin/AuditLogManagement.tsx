@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   SupportedActionType, AllSupportedActionType, PageActions, CommentActions,
 } from '~/interfaces/activity';
-import { useSWRxActivityList } from '~/stores/activity';
+import { useSWRxActivity } from '~/stores/activity';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -47,10 +47,10 @@ export const AuditLogManagement: FC = () => {
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
   const searchFilter = { actions: selectedActionList, dates: selectedDate, usernames: selectedUsernames };
 
-  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
-  const activityList = activityListData?.docs != null ? activityListData.docs : [];
-  const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
-  const isLoading = activityListData === undefined && error == null;
+  const { data: activityData, error } = useSWRxActivity(PAGING_LIMIT, offset, searchFilter);
+  const activityList = activityData?.docs != null ? activityData.docs : [];
+  const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
+  const isLoading = activityData === undefined && error == null;
 
   /*
    * Functions
