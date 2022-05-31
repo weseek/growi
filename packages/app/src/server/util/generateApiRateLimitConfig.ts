@@ -58,7 +58,7 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   const envVar = process.env;
 
   const apiRateEndpointKeys = Object.keys(envVar).filter((key) => {
-    const endpointRegExp = /^API_RATE_LIMIT_.+_.+_ENDPOINT/;
+    const endpointRegExp = /^API_RATE_LIMIT_\w+_ENDPOINT/;
     return endpointRegExp.test(key);
   });
 
