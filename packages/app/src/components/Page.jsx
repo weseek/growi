@@ -11,7 +11,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useSWRxIsSlackEnabled } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -192,7 +192,7 @@ const PageWrapper = (props) => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: slackChannelsData } = useSWRxSlackChannels();
-  const { data: isSlackEnabled } = useSWRxIsSlackEnabled();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();

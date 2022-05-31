@@ -14,7 +14,7 @@ import {
   useIsEditable, useIsIndentSizeForced, useCurrentPagePath,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useSWRxSlackChannels, useSWRxIsSlackEnabled, useIsTextlintEnabled,
+  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled,
 } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -409,7 +409,7 @@ const PageEditorWrapper = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: isSlackEnabled } = useSWRxIsSlackEnabled();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
