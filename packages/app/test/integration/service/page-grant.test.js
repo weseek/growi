@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
-import { getInstance } from '../setup-crowi';
 import UserGroup from '~/server/models/user-group';
+
+import { getInstance } from '../setup-crowi';
 
 /*
  * There are 3 grant types to test.
@@ -36,6 +37,8 @@ describe('PageGrantService', () => {
   const emptyPagePath1 = '/E1';
   const emptyPagePath2 = '/E2';
   const emptyPagePath3 = '/E3';
+
+  const topPagePath = '/';
 
   let pageRootPublic;
   let pageRootGroupParent;
@@ -148,6 +151,10 @@ describe('PageGrantService', () => {
         grantedUsers: null,
         grantedGroup: groupParent._id,
         parent: rootPage._id,
+      },
+      {
+        path: topPagePath,
+        grant: Page.GRANT_PUBLIC,
       },
     ]);
 
@@ -357,6 +364,16 @@ describe('PageGrantService', () => {
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
 
       expect(result).toBe(false);
+    });
+  });
+
+
+  describe('Test for calcApplicableGrantData', () => {
+    test('Public is only Applicable in case of top page', async() => {
+      const topPage = await Page.findOne({ path: topPagePath });
+      const result = await pageGrantService.calcApplicableGrantData(topPage, user1);
+
+      await expect(result[1]).toBeNull();
     });
   });
 
