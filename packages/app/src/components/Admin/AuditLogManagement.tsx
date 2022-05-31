@@ -20,7 +20,7 @@ const formatDate = (date: Date | null) => {
   if (date == null) {
     return '';
   }
-  return format(new Date(date), 'yyyy/MM/dd');
+  return format(new Date(date), 'yyyy-MM-dd');
 };
 
 const PAGING_LIMIT = 10;
