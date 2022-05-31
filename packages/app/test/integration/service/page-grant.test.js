@@ -32,6 +32,7 @@ describe('PageGrantService', () => {
 
   let rootPage;
   let rootPublicPage;
+  let rootOnlyMePage;
 
   let emptyPage1;
   let emptyPage2;
@@ -51,6 +52,10 @@ describe('PageGrantService', () => {
   const pagePublicOnlyMePath = `${pageRootPublicPath}/OnlyMe`;
   const pagePublicAnyoneWithTheLinkPath = `${pageRootPublicPath}/AnyoneWithTheLink`;
   const pagePublicOnlyInsideTheGroupPath = `${pageRootPublicPath}/OnlyInsideTheGroup`;
+
+  const pageOnlyMePublicPath = `${pageRootOnlyMePagePath}/Public`;
+  const pageOnlyMeAnyoneWithTheLinkPath = `${pageRootOnlyMePagePath}/AnyoneWithTheLink`;
+  const pageOnlyMeOnlyInsideTheGroupPath = `${pageRootOnlyMePagePath}/OnlyInsideTheGroup`;
 
   let pageE1Public;
   let pageE2User1;
@@ -172,6 +177,7 @@ describe('PageGrantService', () => {
       {
         path: pageRootOnlyMePagePath,
         grant: Page.GRANT_OWNER,
+        grantedUsers: [user1._id],
         parent: null,
       },
       // AnyoneWithTheLink v4
@@ -189,9 +195,13 @@ describe('PageGrantService', () => {
     ]);
 
     rootPublicPage = await Page.findOne({ path: pageRootPublicPath });
+    rootOnlyMePage = await Page.findOne({ path: pageRootOnlyMePagePath });
 
-    // Leaf pages (Depth: 2, Parent is public)
+    // Leaf pages (Depth: 2)
     await Page.insertMany([
+      /*
+      * Parent is public
+      */
       {
         path: pagePublicOnlyMePath,
         grant: Page.GRANT_OWNER,
@@ -206,6 +216,24 @@ describe('PageGrantService', () => {
         path: pagePublicOnlyInsideTheGroupPath,
         grant: Page.GRANT_USER_GROUP,
         parent: rootPublicPage._id,
+      },
+      /*
+      * Parent is onlyMe
+      */
+      {
+        path: pageOnlyMePublicPath,
+        grant: Page.GRANT_PUBLIC,
+        parent: rootOnlyMePage._id,
+      },
+      {
+        path: pageOnlyMeAnyoneWithTheLinkPath,
+        grant: Page.GRANT_RESTRICTED,
+        parent: rootOnlyMePage._id,
+      },
+      {
+        path: pageOnlyMeOnlyInsideTheGroupPath,
+        grant: Page.GRANT_USER_GROUP,
+        parent: rootOnlyMePage._id,
       },
     ]);
 
@@ -477,6 +505,24 @@ describe('PageGrantService', () => {
       await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_PUBLIC]).toBeNull();
       await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_OWNER]).toBeNull();
       await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_USER_GROUP]).toEqual(userGroupRelation);
+    });
+
+
+    test('Only "GRANT_OWNER" is allowed if the user is the parent page\'s grantUser', async() => {
+      // OnlyMe
+      const onlyMePublicPage = await Page.findOne({ path: pageOnlyMePublicPath });
+      const onlyMePublicRes = await pageGrantService.calcApplicableGrantData(onlyMePublicPage, user1);
+      await expect(onlyMePublicRes[PageGrant.GRANT_OWNER]).toBeNull();
+
+      // AnyoneWithTheLink
+      const onlyMeAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyMeAnyoneWithTheLinkPath });
+      const onlyMeAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyMeAnyoneWithTheLinkPage, user1);
+      await expect(onlyMeAnyoneWithTheLinkRes[PageGrant.GRANT_OWNER]).toBeNull();
+
+      // OnlyInsideTheGroup
+      const publicOnlyInsideTheGroupPage = await Page.findOne({ path: pageOnlyMeOnlyInsideTheGroupPath });
+      const publicOnlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(publicOnlyInsideTheGroupPage, user1);
+      await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_OWNER]).toBeNull();
     });
   });
 
