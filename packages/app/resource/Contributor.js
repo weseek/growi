@@ -41,6 +41,7 @@ const contributors = [
           { name: 'N1koge' },
           { name: 'Ertai87' },
           { name: 'takayuki-t' },
+          { name: 'ayaka0417' },
           { name: 'zahmis' },
           { name: 'takeru0001' },
           { name: 'Shu Katabe' },
