@@ -17,7 +17,6 @@ import {
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
-import { emojiMartData } from '../util/markdown-it/emoji-mart-data';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -53,7 +52,6 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
-      tocHtml: '',
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -102,13 +100,12 @@ export default class PageContainer extends Container {
     }
 
     const { interceptorManager } = this.appContainer;
-    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
-    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
-    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
 
     this.initStateMarkdown();
 
-    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
@@ -193,32 +190,6 @@ export default class PageContainer extends Container {
     }
 
     this.setState(newState);
-  }
-
-  async setTocHtml(tocHtml) {
-    if (this.state.tocHtml !== tocHtml) {
-      const tocHtmlWithEmoji = await this.colonsToEmoji(tocHtml);
-      this.setState({ tocHtml: tocHtmlWithEmoji });
-    }
-  }
-
-  /**
-   *
-   * @param {*} html TOC html string
-   * @returns TOC html with emoji (emoji-mart) in URL
-   */
-  async colonsToEmoji(html) {
-    // Emoji colons matching
-    const colons = ':[a-zA-Z0-9-_+]+:';
-    // Emoji with skin tone matching
-    const skin = ':skin-tone-[2-6]:';
-    const colonsRegex = new RegExp(`(${colons}${skin}|${colons})`, 'g');
-    const emojiData = await emojiMartData();
-    return html.replace(colonsRegex, (index, match) => {
-      const emojiName = match.slice(1, -1);
-      return emojiData[emojiName];
-    });
-
   }
 
   /**

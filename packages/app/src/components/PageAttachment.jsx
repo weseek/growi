@@ -118,7 +118,11 @@ class PageAttachment extends React.Component {
   render() {
     const { t } = this.props;
     if (this.state.attachments.length === 0) {
-      return t('No_attachments_yet');
+      return (
+        <div data-testid="page-attachment">
+          {t('No_attachments_yet')}
+        </div>
+      );
     }
 
     let deleteAttachmentModal = '';
@@ -149,7 +153,7 @@ class PageAttachment extends React.Component {
     }
 
     return (
-      <>
+      <div data-testid="page-attachment">
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}
@@ -166,7 +170,7 @@ class PageAttachment extends React.Component {
           pagingLimit={this.state.limit}
           align="center"
         />
-      </>
+      </div>
     );
   }
 
