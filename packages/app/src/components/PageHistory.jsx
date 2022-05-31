@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import PageHistroyContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { useCurrentPageId } from '~/stores/context';
@@ -25,7 +24,7 @@ function PageHistory(props) {
   const { data: revisionsData } = useSWRxPageRevisions(currentPageId, 1, 10);
   const pagingLimit = 10;
 
-  const { pageHistoryContainer, revisionComparerContainer } = props;
+  const { revisionComparerContainer } = props;
 
   useEffect(() => {
     throw new Promise(async() => {
@@ -64,7 +63,6 @@ function PageHistory(props) {
   return (
     <div className="revision-history">
       <PageRevisionTable
-        pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
         revisions={revisionsData.revisions}
         pagingLimit
@@ -78,10 +76,9 @@ function PageHistory(props) {
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer, RevisionComparerContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [RevisionComparerContainer]);
 
 PageHistory.propTypes = {
-  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 };
 
