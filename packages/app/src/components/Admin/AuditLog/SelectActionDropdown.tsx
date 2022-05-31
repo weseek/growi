@@ -1,5 +1,7 @@
 import React, { FC, useCallback } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { SupportedActionType } from '~/interfaces/activity';
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
 }
 
 export const SelectActionDropdown: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const {
     dropdownItems, actionMap, onChangeAction, onChangeMultipleAction,
   } = props;
@@ -29,7 +32,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   return (
     <div className="btn-group mr-2">
       <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-        <i className="fa fa-fw fa-bolt" />Action
+        <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
       </button>
       <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
         {dropdownItems.map(item => (

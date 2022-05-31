@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
+import { useTranslation } from 'react-i18next';
 
 import { useSWRxUsernames } from '~/stores/user';
 
@@ -13,11 +14,11 @@ const Categories = {
   activitySnapshotUser: 'Activity Snapshot User',
 } as const;
 
-type CategorieType = typeof Categories[keyof typeof Categories]
+type CategoryType = typeof Categories[keyof typeof Categories]
 
 type UserDataType = {
   username: string
-  category: CategorieType
+  category: CategoryType
 }
 
 type Props = {
@@ -26,6 +27,7 @@ type Props = {
 
 export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   const { onChange } = props;
+  const { t } = useTranslation();
 
   /*
    * State
@@ -43,7 +45,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   const isLoading = usernameData === undefined && error == null;
 
   const allUser: UserDataType[] = [];
-  const pushToAllUser = (usernames: string[], category: CategorieType) => {
+  const pushToAllUser = (usernames: string[], category: CategoryType) => {
     usernames.forEach(username => allUser.push({ username, category }));
   };
   pushToAllUser(activeUsernames, Categories.activeUser);
@@ -102,11 +104,11 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         </span>
       </div>
       <AsyncTypeahead
-        id="auditlog-username-typeahead-asynctypeahead"
+        id="search-username-typeahead-asynctypeahead"
         multiple
         delay={400}
         minLength={0}
-        placeholder="username"
+        placeholder={t('admin:audit_log_management.username')}
         caseSensitive={false}
         isLoading={isLoading}
         options={allUser}

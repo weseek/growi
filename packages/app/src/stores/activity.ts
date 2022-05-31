@@ -12,7 +12,7 @@ type ISearchFilter = {
   actions?: SupportedActionType[]
 }
 
-export const useSWRxActivityList = (limit?: number, offset?: number, searchFilter?: ISearchFilter): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
+export const useSWRxActivity = (limit?: number, offset?: number, searchFilter?: ISearchFilter): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
   const stringifiedSearchFilter = JSON.stringify(searchFilter);
   return useSWRImmutable(
     ['/activity', limit, offset, stringifiedSearchFilter],

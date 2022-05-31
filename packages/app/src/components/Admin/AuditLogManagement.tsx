@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   SupportedActionType, AllSupportedActionType, PageActions, CommentActions,
 } from '~/interfaces/activity';
-import { useSWRxActivityList } from '~/stores/activity';
+import { useSWRxActivity } from '~/stores/activity';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -47,10 +47,10 @@ export const AuditLogManagement: FC = () => {
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
   const searchFilter = { actions: selectedActionList, dates: selectedDate, usernames: selectedUsernames };
 
-  const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
-  const activityList = activityListData?.docs != null ? activityListData.docs : [];
-  const totalActivityNum = activityListData?.totalDocs != null ? activityListData.totalDocs : 0;
-  const isLoading = activityListData === undefined && error == null;
+  const { data: activityData, mutate: mutateActivity, error } = useSWRxActivity(PAGING_LIMIT, offset, searchFilter);
+  const activityList = activityData?.docs != null ? activityData.docs : [];
+  const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
+  const isLoading = activityData === undefined && error == null;
 
   /*
    * Functions
@@ -78,8 +78,14 @@ export const AuditLogManagement: FC = () => {
   }, [actionMap, setActionMap]);
 
   const setUsernamesHandler = useCallback((usernames: string[]) => {
+    setActivePage(1);
     setSelectedUsernames(usernames);
   }, []);
+
+  const reloadButtonPushedHandler = useCallback(() => {
+    setActivePage(1);
+    mutateActivity();
+  }, [mutateActivity]);
 
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
@@ -96,7 +102,7 @@ export const AuditLogManagement: FC = () => {
         <DateRangePicker
           startDate={startDate}
           endDate={endDate}
-          onChangeDatePicker={datePickerChangedHandler}
+          onChange={datePickerChangedHandler}
         />
 
         <SelectActionDropdown
@@ -108,33 +114,37 @@ export const AuditLogManagement: FC = () => {
           onChangeAction={actionCheckboxChangedHandler}
           onChangeMultipleAction={multipleActionCheckboxChangedHandler}
         />
+
+        <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
+          <i className="icon icon-reload" />
+        </button>
       </div>
+
+      <p
+        className="ml-2"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: activityCounter }}
+      />
 
       { isLoading
         ? (
           <div className="text-muted text-center mb-5">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
           </div>
         )
         : (
-          <>
-            <p
-              className="ml-2"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: activityCounter }}
-            />
-            <ActivityTable activityList={activityList} />
-            <PaginationWrapper
-              activePage={activePage}
-              changePage={setActivePageHandler}
-              totalItemsCount={totalActivityNum}
-              pagingLimit={PAGING_LIMIT}
-              align="center"
-              size="sm"
-            />
-          </>
+          <ActivityTable activityList={activityList} />
         )
       }
+
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={setActivePageHandler}
+        totalItemsCount={totalActivityNum}
+        pagingLimit={PAGING_LIMIT}
+        align="center"
+        size="sm"
+      />
     </div>
   );
 };

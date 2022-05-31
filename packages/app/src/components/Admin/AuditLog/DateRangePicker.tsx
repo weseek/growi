@@ -5,6 +5,8 @@ import React, {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { useTranslation } from 'react-i18next';
+
 
 type CustomInputProps = {
   buttonRef: React.Ref<HTMLButtonElement>
@@ -12,6 +14,7 @@ type CustomInputProps = {
 }
 
 const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: CustomInputProps) => {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -19,7 +22,7 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
       ref={props.buttonRef}
       onClick={props.onClick}
     >
-      <i className="fa fa-fw fa-calendar" /> Date
+      <i className="fa fa-fw fa-calendar" /> {t('admin:audit_log_management.date')}
     </button>
   );
 });
@@ -28,26 +31,26 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
 type DateRangePickerProps = {
   startDate: Date | null
   endDate: Date | null
-  onChangeDatePicker: (dateList: Date[] | null[]) => void
+  onChange: (dateList: Date[] | null[]) => void
 }
 
 export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePickerProps) => {
-  const { startDate, endDate } = props;
+  const { startDate, endDate, onChange } = props;
 
   const buttonRef = useRef(null);
 
-  const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
-    if (props.onChangeDatePicker != null) {
+  const changeHandler = useCallback((dateList: Date[] | null[]) => {
+    if (onChange != null) {
       const [start, end] = dateList;
       const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
       if (isSameTime) {
-        props.onChangeDatePicker([null, null]);
+        onChange([null, null]);
       }
       else {
-        props.onChangeDatePicker(dateList);
+        onChange(dateList);
       }
     }
-  }, []);
+  }, [onChange]);
 
   return (
     <div className="btn-group mr-2">
@@ -55,7 +58,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
         selectsRange
         startDate={startDate}
         endDate={endDate}
-        onChange={datePickerChangedHandler}
+        onChange={changeHandler}
         customInput={<CustomInput buttonRef={buttonRef} />}
       />
     </div>

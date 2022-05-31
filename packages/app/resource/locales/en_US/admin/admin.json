@@ -514,5 +514,11 @@
       "force_update_parents_label": "Forcibly add missing users",
       "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
+  },
+  "audit_log_management": {
+    "username": "Username",
+    "target_model": "Target Model",
+    "action": "Action",
+    "date": "Date"
   }
 }
