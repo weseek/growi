@@ -1,14 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { debounce } from 'throttle-debounce';
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import PropTypes from 'prop-types';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { withTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
+
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -44,12 +46,15 @@ class UserGroupUserFormByInput extends React.Component {
 
     try {
       await adminUserGroupDetailContainer.addUserByUsername(userName);
+      await adminUserGroupDetailContainer.init();
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
     catch (err) {
       toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`));
     }
+
+    await adminUserGroupDetailContainer.closeUserGroupUserModal();
   }
 
   validateForm() {
