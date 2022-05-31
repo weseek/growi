@@ -197,14 +197,6 @@ const PageWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
-  const [slackChannelsStr, setSlackChannelsStr] = useState('');
-
-  useEffect(() => {
-    if (slackChannelsData != null) {
-      setSlackChannelsStr(slackChannelsData.toString());
-    }
-  }, [slackChannelsData]);
-
   if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
   }
@@ -218,7 +210,7 @@ const PageWrapper = (props) => {
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled || false}
-      slackChannels={slackChannelsStr}
+      slackChannels={slackChannelsData?.toString() || ''}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

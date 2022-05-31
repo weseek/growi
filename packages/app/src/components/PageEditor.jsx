@@ -417,14 +417,6 @@ const PageEditorWrapper = (props) => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
-  const [slackChannelsStr, setSlackChannelsStr] = useState('');
-
-  useEffect(() => {
-    if (slackChannelsData != null) {
-      setSlackChannelsStr(slackChannelsData.toString());
-    }
-  }, [slackChannelsData]);
-
   if (isEditable == null || editorMode == null) {
     return null;
   }
@@ -436,7 +428,7 @@ const PageEditorWrapper = (props) => {
       editorMode={editorMode}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled || false}
-      slackChannels={slackChannelsStr}
+      slackChannels={slackChannelsData?.toString() || ''}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

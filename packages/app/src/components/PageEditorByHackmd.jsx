@@ -436,14 +436,6 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
-  const [slackChannelsStr, setSlackChannelsStr] = useState('');
-
-  useEffect(() => {
-    if (slackChannelsData != null) {
-      setSlackChannelsStr(slackChannelsData.toString());
-    }
-  }, [slackChannelsData]);
-
   if (editorMode == null) {
     return null;
   }
@@ -453,7 +445,7 @@ const PageEditorByHackmdWrapper = (props) => {
       {...props}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled || false}
-      slackChannels={slackChannelsStr}
+      slackChannels={slackChannelsData?.toString() || ''}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
