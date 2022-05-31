@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -23,7 +24,7 @@ class ApiSettings extends React.Component {
     const { t, appContainer, personalContainer } = this.props;
 
     try {
-      await appContainer.apiv3Put('/personal-setting/api-token');
+      await apiv3Put('/personal-setting/api-token');
 
       await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));

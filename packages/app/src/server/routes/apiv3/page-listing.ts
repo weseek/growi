@@ -11,6 +11,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import PageService from '../../service/page';
+
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
@@ -68,10 +69,10 @@ export default (crowi: Crowi): Router => {
   router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
-    const pageService: PageService = crowi.pageService!;
+    const Page: PageModel = crowi.model('Page');
 
     try {
-      const ancestorsChildren = await pageService.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+      const ancestorsChildren = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
     }
     catch (err) {
@@ -88,10 +89,10 @@ export default (crowi: Crowi): Router => {
   router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
-    const pageService: PageService = crowi.pageService!;
+    const Page: PageModel = crowi.model('Page');
 
     try {
-      const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
+      const pages = await Page.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
       return res.apiv3({ children: pages });
     }
     catch (err) {

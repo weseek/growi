@@ -64,7 +64,6 @@
 {% endif %}
 <body
   class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
-  data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
