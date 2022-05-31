@@ -1,66 +1,60 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-
-import { withLoadingSppiner } from './SuspenseUtils';
-import PageRevisionTable from './PageHistory/PageRevisionTable';
 
 import PageHistroyContainer from '~/client/services/PageHistoryContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { useCurrentPageId } from '~/stores/context';
+import { useSWRxPageRevisions } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
+
+import PageRevisionTable from './PageHistory/PageRevisionTable';
 import PaginationWrapper from './PaginationWrapper';
 import RevisionComparer from './RevisionComparer/RevisionComparer';
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
+import { withLoadingSppiner } from './SuspenseUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 
 const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
+  const [activePage, setActivePage] = useState(1);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: revisionsData } = useSWRxPageRevisions(currentPageId, 1, 10);
+  const pagingLimit = 10;
+
   const { pageHistoryContainer, revisionComparerContainer } = props;
-  const { getPreviousRevision } = pageHistoryContainer;
-  const {
-    activePage, totalPages, pagingLimit, revisions, diffOpened,
-  } = pageHistoryContainer.state;
 
-  const handlePage = useCallback(async(selectedPage) => {
-    try {
-      await props.pageHistoryContainer.retrieveRevisions(selectedPage);
-    }
-    catch (err) {
-      toastError(err);
-      props.pageHistoryContainer.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
-  }, [props.pageHistoryContainer]);
-
-  if (pageHistoryContainer.state.errorMessage != null) {
-    return (
-      <div className="my-5">
-        <div className="text-danger">{pageHistoryContainer.state.errorMessage}</div>
-      </div>
-    );
-  }
-
-  if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
+  useEffect(() => {
     throw new Promise(async() => {
       try {
-        await props.pageHistoryContainer.retrieveRevisions(1);
         await props.revisionComparerContainer.initRevisions();
       }
       catch (err) {
         toastError(err);
-        pageHistoryContainer.setState({ errorMessage: err.message });
+        setErrorMessage(err.message);
         logger.error(err);
       }
     });
+  }, [props.revisionComparerContainer]);
+
+
+  if (errorMessage != null) {
+    return (
+      <div className="my-5">
+        <div className="text-danger">{errorMessage}</div>
+      </div>
+    );
   }
 
   function pager() {
     return (
       <PaginationWrapper
         activePage={activePage}
-        changePage={handlePage}
-        totalItemsCount={totalPages}
+        changePage={setActivePage}
+        totalItemsCount={revisionsData.totalCounts}
         pagingLimit={pagingLimit}
         align="center"
       />
@@ -72,9 +66,7 @@ function PageHistory(props) {
       <PageRevisionTable
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
-        revisions={revisions}
-        diffOpened={diffOpened}
-        getPreviousRevision={getPreviousRevision}
+        revisions={revisionsData.revisions}
       />
       <div className="my-3">
         {pager()}

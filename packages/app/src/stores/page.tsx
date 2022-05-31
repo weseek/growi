@@ -9,7 +9,7 @@ import {
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { IRevision } from '~/interfaces/revision';
+import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { apiGet } from '../client/util/apiv1-client';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
@@ -153,12 +153,18 @@ export const useSWRxPageRevisions = (
     pageId: string,
     page: number, // page number of pagination
     limit: number, // max number of pages in one paginate
-): SWRResponse<IRevision, Error> => {
+): SWRResponse<IRevisionsForPagination, Error> => {
 
-  return useSWRImmutable<IRevision, Error>(
+  return useSWRImmutable<IRevisionsForPagination, Error>(
     ['/revisions/list', pageId, page, limit],
     (endpoint, pageId, page, limit) => {
-      return apiv3Get(endpoint, { pageId, page, limit }).then(response => response.data.docs);
+      return apiv3Get(endpoint, { pageId, page, limit }).then((response) => {
+        const revisions = {
+          revisions: response.data.docs,
+          totalCounts: response.data.totalDocs,
+        };
+        return revisions;
+      });
     },
   );
 };

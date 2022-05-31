@@ -1,7 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
 import PageHistroyContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
@@ -20,7 +21,6 @@ class PageRevisionTable extends React.Component {
     const { revisionComparerContainer, t } = this.props;
     const { latestRevision, oldestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
-    const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
     const handleCompareLatestRevisionButton = () => {
@@ -41,7 +41,6 @@ class PageRevisionTable extends React.Component {
               t={this.props.t}
               revision={revision}
               isLatestRevision={revision === latestRevision}
-              revisionDiffOpened={revisionDiffOpened}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
             />
@@ -159,7 +158,6 @@ PageRevisionTable.propTypes = {
   revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revisions: PropTypes.array,
-  diffOpened: PropTypes.object,
 };
 
 export default withTranslation()(PageRevisionTable);
