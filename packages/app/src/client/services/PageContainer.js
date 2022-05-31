@@ -52,7 +52,6 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
-      tocHtml: '',
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -101,13 +100,12 @@ export default class PageContainer extends Container {
     }
 
     const { interceptorManager } = this.appContainer;
-    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
-    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
-    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
 
     this.initStateMarkdown();
 
-    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
@@ -192,12 +190,6 @@ export default class PageContainer extends Container {
     }
 
     this.setState(newState);
-  }
-
-  async setTocHtml(tocHtml) {
-    if (this.state.tocHtml !== tocHtml) {
-      this.setState({ tocHtml });
-    }
   }
 
   /**
