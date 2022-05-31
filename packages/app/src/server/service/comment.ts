@@ -6,6 +6,8 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
+import { prepareSlackMessageForComment } from '../util/slack';
+
 
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
@@ -22,13 +24,16 @@ class CommentService {
 
   commentEvent!: any;
 
+  // slackIntegrationService!:any;
+
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
-
+    // TODO initialize SlackIntegrationService
+    // this.slackIntegrationService = crowi.slackIntegrationService;
     // init
     this.initCommentEventListeners();
   }
@@ -102,9 +107,11 @@ class CommentService {
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Add mentioned users to targetUsers
+    // TODO update mentionedUsers
     const mentionedUsers = await this.getMentionedUsers(activity.event);
     targetUsers = targetUsers.concat(mentionedUsers);
 
+    // TODO call sendNotificationToSlackUsers
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
@@ -114,6 +121,7 @@ class CommentService {
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 
     // Get comment by comment ID
+    // TODO implement getComment
     const commentData = await Comment.findOne({ _id: commentId });
     const { comment } = commentData;
 
@@ -125,10 +133,24 @@ class CommentService {
     }))];
 
     // Get mentioned users ID
+    // TODO return users Object instead of users ID
     const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
+  }
+
+  getComment = async(commentId: Types.ObjectId): Promise<string> => {
+    // TODO get comment from commentID
+    // TODO Implement this method in getMentionedUsers
+    const comment = '';
+    return comment;
+  }
+
+
+  sendNotificationToSlackUsers = async(users: any[], comment: string) : Promise<void> => {
+    // TODO implement prepareSlackMessageForComment to prepare message object for slack
+    // TODO implement slackIntegrationService.postMessage(messageObject) for each users
   }
 
 }
