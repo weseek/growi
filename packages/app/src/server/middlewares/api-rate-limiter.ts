@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { RateLimiterMemory } from 'rate-limiter-flexible';
+import mongoose from 'mongoose';
+import { RateLimiterMongo } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
@@ -12,15 +13,16 @@ const defaultMaxPoints = 100;
 const defaultConsumePoints = 10;
 const defaultDuration = 1;
 const opts = {
+  storeClient: mongoose.connection,
   points: defaultMaxPoints, // set default value
   duration: defaultDuration, // set default value
 };
-const rateLimiter = new RateLimiterMemory(opts);
+const rateLimiter = new RateLimiterMongo(opts);
 
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfig = generateApiRateLimitConfig();
 
-const consumePoints = async(rateLimiter: RateLimiterMemory, key: string, points: number, next: NextFunction) => {
+const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number, next: NextFunction) => {
   await rateLimiter.consume(key, points)
     .then(() => {
       next();
