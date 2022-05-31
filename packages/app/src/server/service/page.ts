@@ -584,7 +584,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(user: any, pageId: ObjectIdLike): Promise<void> {
+  async resumeRenameSubOperation(pageId: ObjectIdLike): Promise<void> {
     // findOne renamed page
     const Page = mongoose.model('Page') as unknown as PageModel;
     const renamedPage = await Page.findById(pageId); // sub operation needs renamed page
@@ -596,9 +596,6 @@ class PageService {
        */
       throw Error(`Renamed page(${pageId} is not found)`);
     }
-    if (user == null) {
-      throw Error('Guest user cannot execute this operation');
-    }
 
     // findOne PageOperation
     const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': pageId };
@@ -607,7 +604,9 @@ class PageService {
       throw Error('There is nothing to be processed right now');
     }
 
-    const { page, toPath, options } = pageOp;
+    const {
+      page, toPath, options, user,
+    } = pageOp;
 
     // check property
     if (toPath == null) {
