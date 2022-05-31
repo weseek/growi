@@ -211,9 +211,9 @@ module.exports = (crowi) => {
       throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
     }
 
-    let stream: GetObjectCommandOutput;
+    let stream : GetObjectCommandOutput['Body'];
     try {
-      stream = await s3.send(new GetObjectCommand(params));
+      stream = (await s3.send(new GetObjectCommand(params))).Body;
     }
     catch (err) {
       logger.error(err);
@@ -221,7 +221,7 @@ module.exports = (crowi) => {
     }
 
     // return stream.Readable
-    return stream.Body;
+    return stream;
   };
 
   lib.checkLimit = async(uploadFileSize) => {
