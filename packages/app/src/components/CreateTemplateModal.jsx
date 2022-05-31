@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
 
-const CreateTemplateModal = (props) => {
+type Props = {
+  path?: string,
+};
+
+const CreateTemplateModal = (props: Props) => {
   const { t } = useTranslation();
   const { path } = props;
 
