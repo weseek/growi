@@ -9,7 +9,6 @@ import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
 
-
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
@@ -31,6 +30,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
+  const apiRateLimiter = require('../middlewares/api-rate-limiter')();
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const page = require('./page')(crowi, app);
@@ -62,6 +62,9 @@ module.exports = function(crowi, app) {
 
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
+
+  // API rate limiter
+  app.use(apiRateLimiter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
