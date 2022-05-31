@@ -424,6 +424,22 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
+PageEditorByHackmd.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+};
+
 const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
@@ -456,21 +472,5 @@ const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
  * Wrapper component for using unstated
  */
 const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmdWrapperFC, [AppContainer, PageContainer, EditorContainer]);
-
-PageEditorByHackmd.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  // TODO: remove this when omitting unstated is completed
-  editorMode: PropTypes.string.isRequired,
-  isSlackEnabled: PropTypes.bool.isRequired,
-  slackChannels: PropTypes.string.isRequired,
-  grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
-};
 
 export default PageEditorByHackmdWrapper;
