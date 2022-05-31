@@ -36,12 +36,16 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
     hideModal();
   };
 
+  const showModal = () => {
+    setIsShow(true);
+  };
+
   const onSelectFile = (e) => {
     if (e.target.files != null && e.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener('load', () => setSrc(reader.result));
       reader.readAsDataURL(e.target.files[0]);
-      setIsShow(true);
+      showModal();
     }
   };
 

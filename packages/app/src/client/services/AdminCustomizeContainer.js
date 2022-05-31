@@ -60,7 +60,7 @@ export default class AdminCustomizeContainer extends Container {
       },
       uploadedLogoSrc: null,
       defaultLogoSrc: DEFAULT_LOGO,
-      isDefaultLogo: false,
+      isDefaultLogo: true,
       attachmentId: '',
       /* eslint-enable quote-props, no-multi-spaces */
     };

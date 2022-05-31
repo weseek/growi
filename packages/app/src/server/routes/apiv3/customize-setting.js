@@ -139,6 +139,7 @@ module.exports = (crowi) => {
     logo: [
       body('attachmentId').isString().optional({ nullable: true }),
       body('isDefaultLogo').isBoolean(),
+      body('uploadedLogoSrc').isString(),
     ],
   };
 
