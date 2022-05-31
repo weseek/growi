@@ -1,11 +1,11 @@
 import React from 'react';
+
 import {
   Modal, ModalBody,
 } from 'reactstrap';
 
 import { usePagePresentationModal } from '~/stores/modal';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PagePresentationModal = () => {
 
   const { data: presentationData, close: closePresentationModal } = usePagePresentationModal();
