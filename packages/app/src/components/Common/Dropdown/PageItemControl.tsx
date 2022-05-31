@@ -20,6 +20,7 @@ export const MenuItemType = {
   DUPLICATE: 'duplicate',
   DELETE: 'delete',
   REVERT: 'revert',
+  PATH_RECOVERY: 'pathRecovery',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -37,6 +38,7 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickPathRecoveryMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
@@ -54,7 +56,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
 
@@ -106,6 +108,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickDeleteMenuItem(pageId, pageInfo);
   }, [onClickDeleteMenuItem, pageId, pageInfo]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const pathRecoveryItemClickedHandler = useCallback(async() => {
+    if (onClickPathRecoveryMenuItem == null) {
+      return;
+    }
+    await onClickPathRecoveryMenuItem(pageId);
+  }, [onClickPathRecoveryMenuItem, pageId]);
 
   let contents = <></>;
 
@@ -182,6 +192,17 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             { showDeviderBeforeAdditionalMenuItems && <DropdownItem divider /> }
             <AdditionalMenuItems pageInfo={pageInfo} />
           </>
+        ) }
+
+        {/* PathRecovery */}
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && (
+          <DropdownItem
+            onClick={pathRecoveryItemClickedHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="icon-fw icon-wrench grw-page-control-dropdown-icon"></i>
+            {t('PathRecovery')}
+          </DropdownItem>
         ) }
 
         {/* divider */}

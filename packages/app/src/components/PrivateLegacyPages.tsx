@@ -441,7 +441,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         appContainer={appContainer}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT]}
+        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT, MenuItemType.PATH_RECOVERY]}
         // Components
         searchControl={searchControl}
         searchResultListHead={searchResultListHead}

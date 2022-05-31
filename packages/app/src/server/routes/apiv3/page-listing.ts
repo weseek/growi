@@ -69,10 +69,9 @@ export default (crowi: Crowi): Router => {
   router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
-    const Page: PageModel = crowi.model('Page');
-
+    const pageService: PageService = crowi.pageService!;
     try {
-      const ancestorsChildren = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+      const ancestorsChildren = await pageService.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
     }
     catch (err) {
@@ -89,10 +88,10 @@ export default (crowi: Crowi): Router => {
   router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
-    const Page: PageModel = crowi.model('Page');
+    const pageService: PageService = crowi.pageService!;
 
     try {
-      const pages = await Page.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
+      const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
       return res.apiv3({ children: pages });
     }
     catch (err) {
