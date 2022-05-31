@@ -6,13 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
 
-type Props = {
-  path?: string,
-};
-
-const CreateTemplateModal = (props: Props) => {
+const CreateTemplateModal = (props) => {
   const { t } = useTranslation();
-  const { path } = props;
+  const { path } = props!;
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
