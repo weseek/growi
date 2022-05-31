@@ -47,7 +47,7 @@ export const AuditLogManagement: FC = () => {
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
   const searchFilter = { actions: selectedActionList, dates: selectedDate, usernames: selectedUsernames };
 
-  const { data: activityData, error } = useSWRxActivity(PAGING_LIMIT, offset, searchFilter);
+  const { data: activityData, mutate: mutateActivity, error } = useSWRxActivity(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityData?.docs != null ? activityData.docs : [];
   const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
   const isLoading = activityData === undefined && error == null;
@@ -78,8 +78,14 @@ export const AuditLogManagement: FC = () => {
   }, [actionMap, setActionMap]);
 
   const setUsernamesHandler = useCallback((usernames: string[]) => {
+    setActivePage(1);
     setSelectedUsernames(usernames);
   }, []);
+
+  const reloadButtonPushedHandler = useCallback(() => {
+    setActivePage(1);
+    mutateActivity();
+  }, [mutateActivity]);
 
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
@@ -108,6 +114,10 @@ export const AuditLogManagement: FC = () => {
           onChangeAction={actionCheckboxChangedHandler}
           onChangeMultipleAction={multipleActionCheckboxChangedHandler}
         />
+
+        <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
+          <i className="icon icon-reload"></i>
+        </button>
       </div>
 
       { isLoading
