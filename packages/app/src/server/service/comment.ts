@@ -6,9 +6,8 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
+import { prepareSlackMessageForComment } from '../util/slack';
 
-// TODO import and implement UserNotificationService
-// import UserNotificationService from './user-notification';
 
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
@@ -25,13 +24,16 @@ class CommentService {
 
   commentEvent!: any;
 
+  // slackIntegrationService!:any;
+
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
-
+    // TODO initialize SlackIntegrationService
+    // this.slackIntegrationService = crowi.slackIntegrationService;
     // init
     this.initCommentEventListeners();
   }
@@ -109,8 +111,7 @@ class CommentService {
     const mentionedUsers = await this.getMentionedUsers(activity.event);
     targetUsers = targetUsers.concat(mentionedUsers);
 
-    // TODO send slack notification for each username if slack is enabled
-
+    // TODO call sendNotificationToSlackUsers
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
@@ -146,6 +147,11 @@ class CommentService {
     return comment;
   }
 
+
+  sendNotificationToSlackUsers = async(users: any[], comment: string) : Promise<void> => {
+    // TODO implement prepareSlackMessageForComment to prepare message object for slack
+    // TODO implement slackIntegrationService.postMessage(messageObject) for each users
+  }
 
 }
 
