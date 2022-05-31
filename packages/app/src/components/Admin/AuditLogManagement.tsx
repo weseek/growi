@@ -116,35 +116,35 @@ export const AuditLogManagement: FC = () => {
         />
 
         <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-          <i className="icon icon-reload"></i>
+          <i className="icon icon-reload" />
         </button>
       </div>
+
+      <p
+        className="ml-2"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: activityCounter }}
+      />
 
       { isLoading
         ? (
           <div className="text-muted text-center mb-5">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
           </div>
         )
         : (
-          <>
-            <p
-              className="ml-2"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: activityCounter }}
-            />
-            <ActivityTable activityList={activityList} />
-            <PaginationWrapper
-              activePage={activePage}
-              changePage={setActivePageHandler}
-              totalItemsCount={totalActivityNum}
-              pagingLimit={PAGING_LIMIT}
-              align="center"
-              size="sm"
-            />
-          </>
+          <ActivityTable activityList={activityList} />
         )
       }
+
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={setActivePageHandler}
+        totalItemsCount={totalActivityNum}
+        pagingLimit={PAGING_LIMIT}
+        align="center"
+        size="sm"
+      />
     </div>
   );
 };
