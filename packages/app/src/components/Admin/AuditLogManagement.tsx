@@ -102,7 +102,7 @@ export const AuditLogManagement: FC = () => {
         <DateRangePicker
           startDate={startDate}
           endDate={endDate}
-          onChangeDatePicker={datePickerChangedHandler}
+          onChange={datePickerChangedHandler}
         />
 
         <SelectActionDropdown
