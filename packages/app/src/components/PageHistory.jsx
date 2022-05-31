@@ -67,6 +67,7 @@ function PageHistory(props) {
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
         revisions={revisionsData.revisions}
+        pagingLimit
       />
       <div className="my-3">
         {pager()}

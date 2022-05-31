@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PageHistroyContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 import Revision from './Revision';
@@ -17,9 +16,11 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} hasDiff whether revision has difference to previousRevision
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
-  renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
+  renderRow(revisions, index, previousRevision, hasDiff, isContiguousNodiff) {
     const { revisionComparerContainer, t } = this.props;
-    const { latestRevision, oldestRevision } = this.props.pageHistoryContainer.state;
+    const revision = revisions[index];
+    const latestRevision = revisions[0];
+    const oldestRevision = revisions[revision.length - 1];
     const revisionId = revision._id;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
@@ -104,7 +105,7 @@ class PageRevisionTable extends React.Component {
   }
 
   render() {
-    const { t, pageHistoryContainer } = this.props;
+    const { t, pagingLimit } = this.props;
 
     const revisions = this.props.revisions;
     const revisionCount = this.props.revisions.length;
@@ -113,7 +114,7 @@ class PageRevisionTable extends React.Component {
 
     const revisionList = this.props.revisions.map((revision, idx) => {
       // Returns null because the last revision is for the bottom diff display
-      if (idx === pageHistoryContainer.state.pagingLimit) {
+      if (idx === pagingLimit) {
         return null;
       }
 
@@ -131,7 +132,7 @@ class PageRevisionTable extends React.Component {
 
       hasDiffPrev = hasDiff;
 
-      return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
+      return this.renderRow(revisions, idx, previousRevision, hasDiff, isContiguousNodiff);
     });
 
     return (
@@ -154,10 +155,10 @@ class PageRevisionTable extends React.Component {
 
 PageRevisionTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revisions: PropTypes.array,
+  pagingLimit: PropTypes.number,
 };
 
 export default withTranslation()(PageRevisionTable);
