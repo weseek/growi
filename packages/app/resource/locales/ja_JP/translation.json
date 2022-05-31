@@ -16,8 +16,6 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
-  "Like!": "いいね！",
-  "Seen by": "見た人",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -217,7 +215,7 @@
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、8文字以上の半角英数字または記号等を設定してください。",
+      "password": "パスワードには、{{target}}文字以上の半角英数字または記号等を設定してください。",
       "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
     }
   },
@@ -440,6 +438,7 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_page": "ゴミ箱に入れました",
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
@@ -1096,5 +1095,14 @@
       "description": "このページの権限設定を修正する必要があります。",
       "btn_label": "修正"
     }
+  },
+  "tooltip": {
+    "like": "いいね！",
+    "cancel_like": "いいねを取り消す",
+    "bookmark": "ブックマーク",
+    "cancel_bookmark": "ブックマークを取り消す",
+    "receive_notifications": "通知を受け取る",
+    "stop_notification": "通知を止める",
+    "footprints": "足跡"
   }
 }

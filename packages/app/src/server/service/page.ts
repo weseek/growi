@@ -262,7 +262,7 @@ class PageService {
       authority: IPageDeleteConfigValueToProcessValidation | null,
       recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
-    const isAdmin = operator.admin;
+    const isAdmin = operator?.admin ?? false;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
 
     if (isRecursively) {
@@ -3418,7 +3418,7 @@ class PageService {
     }
 
     // Prepare a page document
-    const shouldNew = !isGrantRestricted;
+    const shouldNew = isGrantRestricted;
     const page = await this.preparePageDocumentToCreate(path, shouldNew);
 
     // Set field
