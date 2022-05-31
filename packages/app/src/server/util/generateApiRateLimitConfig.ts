@@ -43,7 +43,7 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   });
 
   // sort priority
-  apiRateEndpointKeys.sort();
+  apiRateEndpointKeys.sort().reverse();
 
   // get config
   const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys);
