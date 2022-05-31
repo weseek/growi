@@ -48,12 +48,12 @@ export default class CommentMentionHelper {
     });
   }
 
-  getUsersList = async(username) => {
+  getUsersList = async(q: string) => {
     const limit = 20;
-    const { data } = await apiv3Get('/users/list', { username, limit });
-    return data.users.map(user => ({
-      text: `@${user.username} `,
-      displayText: user.username,
+    const { data } = await apiv3Get('/users/usernames', { q, limit });
+    return data.activeUser.usernames.map(username => ({
+      text: `@${username} `,
+      displayText: username,
     }));
   }
 

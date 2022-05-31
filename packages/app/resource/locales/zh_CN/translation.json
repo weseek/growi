@@ -17,8 +17,6 @@
 	"Move/Rename": "移动/重命名",
 	"Redirected": "重定向",
 	"Unlinked": "Unlinked",
-	"Like!": "Like!",
-	"Seen by": "Seen by",
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
@@ -419,6 +417,7 @@
 		"recursively": "Delete children of <code>%s</code> recursively.",
 		"completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_page": "移到了垃圾箱。",
   "deleted_pages": "将 {{path}} 放入垃圾箱",
   "deleted_pages_completely": "{{path}} 已被完全删除",
   "renamed_pages": "移动/重命名 {{path}}",
@@ -1106,5 +1105,14 @@
       "description": "本页的授权设置需要修改。",
       "btn_label": "修改"
     }
+  },
+  "tooltip": {
+    "like": "很好!",
+    "cancel_like": "取消喜欢",
+    "bookmark": "书签",
+    "cancel_bookmark": "取消书签",
+    "receive_notifications": "接收通知",
+    "stop_notification": "停止通知",
+    "footprints": "脚印"
   }
 }

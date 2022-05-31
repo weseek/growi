@@ -21,7 +21,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -40,7 +40,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath,
+  collectAncestorPaths, isMovablePage, canMoveByPath, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -263,7 +263,7 @@ class PageService {
       authority: IPageDeleteConfigValueToProcessValidation | null,
       recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
-    const isAdmin = operator.admin;
+    const isAdmin = operator?.admin ?? false;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
 
     if (isRecursively) {
@@ -3419,7 +3419,7 @@ class PageService {
     }
 
     // Prepare a page document
-    const shouldNew = !isGrantRestricted;
+    const shouldNew = isGrantRestricted;
     const page = await this.preparePageDocumentToCreate(path, shouldNew);
 
     // Set field
@@ -3455,6 +3455,70 @@ class PageService {
     return savedPage;
   }
 
+  /*
+   * Find all children by parent's path or id. Using id should be prioritized
+   */
+  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    let queryBuilder: PageQueryBuilder;
+    if (hasSlash(parentPathOrId)) {
+      const path = parentPathOrId;
+      const regexp = generateChildrenRegExp(path);
+      queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+    }
+    else {
+      const parentId = parentPathOrId;
+      queryBuilder = new PageQueryBuilder(Page.find({ parent: parentId } as any), true); // TODO: improve type
+    }
+    await queryBuilder.addViewerCondition(user, userGroups);
+
+    return queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+  }
+
+  async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
+    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+
+    // get pages at once
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
+    await queryBuilder.addViewerCondition(user, userGroups);
+    const _pages = await queryBuilder
+      .addConditionAsOnTree()
+      .addConditionToMinimizeDataForRendering()
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+    // mark target
+    const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+      return page;
+    });
+
+    /*
+     * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+     */
+    const pathToChildren: Record<string, PageDocument[]> = {};
+    const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+    sortedPaths.every((path) => {
+      const children = pages.filter(page => pathlib.dirname(page.path) === path);
+      if (children.length === 0) {
+        return false; // break when children do not exist
+      }
+      pathToChildren[path] = children;
+      return true;
+    });
+
+    return pathToChildren;
+  }
 
   /**
    * It takes page documents.
