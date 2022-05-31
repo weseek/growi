@@ -1,4 +1,4 @@
-import { parse, addMinutes, isValid } from 'date-fns';
+import { parseISO, addMinutes, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
@@ -48,20 +48,23 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const parsedSearchFilter = JSON.parse(req.query.searchFilter as string);
 
+      console.log(parsedSearchFilter);
+
       // add username to query
-      if (typeof parsedSearchFilter.username === 'string') {
-        Object.assign(query, { 'snapshot.username': parsedSearchFilter.username });
+      const canContainUsernameFilterToQuery = parsedSearchFilter.usernames.every(u => typeof u === 'string');
+      if (canContainUsernameFilterToQuery && parsedSearchFilter.usernames.length > 0) {
+        Object.assign(query, { 'snapshot.username': parsedSearchFilter.usernames });
       }
 
       // add action to query
-      const canContainActionFilterToQuery = parsedSearchFilter.action.every(a => AllSupportedActionType.includes(a));
+      const canContainActionFilterToQuery = parsedSearchFilter.actions.every(a => AllSupportedActionType.includes(a));
       if (canContainActionFilterToQuery) {
-        Object.assign(query, { action: parsedSearchFilter.action });
+        Object.assign(query, { action: parsedSearchFilter.actions });
       }
 
       // add date to query
-      const startDate = parse(parsedSearchFilter.date.startDate, 'yyyy/MM/dd', new Date());
-      const endDate = parse(parsedSearchFilter.date.endDate, 'yyyy/MM/dd', new Date());
+      const startDate = parseISO(parsedSearchFilter.dates.startDate);
+      const endDate = parseISO(parsedSearchFilter.dates.endDate);
       if (isValid(startDate) && isValid(endDate)) {
         Object.assign(query, {
           createdAt: {

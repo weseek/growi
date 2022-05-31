@@ -7,8 +7,9 @@ import { PaginateResult } from '../interfaces/mongoose-utils';
 
 
 type ISearchFilter = {
-  date?: {startDate: string | null, endDate: string | null}
-  action?: SupportedActionType[]
+  usernames?: string[]
+  dates?: {startDate: string | null, endDate: string | null}
+  actions?: SupportedActionType[]
 }
 
 export const useSWRxActivityList = (limit?: number, offset?: number, searchFilter?: ISearchFilter): SWRResponse<PaginateResult<IActivityHasId>, Error> => {

@@ -12,6 +12,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
+import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
 
@@ -19,7 +20,7 @@ const formatDate = (date: Date | null) => {
   if (date == null) {
     return '';
   }
-  return format(new Date(date), 'yyyy/MM/dd');
+  return format(new Date(date), 'yyyy-MM-dd');
 };
 
 const PAGING_LIMIT = 10;
@@ -34,6 +35,7 @@ export const AuditLogManagement: FC = () => {
   const offset = (activePage - 1) * PAGING_LIMIT;
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
     new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
   );
@@ -43,7 +45,7 @@ export const AuditLogManagement: FC = () => {
    */
   const selectedDate = { startDate: formatDate(startDate), endDate: formatDate(endDate) };
   const selectedActionList = Array.from(actionMap.entries()).filter(v => v[1]).map(v => v[0]);
-  const searchFilter = { action: selectedActionList, date: selectedDate };
+  const searchFilter = { actions: selectedActionList, dates: selectedDate, usernames: selectedUsernames };
 
   const { data: activityListData, error } = useSWRxActivityList(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityListData?.docs != null ? activityListData.docs : [];
@@ -75,6 +77,10 @@ export const AuditLogManagement: FC = () => {
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
+  const setUsernamesHandler = useCallback((usernames: string[]) => {
+    setSelectedUsernames(usernames);
+  }, []);
+
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
 
@@ -82,21 +88,27 @@ export const AuditLogManagement: FC = () => {
     <div data-testid="admin-auditlog">
       <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
 
-      <DateRangePicker
-        startDate={startDate}
-        endDate={endDate}
-        onChangeDatePicker={datePickerChangedHandler}
-      />
+      <div className="form-inline mb-3">
+        <SearchUsernameTypeahead
+          onChange={setUsernamesHandler}
+        />
 
-      <SelectActionDropdown
-        dropdownItems={[
-          { actionCategory: 'Page', actionNames: PageActions },
-          { actionCategory: 'Comment', actionNames: CommentActions },
-        ]}
-        actionMap={actionMap}
-        onChangeAction={actionCheckboxChangedHandler}
-        onChangeMultipleAction={multipleActionCheckboxChangedHandler}
-      />
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onChangeDatePicker={datePickerChangedHandler}
+        />
+
+        <SelectActionDropdown
+          dropdownItems={[
+            { actionCategory: 'Page', actionNames: PageActions },
+            { actionCategory: 'Comment', actionNames: CommentActions },
+          ]}
+          actionMap={actionMap}
+          onChangeAction={actionCheckboxChangedHandler}
+          onChangeMultipleAction={multipleActionCheckboxChangedHandler}
+        />
+      </div>
 
       { isLoading
         ? (

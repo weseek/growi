@@ -27,7 +27,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onChangeMultipleAction]);
 
   return (
-    <div className="btn-group mr-2 mb-3">
+    <div className="btn-group mr-2">
       <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
         <i className="fa fa-fw fa-bolt" />Action
       </button>
