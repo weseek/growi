@@ -15,8 +15,9 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const PageAccessoriesModalControl = (props) => {
+  const { t } = useTranslation();
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
+    pageAccessoriesContainer, isGuestUser, isSharedUser,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
 
@@ -101,14 +102,9 @@ PageAccessoriesModalControl.propTypes = {
   isSharedUser: PropTypes.bool.isRequired,
 };
 
-const PageAccessoriesModalControlWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <PageAccessoriesModalControl t={t} {...props} />;
-};
-
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControlWrapperFC, []);
+const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, []);
 
 export default PageAccessoriesModalControlWrapper;

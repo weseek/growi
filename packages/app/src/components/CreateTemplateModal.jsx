@@ -7,7 +7,8 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
 
 const CreateTemplateModal = (props) => {
-  const { t, path } = props;
+  const { t } = useTranslation();
+  const { path } = props;
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -68,9 +69,4 @@ CreateTemplateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const CreateTemplateModalWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <CreateTemplateModal t={t} {...props} />;
-};
-
-export default CreateTemplateModalWrapperFC;
+export default CreateTemplateModal;

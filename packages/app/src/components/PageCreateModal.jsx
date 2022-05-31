@@ -23,7 +23,8 @@ const {
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
@@ -312,14 +313,9 @@ PageCreateModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-const PageCreateModalWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <PageCreateModal t={t} {...props} />;
-};
-
 /**
  * Wrapper component for using unstated
  */
-const PageCreateModalWrapper = withUnstatedContainers(PageCreateModalWrapperFC, [AppContainer]);
+const PageCreateModalWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
 export default PageCreateModalWrapper;

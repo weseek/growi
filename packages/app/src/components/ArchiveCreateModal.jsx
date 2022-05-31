@@ -14,7 +14,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const ArchiveCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
@@ -243,14 +244,9 @@ ArchiveCreateModal.propTypes = {
   errorMessage: PropTypes.string,
 };
 
-const ArchiveCreateModalWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <ArchiveCreateModal t={t} {...props} />;
-};
-
 /**
  * Wrapper component for using unstated
  */
-const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModalWrapperFC, [AppContainer]);
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
 
 export default ArchiveCreateModalWrapper;
