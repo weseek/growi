@@ -48,9 +48,9 @@ describe('PageGrantService', () => {
   const pageRootAnyoneWithTheLinkPagePath = '/AnyoneWithTheLink';
   const pageRootOnlyInsideTheGroupPagePath = '/OnlyInsideTheGroup';
 
-  const pagePublicOnlyMePath = '/Public/OnlyMe';
-  const pagePublicAnyoneWithTheLinkPath = '/Public/AnyoneWithTheLink';
-  const pagePublicOnlyInsideTheGroupPath = '/Public/OnlyInsideTheGroup';
+  const pagePublicOnlyMePath = `${pageRootPublicPath}/OnlyMe`;
+  const pagePublicAnyoneWithTheLinkPath = `${pageRootPublicPath}/AnyoneWithTheLink`;
+  const pagePublicOnlyInsideTheGroupPath = `${pageRootPublicPath}/OnlyInsideTheGroup`;
 
   let pageE1Public;
   let pageE2User1;
