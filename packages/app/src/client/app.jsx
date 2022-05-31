@@ -34,7 +34,6 @@ import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
-import NotFoundAlert from '../components/Page/NotFoundAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import TrashPageAlert from '../components/Page/TrashPageAlert';
@@ -117,9 +116,6 @@ Object.assign(componentMappings, {
 
   'share-link-alert': <ShareLinkAlert />,
   'redirected-alert': <RedirectedAlert />,
-  'not-found-alert': <NotFoundAlert
-    isGuestUserMode={appContainer.isGuestUser}
-  />,
 });
 
 // additional definitions if data exists

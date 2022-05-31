@@ -585,6 +585,28 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  async resumeRenameSubOperation(renamedPage: PageDocument): Promise<void> {
+
+    // findOne PageOperation
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': renamedPage._id };
+    const pageOp = await PageOperation.findOne(filter);
+    if (pageOp == null) {
+      throw Error('There is nothing to be processed right now');
+    }
+
+    const {
+      page, toPath, options, user,
+    } = pageOp;
+
+    // check property
+    if (toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+    }
+
+    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+
+  }
+
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
     const pathToTest = escapeStringRegexp(addTrailingSlash(fromPath));
     const pathToBeTested = toPath;
