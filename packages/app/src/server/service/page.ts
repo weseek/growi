@@ -3472,11 +3472,14 @@ class PageService {
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
-    return queryBuilder
+    const _pages = await queryBuilder
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
+
+    return this.injectProcessInfoIntoPagesByActionTypes(_pages, [PageActionType.Rename]);
+
   }
 
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -3496,12 +3499,14 @@ class PageService {
       .lean()
       .exec();
     // mark target
-    const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
+    const markedPages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
       if (page.path === path) {
         page.isTarget = true;
       }
       return page;
     });
+
+    const pages = await this.injectProcessInfoIntoPagesByActionTypes(markedPages, [PageActionType.Rename]);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
