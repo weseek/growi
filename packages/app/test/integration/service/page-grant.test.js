@@ -456,12 +456,27 @@ describe('PageGrantService', () => {
 
     test('Any grant is allowed if parent is public', async() => {
       const userGroupRelation = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      const publicOnlyMePage = await Page.findOne({ path: pagePublicOnlyMePath });
 
+      // OnlyMe
+      const publicOnlyMePage = await Page.findOne({ path: pagePublicOnlyMePath });
       const publicOnlyMeRes = await pageGrantService.calcApplicableGrantData(publicOnlyMePage, user1);
       await expect(publicOnlyMeRes[PageGrant.GRANT_PUBLIC]).toBeNull();
       await expect(publicOnlyMeRes[PageGrant.GRANT_OWNER]).toBeNull();
       await expect(publicOnlyMeRes[PageGrant.GRANT_USER_GROUP]).toEqual(userGroupRelation);
+
+      // AnyoneWithTheLink
+      const publicAnyoneWithTheLinkPage = await Page.findOne({ path: pagePublicAnyoneWithTheLinkPath });
+      const publicAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(publicAnyoneWithTheLinkPage, user1);
+      await expect(publicAnyoneWithTheLinkRes[PageGrant.GRANT_PUBLIC]).toBeNull();
+      await expect(publicAnyoneWithTheLinkRes[PageGrant.GRANT_OWNER]).toBeNull();
+      await expect(publicAnyoneWithTheLinkRes[PageGrant.GRANT_USER_GROUP]).toEqual(userGroupRelation);
+
+      // OnlyInsideTheGroup
+      const publicOnlyInsideTheGroupPage = await Page.findOne({ path: pagePublicOnlyInsideTheGroupPath });
+      const publicOnlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(publicOnlyInsideTheGroupPage, user1);
+      await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_PUBLIC]).toBeNull();
+      await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_OWNER]).toBeNull();
+      await expect(publicOnlyInsideTheGroupRes[PageGrant.GRANT_USER_GROUP]).toEqual(userGroupRelation);
     });
   });
 
