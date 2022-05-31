@@ -44,21 +44,8 @@ const Tag: FC = () => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      <h2 className="my-3">{t('popular_tags')}</h2>
 
-      <div className="px-3 text-center">
-        <TagCloudBox tags={tagData} />
-      </div>
-
-      <div className="d-flex justify-content-center my-5">
-        <button
-          className="btn btn-primary rounded px-5"
-          type="button"
-          onClick={() => { window.location.href = '/tags' }}
-        >
-          {t('Check All tags')}
-        </button>
-      </div>
+      <h2 className="my-3">{t('tag_list')}</h2>
 
       { isLoading
         ? (
@@ -76,6 +63,22 @@ const Tag: FC = () => {
           />
         )
       }
+
+      <div className="d-flex justify-content-center my-5">
+        <button
+          className="btn btn-primary rounded px-5"
+          type="button"
+          onClick={() => { window.location.href = '/tags' }}
+        >
+          {t('Check All tags')}
+        </button>
+      </div>
+
+      <h2 className="my-3">{t('popular_tags')}</h2>
+
+      <div className="px-3 text-center">
+        <TagCloudBox tags={tagData} />
+      </div>
     </div>
   );
 
