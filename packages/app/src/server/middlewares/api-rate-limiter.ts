@@ -9,8 +9,13 @@ import { generateApiRateLimitConfig } from '../util/generateApiRateLimitConfig';
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
 
+// config sample
+// API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
+// API_RATE_LIMIT_010_FOO_METHODS=GET,POST
+// API_RATE_LIMIT_010_FOO_MAX_REQUESTS=10
+
 const defaultMaxPoints = 100;
-const defaultConsumePoints = 10;
+const defaultMaxRequests = 10;
 const defaultDuration = 1;
 const opts = {
   storeClient: mongoose.connection,
@@ -23,7 +28,8 @@ const rateLimiter = new RateLimiterMongo(opts);
 const apiRateLimitConfig = generateApiRateLimitConfig();
 
 const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number, next: NextFunction) => {
-  await rateLimiter.consume(key, points)
+  const consumePoints = defaultMaxPoints / points;
+  await rateLimiter.consume(key, consumePoints)
     .then(() => {
       next();
     })
@@ -42,16 +48,16 @@ module.exports = () => {
     const customizedConfig = apiRateLimitConfig[endpoint];
 
     if (customizedConfig === undefined) {
-      await consumePoints(rateLimiter, key, defaultConsumePoints, next);
+      await consumePoints(rateLimiter, key, defaultMaxRequests, next);
       return;
     }
 
     if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
-      await consumePoints(rateLimiter, key, customizedConfig.consumePoints, next);
+      await consumePoints(rateLimiter, key, customizedConfig.maxRequests, next);
       return;
     }
 
-    await consumePoints(rateLimiter, key, defaultConsumePoints, next);
+    await consumePoints(rateLimiter, key, defaultMaxRequests, next);
     return;
   };
 };
