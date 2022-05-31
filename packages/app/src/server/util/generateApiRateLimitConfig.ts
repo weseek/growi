@@ -4,26 +4,6 @@ const getTargetFromKey = (key: string) => {
   return key.replace(/^API_RATE_LIMIT_/, '').replace(/_ENDPOINT$/, '');
 };
 
-const sortApiRateEndpointKeys = (endpoints: string[]): string[] => {
-  return endpoints.sort((a, b) => {
-    const targetA = getTargetFromKey(a);
-    const priorityA = Number(targetA.split('_')[0]);
-
-    const targetB = getTargetFromKey(b);
-    const priorityB = Number(targetB.split('_')[0]);
-
-    if (Number.isNaN(priorityA) || Number.isNaN(priorityB)) {
-      return 1;
-    }
-
-    if (priorityA > priorityB) {
-      return -1;
-    }
-
-    return 1;
-  });
-};
-
 const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpointKeys: string[]): IApiRateLimitConfig => {
   const apiRateLimitConfig: IApiRateLimitConfig = {};
   endpointKeys.forEach((key) => {
@@ -63,10 +43,10 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   });
 
   // sort priority
-  const apiRateEndpointKeysSorted = sortApiRateEndpointKeys(apiRateEndpointKeys);
+  apiRateEndpointKeys.sort();
 
   // get config
-  const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeysSorted);
+  const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys);
 
   // default setting e.g. healthchack
   apiRateLimitConfig['/_api/v3/healthcheck'] = {
