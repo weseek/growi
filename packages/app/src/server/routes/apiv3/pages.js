@@ -562,10 +562,6 @@ module.exports = (crowi) => {
     const { pageId } = req.body;
     const { user } = req;
 
-    if (user == null) {
-      throw Error('Guest user cannot execute this operation');
-    }
-
     // The user has permission to resume rename operation if page is returned.
     const page = await Page.findByIdAndViewer(pageId, user, null, true);
     if (page == null) {
