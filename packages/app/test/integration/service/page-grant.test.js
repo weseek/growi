@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { PageGrant } from '~/interfaces/page';
 import UserGroup from '~/server/models/user-group';
 
 import { getInstance } from '../setup-crowi';
@@ -38,12 +39,16 @@ describe('PageGrantService', () => {
   const emptyPagePath2 = '/E2';
   const emptyPagePath3 = '/E3';
 
+
   const topPagePath = '/';
 
   let pageRootPublic;
   let pageRootGroupParent;
   const pageRootPublicPath = '/Public';
   const pageRootGroupParentPath = '/GroupParent';
+  const pageRootOnlyMePagePath = '/OnlyMe';
+  const pageRootAnyoneWithTheLinkPagePath = '/AnyoneWithTheLink';
+  const pageRootOnlyInsideTheGroupPagePath = '/OnlyInsideTheGroup';
 
   let pageE1Public;
   let pageE2User1;
@@ -152,9 +157,27 @@ describe('PageGrantService', () => {
         grantedGroup: groupParent._id,
         parent: rootPage._id,
       },
+      // Root Page
       {
-        path: topPagePath,
+        path: rootPage,
         grant: Page.GRANT_PUBLIC,
+        parent: null,
+      },
+      // OnlyMe
+      {
+        path: pageRootOnlyMePagePath,
+        grant: Page.GRANT_OWNER,
+        parent: rootPage._id,
+      },
+      {
+        path: pageRootAnyoneWithTheLinkPagePath,
+        grant: Page.GRANT_RESTRICTED,
+        parent: rootPage._id,
+      },
+      {
+        path: pageRootOnlyInsideTheGroupPagePath,
+        grant: Page.GRANT_USER_GROUP,
+        parent: rootPage._id,
       },
     ]);
 
@@ -370,11 +393,18 @@ describe('PageGrantService', () => {
 
   describe('Test for calcApplicableGrantData', () => {
     test('Public is only Applicable in case of top page', async() => {
+      const result = await pageGrantService.calcApplicableGrantData(rootPage, user1);
+
+      await expect(result[PageGrant.GRANT_PUBLIC]).toBeNull();
+    });
+
+    test('Should any pages Applicable in case that the parent is null', async() => {
       const topPage = await Page.findOne({ path: topPagePath });
       const result = await pageGrantService.calcApplicableGrantData(topPage, user1);
 
-      await expect(result[1]).toBeNull();
+      await expect(result[PageGrant.GRANT_PUBLIC]).toBeNull();
     });
   });
+
 
 });
