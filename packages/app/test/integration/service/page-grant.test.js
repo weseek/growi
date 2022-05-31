@@ -157,27 +157,32 @@ describe('PageGrantService', () => {
         grantedGroup: groupParent._id,
         parent: rootPage._id,
       },
+    ]);
+
+    await Page.insertMany([
       // Root Page
       {
         path: rootPage,
         grant: Page.GRANT_PUBLIC,
         parent: null,
       },
-      // OnlyMe
+      // OnlyMe v4
       {
         path: pageRootOnlyMePagePath,
         grant: Page.GRANT_OWNER,
-        parent: rootPage._id,
+        parent: null,
       },
+      // AnyoneWithTheLink v4
       {
         path: pageRootAnyoneWithTheLinkPagePath,
         grant: Page.GRANT_RESTRICTED,
-        parent: rootPage._id,
+        parent: null,
       },
+      // OnlyInsideTheGroup v4
       {
         path: pageRootOnlyInsideTheGroupPagePath,
         grant: Page.GRANT_USER_GROUP,
-        parent: rootPage._id,
+        parent: null,
       },
     ]);
 
@@ -399,10 +404,25 @@ describe('PageGrantService', () => {
     });
 
     test('Should any pages Applicable in case that the parent is null', async() => {
-      const topPage = await Page.findOne({ path: topPagePath });
-      const result = await pageGrantService.calcApplicableGrantData(topPage, user1);
 
-      await expect(result[PageGrant.GRANT_PUBLIC]).toBeNull();
+      // AnyoneWithTheLink
+      const rootAnyoneWithTheLinkPage = await Page.findOne({ path: pageRootAnyoneWithTheLinkPagePath });
+      const AnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(rootAnyoneWithTheLinkPage, user1);
+      await expect(AnyoneWithTheLinkRes[PageGrant.GRANT_PUBLIC]).toBeNull();
+      await expect(AnyoneWithTheLinkRes[PageGrant.GRANT_OWNER]).toBeNull();
+
+      // OnlyInsideTheGroup
+      const rootOnlyInsideTheGroupPage = await Page.findOne({ path: pageRootOnlyInsideTheGroupPagePath });
+      const onlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(rootOnlyInsideTheGroupPage, user1);
+      await expect(onlyInsideTheGroupRes[PageGrant.GRANT_PUBLIC]).toBeNull();
+      await expect(onlyInsideTheGroupRes[PageGrant.GRANT_OWNER]).toBeNull();
+
+      // OnlyMe
+      const rootOnlyMePage = await Page.findOne({ path: pageRootOnlyMePagePath });
+      const rootOnlyMePageRes = await pageGrantService.calcApplicableGrantData(rootOnlyMePage, user1);
+      await expect(rootOnlyMePageRes[PageGrant.GRANT_PUBLIC]).toBeNull();
+      await expect(rootOnlyMePageRes[PageGrant.GRANT_OWNER]).toBeNull();
+
     });
   });
 
