@@ -5,6 +5,8 @@ import React, {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { useTranslation } from 'react-i18next';
+
 
 type CustomInputProps = {
   buttonRef: React.Ref<HTMLButtonElement>
@@ -12,6 +14,7 @@ type CustomInputProps = {
 }
 
 const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: CustomInputProps) => {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -19,7 +22,7 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
       ref={props.buttonRef}
       onClick={props.onClick}
     >
-      <i className="fa fa-fw fa-calendar" /> Date
+      <i className="fa fa-fw fa-calendar" /> {t('admin:audit_log_management.date')}
     </button>
   );
 });
@@ -47,7 +50,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
         onChange(dateList);
       }
     }
-  }, []);
+  }, [onChange]);
 
   return (
     <div className="btn-group mr-2">

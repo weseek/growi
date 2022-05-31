@@ -523,5 +523,11 @@
       "force_update_parents_label": "强行添加失踪的用户",
       "force_update_parents_description": "激活这个选项，如果在父组改变后，在祖先组中有缺失的用户，可以强制添加这些用户"
     }
+  },
+  "audit_log_management": {
+    "username": "帐号",
+    "target_model": "目标模型",
+    "action": "行动",
+    "date": "日期"
   }
 }

@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
+import { useTranslation } from 'react-i18next';
 
 import { useSWRxUsernames } from '~/stores/user';
 
@@ -26,6 +27,7 @@ type Props = {
 
 export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
   const { onChange } = props;
+  const { t } = useTranslation();
 
   /*
    * State
@@ -106,7 +108,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         multiple
         delay={400}
         minLength={0}
-        placeholder="username"
+        placeholder={t('admin:audit_log_management.username')}
         caseSensitive={false}
         isLoading={isLoading}
         options={allUser}

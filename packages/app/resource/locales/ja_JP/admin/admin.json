@@ -513,5 +513,11 @@
       "force_update_parents_label": "強制的に足りないユーザーを追加する",
       "force_update_parents_description": "このオプションを有効化すると、親グループ変更後に祖先グループに足りないユーザーが存在した場合にそれらのユーザーを強制的に追加することができます"
     }
+  },
+  "audit_log_management": {
+    "username": "ユーザー名",
+    "target_model": "ターゲットモデル",
+    "action": "アクション",
+    "date": "日付"
   }
 }
