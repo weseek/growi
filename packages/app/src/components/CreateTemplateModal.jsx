@@ -8,6 +8,7 @@ import urljoin from 'url-join';
 
 const CreateTemplateModal = (props) => {
   const { t } = useTranslation();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { path } = props!;
 
   const parentPath = pathUtils.addTrailingSlash(path);
