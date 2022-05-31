@@ -584,21 +584,10 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(pageId: ObjectIdLike): Promise<void> {
-    // findOne renamed page
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const renamedPage = await Page.findById(pageId); // sub operation needs renamed page
-
-    if (renamedPage == null) {
-      /**
-       * Todo: This error means that the PageOperation doc remains while operating Page doc does not exist(deleted somehow).
-       * This needs to be taken care of later probably by using system to create a page that imitates the original deleted page.
-       */
-      throw Error(`Renamed page(${pageId} is not found)`);
-    }
+  async resumeRenameSubOperation(renamedPage: PageDocument): Promise<void> {
 
     // findOne PageOperation
-    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': pageId };
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': renamedPage._id };
     const pageOp = await PageOperation.findOne(filter);
     if (pageOp == null) {
       throw Error('There is nothing to be processed right now');

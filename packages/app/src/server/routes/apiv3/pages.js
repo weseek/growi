@@ -573,7 +573,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      await crowi.pageService.resumeRenameSubOperation(pageId);
+      await crowi.pageService.resumeRenameSubOperation(page);
     }
     catch (err) {
       logger.error(err);
