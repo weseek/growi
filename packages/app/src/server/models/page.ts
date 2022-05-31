@@ -543,17 +543,6 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   return this.findById(newTarget._id);
 };
 
-// Utility function to add viewer condition to PageQueryBuilder instance
-const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
-  let relatedUserGroups = userGroups;
-  if (user != null && relatedUserGroups == null) {
-    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-    relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-  }
-
-  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
-};
-
 /*
  * Find pages by ID and viewer.
  */
@@ -673,7 +662,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
     const parentId = parentPathOrId;
     queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO: improve type
   }
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
 
   return queryBuilder
     .addConditionToSortPagesByAscPath()
@@ -688,7 +677,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 
   // get pages at once
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }), true);
-  await addViewerCondition(queryBuilder, user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups);
   const _pages = await queryBuilder
     .addConditionAsOnTree()
     .addConditionToMinimizeDataForRendering()
