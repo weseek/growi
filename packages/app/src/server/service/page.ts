@@ -564,8 +564,18 @@ class PageService {
 
     const exParentId = page.parent;
 
+    const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
+    try {
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    }
+    catch (err) {
+      logger.warn(err);
+      throw Error(err);
+    }
+    finally {
+      this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
+    }
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -591,6 +601,10 @@ class PageService {
     const pageOp = await PageOperation.findOne(filter);
     if (pageOp == null) {
       throw Error('There is nothing to be processed right now');
+    }
+    const isProcessable = await PageOperation.isProcessable(pageOp);
+    if (!isProcessable) {
+      throw Error('This page operation is currently being processed');
     }
 
     const {

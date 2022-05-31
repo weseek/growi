@@ -2,7 +2,10 @@ import { pagePathUtils } from '@growi/core';
 
 import PageOperation, { PageActionType } from '~/server/models/page-operation';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
+const AUTO_UPDATE_INTERVAL_SEC = 5;
 
 class PageOperationService {
 
@@ -75,6 +78,22 @@ class PageOperationService {
     }
 
     return true;
+  }
+
+  /**
+   * Set interval to update unprocessableExpiryDate every AUTO_UPDATE_INTERVAL_SEC seconds.
+   * This is used to prevent the same page operation from being processed multiple times at once
+   */
+  autoUpdateExpiryDate(operationId: ObjectIdLike): NodeJS.Timeout {
+    // https://github.com/Microsoft/TypeScript/issues/30128#issuecomment-651877225
+    const timerObj = global.setInterval(async() => {
+      await PageOperation.extendExpiryDate(operationId);
+    }, AUTO_UPDATE_INTERVAL_SEC * 1000);
+    return timerObj;
+  }
+
+  clearAutoUpdateInterval(timerObj: NodeJS.Timeout): void {
+    clearInterval(timerObj);
   }
 
 }
