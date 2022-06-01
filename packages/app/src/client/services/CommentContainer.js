@@ -32,8 +32,8 @@ export default class CommentContainer extends Container {
       comments: [],
 
       // settings shared among all of CommentEditor
-      isSlackEnabled: false,
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
+      // isSlackEnabled: false,
+      // slackChannels: mainContent.getAttribute('data-slack-channels') || '',
     };
 
     this.retrieveComments = this.retrieveComments.bind(this);

@@ -90,6 +90,7 @@ export const useIsSlackEnabledBydefault = (): SWRResponse<boolean, Error> => {
   return useSWR(
     ['isSlackEnabledByDefault', isSlackEnabledByDefault],
     (key: string, isSlackEnabledByDefault: boolean) => isSlackEnabledByDefault,
+    { fallbackData: false },
   );
 };
 
