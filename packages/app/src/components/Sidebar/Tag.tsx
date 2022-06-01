@@ -49,7 +49,7 @@ const Tag: FC = () => {
         </button>
       </div>
 
-      <h2 className="my-3">{t('tag_list')}</h2>
+      <h3 className="my-3">{t('tag_list')}</h3>
 
       { isLoading
         ? (
@@ -70,7 +70,7 @@ const Tag: FC = () => {
 
       <div className="d-flex justify-content-center my-5">
         <button
-          className="btn btn-primary rounded px-5"
+          className="btn btn-primary rounded px-4"
           type="button"
           onClick={() => { window.location.href = '/tags' }}
         >
@@ -78,9 +78,9 @@ const Tag: FC = () => {
         </button>
       </div>
 
-      <h2 className="my-3">{t('popular_tags')}</h2>
+      <h3 className="my-3">{t('popular_tags')}</h3>
 
-      <div className="px-3 text-center">
+      <div className="text-center">
         <TagCloudBox tags={tagCloudData} />
       </div>
     </div>
