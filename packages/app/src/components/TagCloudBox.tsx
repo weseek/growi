@@ -23,7 +23,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   const tagElements = tags.map((tag:IDataTagCount) => {
     const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
     return (
-      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-3">
+      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
         {tagNameFormat}
       </a>
     );
