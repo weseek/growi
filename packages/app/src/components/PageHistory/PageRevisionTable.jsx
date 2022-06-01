@@ -16,11 +16,8 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} hasDiff whether revision has difference to previousRevision
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
-  renderRow(revisions, index, previousRevision, hasDiff, isContiguousNodiff) {
+  renderRow(revision, previousRevision, latestRevision, oldestRevision, hasDiff, isContiguousNodiff) {
     const { revisionComparerContainer, t } = this.props;
-    const revision = revisions[index];
-    const latestRevision = revisions[0];
-    const oldestRevision = revisions[revision.length - 1];
     const revisionId = revision._id;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
@@ -109,6 +106,8 @@ class PageRevisionTable extends React.Component {
 
     const revisions = this.props.revisions;
     const revisionCount = this.props.revisions.length;
+    const latestRevision = revisions[0];
+    const oldestRevision = revisions[revisions.length - 1];
 
     let hasDiffPrev;
 
@@ -132,7 +131,7 @@ class PageRevisionTable extends React.Component {
 
       hasDiffPrev = hasDiff;
 
-      return this.renderRow(revisions, idx, previousRevision, hasDiff, isContiguousNodiff);
+      return this.renderRow(revision, previousRevision, latestRevision, oldestRevision, hasDiff, isContiguousNodiff);
     });
 
     return (
