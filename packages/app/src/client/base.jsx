@@ -18,6 +18,8 @@ import PageDuplicateModal from '../components/PageDuplicateModal';
 import PagePresentationModal from '../components/PagePresentationModal';
 import PageRenameModal from '../components/PageRenameModal';
 
+import ShowPageAccessories from './services/ShowPageAccessories';
+
 const logger = loggerFactory('growi:cli:app');
 
 if (!window) {
@@ -58,6 +60,7 @@ const componentMappings = {
 
   'grw-hotkeys-manager': <HotkeysManager />,
 
+  'show-page-accessories': <ShowPageAccessories />,
 };
 
 export { appContainer, componentMappings };
