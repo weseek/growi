@@ -3383,12 +3383,13 @@ class PageService {
   }
 
   /**
+   * @private
    * This method receives the same arguments as the PageService.create method does except for the added type '{ grantedUsers?: ObjectIdLike[] }'.
    * This additional value is used to determine the grantedUser of the page to be created by system.
    * !!This method does not run isGrantNormalized method to validate grant. Run it before use this method if necessary.!!
    * !!This is because it is not expected to use this method when the grant validation is required.!!
    */
-  async forceCreateBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
+  private async forceCreateBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
