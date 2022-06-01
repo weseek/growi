@@ -1,5 +1,5 @@
 import React, {
-  UIEventHandler, useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useMemo, useState, SyntheticEvent,
 } from 'react';
 
 
@@ -18,7 +18,7 @@ type Props = {
   inputRef?: React.RefObject<HTMLDivElement>,
   isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
-  onScroll?: UIEventHandler<HTMLDivElement>,
+  onScroll?: (scrollTop: number) => void,
 }
 
 
@@ -89,7 +89,11 @@ const Preview = (props: Props): JSX.Element => {
     <div
       className="page-editor-preview-body"
       ref={inputRef}
-      onScroll={onScroll}
+      onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
+        if (props.onScroll != null) {
+          props.onScroll(event.currentTarget.scrollTop);
+        }
+      }}
     >
       <RevisionBody
         {...props}
