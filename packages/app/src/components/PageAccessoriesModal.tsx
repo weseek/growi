@@ -42,9 +42,7 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isGuestUser } = useIsGuestUser();
 
-  const {
-    data: status, mutate, close,
-  } = usePageAccessoriesModal();
+  const { data: status, mutate, close } = usePageAccessoriesModal();
 
   // add event handler when opened
   useEffect(() => {
