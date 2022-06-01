@@ -131,7 +131,7 @@ export const prepareSlackMessageForComment = (comment, user, appTitle, siteUrl, 
   const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
   const message = {
-    channel: (channel != null) ? `#${channel}` : undefined,
+    channel: (channel != null) ? `${channel}` : undefined,
     username: appTitle,
     text,
     attachments: [attachment],

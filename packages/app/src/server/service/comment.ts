@@ -24,7 +24,7 @@ class CommentService {
 
   commentEvent!: any;
 
-  // slackIntegrationService!:any;
+  slackIntegrationService;
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
@@ -32,8 +32,8 @@ class CommentService {
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
-    // TODO initialize SlackIntegrationService
-    // this.slackIntegrationService = crowi.slackIntegrationService;
+    this.slackIntegrationService = crowi.slackIntegrationService;
+
     // init
     this.initCommentEventListeners();
   }
@@ -106,25 +106,25 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // Add mentioned users to targetUsers
-    // TODO update mentionedUsers
-    const mentionedUsers = await this.getMentionedUsers(activity.event);
-    targetUsers = targetUsers.concat(mentionedUsers);
+    const commentObject = await this.getComment(activity.event);
+    const { comment } = commentObject;
+    const mentionedUsers = await this.getMentionedUsers(comment);
+    const usersForInAppNotification = mentionedUsers.map((user) => {
+      return user._id;
+    });
 
-    // TODO call sendNotificationToSlackUsers
+    // Add mentioned users to targetUsers (for inAppNotification)
+    targetUsers = targetUsers.concat(usersForInAppNotification);
+
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
+
+    // Send notification to slack users
+    await this.sendNotificationToSlackUsers(mentionedUsers, commentObject, page);
   };
 
-  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
-    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
-    const User = getModelSafely('User') || require('../models/user')(this.crowi);
-
-    // Get comment by comment ID
-    // TODO implement getComment
-    const commentData = await Comment.findOne({ _id: commentId });
-    const { comment } = commentData;
-
+  getMentionedUsers = async(comment: string): Promise<Types.ObjectId[]> => {
+    const User = this.getUserModel();
     const usernamesFromComment = comment.match(USERNAME_PATTERN);
 
     // Get username from comment and remove duplicate username
@@ -133,24 +133,38 @@ class CommentService {
     }))];
 
     // Get mentioned users ID
-    // TODO return users Object instead of users ID
-    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
-    return mentionedUserIDs?.map((user) => {
-      return user._id;
+    const mentionedUsers = await User.find({ username: { $in: mentionedUsernames } });
+    return mentionedUsers?.map((user) => {
+      return user;
     });
   }
 
-  getComment = async(commentId: Types.ObjectId): Promise<string> => {
-    // TODO get comment from commentID
-    // TODO Implement this method in getMentionedUsers
-    const comment = '';
+  getComment = async(commentId: Types.ObjectId): Promise<any> => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const comment = await Comment.findOne({ _id: commentId });
     return comment;
   }
 
 
-  sendNotificationToSlackUsers = async(users: any[], comment: string) : Promise<void> => {
-    // TODO implement prepareSlackMessageForComment to prepare message object for slack
-    // TODO implement slackIntegrationService.postMessage(messageObject) for each users
+  sendNotificationToSlackUsers = async(users: any[], comment: any, page:any) : Promise<void> => {
+    const User = this.getUserModel();
+    const { creator } = comment;
+
+    const appTitle = this.crowi.appService?.getAppTitle();
+    const siteUrl = this.crowi.appService?.getSiteUrl();
+    const commentCreator = await User.findOne({ _id: creator });
+
+    users.map(async(user) => {
+      if (user.slackMemberId !== undefined) {
+        const messageObj = prepareSlackMessageForComment(comment, commentCreator, appTitle, siteUrl, user.slackMemberId, page.path);
+        return this.slackIntegrationService.postMessage(messageObj);
+      }
+      return;
+    });
+  }
+
+  getUserModel = () => {
+    return getModelSafely('User') || require('../models/user')(this.crowi);
   }
 
 }
