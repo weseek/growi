@@ -60,6 +60,7 @@ module.exports = () => {
     }
     catch {
       logger.error(`too many request at ${key}`);
+      return res.sendStatus(429);
     }
   };
 };
