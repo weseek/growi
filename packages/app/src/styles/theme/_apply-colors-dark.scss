@@ -219,14 +219,13 @@ ul.pagination {
 .page-list {
   .page-list-ul {
     > li {
-      background-color: transparent;
       > span.page-list-meta {
         color: darken($color-global, 10%);
       }
     }
   }
 
-  // List group
+  // on serch
   .list-group-item {
     &.active {
       background-color: lighten($bgcolor-global, 9%) !important;
