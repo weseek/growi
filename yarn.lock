@@ -16837,15 +16837,6 @@ react-scrolllock@^1.0.9:
     create-react-class "^15.5.2"
     prop-types "^15.5.10"
 
-react-tagcloud@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-tagcloud/-/react-tagcloud-2.1.1.tgz#b8883634f76b5681c91a178689070efa0d442657"
-  integrity sha512-cM96jzUOKQqu2qlzwcO91r239MSDbFiAslFNk4Hja3MaZ4Y89goIzbTyXZwonkeJck1zY5wkNhJYeJ8YSdOwXg==
-  dependencies:
-    prop-types "^15.6.2"
-    randomcolor "^0.5.4"
-    shuffle-array "^1.0.1"
-
 react-transition-group@^2.2.1, react-transition-group@^2.3.1:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"

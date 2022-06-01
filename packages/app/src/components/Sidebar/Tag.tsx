@@ -10,6 +10,7 @@ import TagList from '../TagList';
 
 
 const PAGING_LIMIT = 10;
+const TAG_CLOUD_LIMIT = 20;
 
 const Tag: FC = () => {
   const [activePage, setActivePage] = useState<number>(1);
@@ -19,6 +20,9 @@ const Tag: FC = () => {
   const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
+
+  const { data: tagDataCloud } = useSWRxTagsList(TAG_CLOUD_LIMIT, 0);
+  const tagCloudData: IDataTagCount[] = tagDataCloud?.data || [];
 
   const { t } = useTranslation('');
 
@@ -77,7 +81,7 @@ const Tag: FC = () => {
       <h2 className="my-3">{t('popular_tags')}</h2>
 
       <div className="px-3 text-center">
-        <TagCloudBox tags={tagData} />
+        <TagCloudBox tags={tagCloudData} />
       </div>
     </div>
   );
