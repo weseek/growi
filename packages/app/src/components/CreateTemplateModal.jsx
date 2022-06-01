@@ -8,7 +8,6 @@ import urljoin from 'url-join';
 
 const CreateTemplateModal = (props) => {
   const { t } = useTranslation();
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { path } = props;
 
   const parentPath = pathUtils.addTrailingSlash(path);
@@ -65,7 +64,7 @@ const CreateTemplateModal = (props) => {
 
 CreateTemplateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  path: PropTypes.string.isRequired,
+  path: PropTypes.string,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
