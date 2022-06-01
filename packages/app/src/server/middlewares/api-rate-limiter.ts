@@ -40,8 +40,6 @@ module.exports = () => {
     const endpoint = req.path;
     const key = md5(req.ip + endpoint);
 
-    logger.info(`key: ${key}`);
-
     const customizedConfig = apiRateLimitConfig[endpoint];
 
     try {
