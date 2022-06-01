@@ -16,15 +16,15 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
 
     const target = getTargetFromKey(key);
     const method = envVar[`API_RATE_LIMIT_${target}_METHODS`] ?? 'ALL';
-    const consumePoints = Number(envVar[`API_RATE_LIMIT_${target}_CONSUME_POINTS`]);
+    const maxRequests = Number(envVar[`API_RATE_LIMIT_${target}_MAX_REQUESTS`]);
 
-    if (endpoint == null || consumePoints == null) {
+    if (endpoint == null || maxRequests == null) {
       return;
     }
 
     const config = {
       method,
-      consumePoints,
+      maxRequests,
     };
 
     apiRateLimitConfig[endpoint] = config;
@@ -51,7 +51,7 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   // default setting e.g. healthchack
   apiRateLimitConfig['/_api/v3/healthcheck'] = {
     method: 'GET',
-    consumePoints: 0,
+    maxRequests: 0,
   };
 
   return apiRateLimitConfig;
