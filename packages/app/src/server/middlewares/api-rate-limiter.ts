@@ -29,13 +29,13 @@ const apiRateLimitConfig = generateApiRateLimitConfig();
 
 const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number, next: NextFunction) => {
   const consumePoints = defaultMaxPoints / points;
-  await rateLimiter.consume(key, consumePoints)
-    .then(() => {
-      next();
-    })
-    .catch(() => {
-      logger.error(`too many request at ${key}`);
-    });
+  try {
+    await rateLimiter.consume(key, consumePoints);
+    next();
+  }
+  catch {
+    logger.error(`too many request at ${key}`);
+  }
 };
 
 module.exports = () => {
