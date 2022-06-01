@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
@@ -13,6 +13,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
 import { useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled } from '~/stores/editor';
 import {
+  EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -96,7 +97,9 @@ class PageEditor extends React.Component {
   }
 
   focusToEditor() {
-    this.editor.forceToFocus();
+    if (this.editor != null) {
+      this.editor.forceToFocus();
+    }
   }
 
   /**
@@ -298,7 +301,7 @@ class PageEditor extends React.Component {
    * @param {number} offset
    */
   scrollEditorByPreviewScroll(offset) {
-    if (this.previewElement == null) {
+    if (this.editor == null || this.previewElement == null) {
       return;
     }
 
@@ -412,6 +415,29 @@ const PageEditorWrapper = (props) => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
+  const pageEditorRef = useRef(null);
+
+  // set handler to set caret line
+  useEffect(() => {
+    const handler = (line) => {
+      if (pageEditorRef.current != null) {
+        pageEditorRef.current.setCaretLine(line);
+      }
+    };
+    window.globalEmitter.on('setCaretLine', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('setCaretLine', handler);
+    };
+  }, []);
+
+  // set handler to focus
+  useEffect(() => {
+    if (pageEditorRef.current != null && editorMode === EditorMode.Editor) {
+      pageEditorRef.current.focusToEditor();
+    }
+  }, [editorMode]);
+
   if (isEditable == null || editorMode == null) {
     return null;
   }
@@ -419,6 +445,7 @@ const PageEditorWrapper = (props) => {
   return (
     <PageEditorHOCWrapper
       {...props}
+      ref={pageEditorRef}
       isEditable={isEditable}
       editorMode={editorMode}
       isMobile={isMobile}
