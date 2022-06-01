@@ -424,6 +424,11 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -440,7 +445,7 @@ PageEditorByHackmd.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
+const PageEditorByHackmdWrapper = (props) => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
@@ -454,8 +459,7 @@ const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
   }
 
   return (
-    <PageEditorByHackmd
-      ref={ref}
+    <PageEditorByHackmdHOCWrapper
       {...props}
       t={t}
       editorMode={editorMode}
@@ -466,11 +470,6 @@ const PageEditorByHackmdWrapperFC = React.forwardRef((props, ref) => {
       grantGroupName={grantGroupName}
     />
   );
-});
-
-/**
- * Wrapper component for using unstated
- */
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmdWrapperFC, [AppContainer, PageContainer, EditorContainer]);
+};
 
 export default PageEditorByHackmdWrapper;

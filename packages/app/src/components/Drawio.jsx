@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
-
 import AppContainer from '~/client/services/AppContainer';
 
 import NotAvailableForGuest from './NotAvailableForGuest';
 import { withUnstatedContainers } from './UnstatedUtils';
-
 
 class Drawio extends React.Component {
 
