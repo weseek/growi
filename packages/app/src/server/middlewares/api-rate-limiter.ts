@@ -27,15 +27,9 @@ const rateLimiter = new RateLimiterMongo(opts);
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfig = generateApiRateLimitConfig();
 
-const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number, next: NextFunction) => {
+const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number) => {
   const consumePoints = defaultMaxPoints / points;
-  try {
-    await rateLimiter.consume(key, consumePoints);
-    next();
-  }
-  catch {
-    logger.error(`too many request at ${key}`);
-  }
+  await rateLimiter.consume(key, consumePoints);
 };
 
 module.exports = () => {
@@ -47,17 +41,25 @@ module.exports = () => {
 
     const customizedConfig = apiRateLimitConfig[endpoint];
 
-    if (customizedConfig === undefined) {
-      await consumePoints(rateLimiter, key, defaultMaxRequests, next);
+    try {
+      if (customizedConfig === undefined) {
+        await consumePoints(rateLimiter, key, defaultMaxRequests);
+        next();
+        return;
+      }
+
+      if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
+        await consumePoints(rateLimiter, key, customizedConfig.maxRequests);
+        next();
+        return;
+      }
+
+      await consumePoints(rateLimiter, key, defaultMaxRequests);
+      next();
       return;
     }
-
-    if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
-      await consumePoints(rateLimiter, key, customizedConfig.maxRequests, next);
-      return;
+    catch {
+      logger.error(`too many request at ${key}`);
     }
-
-    await consumePoints(rateLimiter, key, defaultMaxRequests, next);
-    return;
   };
 };
