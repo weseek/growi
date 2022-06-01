@@ -1,7 +1,5 @@
 import React, { FC, memo } from 'react';
 
-import { TagCloud } from 'react-tagcloud';
-
 import { IDataTagCount } from '~/interfaces/tag';
 
 type Props = {
@@ -22,12 +20,11 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   const { tags } = props;
   const maxTagTextLength: number = props.maxTagTextLength ?? MAX_TAG_TEXT_LENGTH;
 
-
   const tagElements = tags.map((tag:IDataTagCount) => {
-    const tagFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
+    const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
     return (
       <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-3">
-        {tagFormat}
+        {tagNameFormat}
       </a>
     );
   });
