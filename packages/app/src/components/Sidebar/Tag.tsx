@@ -42,7 +42,7 @@ const Tag: FC = () => {
         <h3 className="mb-0">{t('Tags')}</h3>
         <button
           type="button"
-          className="btn btn-sm ml-auto grw-btn-reload-rc"
+          className="btn btn-sm ml-auto grw-btn-reload"
           onClick={onReload}
         >
           <i className="icon icon-reload"></i>

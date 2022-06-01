@@ -1,17 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
+import { useIsGuestUser } from '~/stores/context';
 
 const NotAvailableForGuest = (props) => {
-  const { appContainer, children } = props;
-  const isLoggedin = appContainer.currentUser != null;
+  const { children } = props;
 
-  if (isLoggedin) {
+  const { data: isGuestUser } = useIsGuestUser();
+
+  if (!isGuestUser) {
     return props.children;
   }
 
@@ -34,8 +33,7 @@ const NotAvailableForGuest = (props) => {
 };
 
 NotAvailableForGuest.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   children: PropTypes.node.isRequired,
 };
 
-export default withUnstatedContainers(NotAvailableForGuest, [AppContainer]);
+export default NotAvailableForGuest;
