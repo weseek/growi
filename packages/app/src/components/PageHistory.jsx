@@ -21,7 +21,7 @@ function PageHistory(props) {
   const [activePage, setActivePage] = useState(1);
   const [errorMessage, setErrorMessage] = useState(null);
   const { data: currentPageId } = useCurrentPageId();
-  const { data: revisionsData } = useSWRxPageRevisions(currentPageId, 1, 10);
+  const { data: revisionsData } = useSWRxPageRevisions(currentPageId, activePage, 10);
   const pagingLimit = 10;
 
   const { revisionComparerContainer } = props;
