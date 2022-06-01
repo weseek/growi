@@ -85,7 +85,7 @@ export default class GrowiRenderer {
 
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new FooternoteConfigurer(appContainer),
-          new TocAndAnchorConfigurer(appContainer, pageContainer.setTocHtml),
+          new TocAndAnchorConfigurer(),
           new HeaderLineNumberConfigurer(appContainer),
           new HeaderWithEditLinkConfigurer(appContainer),
           new TableWithHandsontableButtonConfigurer(appContainer),

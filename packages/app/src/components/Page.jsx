@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -47,10 +47,6 @@ class Page extends React.Component {
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.appContainer.registerComponentInstance('Page', this);
   }
 
   /**
@@ -197,6 +193,36 @@ const PageWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
+  const pageRef = useRef(null);
+
+  // set handler to open DrawioModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchDrawioModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchDrawioModal', handler);
+    };
+  }, []);
+
+  // set handler to open HandsontableModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchHandsontableModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchHandsontableModal', handler);
+    };
+  }, []);
+
   if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
   }
@@ -204,6 +230,7 @@ const PageWrapper = (props) => {
   return (
     <Page
       {...props}
+      ref={pageRef}
       pagePath={currentPagePath}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
