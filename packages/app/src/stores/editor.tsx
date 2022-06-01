@@ -80,6 +80,7 @@ export const useSWRxSlackChannels = (): SWRResponse<Nullable<string[]>, Error> =
   return useSWR(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
     (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
+    { fallbackData: [''] },
   );
 };
 
