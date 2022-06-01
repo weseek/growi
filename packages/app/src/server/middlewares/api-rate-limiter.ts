@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { md5 } from 'md5';
 import mongoose from 'mongoose';
 import { RateLimiterMongo } from 'rate-limiter-flexible';
 
@@ -37,7 +38,7 @@ module.exports = () => {
   return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.path;
-    const key = req.ip + endpoint;
+    const key = md5(req.ip + endpoint);
 
     const customizedConfig = apiRateLimitConfig[endpoint];
 
@@ -56,7 +57,7 @@ module.exports = () => {
       return next();
     }
     catch {
-      logger.error(`too many request at ${key}`);
+      logger.error(`${req.ip}: too many request at ${endpoint}`);
       return res.sendStatus(429);
     }
   };
