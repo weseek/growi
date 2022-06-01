@@ -18,7 +18,7 @@ import ContentLinkButtons from '../ContentLinkButtons';
 import HashChanged from '../EventListeneres/HashChanged';
 import PageListIcon from '../Icons/PageListIcon';
 import Page from '../Page';
-import Editor from '../PageEditor';
+import PageEditor from '../PageEditor';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
@@ -117,7 +117,7 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
             <div data-testid="page-editor" id="page-editor">
-              <Editor />
+              <PageEditor />
             </div>
           </TabPane>
         ) }
