@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { md5 } from 'md5';
+import md5 from 'md5';
 import mongoose from 'mongoose';
 import { RateLimiterMongo } from 'rate-limiter-flexible';
 
@@ -39,6 +39,8 @@ module.exports = () => {
 
     const endpoint = req.path;
     const key = md5(req.ip + endpoint);
+
+    logger.info(`key: ${key}`);
 
     const customizedConfig = apiRateLimitConfig[endpoint];
 
