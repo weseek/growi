@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
-function hasURLQueryParamValue(key) {
+function hasURLQueryParamValue(key: string): string | null {
 // window.location.href is page URL;
-  const queryStr = new URL(window.location.href).searchParams;
+  const queryStr: URLSearchParams = new URL(window.location.href).searchParams;
   if (queryStr === null) {
     return '';
   }
