@@ -92,9 +92,7 @@ class PageOperationService {
       const pageId = pageOp.page._id.toString();
 
       const actionType = pageOp.actionType;
-      // Todo: dynamically change the value based on PageOperation prop,
-      // https://redmine.weseek.co.jp/issues/95971
-      const isProcessable = true;
+      const isProcessable = PageOperation.isProcessable(pageOp);
 
       // processData for processInfo
       const processData = { [actionType]: { isProcessable } };
