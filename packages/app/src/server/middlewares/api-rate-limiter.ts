@@ -44,19 +44,16 @@ module.exports = () => {
     try {
       if (customizedConfig === undefined) {
         await consumePoints(rateLimiter, key, defaultMaxRequests);
-        next();
-        return;
+        return next();
       }
 
       if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
         await consumePoints(rateLimiter, key, customizedConfig.maxRequests);
-        next();
-        return;
+        return next();
       }
 
       await consumePoints(rateLimiter, key, defaultMaxRequests);
-      next();
-      return;
+      return next();
     }
     catch {
       logger.error(`too many request at ${key}`);
