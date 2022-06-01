@@ -19,7 +19,7 @@ const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
   const [activePage, setActivePage] = useState(1);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
   const { data: currentPageId } = useCurrentPageId();
   const { data: revisionsData } = useSWRxPageRevisions(currentPageId, 1, 10);
   const pagingLimit = 10;
@@ -27,7 +27,7 @@ function PageHistory(props) {
   const { revisionComparerContainer } = props;
 
   useEffect(() => {
-    throw new Promise(async() => {
+    (async() => {
       try {
         await props.revisionComparerContainer.initRevisions();
       }
@@ -36,9 +36,16 @@ function PageHistory(props) {
         setErrorMessage(err.message);
         logger.error(err);
       }
-    });
+    })();
   }, [props.revisionComparerContainer]);
 
+  if (revisionsData == null) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+      </div>
+    );
+  }
 
   if (errorMessage != null) {
     return (
@@ -65,7 +72,7 @@ function PageHistory(props) {
       <PageRevisionTable
         revisionComparerContainer={revisionComparerContainer}
         revisions={revisionsData.revisions}
-        pagingLimit
+        pagingLimit={pagingLimit}
       />
       <div className="my-3">
         {pager()}
