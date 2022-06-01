@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -25,6 +25,8 @@ const TableOfContents = (props) => {
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
 
+  const [tocHtml, setTocHtml] = useState('');
+
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
     const parentElem = document.querySelector('.grw-side-contents-container');
@@ -45,14 +47,21 @@ const TableOfContents = (props) => {
     return bottom - (containerTop + containerPaddingTop);
   }, [isUserPage]);
 
-  const { tocHtml } = pageContainer.state;
-
-  // execute after generation toc html
   useEffect(() => {
     const tocDom = document.getElementById('revision-toc-content');
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
     addSmoothScrollEvent(anchorsInToc, blinkElem);
   }, [tocHtml]);
+
+  // set handler to render ToC
+  useEffect(() => {
+    const handler = html => setTocHtml(html);
+    window.globalEmitter.on('renderTocHtml', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('renderTocHtml', handler);
+    };
+  }, []);
 
   return (
     <StickyStretchableScroller
