@@ -1,5 +1,7 @@
 import React from 'react';
 
+import EventEmitter from 'events';
+
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
@@ -27,6 +29,8 @@ if (!window) {
 // setup xss library
 const xss = new Xss();
 window.xss = xss;
+
+window.globalEmitter = new EventEmitter();
 
 // create unstated container instance
 const appContainer = new AppContainer();
