@@ -83,13 +83,17 @@ const EditorNavbarBottom = (props) => {
       {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
-            <SlackNotification
-              isSlackEnabled={isSlackEnabled ?? false}
-              slackChannels={slackChannelsStr}
-              onEnabledFlagChange={isSlackEnabledToggleHandler}
-              onChannelChange={slackChannelsChangedHandler}
-              id="idForEditorNavbarBottomForMobile"
-            />
+            {isSlackEnabled != null
+            && (
+              <SlackNotification
+                isSlackEnabled={isSlackEnabled}
+                slackChannels={slackChannelsStr}
+                onEnabledFlagChange={isSlackEnabledToggleHandler}
+                onChannelChange={slackChannelsChangedHandler}
+                id="idForEditorNavbarBottomForMobile"
+              />
+            )
+            }
           </nav>
         </Collapse>
       )
@@ -114,13 +118,16 @@ const EditorNavbarBottom = (props) => {
             </Button>
           ) : (
             <div className="mr-2">
-              <SlackNotification
-                isSlackEnabled={isSlackEnabled || false}
-                slackChannels={slackChannelsStr}
-                onEnabledFlagChange={isSlackEnabledToggleHandler}
-                onChannelChange={slackChannelsChangedHandler}
-                id="idForEditorNavbarBottom"
-              />
+              {isSlackEnabled != null
+              && (
+                <SlackNotification
+                  isSlackEnabled={isSlackEnabled}
+                  slackChannels={slackChannelsStr}
+                  onEnabledFlagChange={isSlackEnabledToggleHandler}
+                  onChannelChange={slackChannelsChangedHandler}
+                  id="idForEditorNavbarBottom"
+                />
+              )}
             </div>
           ))}
           <SavePageControls slackChannels={slackChannelsStr} isSlackEnabled={isSlackEnabled || false} />

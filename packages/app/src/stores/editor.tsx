@@ -84,21 +84,10 @@ export const useSWRxSlackChannels = (): SWRResponse<string[], Error> => {
   );
 };
 
-export const useIsSlackEnabledBydefault = (): SWRResponse<boolean, Error> => {
-  const { data: slackChannelsData } = useSWRxSlackChannels();
-  const isSlackEnabledByDefault = (slackChannelsData != null && slackChannelsData.length > 0) || false;
-  return useSWR(
-    ['isSlackEnabledByDefault', isSlackEnabledByDefault],
-    (key: string, isSlackEnabledByDefault: boolean) => isSlackEnabledByDefault,
-    { fallbackData: false },
-  );
-};
-
 export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
-  const { data: isSlackEnabledByDefault } = useIsSlackEnabledBydefault();
   return useStaticSWR(
     'isSlackEnabled',
     undefined,
-    { fallbackData: isSlackEnabledByDefault },
+    { fallbackData: false },
   );
 };
