@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
-import PageOperation, { PageActionType } from '~/server/models/page-operation';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
+import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
@@ -78,6 +79,35 @@ class PageOperationService {
     }
 
     return true;
+  }
+
+  /**
+   * Generate object that connects page id with processData of PageOperation.
+   * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
+   */
+  generateProcessInfo(pageOps: PageOperationDocument[]): IPageOperationProcessInfo {
+    const processInfo: IPageOperationProcessInfo = {};
+
+    pageOps.forEach((pageOp) => {
+      const pageId = pageOp.page._id.toString();
+
+      const actionType = pageOp.actionType;
+      const isProcessable = pageOp.isProcessable();
+
+      // processData for processInfo
+      const processData: IPageOperationProcessData = { [actionType]: { isProcessable } };
+
+      // Merge processData if other processData exist
+      if (processInfo[pageId] != null) {
+        const otherProcessData = processInfo[pageId];
+        processInfo[pageId] = { ...otherProcessData, ...processData };
+        return;
+      }
+      // add new process data to processInfo
+      processInfo[pageId] = processData;
+    });
+
+    return processInfo;
   }
 
   /**

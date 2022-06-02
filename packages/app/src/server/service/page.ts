@@ -16,6 +16,7 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
@@ -602,7 +603,7 @@ class PageService {
     if (pageOp == null) {
       throw Error('There is nothing to be processed right now');
     }
-    const isProcessable = await PageOperation.isProcessable(pageOp);
+    const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
     }
@@ -3507,11 +3508,15 @@ class PageService {
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
-    return queryBuilder
+    const pages = await queryBuilder
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
+
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    return pages;
   }
 
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -3523,20 +3528,16 @@ class PageService {
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
     await queryBuilder.addViewerCondition(user, userGroups);
-    const _pages = await queryBuilder
+    const pages = await queryBuilder
       .addConditionAsOnTree()
       .addConditionToMinimizeDataForRendering()
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
-    // mark target
-    const pages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
-      if (page.path === path) {
-        page.isTarget = true;
-      }
-      return page;
-    });
+
+    this.injectIsTargetIntoPages(pages, path);
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3553,6 +3554,41 @@ class PageService {
     });
 
     return pathToChildren;
+  }
+
+  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
+    pages.forEach((page) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+    });
+  }
+
+  /**
+   * Inject processData into page docuements
+   * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
+   */
+  private async injectProcessDataIntoPagesByActionTypes(
+      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+      actionTypes: PageActionType[],
+  ): Promise<void> {
+
+    const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
+    if (pageOperations == null || pageOperations.length === 0) {
+      return;
+    }
+
+    const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
+    const operatingPageIds: string[] = Object.keys(processInfo);
+
+    // inject processData into pages
+    pages.forEach((page) => {
+      const pageId = page._id.toString();
+      if (operatingPageIds.includes(pageId)) {
+        const processData: IPageOperationProcessData = processInfo[pageId];
+        page.processData = processData;
+      }
+    });
   }
 
 }
