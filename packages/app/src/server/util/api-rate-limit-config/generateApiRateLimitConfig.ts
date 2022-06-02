@@ -1,4 +1,6 @@
-import { IApiRateLimitConfig } from '../interfaces/api-rate-limit-config';
+import { IApiRateLimitConfig } from '../../interfaces/api-rate-limit-config';
+
+import defaultApiRateLimitConfig from './defaultApiRateLimitConfig';
 
 const getTargetFromKey = (key: string) => {
   return key.replace(/^API_RATE_LIMIT_/, '').replace(/_ENDPOINT$/, '');
@@ -48,11 +50,5 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   // get config
   const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys);
 
-  // default setting e.g. healthchack
-  apiRateLimitConfig['/_api/v3/healthcheck'] = {
-    method: 'GET',
-    maxRequests: 0,
-  };
-
-  return apiRateLimitConfig;
+  return { ...apiRateLimitConfig, ...defaultApiRateLimitConfig };
 };

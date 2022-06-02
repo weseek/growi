@@ -5,7 +5,7 @@ import { RateLimiterMongo } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
-import { generateApiRateLimitConfig } from '../util/generateApiRateLimitConfig';
+import { generateApiRateLimitConfig } from '../util/api-rate-limit-config/generateApiRateLimitConfig';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
