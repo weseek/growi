@@ -524,7 +524,7 @@
 	"template": {
 		"modal_label": {
 			"Create/Edit Template Page": "创建/编辑模板页",
-			"Create template under": "在下面创建模板页：<br/><code><small>%s</small></code>"
+			"Create template under": "在下面创建模板页："
 		},
 		"option_label": {
 			"create/edit": "创建/编辑模板页。",
