@@ -435,7 +435,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { (isRenaming || !page.processData?.Rename?.isProcessable) && (
+              { isRenaming && (
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
               )}
               { (!isRenaming && page.processData?.Rename?.isProcessable) && (
