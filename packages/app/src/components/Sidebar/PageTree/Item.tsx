@@ -438,6 +438,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               { isRenaming && (
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
               )}
+              { page.processData?.Rename?.isProcessable && (
+                <i className="fa fa-warning mr-2 text-warning"></i>
+              )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
                 <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
               </a>
