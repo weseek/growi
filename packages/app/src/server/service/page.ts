@@ -3508,14 +3508,15 @@ class PageService {
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
-    const _pages = await queryBuilder
+    const pages = await queryBuilder
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
 
-    return this.injectProcessDataIntoPagesByActionTypes(_pages, [PageActionType.Rename]);
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
+    return pages;
   }
 
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -3527,22 +3528,16 @@ class PageService {
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
     await queryBuilder.addViewerCondition(user, userGroups);
-    const _pages = await queryBuilder
+    const pages = await queryBuilder
       .addConditionAsOnTree()
       .addConditionToMinimizeDataForRendering()
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
       .exec();
-    // mark target
-    const markedPages = _pages.map((page: PageDocument & { isTarget?: boolean }) => {
-      if (page.path === path) {
-        page.isTarget = true;
-      }
-      return page;
-    });
 
-    const pages = await this.injectProcessDataIntoPagesByActionTypes(markedPages, [PageActionType.Rename]);
+    this.injectIsTargetIntoPages(pages, path);
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3561,23 +3556,31 @@ class PageService {
     return pathToChildren;
   }
 
+  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
+    pages.forEach((page) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+    });
+  }
+
   /**
    * It takes page documents.
    * Generate process information for each actionType of PageOperation
    * Inject the information into page docuement if they are related based on page id
    */
-  async injectProcessDataIntoPagesByActionTypes(
+  private async injectProcessDataIntoPagesByActionTypes(
       pages: (PageDocument & { processData?: IPageOperationProcessData })[],
       actionTypes: PageActionType[],
-  ): Promise<(PageDocument & { processData?: IPageOperationProcessData })[]> {
+  ): Promise<void> {
 
     const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
     if (pageOperations == null || pageOperations.length === 0) {
-      return pages;
+      return;
     }
 
     const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
-    const operatingPageIds: string[] = Object.keys(processInfo);
+    const operatingPageIds: ObjectIdLike[] = Object.keys(processInfo);
 
     // inject processData into pages
     pages.forEach((page) => {
@@ -3587,8 +3590,6 @@ class PageService {
         page.processData = processData;
       }
     });
-
-    return pages;
   }
 
 }
