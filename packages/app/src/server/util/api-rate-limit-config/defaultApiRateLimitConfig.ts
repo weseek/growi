@@ -25,11 +25,11 @@ const defaultStrictConfigKey: IApiRateLimitConfig = {
     method: 'POST',
     maxRequests: defaultStrictMaxRequests,
   },
-  '/forgot-password/:token': {
+  '/forgot-password/.*': {
     method: 'GET',
     maxRequests: defaultStrictMaxRequests,
   },
-  '/user-activation/:token': {
+  '/user-activation/.*': {
     method: 'GET',
     maxRequests: defaultStrictMaxRequests,
   },
@@ -37,11 +37,11 @@ const defaultStrictConfigKey: IApiRateLimitConfig = {
     method: 'POST',
     maxRequests: defaultStrictMaxRequests,
   },
-  '/download/:id([0-9a-z]{24})': {
+  '/download/[0-9a-z]{24}': {
     method: 'GET',
     maxRequests: defaultStrictMaxRequests,
   },
-  '/share/:linkId': {
+  '/share/[0-9a-z]{24}': {
     method: 'GET',
     maxRequests: defaultStrictMaxRequests,
   },

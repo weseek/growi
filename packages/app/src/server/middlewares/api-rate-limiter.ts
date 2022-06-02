@@ -40,7 +40,12 @@ module.exports = () => {
     const endpoint = req.path;
     const key = md5(req.ip + endpoint);
 
-    const customizedConfig = apiRateLimitConfig[endpoint];
+    const filterdKeys = Object.keys(apiRateLimitConfig).filter((key) => {
+      const keyRegExp = new RegExp(key);
+      return keyRegExp.test(endpoint);
+    });
+
+    const customizedConfig = apiRateLimitConfig[filterdKeys[0]];
 
     try {
       if (customizedConfig === undefined) {
