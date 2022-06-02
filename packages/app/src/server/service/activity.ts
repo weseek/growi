@@ -1,4 +1,5 @@
 import { getModelSafely } from '@growi/core';
+import { NavItem } from 'reactstrap';
 
 import { IActivity, AllSupportedActionToNotifiedType } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
@@ -35,11 +36,13 @@ class ActivityService {
   updateByParameters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
     const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true });
 
-    // eslint-disable-next-line
-    const shouldNotification = activity != null && target !== null && target !== undefined && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
-      const notificationTargetUsers = await activity.getNotificationTargetUsers();
-      const snapshotForInAppNotification = stringifySnapshot(target);
+      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      let snapshotForInAppNotification: string;
+      if (target != null) {
+        snapshotForInAppNotification = stringifySnapshot(target);
+      }
       await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
       await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
     }
