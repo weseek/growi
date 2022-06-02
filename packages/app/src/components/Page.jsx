@@ -187,7 +187,7 @@ const PageWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: slackChannelsData } = useSWRxSlackChannels();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();

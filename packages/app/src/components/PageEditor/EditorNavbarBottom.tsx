@@ -6,6 +6,7 @@ import { Collapse, Button } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import { useCurrentPagePath } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
@@ -31,8 +32,8 @@ const EditorNavbarBottom = (props) => {
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const additionalClasses = ['grw-editor-navbar-bottom'];
-
-  const { data: slackChannelsData } = useSWRxSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
@@ -40,8 +41,9 @@ const EditorNavbarBottom = (props) => {
   useEffect(() => {
     if (slackChannelsData != null) {
       setSlackChannelsStr(slackChannelsData.toString());
+      mutateIsSlackEnabled(false);
     }
-  }, [slackChannelsData]);
+  }, [mutateIsSlackEnabled, slackChannelsData]);
 
   const isSlackEnabledToggleHandler = (bool: boolean) => {
     mutateIsSlackEnabled(bool, false);

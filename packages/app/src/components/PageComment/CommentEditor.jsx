@@ -13,7 +13,8 @@ import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { useCurrentUser } from '~/stores/context'; import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
@@ -442,7 +443,8 @@ const CommentEditorWrapper = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: currentUser } = useCurrentUser();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsData } = useSWRxSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
   const onSlackEnabledFlagChange = (isSlackEnabled) => {
     mutateIsSlackEnabled(isSlackEnabled, false);

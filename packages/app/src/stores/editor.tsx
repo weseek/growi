@@ -8,7 +8,7 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useCurrentPagePath,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -74,8 +74,7 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 /*
 * Slack Notification
 */
-export const useSWRxSlackChannels = (): SWRResponse<string[], Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResponse<string[], Error> => {
   const shouldFetch: boolean = currentPagePath != null;
   return useSWR(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
