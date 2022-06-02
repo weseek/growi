@@ -423,7 +423,7 @@ CommentEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
-  slackChannels: PropTypes.array.isRequired,
+  slackChannels: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   currentUser: PropTypes.instanceOf(Object),
