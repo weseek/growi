@@ -86,7 +86,7 @@ class PageOperationService {
    * processInfo is the combination of actionType as key with the infomation of whether it's processable as value
    */
   generateProcessInfo(pageOps: PageOperationDocument[]): IPageOperationProcessInfo {
-    const processInfo = {};
+    const processInfo: IPageOperationProcessInfo = {};
 
     pageOps.forEach((pageOp) => {
       const pageId = pageOp.page._id.toString();
