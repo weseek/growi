@@ -8,7 +8,7 @@ import Activity from '~/server/models/activity';
 import Crowi from '../crowi';
 
 
-type ParameterType = Omit<IActivity, 'ip' | 'path' | 'createdAt'>
+type ParameterType = Omit<IActivity, 'createdAt'>
 
 class ActivityService {
 

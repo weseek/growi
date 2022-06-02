@@ -6,7 +6,6 @@ const MODEL_PAGE = 'Page';
 
 // Action
 const ACTION_UNSETTLED = 'UNSETTLED';
-
 const ACTION_PAGE_LIKE = 'PAGE_LIKE';
 const ACTION_PAGE_BOOKMARK = 'PAGE_BOOKMARK';
 const ACTION_PAGE_CREATE = 'PAGE_CREATE';
@@ -57,6 +56,7 @@ export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
 
+
 /*
  * For AuditLogManagement.tsx
  */
@@ -79,7 +79,6 @@ export const CommentActions = Object.values({
 
 
 export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof typeof SUPPORTED_TARGET_MODEL_TYPE];
-// type supportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
 

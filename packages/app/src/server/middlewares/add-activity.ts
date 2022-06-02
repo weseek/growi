@@ -7,13 +7,12 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middlewares:add-activity');
 
-
 interface AuthorizedRequest extends Request {
   user?: IUserHasId
 }
 
 export const generateAddActivityMiddleware = crowi => async(req: AuthorizedRequest, res: Response, next: NextFunction): Promise<void> => {
-  const ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress);
+  const ip = req.headers['x-forwarded-for'];
   const path = req.originalUrl;
   const user = req.user;
 
@@ -35,5 +34,5 @@ export const generateAddActivityMiddleware = crowi => async(req: AuthorizedReque
     logger.error('Create activity failed', err);
   }
 
-  next();
+  return next();
 };
