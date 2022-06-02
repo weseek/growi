@@ -1,19 +1,19 @@
+import { pagePathUtils } from '@growi/core';
+import * as entities from 'entities';
+import * as toastr from 'toastr';
 import { Container } from 'unstated';
 
 
-import * as entities from 'entities';
-import * as toastr from 'toastr';
-import { pagePathUtils } from '@growi/core';
-
-import loggerFactory from '~/utils/logger';
 import { EditorMode } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Post } from '../util/apiv3-client';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
-
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
@@ -52,7 +52,6 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
-      tocHtml: '',
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -101,13 +100,12 @@ export default class PageContainer extends Container {
     }
 
     const { interceptorManager } = this.appContainer;
-    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
-    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
-    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
 
     this.initStateMarkdown();
 
-    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
@@ -120,7 +118,7 @@ export default class PageContainer extends Container {
     if (unlinkPageButton != null) {
       unlinkPageButton.addEventListener('click', async() => {
         try {
-          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          const res = await apiPost('/pages.unlink', { path });
           window.location.href = encodeURI(`${res.path}?unlinked=true`);
         }
         catch (err) {
@@ -192,12 +190,6 @@ export default class PageContainer extends Container {
     }
 
     this.setState(newState);
-  }
-
-  setTocHtml(tocHtml) {
-    if (this.state.tocHtml !== tocHtml) {
-      this.setState({ tocHtml });
-    }
   }
 
   /**
@@ -350,7 +342,7 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiv3Post('/pages/', params);
+    const res = await apiv3Post('/pages/', params);
     const { page, tags, revision } = res.data;
 
     return { page, tags, revision };
@@ -366,7 +358,7 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiPost('/pages.update', params);
+    const res = await apiPost('/pages.update', params);
     if (!res.ok) {
       throw new Error(res.error);
     }

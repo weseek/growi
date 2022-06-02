@@ -3,17 +3,13 @@ import React, {
   FC, SetStateAction, useCallback, useEffect, useState,
 } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 
 type EditorSettingsBodyProps = {
-  appContainer: AppContainer
 }
 
 type RuleListGroupProps = {
@@ -153,7 +149,7 @@ const japaneseRulesMenuItems = [
 
 const RuleListGroup: FC<RuleListGroupProps> = ({
   title, ruleList, textlintRules, setTextlintRules,
-}) => {
+}: RuleListGroupProps) => {
   const { t } = useTranslation();
 
   const isCheckedRule = (ruleName: string) => (
@@ -200,21 +196,12 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
 };
 
 
-RuleListGroup.propTypes = {
-  title: PropTypes.string.isRequired,
-  ruleList: PropTypes.array.isRequired,
-  textlintRules: PropTypes.array.isRequired,
-  setTextlintRules: PropTypes.func.isRequired,
-};
-
-
-const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
+export const EditorSettings: FC<EditorSettingsBodyProps> = () => {
   const { t } = useTranslation();
-  const { appContainer } = props;
   const [textlintRules, setTextlintRules] = useState<LintRule[]>([]);
 
   const initializeEditorSettings = useCallback(async() => {
-    const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
+    const { data } = await apiv3Get('/personal-setting/editor-settings');
     const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
 
     // If database is empty, add default rules to state
@@ -234,7 +221,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
     }
 
-  }, [appContainer]);
+  }, []);
 
   useEffect(() => {
     initializeEditorSettings();
@@ -242,7 +229,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   const updateRulesHandler = async() => {
     try {
-      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { textlintRules: [...textlintRules] } });
+      const { data } = await apiv3Put('/personal-setting/editor-settings', { textlintSettings: { textlintRules: [...textlintRules] } });
       setTextlintRules(data.textlintSettings.textlintRules);
       toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }
@@ -284,10 +271,4 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       </div>
     </div>
   );
-};
-
-export const EditorSettings = withUnstatedContainers(EditorSettingsBody, [AppContainer]);
-
-EditorSettingsBody.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };

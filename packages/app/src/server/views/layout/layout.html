@@ -59,12 +59,13 @@
 {% endblock %}
 
 {% block html_body %}
+{% set additionalBodyClasses = []; %}
+{% block html_additional_body_classes %}{% endblock %}
 {% if getConfig('crowi', 'customize:isContainerFluid') %}
-  {% set additionalBodyClass = 'growi-layout-fluid' %}
+  {% set additionalBodyClasses = additionalBodyClasses|push('growi-layout-fluid') %}
 {% endif %}
 <body
-  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
-  data-is-admin="{{ user.admin }}"
+  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClasses|join(' ') }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
@@ -105,6 +106,7 @@
 
 <div id="page-create-modal"></div>
 <div id="page-delete-modal"></div>
+<div id="empty-trash-modal"></div>
 <div id="page-duplicate-modal"></div>
 <div id="page-rename-modal"></div>
 <div id="page-presentation-modal"></div>

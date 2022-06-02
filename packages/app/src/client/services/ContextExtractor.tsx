@@ -16,8 +16,9 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
+  useDefaultIndentSize, useIsIndentSizeForced,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -71,6 +72,7 @@ const ContextExtractorOnce: FC = () => {
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
+  const hasParent = JSON.parse(mainContent?.getAttribute('data-has-parent') || jsonNull);
   const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
   const shareLinksNumber = mainContent?.getAttribute('data-share-links-number');
   const shareLinkId = JSON.parse(mainContent?.getAttribute('data-share-link-id') || jsonNull);
@@ -110,6 +112,8 @@ const ContextExtractorOnce: FC = () => {
   useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
   useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
+  useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
+  useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
 
 
   // Page
@@ -142,6 +146,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useHasParent(hasParent);
 
   // Navigation
   usePreferDrawerModeByUser();

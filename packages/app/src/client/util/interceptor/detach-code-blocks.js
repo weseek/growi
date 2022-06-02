@@ -15,12 +15,9 @@ class DetachCodeBlockUtil {
  */
 export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
-  constructor(crowi) {
+  constructor() {
     super();
     this.logger = loggerFactory('growi:interceptor:DetachCodeBlockInterceptor');
-
-    this.crowi = crowi;
-    this.crowiForJquery = crowi.getCrowiForJquery();
   }
 
   /**
@@ -94,12 +91,9 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
  */
 export class RestoreCodeBlockInterceptor extends BasicInterceptor {
 
-  constructor(crowi) {
+  constructor() {
     super();
     this.logger = loggerFactory('growi:interceptor:DetachCodeBlockInterceptor');
-
-    this.crowi = crowi;
-    this.crowiForJquery = crowi.getCrowiForJquery();
   }
 
   /**

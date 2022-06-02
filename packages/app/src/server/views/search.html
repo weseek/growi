@@ -12,7 +12,9 @@
 {% endblock %}
 
 <!-- add .on-search to body tag class in layout -->
-{% set additionalBodyClass = 'on-search' %}
+{% block html_additional_body_classes %}
+  {% set additionalBodyClasses = additionalBodyClasses|push('on-search') %}
+{% endblock %}
 
 {% block layout_main %}
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
