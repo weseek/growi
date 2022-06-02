@@ -3580,7 +3580,7 @@ class PageService {
     }
 
     const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
-    const operatingPageIds: ObjectIdLike[] = Object.keys(processInfo);
+    const operatingPageIds: string[] = Object.keys(processInfo);
 
     // inject processData into pages
     pages.forEach((page) => {
