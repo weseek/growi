@@ -1,5 +1,4 @@
 import { getModelSafely } from '@growi/core';
-import { NavItem } from 'reactstrap';
 
 import { IActivity } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
