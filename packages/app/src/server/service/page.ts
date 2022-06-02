@@ -3576,7 +3576,7 @@ class PageService {
       return pages;
     }
 
-    const processInfo = this.crowi.pageOperationService.generateProcessInfoByActionTypes(pageOperations);
+    const processInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
     const operatingPageids = Object.keys(processInfo);
 
     // filter pages to inject processInfo
