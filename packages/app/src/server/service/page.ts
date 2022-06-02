@@ -16,7 +16,7 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { IPageOperationProcessInfo } from '~/interfaces/page-operation';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
@@ -3514,7 +3514,7 @@ class PageService {
       .lean()
       .exec();
 
-    return this.injectProcessInfoIntoPagesByActionTypes(_pages, [PageActionType.Rename]);
+    return this.injectProcessDataIntoPagesByActionTypes(_pages, [PageActionType.Rename]);
 
   }
 
@@ -3542,7 +3542,7 @@ class PageService {
       return page;
     });
 
-    const pages = await this.injectProcessInfoIntoPagesByActionTypes(markedPages, [PageActionType.Rename]);
+    const pages = await this.injectProcessDataIntoPagesByActionTypes(markedPages, [PageActionType.Rename]);
 
     /*
      * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
@@ -3566,35 +3566,26 @@ class PageService {
    * Generate process information for each actionType of PageOperation
    * Inject the information into page docuement if they are related based on page id
    */
-  async injectProcessInfoIntoPagesByActionTypes(
-      pages: (PageDocument & { processInfo?: IPageOperationProcessInfo })[],
+  async injectProcessDataIntoPagesByActionTypes(
+      pages: (PageDocument & { processInfo?: IPageOperationProcessData })[],
       actionTypes: PageActionType[],
-  ): Promise<(PageDocument & { processInfo?: IPageOperationProcessInfo })[]> {
+  ): Promise<(PageDocument & { processInfo?: IPageOperationProcessData })[]> {
 
     const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
     if (pageOperations == null || pageOperations.length === 0) {
       return pages;
     }
 
-    const processInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
-    const operatingPageids = Object.keys(processInfo);
+    const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
+    const operatingPageids: ObjectIdLike[] = Object.keys(processInfo);
 
-    // filter pages to inject processInfo
-    const operatingPages = pages.filter((page) => {
+    // inject processData into pages
+    pages.forEach((page) => {
       const pageId = page._id.toString();
-      return operatingPageids.includes(pageId);
-    });
-
-    // return if no pages found
-    if (operatingPages.length === 0) {
-      return pages;
-    }
-
-    // inject
-    operatingPages.forEach((page) => {
-      const pageId = page._id.toString();
-      const processData = processInfo[pageId];
-      page.processInfo = processData;
+      if (operatingPageids.includes(pageId)) {
+        const processData: IPageOperationProcessData = processInfo[pageId];
+        page.processData = processData;
+      }
     });
 
     return pages;
