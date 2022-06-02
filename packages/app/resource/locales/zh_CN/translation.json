@@ -1114,5 +1114,8 @@
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
     "footprints": "脚印"
+  },
+  "page_operation":{
+    "begin_resume_rename": "路径恢复已经开始"
   }
 }

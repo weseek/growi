@@ -1111,5 +1111,8 @@
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
     "footprints": "Footprints"
+  },
+  "page_operation":{
+    "begin_path_recovery": "Path recovery has begun"
   }
 }
