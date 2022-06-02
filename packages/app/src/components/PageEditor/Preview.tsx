@@ -28,7 +28,6 @@ const Preview = (props: Props): JSX.Element => {
     appContainer,
     markdown, pagePath,
     inputRef,
-    onScroll,
   } = props;
 
   const [html, setHtml] = useState('');
@@ -110,4 +109,9 @@ const Preview = (props: Props): JSX.Element => {
  */
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
-export default PreviewWrapper;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const PreviewWrapper2 = (props): JSX.Element => {
+  return <PreviewWrapper {...props} />;
+};
+
+export default PreviewWrapper2;

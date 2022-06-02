@@ -1,22 +1,22 @@
 import React, {
-  useState, useEffect, FC, useRef,
+  useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
+
 import { UserPicture } from '@growi/ui';
+import CodeMirror from 'codemirror/lib/codemirror';
+import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import CodeMirror from 'codemirror/lib/codemirror';
 
-import PageContainer from '../../client/services/PageContainer';
-import AppContainer from '../../client/services/AppContainer';
-import ExpandOrContractButton from '../ExpandOrContractButton';
-
+import { IUser } from '~/interfaces/user';
+import { useCurrentUser } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
 
+import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
+import ExpandOrContractButton from '../ExpandOrContractButton';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
@@ -27,10 +27,9 @@ const DMP = require('diff_match_patch');
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 type ConflictDiffModalProps = {
-  isOpen: boolean | null;
+  isOpen?: boolean;
   onClose?: (() => void);
   pageContainer: PageContainer;
-  appContainer: AppContainer;
   markdownOnEdit: string;
 };
 
@@ -38,18 +37,18 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
   createdAt: string
 }
 
-export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
+const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IUser }): JSX.Element => {
+  const { currentUser, pageContainer, onClose } = props;
+
+  const { data: editorMode } = useEditorMode();
+
   const { t } = useTranslation('');
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
-  const { data: editorMode } = useEditorMode();
-
   const uncontrolledRef = useRef<CodeMirror>(null);
-
-  const { pageContainer, appContainer } = props;
 
   const currentTime: Date = new Date();
 
@@ -57,7 +56,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     revisionId: '',
     revisionBody: props.markdownOnEdit,
     createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
-    user: appContainer.currentUser,
+    user: currentUser,
   };
   const origin: IRevisionOnConflictWithStringDate = {
     revisionId: pageContainer.state.revisionId || '',
@@ -89,13 +88,13 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     }
   }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
 
-  const onClose = () => {
-    if (props.onClose != null) {
-      props.onClose();
+  const close = useCallback(() => {
+    if (onClose != null) {
+      onClose();
     }
-  };
+  }, [onClose]);
 
-  const onResolveConflict = async() : Promise<void> => {
+  const onResolveConflict = useCallback(async() => {
     // disable button after clicked
     setIsRevisionSelected(false);
 
@@ -103,40 +102,34 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
     try {
       await pageContainer.resolveConflict(codeMirrorVal, editorMode);
-      onClose();
+      close();
       pageContainer.showSuccessToastr();
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
     }
 
-  };
+  }, [editorMode, close, pageContainer]);
 
-  const onExpandModal = () => {
-    setIsModalExpanded(true);
-  };
-
-  const onContractModal = () => {
-    setIsModalExpanded(false);
-  };
-
-  const resizeAndCloseButtons = (
+  const resizeAndCloseButtons = useMemo(() => (
     <div className="d-flex flex-nowrap">
       <ExpandOrContractButton
         isWindowExpanded={isModalExpanded}
-        expandWindow={onExpandModal}
-        contractWindow={onContractModal}
+        expandWindow={() => setIsModalExpanded(true)}
+        contractWindow={() => setIsModalExpanded(false)}
       />
-      <button type="button" className="close text-white" onClick={onClose} aria-label="Close">
+      <button type="button" className="close text-white" onClick={close} aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-  );
+  ), [isModalExpanded, close]);
+
+  const isOpen = props.isOpen ?? false;
 
   return (
     <Modal
-      isOpen={props.isOpen || false}
-      toggle={onClose}
+      isOpen={isOpen}
+      toggle={close}
       backdrop="static"
       className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
       size="xl"
@@ -145,7 +138,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody className="mx-4 my-1">
-        { props.isOpen
+        { isOpen
         && (
           <div className="row">
             <div className="col-12 text-center mt-2 mb-4">
@@ -269,14 +262,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   );
 };
 
-ConflictDiffModal.propTypes = {
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  markdownOnEdit: PropTypes.string.isRequired,
-};
 
-ConflictDiffModal.defaultProps = {
-  isOpen: false,
+export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
+  const { isOpen } = props;
+  const { data: currentUser } = useCurrentUser();
+
+  if (!isOpen || currentUser == null) {
+    return <></>;
+  }
+
+  return <ConflictDiffModalCore {...props} currentUser={currentUser} />;
 };

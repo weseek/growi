@@ -13,20 +13,29 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPageId, useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
-export const useSWRxPageByPath = (path: string | null | undefined, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxPage = (pageId?: string, shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
   return useSWR(
-    path != null ? ['/page', path] : null,
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
-    {
-      fallbackData: initialData,
-    },
+    pageId != null ? ['/page', pageId, shareLinkId] : null,
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
   );
 };
 
+export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error> => {
+  return useSWR(
+    path != null ? ['/page', path] : null,
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
+  );
+};
+
+export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
+  const { data: currentPageId } = useCurrentPageId();
+
+  return useSWRxPage(currentPageId ?? undefined, shareLinkId);
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
