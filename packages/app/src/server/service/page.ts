@@ -168,16 +168,6 @@ class PageService {
       }
     });
 
-    // rename
-    this.pageEvent.on('rename', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {
@@ -545,7 +535,7 @@ class PageService {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename');
 
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
@@ -684,7 +674,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename');
 
     return renamedPage;
   }
