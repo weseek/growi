@@ -35,7 +35,8 @@ class ActivityService {
   updateByParameters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
     const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true });
 
-    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+    // eslint-disable-next-line
+    const shouldNotification = activity != null && target !== null && target !== undefined && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       const notificationTargetUsers = await activity.getNotificationTargetUsers();
       const snapshotForInAppNotification = stringifySnapshot(target);
