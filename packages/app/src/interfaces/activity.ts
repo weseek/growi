@@ -39,9 +39,23 @@ export const SUPPORTED_ACTION_TYPE = {
   ACTION_COMMENT_UPDATE,
 } as const;
 
+export const SUPPORTED_ACTION_TO_NOTIFIED_TYPE = {
+  ACTION_PAGE_LIKE,
+  ACTION_PAGE_BOOKMARK,
+  ACTION_PAGE_UPDATE,
+  ACTION_PAGE_RENAME,
+  ACTION_PAGE_DUPLICATE,
+  ACTION_PAGE_DELETE,
+  ACTION_PAGE_DELETE_COMPLETELY,
+  ACTION_PAGE_REVERT,
+  ACTION_COMMENT_CREATE,
+  ACTION_COMMENT_UPDATE,
+} as const;
+
 
 export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
+export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
 
 /*
  * For AuditLogManagement.tsx

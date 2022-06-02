@@ -1,6 +1,14 @@
 import { getModelSafely } from '@growi/core';
 
+import { IActivity, AllSupportedActionToNotifiedType } from '~/interfaces/activity';
+import { IPage } from '~/interfaces/page';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import Activity from '~/server/models/activity';
+
 import Crowi from '../crowi';
+
+
+type ParameterType = Omit<IActivity, 'ip' | 'path' | 'createdAt'>
 
 class ActivityService {
 
@@ -24,6 +32,17 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
+  updateByParmeters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
+    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true });
+
+    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+    if (shouldNotification) {
+      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      const snapshotForInAppNotification = stringifySnapshot(target);
+      await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
+      await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
+    }
+  };
 
   /**
    * @param {User} user

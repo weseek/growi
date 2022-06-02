@@ -4,7 +4,9 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { AllSupportedTargetModelType, AllSupportedActionType, ISnapshot } from '~/interfaces/activity';
+import {
+  AllSupportedTargetModelType, AllSupportedActionType, SupportedActionType, ISnapshot,
+} from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -20,7 +22,7 @@ export interface ActivityDocument extends Document {
   path: string
   targetModel: string
   target: Types.ObjectId
-  action: string
+  action: SupportedActionType
   snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
