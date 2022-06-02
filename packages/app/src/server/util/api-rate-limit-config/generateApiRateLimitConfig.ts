@@ -50,5 +50,5 @@ export const generateApiRateLimitConfig = (): IApiRateLimitConfig => {
   // get config
   const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys);
 
-  return { ...apiRateLimitConfig, ...defaultApiRateLimitConfig };
+  return { ...defaultApiRateLimitConfig, ...apiRateLimitConfig };
 };
