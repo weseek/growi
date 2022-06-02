@@ -284,7 +284,6 @@ Crowi.prototype.setupModels = async function() {
   allModels.Activity = Activity;
   allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
-  allModels.UpdatePost = UpdatePost;
   allModels.PageRedirect = PageRedirect;
 
   Object.keys(allModels).forEach((key) => {
