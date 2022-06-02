@@ -70,6 +70,8 @@ export type ISnapshot = Partial<Pick<IUser, 'username'>>
 
 export type IActivity = {
   user?: IUser
+  ip: string
+  path: string
   targetModel?: SupportedTargetModelType
   target?: string
   action?: SupportedActionType

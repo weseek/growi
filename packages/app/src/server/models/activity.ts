@@ -16,6 +16,8 @@ const logger = loggerFactory('growi:models:activity');
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId | any
+  ip: string
+  path: string
   targetModel: string
   target: Types.ObjectId
   action: string
@@ -39,6 +41,14 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
+  },
+  ip: {
+    type: String,
+    required: true,
+  },
+  path: {
+    type: String,
+    required: true,
   },
   targetModel: {
     type: String,
