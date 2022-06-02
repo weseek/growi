@@ -8,7 +8,7 @@ import {
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
-import { IPageOperationProcessInfo } from '~/interfaces/page-operation';
+import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
@@ -49,7 +49,7 @@ type CommonProps = {
 type DropdownMenuProps = CommonProps & {
   pageId: string,
   isLoading?: boolean,
-  operationProcessInfo?: IPageOperationProcessInfo,
+  operationProcessData?: IPageOperationProcessData,
 }
 
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
@@ -57,7 +57,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   const {
     pageId, isLoading,
-    pageInfo, isEnableActions, forceHideMenuItems, operationProcessInfo,
+    pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
   } = props;
@@ -197,7 +197,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && operationProcessInfo?.Rename != null && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && operationProcessData?.Rename != null && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
@@ -239,7 +239,7 @@ type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
   fetchOnInit?: boolean,
   children?: React.ReactNode,
-  operationProcessInfo?: IPageOperationProcessInfo,
+  operationProcessData?: IPageOperationProcessData,
 }
 
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
@@ -325,7 +325,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 type PageItemControlProps = CommonProps & {
   pageId?: string,
   children?: React.ReactNode,
-  operationProcessInfo?: IPageOperationProcessInfo,
+  operationProcessData?: IPageOperationProcessData,
 }
 
 export const PageItemControl = (props: PageItemControlProps): JSX.Element => {

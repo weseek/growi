@@ -3567,9 +3567,9 @@ class PageService {
    * Inject the information into page docuement if they are related based on page id
    */
   async injectProcessDataIntoPagesByActionTypes(
-      pages: (PageDocument & { processInfo?: IPageOperationProcessData })[],
+      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
       actionTypes: PageActionType[],
-  ): Promise<(PageDocument & { processInfo?: IPageOperationProcessData })[]> {
+  ): Promise<(PageDocument & { processData?: IPageOperationProcessData })[]> {
 
     const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
     if (pageOperations == null || pageOperations.length === 0) {

@@ -1,6 +1,6 @@
 import { Ref, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
-import { IPageOperationProcessInfo } from './page-operation';
+import { IPageOperationProcessData } from './page-operation';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
 import { ITag } from './tag';
@@ -44,7 +44,7 @@ export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
 export type IPageHasId = IPage & HasObjectId;
 
-export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processInfo?: IPageOperationProcessInfo}>;
+export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
 export type IPageInfo = {
   isV5Compatible: boolean,
