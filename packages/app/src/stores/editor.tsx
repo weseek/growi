@@ -96,9 +96,9 @@ export const useIsSlackEnabledBydefault = (): SWRResponse<boolean, Error> => {
 
 export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   const { data: isSlackEnabledByDefault } = useIsSlackEnabledBydefault();
-  return useStaticSWR<boolean, Error>(
-    ['isSlackEnabled', isSlackEnabledByDefault],
-    isSlackEnabledByDefault,
-    { fallbackData: false },
+  return useStaticSWR(
+    'isSlackEnabled',
+    undefined,
+    { fallbackData: isSlackEnabledByDefault },
   );
 };
