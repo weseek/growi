@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core';
 
-import { IPageOperationProcessInfo } from '~/interfaces/page-operation';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -97,7 +97,7 @@ class PageOperationService {
       const isProcessable = true;
 
       // processData for processInfo
-      const processData = { [actionType]: { isProcessable } };
+      const processData: IPageOperationProcessData = { [actionType]: { isProcessable } };
 
       // Merge processData if other processData exist
       if (processInfo[pageId] != null) {
