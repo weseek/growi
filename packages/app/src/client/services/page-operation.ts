@@ -3,7 +3,8 @@ import urljoin from 'url-join';
 import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 import { toastError } from '../util/apiNotification';
-import { apiv3Put } from '../util/apiv3-client';
+import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
@@ -59,4 +60,14 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
   url.searchParams.append('format', format);
   url.searchParams.append('revisionId', revisionId);
   window.location.href = url.href;
+};
+
+
+export const resumeRenameOperation = async(pageId: string): Promise<void> => {
+  try {
+    await apiv3Post('/pages/resume-rename', { pageId });
+  }
+  catch (err) {
+    throw err;
+  }
 };
