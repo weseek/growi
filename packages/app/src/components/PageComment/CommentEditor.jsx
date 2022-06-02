@@ -54,8 +54,6 @@ class CommentEditor extends React.Component {
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
 
-    console.log('this.props', this.props);
-
     this.state = {
       isReadyToUse: !this.props.isForNewComment,
       comment: this.props.commentBody || '',
@@ -80,14 +78,8 @@ class CommentEditor extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    // this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
     this.fetchSlackChannels = this.fetchSlackChannels.bind(this);
-  }
-
-  fetchSlackChannels(slackChannels) {
-    console.log('fetchSlackChannels', slackChannels);
-    this.setState({ slackChannels });
   }
 
   updateState(value) {
@@ -106,23 +98,17 @@ class CommentEditor extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
-  componentDidUpdate(prevProps) {
-    console.log('componentDidUpdate', prevProps);
-    if (this.props.slackChannels !== prevProps.slackChannels) {
-      console.log('aaaa_prevProps.slackChannels', this.props.slackChannels);
-      this.fetchSlackChannels(prevProps.slackChannels);
-    }
-    // eslint-disable-next-line react/no-did-update-set-state
-    // this.setState({ slackChannels: this.props.slackChannels });
+  fetchSlackChannels(slackChannels) {
+    this.setState({ slackChannels });
   }
 
-  // onSlackEnabledFlagChange(isSlackEnabled) {
-  //   // this.props.commentContainer.setState({ isSlackEnabled });
-  //   this.props.commentContainer.setState({ isSlackEnabled });
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.slackChannels !== prevProps.slackChannels) {
+      this.fetchSlackChannels(this.props.slackChannels);
+    }
+  }
 
   onSlackChannelsChange(slackChannels) {
-    // this.props.commentContainer.setState({ slackChannels });
     this.setState({ slackChannels });
   }
 
@@ -186,8 +172,6 @@ class CommentEditor extends React.Component {
           this.state.comment,
           this.state.isMarkdown,
           replyTo,
-          // commentContainer.state.isSlackEnabled,
-          // commentContainer.state.slackChannels,
           this.props.isSlackEnabled,
           this.state.slackChannels,
         );
@@ -381,11 +365,8 @@ class CommentEditor extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    // isSlackEnabled={commentContainer.state.isSlackEnabled}
                     isSlackEnabled={this.props.isSlackEnabled}
-                    // slackChannels={commentContainer.state.slackChannels}
                     slackChannels={this.state.slackChannels}
-                    // onEnabledFlagChange={this.onSlackEnabledFlagChange}
                     onEnabledFlagChange={this.props.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
@@ -463,18 +444,9 @@ const CommentEditorWrapper = (props) => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels();
 
-  console.log('slackChannelsData', slackChannelsData);
-
-
   const onSlackEnabledFlagChange = (isSlackEnabled) => {
-    // this.props.commentContainer.setState({ isSlackEnabled });
     mutateIsSlackEnabled(isSlackEnabled, false);
   };
-
-  // const onSlackChannelsChange = (slackChannels) => {
-  //   this.props.commentContainer.setState({ slackChannels });
-  // };
-
 
   return (
     <CommentEditorHOCWrapper
