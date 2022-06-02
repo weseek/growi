@@ -47,6 +47,7 @@ class UserGroupUserFormByInput extends React.Component {
     try {
       await adminUserGroupDetailContainer.addUserByUsername(userName);
       await adminUserGroupDetailContainer.init();
+      await adminUserGroupDetailContainer.closeUserGroupUserModal();
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
@@ -54,7 +55,7 @@ class UserGroupUserFormByInput extends React.Component {
       toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`));
     }
 
-    await adminUserGroupDetailContainer.closeUserGroupUserModal();
+
   }
 
   validateForm() {
