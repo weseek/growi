@@ -300,6 +300,13 @@ const PageEditor = (props: Props): JSX.Element => {
     appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
   }, [appContainer, markdown]);
 
+  // initial caret line
+  useEffect(() => {
+    if (editorRef.current != null) {
+      editorRef.current.setCaretLine(0);
+    }
+  }, []);
+
   // set handler to set caret line
   useEffect(() => {
     const handler = (line) => {
