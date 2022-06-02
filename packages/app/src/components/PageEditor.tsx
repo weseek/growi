@@ -6,7 +6,6 @@ import EventEmitter from 'events';
 
 import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
-import PropTypes from 'prop-types';
 import { throttle, debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -36,12 +35,15 @@ const logger = loggerFactory('growi:PageEditor');
 
 
 declare let window: {
-    globalEmitter: EventEmitter,
+  globalEmitter: EventEmitter,
 };
 
 type EditorRef = {
+  setValue: (markdown: string) => void,
   setCaretLine: (line: number) => void,
+  insertText: (text: string) => void,
   forceToFocus: () => void,
+  terminateUploadingState: () => void,
 }
 
 type Props = {
@@ -68,7 +70,7 @@ type Props = {
 };
 
 // for scrolling
-const lastScrolledDateWithCursor: Date | null = null;
+let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
@@ -91,49 +93,15 @@ const PageEditor = (props: Props): JSX.Element => {
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
-  const [lastScrolledDateWithCursor, setLastScrolledDateWithCursor] = useState<Date|null>(null);
 
 
   const editorRef = useRef<EditorRef>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-
-  // componentWillMount() {
-  //   this.props.appContainer.registerComponentInstance('PageEditor', this);
-  // }
-
-  // getMarkdown() {
-  //   return this.state.markdown;
-  // }
-
-  // updateEditorValue(markdown) {
-  //   this.editor.setValue(markdown);
-  // }
-
-  // focusToEditor() {
-  //   if (this.editor != null) {
-  //     this.editor.forceToFocus();
-  //   }
-  // }
-
-  // /**
-  //  * set caret position of editor
-  //  * @param {number} line
-  //  */
-  // setCaretLine(line) {
-  //   this.editor.setCaretLine(line);
-  //   scrollSyncHelper.scrollPreview(this.previewElement, line);
-  // }
-
-
   const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
   const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
     editorContainer.saveDraft(pageContainer.state.path, markdown);
   }), [editorContainer, markdown, pageContainer.state.path]);
-
-  // clearDraft() {
-  //   this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
-  // }
 
   const markdownChangedHandler = useCallback((value: string): void => {
     setMarkdownWithDebounce(value);
@@ -171,60 +139,64 @@ const PageEditor = (props: Props): JSX.Element => {
   }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, markdown, pageContainer, slackChannels]);
 
 
-  // /**
-  //  * the upload event handler
-  //  * @param {any} file
-  //  */
-  // async onUpload(file) {
-  //   const {
-  //     appContainer, pageContainer, mutateGrant,
-  //   } = this.props;
+  /**
+   * the upload event handler
+   * @param {any} file
+   */
+  const uploadHandler = useCallback(async(file) => {
+    if (editorRef.current == null) {
+      return;
+    }
 
-  //   try {
-  //     let res = await apiGet('/attachments.limit', {
-  //       fileSize: file.size,
-  //     });
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let res: any = await apiGet('/attachments.limit', {
+        fileSize: file.size,
+      });
 
-  //     if (!res.isUploadable) {
-  //       throw new Error(res.errorMessage);
-  //     }
+      if (!res.isUploadable) {
+        throw new Error(res.errorMessage);
+      }
 
-  //     const formData = new FormData();
-  //     const { pageId, path } = pageContainer.state;
-  //     formData.append('_csrf', appContainer.csrfToken);
-  //     formData.append('file', file);
-  //     formData.append('path', path);
-  //     if (pageId != null) {
-  //       formData.append('page_id', pageContainer.state.pageId);
-  //     }
+      const formData = new FormData();
+      const { pageId, path } = pageContainer.state;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      formData.append('_csrf', appContainer.csrfToken!);
+      formData.append('file', file);
+      if (path != null) {
+        formData.append('path', path);
+      }
+      if (pageId != null) {
+        formData.append('page_id', pageId);
+      }
 
-  //     res = await apiPost('/attachments.add', formData);
-  //     const attachment = res.attachment;
-  //     const fileName = attachment.originalName;
+      res = await apiPost('/attachments.add', formData);
+      const attachment = res.attachment;
+      const fileName = attachment.originalName;
 
-  //     let insertText = `[${fileName}](${attachment.filePathProxied})`;
-  //     // when image
-  //     if (attachment.fileFormat.startsWith('image/')) {
-  //       // modify to "![fileName](url)" syntax
-  //       insertText = `!${insertText}`;
-  //     }
-  //     this.editor.insertText(insertText);
+      let insertText = `[${fileName}](${attachment.filePathProxied})`;
+      // when image
+      if (attachment.fileFormat.startsWith('image/')) {
+        // modify to "![fileName](url)" syntax
+        insertText = `!${insertText}`;
+      }
+      editorRef.current.insertText(insertText);
 
-  //     // when if created newly
-  //     if (res.pageCreated) {
-  //       logger.info('Page is created', res.page._id);
-  //       pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
-  //       mutateGrant(res.page.grant);
-  //     }
-  //   }
-  //   catch (e) {
-  //     logger.error('failed to upload', e);
-  //     pageContainer.showErrorToastr(e);
-  //   }
-  //   finally {
-  //     this.editor.terminateUploadingState();
-  //   }
-  // }
+      // when if created newly
+      if (res.pageCreated) {
+        logger.info('Page is created', res.page._id);
+        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+        mutateGrant(res.page.grant);
+      }
+    }
+    catch (e) {
+      logger.error('failed to upload', e);
+      pageContainer.showErrorToastr(e);
+    }
+    finally {
+      editorRef.current.terminateUploadingState();
+    }
+  }, [appContainer.csrfToken, editorMode, mutateGrant, pageContainer]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -254,44 +226,45 @@ const PageEditor = (props: Props): JSX.Element => {
   const editorScrolledHandler = useCallback(({ line }: { line: number }) => {
     // prevent scrolling
     //   if the elapsed time from last scroll with cursor is shorter than 40ms
-    // const now = new Date();
-    // if (now - lastScrolledDateWithCursor < 40) {
-    //   return;
-    // }
+    const now = new Date();
+    if (lastScrolledDateWithCursor != null && now.getTime() - lastScrolledDateWithCursor.getTime() < 40) {
+      return;
+    }
 
     scrollPreviewByEditorLineWithThrottle(line);
   }, [scrollPreviewByEditorLineWithThrottle]);
 
-  // /**
-  //  * the scroll event handler from codemirror
-  //  * @param {number} line
-  //  * @see https://codemirror.net/doc/manual.html#events
-  //  */
-  // onEditorScrollCursorIntoView(line) {
-  //   // record date
-  //   this.lastScrolledDateWithCursor = new Date();
-  //   this.scrollPreviewByCursorMovingWithThrottle(line);
-  // }
+  /**
+   * scroll Preview element by cursor moving
+   * @param {number} line
+   */
+  const scrollPreviewByCursorMoving = useCallback((line: number) => {
+    if (previewRef.current == null) {
+      return;
+    }
 
-  // /**
-  //  * scroll Preview element by cursor moving
-  //  * @param {number} line
-  //  */
-  // scrollPreviewByCursorMoving(line) {
-  //   if (this.previewElement == null) {
-  //     return;
-  //   }
+    // prevent circular invocation
+    if (isOriginOfScrollSyncPreview) {
+      isOriginOfScrollSyncPreview = false; // turn off the flag
+      return;
+    }
 
-  //   // prevent circular invocation
-  //   if (this.isOriginOfScrollSyncPreview) {
-  //     this.isOriginOfScrollSyncPreview = false; // turn off the flag
-  //     return;
-  //   }
+    // turn on the flag
+    isOriginOfScrollSyncEditor = true;
+    scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+  }, []);
+  const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
 
-  //   // turn on the flag
-  //   this.isOriginOfScrollSyncEditor = true;
-  //   scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
-  // }
+  /**
+   * the scroll event handler from codemirror
+   * @param {number} line
+   * @see https://codemirror.net/doc/manual.html#events
+   */
+  const editorScrollCursorIntoViewHandler = useCallback((line: number) => {
+    // record date
+    lastScrolledDateWithCursor = new Date();
+    scrollPreviewByCursorMovingWithThrottle(line);
+  }, [scrollPreviewByCursorMovingWithThrottle]);
 
   /**
    * scroll Editor component by scroll event of Preview component
@@ -316,6 +289,30 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
+
+  // register dummy instance to get markdown
+  useEffect(() => {
+    const pageEditorInstance = {
+      getMarkdown: () => {
+        return markdown;
+      },
+    };
+    appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
+  }, [appContainer, markdown]);
+
+  // set handler to update editor value
+  useEffect(() => {
+    const handler = (markdown) => {
+      if (editorRef.current != null) {
+        editorRef.current.setValue(markdown);
+      }
+    };
+    window.globalEmitter.on('updateEditorValue', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('updateEditorValue', handler);
+    };
+  }, []);
 
   // set handler to set caret line
   useEffect(() => {
@@ -349,15 +346,16 @@ const PageEditor = (props: Props): JSX.Element => {
     }
   }, [editorContainer, markdown, pageContainer.state.markdown]);
 
-
-  //   // Detect indent size from contents (only when users are allowed to change it)
-  //   // TODO: https://youtrack.weseek.co.jp/issue/GW-5368
-  //   if (!props.isIndentSizeForced && this.state.markdown) {
-  //     const detectedIndent = detectIndent(this.state.markdown);
-  //     if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-  //       props.mutateCurrentIndentSize(detectedIndent.amount);
-  //     }
-  //   }
+  // Detect indent size from contents (only when users are allowed to change it)
+  useEffect(() => {
+    const currentPageMarkdown = pageContainer.state.markdown;
+    if (!isIndentSizeForced && currentPageMarkdown != null) {
+      const detectedIndent = detectIndent(currentPageMarkdown);
+      if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
+        mutateCurrentIndentSize(detectedIndent.amount);
+      }
+    }
+  }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
 
 
   if (!isEditable) {
@@ -384,9 +382,9 @@ const PageEditor = (props: Props): JSX.Element => {
           isTextlintEnabled={isTextlintEnabled}
           indentSize={indentSize}
           onScroll={editorScrolledHandler}
-          // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+          onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
           onChange={markdownChangedHandler}
-          // onUpload={this.onUpload}
+          onUpload={uploadHandler}
           onSave={() => saveWithShortcut()}
         />
       </div>
@@ -400,13 +398,13 @@ const PageEditor = (props: Props): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
-      {/* <ConflictDiffModal
-          isOpen={pageContainer.state.isConflictDiffModalOpen}
-          onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
-          appContainer={appContainer}
-          pageContainer={pageContainer}
-          markdownOnEdit={this.state.markdown}
-        /> */}
+      <ConflictDiffModal
+        isOpen={pageContainer.state.isConflictDiffModalOpen}
+        onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
+        appContainer={appContainer}
+        pageContainer={pageContainer}
+        markdownOnEdit={markdown}
+      />
     </div>
   );
 };
