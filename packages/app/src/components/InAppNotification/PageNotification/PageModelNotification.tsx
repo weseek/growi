@@ -41,7 +41,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   }));
 
   return (
-    <div className="p-2">
+    <div className="p-2 pr-5 grw-dropdown-notification-list-width">
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={snapshot.path} />
       </div>
