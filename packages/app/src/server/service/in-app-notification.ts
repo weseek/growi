@@ -1,22 +1,22 @@
-import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
-
-import { HasObjectId } from '~/interfaces/has-object-id';
+import { subDays } from 'date-fns';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
-import { IUser } from '~/interfaces/user';
-import { ActivityDocument } from '~/server/models/activity';
+import Crowi from '../crowi';
 import {
   InAppNotification,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
+
+import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
+
+import { IUser } from '~/interfaces/user';
+
+import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
-
-import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
-
+import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
