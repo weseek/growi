@@ -369,10 +369,17 @@ const PageEditor = (props: Props): JSX.Element => {
 
   const noCdn = envUtils.toBoolean(config.env.NO_CDN);
 
+  // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
+  // It is impossible to avoid the error
+  //  "Property '...' does not exist on type 'IntrinsicAttributes & RefAttributes<any>'"
+  //  because Editor is a class component and must be wrapped with React.forwardRef
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const EditorAny = Editor as any;
+
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-        <Editor
+        <EditorAny
           ref={editorRef}
           value={markdown}
           noCdn={noCdn}
