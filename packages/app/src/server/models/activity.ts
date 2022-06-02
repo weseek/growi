@@ -61,6 +61,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   action: {
     type: String,
     enum: AllSupportedActionType,
+    required: true,
   },
   snapshot: snapshotSchema,
 }, {

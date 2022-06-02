@@ -5,6 +5,8 @@ import { IUser } from './user';
 const MODEL_PAGE = 'Page';
 
 // Action
+const ACTION_UNSETTLED = 'UNSETTLED';
+
 const ACTION_PAGE_LIKE = 'PAGE_LIKE';
 const ACTION_PAGE_BOOKMARK = 'PAGE_BOOKMARK';
 const ACTION_PAGE_CREATE = 'PAGE_CREATE';
@@ -23,6 +25,7 @@ export const SUPPORTED_TARGET_MODEL_TYPE = {
 } as const;
 
 export const SUPPORTED_ACTION_TYPE = {
+  ACTION_UNSETTLED,
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
   ACTION_PAGE_CREATE,
@@ -74,7 +77,7 @@ export type IActivity = {
   path: string
   targetModel?: SupportedTargetModelType
   target?: string
-  action?: SupportedActionType
+  action: SupportedActionType
   createdAt: Date
   snapshot?: ISnapshot
 }
