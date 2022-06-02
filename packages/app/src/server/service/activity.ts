@@ -39,12 +39,11 @@ class ActivityService {
     const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      let snapshotForInAppNotification: string;
       if (target != null) {
-        snapshotForInAppNotification = stringifySnapshot(target);
+        const snapshotForInAppNotification = stringifySnapshot(target);
+        await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
+        await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
       }
-      await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
-      await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
     }
   };
 
