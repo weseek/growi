@@ -47,6 +47,8 @@ export interface IPageOperation {
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
   unprocessableExpiryDate: Date,
+
+  isProcessable(): Promise<boolean>
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -136,17 +138,17 @@ schema.statics.deleteByActionTypes = async function(
   logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
 };
 
-schema.statics.isProcessable = function(pageOp: PageOperationDocument): boolean {
-  const { unprocessableExpiryDate } = pageOp;
-  return unprocessableExpiryDate == null || (unprocessableExpiryDate != null && new Date() > unprocessableExpiryDate);
-};
-
 /**
  * add TIME_TO_ADD_SEC to current time and update unprocessableExpiryDate with it
  */
 schema.statics.extendExpiryDate = async function(operationId: ObjectIdLike): Promise<void> {
   const date = addSeconds(new Date(), TIME_TO_ADD_SEC);
   await this.findByIdAndUpdate(operationId, { unprocessableExpiryDate: date });
+};
+
+schema.methods.isProcessable = function(): boolean {
+  const { unprocessableExpiryDate } = this;
+  return unprocessableExpiryDate == null || (unprocessableExpiryDate != null && new Date() > unprocessableExpiryDate);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
