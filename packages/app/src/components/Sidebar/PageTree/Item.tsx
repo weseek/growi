@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { DropdownToggle } from 'reactstrap';
 
 
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -371,6 +371,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  const pathRecoveryMenuItemClickHandler = useCallback(async(pageId: string) => {
+    try {
+      toastSuccess(t('page_operation.begin_path_recovery'));
+      await resumeRenameOperation(pageId);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [page]);
 
   // didMount
   useEffect(() => {
@@ -456,6 +465,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
             operationProcessData={page.processData}
           >
