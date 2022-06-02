@@ -48,7 +48,7 @@ export interface IPageOperation {
   incForUpdatingDescendantCount?: number,
   unprocessableExpiryDate: Date,
 
-  isProcessable(): Promise<boolean>
+  isProcessable(): boolean
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -59,7 +59,6 @@ export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
   deleteByActionTypes(deleteTypeList: PageActionType[]): Promise<void>
-  isProcessable(pageOp: PageOperationDocument): boolean
   extendExpiryDate(operationId: ObjectIdLike): Promise<void>
 }
 
