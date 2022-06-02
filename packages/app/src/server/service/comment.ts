@@ -123,7 +123,7 @@ class CommentService {
     await this.sendNotificationToSlackUsers(mentionedUsers, commentObject, page);
   };
 
-  getMentionedUsers = async(comment: string): Promise<Types.ObjectId[]> => {
+  private getMentionedUsers = async(comment: string): Promise<Types.ObjectId[]> => {
     const User = this.getUserModel();
     const usernamesFromComment = comment.match(USERNAME_PATTERN);
 
@@ -139,14 +139,14 @@ class CommentService {
     });
   }
 
-  getComment = async(commentId: Types.ObjectId): Promise<any> => {
+  private getComment = async(commentId: Types.ObjectId): Promise<any> => {
     const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
     const comment = await Comment.findOne({ _id: commentId });
     return comment;
   }
 
 
-  sendNotificationToSlackUsers = async(users: any[], comment: any, page:any) : Promise<void> => {
+  private sendNotificationToSlackUsers = async(users: any[], comment: any, page:any) : Promise<void> => {
     const User = this.getUserModel();
     const { creator } = comment;
 
@@ -163,7 +163,7 @@ class CommentService {
     });
   }
 
-  getUserModel = () => {
+  private getUserModel = () => {
     return getModelSafely('User') || require('../models/user')(this.crowi);
   }
 
