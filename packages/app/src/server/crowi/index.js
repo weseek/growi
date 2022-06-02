@@ -19,7 +19,6 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
-import UpdatePost from '../models/update-post';
 import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
 import AppService from '../service/app';
