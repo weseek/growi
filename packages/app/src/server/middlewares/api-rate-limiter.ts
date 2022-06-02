@@ -26,7 +26,9 @@ const opts = {
 const rateLimiter = new RateLimiterMongo(opts);
 
 // generate ApiRateLimitConfig for api rate limiter
-const apiRateLimitConfig = generateApiRateLimitConfig();
+const apiRateLimitConfigWithoutRegExp = generateApiRateLimitConfig(false);
+const apiRateLimitConfigWithRegExp = generateApiRateLimitConfig(true);
+const keysWithRegExp = Object.keys(apiRateLimitConfigWithRegExp).map(key => new RegExp(key));
 
 const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number) => {
   const consumePoints = defaultMaxPoints / points;
@@ -40,12 +42,14 @@ module.exports = () => {
     const endpoint = req.path;
     const key = md5(req.ip + endpoint);
 
-    const filterdKeys = Object.keys(apiRateLimitConfig).filter((key) => {
-      const keyRegExp = new RegExp(key);
-      return keyRegExp.test(endpoint);
+    let customizedConfig;
+    keysWithRegExp.forEach((key) => {
+      if (key.test(endpoint)) {
+        customizedConfig = apiRateLimitConfigWithRegExp[key.toString()];
+      }
     });
 
-    const customizedConfig = apiRateLimitConfig[filterdKeys[0]];
+    customizedConfig = apiRateLimitConfigWithoutRegExp[endpoint];
 
     try {
       if (customizedConfig === undefined) {

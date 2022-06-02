@@ -1,10 +1,8 @@
 import { IApiRateLimitConfig } from '../../interfaces/api-rate-limit-config';
 
 // strict config
-
 const defaultStrictMaxRequests = 1; // per second
-
-const defaultStrictConfigKey: IApiRateLimitConfig = {
+const defaultStrictConfig: IApiRateLimitConfig = {
   '/login/activateInvited': {
     method: 'POST',
     maxRequests: defaultStrictMaxRequests,
@@ -25,16 +23,32 @@ const defaultStrictConfigKey: IApiRateLimitConfig = {
     method: 'POST',
     maxRequests: defaultStrictMaxRequests,
   },
+  '/user-activation/register': {
+    method: 'POST',
+    maxRequests: defaultStrictMaxRequests,
+  },
+};
+
+
+// infinity config
+const defaultInfinityConfig: IApiRateLimitConfig = {
+  '/_api/v3/healthcheck': {
+    method: 'GET',
+    maxRequests: Infinity,
+  },
+};
+
+// default config without reg exp
+export const defaultConfigWithoutRegExp = { ...defaultStrictConfig, ...defaultInfinityConfig };
+
+// default config with reg exp
+export const defaultConfigWithRegExp = {
   '/forgot-password/.*': {
     method: 'GET',
     maxRequests: defaultStrictMaxRequests,
   },
   '/user-activation/.*': {
     method: 'GET',
-    maxRequests: defaultStrictMaxRequests,
-  },
-  '/user-activation/register': {
-    method: 'POST',
     maxRequests: defaultStrictMaxRequests,
   },
   '/download/[0-9a-z]{24}': {
@@ -46,16 +60,3 @@ const defaultStrictConfigKey: IApiRateLimitConfig = {
     maxRequests: defaultStrictMaxRequests,
   },
 };
-
-
-// infinity config
-
-const defaultInfinityConfigKey: IApiRateLimitConfig = {
-  '/_api/v3/healthcheck': {
-    method: 'GET',
-    maxRequests: Infinity,
-  },
-};
-
-
-export default { ...defaultStrictConfigKey, ...defaultInfinityConfigKey };
