@@ -38,12 +38,10 @@ class ActivityService {
 
     const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
+      const snapshotForInAppNotification = stringifySnapshot(target as IPage);
       const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      if (target != null) {
-        const snapshotForInAppNotification = stringifySnapshot(target);
-        await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
-        await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
-      }
+      await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
+      await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
     }
   };
 
