@@ -4,7 +4,9 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { AllSupportedTargetModelType, AllSupportedActionType, ISnapshot } from '~/interfaces/activity';
+import {
+  AllSupportedTargetModelType, AllSupportedActionType, SupportedActionType, ISnapshot,
+} from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
 import activityEvent from '../events/activity';
@@ -16,9 +18,11 @@ const logger = loggerFactory('growi:models:activity');
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId | any
+  ip: string
+  endpoint: string
   targetModel: string
   target: Types.ObjectId
-  action: string
+  action: SupportedActionType
   snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
@@ -39,22 +43,25 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
-    required: true,
+  },
+  ip: {
+    type: String,
+  },
+  endpoint: {
+    type: String,
   },
   targetModel: {
     type: String,
-    required: true,
     enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    required: true,
   },
   action: {
     type: String,
-    required: true,
     enum: AllSupportedActionType,
+    required: true,
   },
   snapshot: snapshotSchema,
 }, {

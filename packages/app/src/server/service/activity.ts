@@ -1,6 +1,12 @@
 import { getModelSafely } from '@growi/core';
 
+import { IActivity } from '~/interfaces/activity';
+import Activity from '~/server/models/activity';
+
 import Crowi from '../crowi';
+
+
+type ParameterType = Omit<IActivity, 'createdAt'>
 
 class ActivityService {
 
@@ -24,6 +30,11 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
+  updateByParameters = async function(activityId: string, parameters: ParameterType): Promise<IActivity> {
+    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
+
+    return activity;
+  };
 
   /**
    * @param {User} user

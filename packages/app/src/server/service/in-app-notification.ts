@@ -1,22 +1,25 @@
-import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
+import { Types } from 'mongoose';
+
+import { AllSupportedActionToNotifiedType } from '~/interfaces/activity';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import Crowi from '../crowi';
+import { IPage } from '~/interfaces/page';
+import { SubscriptionStatusType } from '~/interfaces/subscription';
+import { IUser } from '~/interfaces/user';
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { ActivityDocument } from '~/server/models/activity';
 import {
   InAppNotification,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
-
-import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
-
-import { IUser } from '~/interfaces/user';
-
-import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
+
+import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
+
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
@@ -36,6 +39,8 @@ export default class InAppNotificationService {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
 
+    this.emitSocketIo = this.emitSocketIo.bind(this);
+    this.upsertByActivity = this.upsertByActivity.bind(this);
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
   }
 
@@ -172,6 +177,20 @@ export default class InAppNotificationService {
       }
     }
 
+    return;
+  };
+
+  createInAppNotification = async function(activity: ActivityDocument, target: IPage): Promise<void> {
+    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+    if (shouldNotification) {
+      const snapshot = stringifySnapshot(target as IPage);
+      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      await this.upsertByActivity(notificationTargetUsers, activity, snapshot);
+      await this.emitSocketIo(notificationTargetUsers);
+    }
+    else {
+      throw Error('No activity to notify');
+    }
     return;
   };
 
