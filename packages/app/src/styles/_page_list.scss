@@ -97,21 +97,6 @@ body .page-list {
   }
 }
 
-.popular-page-high {
-  font-size: 1.1em;
-  font-weight: bold;
-  color: darken($red, 5%);
-}
-
-.popular-page-mid {
-  font-weight: bold;
-  color: #e47800;
-}
-
-.popular-page-low {
-  color: #ab7c7c;
-}
-
 .card-timeline {
   border: 1px solid $gray-300;
   > .card-header {
