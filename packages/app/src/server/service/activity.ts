@@ -32,7 +32,7 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
-  updateByParmeters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
+  updateByParameters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
     const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true });
 
     const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
