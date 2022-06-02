@@ -427,7 +427,7 @@ const PageEditorWrapper = (props) => {
       isEditable={isEditable}
       editorMode={editorMode}
       isMobile={isMobile}
-      isSlackEnabled={isSlackEnabled || false}
+      isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}

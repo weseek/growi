@@ -209,7 +209,7 @@ const PageWrapper = (props) => {
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}
-      isSlackEnabled={isSlackEnabled || false}
+      isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}

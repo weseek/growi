@@ -444,7 +444,7 @@ const PageEditorByHackmdWrapper = (props) => {
     <PageEditorByHackmdHOCWrapper
       {...props}
       editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled || false}
+      isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}

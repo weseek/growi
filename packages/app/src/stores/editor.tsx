@@ -74,7 +74,7 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 /*
 * Slack Notification
 */
-export const useSWRxSlackChannels = (): SWRResponse<Nullable<string[]>, Error> => {
+export const useSWRxSlackChannels = (): SWRResponse<string[], Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const shouldFetch: boolean = currentPagePath != null;
   return useSWR(
@@ -96,9 +96,9 @@ export const useIsSlackEnabledBydefault = (): SWRResponse<boolean, Error> => {
 
 export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   const { data: isSlackEnabledByDefault } = useIsSlackEnabledBydefault();
-  return useStaticSWR(
-    'isSlackEnabled',
-    undefined,
-    { fallbackData: isSlackEnabledByDefault },
+  return useStaticSWR<boolean, Error>(
+    ['isSlackEnabled', isSlackEnabledByDefault],
+    isSlackEnabledByDefault,
+    { fallbackData: false },
   );
 };
