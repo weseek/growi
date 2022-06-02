@@ -1,9 +1,7 @@
 import { getModelSafely } from '@growi/core';
 import { NavItem } from 'reactstrap';
 
-import { IActivity, AllSupportedActionToNotifiedType } from '~/interfaces/activity';
-import { IPage } from '~/interfaces/page';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import { IActivity } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 
 import Crowi from '../crowi';
@@ -33,16 +31,10 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
-  updateByParameters = async function(activityId: string, parameters: ParameterType, target?: IPage): Promise<void> {
-    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true });
+  updateByParameters = async function(activityId: string, parameters: ParameterType): Promise<IActivity> {
+    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
-    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
-    if (shouldNotification) {
-      const snapshotForInAppNotification = stringifySnapshot(target as IPage);
-      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      await this.inAppNotificationService.upsertByActivity(notificationTargetUsers, activity, snapshotForInAppNotification);
-      await this.inAppNotificationService.emitSocketIo(notificationTargetUsers);
-    }
+    return activity;
   };
 
   /**
