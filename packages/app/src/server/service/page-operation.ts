@@ -92,7 +92,7 @@ class PageOperationService {
       const pageId = pageOp.page._id.toString();
 
       const actionType = pageOp.actionType;
-      const isProcessable = PageOperation.isProcessable(pageOp);
+      const isProcessable = pageOp.isProcessable();
 
       // processData for processInfo
       const processData = { [actionType]: { isProcessable } };
