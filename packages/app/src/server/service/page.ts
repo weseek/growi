@@ -603,7 +603,7 @@ class PageService {
     if (pageOp == null) {
       throw Error('There is nothing to be processed right now');
     }
-    const isProcessable = await pageOp.isProcessable();
+    const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
     }
