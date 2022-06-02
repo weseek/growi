@@ -408,7 +408,6 @@ const PageEditor = (props: Props): JSX.Element => {
       <ConflictDiffModal
         isOpen={pageContainer.state.isConflictDiffModalOpen}
         onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
-        appContainer={appContainer}
         pageContainer={pageContainer}
         markdownOnEdit={markdown}
       />

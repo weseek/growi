@@ -14,7 +14,6 @@ import { IUser } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
 
-import AppContainer from '../../client/services/AppContainer';
 import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -31,7 +30,6 @@ type ConflictDiffModalProps = {
   isOpen?: boolean;
   onClose?: (() => void);
   pageContainer: PageContainer;
-  currentUser: IUser,
   markdownOnEdit: string;
 };
 
@@ -39,7 +37,7 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
   createdAt: string
 }
 
-const ConflictDiffModalCore = (props: ConflictDiffModalProps): JSX.Element => {
+const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IUser }): JSX.Element => {
   const { currentUser, pageContainer, onClose } = props;
 
   const { data: editorMode } = useEditorMode();
