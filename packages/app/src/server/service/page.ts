@@ -3386,7 +3386,7 @@ class PageService {
    * @private
    * This method receives the same arguments as the PageService.create method does except for the added type '{ grantedUsers?: ObjectIdLike[] }'.
    * This additional value is used to determine the grantedUser of the page to be created by system.
-   * This method does not run isGrantNormalized method to validate grant. **Run it before use this method if necessary.**
+   * This method must not run isGrantNormalized method to validate grant. **If necessary, run it before use this method.**
    * -- Reason 1: This is because it is not expected to use this method when the grant validation is required.
    * -- Reason 2: This is because it is not expected to use this method when the program cannot determine the operator.
    */
