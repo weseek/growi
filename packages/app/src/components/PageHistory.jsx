@@ -39,18 +39,18 @@ function PageHistory(props) {
     })();
   }, [props.revisionComparerContainer]);
 
-  if (revisionsData == null) {
-    return (
-      <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-      </div>
-    );
-  }
-
   if (errorMessage != null) {
     return (
       <div className="my-5">
         <div className="text-danger">{errorMessage}</div>
+      </div>
+    );
+  }
+
+  if (revisionsData == null) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
       </div>
     );
   }
