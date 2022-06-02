@@ -143,10 +143,6 @@ export default class AppContainer extends Container {
       throw new Error('The specified instance must not be null');
     }
 
-    if (this.componentInstances[id] != null) {
-      throw new Error('The specified instance couldn\'t register because the same id has already been registered');
-    }
-
     this.componentInstances[id] = instance;
   }
 
