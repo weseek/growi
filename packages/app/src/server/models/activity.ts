@@ -19,7 +19,7 @@ export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId | any
   ip: string
-  path: string
+  endpoint: string
   targetModel: string
   target: Types.ObjectId
   action: SupportedActionType
@@ -46,11 +46,9 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   ip: {
     type: String,
-    required: true,
   },
-  path: {
+  endpoint: {
     type: String,
-    required: true,
   },
   targetModel: {
     type: String,

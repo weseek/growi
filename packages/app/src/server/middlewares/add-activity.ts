@@ -12,17 +12,13 @@ interface AuthorizedRequest extends Request {
 }
 
 export const generateAddActivityMiddleware = crowi => async(req: AuthorizedRequest, res: Response, next: NextFunction): Promise<void> => {
-  const ip = req.headers['x-forwarded-for'];
-  const path = req.originalUrl;
-  const user = req.user;
-
   const parameter = {
-    ip,
-    path,
+    ip:  req.ip,
+    endpoint: req.originalUrl,
     action: SUPPORTED_ACTION_TYPE.ACTION_UNSETTLED,
-    user: user?._id,
+    user: req.user?._id,
     snapshot: {
-      username: user?.username,
+      username: req.user?.username,
     },
   };
 
