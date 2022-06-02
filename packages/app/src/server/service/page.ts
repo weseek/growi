@@ -3565,9 +3565,8 @@ class PageService {
   }
 
   /**
-   * It takes page documents.
-   * Generate process information for each actionType of PageOperation
-   * Inject the information into page docuement if they are related based on page id
+   * Inject processData into page docuements
+   * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
    */
   private async injectProcessDataIntoPagesByActionTypes(
       pages: (PageDocument & { processData?: IPageOperationProcessData })[],
