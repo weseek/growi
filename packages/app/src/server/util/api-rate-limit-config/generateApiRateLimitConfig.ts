@@ -44,8 +44,8 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
 export const generateApiRateLimitConfig = (withRegExp: boolean): IApiRateLimitConfig => {
 
   const apiRateEndpointKeys = Object.keys(envVar).filter((key) => {
-    const endpointRegExp = withRegExp ? /^API_RATE_LIMIT_\w+_ENDPOINT_WITH_REGEXP/ : /^API_RATE_LIMIT_\w+_ENDPOINT/;
-    return endpointRegExp.test(key);
+    const target = getTargetFromKey(key, withRegExp);
+    return target;
   });
 
   // sort priority
