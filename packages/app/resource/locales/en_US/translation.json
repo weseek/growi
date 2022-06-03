@@ -1113,6 +1113,6 @@
     "footprints": "Footprints"
   },
   "page_operation":{
-    "begin_path_recovery": "Path recovery has begun"
+    "paths_recovered": "Paths recovered successfully"
   }
 }

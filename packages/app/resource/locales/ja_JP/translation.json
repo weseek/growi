@@ -1106,6 +1106,6 @@
     "footprints": "足跡"
   },
   "page_operation":{
-    "begin_path_recovery": "パスの修復を開始しました"
+    "paths_recovered": "パスを修復しました"
   }
 }

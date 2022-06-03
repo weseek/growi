@@ -1116,6 +1116,6 @@
     "footprints": "脚印"
   },
   "page_operation":{
-    "begin_resume_rename": "路径恢复已经开始"
+    "paths_recovered": "成功恢复了页面路径"
   }
 }
