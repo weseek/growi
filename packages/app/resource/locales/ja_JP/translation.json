@@ -1107,6 +1107,7 @@
   },
   "page_operation":{
     "paths_recovered": "パスを修復しました",
-    "failed_resume_rename": "パスの修復に失敗しました"
+    "failed_resume_rename": "パスの修復に失敗しました",
+    "forbidden_user": "操作権限がありません"
   }
 }

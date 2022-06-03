@@ -1114,6 +1114,7 @@
   },
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
-    "failed_resume_rename": "Failed to resume rename operation"
+    "failed_resume_rename": "Failed to resume rename operation",
+    "forbidden_user": "The operation is forbidden for this user"
   }
 }
