@@ -1113,6 +1113,7 @@
     "footprints": "Footprints"
   },
   "page_operation":{
-    "paths_recovered": "Paths recovered successfully"
+    "paths_recovered": "Paths recovered successfully",
+    "failed_resume_rename": "Failed to resume rename operation"
   }
 }
