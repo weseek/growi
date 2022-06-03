@@ -51,13 +51,6 @@ const EditorNavbarBottom = (props) => {
   const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
     setSlackChannelsStr(slackChannels);
   }, []);
-  // const isSlackEnabledToggleHandler = useCallback(
-  //   (bool: boolean) => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
-  // );
-
-  // const slackChannelsChangedHandler = useCallback(
-  //   (slackChannels: string) => mutateSlackChannels(slackChannels), [mutateSlackChannels],
-  // );
 
   const renderDrawerButton = () => (
     <button
