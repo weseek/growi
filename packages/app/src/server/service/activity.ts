@@ -39,6 +39,7 @@ class ActivityService {
         logger.error('Update activity failed', err);
         return;
       }
+
       // create inAppNotification
       const shouldNotification = (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
       if (shouldNotification) {
