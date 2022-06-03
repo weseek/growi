@@ -1113,7 +1113,12 @@
     "cancel_bookmark": "取消书签",
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
-    "footprints": "脚印"
+    "footprints": "脚印",
+    "operation": {
+      "attention": {
+        "rename": "由于某些影响，页面路径被破坏，请从三点式阅读器中打开菜单，执行 '路径修复'。"
+      }
+    }
   },
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径"

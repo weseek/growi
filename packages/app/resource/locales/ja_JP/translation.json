@@ -1103,7 +1103,12 @@
     "cancel_bookmark": "ブックマークを取り消す",
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
-    "footprints": "足跡"
+    "footprints": "足跡",
+    "operation": {
+      "attention": {
+        "rename": "何らかの影響でパスが壊れています。修復するにはメニューを開き、「パスを修復」を選択してしてください"
+      }
+    }
   },
   "page_operation":{
     "paths_recovered": "パスを修復しました"
