@@ -23,6 +23,10 @@ import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 
+import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useIsMobile } from '~/stores/ui';
+
 
 const navTabMapping = {
   comment_editor: {
@@ -283,7 +287,7 @@ class CommentEditor extends React.Component {
   }
 
   renderReady() {
-    const { appContainer, commentContainer } = this.props;
+    const { appContainer, commentContainer, isMobile } = this.props;
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -318,7 +322,7 @@ class CommentEditor extends React.Component {
                 value={this.state.comment}
                 isGfmMode={this.state.isMarkdown}
                 lineNumbers={false}
-                isMobile={appContainer.isMobile}
+                isMobile={isMobile}
                 isUploadable={this.state.isUploadable}
                 isUploadableFile={this.state.isUploadableFile}
                 emojiStrategy={emojiStrategy}
@@ -394,14 +398,14 @@ class CommentEditor extends React.Component {
   }
 
   render() {
-    const { appContainer } = this.props;
+    const { currentUser } = this.props;
     const { isReadyToUse } = this.state;
 
     return (
       <div className="form page-comment-form">
         <div className="comment-form">
           <div className="comment-form-user">
-            <UserPicture user={appContainer.currentUser} noLink noTooltip />
+            <UserPicture user={currentUser} noLink noTooltip />
           </div>
           <div className="comment-form-main">
             { !isReadyToUse
@@ -416,6 +420,11 @@ class CommentEditor extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const CommentEditorHOCWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -425,6 +434,8 @@ CommentEditor.propTypes = {
   slackChannels: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  currentUser: PropTypes.instanceOf(Object),
+  isMobile: PropTypes.bool,
   isForNewComment: PropTypes.bool,
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
@@ -435,9 +446,30 @@ CommentEditor.propTypes = {
   onSlackEnabledFlagChange: PropTypes.func,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+
+// export default CommentEditorWrapper;
+
+const CommentEditorWrapper = (props) => {
+  const { data: isMobile } = useIsMobile();
+  const { data: currentUser } = useCurrentUser();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
+  const onSlackEnabledFlagChange = (isSlackEnabled) => {
+    mutateIsSlackEnabled(isSlackEnabled, false);
+  };
+
+  return (
+    <CommentEditorHOCWrapper
+      {...props}
+      onSlackEnabledFlagChange={onSlackEnabledFlagChange}
+      slackChannels={slackChannelsData.toString()}
+      isSlackEnabled={isSlackEnabled}
+      currentUser={currentUser}
+      isMobile={isMobile}
+    />
+  );
+};
 
 export default CommentEditorWrapper;
