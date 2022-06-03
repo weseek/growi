@@ -15,7 +15,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
-              ページを訪れたゲストのサイドバーモードを設定できます
+              {t('admin:customize_setting.default_sidebar_mode_desc')}
             </CardBody>
           </Card>
 

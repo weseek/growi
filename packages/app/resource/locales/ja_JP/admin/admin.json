@@ -150,6 +150,7 @@
   },
   "customize_setting": {
     "default_sidebar_mode": "デフォルトのサイドバーモード",
+    "default_sidebar_mode_desc": "ページを訪れたゲストのサイドバーモードを設定できます。",
     "layout": "レイアウト",
     "layout_options": {
       "default": "デフォルトのコンテンツ幅",
