@@ -286,6 +286,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
     catch (err) {
       setRenameInputShown(true);
+      setRenaming(false);
       toastError(err);
     }
     finally {
@@ -420,6 +421,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   }, [data, isOpen, targetPathOrId]);
 
+  // Rename process
+  const existRenameProcessData = page.processData?.Rename != null;
+  const isRenameProcessable = page.processData?.Rename?.isProcessable;
+
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -457,8 +462,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { isRenaming && (
+              { (isRenaming || (existRenameProcessData && !isRenameProcessable)) && (
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              )}
+              { (!isRenaming && page.processData?.Rename?.isProcessable) && (
+                <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
                 <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
