@@ -247,7 +247,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -299,6 +299,13 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     await onClickDeleteMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
+  const pathRecoveryMenuItemClickHandler = useCallback(async() => {
+    if (onClickPathRecoveryMenuItem == null) {
+      return;
+    }
+    await onClickPathRecoveryMenuItem(pageId);
+  }, [onClickPathRecoveryMenuItem, pageId]);
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
@@ -315,6 +322,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickRenameMenuItem={renameMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
+        onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
       />
     </Dropdown>
   );
