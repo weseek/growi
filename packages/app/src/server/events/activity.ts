@@ -11,21 +11,18 @@ const util = require('util');
 
 function ActivityEvent(crowi: Crowi) {
   this.crowi = crowi;
-  this.inAppNotificationService = crowi.inAppNotificationService;
 
   events.EventEmitter.call(this);
 }
+util.inherits(ActivityEvent, events.EventEmitter);
 
 ActivityEvent.prototype.onUpdate = async function(activity: ActivityDocument, target: IPage) {
   try {
-    await this.inAppNotificationService.createInAppNotification(activity, target);
+    await this.crowi.inAppNotificationService.createInAppNotification(activity, target);
   }
   catch (err) {
     logger.error('Create InAppNotification failed', err);
   }
 };
-
-util.inherits(ActivityEvent, events.EventEmitter);
-
 
 module.exports = ActivityEvent;
