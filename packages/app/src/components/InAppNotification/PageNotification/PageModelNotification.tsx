@@ -25,7 +25,6 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   } = props;
 
   const snapshot = parseSnapshot(notification.snapshot);
-  // const addtionalClassName = ['text-truncate'];
 
   // publish open()
   useImperativeHandle(ref, () => ({
@@ -41,7 +40,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   }));
 
   return (
-    <div className="p-2 pr-5 grw-dropdown-notification-list-width">
+    <div className="p-2 overflow-hidden">
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={snapshot.path} />
       </div>
