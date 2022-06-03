@@ -22,8 +22,8 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
     }
 
     const target = getTargetFromKey(key, withRegExp);
-    const methodKey = withRegExp ? `API_RATE_LIMIT_${target}_METHODS_WITH_REGEXP` : `API_RATE_LIMIT_${target}_METHODS`;
-    const maxRequestsKey = withRegExp ? `API_RATE_LIMIT_${target}_MAX_REQUESTS_WITH_REGEXP` : `API_RATE_LIMIT_${target}_MAX_REQUESTS`;
+    const methodKey = `API_RATE_LIMIT_${target}_METHODS`;
+    const maxRequestsKey = `API_RATE_LIMIT_${target}_MAX_REQUESTS`;
     const method = envVar[methodKey] ?? 'ALL';
     const maxRequests = Number(envVar[maxRequestsKey]);
 
