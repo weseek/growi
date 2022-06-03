@@ -1,21 +1,19 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import {
   Button,
   TabContent, TabPane,
 } from 'reactstrap';
-
 import * as toastr from 'toastr';
-
 import { UserPicture } from '@growi/ui';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
@@ -82,6 +80,7 @@ class CommentEditor extends React.Component {
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
+    this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
     this.fetchSlackChannels = this.fetchSlackChannels.bind(this);
   }
 
@@ -179,8 +178,8 @@ class CommentEditor extends React.Component {
           this.state.comment,
           this.state.isMarkdown,
           replyTo,
-          commentContainer.state.isSlackEnabled,
-          commentContainer.state.slackChannels,
+          this.props.isSlackEnabled,
+          this.state.slackChannels,
         );
       }
       this.initializeEditor();

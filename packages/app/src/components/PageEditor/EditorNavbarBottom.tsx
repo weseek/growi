@@ -1,9 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import React, { useCallback, useState, useEffect } from 'react';
 import { Collapse, Button } from 'reactstrap';
 
-import EditorContainer from '~/client/services/EditorContainer';
 import AppContainer from '~/client/services/AppContainer';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
@@ -16,6 +14,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import SavePageControls from '../SavePageControls';
 
 import OptionsSelector from './OptionsSelector';
+import EditorContainer from '~/client/services/EditorContainer';
 import { useCurrentPagePath } from '~/stores/context';
 import { useIsSlackEnabled, useSWRxSlackChannels } from '~/stores/editor';
 
