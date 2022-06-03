@@ -18,12 +18,9 @@ class ActivityService {
 
   activityEvent: any;
 
-  inAppNotificationService!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
-    this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.updateByParameters = this.updateByParameters.bind(this);
 
@@ -42,16 +39,10 @@ class ActivityService {
         logger.error('Update activity failed', err);
         return;
       }
-
       // create inAppNotification
       const shouldNotification = (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
       if (shouldNotification) {
-        try {
-          await this.inAppNotificationService.createInAppNotification(activity, target);
-        }
-        catch (err) {
-          logger.error('Create InAppNotification failed', err);
-        }
+        this.activityEvent.onUpdate(activity, target);
       }
     });
   }
