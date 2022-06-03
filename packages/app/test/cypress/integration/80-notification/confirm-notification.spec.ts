@@ -2,22 +2,13 @@
 context('Confirm notification', () => {
   const ssPrefix = 'confirm-notification-';
 
-  let connectSid: string | undefined;
-
-  before(() => {
+  beforeEach(() => {
     // login
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.getCookie('connect.sid').then(cookie => {
-      connectSid = cookie?.value;
-    });
-  });
-
-  beforeEach(() => {
-    if (connectSid != null) {
-      cy.setCookie('connect.sid', connectSid);
-    }
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   it('Confirm notification', () => {
@@ -25,13 +16,13 @@ context('Confirm notification', () => {
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
 
-    cy.wait(1500);
+    cy.get('#all-in-app-notifications').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
     cy.get('#all-in-app-notifications ul.nav-title li:eq(1) a').click();
 
-    cy.wait(500);
+    cy.get('.tab-pane.active > .justify-content-end > button').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
   });
