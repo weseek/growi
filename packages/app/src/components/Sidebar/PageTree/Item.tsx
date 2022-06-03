@@ -385,7 +385,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       toastSuccess(t('page_operation.paths_recovered'));
     }
     catch (err) {
-      toastError(t('page_operation.failed_resume_rename'));
+      toastError(t(err[0].message));
     }
     finally {
       setTimeout(() => {
