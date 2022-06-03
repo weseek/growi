@@ -142,8 +142,6 @@ const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [App
 const SavePageControlsWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
@@ -161,8 +159,6 @@ const SavePageControlsWrapper = (props) => {
     <SavePageControlsHOCWrapper
       {...props}
       editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

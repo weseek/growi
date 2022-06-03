@@ -63,6 +63,7 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       isSlackConfigured: config.isSlackConfigured,
+      slackChannels: this.props.slackChannels,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -77,11 +78,21 @@ class CommentEditor extends React.Component {
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
-    this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
+    this.fetchSlackChannels = this.fetchSlackChannels.bind(this);
   }
 
   updateState(value) {
     this.setState({ comment: value });
+  }
+
+  fetchSlackChannels(slackChannels) {
+    this.setState({ slackChannels });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.slackChannels !== prevProps.slackChannels) {
+      this.fetchSlackChannels(this.props.slackChannels);
+    }
   }
 
   updateStateCheckbox(event) {
@@ -101,7 +112,7 @@ class CommentEditor extends React.Component {
   }
 
   onSlackChannelsChange(slackChannels) {
-    this.props.commentContainer.setState({ slackChannels });
+    this.setState({ slackChannels });
   }
 
   initializeEditor() {
@@ -358,9 +369,9 @@ class CommentEditor extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled={commentContainer.state.isSlackEnabled}
-                    slackChannels={commentContainer.state.slackChannels}
-                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                    isSlackEnabled={this.props.isSlackEnabled}
+                    slackChannels={this.state.slackChannels}
+                    onEnabledFlagChange={this.props.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
                   />
@@ -411,6 +422,8 @@ CommentEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
+  slackChannels: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   isForNewComment: PropTypes.bool,
   replyTo: PropTypes.string,
@@ -419,6 +432,7 @@ CommentEditor.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
+  onSlackEnabledFlagChange: PropTypes.func,
 };
 
 /**

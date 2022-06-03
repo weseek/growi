@@ -51,7 +51,6 @@ const pageSchema = new mongoose.Schema({
   liker: [{ type: ObjectId, ref: 'User' }],
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
-  slackChannels: { type: String },
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
