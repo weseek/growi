@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -11,7 +11,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const PasswordResetRequestForm = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
   const [email, setEmail] = useState('');
 
   const changeEmail = (inputValue) => {
@@ -66,4 +67,4 @@ PasswordResetRequestForm.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(PasswordResetRequestFormWrapper);
+export default PasswordResetRequestFormWrapper;

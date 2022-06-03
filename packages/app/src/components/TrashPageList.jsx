@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
@@ -9,8 +9,8 @@ import EmptyTrashButton from './EmptyTrashButton';
 import PageListIcon from './Icons/PageListIcon';
 
 
-const TrashPageList = (props) => {
-  const { t } = props;
+const TrashPageList = () => {
+  const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
     return {
@@ -38,4 +38,4 @@ TrashPageList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 };
 
-export default withTranslation()(TrashPageList);
+export default TrashPageList;
