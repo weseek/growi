@@ -187,7 +187,6 @@ Crowi.prototype.model = function(name, model) {
 // getter/setter of event instance
 Crowi.prototype.event = function(name, event) {
   if (event) {
-    console.log(event);
     this.events[name] = event;
   }
 
