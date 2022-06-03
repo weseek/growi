@@ -480,12 +480,12 @@ ul.pagination {
     .list-group-item {
       a {
         svg {
-          fill: $link-color;
+          fill: $color-global;
         }
 
         @include hover() {
           svg {
-            fill: $link-color;
+            fill: $color-global;
           }
         }
       }
