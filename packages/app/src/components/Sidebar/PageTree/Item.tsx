@@ -371,6 +371,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  /**
+   * Users do not need to know if all pages have been renamed.
+   * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
+   */
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       setRenaming(true);
