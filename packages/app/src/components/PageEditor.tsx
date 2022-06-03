@@ -129,7 +129,7 @@ const PageEditor = (props: Props): JSX.Element => {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
+      const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -305,18 +305,11 @@ const PageEditor = (props: Props): JSX.Element => {
     appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
   }, [appContainer, markdown]);
 
-  // set handler to update editor value
+  // initial caret line
   useEffect(() => {
-    const handler = (markdown) => {
-      if (editorRef.current != null) {
-        editorRef.current.setValue(markdown);
-      }
-    };
-    window.globalEmitter.on('updateEditorValue', handler);
-
-    return function cleanup() {
-      window.globalEmitter.removeListener('updateEditorValue', handler);
-    };
+    if (editorRef.current != null) {
+      editorRef.current.setCaretLine(0);
+    }
   }, []);
 
   // set handler to set caret line
@@ -342,6 +335,20 @@ const PageEditor = (props: Props): JSX.Element => {
       editorRef.current.forceToFocus();
     }
   }, [editorMode]);
+
+  // set handler to update editor value
+  useEffect(() => {
+    const handler = (markdown) => {
+      if (editorRef.current != null) {
+        editorRef.current.setValue(markdown);
+      }
+    };
+    window.globalEmitter.on('updateEditorValue', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('updateEditorValue', handler);
+    };
+  }, []);
 
   // Displays an alert if there is a difference with pageContainer's markdown
   useEffect(() => {
