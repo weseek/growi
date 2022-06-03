@@ -1,19 +1,18 @@
-import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
+import React, { FC, useEffect, useState } from 'react';
 
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import {
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
-  useSlackChannels,
 } from '~/stores/context';
 import {
   useIsDeviceSmallerThanMd,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
   useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -68,7 +67,6 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
-  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
   const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
@@ -119,7 +117,6 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSlackChannels(slackChannels);
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);

@@ -21,8 +21,8 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsEditable, useCurrentPagePath } from '~/stores/context';
+import { useIsSlackEnabled, useSWRxSlackChannels } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -371,7 +371,8 @@ const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -379,6 +380,8 @@ const PageEditorWrapper = (props) => {
   if (isEditable == null || editorMode == null) {
     return null;
   }
+
+  const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
   return (
     <PageEditorHOCWrapper

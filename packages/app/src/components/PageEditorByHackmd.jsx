@@ -17,8 +17,8 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -432,8 +432,9 @@ const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, 
 
 const PageEditorByHackmdWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -447,7 +448,7 @@ const PageEditorByHackmdWrapper = (props) => {
       {...props}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
