@@ -149,6 +149,7 @@
     }
   },
   "customize_setting": {
+    "default_sidebar_mode": "デフォルトのサイドバーモード",
     "layout": "レイアウト",
     "layout_options": {
       "default": "デフォルトのコンテンツ幅",
