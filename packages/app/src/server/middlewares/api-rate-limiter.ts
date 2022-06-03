@@ -5,7 +5,7 @@ import { RateLimiterMongo } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
-import { generateApiRateLimitConfig } from '../util/generateApiRateLimitConfig';
+import { generateApiRateLimitConfig } from '../util/api-rate-limit-config/generateApiRateLimitConfig';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
@@ -26,7 +26,11 @@ const opts = {
 const rateLimiter = new RateLimiterMongo(opts);
 
 // generate ApiRateLimitConfig for api rate limiter
-const apiRateLimitConfig = generateApiRateLimitConfig();
+const apiRateLimitConfigWithoutRegExp = generateApiRateLimitConfig(false);
+const apiRateLimitConfigWithRegExp = generateApiRateLimitConfig(true);
+const allRegExp = new RegExp(Object.keys(apiRateLimitConfigWithRegExp).join('|'));
+const keysWithRegExp = Object.keys(apiRateLimitConfigWithRegExp).map(key => new RegExp(key));
+const valuesWithRegExp = Object.values(apiRateLimitConfigWithRegExp);
 
 const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number) => {
   const consumePoints = defaultMaxPoints / points;
@@ -40,7 +44,18 @@ module.exports = () => {
     const endpoint = req.path;
     const key = md5(req.ip + endpoint);
 
-    const customizedConfig = apiRateLimitConfig[endpoint];
+    let customizedConfig;
+    const configForEndpoint = apiRateLimitConfigWithoutRegExp[endpoint];
+    if (configForEndpoint) {
+      customizedConfig = configForEndpoint;
+    }
+    else if (allRegExp.test(endpoint)) {
+      keysWithRegExp.forEach((key, index) => {
+        if (key.test(endpoint)) {
+          customizedConfig = valuesWithRegExp[index];
+        }
+      });
+    }
 
     try {
       if (customizedConfig === undefined) {
