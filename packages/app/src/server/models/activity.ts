@@ -76,7 +76,7 @@ activitySchema.index({
 activitySchema.plugin(mongoosePaginate);
 
 activitySchema.post('save', function() {
-  logger.info('activity has been created', this);
+  logger.debug('activity has been created', this);
 });
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
