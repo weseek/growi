@@ -28,7 +28,7 @@ const rateLimiter = new RateLimiterMongo(opts);
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfigWithoutRegExp = generateApiRateLimitConfig(false);
 const apiRateLimitConfigWithRegExp = generateApiRateLimitConfig(true);
-const allRegExp = new RegExp(Object.keys(apiRateLimitConfigWithRegExp).join(' | '));
+const allRegExp = new RegExp(Object.keys(apiRateLimitConfigWithRegExp).join('|'));
 const keysWithRegExp = Object.keys(apiRateLimitConfigWithRegExp).map(key => new RegExp(key));
 const valuesWithRegExp = Object.values(apiRateLimitConfigWithRegExp);
 
