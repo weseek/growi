@@ -373,13 +373,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const pathRecoveryMenuItemClickHandler = useCallback(async(pageId: string) => {
     try {
-      toastSuccess(t('page_operation.begin_path_recovery'));
+      setRenaming(true);
       await resumeRenameOperation(pageId);
+
+      mutateChildren();
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
+      toastSuccess(t('page_operation.paths_recovered'));
     }
     catch (err) {
       toastError(err);
     }
-  }, [page]);
+    finally {
+      setTimeout(() => {
+        setRenaming(false);
+      }, 1000);
+    }
+  }, []);
 
   // didMount
   useEffect(() => {
