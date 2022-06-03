@@ -28,6 +28,7 @@ const rateLimiter = new RateLimiterMongo(opts);
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfigWithoutRegExp = generateApiRateLimitConfig(false);
 const apiRateLimitConfigWithRegExp = generateApiRateLimitConfig(true);
+const allRegExp = new RegExp(Object.keys(apiRateLimitConfigWithRegExp).join(' | '));
 const keysWithRegExp = Object.keys(apiRateLimitConfigWithRegExp).map(key => new RegExp(key));
 const valuesWithRegExp = Object.values(apiRateLimitConfigWithRegExp);
 
@@ -44,15 +45,16 @@ module.exports = () => {
     const key = md5(req.ip + endpoint);
 
     let customizedConfig;
-    if (keysWithRegExp.some(key => key.test(endpoint))) {
+    const configForEndpoint = apiRateLimitConfigWithoutRegExp[endpoint];
+    if (configForEndpoint) {
+      customizedConfig = configForEndpoint;
+    }
+    else if (allRegExp.test(endpoint)) {
       keysWithRegExp.forEach((key, index) => {
         if (key.test(endpoint)) {
           customizedConfig = valuesWithRegExp[index];
         }
       });
-    }
-    else {
-      customizedConfig = apiRateLimitConfigWithoutRegExp[endpoint];
     }
 
     try {
