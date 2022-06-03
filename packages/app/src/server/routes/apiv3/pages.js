@@ -2,7 +2,7 @@ import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
-
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
@@ -157,6 +157,8 @@ module.exports = (crowi) => {
   const { serializePageSecurely } = require('../../models/serializers/page-serializer');
   const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
   const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const validator = {
     createPage: [
@@ -490,7 +492,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -552,7 +554,31 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    return res.apiv3(result);
+    // return response first
+    res.apiv3(result);
+
+    let activity;
+    try {
+      const activityId = res.locals.activity._id;
+      const parameters = {
+        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+        target: page,
+        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
+      };
+      activity = await crowi.activityService.updateByParameters(activityId, parameters);
+    }
+    catch (err) {
+      logger.error('Update activity failed', err);
+      return res.apiv3Err(err);
+    }
+
+    try {
+      await crowi.inAppNotificationService.createInAppNotification(activity, page);
+    }
+    catch (err) {
+      logger.error('Create InAppNotification failed', err);
+      return res.apiv3Err(err);
+    }
   });
 
   /**
