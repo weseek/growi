@@ -34,8 +34,4 @@ const TrashPageList = () => {
   );
 };
 
-TrashPageList.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-};
-
 export default TrashPageList;

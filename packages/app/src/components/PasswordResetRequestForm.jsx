@@ -63,7 +63,6 @@ const PasswordResetRequestForm = (props) => {
 const PasswordResetRequestFormWrapper = withUnstatedContainers(PasswordResetRequestForm, [AppContainer]);
 
 PasswordResetRequestForm.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
