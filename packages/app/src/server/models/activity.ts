@@ -76,6 +76,10 @@ activitySchema.index({
 }, { unique: true });
 activitySchema.plugin(mongoosePaginate);
 
+activitySchema.post('save', function() {
+  logger.debug('activity has been created', this);
+});
+
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();

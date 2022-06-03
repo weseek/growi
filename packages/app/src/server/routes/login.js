@@ -1,3 +1,4 @@
+import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 // disable all of linting
@@ -5,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
+  const activityService = crowi.activityService;
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
@@ -140,6 +142,15 @@ module.exports = function(crowi, app) {
           if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
             // send mail asynchronous
             sendEmailToAllAdmins(userData);
+          }
+
+          try {
+            const activityId = res.locals.activity._id;
+            const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_REGISTRATION_SUCCESS };
+            await activityService.updateByParameters(activityId, parameters);
+          }
+          catch (err) {
+            logger.error('Update activity failed', err);
           }
 
 
