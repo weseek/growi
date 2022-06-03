@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 
 import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
 
@@ -23,11 +25,16 @@ class FullTextSearchManagement extends React.Component {
 
 }
 
-const FullTextSearchManagementWrapper = withUnstatedContainers(FullTextSearchManagement, [AppContainer]);
-
 FullTextSearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(FullTextSearchManagementWrapper);
+const FullTextSearchManagementWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <FullTextSearchManagement t={t} {...props} />;
+};
+
+const FullTextSearchManagementWrapper = withUnstatedContainers(FullTextSearchManagementWrapperFC, [AppContainer]);
+
+export default FullTextSearchManagementWrapper;
