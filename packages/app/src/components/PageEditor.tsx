@@ -13,8 +13,10 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useIsIndentSizeForced, useSlackChannels } from '~/stores/context';
-import { useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled } from '~/stores/editor';
+import { useIsEditable, useIsIndentSizeForced, useCurrentPagePath } from '~/stores/context';
+import {
+  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled,
+} from '~/stores/editor';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -83,7 +85,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -117,6 +120,8 @@ const PageEditor = (props: Props): JSX.Element => {
       return;
     }
 
+    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+
     const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     try {
@@ -136,7 +141,7 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, markdown, pageContainer, slackChannels]);
+  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer]);
 
 
   /**
