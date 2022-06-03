@@ -14,6 +14,9 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import ImageCropModal from './ImageCropModal';
 
+const DEFAULT_IMAGE = '/images/icons/user.svg';
+
+
 type Props = {
   appContainer: AppContainer,
 }
@@ -147,7 +150,7 @@ const ProfileImageSettings = (props: Props): JSX.Element => {
               { t('Current Image') }
             </label>
             <div className="col-sm-8 col-12">
-              {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
+              <p><img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>
               {uploadedPictureSrc && <button type="button" className="btn btn-danger" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
             </div>
           </div>

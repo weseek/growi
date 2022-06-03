@@ -8,8 +8,6 @@ import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
-const DEFAULT_IMAGE = '/images/icons/user.svg';
-
 /**
  * Service container for personal settings page (PersonalSettings.jsx)
  * @extends {Container} unstated Container
