@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -39,6 +40,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const page = require('./page')(crowi, app);
@@ -77,8 +79,7 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
-  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , apiLimiter , applicationInstalled, addActivity, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
