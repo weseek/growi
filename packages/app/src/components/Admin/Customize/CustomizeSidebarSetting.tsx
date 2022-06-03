@@ -19,28 +19,22 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="form-check">
+          <div className="custom-control custom-radio my-3">
             <input
-              className="form-check-input"
               type="radio"
-              name="flexRadioDefault"
               id="drawerRadioButton"
+              className="custom-control-input"
             />
-            <label className="form-check-label" htmlFor="drawerRadioButton">
-              Drawer Mode
-            </label>
+            <label className="custom-control-label" htmlFor="drawerRadioButton">Drawer Mode</label>
           </div>
 
-          <div className="form-check">
+          <div className="custom-control custom-radio">
             <input
-              className="form-check-input"
               type="radio"
-              name="flexRadioDefault"
               id="dockRadioButton"
+              className="custom-control-input"
             />
-            <label className="form-check-label" htmlFor="dockRadioButton">
-              Dock Mode
-            </label>
+            <label className="custom-control-label" htmlFor="dockRadioButton">Dock Mode</label>
           </div>
 
           <div className="row my-3">
