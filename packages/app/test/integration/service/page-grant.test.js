@@ -476,7 +476,7 @@ describe('PageGrantService', () => {
     test('Only Public is Applicable in case of top page', async() => {
       const result = await pageGrantService.calcApplicableGrantData(rootPage, user1);
 
-      await expect(result).toStrictEqual({ [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null });
+      expect(result).toStrictEqual({ [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null });
     });
 
     // parent property of all private pages is null
@@ -486,7 +486,7 @@ describe('PageGrantService', () => {
       // OnlyMe
       const rootOnlyMePage = await Page.findOne({ path: v4PageRootOnlyMePagePath });
       const rootOnlyMePageRes = await pageGrantService.calcApplicableGrantData(rootOnlyMePage, user1);
-      await expect(rootOnlyMePageRes).toStrictEqual(
+      expect(rootOnlyMePageRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -495,7 +495,7 @@ describe('PageGrantService', () => {
       // AnyoneWithTheLink
       const rootAnyoneWithTheLinkPage = await Page.findOne({ path: v4PageRootAnyoneWithTheLinkPagePath });
       const AnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(rootAnyoneWithTheLinkPage, user1);
-      await expect(AnyoneWithTheLinkRes).toStrictEqual(
+      expect(AnyoneWithTheLinkRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -504,7 +504,7 @@ describe('PageGrantService', () => {
       // OnlyInsideTheGroup
       const rootOnlyInsideTheGroupPage = await Page.findOne({ path: v4PageRootOnlyInsideTheGroupPagePath });
       const onlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(rootOnlyInsideTheGroupPage, user1);
-      await expect(onlyInsideTheGroupRes).toStrictEqual(
+      expect(onlyInsideTheGroupRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -518,7 +518,7 @@ describe('PageGrantService', () => {
       // OnlyMe
       const publicOnlyMePage = await Page.findOne({ path: pagePublicOnlyMePath });
       const publicOnlyMeRes = await pageGrantService.calcApplicableGrantData(publicOnlyMePage, user1);
-      await expect(publicOnlyMeRes).toStrictEqual(
+      expect(publicOnlyMeRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -527,7 +527,7 @@ describe('PageGrantService', () => {
       // AnyoneWithTheLink
       const publicAnyoneWithTheLinkPage = await Page.findOne({ path: pagePublicAnyoneWithTheLinkPath });
       const publicAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(publicAnyoneWithTheLinkPage, user1);
-      await expect(publicAnyoneWithTheLinkRes).toStrictEqual(
+      expect(publicAnyoneWithTheLinkRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -536,7 +536,7 @@ describe('PageGrantService', () => {
       // OnlyInsideTheGroup
       const publicOnlyInsideTheGroupPage = await Page.findOne({ path: pagePublicOnlyInsideTheGroupPath });
       const publicOnlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(publicOnlyInsideTheGroupPage, user1);
-      await expect(publicOnlyInsideTheGroupRes).toStrictEqual(
+      expect(publicOnlyInsideTheGroupRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null, [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
         },
@@ -548,7 +548,7 @@ describe('PageGrantService', () => {
       // Public
       const onlyMePublicPage = await Page.findOne({ path: pageOnlyMePublicPath });
       const onlyMePublicRes = await pageGrantService.calcApplicableGrantData(onlyMePublicPage, user1);
-      await expect(onlyMePublicRes).toStrictEqual(
+      expect(onlyMePublicRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null,
         },
@@ -557,7 +557,7 @@ describe('PageGrantService', () => {
       // AnyoneWithTheLink
       const onlyMeAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyMeAnyoneWithTheLinkPath });
       const onlyMeAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyMeAnyoneWithTheLinkPage, user1);
-      await expect(onlyMeAnyoneWithTheLinkRes).toStrictEqual(
+      expect(onlyMeAnyoneWithTheLinkRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null,
         },
@@ -566,7 +566,7 @@ describe('PageGrantService', () => {
       // OnlyInsideTheGroup
       const publicOnlyInsideTheGroupPage = await Page.findOne({ path: pageOnlyMeOnlyInsideTheGroupPath });
       const publicOnlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(publicOnlyInsideTheGroupPage, user1);
-      await expect(publicOnlyInsideTheGroupRes).toStrictEqual(
+      expect(publicOnlyInsideTheGroupRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null,
         },
@@ -579,7 +579,7 @@ describe('PageGrantService', () => {
       // Public
       const onlyInsideGroupPublicPage = await Page.findOne({ path: pageOnlyInsideTheGroupPublicPath });
       const onlyInsideGroupPublicRes = await pageGrantService.calcApplicableGrantData(onlyInsideGroupPublicPage, user1);
-      await expect(onlyInsideGroupPublicRes).toStrictEqual(
+      expect(onlyInsideGroupPublicRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
         },
@@ -588,7 +588,7 @@ describe('PageGrantService', () => {
       // OnlyMe
       const onlyInsideTheGroupOnlyMePage = await Page.findOne({ path: pageOnlyInsideTheGroupOnlyMePath });
       const onlyInsideTheGroupOnlyMeRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupOnlyMePage, user1);
-      await expect(onlyInsideTheGroupOnlyMeRes).toStrictEqual(
+      expect(onlyInsideTheGroupOnlyMeRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
         },
@@ -597,13 +597,11 @@ describe('PageGrantService', () => {
       // AnyoneWithTheLink
       const onlyInsideTheGroupAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyInsideTheGroupAnyoneWithTheLinkPath });
       const onlyInsideTheGroupAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupAnyoneWithTheLinkPage, user1);
-      await expect(onlyInsideTheGroupAnyoneWithTheLinkRes).toStrictEqual(
+      expect(onlyInsideTheGroupAnyoneWithTheLinkRes).toStrictEqual(
         {
           [PageGrant.GRANT_RESTRICTED]: null, [PageGrant.GRANT_OWNER]: null, [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
         },
       );
     });
   });
-
-
 });
