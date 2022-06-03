@@ -62,7 +62,9 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
   window.location.href = url.href;
 };
 
-
+/**
+ * send request to fix broken paths caused by unexpected events such as server shutdown while renaming page paths
+ */
 export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   try {
     await apiv3Post('/pages/resume-rename', { pageId });
