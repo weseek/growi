@@ -371,7 +371,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
-  const pathRecoveryMenuItemClickHandler = useCallback(async(pageId: string) => {
+  const pathRecoveryMenuItemClickHandler = useCallback(async(pageId: string): Promise<void> => {
     try {
       setRenaming(true);
       await resumeRenameOperation(pageId);
