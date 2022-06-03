@@ -1,197 +1,185 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import md5 from 'md5';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiPost } from '~/client/util/apiv1-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { useCurrentUser } from '~/stores/context';
+import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-
 import ImageCropModal from './ImageCropModal';
 
-class ProfileImageSettings extends React.Component {
+type Props = {
+  appContainer: AppContainer,
+}
 
-  constructor(appContainer) {
-    super();
+const ProfileImageSettings = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
 
-    this.state = {
-      show: false,
-      src: null,
-    };
+  const { appContainer } = props;
 
-    this.imageRef = null;
-    this.onSelectFile = this.onSelectFile.bind(this);
-    this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.cancelModal = this.cancelModal.bind(this);
-    this.onCropCompleted = this.onCropCompleted.bind(this);
-    this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
+  const { data: currentUser } = useCurrentUser();
 
-  async onClickSubmit() {
-    const { t, personalContainer } = this.props;
+  const [isGravatarEnabled, setGravatarEnabled] = useState(currentUser?.isGravatarEnabled);
+  const [uploadedPictureSrc, setUploadedPictureSrc] = useState(() => {
+    if (typeof currentUser?.imageAttachment === 'string') {
+      return currentUser?.image;
+    }
+    return currentUser?.imageAttachment?.filePathProxied ?? currentUser?.image;
+  });
 
+  const [showImageCropModal, setShowImageCropModal] = useState(false);
+  const [imageCropSrc, setImageCropSrc] = useState<string|ArrayBuffer|null>(null);
+
+  const selectFileHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files == null || e.target.files.length === 0) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => setImageCropSrc(reader.result));
+    reader.readAsDataURL(e.target.files[0]);
+
+    setShowImageCropModal(true);
+  }, []);
+
+  const cropCompletedHandler = useCallback(async(croppedImage) => {
     try {
-      await personalContainer.updateProfileImage();
+      const formData = new FormData();
+      formData.append('file', croppedImage);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      formData.append('_csrf', appContainer.csrfToken!);
+      const response = await apiPost('/attachments.uploadProfileImage', formData);
+
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setUploadedPictureSrc((response as any).attachment.filePathProxied);
+
+      // close modal
+      setShowImageCropModal(false);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.csrfToken, t]);
+
+  const deleteImageHandler = useCallback(async() => {
+    try {
+      await apiPost('/attachments.removeProfileImage');
+
+      setUploadedPictureSrc(undefined);
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t]);
+
+  const submit = useCallback(async() => {
+    try {
+      const response = await apiv3Put('/personal-setting/image-type', { isGravatarEnabled });
+
+      const { userData } = response.data;
+      setGravatarEnabled(userData.isGravatarEnabled);
+
       toastSuccess(t('toaster.update_successed', { target: t('Set Profile Image') }));
     }
     catch (err) {
       toastError(err);
     }
+  }, [isGravatarEnabled, t]);
+
+  if (currentUser == null) {
+    return <></>;
   }
 
-  generateGravatarSrc() {
-    const email = this.props.personalContainer.state.email || '';
-    const hash = md5(email.trim().toLowerCase());
-    return `https://gravatar.com/avatar/${hash}`;
-  }
-
-  onSelectFile(e) {
-    if (e.target.files && e.target.files.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => this.setState({ src: reader.result }));
-      reader.readAsDataURL(e.target.files[0]);
-      this.setState({ show: true });
-    }
-  }
-
-  /**
-   * @param {object} croppedImage cropped profile image for upload
-   */
-  async onCropCompleted(croppedImage) {
-    const { t, personalContainer } = this.props;
-    try {
-      await personalContainer.uploadAttachment(croppedImage);
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    this.hideModal();
-  }
-
-  async onClickDeleteBtn() {
-    const { t, personalContainer } = this.props;
-    try {
-      await personalContainer.deleteProfileImage();
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  showModal() {
-    this.setState({ show: true });
-  }
-
-  hideModal() {
-    this.setState({ show: false });
-  }
-
-  cancelModal() {
-    this.hideModal();
-  }
-
-  render() {
-    const { t, personalContainer } = this.props;
-    const { uploadedPictureSrc, isGravatarEnabled, isUploadedPicture } = personalContainer.state;
-
-    return (
-      <React.Fragment>
-        <div className="row">
-          <div className="col-md-6 col-12 mb-3 mb-md-0">
-            <h4>
-              <div className="custom-control custom-radio radio-primary">
-                <input
-                  type="radio"
-                  id="radioGravatar"
-                  className="custom-control-input"
-                  form="formImageType"
-                  name="imagetypeForm[isGravatarEnabled]"
-                  checked={isGravatarEnabled}
-                  onChange={() => { personalContainer.changeIsGravatarEnabled(true) }}
-                />
-                <label className="custom-control-label" htmlFor="radioGravatar">
-                  <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" data-hide-in-vrt /> Gravatar
-                </label>
-                <a href="https://gravatar.com/">
-                  <small><i className="icon-arrow-right-circle" aria-hidden="true"></i></small>
-                </a>
-              </div>
-            </h4>
-            <img src={this.generateGravatarSrc()} width="64" data-hide-in-vrt />
-          </div>
-
-          <div className="col-md-6 col-12">
-            <h4>
-              <div className="custom-control custom-radio radio-primary">
-                <input
-                  type="radio"
-                  id="radioUploadPicture"
-                  className="custom-control-input"
-                  form="formImageType"
-                  name="imagetypeForm[isGravatarEnabled]"
-                  checked={!isGravatarEnabled}
-                  onChange={() => { personalContainer.changeIsGravatarEnabled(false) }}
-                />
-                <label className="custom-control-label" htmlFor="radioUploadPicture">
-                  { t('Upload Image') }
-                </label>
-              </div>
-            </h4>
-            <div className="row mb-3">
-              <label className="col-sm-4 col-12 col-form-label text-left">
-                { t('Current Image') }
+  return (
+    <>
+      <div className="row">
+        <div className="col-md-6 col-12 mb-3 mb-md-0">
+          <h4>
+            <div className="custom-control custom-radio radio-primary">
+              <input
+                type="radio"
+                id="radioGravatar"
+                className="custom-control-input"
+                form="formImageType"
+                name="imagetypeForm[isGravatarEnabled]"
+                checked={isGravatarEnabled}
+                onChange={() => setGravatarEnabled(true)}
+              />
+              <label className="custom-control-label" htmlFor="radioGravatar">
+                <img src={GRAVATAR_DEFAULT} data-hide-in-vrt /> Gravatar
               </label>
-              <div className="col-sm-8 col-12">
-                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
-                {isUploadedPicture && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Image') }</button>}
-              </div>
+              <a href="https://gravatar.com/">
+                <small><i className="icon-arrow-right-circle" aria-hidden="true"></i></small>
+              </a>
             </div>
-            <div className="row">
-              <label className="col-sm-4 col-12 col-form-label text-left">
-                {t('Upload new image')}
+          </h4>
+          <img src={generateGravatarSrc(currentUser.email)} width="64" data-hide-in-vrt />
+        </div>
+
+        <div className="col-md-6 col-12">
+          <h4>
+            <div className="custom-control custom-radio radio-primary">
+              <input
+                type="radio"
+                id="radioUploadPicture"
+                className="custom-control-input"
+                form="formImageType"
+                name="imagetypeForm[isGravatarEnabled]"
+                checked={!isGravatarEnabled}
+                onChange={() => setGravatarEnabled(false)}
+              />
+              <label className="custom-control-label" htmlFor="radioUploadPicture">
+                { t('Upload Image') }
               </label>
-              <div className="col-sm-8 col-12">
-                <input type="file" onChange={this.onSelectFile} name="profileImage" accept="image/*" />
-              </div>
+            </div>
+          </h4>
+          <div className="row mb-3">
+            <label className="col-sm-4 col-12 col-form-label text-left">
+              { t('Current Image') }
+            </label>
+            <div className="col-sm-8 col-12">
+              {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
+              {uploadedPictureSrc && <button type="button" className="btn btn-danger" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
+            </div>
+          </div>
+          <div className="row">
+            <label className="col-sm-4 col-12 col-form-label text-left">
+              {t('Upload new image')}
+            </label>
+            <div className="col-sm-8 col-12">
+              <input type="file" onChange={selectFileHandler} name="profileImage" accept="image/*" />
             </div>
           </div>
         </div>
+      </div>
 
-        <ImageCropModal
-          show={this.state.show}
-          src={this.state.src}
-          onModalClose={this.cancelModal}
-          onCropCompleted={this.onCropCompleted}
-        />
+      <ImageCropModal
+        show={showImageCropModal}
+        src={imageCropSrc}
+        onModalClose={() => setShowImageCropModal(false)}
+        onCropCompleted={cropCompletedHandler}
+      />
 
-        <div className="row my-3">
-          <div className="offset-4 col-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
-              {t('Update')}
-            </button>
-          </div>
+      <div className="row my-3">
+        <div className="offset-4 col-5">
+          <button type="button" className="btn btn-primary" onClick={submit}>
+            {t('Update')}
+          </button>
         </div>
+      </div>
 
-      </React.Fragment>
-    );
-  }
+    </>
+  );
 
-}
-
-
-const ProfileImageSettingsWrapper = withUnstatedContainers(ProfileImageSettings, [AppContainer, PersonalContainer]);
-
-ProfileImageSettings.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
-export default withTranslation()(ProfileImageSettingsWrapper);
+export default withUnstatedContainers(ProfileImageSettings, [AppContainer]);

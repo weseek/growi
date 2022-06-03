@@ -29,8 +29,6 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en_US',
       isGravatarEnabled: false,
-      isUploadedPicture: false,
-      uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       apiToken: '',
       slackMemberId: '',
@@ -67,25 +65,6 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to fetch personal data');
     }
-  }
-
-  /**
-   * define a function for uploaded picture
-   */
-  getUploadedPictureSrc(user) {
-    if (user == null) {
-      return DEFAULT_IMAGE;
-    }
-    if (user.image) {
-      this.setState({ isUploadedPicture: true });
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      this.setState({ isUploadedPicture: true });
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
   }
 
   /**
@@ -175,60 +154,6 @@ export default class PersonalContainer extends Container {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to update personal data');
-    }
-  }
-
-  /**
-   * Update profile image
-   * @memberOf PersonalContainer
-   */
-  async updateProfileImage() {
-    try {
-      const response = await apiv3Put('/personal-setting/image-type', {
-        isGravatarEnabled: this.state.isGravatarEnabled,
-      });
-      const { userData } = response.data;
-      this.setState({
-        isGravatarEnabled: userData.isGravatarEnabled,
-      });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to update profile image');
-    }
-  }
-
-  /**
-   * Upload image
-   */
-  async uploadAttachment(file) {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('_csrf', this.appContainer.csrfToken);
-      const response = await apiPost('/attachments.uploadProfileImage', formData);
-      this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to upload profile image');
-    }
-  }
-
-  /**
-   * Delete image
-   */
-  async deleteProfileImage() {
-    try {
-      await apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
-      this.setState({ isUploadedPicture: false, uploadedPictureSrc: DEFAULT_IMAGE });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to delete profile image');
     }
   }
 
