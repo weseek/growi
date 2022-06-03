@@ -9,7 +9,6 @@ import {
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
-import activityEvent from '../events/activity';
 
 import Subscription from './subscription';
 
@@ -76,6 +75,9 @@ activitySchema.index({
 }, { unique: true });
 activitySchema.plugin(mongoosePaginate);
 
+activitySchema.post('save', function() {
+  logger.debug('activity has been created', this);
+});
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
@@ -98,18 +100,6 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   }).distinct('_id');
   return activeNotificationUsers;
 };
-
-activitySchema.post('save', async(savedActivity: ActivityDocument) => {
-  let targetUsers: Types.ObjectId[] = [];
-  try {
-    targetUsers = await savedActivity.getNotificationTargetUsers();
-  }
-  catch (err) {
-    logger.error(err);
-  }
-
-  activityEvent.emit('create', targetUsers, savedActivity);
-});
 
 activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
   const paginateResult = await this.paginate(

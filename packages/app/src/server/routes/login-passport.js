@@ -1,3 +1,4 @@
+import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
@@ -8,6 +9,7 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
+  const activityService = crowi.activityService;
   const ApiResponse = require('../util/apiResponse');
 
   /**
@@ -15,7 +17,7 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginSuccessHandler = (req, res, user) => {
+  const loginSuccessHandler = async(req, res, user) => {
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -27,7 +29,18 @@ module.exports = function(crowi, app) {
     const { redirectTo } = req.session;
     // remove session.redirectTo
     delete req.session.redirectTo;
-    return res.safeRedirect(redirectTo);
+
+    // return response first
+    res.safeRedirect(redirectTo);
+
+    try {
+      const activityId = res.locals.activity._id;
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_SUCCESS };
+      await activityService.updateByParameters(activityId, parameters);
+    }
+    catch (err) {
+      logger.error('Update activity failed', err);
+    }
   };
 
   /**
@@ -35,9 +48,20 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginFailureHandler = (req, res, message) => {
+  const loginFailureHandler = async(req, res, message) => {
     req.flash('errorMessage', message || req.t('message.sign_in_failure'));
-    return res.redirect('/login');
+
+    // return response first
+    res.redirect('/login');
+
+    try {
+      const activityId = res.locals.activity._id;
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_FAILURE };
+      await activityService.updateByParameters(activityId, parameters);
+    }
+    catch (err) {
+      logger.error('Update activity failed', err);
+    }
   };
 
   /**
