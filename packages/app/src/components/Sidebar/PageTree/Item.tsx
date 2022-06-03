@@ -465,7 +465,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               { (isRenaming || (existRenameProcessData && !isRenameProcessable)) && (
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
               )}
-              { (!isRenaming && page.processData?.Rename?.isProcessable) && (
+              { (!isRenaming && isRenameProcessable) && (
                 <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
