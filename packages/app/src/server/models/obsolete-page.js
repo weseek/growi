@@ -664,7 +664,6 @@ export const getPageSchema = (crowi) => {
 
     pageData.revision = newRevision;
     pageData.lastUpdateUser = user;
-    pageData.updatedAt = Date.now();
 
     return pageData.save();
   }

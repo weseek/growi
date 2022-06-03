@@ -534,9 +534,8 @@ class PageService {
     update.parent = newParent._id;
     if (updateMetadata) {
       update.lastUpdateUser = user;
-      update.updatedAt = new Date();
     }
-    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true, timestamps: updateMetadata });
 
     // create page redirect
     if (options.createRedirectPage) {
@@ -670,9 +669,8 @@ class PageService {
     update.path = newPagePath;
     if (updateMetadata) {
       update.lastUpdateUser = user;
-      update.updatedAt = Date.now();
     }
-    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true, timestamps: updateMetadata });
 
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });

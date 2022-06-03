@@ -102,11 +102,10 @@ const schema = new Schema<PageDocument, PageModel>({
   pageIdOnHackmd: { type: String },
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: new Date() },
-  updatedAt: { type: Date, default: new Date() },
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
 }, {
+  timestamps: true,
   toJSON: { getters: true },
   toObject: { getters: true },
 });
@@ -767,7 +766,6 @@ export async function pushRevision(pageData, newRevision, user) {
 
   pageData.revision = newRevision;
   pageData.lastUpdateUser = user?._id ?? user;
-  pageData.updatedAt = Date.now();
 
   return pageData.save();
 }
