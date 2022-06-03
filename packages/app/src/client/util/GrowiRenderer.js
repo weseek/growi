@@ -40,9 +40,9 @@ export default class GrowiRenderer {
     }
     else {
       this.preProcessors = [
-        new EasyGrid(appContainer),
-        new Linker(appContainer),
-        new CsvToTable(appContainer),
+        new EasyGrid(),
+        new Linker(),
+        new CsvToTable(),
         new XssFilter(appContainer),
       ];
       this.postProcessors = [
@@ -70,10 +70,10 @@ export default class GrowiRenderer {
     this.markdownItConfigurers = [
       new LinkerByRelativePathConfigurer(appContainer),
       new TaskListsConfigurer(appContainer),
-      new HeaderConfigurer(appContainer),
-      new EmojiConfigurer(appContainer),
+      new HeaderConfigurer(),
+      new EmojiConfigurer(),
       new MathJaxConfigurer(appContainer),
-      new DrawioViewerConfigurer(appContainer),
+      new DrawioViewerConfigurer(),
       new PlantUMLConfigurer(appContainer),
       new BlockdiagConfigurer(appContainer),
     ];
@@ -81,29 +81,27 @@ export default class GrowiRenderer {
     // add configurers according to mode
     switch (mode) {
       case 'page': {
-        const pageContainer = appContainer.getContainer('PageContainer');
-
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(appContainer),
+          new FooternoteConfigurer(),
           new TocAndAnchorConfigurer(),
-          new HeaderLineNumberConfigurer(appContainer),
-          new HeaderWithEditLinkConfigurer(appContainer),
-          new TableWithHandsontableButtonConfigurer(appContainer),
+          new HeaderLineNumberConfigurer(),
+          new HeaderWithEditLinkConfigurer(),
+          new TableWithHandsontableButtonConfigurer(),
         ]);
         break;
       }
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(appContainer),
-          new HeaderLineNumberConfigurer(appContainer),
-          new TableConfigurer(appContainer),
+          new FooternoteConfigurer(),
+          new HeaderLineNumberConfigurer(),
+          new TableConfigurer(),
         ]);
         break;
       // case 'comment':
       //   break;
       default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(appContainer),
+          new TableConfigurer(),
         ]);
         break;
     }
