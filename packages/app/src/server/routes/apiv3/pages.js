@@ -151,6 +151,8 @@ module.exports = (crowi) => {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
+  const activtyEvent = crowi.event('activity');
+
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -554,31 +556,15 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    // return response first
-    res.apiv3(result);
+    const activityId = res.locals.activity._id;
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
+    };
+    activtyEvent.emit('update', activityId, parameters, page);
 
-    let activity;
-    try {
-      const activityId = res.locals.activity._id;
-      const parameters = {
-        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-        target: page,
-        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
-      };
-      activity = await crowi.activityService.updateByParameters(activityId, parameters);
-    }
-    catch (err) {
-      logger.error('Update activity failed', err);
-      return res.apiv3Err(err);
-    }
-
-    try {
-      await crowi.inAppNotificationService.createInAppNotification(activity, page);
-    }
-    catch (err) {
-      logger.error('Create InAppNotification failed', err);
-      return res.apiv3Err(err);
-    }
+    return res.apiv3(result);
   });
 
   /**

@@ -10,23 +10,17 @@ const express = require('express');
 const router = express.Router();
 
 module.exports = (crowi) => {
-  const activityService = crowi.activityService;
+  const activtyEvent = crowi.event('activity');
   const addActivity = generateAddActivityMiddleware(crowi);
 
   router.post('/', addActivity, async(req, res) => {
     req.session.destroy();
 
-    // return response first
-    res.send();
+    const activityId = res.locals.activity._id;
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGOUT };
+    activtyEvent.emit('update', activityId, parameters);
 
-    try {
-      const activityId = res.locals.activity._id;
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGOUT };
-      await activityService.updateByParameters(activityId, parameters);
-    }
-    catch (err) {
-      logger.error('Update activity failed', err);
-    }
+    return res.send();
   });
 
   return router;
