@@ -1292,6 +1292,13 @@ module.exports = function(crowi, app) {
     const result = {};
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     return res.json(ApiResponse.success(result));
   };
 
