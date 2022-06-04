@@ -155,26 +155,6 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
 
-    // delete
-    this.pageEvent.on('delete', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
     // revert
     this.pageEvent.on('revert', async(page, user) => {
       try {
@@ -1403,7 +1383,7 @@ class PageService {
         throw err;
       }
     }
-    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('delete');
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1465,7 +1445,7 @@ class PageService {
       }
     }
 
-    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('delete');
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1679,7 +1659,7 @@ class PageService {
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
+      this.pageEvent.emit('deleteCompletely');
     }
 
     if (isRecursively) {
@@ -1728,7 +1708,7 @@ class PageService {
     }
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
+      this.pageEvent.emit('deleteCompletely');
     }
 
     return;

@@ -1234,6 +1234,13 @@ module.exports = function(crowi, app) {
     result.isRecursively = isRecursively;
     result.isCompletely = isCompletely;
 
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: isCompletely ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     res.json(ApiResponse.success(result));
 
     try {
