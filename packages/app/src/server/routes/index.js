@@ -186,8 +186,8 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
   apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);

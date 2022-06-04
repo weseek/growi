@@ -44,15 +44,6 @@ class CommentService {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
-
-        const page = await Page.findById(savedComment.page);
-        if (page == null) {
-          logger.error('Page is not found');
-          return;
-        }
-
-        const activity = await this.createActivity(user, savedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -64,7 +55,6 @@ class CommentService {
     this.commentEvent.on('update', async(user, updatedComment) => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(user, updatedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -114,7 +104,7 @@ class CommentService {
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
-  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+  getMentionedUsers = async function(commentId: Types.ObjectId): Promise<Types.ObjectId[]> {
     const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 

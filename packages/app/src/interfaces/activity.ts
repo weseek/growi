@@ -3,6 +3,7 @@ import { IUser } from './user';
 
 // Model
 const MODEL_PAGE = 'Page';
+const MODEL_COMMENT = 'Comment';
 
 // Action
 const ACTION_UNSETTLED = 'UNSETTLED';
@@ -26,6 +27,10 @@ const ACTION_COMMENT_UPDATE = 'COMMENT_UPDATE';
 
 export const SUPPORTED_TARGET_MODEL_TYPE = {
   MODEL_PAGE,
+} as const;
+
+export const SUPPORTED_EVENT_MODEL_TYPE = {
+  MODEL_COMMENT,
 } as const;
 
 export const SUPPORTED_ACTION_TYPE = {
@@ -58,11 +63,11 @@ export const SUPPORTED_ACTION_TO_NOTIFIED_TYPE = {
   ACTION_PAGE_DELETE_COMPLETELY,
   ACTION_PAGE_REVERT,
   ACTION_COMMENT_CREATE,
-  ACTION_COMMENT_UPDATE,
 } as const;
 
 
 export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
+export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
 
@@ -89,17 +94,20 @@ export const CommentActions = Object.values({
 
 
 export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof typeof SUPPORTED_TARGET_MODEL_TYPE];
+export type SupportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
 
 export type ISnapshot = Partial<Pick<IUser, 'username'>>
 
 export type IActivity = {
-  user?: IUser
+  user?: string
   ip?: string
   endpoint?: string
   targetModel?: SupportedTargetModelType
   target?: string
+  eventModel?: SupportedEventModelType
+  event?: string
   action: SupportedActionType
   createdAt: Date
   snapshot?: ISnapshot
