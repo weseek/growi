@@ -286,7 +286,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
@@ -326,6 +326,13 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: createdPage,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     res.apiv3(result, 201);
 
     try {
@@ -349,21 +356,6 @@ module.exports = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
-    }
-
-    // create activity
-    try {
-      const parameters = {
-        user: req.user._id,
-        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-        target: createdPage,
-        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
-        snapshot: { username: req.user.username },
-      };
-      await crowi.activityService.createByParameters(parameters);
-    }
-    catch (err) {
-      logger.error('Failed to create activity', err);
     }
 
     // create subscription
