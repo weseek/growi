@@ -991,13 +991,12 @@ module.exports = function(crowi, app) {
       }
     }
 
-    const activityId = res.locals.activity._id;
     const parameters = {
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', activityId, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
   };
 
   /**

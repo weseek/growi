@@ -245,7 +245,7 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-      commentEvent.emit('create', req.user, createdComment);
+      commentEvent.emit('create', createdComment);
     }
     catch (err) {
       logger.error(err);
@@ -260,7 +260,6 @@ module.exports = function(crowi, app) {
       },
     );
 
-    const activityId = res.locals.activity._id;
     const parameters = {
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: page,
@@ -268,7 +267,7 @@ module.exports = function(crowi, app) {
       event: createdComment,
       action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE,
     };
-    activityEvent.emit('update', activityId, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
@@ -391,7 +390,7 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
-      commentEvent.emit('update', req.user, updatedComment);
+      commentEvent.emit('update', updatedComment);
     }
     catch (err) {
       logger.error(err);

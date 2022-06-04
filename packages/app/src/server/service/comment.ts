@@ -1,13 +1,6 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import {
-  SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, SupportedActionType, ISnapshot,
-} from '~/interfaces/activity';
-import { IPage } from '~/interfaces/page';
-import { IUserHasId } from '~/interfaces/user';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
@@ -39,7 +32,7 @@ class CommentService {
 
   initCommentEventListeners(): void {
     // create
-    this.commentEvent.on('create', async(user, savedComment) => {
+    this.commentEvent.on('create', async(savedComment) => {
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
@@ -52,7 +45,7 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(user, updatedComment) => {
+    this.commentEvent.on('update', async() => {
       try {
         this.commentEvent.onUpdate();
       }
@@ -75,36 +68,7 @@ class CommentService {
     });
   }
 
-  private createActivity = async function(user: IUserHasId, target: IPage, action: SupportedActionType) {
-    const snapshot: ISnapshot = { username: user.username };
-    const parameters = {
-      user: user._id,
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target,
-      action,
-      snapshot,
-    };
-    const activity = await this.activityService.createByParameters(parameters);
-    return activity;
-  };
-
-  private createAndSendNotifications = async function(activity, page: IPage) {
-
-    // Get user to be notified
-    let targetUsers: Types.ObjectId[] = [];
-    targetUsers = await activity.getNotificationTargetUsers();
-
-    // Create and send notifications
-    const snapshot = stringifySnapshot(page);
-    // Add mentioned users to targetUsers
-    const mentionedUsers = await this.getMentionedUsers(activity.event);
-    targetUsers = targetUsers.concat(mentionedUsers);
-
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
-    await this.inAppNotificationService.emitSocketIo(targetUsers);
-  };
-
-  getMentionedUsers = async function(commentId: Types.ObjectId): Promise<Types.ObjectId[]> {
+  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
     const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 

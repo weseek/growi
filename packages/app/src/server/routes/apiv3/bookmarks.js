@@ -310,13 +310,12 @@ module.exports = (crowi) => {
       bookmark.depopulate('user');
     }
 
-    const activityId = res.locals.activity._id;
     const parameters = {
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
       target: page,
       action: bool ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK : SUPPORTED_ACTION_TYPE.ACTION_PAGE_UNBOOKMARK,
     };
-    activityEvent.emit('update', activityId, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     return res.apiv3({ bookmark });
   });
