@@ -155,19 +155,6 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
 
-    // update
-    this.pageEvent.on('update', async(page, user) => {
-
-      this.pageEvent.onUpdate();
-
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {

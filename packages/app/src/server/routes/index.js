@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
+  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, addActivity, page.api.update);
   apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);

@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
+import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -156,6 +157,8 @@ module.exports = function(crowi, app) {
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
+
+  const activityEvent = crowi.event('activity');
 
   const XssOption = require('~/services/xss/xssOption');
   const Xss = require('~/services/xss/index');
@@ -987,6 +990,14 @@ module.exports = function(crowi, app) {
         logger.error('Create user notification failed', err);
       }
     }
+
+    const activityId = res.locals.activity._id;
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE,
+    };
+    activityEvent.emit('update', activityId, parameters, page);
   };
 
   /**
