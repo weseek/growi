@@ -10,7 +10,7 @@ const express = require('express');
 const router = express.Router();
 
 module.exports = (crowi) => {
-  const activtyEvent = crowi.event('activity');
+  const activityEvent = crowi.event('activity');
   const addActivity = generateAddActivityMiddleware(crowi);
 
   router.post('/', addActivity, async(req, res) => {
@@ -18,7 +18,7 @@ module.exports = (crowi) => {
 
     const activityId = res.locals.activity._id;
     const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGOUT };
-    activtyEvent.emit('update', activityId, parameters);
+    activityEvent.emit('update', activityId, parameters);
 
     return res.send();
   });

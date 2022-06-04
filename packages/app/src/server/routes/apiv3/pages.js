@@ -151,7 +151,7 @@ module.exports = (crowi) => {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
-  const activtyEvent = crowi.event('activity');
+  const activityEvent = crowi.event('activity');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
@@ -562,7 +562,7 @@ module.exports = (crowi) => {
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
     };
-    activtyEvent.emit('update', activityId, parameters, page);
+    activityEvent.emit('update', activityId, parameters, page);
 
     return res.apiv3(result);
   });

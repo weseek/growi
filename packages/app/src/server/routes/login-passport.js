@@ -10,7 +10,7 @@ module.exports = function(crowi, app) {
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
 
-  const activtyEvent = crowi.event('activity');
+  const activityEvent = crowi.event('activity');
 
   const ApiResponse = require('../util/apiResponse');
 
@@ -33,7 +33,7 @@ module.exports = function(crowi, app) {
     delete req.session.redirectTo;
 
     const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_SUCCESS };
-    activtyEvent.emit('update', res.locals.activity._id, parameters);
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.safeRedirect(redirectTo);
   };
@@ -47,7 +47,7 @@ module.exports = function(crowi, app) {
     req.flash('errorMessage', message || req.t('message.sign_in_failure'));
 
     const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_FAILURE };
-    activtyEvent.emit('update', res.locals.activity._id, parameters);
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.redirect('/login');
   };
