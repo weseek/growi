@@ -903,6 +903,7 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
+    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -996,6 +997,7 @@ class PageService {
     const createdPage = await this.crowi.pageService.create(
       newPagePath, page.revision.body, user, options,
     );
+    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
@@ -1349,7 +1351,7 @@ class PageService {
         throw err;
       }
     }
-    this.pageEvent.emit('delete');
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1411,7 +1413,7 @@ class PageService {
       }
     }
 
-    this.pageEvent.emit('delete');
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1625,7 +1627,7 @@ class PageService {
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely');
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     if (isRecursively) {
@@ -1674,7 +1676,7 @@ class PageService {
     }
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely');
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
