@@ -155,16 +155,6 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
 
-    // duplicate
-    this.pageEvent.on('duplicate', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
@@ -967,7 +957,6 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
-    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -1061,7 +1050,6 @@ class PageService {
     const createdPage = await this.crowi.pageService.create(
       newPagePath, page.revision.body, user, options,
     );
-    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
