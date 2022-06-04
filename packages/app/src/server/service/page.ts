@@ -154,16 +154,6 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
-
-    // bookmark
-    this.pageEvent.on('bookmark', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
   }
 
   canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
