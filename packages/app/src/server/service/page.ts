@@ -155,16 +155,6 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
 
-    // likes
-    this.pageEvent.on('like', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
