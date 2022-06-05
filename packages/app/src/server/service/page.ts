@@ -262,7 +262,7 @@ class PageService {
       authority: IPageDeleteConfigValueToProcessValidation | null,
       recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
-    const isAdmin = operator.admin;
+    const isAdmin = operator?.admin ?? false;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
 
     if (isRecursively) {
@@ -2297,7 +2297,7 @@ class PageService {
         grantedUsers: notEmptyParent.grantedUsers,
       };
 
-      systematicallyCreatedPage = await this.createBySystem(
+      systematicallyCreatedPage = await this.forceCreateBySystem(
         path,
         '',
         options,
@@ -3371,7 +3371,7 @@ class PageService {
     return savedPage;
   }
 
-  private async canProcessCreateBySystem(
+  private async canProcessForceCreateBySystem(
       path: string,
       grantData: {
         grant: number,
@@ -3382,7 +3382,15 @@ class PageService {
     return this.canProcessCreate(path, grantData, false);
   }
 
-  async createBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
+  /**
+   * @private
+   * This method receives the same arguments as the PageService.create method does except for the added type '{ grantedUsers?: ObjectIdLike[] }'.
+   * This additional value is used to determine the grantedUser of the page to be created by system.
+   * This method must not run isGrantNormalized method to validate grant. **If necessary, run it before use this method.**
+   * -- Reason 1: This is because it is not expected to use this method when the grant validation is required.
+   * -- Reason 2: This is because it is not expected to use this method when the program cannot determine the operator.
+   */
+  private async forceCreateBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -3412,9 +3420,9 @@ class PageService {
     if (isGrantOwner && grantedUsers?.length !== 1) {
       throw Error('grantedUser must exist when grant is GRANT_OWNER');
     }
-    const canProcessCreateBySystem = await this.canProcessCreateBySystem(path, grantData);
-    if (!canProcessCreateBySystem) {
-      throw Error('Cannnot process createBySystem');
+    const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
+    if (!canProcessForceCreateBySystem) {
+      throw Error('Cannnot process forceCreateBySystem');
     }
 
     // Prepare a page document

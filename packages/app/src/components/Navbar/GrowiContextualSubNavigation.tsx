@@ -98,6 +98,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
+        data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -108,6 +109,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
+        data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -133,6 +135,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={openPageTemplateModalHandler}
         className="grw-page-control-dropdown-item"
+        data-testid="open-page-template-modal-btn"
       >
         <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
         { t('template.option_label.create/edit') }

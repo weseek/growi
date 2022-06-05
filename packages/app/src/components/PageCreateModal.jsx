@@ -12,6 +12,7 @@ import { debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -26,13 +27,15 @@ const PageCreateModal = (props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
 
+  const { data: currentUser } = useCurrentUser();
+
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const pathname = path || '';
-  const userPageRootPath = userPageRoot(appContainer.currentUser);
+  const userPageRootPath = userPageRoot(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');

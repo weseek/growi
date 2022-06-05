@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +9,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -448,8 +448,9 @@ PageEditorByHackmd.propTypes = {
 const PageEditorByHackmdWrapper = (props) => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -464,7 +465,7 @@ const PageEditorByHackmdWrapper = (props) => {
       t={t}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
