@@ -85,6 +85,7 @@ describe('Test page service methods', () => {
     const pageId4 = new mongoose.Types.ObjectId();
     const pageId5 = new mongoose.Types.ObjectId();
     const pageId6 = new mongoose.Types.ObjectId();
+    const pageId7 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -157,6 +158,16 @@ describe('Test page service methods', () => {
         descendantCount: 0,
         isEmpty: false,
       },
+      {
+        _id: pageId7,
+        path: '/POP2',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 0,
+        isEmpty: false,
+      },
     ]);
 
     /**
@@ -164,8 +175,10 @@ describe('Test page service methods', () => {
      */
     const pageOpId1 = new mongoose.Types.ObjectId();
     const pageOpId2 = new mongoose.Types.ObjectId();
+    const pageOpId3 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId2 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId3 = new mongoose.Types.ObjectId();
     await PageOperation.insertMany([
       {
         _id: pageOpId1,
@@ -209,6 +222,35 @@ describe('Test page service methods', () => {
           isEmpty: false,
           path: '/renamePOP4',
           revision: pageOpRevisionId2,
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+        unprocessableExpiryDate: new Date(),
+      },
+      {
+        _id: pageOpId3,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/POP2',
+        // toPath NOT exist
+        page: {
+          _id: pageId7,
+          parent: rootPage._id,
+          descendantCount: 2,
+          isEmpty: false,
+          path: '/POP2',
+          revision: pageOpRevisionId3,
           status: 'published',
           grant: 1,
           grantedUsers: [],
@@ -312,6 +354,21 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
+    });
+
+    test('Missing property(toPath) for PageOperation should throw error', async() => {
+      // path
+      const _path1 = '/POP2';
+      // page
+      const _page1 = await Page.findOne({ path: _path1 });
+      // page operation
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+
+      expect(_page1).toBeTruthy();
+      expect(_pageOperation).toBeTruthy();
+
+      const promise = resumeRenameSubOperation(_page1);
+      await expect(promise).rejects.toThrow(new Error(`Property toPath is missing which is needed to resume page operation(${_pageOperation._id})`));
     });
   });
 });
