@@ -380,21 +380,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       setRenaming(true);
       await resumeRenameOperation(pageId);
 
-      mutateChildren();
-
       if (onRenamed != null) {
         onRenamed();
       }
 
       toastSuccess(t('page_operation.paths_recovered'));
     }
-    catch (err) {
-      toastError(t(err[0].message));
-    }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
+    catch (e) {
+      toastError(t('page_operation.path_recovery_failed'));
     }
   };
 
