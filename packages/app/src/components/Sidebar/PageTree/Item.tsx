@@ -372,12 +372,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  /**
+   * Users do not need to know if all pages have been renamed.
+   * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
+   */
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       setRenaming(true);
       await resumeRenameOperation(pageId);
-
-      mutateChildren();
 
       if (onRenamed != null) {
         onRenamed();
@@ -385,13 +387,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       toastSuccess(t('page_operation.paths_recovered'));
     }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
+    catch (e) {
+      toastError(t('page_operation.path_recovery_failed'));
     }
   };
 

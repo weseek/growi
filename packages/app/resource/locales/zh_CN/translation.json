@@ -1116,6 +1116,8 @@
     "footprints": "脚印"
   },
   "page_operation":{
-    "paths_recovered": "成功恢复了页面路径"
+    "paths_recovered": "成功恢复了页面路径",
+    "path_recovery_failed":"路径恢复失败",
+    "forbidden_user": "该操作对该用户来说是被禁止的"
   }
 }

@@ -1106,6 +1106,8 @@
     "footprints": "足跡"
   },
   "page_operation":{
-    "paths_recovered": "パスを修復しました"
+    "paths_recovered": "パスを修復しました",
+    "path_recovery_failed":"パスを修復できませんでした",
+    "forbidden_user": "操作権限がありません"
   }
 }
