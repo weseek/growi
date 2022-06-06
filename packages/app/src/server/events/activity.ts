@@ -1,5 +1,3 @@
-import { IPage } from '~/interfaces/page';
-import { ActivityDocument } from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../crowi';
@@ -15,14 +13,5 @@ function ActivityEvent(crowi: Crowi) {
   events.EventEmitter.call(this);
 }
 util.inherits(ActivityEvent, events.EventEmitter);
-
-ActivityEvent.prototype.onUpdate = async function(activity: ActivityDocument, target: IPage) {
-  try {
-    await this.crowi.inAppNotificationService.createInAppNotification(activity, target);
-  }
-  catch (err) {
-    logger.error('Create InAppNotification failed', err);
-  }
-};
 
 module.exports = ActivityEvent;
