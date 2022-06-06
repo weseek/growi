@@ -8,6 +8,11 @@ export type IRevision = {
   updatedAt: Date,
 }
 
+export type IRevisionsForPagination = {
+  revisions: IRevision[], // revisions in one pagination
+  totalCounts: number // total counts
+}
+
 export type IRevisionOnConflict = {
   revisionId: string,
   revisionBody: string,
