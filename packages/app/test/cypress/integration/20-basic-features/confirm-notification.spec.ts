@@ -22,8 +22,6 @@ context('Confirm notification', () => {
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
 
-    cy.get('.tab-pane.active > .justify-content-end > button').should('be.visible');
-
     cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
   });
 
