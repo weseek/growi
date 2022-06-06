@@ -133,6 +133,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     const showDeviderBeforeAdditionalMenuItems = (forceHideMenuItems?.length ?? 0) < 3;
     const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
 
+    // PathRecovery
+    // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+    const shouldShowPathRecoveryButton = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
+
     contents = (
       <>
         { !isEnableActions && (
@@ -197,7 +201,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && operationProcessData?.Rename != null && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && shouldShowPathRecoveryButton && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
@@ -247,7 +251,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -299,6 +303,13 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     await onClickDeleteMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
   }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
+  const pathRecoveryMenuItemClickHandler = useCallback(async() => {
+    if (onClickPathRecoveryMenuItem == null) {
+      return;
+    }
+    await onClickPathRecoveryMenuItem(pageId);
+  }, [onClickPathRecoveryMenuItem, pageId]);
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
@@ -315,6 +326,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickRenameMenuItem={renameMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
+        onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
       />
     </Dropdown>
   );

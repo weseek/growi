@@ -1114,5 +1114,9 @@
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
     "footprints": "脚印"
+  },
+  "page_operation":{
+    "paths_recovered": "成功恢复了页面路径",
+    "path_recovery_failed":"路径恢复失败"
   }
 }

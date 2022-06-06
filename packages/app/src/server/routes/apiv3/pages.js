@@ -565,7 +565,9 @@ module.exports = (crowi) => {
     // The user has permission to resume rename operation if page is returned.
     const page = await Page.findByIdAndViewer(pageId, user, null, true);
     if (page == null) {
-      return res.apiv3Err(new ErrorV3('The operation is forbidden for this user.'), 403);
+      const msg = 'The operation is forbidden for this user';
+      const code = 'forbidden-user';
+      return res.apiv3Err(new ErrorV3(msg, code), 403);
     }
 
     try {
@@ -573,7 +575,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3(`Failed to resume rename operation. ${err}`), 500);
+      return res.apiv3Err(err, 500);
     }
     return res.apiv3();
   });
