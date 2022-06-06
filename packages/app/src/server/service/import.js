@@ -2,8 +2,6 @@ import gc from 'expose-gc/function';
 
 import loggerFactory from '~/utils/logger';
 
-
-const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
 const { Writable, Transform } = require('stream');
@@ -15,11 +13,12 @@ const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
 
+const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
+const { createBatchStream } = require('../util/batch-stream');
 
 const { ObjectId } = mongoose.Types;
 
-const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
-const { createBatchStream } = require('../util/batch-stream');
+const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 
 
 const BULK_IMPORT_SIZE = 100;
