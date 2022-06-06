@@ -280,6 +280,7 @@ describe('Test page service methods', () => {
       mockedRenameSubOperation.mockRestore();
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
     };
+
     test('it should successfully restart rename operation', async() => {
       // path
       const _path0 = '/POP0';
@@ -327,6 +328,7 @@ describe('Test page service methods', () => {
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
     });
+
     test('it should fail and throw error if PageOperation is not found', async() => {
       await expect(resumeRenameSubOperation({}))
         .rejects.toThrow(new Error('There is nothing to be processed right now'));
