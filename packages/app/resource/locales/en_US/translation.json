@@ -1114,7 +1114,6 @@
   },
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
-    "path_recovery_failed":"Path recovery failed",
-    "forbidden_user": "The operation is forbidden for this user"
+    "path_recovery_failed":"Path recovery failed"
   }
 }
