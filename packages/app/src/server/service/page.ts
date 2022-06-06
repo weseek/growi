@@ -670,7 +670,7 @@ class PageService {
     update.path = newPagePath;
     if (updateMetadata) {
       update.lastUpdateUser = user;
-      update.updatedAt = new Date();
+      update.updatedAt = Date.now();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
