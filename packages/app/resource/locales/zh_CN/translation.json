@@ -1117,7 +1117,7 @@
   },
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径",
-    "failed_resume_rename": "恢复重命名操作失败",
+    "path_recovery_failed":"路径恢复失败",
     "forbidden_user": "该操作对该用户来说是被禁止的"
   }
 }
