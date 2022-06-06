@@ -410,8 +410,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   // Rename process
-  // Whether to show the warning icon to indicate that the path needs fixing on the left side of a path name on pagetree
-  const shouldShowPathRecoveryWarningIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
+  // Warning icon that requires some action from the user
+  const shouldShowWarningIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
 
   return (
     <div
@@ -450,7 +450,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { shouldShowPathRecoveryWarningIcon && (
+              { shouldShowWarningIcon && (
                 <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
