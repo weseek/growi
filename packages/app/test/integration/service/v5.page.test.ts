@@ -284,9 +284,9 @@ describe('Test page service methods', () => {
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
     });
-    test.skip('it should fail and throw error if PageOperation is not found', async() => {
+    test('it should fail and throw error if PageOperation is not found', async() => {
       await expect(resumeRenameSubOperation({}))
-        .rejects.toThrow(new Error('it did not restart rename operation because page operation to be processed was not found'));
+        .rejects.toThrow(new Error('There is nothing to be processed right now'));
     });
 
     test.skip('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
