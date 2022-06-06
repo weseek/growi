@@ -25,18 +25,17 @@ import {
 } from '~/stores/ui';
 
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
+import PresentationIcon from '../Icons/PresentationIcon';
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import ShareLinkIcon from '../Icons/ShareLinkIcon';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import PageEditorModeManager from './PageEditorModeManager';
 import { SubNavButtons } from './SubNavButtons';
-
-import PresentationIcon from '../Icons/PresentationIcon';
-import CreateTemplateModal from '../CreateTemplateModal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -285,7 +284,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {currentUser != null && (
+        {path != null && currentUser != null && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}
@@ -302,7 +301,6 @@ const GrowiContextualSubNavigation = (props) => {
     path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-
   if (path == null) {
     return <></>;
   }
@@ -316,7 +314,6 @@ const GrowiContextualSubNavigation = (props) => {
     createdAt: createdAt ?? undefined,
     updatedAt: updatedAt ?? undefined,
   };
-
 
   return (
     <GrowiSubNavigation
