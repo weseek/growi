@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+import rateLimit from 'express-rate-limit';
+
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -12,6 +14,13 @@ const router = express.Router();
 const { body, query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message:
+    'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+});
 
 /**
  * @swagger
@@ -618,7 +627,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', apiLimiter, loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
       isDefaultLogo, brandLogoAttachmentId, uploadedLogoSrc,
