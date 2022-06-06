@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { DropdownToggle } from 'reactstrap';
 
 
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -371,6 +371,25 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  /**
+   * Users do not need to know if all pages have been renamed.
+   * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
+   */
+  const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
+    try {
+      setRenaming(true);
+      await resumeRenameOperation(pageId);
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
+      toastSuccess(t('page_operation.paths_recovered'));
+    }
+    catch {
+      toastError(t('page_operation.path_recovery_failed'));
+    }
+  };
 
   // didMount
   useEffect(() => {
@@ -456,6 +475,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
             operationProcessData={page.processData}
           >

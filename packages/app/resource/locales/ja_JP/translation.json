@@ -1104,5 +1104,9 @@
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
     "footprints": "足跡"
+  },
+  "page_operation":{
+    "paths_recovered": "パスを修復しました",
+    "path_recovery_failed":"パスを修復できませんでした"
   }
 }

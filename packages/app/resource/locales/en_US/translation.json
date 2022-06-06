@@ -1111,5 +1111,9 @@
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
     "footprints": "Footprints"
+  },
+  "page_operation":{
+    "paths_recovered": "Paths recovered successfully",
+    "path_recovery_failed":"Path recovery failed"
   }
 }
