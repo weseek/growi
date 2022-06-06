@@ -15,13 +15,18 @@ const PageHistory = () => {
   const [activePage, setActivePage] = useState(1);
   const { data: currentPageId } = useCurrentPageId();
   const { data: revisionsData } = useSWRxPageRevisions(currentPageId, activePage, 10);
-  const [latestRevision, setLatestRevision] = useState(null);
-  const [sourceRevision, setSourceRevision] = useState(latestRevision);
-  const [targetRevision, setTargetRevision] = useState(latestRevision);
+  const [sourceRevision, setSourceRevision] = useState(null);
+  const [targetRevision, setTargetRevision] = useState(null);
 
   useEffect(() => {
-    if (revisionsData != null) setLatestRevision(revisionsData.revisions[0]);
+    if (revisionsData != null) {
+      setSourceRevision(revisionsData.revisions[0]);
+      setTargetRevision(revisionsData.revisions[0]);
+    }
   }, [revisionsData]);
+
+  // console.log('The source and target revisions are: ', sourceRevision, targetRevision);
+
 
   const pagingLimit = 10;
 

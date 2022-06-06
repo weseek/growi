@@ -65,34 +65,34 @@ class PageRevisionTable extends React.Component {
           </div>
         </td>
         <td className="col-1">
-          {(hasDiff || revision._id === sourceRevision?._id) && (
+          {(hasDiff || revisionId === sourceRevision?._id) && (
             <div className="custom-control custom-radio custom-control-inline mr-0">
               <input
                 type="radio"
                 className="custom-control-input"
-                id={`compareSource-${revision._id}`}
+                id={`compareSource-${revisionId}`}
                 name="compareSource"
-                value={revision._id}
-                checked={revision._id === sourceRevision?._id}
+                value={revisionId}
+                checked={revisionId === sourceRevision?._id}
                 onChange={() => changeSourceRevision(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
+              <label className="custom-control-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
           )}
         </td>
         <td className="col-2">
-          {(hasDiff || revision._id === targetRevision?._id) && (
+          {(hasDiff || revisionId === targetRevision?._id) && (
             <div className="custom-control custom-radio custom-control-inline mr-0">
               <input
                 type="radio"
                 className="custom-control-input"
-                id={`compareTarget-${revision._id}`}
+                id={`compareTarget-${revisionId}`}
                 name="compareTarget"
-                value={revision._id}
-                checked={revision._id === targetRevision?._id}
+                value={revisionId}
+                checked={revisionId === targetRevision?._id}
                 onChange={() => changeTargetRevision(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
+              <label className="custom-control-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>
           )}
         </td>
