@@ -5,9 +5,9 @@ import { defaultConfigWithoutRegExp, defaultConfigWithRegExp } from './defaultAp
 const envVar = process.env;
 
 const getTargetFromKey = (key: string, withRegExp: boolean) => {
-  // eslint-disable-next-line regex/invalid
-  const regExp = new RegExp(withRegExp ? '(?<=API_RATE_LIMIT_).*(?=_ENDPOINT_WITH_REGEXP)' : '(?<=API_RATE_LIMIT_).*(?=_ENDPOINT)');
-  return key.match(regExp);
+  const regExp = new RegExp(withRegExp ? '^API_RATE_LIMIT_|_ENDPOINT_WITH_REGEXP$' : '^API_RATE_LIMIT_|_ENDPOINT$', 'g');
+  const target = key.replaceAll(regExp, '');
+  return target;
 };
 
 const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpointKeys: string[], withRegExp: boolean): IApiRateLimitConfig => {
