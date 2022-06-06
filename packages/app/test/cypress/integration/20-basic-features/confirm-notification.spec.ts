@@ -20,7 +20,7 @@ context('Confirm notification', () => {
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
-    cy.get('#all-in-app-notifications ul.nav-title li:eq(1) a').click();
+    cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
 
     cy.get('.tab-pane.active > .justify-content-end > button').should('be.visible');
 
