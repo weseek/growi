@@ -64,7 +64,7 @@ const CreateTemplateModal = (props) => {
 };
 
 CreateTemplateModal.propTypes = {
-  path: PropTypes.string.isRequired,
+  path: PropTypes.string,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
