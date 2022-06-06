@@ -252,7 +252,7 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
-      // PageOperation
+      // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
       expect(_pageOperation).toBeTruthy();
 
@@ -268,7 +268,7 @@ describe('Test page service methods', () => {
       const page1 = await Page.findOne({ path: path1 });
       const page2 = await Page.findOne({ path: path2 });
       const page3 = await Page.findOne({ path: path3 });
-      // PageOperation
+      // page operation
       const pageOperation = await PageOperation.findOne({ _id: _pageOperation._id });
       expect(page0.descendantCount).toBe(3);
       expect(page0).toBeTruthy();
@@ -290,12 +290,15 @@ describe('Test page service methods', () => {
     });
 
     test.skip('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
+      // path
       const _path0 = '/POP1';
       const _path1 = '/POP1/renamePOP4'; // renamed already
       const _path2 = '/renamePOP4/renamePOP5'; // not renamed yet
+      // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
+      // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
       expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
