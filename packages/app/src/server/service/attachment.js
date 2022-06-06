@@ -16,7 +16,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType = 'UNCATEGORIZED') {
+  async createAttachment(file, user, pageId = null, attachmentType = undefined) {
     const { fileUploadService } = this.crowi;
 
     // check limit

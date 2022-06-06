@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 /* eslint-disable no-use-before-define */
 
@@ -453,7 +454,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId, 'WIKI_PAGE');
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
     }
     catch (err) {
       logger.error(err);
@@ -709,14 +710,14 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-    const { attachmentType, attachmentId } = req.body;
+    const { attachmentType, brandLogoAttachmentId } = req.body;
 
     let previousAttachmentId;
-    if (attachmentId === 'null' || attachmentId === 'undefined') {
+    if (brandLogoAttachmentId === 'null' || brandLogoAttachmentId === 'undefined') {
       previousAttachmentId = null;
     }
     else {
-      previousAttachmentId = mongoose.Types.ObjectId(attachmentId);
+      previousAttachmentId = mongoose.Types.ObjectId(brandLogoAttachmentId);
     }
 
     // check type
@@ -735,8 +736,7 @@ module.exports = function(crowi, app) {
     try {
       attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
       const attachmentConfigParams = {
-        'customize:attachmentId': attachment.id,
-        'customize:uploadedLogoSrc': attachment.filePathProxied,
+        'customize:brandLogoAttachmentId': attachment.id,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
     }
@@ -753,8 +753,8 @@ module.exports = function(crowi, app) {
   };
 
   api.removeBrandLogo = async function(req, res) {
-    const { attachmentId } = req.body;
-    const attachmentObjectId = mongoose.Types.ObjectId(attachmentId);
+    const { brandLogoAttachmentId } = req.body;
+    const attachmentObjectId = mongoose.Types.ObjectId(brandLogoAttachmentId);
     const attachment = await Attachment.findById(attachmentObjectId);
 
     if (attachment == null) {
@@ -765,7 +765,7 @@ module.exports = function(crowi, app) {
       await attachmentService.removeAttachment(attachmentObjectId);
       // update attachmentId immediately
       const attachmentConfigParams = {
-        'customize:attachmentId': null,
+        'customize:brandLogoAttachmentId': null,
         'customize:isDefaultLogo': true,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);

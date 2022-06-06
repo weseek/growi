@@ -137,9 +137,9 @@ module.exports = (crowi) => {
       body('customizeScript').isString(),
     ],
     logo: [
-      body('attachmentId').isString().optional({ nullable: true }),
+      body('brandLogoAttachmentId').isString().optional({ nullable: true }),
       body('isDefaultLogo').isBoolean(),
-      body('uploadedLogoSrc').isString(),
+      body('uploadedLogoSrc').isString().optional({ nullable: true }),
     ],
   };
 
@@ -183,7 +183,7 @@ module.exports = (crowi) => {
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
-      attachmentId: await crowi.configManager.getConfig('crowi', 'customize:attachmentId'),
+      brandLogoAttachmentId: await crowi.configManager.getConfig('crowi', 'customize:brandLogoAttachmentId'),
       isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
       uploadedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
     };
@@ -621,18 +621,18 @@ module.exports = (crowi) => {
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
-      isDefaultLogo, attachmentId, uploadedLogoSrc,
+      isDefaultLogo, brandLogoAttachmentId, uploadedLogoSrc,
     } = req.body;
 
     const requestParams = {
-      'customize:attachmentId': attachmentId,
+      'customize:brandLogoAttachmentId': brandLogoAttachmentId,
       'customize:isDefaultLogo': isDefaultLogo,
       'customize:uploadedLogoSrc': uploadedLogoSrc,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        attachmentId: await crowi.configManager.getConfig('crowi', 'customize:attachmentId'),
+        brandLogoAttachmentId: await crowi.configManager.getConfig('crowi', 'customize:brandLogoAttachmentId'),
         isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
         uploadedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
       };

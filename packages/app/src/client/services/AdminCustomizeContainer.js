@@ -1,5 +1,6 @@
 import { Container } from 'unstated';
 
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
@@ -61,7 +62,7 @@ export default class AdminCustomizeContainer extends Container {
       uploadedLogoSrc: null,
       defaultLogoSrc: DEFAULT_LOGO,
       isDefaultLogo: true,
-      attachmentId: '',
+      brandLogoAttachmentId: '',
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
@@ -106,7 +107,7 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
-        attachmentId: customizeParams.attachmentId,
+        brandLogoAttachmentId: customizeParams.brandLogoAttachmentId,
         isDefaultLogo: customizeParams.isDefaultLogo,
         uploadedLogoSrc: customizeParams.uploadedLogoSrc,
       });
@@ -446,12 +447,12 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const formData = {
         _csrf:  this.appContainer.csrfToken,
-        attachmentId: this.state.attachmentId,
+        brandLogoAttachmentId: this.state.brandLogoAttachmentId,
       };
       await apiPost('/attachments.removeBrandLogo', formData);
       this.setState({
         uploadedLogoSrc: null,
-        attachmentId: null,
+        brandLogoAttachmentId: null,
       });
 
     }
@@ -467,13 +468,13 @@ export default class AdminCustomizeContainer extends Container {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
-      formData.append('attachmentType', 'BRAND_LOGO');
-      formData.append('attachmentId', this.state.attachmentId);
+      formData.append('attachmentType', AttachmentType.BRAND_LOGO);
+      formData.append('brandLogoAttachmentId', this.state.brandLogoAttachmentId);
       const response = await apiPost('/attachments.uploadBrandLogo', formData);
 
       this.setState({
         uploadedLogoSrc: response.attachment.filePathProxied,
-        attachmentId: response.attachment.id,
+        brandLogoAttachmentId: response.attachment.id,
       });
     }
     catch (err) {
@@ -491,13 +492,13 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo: this.state.isDefaultLogo,
-        attachmentId: this.state.attachmentId,
+        brandLogoAttachmentId: this.state.brandLogoAttachmentId,
         uploadedLogoSrc: this.state.uploadedLogoSrc,
       });
       const { customizedParams } = response.data;
       this.setState({
         isDefaultLogo: customizedParams.isDefaultLogo,
-        attachmentId:  customizedParams.attachmentId,
+        brandLogoAttachmentId:  customizedParams.brandLogoAttachmentId,
         uploadedLogoSrc: customizedParams.uploadedLogoSrc,
       });
     }

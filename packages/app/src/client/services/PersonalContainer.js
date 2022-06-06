@@ -1,5 +1,6 @@
 import { Container } from 'unstated';
 
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { apiPost } from '../util/apiv1-client';
@@ -207,7 +208,7 @@ export default class PersonalContainer extends Container {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
-      formData.append('attachmentType', 'PROFILE_IMAGE');
+      formData.append('attachmentType', AttachmentType.PROFILE_IMAGE);
       const response = await apiPost('/attachments.uploadProfileImage', formData);
       this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
     }
