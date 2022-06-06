@@ -411,7 +411,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   // Rename process
   // Whether to show the warning icon to indicate that the path needs fixing on the left side of a path name on pagetree
-  const showFixPathWarningIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
+  const shouldShowPathRecoveryWarningIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
 
   return (
     <div
@@ -450,7 +450,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { showFixPathWarningIcon && (
+              { shouldShowPathRecoveryWarningIcon && (
                 <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
@@ -473,6 +473,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
+            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
             operationProcessData={page.processData}
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
