@@ -247,8 +247,8 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
-    if (typeof path !== 'string') {
-      return;
+    if (path == null) {
+      return <></>;
     }
 
     return (
