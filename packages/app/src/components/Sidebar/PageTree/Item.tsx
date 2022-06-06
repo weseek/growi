@@ -410,8 +410,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   // Rename process
-  // Warning icon that requires some action from the user
-  const shouldShowWarningIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
+  // Icon that draw attention from users for some actions
+  const shouldShowAttentionIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
 
   return (
     <div
@@ -450,7 +450,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { shouldShowWarningIcon && (
+              { shouldShowAttentionIcon && (
                 <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
