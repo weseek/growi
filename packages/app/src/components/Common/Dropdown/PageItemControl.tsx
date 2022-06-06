@@ -134,7 +134,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
 
     // PathRecovery
-    // Todo: It should be considered if PageItemControl should handle operationProcessData
+    // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
     const shouldShowPathRecoveryButton = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
 
     contents = (
