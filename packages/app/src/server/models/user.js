@@ -67,11 +67,11 @@ module.exports = function(crowi) {
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
     },
-    createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
   }, {
+    timestamps: true,
     toObject: {
       transform: (doc, ret, opt) => {
         return omitInsecureAttributes(ret);
@@ -542,7 +542,6 @@ module.exports = function(crowi) {
     newUser.username = tmpUsername;
     newUser.email = email;
     newUser.setPassword(password);
-    newUser.createdAt = Date.now();
     newUser.status = STATUS_INVITED;
 
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -632,7 +631,6 @@ module.exports = function(crowi) {
     if (lang != null) {
       newUser.lang = lang;
     }
-    newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
 
     newUser.save((err, userData) => {
