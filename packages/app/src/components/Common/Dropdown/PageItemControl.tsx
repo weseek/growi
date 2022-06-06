@@ -134,7 +134,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
 
     // PathRecovery
-    const shouldFixPath = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
+    // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+    const shouldShowPathRecoveryButton = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
 
     contents = (
       <>
@@ -200,7 +201,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && shouldFixPath && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && shouldShowPathRecoveryButton && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
