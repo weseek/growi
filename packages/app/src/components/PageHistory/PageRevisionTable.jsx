@@ -3,8 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
-
 import Revision from './Revision';
 
 class PageRevisionTable extends React.Component {
@@ -17,18 +15,19 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
   renderRow(revision, previousRevision, latestRevision, oldestRevision, hasDiff, isContiguousNodiff) {
-    const { revisionComparerContainer, t } = this.props;
+    const {
+      t, sourceRevision, targetRevision, changeSourceRevision, changeTargetRevision,
+    } = this.props;
     const revisionId = revision._id;
-    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
     const handleCompareLatestRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: revision });
-      revisionComparerContainer.setState({ targetRevision: latestRevision });
+      changeSourceRevision(revision);
+      changeTargetRevision(latestRevision);
     };
 
     const handleComparePreviousRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: previousRevision });
-      revisionComparerContainer.setState({ targetRevision: revision });
+      changeSourceRevision(previousRevision);
+      changeTargetRevision(revision);
     };
 
     return (
@@ -75,7 +74,7 @@ class PageRevisionTable extends React.Component {
                 name="compareSource"
                 value={revision._id}
                 checked={revision._id === sourceRevision?._id}
-                onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
+                onChange={() => changeSourceRevision(revision)}
               />
               <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
             </div>
@@ -91,7 +90,7 @@ class PageRevisionTable extends React.Component {
                 name="compareTarget"
                 value={revision._id}
                 checked={revision._id === targetRevision?._id}
-                onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
+                onChange={() => changeTargetRevision(revision)}
               />
               <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
             </div>
@@ -154,10 +153,13 @@ class PageRevisionTable extends React.Component {
 
 PageRevisionTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revisions: PropTypes.array,
   pagingLimit: PropTypes.number,
+  sourceRevision: PropTypes.instanceOf(Object),
+  targetRevision: PropTypes.instanceOf(Object),
+  changeSourceRevision: PropTypes.func.isRequired,
+  changeTargetRevision: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageRevisionTable);
