@@ -424,11 +424,6 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
-
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -444,6 +439,11 @@ PageEditorByHackmd.propTypes = {
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
 
 const PageEditorByHackmdWrapper = (props) => {
   const { t } = useTranslation();

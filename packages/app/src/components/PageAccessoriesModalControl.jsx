@@ -94,8 +94,6 @@ const PageAccessoriesModalControl = (props) => {
 };
 
 PageAccessoriesModalControl.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
   pageAccessoriesContainer: PropTypes.any,
 
   isGuestUser: PropTypes.bool.isRequired,

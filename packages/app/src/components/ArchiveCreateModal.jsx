@@ -235,7 +235,6 @@ const ArchiveCreateModal = (props) => {
 };
 
 ArchiveCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,

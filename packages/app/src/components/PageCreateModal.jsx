@@ -312,7 +312,6 @@ const PageCreateModal = (props) => {
 };
 
 PageCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
