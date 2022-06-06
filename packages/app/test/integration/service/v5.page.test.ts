@@ -1,3 +1,4 @@
+import { addSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
 import { PageActionType } from '../../../src/server/models/page-operation';
@@ -222,7 +223,7 @@ describe('Test page service methods', () => {
           createRedirectPage: false,
           updateMetadata: true,
         },
-        unprocessableExpiryDate: new Date(5000, 0, 1), // year 5000
+        unprocessableExpiryDate: new Date(),
       },
     ]);
   });
@@ -289,7 +290,7 @@ describe('Test page service methods', () => {
         .rejects.toThrow(new Error('There is nothing to be processed right now'));
     });
 
-    test.skip('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
+    test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
       // path
       const _path0 = '/POP1';
       const _path1 = '/POP1/renamePOP4'; // renamed already
@@ -300,12 +301,16 @@ describe('Test page service methods', () => {
       const _page2 = await Page.findOne({ path: _path2 });
       // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+
+      // make `unprocessableExpiryDate` 15 seconds ahead of current time to make sure `unprocessableExpiryDate` is future
+      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
+
       expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_pageOperation).toBeTruthy();
-      const promise = resumeRenameSubOperation(_page1._id);
-      await expect(promise).rejects.toThrow(new Error('it did not restart rename operation because it is currently being processed'));
+
+      await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
     });
   });
 });
