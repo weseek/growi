@@ -4,12 +4,21 @@ import { defaultConfigWithoutRegExp, defaultConfigWithRegExp } from './defaultAp
 
 const envVar = process.env;
 
+// https://regex101.com/r/aNDjmI/1
+const regExp = /^API_RATE_LIMIT_(\w+)_ENDPOINT(_WITH_REGEXP)?$/;
+
 const getTargetFromKey = (key: string, withRegExp: boolean): string|null => {
-  const regExp = new RegExp(withRegExp ? '^API_RATE_LIMIT_|_ENDPOINT_WITH_REGEXP$' : '^API_RATE_LIMIT_|_ENDPOINT$', 'g');
-  if (!regExp.test(key)) {
+  const result = key.match(regExp);
+
+  if (result == null) { return null }
+
+  const target = result[1];
+  const isWithRegExp = result[2] != null;
+
+  if (isWithRegExp !== withRegExp) {
     return null;
   }
-  const target = key.replaceAll(regExp, '');
+
   return target;
 };
 
