@@ -133,6 +133,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     const showDeviderBeforeAdditionalMenuItems = (forceHideMenuItems?.length ?? 0) < 3;
     const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
 
+    // PathRecovery
+    const shouldFixPath = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
+
     contents = (
       <>
         { !isEnableActions && (
@@ -197,7 +200,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && operationProcessData?.Rename != null && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && shouldFixPath && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
