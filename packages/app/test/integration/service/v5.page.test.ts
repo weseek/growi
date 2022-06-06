@@ -302,7 +302,8 @@ describe('Test page service methods', () => {
       // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
 
-      // make `unprocessableExpiryDate` 15 seconds ahead of current time to make sure `unprocessableExpiryDate` is future
+      // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
+      // The number 15 seconds has no meaning other than placing time in the furue.
       await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
 
       expect(_page0).toBeTruthy();
