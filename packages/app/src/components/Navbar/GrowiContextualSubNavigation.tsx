@@ -247,10 +247,6 @@ const GrowiContextualSubNavigation = (props) => {
 
     const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
 
-    if (path == null) {
-      return <></>;
-    }
-
     return (
       <>
         <div className={className}>
@@ -288,7 +284,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {currentUser != null && (
+        {path != null && currentUser != null && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}
