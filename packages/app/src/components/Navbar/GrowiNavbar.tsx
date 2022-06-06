@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IUser } from '~/interfaces/user';
-import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
+import {
+  useIsSearchPage, useCurrentPagePath, useIsGuestUser,
+} from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
@@ -19,16 +20,15 @@ import GlobalSearch from './GlobalSearch';
 import PersonalDropdown from './PersonalDropdown';
 
 
-type NavbarRightProps = {
-  currentUser: IUser,
-}
-const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
+const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
+
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isGuestUser } = useIsGuestUser();
+
   const { open: openCreateModal } = usePageCreateModal();
 
-  const { currentUser } = props;
-  const isAuthenticated = currentUser != null;
+  const isAuthenticated = isGuestUser === false;
 
   const authenticatedNavItem = useMemo(() => {
     return (
@@ -125,6 +125,7 @@ const GrowiNavbar = (props) => {
   const {
     crowi, isSearchServiceConfigured, uploadedLogoSrc,
   } = appContainer.config;
+
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
   const logoSrc = uploadedLogoSrc != null ? uploadedLogoSrc : null;
@@ -144,7 +145,7 @@ const GrowiNavbar = (props) => {
 
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
-        <NavbarRight currentUser={currentUser}></NavbarRight>
+        <NavbarRight></NavbarRight>
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 

@@ -26,12 +26,6 @@ export default class AppContainer extends Container {
       this.currentUser = JSON.parse(currentUserElem.textContent);
     }
 
-    const isSharedPageElem = document.getElementById('is-shared-page');
-
-    // check what kind of user
-    this.isGuestUser = this.currentUser == null;
-    this.isSharedUser = isSharedPageElem != null && this.currentUser == null;
-
     const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
 
@@ -149,10 +143,6 @@ export default class AppContainer extends Container {
       throw new Error('The specified instance must not be null');
     }
 
-    if (this.componentInstances[id] != null) {
-      throw new Error('The specified instance couldn\'t register because the same id has already been registered');
-    }
-
     this.componentInstances[id] = instance;
   }
 
@@ -184,27 +174,6 @@ export default class AppContainer extends Container {
     this.rendererInstances[mode] = renderer;
 
     return renderer;
-  }
-
-
-  launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
-    let targetComponent;
-    switch (componentKind) {
-      case 'page':
-        targetComponent = this.getComponentInstance('Page');
-        break;
-    }
-    targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
-  }
-
-  launchDrawioModal(componentKind, beginLineNumber, endLineNumber) {
-    let targetComponent;
-    switch (componentKind) {
-      case 'page':
-        targetComponent = this.getComponentInstance('Page');
-        break;
-    }
-    targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
   }
 
 }

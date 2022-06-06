@@ -1,8 +1,6 @@
 export default class HeaderConfigurer {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-
+  constructor() {
     this.injectRevisionHeadClass = this.injectRevisionHeadClass.bind(this);
   }
 

@@ -224,6 +224,12 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       }
     }
   }
+  // List group
+  .list-group-item {
+    .page-list-snippet {
+      color: lighten($body-color, 10%);
+    }
+  }
 }
 
 /*

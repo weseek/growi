@@ -57,6 +57,8 @@
     "string-width": "5.0.0 or above exports only ESM."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.58.0",
+    "@aws-sdk/s3-request-presigner": "^3.58.0",
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@elastic/elasticsearch6": "npm:@elastic/elasticsearch@^6.8.8",
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
