@@ -287,8 +287,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
 };
 
 
-export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
-  return useStaticSWR<Nullable<number>, Error>('grant', initialData);
+export const useSelectedGrant = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('grant', initialData);
 };
 
 export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {

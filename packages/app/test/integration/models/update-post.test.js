@@ -1,19 +1,6 @@
-const mongoose = require('mongoose');
-
-const { getInstance } = require('../setup-crowi');
+import UpdatePost from '../../../src/server/models/update-post';
 
 describe('UpdatePost', () => {
-  // eslint-disable-next-line no-unused-vars
-  let crowi;
-  let UpdatePost;
-
-  beforeAll(async() => {
-    crowi = await getInstance();
-  });
-
-  beforeEach(async() => {
-    UpdatePost = mongoose.model('UpdatePost');
-  });
 
   describe('.createPrefixesByPathPattern', () => {
     describe('with a path', () => {

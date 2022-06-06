@@ -16,7 +16,7 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
+  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
   useDefaultIndentSize, useIsIndentSizeForced,
 } from '../../stores/context';
@@ -85,7 +85,6 @@ const ContextExtractorOnce: FC = () => {
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
-  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
@@ -158,7 +157,6 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSlackChannels(slackChannels);
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);

@@ -217,13 +217,11 @@ export default class PageContainer extends Container {
     }
     this.setState(newState);
 
-    // PageEditor component
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      if (editorMode !== EditorMode.Editor) {
-        pageEditor.updateEditorValue(newState.markdown);
-      }
+    // Update PageEditor component
+    if (editorMode !== EditorMode.Editor) {
+      window.globalEmitter.emit('updateEditorValue', newState.markdown);
     }
+
     // PageEditorByHackmd component
     const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
@@ -271,7 +269,7 @@ export default class PageContainer extends Container {
     let { revisionId } = this.state;
     const options = Object.assign({}, optionsToSave);
 
-    if (editorMode === 'hackmd') {
+    if (editorMode === EditorMode.HackMD) {
       // set option to sync
       options.isSyncRevisionToHackmd = true;
       revisionId = this.state.revisionIdHackmdSynced;
@@ -306,7 +304,7 @@ export default class PageContainer extends Container {
     const options = Object.assign({}, optionsToSave);
 
     let markdown;
-    if (editorMode === 'hackmd') {
+    if (editorMode === EditorMode.HackMD) {
       const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
       markdown = await pageEditorByHackmd.getMarkdown();
       // set option to sync
@@ -451,7 +449,6 @@ export default class PageContainer extends Container {
 
     const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     const options = editorContainer.getCurrentOptionsToSave();
     const optionsToSave = Object.assign({}, options);
 
@@ -460,8 +457,9 @@ export default class PageContainer extends Container {
     editorContainer.clearDraft(path);
     this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
 
-    if (pageEditor != null) {
-      pageEditor.updateEditorValue(markdown);
+    // Update PageEditor component
+    if (editorMode !== EditorMode.Editor) {
+      window.globalEmitter.emit('updateEditorValue', markdown);
     }
 
     editorContainer.setState({ tags: res.tags });

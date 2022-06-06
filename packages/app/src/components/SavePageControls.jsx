@@ -1,30 +1,27 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
 import { withTranslation } from 'react-i18next';
-
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import loggerFactory from '~/utils/logger';
 
-import PageContainer from '~/client/services/PageContainer';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import GrantSelector from './SavePageControls/GrantSelector';
-
+import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
+import { useIsEditable } from '~/stores/context';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
+
+import GrantSelector from './SavePageControls/GrantSelector';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -142,8 +139,6 @@ const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [App
 const SavePageControlsWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
@@ -161,8 +156,6 @@ const SavePageControlsWrapper = (props) => {
     <SavePageControlsHOCWrapper
       {...props}
       editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
