@@ -422,8 +422,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   // Rename process
-  const existRenameProcessData = page.processData?.Rename != null;
-  const isRenameProcessable = page.processData?.Rename?.isProcessable;
+  const isRenameProcessable = page.processData?.Rename != null ? page.processData.Rename.isProcessable : true;
 
   return (
     <div
@@ -462,7 +461,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { (isRenaming || (existRenameProcessData && !isRenameProcessable)) && (
+              { (isRenaming || !isRenameProcessable) && (
                 <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
               )}
               { (!isRenaming && isRenameProcessable) && (
