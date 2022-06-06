@@ -386,7 +386,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       toastSuccess(t('page_operation.paths_recovered'));
     }
-    catch (e) {
+    catch {
       toastError(t('page_operation.path_recovery_failed'));
     }
   };
