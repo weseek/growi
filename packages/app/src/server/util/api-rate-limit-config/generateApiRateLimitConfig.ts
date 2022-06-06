@@ -16,7 +16,7 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
 
     const endpoint = envVar[key];
 
-    if (endpoint == null || Object.keys(apiRateLimitConfig).includes(endpoint)) {
+    if (endpoint == null) {
       return;
     }
 
@@ -47,9 +47,6 @@ export const generateApiRateLimitConfig = (withRegExp: boolean): IApiRateLimitCo
     const target = getTargetFromKey(key, withRegExp);
     return target;
   });
-
-  // sort priority
-  apiRateEndpointKeys.sort().reverse();
 
   // get config
   const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys, withRegExp);
