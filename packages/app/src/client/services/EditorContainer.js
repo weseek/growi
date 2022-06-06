@@ -59,20 +59,6 @@ export default class EditorContainer extends Container {
     }
   }
 
-  setCaretLine(line) {
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.setCaretLine(line);
-    }
-  }
-
-  focusToEditor() {
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.focusToEditor();
-    }
-  }
-
   getCurrentOptionsToSave() {
     const opt = {
       pageTags: this.state.tags,

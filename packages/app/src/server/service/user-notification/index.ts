@@ -49,7 +49,6 @@ export class UserNotificationService {
 
     // "dev,slacktest" => [dev,slacktest]
     const slackChannels: (string|null)[] = toArrayFromCsv(slackChannelsStr);
-    await this.putDefaultChannelIfEmpty(page.path, slackChannels);
 
     const appTitle = appService.getAppTitle();
     const siteUrl = appService.getSiteUrl();
@@ -67,16 +66,6 @@ export class UserNotificationService {
     });
 
     return Promise.allSettled(promises);
-  }
-
-  private async putDefaultChannelIfEmpty(pagePath:string, slackChannels: (string|null)[]): Promise<void> {
-    const updatePosts = await UpdatePost.findSettingsByPath(pagePath);
-    slackChannels.push(...(updatePosts).map(up => up.channel));
-
-    // insert null if empty to notify once
-    if (slackChannels.length === 0) {
-      slackChannels.push(null);
-    }
   }
 
 }
