@@ -39,7 +39,7 @@ const defaultInfinityConfig: IApiRateLimitConfig = {
 };
 
 // default config without reg exp
-export const defaultConfigWithoutRegExp = { ...defaultStrictConfig, ...defaultInfinityConfig };
+export const defaultConfig = { ...defaultStrictConfig, ...defaultInfinityConfig };
 
 // default config with reg exp
 export const defaultConfigWithRegExp = {
