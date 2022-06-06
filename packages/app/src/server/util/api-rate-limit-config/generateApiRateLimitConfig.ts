@@ -4,23 +4,26 @@ import { defaultConfigWithoutRegExp, defaultConfigWithRegExp } from './defaultAp
 
 const envVar = process.env;
 
-const getTargetFromKey = (key: string, withRegExp: boolean) => {
+const getTargetFromKey = (key: string, withRegExp: boolean): string|null => {
   const regExp = new RegExp(withRegExp ? '^API_RATE_LIMIT_|_ENDPOINT_WITH_REGEXP$' : '^API_RATE_LIMIT_|_ENDPOINT$', 'g');
+  if (!regExp.test(key)) {
+    return null;
+  }
   const target = key.replaceAll(regExp, '');
   return target;
 };
 
-const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpointKeys: string[], withRegExp: boolean): IApiRateLimitConfig => {
+const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targets: string[], withRegExp: boolean): IApiRateLimitConfig => {
   const apiRateLimitConfig: IApiRateLimitConfig = {};
-  endpointKeys.forEach((key) => {
+  targets.forEach((target) => {
 
-    const endpoint = envVar[key];
+    const endpointKey = withRegExp ? `API_RATE_LIMIT_${target}_ENDPOINT_WITH_REGEXP` : `API_RATE_LIMIT_${target}_ENDPOINT`;
+
+    const endpoint = envVar[endpointKey];
 
     if (endpoint == null) {
       return;
     }
-
-    const target = getTargetFromKey(key, withRegExp);
     const methodKey = `API_RATE_LIMIT_${target}_METHODS`;
     const maxRequestsKey = `API_RATE_LIMIT_${target}_MAX_REQUESTS`;
     const method = envVar[methodKey] ?? 'ALL';
@@ -43,13 +46,20 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, endpo
 
 export const generateApiRateLimitConfig = (withRegExp: boolean): IApiRateLimitConfig => {
 
-  const apiRateEndpointKeys = Object.keys(envVar).filter((key) => {
+  const apiRateConfigTargets: string[] = [];
+  Object.keys(envVar).forEach((key) => {
     const target = getTargetFromKey(key, withRegExp);
-    return target;
+    if (target == null) {
+      return;
+    }
+    apiRateConfigTargets.push(target);
   });
 
+  // sort priority
+  apiRateConfigTargets.sort();
+
   // get config
-  const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateEndpointKeys, withRegExp);
+  const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateConfigTargets, withRegExp);
 
   const defaultConfig = withRegExp ? defaultConfigWithRegExp : defaultConfigWithoutRegExp;
 
