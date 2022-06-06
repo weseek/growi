@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
@@ -7,7 +8,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -35,7 +35,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -512,13 +511,13 @@ describe('Page', () => {
   describe('create', () => {
 
     test('Should create single page', async() => {
-      const page = await Page.create('/v5_create1', 'create1', dummyUser1, {});
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
     });
 
     test('Should create empty-child and non-empty grandchild', async() => {
-      const grandchildPage = await Page.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
       const childPage = await Page.findOne({ path: '/v5_empty_create2' });
 
       expect(childPage.isEmpty).toBe(true);
@@ -532,7 +531,7 @@ describe('Page', () => {
       const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
       expect(beforeCreatePage.isEmpty).toBe(true);
 
-      const childPage = await Page.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
       const grandchildPage = await Page.findOne({ parent: childPage._id });
 
       expect(childPage).toBeTruthy();
@@ -558,7 +557,7 @@ describe('Page', () => {
         expect(page3).toBeNull();
 
         // use existing path
-        await Page.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await crowi.pageService.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
@@ -583,7 +582,7 @@ describe('Page', () => {
         expect(page1).toBeTruthy();
         expect(page2).toBeNull();
 
-        await Page.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await crowi.pageService.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
@@ -815,7 +814,7 @@ describe('Page', () => {
   describe('getParentAndFillAncestors', () => {
     test('return parent if exist', async() => {
       const page1 = await Page.findOne({ path: '/PAF1' });
-      const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, page1.path);
       expect(parent).toBeTruthy();
       expect(page1.parent).toStrictEqual(parent._id);
     });
@@ -830,7 +829,7 @@ describe('Page', () => {
       expect(_page2).toBeNull();
       expect(_page3).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors(path3, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, path3);
       const page1 = await Page.findOne({ path: path1 });
       const page2 = await Page.findOne({ path: path2 });
       const page3 = await Page.findOne({ path: path3 });
@@ -855,7 +854,7 @@ describe('Page', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
 
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
       const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
       const page2 = await Page.findOne({ path: path2, isEmpty: false });
 
@@ -878,7 +877,7 @@ describe('Page', () => {
       expect(_page3).toBeTruthy();
       expect(_page3.parent).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
       const page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
       const page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
       const page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
@@ -921,7 +920,7 @@ describe('Page', () => {
       expect(_emptyA).toBeNull();
       expect(_emptyAB).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors('/get_parent_A/get_parent_B/get_parent_C', dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_A/get_parent_B/get_parent_C');
 
       const pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
@@ -967,7 +966,7 @@ describe('Page', () => {
       expect(_emptyC).toBeNull();
       expect(_emptyCD).toBeNull();
 
-      const parent = await Page.getParentAndFillAncestors('/get_parent_C/get_parent_D/get_parent_E', dummyUser1);
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_C/get_parent_D/get_parent_E');
 
       const pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false });
       const pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
@@ -986,7 +985,7 @@ describe('Page', () => {
       expect(pageCD.parent).toStrictEqual(pageC._id);
 
       // -- Check the found parent
-      expect(parent).toStrictEqual(pageCD);
+      expect(parent.toObject()).toStrictEqual(pageCD.toObject());
     });
   });
 });

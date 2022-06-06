@@ -183,11 +183,6 @@ jobs:
         cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
 
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
       with:

@@ -1,5 +1,7 @@
 import { Container } from 'unstated';
 
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+
 /**
  * Service container for admin LegacySlackIntegration setting page (LegacySlackIntegration.jsx)
  * @extends {Container} unstated Container
@@ -35,7 +37,7 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
    * Retrieve notificationData
    */
   async retrieveData() {
-    const response = await this.appContainer.apiv3.get('/slack-integration-legacy-settings/');
+    const response = await apiv3Get('/slack-integration-legacy-settings/');
     const { slackIntegrationParams } = response.data;
 
     this.setState({
@@ -79,7 +81,7 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async updateSlackAppConfiguration() {
-    const response = await this.appContainer.apiv3.put('/slack-integration-legacy-settings/', {
+    const response = await apiv3Put('/slack-integration-legacy-settings/', {
       webhookUrl: this.state.webhookUrl,
       isIncomingWebhookPrioritized: this.state.isIncomingWebhookPrioritized,
       slackToken: this.state.slackToken,

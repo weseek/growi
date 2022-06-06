@@ -7,6 +7,7 @@ import { createTerminus } from '@godaddy/terminus';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
+
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -16,8 +17,9 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
-import PageOperation, { PageActionType, PageActionStage } from '../models/page-operation';
+import PageOperation, { PageActionType } from '../models/page-operation';
 import PageRedirect from '../models/page-redirect';
+import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
 import AppService from '../service/app';
@@ -280,6 +282,7 @@ Crowi.prototype.setupModels = async function() {
 
   // include models that independent from crowi
   allModels.Activity = Activity;
+  allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
 
@@ -398,12 +401,16 @@ Crowi.prototype.autoInstall = function() {
     admin: true,
   };
   const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+  const allowGuestMode = this.configManager.getConfig('crowi', 'autoInstall:allowGuestMode');
   const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
 
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
+      allowGuestMode,
+      serverDate,
+    });
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
@@ -424,9 +431,6 @@ Crowi.prototype.start = async function() {
 
   await this.init();
   await this.buildServer();
-  // cleanup if PageOperationDocuments exist
-  await this.cleanupPageOperation();
-
 
   const { express, configManager } = this;
 
@@ -684,6 +688,8 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
+    // TODO: Remove this code when resuming feature is implemented
+    await this.pageOperationService.init();
   }
 };
 
@@ -729,15 +735,6 @@ Crowi.prototype.setupSlackIntegrationService = async function() {
   if (this.s2sMessagingService != null) {
     this.s2sMessagingService.addMessageHandler(this.slackIntegrationService);
   }
-};
-
-Crowi.prototype.cleanupPageOperation = async function() {
-  if (PageOperation == null) return;
-
-  const excludeList = [PageActionType.Rename]; // list of ActionType to avoid being cleaned up
-  const excludeStage = PageActionStage.Sub;
-  await PageOperation.cleanup(excludeList, excludeStage);
-  logger.info('cleanupPageOperation has been finished');
 };
 
 export default Crowi;

@@ -1,24 +1,20 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { Subscribe } from 'unstated';
-
+import Dropzone from 'react-dropzone';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import Dropzone from 'react-dropzone';
+import { useDefaultIndentSize } from '~/stores/context';
+import { useEditorSettings } from '~/stores/editor';
 
-import EditorContainer from '~/client/services/EditorContainer';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
+import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
+import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
-import pasteHelper from './PasteHelper';
 
 class Editor extends AbstractEditor {
 
@@ -285,7 +281,10 @@ class Editor extends AbstractEditor {
       flexDirection: 'column',
     };
 
-    const isMobile = this.props.isMobile;
+    const {
+      isMobile,
+      indentSize,
+    } = this.props;
 
     return (
       <>
@@ -313,24 +312,16 @@ class Editor extends AbstractEditor {
 
                   {/* for PC */}
                   { !isMobile && (
-                    <Subscribe to={[EditorContainer]}>
-                      { editorContainer => (
-                        // eslint-disable-next-line arrow-body-style
-                        <CodeMirrorEditor
-                          ref={(c) => { this.cmEditor = c }}
-                          indentSize={editorContainer.state.indentSize}
-                          editorOptions={editorContainer.state.editorOptions}
-                          isTextlintEnabled={editorContainer.state.isTextlintEnabled}
-                          textlintRules={editorContainer.state.textlintRules}
-                          onInitializeTextlint={editorContainer.retrieveEditorSettings}
-                          onPasteFiles={this.pasteFilesHandler}
-                          onDragEnter={this.dragEnterHandler}
-                          onMarkdownHelpButtonClicked={this.showMarkdownHelp}
-                          onAddAttachmentButtonClicked={this.addAttachmentHandler}
-                          {...this.props}
-                        />
-                      )}
-                    </Subscribe>
+                    // eslint-disable-next-line arrow-body-style
+                    <CodeMirrorEditor
+                      ref={(c) => { this.cmEditor = c }}
+                      indentSize={indentSize}
+                      onPasteFiles={this.pasteFilesHandler}
+                      onDragEnter={this.dragEnterHandler}
+                      onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                      onAddAttachmentButtonClicked={this.addAttachmentHandler}
+                      {...this.props}
+                    />
                   )}
 
                   {/* for mobile */}
@@ -384,11 +375,30 @@ Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
-  emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorSettings: PropTypes.object.isRequired,
+  indentSize: PropTypes.number,
 }, AbstractEditor.propTypes);
 
-export default withUnstatedContainers(Editor, [EditorContainer, AppContainer]);
+
+const EditorWrapper = React.forwardRef((props, ref) => {
+  const { data: editorSettings } = useEditorSettings();
+  const { data: defaultIndentSize } = useDefaultIndentSize();
+
+  if (editorSettings == null) {
+    return <></>;
+  }
+
+  return (
+    <Editor
+      ref={ref}
+      {...props}
+      editorSettings={editorSettings}
+      // eslint-disable-next-line react/prop-types
+      indentSize={props.indentSize ?? defaultIndentSize}
+    />
+  );
+});
+
+export default EditorWrapper;

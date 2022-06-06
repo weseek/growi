@@ -159,6 +159,7 @@ RUN rm node_modules.tar packages.tar
 
 COPY --chown=node:node --chmod=700 packages/app/docker/docker-entrypoint.sh /
 
+USER root
 WORKDIR ${appDir}/packages/app
 
 VOLUME /data

@@ -8,17 +8,18 @@ import {
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-
 import { IFocusable } from '~/client/interfaces/focusable';
+import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { Nullable } from '~/interfaces/common';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
 } from './context';
+import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
 const { isSharedPage } = pagePathUtils;
@@ -211,8 +212,27 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   return useStaticSWR(key);
 };
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
+type PreferDrawerModeByUserUtils = {
+  update: (preferDrawerMode: boolean) => void
+}
+
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+  const { data: isGuestUser } = useIsGuestUser();
+  const { scheduleToPut } = useUserUISettings();
+
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+
+  return {
+    ...swrResponse,
+    data: swrResponse.data,
+    update: (preferDrawerMode: boolean) => {
+      swrResponse.mutate(preferDrawerMode);
+
+      if (!isGuestUser) {
+        scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
+      }
+    },
+  };
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {

@@ -11,6 +11,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import PageService from '../../service/page';
+
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
@@ -69,7 +70,6 @@ export default (crowi: Crowi): Router => {
     const { path } = req.query;
 
     const pageService: PageService = crowi.pageService!;
-
     try {
       const ancestorsChildren = await pageService.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
