@@ -767,6 +767,7 @@ export async function pushRevision(pageData, newRevision, user) {
 
   pageData.revision = newRevision;
   pageData.lastUpdateUser = user?._id ?? user;
+  pageData.updatedAt = Date.now();
 
   return pageData.save();
 }
