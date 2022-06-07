@@ -225,6 +225,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
                 <PageItemControl
+                  alignRight
                   pageId={pageData._id}
                   pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}
