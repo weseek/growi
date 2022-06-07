@@ -79,7 +79,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 // Dropdown
 .grw-personal-dropdown {
-
   .grw-sidebar-mode-icon svg {
     fill: $secondary;
   }
@@ -480,13 +479,11 @@ ul.pagination {
   .list-group {
     .list-group-item {
       a {
-        color: $color-global;
         svg {
           fill: $color-global;
         }
 
         @include hover() {
-          color: $color-global;
           svg {
             fill: $color-global;
           }
@@ -498,10 +495,6 @@ ul.pagination {
         svg {
           fill: $color-page-list-group-item-meta;
         }
-      }
-
-      .page-list-snippet {
-        color: $gray-600;
       }
 
       &.list-group-item-action {

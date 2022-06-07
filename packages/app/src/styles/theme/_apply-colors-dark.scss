@@ -234,7 +234,7 @@ ul.pagination {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: theme-color('light');
+      color: darken($body-color, 10%);
     }
   }
 }
@@ -461,6 +461,16 @@ ul.pagination {
  * GROWI tags
  */
 .grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
