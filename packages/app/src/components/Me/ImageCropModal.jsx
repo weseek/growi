@@ -1,20 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import canvasToBlob from 'async-canvas-to-blob';
 
+import canvasToBlob from 'async-canvas-to-blob';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import ReactCrop from 'react-image-crop';
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
-import ReactCrop from 'react-image-crop';
-import loggerFactory from '~/utils/logger';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
 import 'react-image-crop/dist/ReactCrop.css';
 import { toastError } from '~/client/util/apiNotification';
+import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:ImageCropModal');
 
@@ -113,12 +113,11 @@ class ImageCropModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ProfileImageFormWrapper = withUnstatedContainers(ImageCropModal, [AppContainer]);
 ImageCropModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,
   src: PropTypes.string,
   onModalClose: PropTypes.func.isRequired,
   onCropCompleted: PropTypes.func.isRequired,
 };
-export default withTranslation()(ProfileImageFormWrapper);
+
+export default withTranslation()(ImageCropModal);

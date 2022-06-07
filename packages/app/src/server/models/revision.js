@@ -28,8 +28,9 @@ module.exports = function(crowi) {
     },
     format: { type: String, default: 'markdown' },
     author: { type: ObjectId, ref: 'User' },
-    createdAt: { type: Date, default: Date.now },
     hasDiffToPrev: { type: Boolean },
+  }, {
+    timestamps: { createdAt: true, updatedAt: false },
   });
   revisionSchema.plugin(mongoosePaginate);
 
@@ -55,7 +56,6 @@ module.exports = function(crowi) {
     newRevision.body = body;
     newRevision.format = format;
     newRevision.author = user._id;
-    newRevision.createdAt = Date.now();
     if (pageData.revision != null) {
       newRevision.hasDiffToPrev = body !== previousBody;
     }
