@@ -1113,7 +1113,7 @@
     "footprints": "Footprints",
     "operation": {
       "attention": {
-        "rename": "Renaming was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
+        "rename": "Renaming paths of descendant pages was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
       }
     }
   },
