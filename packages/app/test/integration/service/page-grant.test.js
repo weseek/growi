@@ -502,8 +502,8 @@ describe('PageGrantService', () => {
 
       // AnyoneWithTheLink
       const rootAnyoneWithTheLinkPage = await Page.findOne({ path: v4PageRootAnyoneWithTheLinkPagePath });
-      const AnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(rootAnyoneWithTheLinkPage, user1);
-      expect(AnyoneWithTheLinkRes).toStrictEqual(
+      const anyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(rootAnyoneWithTheLinkPage, user1);
+      expect(anyoneWithTheLinkRes).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
