@@ -571,7 +571,7 @@ describe('Page', () => {
     ]);
 
   });
-  describe.only('create', () => {
+  describe('create', () => {
 
     test('Should create single page', async() => {
       const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
