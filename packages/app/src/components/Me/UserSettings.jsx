@@ -2,7 +2,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import BasicInfoSettings from './BasicInfoSettings';
 import ProfileImageSettings from './ProfileImageSettings';
@@ -28,9 +28,13 @@ class UserSettings extends React.Component {
 
 }
 
-
 UserSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(UserSettings);
+const UserSettingsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserSettings t={t} {...props} />;
+};
+
+export default UserSettingsWrapperFC;

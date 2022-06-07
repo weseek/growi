@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
@@ -22,7 +22,8 @@ const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
 };
 
 const TrashPageAlert = (props) => {
-  const { t, pageContainer } = props;
+  const { t } = useTranslation();
+  const { pageContainer } = props;
   const {
     pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
@@ -141,15 +142,14 @@ const TrashPageAlert = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [PageContainer]);
-
-
 TrashPageAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(TrashPageAlertWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [PageContainer]);
+
+export default TrashPageAlertWrapper;
