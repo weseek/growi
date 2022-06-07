@@ -1,3 +1,4 @@
+import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /**
@@ -52,6 +53,8 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
+
+  const activityEvent = crowi.event('activity');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
@@ -464,6 +467,9 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_REMOVE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.json(ApiResponse.success({}));
   };

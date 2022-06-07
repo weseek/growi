@@ -72,7 +72,7 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('delete', async(user, removedComment) => {
+    this.commentEvent.on('delete', async(removedComment) => {
       this.commentEvent.onDelete();
 
       try {
@@ -81,13 +81,6 @@ class CommentService {
       }
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
-      }
-
-      try {
-        await this.createActivity(user, removedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_REMOVE);
-      }
-      catch (err) {
-        logger.error('Error occurred while handling the comment removal event:\n', err);
       }
     });
   }
