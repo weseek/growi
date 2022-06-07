@@ -109,7 +109,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const [isRenaming, setRenaming] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -271,7 +270,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
-      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -287,11 +285,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
-    }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
     }
   };
 
@@ -377,7 +370,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
    */
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
-      setRenaming(true);
       await resumeRenameOperation(pageId);
 
       if (onRenamed != null) {
@@ -417,6 +409,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   }, [data, isOpen, targetPathOrId]);
 
+  // Rename process
+  // Icon that draw attention from users for some actions
+  const shouldShowAttentionIcon = !!page.processData?.Rename?.isProcessable;
+
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -454,8 +450,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { isRenaming && (
-                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              { shouldShowAttentionIcon && (
+                <i className="fa fa-warning mr-2 text-warning"></i>
               )}
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
                 <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
@@ -477,6 +473,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
+            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
             operationProcessData={page.processData}
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
