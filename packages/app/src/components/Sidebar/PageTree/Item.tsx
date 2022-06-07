@@ -411,7 +411,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   // Rename process
   // Icon that draw attention from users for some actions
-  const shouldShowAttentionIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
+  const shouldShowAttentionIcon = !!page.processData?.Rename?.isProcessable;
 
   return (
     <div
