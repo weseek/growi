@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { useCurrentPageId } from '~/stores/context';
 import { useSWRxPageRevisions } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -59,11 +60,8 @@ const PageHistory = () => {
         {pager()}
       </div>
       <RevisionComparer
-        revisions={revisionsData.revisions}
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
-        changeSourceRevision={setSourceRevision}
-        changeTargetRevision={setTargetRevision}
         currentPageId={currentPageId}
       />
     </div>

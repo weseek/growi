@@ -14,7 +14,7 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} hasDiff whether revision has difference to previousRevision
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
-  renderRow(revision, previousRevision, latestRevision, oldestRevision, hasDiff, isContiguousNodiff) {
+  renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff) {
     const {
       t, sourceRevision, targetRevision, changeSourceRevision, changeTargetRevision,
     } = this.props;
@@ -55,7 +55,7 @@ class PageRevisionTable extends React.Component {
                     type="button"
                     className="btn btn-outline-secondary btn-sm"
                     onClick={handleComparePreviousRevisionButton}
-                    disabled={revision === oldestRevision}
+                    disabled={isOldestRevision}
                   >
                     {t('page_history.compare_previous')}
                   </button>
@@ -124,13 +124,14 @@ class PageRevisionTable extends React.Component {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
+      let isOldestRevision = false;
+      if (revision === oldestRevision) isOldestRevision = true;
 
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
-      const isContiguousNodiff = !hasDiff && !hasDiffPrev;
 
       hasDiffPrev = hasDiff;
 
-      return this.renderRow(revision, previousRevision, latestRevision, oldestRevision, hasDiff, isContiguousNodiff);
+      return this.renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
     });
 
     return (

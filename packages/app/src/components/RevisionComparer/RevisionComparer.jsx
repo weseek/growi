@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
@@ -31,35 +31,13 @@ const RevisionComparer = (props) => {
   const { data: currentPagePath = '' } = useCurrentPagePath();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {
-    sourceRevision, targetRevision, revisions,
-    changeSourceRevision, changeTargetRevision,
+    sourceRevision, targetRevision,
     currentPageId,
   } = props;
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
-
-  function getRevisionIDsToCompareAsParam() {
-    const searchParams = {};
-    for (const param of window.location.search?.substr(1)?.split('&')) {
-      const [k, v] = param.split('=');
-      searchParams[k] = v;
-    }
-    if (!searchParams.compare) {
-      return [];
-    }
-
-    return searchParams.compare.split('...') || [];
-  }
-
-  useEffect(() => {
-    const { sourceRevisionId, targetRevisionId } = getRevisionIDsToCompareAsParam();
-    revisions.forEach((element) => {
-      if (element._id === sourceRevisionId) changeSourceRevision(element);
-      if (element._id === targetRevisionId) changeTargetRevision(element);
-    });
-  });
 
   const generateURL = (pathName) => {
     const { origin } = window.location;
@@ -135,11 +113,8 @@ const RevisionComparer = (props) => {
 };
 
 RevisionComparer.propTypes = {
-  revisions: PropTypes.array,
   sourceRevision: PropTypes.instanceOf(Object),
   targetRevision: PropTypes.instanceOf(Object),
-  changeSourceRevision: PropTypes.func.isRequired,
-  changeTargetRevision: PropTypes.func.isRequired,
   currentPageId: PropTypes.string,
 };
 
