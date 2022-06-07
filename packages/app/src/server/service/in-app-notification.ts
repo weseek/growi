@@ -49,7 +49,7 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('createInAppNotification', async(activity: ActivityDocument, target: IPage) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
       try {
         await this.createInAppNotification(activity, target);
       }
