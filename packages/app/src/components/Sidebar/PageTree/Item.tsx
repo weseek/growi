@@ -7,8 +7,7 @@ import nodePath from 'path';
 import { pathUtils, pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
-import { DropdownToggle } from 'reactstrap';
-
+import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -451,8 +450,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           : (
             <>
               { shouldShowAttentionIcon && (
-                <i className="fa fa-warning mr-2 text-warning"></i>
+                <>
+                  <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+                  <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
+                    {t('tooltip.operation.attention.rename')}
+                  </UncontrolledTooltip>
+                </>
               )}
+
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
                 <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
               </a>
