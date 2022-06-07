@@ -72,15 +72,22 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('delete', async(comment) => {
+    this.commentEvent.on('delete', async(user, removedComment) => {
       this.commentEvent.onDelete();
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
-        await Page.updateCommentCount(comment.page);
+        await Page.updateCommentCount(removedComment.page);
       }
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
+      }
+
+      try {
+        await this.createActivity(user, removedComment.page, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_REMOVE);
+      }
+      catch (err) {
+        logger.error('Error occurred while handling the comment removal event:\n', err);
       }
     });
   }
