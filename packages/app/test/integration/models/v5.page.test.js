@@ -147,6 +147,10 @@ describe('Page', () => {
     const pageIdCreate2 = new mongoose.Types.ObjectId();
     const pageIdCreate3 = new mongoose.Types.ObjectId();
     const pageIdCreate4 = new mongoose.Types.ObjectId();
+    const pageIdCreate5 = new mongoose.Types.ObjectId();
+    const pageIdCreate6 = new mongoose.Types.ObjectId();
+    const pageIdCreate7 = new mongoose.Types.ObjectId();
+    const pageIdCreate8 = new mongoose.Types.ObjectId();
 
     /**
      * create
@@ -171,7 +175,7 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdCreate1,
+        _id: pageIdCreate5,
         path: '/v5_empty_create_by_system4',
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
@@ -182,7 +186,7 @@ describe('Page', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate1,
+        parent: pageIdCreate5,
         isEmpty: false,
       },
       {
@@ -203,7 +207,7 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdCreate2,
+        _id: pageIdCreate6,
         path: '/mc4_top_create_by_system/mc1_emp_create_by_system',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -216,7 +220,7 @@ describe('Page', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate2,
+        parent: pageIdCreate6,
         isEmpty: false,
       },
       {
@@ -244,7 +248,7 @@ describe('Page', () => {
         descendantCount: 1,
       },
       {
-        _id: pageIdCreate3,
+        _id: pageIdCreate7,
         path: '/mc4_top_create_by_system',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -264,7 +268,7 @@ describe('Page', () => {
         descendantCount: 0,
       },
       {
-        _id: pageIdCreate4,
+        _id: pageIdCreate8,
         path: '/mc5_top_create_by_system',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
