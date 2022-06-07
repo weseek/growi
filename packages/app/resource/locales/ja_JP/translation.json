@@ -1111,6 +1111,7 @@
     }
   },
   "page_operation":{
-    "paths_recovered": "パスを修復しました"
+    "paths_recovered": "パスを修復しました",
+    "path_recovery_failed":"パスを修復できませんでした"
   }
 }

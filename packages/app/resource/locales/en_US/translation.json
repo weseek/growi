@@ -1118,6 +1118,7 @@
     }
   },
   "page_operation":{
-    "paths_recovered": "Paths recovered successfully"
+    "paths_recovered": "Paths recovered successfully",
+    "path_recovery_failed":"Path recovery failed"
   }
 }

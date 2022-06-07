@@ -108,7 +108,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const [isRenaming, setRenaming] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -270,7 +269,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
-      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -285,13 +283,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
     catch (err) {
       setRenameInputShown(true);
-      setRenaming(false);
       toastError(err);
-    }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
     }
   };
 
@@ -371,12 +363,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  /**
+   * Users do not need to know if all pages have been renamed.
+   * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
+   */
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
-      setRenaming(true);
       await resumeRenameOperation(pageId);
-
-      mutateChildren();
 
       if (onRenamed != null) {
         onRenamed();
@@ -384,13 +377,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       toastSuccess(t('page_operation.paths_recovered'));
     }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
+    catch {
+      toastError(t('page_operation.path_recovery_failed'));
     }
   };
 
@@ -421,8 +409,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   // Rename process
-  const existRenameProcessData = page.processData?.Rename != null;
-  const isRenameProcessable = page.processData?.Rename?.isProcessable;
+  // Icon that draw attention from users for some actions
+  const shouldShowAttentionIcon = page.processData?.Rename != null ? page.processData.Rename.isProcessable : false;
 
   return (
     <div
@@ -461,17 +449,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { (isRenaming || (existRenameProcessData && !isRenameProcessable)) && (
-                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
-              )}
-              { (!isRenaming && isRenameProcessable) && (
-                <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
-              )}
-
-              {page.processData != null && (
-                <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
-                  {t('tooltip.operation.attention.rename')}
-                </UncontrolledTooltip>
+              { shouldShowAttentionIcon && (
+                <>
+                  <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+                  <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
+                    {t('tooltip.operation.attention.rename')}
+                  </UncontrolledTooltip>
+                </>
               )}
 
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
@@ -494,6 +478,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
+            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
             operationProcessData={page.processData}
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
