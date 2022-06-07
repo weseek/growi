@@ -598,6 +598,35 @@ describe('PageGrantService', () => {
       );
     });
 
+    test('"GRANT_OWNER" is not allowed if the user is not the parent page\'s grantUser', async() => {
+      // Public
+      const onlyMePublicPage = await Page.findOne({ path: pageOnlyMePublicPath });
+      const onlyMePublicRes = await pageGrantService.calcApplicableGrantData(onlyMePublicPage, user2);
+      expect(onlyMePublicRes).toStrictEqual(
+        {
+          [PageGrant.GRANT_RESTRICTED]: null,
+        },
+      );
+
+      // AnyoneWithTheLink
+      const onlyMeAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyMeAnyoneWithTheLinkPath });
+      const onlyMeAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyMeAnyoneWithTheLinkPage, user2);
+      expect(onlyMeAnyoneWithTheLinkRes).toStrictEqual(
+        {
+          [PageGrant.GRANT_RESTRICTED]: null,
+        },
+      );
+
+      // OnlyInsideTheGroup
+      const publicOnlyInsideTheGroupPage = await Page.findOne({ path: pageOnlyMeOnlyInsideTheGroupPath });
+      const publicOnlyInsideTheGroupRes = await pageGrantService.calcApplicableGrantData(publicOnlyInsideTheGroupPage, user2);
+      expect(publicOnlyInsideTheGroupRes).toStrictEqual(
+        {
+          [PageGrant.GRANT_RESTRICTED]: null,
+        },
+      );
+    });
+
     test('"GRANT_USER_GROUP" is allowed if the parent\'s grant is GRANT_USER_GROUP and the user is included in the group', async() => {
       const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(groupParent, user1);
 
