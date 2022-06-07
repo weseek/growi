@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class RemoveAdminButton extends React.Component {
 
@@ -63,11 +65,6 @@ class RemoveAdminButton extends React.Component {
 
 }
 
-/**
-* Wrapper component for using unstated
-*/
-const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AppContainer, AdminUsersContainer]);
-
 RemoveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -76,4 +73,14 @@ RemoveAdminButton.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(RemoveAdminButtonWrapper);
+const RemoveAdminButtonWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <RemoveAdminButton t={t} {...props} />;
+};
+
+/**
+* Wrapper component for using unstated
+*/
+const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButtonWrapperFC, [AppContainer, AdminUsersContainer]);
+
+export default RemoveAdminButtonWrapper;

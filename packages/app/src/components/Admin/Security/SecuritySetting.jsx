@@ -1,15 +1,17 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Collapse } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
 
-import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { Collapse } from 'reactstrap';
+
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
-import AppContainer from '~/client/services/AppContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 // used as the prefix of translation
 const DeletionTypeForT = Object.freeze({
@@ -495,6 +497,14 @@ SecuritySetting.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecuritySettingWrapper = withUnstatedContainers(SecuritySetting, [AppContainer, AdminGeneralSecurityContainer]);
+const SecuritySettingWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <SecuritySetting t={t} {...props} />;
+};
 
-export default withTranslation()(SecuritySettingWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const SecuritySettingWrapper = withUnstatedContainers(SecuritySettingWrapperFC, [AppContainer, AdminGeneralSecurityContainer]);
+
+export default SecuritySettingWrapper;

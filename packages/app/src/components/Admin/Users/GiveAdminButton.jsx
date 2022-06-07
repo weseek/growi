@@ -1,11 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GiveAdminButton extends React.Component {
 
@@ -39,11 +41,6 @@ class GiveAdminButton extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButton, [AppContainer, AdminUsersContainer]);
-
 GiveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -52,4 +49,14 @@ GiveAdminButton.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(GiveAdminButtonWrapper);
+const GiveAdminButtonWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <GiveAdminButton t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButtonWrapperFC, [AppContainer, AdminUsersContainer]);
+
+export default GiveAdminButtonWrapper;

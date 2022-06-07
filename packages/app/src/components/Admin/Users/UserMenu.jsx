@@ -1,20 +1,23 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
 } from 'reactstrap';
 
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
+import GiveAdminButton from './GiveAdminButton';
+import RemoveAdminButton from './RemoveAdminButton';
+import SendInvitationEmailButton from './SendInvitationEmailButton';
 import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedButton from './StatusSuspendedButton';
 import UserRemoveButton from './UserRemoveButton';
-import RemoveAdminButton from './RemoveAdminButton';
-import GiveAdminButton from './GiveAdminButton';
-import SendInvitationEmailButton from './SendInvitationEmailButton';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 class UserMenu extends React.Component {
 
@@ -113,14 +116,21 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
-
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserMenuWrapper);
+const UserMenuWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserMenu t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AppContainer, AdminUsersContainer]);
+
+export default UserMenuWrapper;

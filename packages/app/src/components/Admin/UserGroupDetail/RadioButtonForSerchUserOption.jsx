@@ -1,7 +1,8 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 class RadioButtonForSerchUserOption extends React.Component {
 
@@ -34,4 +35,9 @@ RadioButtonForSerchUserOption.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(RadioButtonForSerchUserOption);
+const RadioButtonForSerchUserOptionWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <RadioButtonForSerchUserOption t={t} {...props} />;
+};
+
+export default RadioButtonForSerchUserOptionWrapperFC;
