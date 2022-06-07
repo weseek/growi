@@ -5,11 +5,6 @@ import { emojiMartData } from './emoji-mart-data';
 
 export default class TocAndAnchorConfigurer {
 
-  constructor(crowi, setHtml) {
-    this.crowi = crowi;
-    this.setHtml = setHtml;
-  }
-
   configure(md) {
     md.use(markdownItEmojiMart, { defs: emojiMartData })
       .use(markdownItToc, {
@@ -21,13 +16,11 @@ export default class TocAndAnchorConfigurer {
       });
 
     // set toc render function
-    if (this.setHtml != null) {
-      md.set({
-        tocCallback: (tocMarkdown, tocArray, tocHtml) => {
-          this.setHtml(tocHtml);
-        },
-      });
-    }
+    md.set({
+      tocCallback: (tocMarkdown, tocArray, tocHtml) => {
+        window.globalEmitter.emit('renderTocHtml', tocHtml);
+      },
+    });
   }
 
 }

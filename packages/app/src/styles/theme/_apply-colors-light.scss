@@ -224,6 +224,12 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       }
     }
   }
+  // List group
+  .list-group-item {
+    .page-list-snippet {
+      color: lighten($body-color, 10%);
+    }
+  }
 }
 
 /*
@@ -344,6 +350,16 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * GROWI tags
  */
 .grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;

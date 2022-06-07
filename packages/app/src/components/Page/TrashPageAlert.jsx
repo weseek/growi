@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
+import PageContainer from '~/client/services/PageContainer';
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import EmptyTrashModal from '../EmptyTrashModal';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
   if (typeof pathOrPathsToDelete !== 'string') {
@@ -145,12 +144,11 @@ const TrashPageAlert = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [AppContainer, PageContainer]);
+const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [PageContainer]);
 
 
 TrashPageAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
