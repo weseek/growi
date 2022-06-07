@@ -146,8 +146,8 @@ context('Access to Template Editing Mode', () => {
 
 });
 
-context('Confirm notification', () => {
-  const ssPrefix = 'confirm-notification-';
+context('Access to /me/all-in-app-notifications', () => {
+  const ssPrefix = 'in-app-notifications-';
 
   beforeEach(() => {
     // login
@@ -158,7 +158,7 @@ context('Confirm notification', () => {
     cy.collapseSidebar(true);
   });
 
-  it('Notification list successfully loaded', () => {
+  it('All In-App Notification list is successfully loaded', () => {
     cy.visit('/');
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
