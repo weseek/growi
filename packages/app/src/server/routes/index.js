@@ -173,21 +173,21 @@ module.exports = function(crowi, app) {
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
+  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, addActivity, page.api.update);
   apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , csrf, addActivity, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , csrf, addActivity, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
   apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
