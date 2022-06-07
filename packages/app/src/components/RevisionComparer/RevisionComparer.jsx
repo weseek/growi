@@ -28,7 +28,7 @@ const DropdownItemContents = ({ title, contents }) => (
 const RevisionComparer = (props) => {
 
   const { t } = useTranslation();
-  const { data: currentPagePath = '' } = useCurrentPagePath();
+  const { data: currentPagePath } = useCurrentPagePath();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {
     sourceRevision, targetRevision,
@@ -40,6 +40,8 @@ const RevisionComparer = (props) => {
   }
 
   const generateURL = (pathName) => {
+    if (pathName == null) return null;
+
     const { origin } = window.location;
 
     const url = new URL(pathName, origin);

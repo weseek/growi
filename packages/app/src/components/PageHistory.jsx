@@ -53,8 +53,8 @@ const PageHistory = () => {
         pagingLimit={pagingLimit}
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
-        changeSourceRevision={setSourceRevision}
-        changeTargetRevision={setTargetRevision}
+        onChangeSourceInvoked={setSourceRevision}
+        onChangeTargetInvoked={setTargetRevision}
       />
       <div className="my-3">
         {pager()}

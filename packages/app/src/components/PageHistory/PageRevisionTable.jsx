@@ -16,18 +16,18 @@ class PageRevisionTable extends React.Component {
    */
   renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff) {
     const {
-      t, sourceRevision, targetRevision, changeSourceRevision, changeTargetRevision,
+      t, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked,
     } = this.props;
     const revisionId = revision._id;
 
     const handleCompareLatestRevisionButton = () => {
-      changeSourceRevision(revision);
-      changeTargetRevision(latestRevision);
+      onChangeSourceInvoked(revision);
+      onChangeTargetInvoked(latestRevision);
     };
 
     const handleComparePreviousRevisionButton = () => {
-      changeSourceRevision(previousRevision);
-      changeTargetRevision(revision);
+      onChangeSourceInvoked(previousRevision);
+      onChangeTargetInvoked(revision);
     };
 
     return (
@@ -74,7 +74,7 @@ class PageRevisionTable extends React.Component {
                 name="compareSource"
                 value={revisionId}
                 checked={revisionId === sourceRevision?._id}
-                onChange={() => changeSourceRevision(revision)}
+                onChange={() => onChangeSourceInvoked(revision)}
               />
               <label className="custom-control-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
@@ -90,7 +90,7 @@ class PageRevisionTable extends React.Component {
                 name="compareTarget"
                 value={revisionId}
                 checked={revisionId === targetRevision?._id}
-                onChange={() => changeTargetRevision(revision)}
+                onChange={() => onChangeTargetInvoked(revision)}
               />
               <label className="custom-control-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>
@@ -158,8 +158,8 @@ PageRevisionTable.propTypes = {
   pagingLimit: PropTypes.number,
   sourceRevision: PropTypes.instanceOf(Object),
   targetRevision: PropTypes.instanceOf(Object),
-  changeSourceRevision: PropTypes.func.isRequired,
-  changeTargetRevision: PropTypes.func.isRequired,
+  onChangeSourceInvoked: PropTypes.func.isRequired,
+  onChangeTargetInvoked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageRevisionTable);
