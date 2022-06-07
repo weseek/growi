@@ -658,14 +658,12 @@ describe('Page', () => {
 
     describe('Force create by system', () => {
       test('Should create single page by system', async() => {
-        // 実装完了
         const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
         expect(page).toBeTruthy();
         expect(page.parent).toStrictEqual(rootPage._id);
       });
 
       test('Should create empty-child and non-empty grandchild by system', async() => {
-        // 実装完了
         const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
         const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
 
@@ -677,7 +675,6 @@ describe('Page', () => {
       });
 
       test('Should create on empty page by system', async() => {
-        // 実装完了
         const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
         expect(beforeCreatePage.isEmpty).toBe(true);
 
@@ -693,7 +690,6 @@ describe('Page', () => {
       });
 
       test('with grant RESTRICTED should only create the page and change nothing else by system', async() => {
-        // 実装完了
         const pathT = '/mc4_top_create_by_system';
         const path1 = '/mc4_top_create_by_system/mc1_emp_create_by_system';
         const path2 = '/mc4_top_create_by_system/mc1_emp_create_by_system/mc2_pub_create_by_system';
