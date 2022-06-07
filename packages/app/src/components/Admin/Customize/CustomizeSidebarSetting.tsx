@@ -3,6 +3,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
+import SidebarDockIcon from '../../Icons/SidebarDockIcon';
+import SidebarDrawerIcon from '../../Icons/SidebarDrawerIcon';
+
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -23,18 +26,24 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             <input
               type="radio"
               id="drawerRadioButton"
-              className="custom-control-input"
+              className="custom-control-input mr-1"
             />
-            <label className="custom-control-label" htmlFor="drawerRadioButton">Drawer Mode</label>
+            <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="drawerRadioButton">
+              <SidebarDrawerIcon />
+              <div className="ml-2">Drawer Mode</div>
+            </label>
           </div>
 
           <div className="custom-control custom-radio">
             <input
               type="radio"
               id="dockRadioButton"
-              className="custom-control-input"
+              className="custom-control-input mr-1"
             />
-            <label className="custom-control-label" htmlFor="dockRadioButton">Dock Mode</label>
+            <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="dockRadioButton">
+              <SidebarDockIcon />
+              <div className="ml-2">Dock Mode</div>
+            </label>
           </div>
 
           <div className="row my-3">
