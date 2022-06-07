@@ -99,7 +99,7 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager } = this.appContainer;
+    const { interceptorManager } = global;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
     interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible

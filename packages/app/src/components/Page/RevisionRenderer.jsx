@@ -58,7 +58,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     const HeaderLinkArray = Array.from(HeaderLink);
     addSmoothScrollEvent(HeaderLinkArray, blinkElem);
 
-    const { interceptorManager } = this.props.appContainer;
+    const { interceptorManager } = global;
 
     interceptorManager.process('postRenderHtml', this.currentRenderingContext);
   }
@@ -134,7 +134,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
       highlightKeywords,
     } = this.props;
 
-    const { interceptorManager } = appContainer;
+    const { interceptorManager } = global;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRender', context);

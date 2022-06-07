@@ -11,7 +11,6 @@ import mongoose from 'mongoose';
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
-import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
@@ -72,7 +71,6 @@ function Crowi() {
   this.pageService = null;
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
-  this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
   this.activityService = null;
@@ -311,10 +309,6 @@ Crowi.prototype.getSlack = function() {
 
 Crowi.prototype.getSlackLegacy = function() {
   return this.slackLegacy;
-};
-
-Crowi.prototype.getInterceptorManager = function() {
-  return this.interceptorManager;
 };
 
 Crowi.prototype.getGlobalNotificationService = function() {

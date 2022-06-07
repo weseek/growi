@@ -1,6 +1,5 @@
 import { Container } from 'unstated';
 
-import InterceptorManager from '~/services/interceptor-manager';
 
 import GrowiRenderer from '../util/GrowiRenderer';
 import { i18nFactory } from '../util/i18n';
@@ -51,8 +50,6 @@ export default class AppContainer extends Container {
     this.isDocSaved = true;
 
     this.originRenderer = new GrowiRenderer(this);
-
-    this.interceptorManager = new InterceptorManager();
 
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {

@@ -34,7 +34,7 @@ const Preview = (props: Props): JSX.Element => {
 
   const { data: editorSettings } = useEditorSettings();
 
-  const { interceptorManager } = appContainer;
+  const { interceptorManager } = global;
   const growiRenderer = props.appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
