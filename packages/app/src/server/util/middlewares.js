@@ -37,25 +37,6 @@ module.exports = (crowi) => {
   };
 
   middlewares.swigFilters = function(swig) {
-    // define a function for Gravatar
-    const generateGravatarSrc = function(user) {
-      const email = user.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
-    };
-
-    // define a function for uploaded picture
-    const getUploadedPictureSrc = function(user) {
-      if (user.image) {
-        return user.image;
-      }
-      if (user.imageAttachment != null) {
-        return user.imageAttachment.filePathProxied;
-      }
-
-      return '/images/icons/user.svg';
-    };
-
 
     return function(req, res, next) {
       swig.setFilter('path2name', (string) => {
@@ -124,21 +105,6 @@ module.exports = (crowi) => {
         // 手抜き
         return string
           .replace(/\s(https?.+(jpe?g|png|gif))\s/, '\n\n\n![]($1)\n\n\n');
-      });
-
-      swig.setFilter('gravatar', generateGravatarSrc);
-      swig.setFilter('uploadedpicture', getUploadedPictureSrc);
-
-      swig.setFilter('picture', (user) => {
-        if (!user) {
-          return '/images/icons/user.svg';
-        }
-
-        if (user.isGravatarEnabled === true) {
-          return generateGravatarSrc(user);
-        }
-
-        return getUploadedPictureSrc(user);
       });
 
       swig.setFilter('encodeHTML', (string) => {
