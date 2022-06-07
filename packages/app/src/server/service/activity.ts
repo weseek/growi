@@ -40,11 +40,7 @@ class ActivityService {
         return;
       }
 
-      // create inAppNotification
-      const shouldNotification = (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
-      if (shouldNotification) {
-        this.activityEvent.emit('createInAppNotification', activity, target);
-      }
+      this.activityEvent.emit('updated', activity, target);
     });
   }
 
