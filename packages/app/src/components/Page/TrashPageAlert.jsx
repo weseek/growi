@@ -143,7 +143,6 @@ const TrashPageAlert = (props) => {
 };
 
 TrashPageAlert.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
