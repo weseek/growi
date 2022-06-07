@@ -1,3 +1,4 @@
+import gc from 'expose-gc/function';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
@@ -275,6 +276,15 @@ class ImportService {
           collectionProgress.modifiedCount += modifiedCount;
 
           emitProgressEvent(collectionProgress, errors);
+
+          try {
+            // First aid to prevent unexplained memory leaks
+            logger.info('global.gc() invoked.');
+            gc();
+          }
+          catch (err) {
+            logger.error('fail garbage collection: ', err);
+          }
 
           callback();
         },
