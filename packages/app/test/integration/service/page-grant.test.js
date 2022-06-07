@@ -479,7 +479,6 @@ describe('PageGrantService', () => {
       expect(result).toStrictEqual(
         {
           [PageGrant.GRANT_PUBLIC]: null,
-          [PageGrant.GRANT_RESTRICTED]: null,
         },
       );
     });

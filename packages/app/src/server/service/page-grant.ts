@@ -417,8 +417,9 @@ class PageGrantService {
     // -- Public only if top page
     const isOnlyPublicApplicable = isTopPage(page.path);
     if (isOnlyPublicApplicable) {
-      data[Page.GRANT_PUBLIC] = null;
-      return data;
+      return {
+        [Page.GRANT_PUBLIC]: null,
+      };
     }
 
     // -- Any grant is allowed if parent is null
