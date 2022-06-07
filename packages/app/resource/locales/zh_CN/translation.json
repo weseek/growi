@@ -5,7 +5,7 @@
 	"Delete": "删除",
 	"delete_all": "删除所有",
 	"Duplicate": "复制",
-  "PathRecovery": "路径修复",
+  "PathRecovery": "路径恢复",
 	"Copy": "复制",
   "preview":"预览",
   "desktop":"电脑",
@@ -1116,7 +1116,7 @@
     "footprints": "脚印",
     "operation": {
       "attention": {
-        "rename": "由于某些影响，页面路径被破坏，请从三点式阅读器中打开菜单，执行 '路径修复'。"
+        "rename": "重命名不成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"
       }
     }
   },

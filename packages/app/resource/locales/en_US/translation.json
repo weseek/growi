@@ -1113,7 +1113,7 @@
     "footprints": "Footprints",
     "operation": {
       "attention": {
-        "rename": "The page path is broken due to some effect, please open the menu from the 3-point reader and execute 'Path recovery'."
+        "rename": "Renaming was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
       }
     }
   },
