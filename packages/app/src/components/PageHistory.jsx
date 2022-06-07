@@ -68,5 +68,6 @@ const PageHistory = () => {
       />
     </div>
   );
+};
 
 export default PageHistory;
