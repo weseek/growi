@@ -1,5 +1,7 @@
 /* eslint-disable no-use-before-define */
+import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
 
 const crypto = require('crypto');
 
@@ -227,9 +229,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.generateImageUrlCached = async function() {
     if (this.isGravatarEnabled) {
-      const email = this.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
+      return generateGravatarSrc(this.email);
     }
     if (this.image != null) {
       return this.image;

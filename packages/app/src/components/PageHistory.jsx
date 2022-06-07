@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-
 import { useCurrentPageId } from '~/stores/context';
 import { useSWRxPageRevisions } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -7,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 import PageRevisionTable from './PageHistory/PageRevisionTable';
 import PaginationWrapper from './PaginationWrapper';
 import RevisionComparer from './RevisionComparer/RevisionComparer';
-
 
 const logger = loggerFactory('growi:PageHistory');
 
@@ -25,8 +23,6 @@ const PageHistory = () => {
     }
   }, [revisionsData]);
 
-  // console.log('The source and target revisions are: ', sourceRevision, targetRevision);
-
 
   const pagingLimit = 10;
 
@@ -37,7 +33,6 @@ const PageHistory = () => {
       </div>
     );
   }
-
   function pager() {
     return (
       <PaginationWrapper
@@ -73,6 +68,5 @@ const PageHistory = () => {
       />
     </div>
   );
-};
 
 export default PageHistory;
