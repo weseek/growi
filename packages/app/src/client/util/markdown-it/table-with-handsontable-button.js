@@ -1,9 +1,5 @@
 export default class TableWithHandsontableButtonConfigurer {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-  }
-
   configure(md) {
     md.renderer.rules.table_open = (tokens, idx) => {
       const beginLine = tokens[idx].map[0] + 1;
