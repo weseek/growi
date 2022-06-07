@@ -50,7 +50,8 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
     require: true,
     enum: AllSubscriptionStatusType,
   },
-  createdAt: { type: Date, default: new Date() },
+}, {
+  timestamps: true,
 });
 
 subscriptionSchema.methods.isSubscribing = function() {

@@ -1,24 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import StickyEvents from 'sticky-events';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:cli:Fab');
 
-const Fab = (props) => {
-  const { appContainer } = props;
-  const { currentUser } = appContainer;
+const Fab = () => {
+  const { data: currentUser } = useCurrentUser();
 
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPath = '' } = useCurrentPagePath();
@@ -85,8 +81,4 @@ const Fab = (props) => {
 
 };
 
-Fab.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withUnstatedContainers(Fab, [AppContainer]);
+export default Fab;

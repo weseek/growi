@@ -1,8 +1,8 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
-  Types, Schema, Model, Document,
+  Schema, Model, Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { getOrCreateModel } from '@growi/core';
 
 import { IUserGroup } from '~/interfaces/user';
 
@@ -22,9 +22,10 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<UserGroupDocument, UserGroupModel>({
   name: { type: String, required: true, unique: true },
-  createdAt: { type: Date, default: new Date() },
   parent: { type: ObjectId, ref: 'UserGroup', index: true },
   description: { type: String, default: '' },
+}, {
+  timestamps: true,
 });
 schema.plugin(mongoosePaginate);
 
