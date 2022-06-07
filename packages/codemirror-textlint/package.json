@@ -1,6 +1,6 @@
 {
   "name": "@growi/codemirror-textlint",
-  "version": "4.5.22",
+  "version": "4.5.23-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
