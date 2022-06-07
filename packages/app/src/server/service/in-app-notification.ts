@@ -32,18 +32,32 @@ export default class InAppNotificationService {
 
   socketIoService!: any;
 
+  activityEvent!: any;
+
   commentEvent!: any;
 
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
+    this.activityEvent = crowi.event('activity');
     this.socketIoService = crowi.socketIoService;
 
     this.emitSocketIo = this.emitSocketIo.bind(this);
     this.upsertByActivity = this.upsertByActivity.bind(this);
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
+    this.createInAppNotification = this.createInAppNotification.bind(this);
   }
 
+  initActivityEventListeners(): void {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
+      try {
+        await this.createInAppNotification(activity, target);
+      }
+      catch (err) {
+        logger.error('Create InAppNotification failed', err);
+      }
+    });
+  }
 
   emitSocketIo = async(targetUsers) => {
     if (this.socketIoService.isInitialized) {

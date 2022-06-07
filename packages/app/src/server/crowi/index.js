@@ -91,6 +91,7 @@ function Crowi() {
   this.events = {
     user: new (require('../events/user'))(this),
     page: new (require('../events/page'))(this),
+    activity: new (require('../events/activity'))(this),
     bookmark: new (require('../events/bookmark'))(this),
     comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
