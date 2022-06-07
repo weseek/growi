@@ -77,11 +77,11 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
+    <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparent waves-effect waves-light">
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
-      <DropdownMenu right className="grw-dropdown-notification-width">
+      <DropdownMenu right>
         { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
           ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
