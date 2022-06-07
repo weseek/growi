@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.8](https://github.com/weseek/growi/compare/v5.0.7...v5.0.8) - 2022-06-07
+
+### 🚀 Improvement
+
+- imprv: Fix subnavigation spacing (#5995) @yuki-takei
+- imprv: Set Content-Length header in response of attachment (#5972) @hiroki-hgs
+- imprv: Fix sidebar tag layout (#5984) @jam411
+- imprv: PageStatusAlert labels when data is outdated (#5961) @yuki-takei
+- imprv: Delete NotFoundAlert from not found page (#5919) @Shunm634-source
+
+### 🐛 Bug Fixes
+
+- fix: Too many footstamps icons are shown by lsx output 3 (#6000) @yuki-takei
+- fix: Adjust PageItemControl alignment (#5994) @yuki-takei
+- fix: CodeMirror placeholder color (#5993) @yuki-takei
+- fix: Chinese notation is broken on create new page modal (#5973) @jam411
+- fix: Document timestamps does not updated (#5979) @yuki-takei
+- fix: Slack channels are not automatically filled after setting up user trigger notification on v5.0.x (#5911) @kaoritokashiki
+- fix: Login required when viewing sharelink page (#5959) @yuki-takei
+- fix: Editor scroll sync by Preview scrolling does not work (#5949) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Enable garbage collection at runtime with expose-gc package (#5986) @yuki-takei
+- support: Upgrade aws-sdk to v3 (#5863) @mudana-grune
 
 ## [v5.0.7](https://github.com/weseek/growi/compare/v5.0.6...v5.0.7) - 2022-05-30
 
