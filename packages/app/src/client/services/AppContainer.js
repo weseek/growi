@@ -90,13 +90,6 @@ export default class AppContainer extends Container {
     return this.currentUser.username;
   }
 
-  /**
-   * @return {Object} window.Crowi (js/legacy/crowi.js)
-   */
-  getCrowiForJquery() {
-    return window.Crowi;
-  }
-
   getConfig() {
     return this.config;
   }
