@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { getOrCreateModel } from '@growi/core';
 import {
   Types, Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 export interface IUpdatePost {
   pathPattern: string
@@ -36,7 +36,8 @@ const updatePostSchema = new Schema<UpdatePostDocument, UpdatePostModel>({
   channel: { type: String, required: true },
   provider: { type: String, required: true },
   creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  createdAt: { type: Date, default: new Date(Date.now()) },
+}, {
+  timestamps: true,
 });
 
 updatePostSchema.statics.normalizeChannelName = function(channel) {
@@ -115,7 +116,6 @@ updatePostSchema.statics.createUpdatePost = async function(pathPattern, channel,
     channel: this.normalizeChannelName(channel),
     provider,
     creator,
-    createdAt: Date.now(),
   });
 };
 
