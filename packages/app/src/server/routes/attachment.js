@@ -228,8 +228,13 @@ module.exports = function(crowi, app) {
     res.set({
       ETag: `Attachment-${attachment._id}`,
       'Last-Modified': attachment.createdAt.toUTCString(),
-      'Content-Length': attachment.fileSize,
     });
+
+    if (!attachment.fileSize) {
+      res.set({
+        'Content-Length': attachment.fileSize,
+      });
+    }
 
     // download
     if (forceDownload) {
