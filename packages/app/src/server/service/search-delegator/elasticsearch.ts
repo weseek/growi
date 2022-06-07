@@ -1,5 +1,6 @@
 import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
+import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -586,7 +587,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         if (invokeGarbageCollection) {
           try {
             // First aid to prevent unexplained memory leaks
-            global.gc();
+            logger.info('global.gc() invoked.');
+            gc();
           }
           catch (err) {
             logger.error('fail garbage collection: ', err);
