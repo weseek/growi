@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
@@ -8,6 +8,15 @@ import SidebarDrawerIcon from '../../Icons/SidebarDrawerIcon';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
+  const [isDrawerMode, setIsDrawerMode] = useState(false);
+
+  const radioButtonHandler = useCallback(() => {
+    setIsDrawerMode(!isDrawerMode);
+  }, [isDrawerMode]);
+
+  const onClickSubmit = () => {
+    console.log('update!');
+  };
 
   return (
     <React.Fragment>
@@ -27,6 +36,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
               type="radio"
               id="drawerRadioButton"
               className="custom-control-input mr-1"
+              checked={isDrawerMode}
+              onChange={radioButtonHandler}
             />
             <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="drawerRadioButton">
               <SidebarDrawerIcon />
@@ -39,6 +50,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
               type="radio"
               id="dockRadioButton"
               className="custom-control-input mr-1"
+              checked={!isDrawerMode}
+              onChange={radioButtonHandler}
             />
             <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="dockRadioButton">
               <SidebarDockIcon />
@@ -48,7 +61,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" className="btn btn-primary">{ t('Update') }</button>
+              <button type="button" onClick={onClickSubmit} className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
 
