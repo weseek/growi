@@ -1,23 +1,24 @@
+import gc from 'expose-gc/function';
+
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
-
-const isIsoDate = require('is-iso-date');
-const parseISO = require('date-fns/parseISO');
-
 const { Writable, Transform } = require('stream');
+
 const JSONStream = require('JSONStream');
+const parseISO = require('date-fns/parseISO');
+const isIsoDate = require('is-iso-date');
+const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
 
-const mongoose = require('mongoose');
+const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
+const { createBatchStream } = require('../util/batch-stream');
 
 const { ObjectId } = mongoose.Types;
 
-const { createBatchStream } = require('../util/batch-stream');
-const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
+const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 
 
 const BULK_IMPORT_SIZE = 100;
@@ -285,6 +286,15 @@ class ImportService {
           collectionProgress.modifiedCount += modifiedCount;
 
           emitProgressEvent(collectionProgress, errors);
+
+          try {
+            // First aid to prevent unexplained memory leaks
+            logger.info('global.gc() invoked.');
+            gc();
+          }
+          catch (err) {
+            logger.error('fail garbage collection: ', err);
+          }
 
           callback();
         },

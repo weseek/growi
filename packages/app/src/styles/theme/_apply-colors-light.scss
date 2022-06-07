@@ -357,6 +357,16 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
 * grw-side-contents
 */
 .grw-side-contents-sticky-container {
