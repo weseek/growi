@@ -1,6 +1,6 @@
 import { getModelSafely } from '@growi/core';
 
-import { IActivity, AllSupportedActionToNotifiedType } from '~/interfaces/activity';
+import { IActivity } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
