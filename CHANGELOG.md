@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.21...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.22...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.22](https://github.com/weseek/growi/compare/v4.5.21...v4.5.22) - 2022-06-07
+
+### 🐛 Bug Fixes
+
+- fix: Fixed the bug of auto-filling unintended values into the Email field of the User settings (#5885) @Shunm634-source
+- fix: google-oauth2 Automatically bind external accounts does not work (#5891) @kaoritokashiki
+- fix: Slack channels are not automatically filled after setting up user trigger notification (#5976) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: Enable garbage collection at runtime with expose-gc package (#5998) @kaoritokashiki
 
 ## [v4.5.21](https://github.com/weseek/growi/compare/v4.5.20...v4.5.21) - 2022-05-23
 
