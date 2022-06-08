@@ -81,7 +81,7 @@ module.exports = function(crowi, app) {
   app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
   app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
+  app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, addActivity, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
@@ -188,7 +188,8 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.add);
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.remove);
+
   apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
   apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
