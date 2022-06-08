@@ -1,10 +1,14 @@
 import { getModelSafely } from '@growi/core';
 
 import { IActivity } from '~/interfaces/activity';
+import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
+import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
+
+const logger = loggerFactory('growi:service:ActivityService');
 
 type ParameterType = Omit<IActivity, 'createdAt'>
 
@@ -12,11 +16,32 @@ class ActivityService {
 
   crowi!: Crowi;
 
-  inAppNotificationService!: any;
+  activityEvent: any;
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
-    this.inAppNotificationService = crowi.inAppNotificationService;
+    this.activityEvent = crowi.event('activity');
+
+    this.updateByParameters = this.updateByParameters.bind(this);
+
+    this.initActivityEventListeners();
+  }
+
+  initActivityEventListeners(): void {
+    this.activityEvent.on('update', async(activityId: string, parameters: ParameterType, target?: IPage) => {
+
+      // update activity
+      let activity: IActivity;
+      try {
+        activity = await this.updateByParameters(activityId, parameters);
+      }
+      catch (err) {
+        logger.error('Update activity failed', err);
+        return;
+      }
+
+      this.activityEvent.emit('updated', activity, target);
+    });
   }
 
 

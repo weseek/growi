@@ -1,7 +1,7 @@
 import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
-import { AllSupportedActionToNotifiedType } from '~/interfaces/activity';
+import { AllSupportedActionToNotifiedType, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import { IPage } from '~/interfaces/page';
@@ -32,18 +32,37 @@ export default class InAppNotificationService {
 
   socketIoService!: any;
 
+  activityEvent!: any;
+
   commentEvent!: any;
 
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
+    this.activityEvent = crowi.event('activity');
     this.socketIoService = crowi.socketIoService;
 
     this.emitSocketIo = this.emitSocketIo.bind(this);
     this.upsertByActivity = this.upsertByActivity.bind(this);
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
+    this.createInAppNotification = this.createInAppNotification.bind(this);
+
+    this.initActivityEventListeners();
   }
 
+  initActivityEventListeners(): void {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
+      try {
+        const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+        if (shouldNotification) {
+          await this.createInAppNotification(activity, target);
+        }
+      }
+      catch (err) {
+        logger.error('Create InAppNotification failed', err);
+      }
+    });
+  }
 
   emitSocketIo = async(targetUsers) => {
     if (this.socketIoService.isInitialized) {
@@ -183,9 +202,13 @@ export default class InAppNotificationService {
   createInAppNotification = async function(activity: ActivityDocument, target: IPage): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
-      const snapshot = stringifySnapshot(target as IPage);
+      let mentionedUsers: IUser[] = [];
+      if (activity.action === SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE) {
+        mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
+      }
       const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      await this.upsertByActivity(notificationTargetUsers, activity, snapshot);
+      const snapshot = stringifySnapshot(target as IPage);
+      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers], activity, snapshot);
       await this.emitSocketIo(notificationTargetUsers);
     }
     else {

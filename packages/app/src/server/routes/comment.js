@@ -1,4 +1,5 @@
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+
+import { SUPPORTED_ACTION_TYPE, SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /**
@@ -62,6 +63,8 @@ module.exports = function(crowi, app) {
   const { body } = require('express-validator');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Types.ObjectId;
+
+  const activityEvent = crowi.event('activity');
 
   const actions = {};
   const api = {};
@@ -245,13 +248,12 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-      commentEvent.emit('create', req.user, createdComment);
+      commentEvent.emit('create', createdComment);
     }
     catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
-
     // update page
     const page = await Page.findOneAndUpdate(
       { _id: pageId },
@@ -260,6 +262,15 @@ module.exports = function(crowi, app) {
         updatedAt: new Date(),
       },
     );
+
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
+      event: createdComment,
+      action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
@@ -382,12 +393,15 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
-      commentEvent.emit('update', req.user, updatedComment);
+      commentEvent.emit('update', updatedComment);
     }
     catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     res.json(ApiResponse.success({ comment: updatedComment }));
 

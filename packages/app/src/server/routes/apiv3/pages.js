@@ -151,6 +151,8 @@ module.exports = (crowi) => {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
+  const activityEvent = crowi.event('activity');
+
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -284,7 +286,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
@@ -324,6 +326,13 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: createdPage,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     res.apiv3(result, 201);
 
     try {
@@ -347,21 +356,6 @@ module.exports = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
-    }
-
-    // create activity
-    try {
-      const parameters = {
-        user: req.user._id,
-        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-        target: createdPage,
-        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
-        snapshot: { username: req.user.username },
-      };
-      await crowi.activityService.createByParameters(parameters);
-    }
-    catch (err) {
-      logger.error('Failed to create activity', err);
     }
 
     // create subscription
@@ -554,31 +548,15 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    // return response first
-    res.apiv3(result);
+    const activityId = res.locals.activity._id;
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
+    };
+    activityEvent.emit('update', activityId, parameters, page);
 
-    let activity;
-    try {
-      const activityId = res.locals.activity._id;
-      const parameters = {
-        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-        target: page,
-        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
-      };
-      activity = await crowi.activityService.updateByParameters(activityId, parameters);
-    }
-    catch (err) {
-      logger.error('Update activity failed', err);
-      return res.apiv3Err(err);
-    }
-
-    try {
-      await crowi.inAppNotificationService.createInAppNotification(activity, page);
-    }
-    catch (err) {
-      logger.error('Create InAppNotification failed', err);
-      return res.apiv3Err(err);
-    }
+    return res.apiv3(result);
   });
 
   /**
@@ -708,7 +686,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
@@ -753,6 +731,13 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to create subscription document', err);
     }
+
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     return res.apiv3(result);
   });

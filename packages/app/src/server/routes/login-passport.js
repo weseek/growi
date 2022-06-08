@@ -9,7 +9,9 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
-  const activityService = crowi.activityService;
+
+  const activityEvent = crowi.event('activity');
+
   const ApiResponse = require('../util/apiResponse');
 
   /**
@@ -30,17 +32,10 @@ module.exports = function(crowi, app) {
     // remove session.redirectTo
     delete req.session.redirectTo;
 
-    // return response first
-    res.safeRedirect(redirectTo);
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_SUCCESS };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    try {
-      const activityId = res.locals.activity._id;
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_SUCCESS };
-      await activityService.updateByParameters(activityId, parameters);
-    }
-    catch (err) {
-      logger.error('Update activity failed', err);
-    }
+    return res.safeRedirect(redirectTo);
   };
 
   /**
@@ -51,17 +46,10 @@ module.exports = function(crowi, app) {
   const loginFailureHandler = async(req, res, message) => {
     req.flash('errorMessage', message || req.t('message.sign_in_failure'));
 
-    // return response first
-    res.redirect('/login');
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_FAILURE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    try {
-      const activityId = res.locals.activity._id;
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_FAILURE };
-      await activityService.updateByParameters(activityId, parameters);
-    }
-    catch (err) {
-      logger.error('Update activity failed', err);
-    }
+    return res.redirect('/login');
   };
 
   /**

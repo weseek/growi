@@ -9463,6 +9463,11 @@ expect@^27.0.6:
     jest-message-util "^27.0.6"
     jest-regex-util "^27.0.6"
 
+expose-gc@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/expose-gc/-/expose-gc-1.0.0.tgz#ba0e825b390cc3e7ab38fc5b945cd2b4018584b3"
+  integrity sha512-ecOHrdm+zyOCGIwX18/1RHkUWgxDqGGRiGhaNC+42jReTtudbm2ID/DMa/wpaHwqy5YQHPZvsDqRM2F2iZ0uVA==
+
 express-bunyan-logger@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/express-bunyan-logger/-/express-bunyan-logger-1.3.3.tgz#e76d9b3d598ca83a69b692a9839c7453d01b5010"
@@ -17794,15 +17799,6 @@ react-scrolllock@^1.0.9:
   dependencies:
     create-react-class "^15.5.2"
     prop-types "^15.5.10"
-
-react-tagcloud@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-tagcloud/-/react-tagcloud-2.1.1.tgz#b8883634f76b5681c91a178689070efa0d442657"
-  integrity sha512-cM96jzUOKQqu2qlzwcO91r239MSDbFiAslFNk4Hja3MaZ4Y89goIzbTyXZwonkeJck1zY5wkNhJYeJ8YSdOwXg==
-  dependencies:
-    prop-types "^15.6.2"
-    randomcolor "^0.5.4"
-    shuffle-array "^1.0.1"
 
 react-transition-group@^2.2.1, react-transition-group@^2.3.1:
   version "2.9.0"

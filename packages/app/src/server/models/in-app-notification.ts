@@ -71,14 +71,12 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     index: true,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
   snapshot: {
     type: String,
     required: true,
   },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 inAppNotificationSchema.plugin(mongoosePaginate);
 
