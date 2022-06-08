@@ -395,9 +395,9 @@ describe('Test page service methods', () => {
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
       expect(_pageOperation).toBeTruthy();
 
-      // Make `unprocessableExpiryDate` 10 seconds ahead of current time.
-      // The number 10 seconds has no meaning other than placing time in the furue.
-      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 10) });
+      // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
+      // The number 15 seconds has no meaning other than placing time in the furue.
+      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
 
       await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
     });
