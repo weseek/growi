@@ -13,7 +13,7 @@ const ShowPageAccessoriesModal = (): JSX.Element => {
   useEffect(() => {
     const pageIdParams = getURLQueryParamValue('compare');
     if (pageIdParams != null) {
-      if (pageIdParams.split('...').length > 1) {
+      if (pageIdParams.search(/.{24}\.{3}.{24}/) !== -1) {
         openPageAccessories(PageAccessoriesModalContents.PageHistory);
       }
     }
