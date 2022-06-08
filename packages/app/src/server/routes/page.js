@@ -474,6 +474,14 @@ module.exports = function(crowi, app) {
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     return res.render(view, renderVars);
   }
 
