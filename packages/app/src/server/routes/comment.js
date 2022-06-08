@@ -1,3 +1,4 @@
+
 import { SUPPORTED_ACTION_TYPE, SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -54,14 +55,14 @@ module.exports = function(crowi, app) {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
 
+  const activityEvent = crowi.event('activity');
+
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
   const { body } = require('express-validator');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Types.ObjectId;
-
-  const activityEvent = crowi.event('activity');
 
   const actions = {};
   const api = {};
@@ -478,6 +479,9 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_REMOVE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.json(ApiResponse.success({}));
   };
