@@ -46,12 +46,17 @@ export default class InAppNotificationService {
     this.upsertByActivity = this.upsertByActivity.bind(this);
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
     this.createInAppNotification = this.createInAppNotification.bind(this);
+
+    this.initActivityEventListeners();
   }
 
   initActivityEventListeners(): void {
     this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
       try {
-        await this.createInAppNotification(activity, target);
+        const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
+        if (shouldNotification) {
+          await this.createInAppNotification(activity, target);
+        }
       }
       catch (err) {
         logger.error('Create InAppNotification failed', err);
