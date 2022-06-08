@@ -1,11 +1,10 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
-import { withTranslation } from 'react-i18next';
-
-const ShareLinkAlert = (props) => {
-  const { t } = props;
-
+const ShareLinkAlert = () => {
+  const { t } = useTranslation();
 
   const shareContent = document.getElementById('is-shared-page');
   const expiredAt = shareContent.getAttribute('data-share-link-expired-at');
@@ -51,9 +50,4 @@ const ShareLinkAlert = (props) => {
   );
 };
 
-
-ShareLinkAlert.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-};
-
-export default withTranslation()(ShareLinkAlert);
+export default ShareLinkAlert;
