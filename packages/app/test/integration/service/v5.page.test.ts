@@ -304,10 +304,12 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
+
       // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
       expect(_pageOperation).toBeTruthy();
 
+      // rename
       await resumeRenameSubOperation(_page1);
 
       // page
@@ -319,6 +321,7 @@ describe('Test page service methods', () => {
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
+      // check paths after renaming
       expect(page0.path).toBe(path0);
       expect(page1.path).toBe(path1);
       expect(page2.path).toBe(path2);
@@ -328,6 +331,7 @@ describe('Test page service methods', () => {
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
 
+      // others
       expect(page0.descendantCount).toBe(3);
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
