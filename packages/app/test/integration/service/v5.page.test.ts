@@ -343,6 +343,7 @@ describe('Test page service methods', () => {
     });
 
     test('it should fail and throw error if PageOperation is not found', async() => {
+      // create dummy page operation data not stored in DB
       const notExistPageOp = {
         _id: new mongoose.Types.ObjectId(),
         actionType: 'Rename',
