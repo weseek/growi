@@ -284,11 +284,18 @@ describe('Test page service methods', () => {
     };
 
     test('it should successfully restart rename operation', async() => {
-      // path
+      // paths before renaming
       const _path0 = '/POP0';
       const _path1 = '/POP0/renamePOP1'; // renamed already
       const _path2 = '/renamePOP1/renamePOP2'; // not renamed yet
       const _path3 = '/renamePOP1/renamePOP2/renamePOP3'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/POP0';
+      const path1 = '/POP0/renamePOP1';
+      const path2 = '/POP0/renamePOP1/renamePOP2';
+      const path3 = '/POP0/renamePOP1/renamePOP2/renamePOP3';
+
       // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
@@ -304,25 +311,25 @@ describe('Test page service methods', () => {
 
       await resumeRenameSubOperation(_page1);
 
-      // path
-      const path0 = '/POP0';
-      const path1 = '/POP0/renamePOP1';
-      const path2 = '/POP0/renamePOP1/renamePOP2';
-      const path3 = '/POP0/renamePOP1/renamePOP2/renamePOP3';
       // page
       const page0 = await Page.findById(_page0._id);
       const page1 = await Page.findById(_page1._id);
       const page2 = await Page.findById(_page2._id);
       const page3 = await Page.findById(_page3._id);
-      // page operation
-      const pageOperation = await PageOperation.findOne({ _id: _pageOperation._id });
-      expect(pageOperation).toBeNull(); // should not exist
-
-      expect(page0.descendantCount).toBe(3);
       expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1);
+      expect(page2.path).toBe(path2);
+      expect(page3.path).toBe(path3);
+
+      // page operation
+      const pageOperation = await PageOperation.findById(_pageOperation._id);
+      expect(pageOperation).toBeNull(); // should not exist
+
+      expect(page0.descendantCount).toBe(3);
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
       expect(page3.parent).toStrictEqual(page2._id);
