@@ -379,25 +379,25 @@ describe('Test page service methods', () => {
     });
 
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
-      // path
-      const _path0 = '/resume_rename_4'; // out of renaming scope
+      // path before renaming
+      const _path0 = '/resume_rename_4'; // ut of renaming scope
       const _path1 = '/resume_rename_4/resume_rename_5'; // renamed already
       const _path2 = '/resume_rename_5/resume_rename_6'; // not renamed yet
       // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+
       // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
       expect(_pageOperation).toBeTruthy();
 
-      // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
-      // The number 15 seconds has no meaning other than placing time in the furue.
-      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
-
-      expect(_page0).toBeTruthy();
-      expect(_page1).toBeTruthy();
-      expect(_page2).toBeTruthy();
+      // Make `unprocessableExpiryDate` 10 seconds ahead of current time.
+      // The number 10 seconds has no meaning other than placing time in the furue.
+      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 10) });
 
       await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
     });
