@@ -1,7 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 import PageHistroyContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
@@ -162,4 +163,9 @@ PageRevisionTable.propTypes = {
   diffOpened: PropTypes.object,
 };
 
-export default withTranslation()(PageRevisionTable);
+const PageRevisionTableWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageRevisionTable t={t} {...props} />;
+};
+
+export default PageRevisionTableWrapperFC;
