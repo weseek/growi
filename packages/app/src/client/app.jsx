@@ -13,7 +13,6 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
@@ -63,13 +62,12 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
-const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
+  appContainer, socketIoContainer, pageContainer, pageHistoryContainer,
   commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
@@ -133,11 +131,6 @@ if (pageContainer.state.pageId != null) {
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
 
-  // show the Page accessory modal when query of "compare" is requested
-  if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
-    toastError('Sorry, opening PageAccessoriesModal is not implemented yet in v5.');
-  //   pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
-  }
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
