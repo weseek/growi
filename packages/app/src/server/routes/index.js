@@ -246,7 +246,7 @@ module.exports = function(crowi, app) {
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , addActivity, injectUserUISettings, page.showPage);
 
-  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
+  app.get('/*/$'                   , loginRequired , addActivity, injectUserUISettings, page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , addActivity, autoReconnectToSearch, injectUserUISettings, page.redirector);
 
 };
