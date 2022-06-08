@@ -147,10 +147,6 @@ describe('Page', () => {
     const pageIdCreate2 = new mongoose.Types.ObjectId();
     const pageIdCreate3 = new mongoose.Types.ObjectId();
     const pageIdCreate4 = new mongoose.Types.ObjectId();
-    const pageIdCreate5 = new mongoose.Types.ObjectId();
-    const pageIdCreate6 = new mongoose.Types.ObjectId();
-    const pageIdCreate7 = new mongoose.Types.ObjectId();
-    const pageIdCreate8 = new mongoose.Types.ObjectId();
 
     /**
      * create
@@ -175,21 +171,6 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdCreate5,
-        path: '/v5_empty_create_by_system4',
-        grant: Page.GRANT_PUBLIC,
-        parent: rootPage._id,
-        isEmpty: true,
-      },
-      {
-        path: '/v5_empty_create_by_system_4/v5_create_by_system_5',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate5,
-        isEmpty: false,
-      },
-      {
         _id: pageIdCreate2,
         path: '/mc4_top/mc1_emp',
         grant: Page.GRANT_PUBLIC,
@@ -207,31 +188,7 @@ describe('Page', () => {
         isEmpty: false,
       },
       {
-        _id: pageIdCreate6,
-        path: '/mc4_top_create_by_system/mc1_emp_create_by_system',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        isEmpty: true,
-      },
-      {
-        path: '/mc4_top_create_by_system/mc1_emp_create_by_system/mc2_pub_create_by_system',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate6,
-        isEmpty: false,
-      },
-      {
         path: '/mc5_top/mc3_awl',
-        grant: Page.GRANT_RESTRICTED,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-      },
-      {
-        path: '/mc5_top_create_by_system/mc3_awl_create_by_system',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -248,28 +205,8 @@ describe('Page', () => {
         descendantCount: 1,
       },
       {
-        _id: pageIdCreate7,
-        path: '/mc4_top_create_by_system',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        parent: rootPage._id,
-        descendantCount: 1,
-      },
-      {
         _id: pageIdCreate4,
         path: '/mc5_top',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        parent: rootPage._id,
-        descendantCount: 0,
-      },
-      {
-        _id: pageIdCreate8,
-        path: '/mc5_top_create_by_system',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -658,94 +595,6 @@ describe('Page', () => {
         expect(_pageN.parent).toStrictEqual(_page2._id);
         expect(_pageT.descendantCount).toStrictEqual(1);
       });
-    });
-
-    describe('Force create by system', () => {
-      test('Should create single page by system', async() => {
-        const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
-        expect(page).toBeTruthy();
-        expect(page.parent).toStrictEqual(rootPage._id);
-      });
-
-      test('Should create empty-child and non-empty grandchild by system', async() => {
-        const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
-        const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
-
-        expect(childPage.isEmpty).toBe(true);
-        expect(grandchildPage).toBeTruthy();
-        expect(childPage).toBeTruthy();
-        expect(childPage.parent).toStrictEqual(rootPage._id);
-        expect(grandchildPage.parent).toStrictEqual(childPage._id);
-      });
-
-      test('Should create on empty page by system', async() => {
-        const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
-        expect(beforeCreatePage.isEmpty).toBe(true);
-
-        const childPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system4', 'body', {});
-        const grandchildPage = await Page.findOne({ parent: childPage._id });
-
-        expect(childPage).toBeTruthy();
-        expect(childPage.isEmpty).toBe(false);
-        expect(childPage.revision.body).toBe('body');
-        expect(grandchildPage).toBeTruthy();
-        expect(childPage.parent).toStrictEqual(rootPage._id);
-        expect(grandchildPage.parent).toStrictEqual(childPage._id);
-      });
-
-      test('with grant RESTRICTED should only create the page and change nothing else by system', async() => {
-        const pathT = '/mc4_top_create_by_system';
-        const path1 = '/mc4_top_create_by_system/mc1_emp_create_by_system';
-        const path2 = '/mc4_top_create_by_system/mc1_emp_create_by_system/mc2_pub_create_by_system';
-        const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
-        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const page2 = await Page.findOne({ path: path2 });
-        const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        expect(pageT).toBeTruthy();
-        expect(page1).toBeTruthy();
-        expect(page2).toBeTruthy();
-        expect(page3).toBeNull();
-
-        // use existing path
-        await crowi.pageService.forceCreateBySystem(path1, 'new body', { grant: Page.GRANT_RESTRICTED });
-
-        const _pageT = await Page.findOne({ path: pathT });
-        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const _page2 = await Page.findOne({ path: path2 });
-        const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        expect(_pageT).toBeTruthy();
-        expect(_page1).toBeTruthy();
-        expect(_page2).toBeTruthy();
-        expect(_page3).toBeTruthy();
-        expect(_pageT.descendantCount).toBe(1);
-      });
-
-      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent by system', async() => {
-        const pathT = '/mc5_top_create_by_system';
-        const path1 = '/mc5_top_create_by_system/mc3_awl_create_by_system';
-        const pathN = '/mc5_top_create_by_system/mc3_awl_create_by_system/mc4_pub_create_by_system';
-        const pageT = await Page.findOne({ path: pathT });
-        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        expect(pageT).toBeTruthy();
-        expect(page1).toBeTruthy();
-        expect(page2).toBeNull();
-
-        await crowi.pageService.forceCreateBySystem(pathN, 'new body', { grant: Page.GRANT_PUBLIC });
-
-        const _pageT = await Page.findOne({ path: pathT });
-        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
-        const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC });
-
-        expect(_pageT).toBeTruthy();
-        expect(_page1).toBeTruthy();
-        expect(_page2).toBeTruthy();
-        expect(_pageN).toBeTruthy();
-        expect(_pageN.parent).toStrictEqual(_page2._id);
-        expect(_pageT.descendantCount).toStrictEqual(1);
-      });
-
     });
 
   });

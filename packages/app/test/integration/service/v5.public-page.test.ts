@@ -78,6 +78,29 @@ describe('PageService page operations with only public pages', () => {
     ]);
 
     /*
+     * Create by system
+     */
+    const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdCreateBySystem1,
+        path: '/v5_empty_create_by_system4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_by_system4/v5_create_by_system5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreateBySystem1,
+        isEmpty: false,
+      },
+    ]);
+
+    /*
      * Rename
      */
     const pageIdForRename1 = new mongoose.Types.ObjectId();
@@ -926,6 +949,40 @@ describe('PageService page operations with only public pages', () => {
       await crowi.pageService.forceCreateBySystem(path, 'body', {});
       // isGrantNormalized is not called when created by system
       expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+  });
+
+  describe('Create by system', () => {
+    test('Should create single page by system', async() => {
+      const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+    });
+
+    test('Should create empty-child and non-empty grandchild by system', async() => {
+      const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+    });
+
+    test('Should create on empty page by system', async() => {
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system4', 'body', {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
     });
   });
 

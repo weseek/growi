@@ -36,7 +36,13 @@ describe('PageService page operations with non-public pages', () => {
    */
   const pageIdCreate1 = new mongoose.Types.ObjectId();
   const pageIdCreate2 = new mongoose.Types.ObjectId();
-  const pageIdCreate3 = new mongoose.Types.ObjectId();
+
+  /**
+   * Create by system
+   */
+  const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+  const pageIdCreateBySystem2 = new mongoose.Types.ObjectId();
+  const pageIdCreateBySystem3 = new mongoose.Types.ObjectId();
 
   /**
    * Rename
@@ -226,12 +232,55 @@ describe('PageService page operations with non-public pages', () => {
         creator: dummyUser1._id,
         lastUpdateUser: dummyUser1._id,
       },
+    ]);
+
+    /*
+     * Create by system
+     */
+    await Page.insertMany([
       {
-        _id: pageIdCreate3,
-        path: '/np_create3',
+        _id: pageIdCreateBySystem1,
+        path: '/mc4_top_create_by_system',
         grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1._id,
+        creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id:  pageIdCreateBySystem2,
+        path: '/mc4_top_create_by_system/mc1_emp_create_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/mc4_top_create_by_system/mc1_emp_create_by_system/mc2_pub_create_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreateBySystem2,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdCreateBySystem3,
+        path: '/mc5_top_create_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        path: '/mc5_top_create_by_system/mc3_awl_create_by_system',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
       },
     ]);
 
@@ -666,6 +715,61 @@ describe('PageService page operations with non-public pages', () => {
       await crowi.pageService.create(path, 'new body', dummyUser1, { grant: Page.GRANT_OWNER });
       // isGrantNormalized is called when except for GRANT RESTRICTED
       expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+  });
+
+  describe('Create by system', () => {
+    test('with grant RESTRICTED should only create the page and change nothing else by system', async() => {
+      const pathT = '/mc4_top_create_by_system';
+      const path1 = '/mc4_top_create_by_system/mc1_emp_create_by_system';
+      const path2 = '/mc4_top_create_by_system/mc1_emp_create_by_system/mc2_pub_create_by_system';
+      const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
+      const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+      const page2 = await Page.findOne({ path: path2 });
+      const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+      expect(pageT).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeNull();
+
+      // use existing path
+      await crowi.pageService.forceCreateBySystem(path1, 'new body', { grant: Page.GRANT_RESTRICTED });
+
+      const _pageT = await Page.findOne({ path: pathT });
+      const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+      const _page2 = await Page.findOne({ path: path2 });
+      const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+      expect(_pageT).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_pageT.descendantCount).toBe(1);
+    });
+
+    test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent by system', async() => {
+      const pathT = '/mc5_top_create_by_system';
+      const path1 = '/mc5_top_create_by_system/mc3_awl_create_by_system';
+      const pathN = '/mc5_top_create_by_system/mc3_awl_create_by_system/mc4_pub_create_by_system';
+      const pageT = await Page.findOne({ path: pathT });
+      const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+      const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+      expect(pageT).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeNull();
+
+      await crowi.pageService.forceCreateBySystem(pathN, 'new body', { grant: Page.GRANT_PUBLIC });
+
+      const _pageT = await Page.findOne({ path: pathT });
+      const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+      const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC });
+
+      expect(_pageT).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_pageN).toBeTruthy();
+      expect(_pageN.parent).toStrictEqual(_page2._id);
+      expect(_pageT.descendantCount).toStrictEqual(1);
     });
   });
 
