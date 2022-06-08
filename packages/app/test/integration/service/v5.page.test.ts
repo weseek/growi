@@ -310,10 +310,10 @@ describe('Test page service methods', () => {
       const path2 = '/POP0/renamePOP1/renamePOP2';
       const path3 = '/POP0/renamePOP1/renamePOP2/renamePOP3';
       // page
-      const page0 = await Page.findOne({ path: path0 });
-      const page1 = await Page.findOne({ path: path1 });
-      const page2 = await Page.findOne({ path: path2 });
-      const page3 = await Page.findOne({ path: path3 });
+      const page0 = await Page.findById(_page0._id);
+      const page1 = await Page.findById(_page1._id);
+      const page2 = await Page.findById(_page2._id);
+      const page3 = await Page.findById(_page3._id);
       // page operation
       const pageOperation = await PageOperation.findOne({ _id: _pageOperation._id });
       expect(pageOperation).toBeNull(); // should not exist
