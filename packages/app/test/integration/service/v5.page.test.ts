@@ -1,7 +1,7 @@
 import { addSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import { PageActionType } from '../../../src/server/models/page-operation';
+import { PageActionStage, PageActionType } from '../../../src/server/models/page-operation';
 import { getInstance } from '../setup-crowi';
 
 
@@ -176,9 +176,11 @@ describe('Test page service methods', () => {
     const pageOpId1 = new mongoose.Types.ObjectId();
     const pageOpId2 = new mongoose.Types.ObjectId();
     const pageOpId3 = new mongoose.Types.ObjectId();
+    const pageOpId4 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId2 = new mongoose.Types.ObjectId();
     const pageOpRevisionId3 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId4 = new mongoose.Types.ObjectId();
     await PageOperation.insertMany([
       {
         _id: pageOpId1,
@@ -314,12 +316,13 @@ describe('Test page service methods', () => {
       const page3 = await Page.findOne({ path: path3 });
       // page operation
       const pageOperation = await PageOperation.findOne({ _id: _pageOperation._id });
+      expect(pageOperation).toBeNull(); // should not exist
+
       expect(page0.descendantCount).toBe(3);
       expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
-      expect(pageOperation).toBeNull(); // should not exist
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
       expect(page3.parent).toStrictEqual(page2._id);
@@ -330,7 +333,37 @@ describe('Test page service methods', () => {
     });
 
     test('it should fail and throw error if PageOperation is not found', async() => {
-      await expect(resumeRenameSubOperation({}))
+      const notExistPageOp = {
+        _id: new mongoose.Types.ObjectId(),
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/FROM_NOT_EXIST',
+        toPath: 'TO_NOT_EXIST',
+        page: {
+          _id: new mongoose.Types.ObjectId(),
+          parent: rootPage._id,
+          descendantCount: 2,
+          isEmpty: false,
+          path: '/NOT_EXIST_PAGE',
+          revision: new mongoose.Types.ObjectId(),
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: false,
+        },
+        unprocessableExpiryDate: new Date(),
+      };
+
+      await expect(resumeRenameSubOperation(notExistPageOp))
         .rejects.toThrow(new Error('There is nothing to be processed right now'));
     });
 
@@ -344,7 +377,8 @@ describe('Test page service methods', () => {
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      expect(_pageOperation).toBeTruthy();
 
       // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
       // The number 15 seconds has no meaning other than placing time in the furue.
@@ -353,7 +387,6 @@ describe('Test page service methods', () => {
       expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
-      expect(_pageOperation).toBeTruthy();
 
       await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
     });
