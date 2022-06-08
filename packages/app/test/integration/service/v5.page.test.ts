@@ -306,7 +306,7 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
       expect(_pageOperation).toBeTruthy();
 
       await resumeRenameSubOperation(_page1);
@@ -404,7 +404,7 @@ describe('Test page service methods', () => {
       // page
       const _page1 = await Page.findOne({ path: _path1 });
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
 
       expect(_page1).toBeTruthy();
       expect(_pageOperation).toBeTruthy();
