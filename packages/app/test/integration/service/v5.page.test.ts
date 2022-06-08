@@ -130,7 +130,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId4,
-        path: '/POP1',
+        path: '/resume_rename_4',
         parent: rootPage._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -140,7 +140,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId5,
-        path: '/POP1/renamePOP4',
+        path: '/resume_rename_4/resume_rename_5',
         parent: pageId0._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -150,7 +150,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId6,
-        path: '/renamePOP4/renamePOP5',
+        path: '/resume_rename_5/resume_rename_6',
         parent: pageId5,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -215,14 +215,14 @@ describe('Test page service methods', () => {
         _id: pageOpId2,
         actionType: 'Rename',
         actionStage: 'Sub',
-        fromPath: '/renamePOP4',
-        toPath: '/POP1/renamePOP4',
+        fromPath: '/resume_rename_5',
+        toPath: '/resume_rename_4/resume_rename_5',
         page: {
           _id: pageId5,
           parent: rootPage._id,
           descendantCount: 2,
           isEmpty: false,
-          path: '/renamePOP4',
+          path: '/resume_rename_5',
           revision: pageOpRevisionId2,
           status: 'published',
           grant: 1,
@@ -376,9 +376,9 @@ describe('Test page service methods', () => {
 
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
       // path
-      const _path0 = '/POP1';
-      const _path1 = '/POP1/renamePOP4'; // renamed already
-      const _path2 = '/renamePOP4/renamePOP5'; // not renamed yet
+      const _path0 = '/resume_rename_4';
+      const _path1 = '/resume_rename_4/resume_rename_5'; // renamed already
+      const _path2 = '/resume_rename_5/resume_rename_6'; // not renamed yet
       // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
