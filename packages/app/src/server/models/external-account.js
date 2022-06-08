@@ -15,7 +15,8 @@ const schema = new mongoose.Schema({
   providerType: { type: String, required: true },
   accountId: { type: String, required: true },
   user: { type: ObjectId, ref: 'User', required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 // compound index
 schema.index({ providerType: 1, accountId: 1 }, { unique: true });

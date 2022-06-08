@@ -1,7 +1,6 @@
 export default class HeaderLineNumberConfigurer {
 
-  constructor(crowi) {
-    this.crowi = crowi;
+  constructor() {
     this.firstLine = 0;
   }
 
