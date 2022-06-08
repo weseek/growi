@@ -32,6 +32,13 @@ describe('PageService page operations with non-public pages', () => {
   let rootPage;
 
   /**
+   * Create
+   */
+  const pageIdCreate1 = new mongoose.Types.ObjectId();
+  const pageIdCreate2 = new mongoose.Types.ObjectId();
+  const pageIdCreate3 = new mongoose.Types.ObjectId();
+
+  /**
    * Rename
    */
   const pageIdRename1 = new mongoose.Types.ObjectId();
@@ -200,6 +207,33 @@ describe('PageService page operations with non-public pages', () => {
       const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
       rootPage = pages[0];
     }
+
+    /*
+     * Create
+     */
+    await Page.insertMany([
+      {
+        _id: pageIdCreate1,
+        path: '/np_create1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+      },
+      {
+        _id: pageIdCreate2,
+        path: '/np_create2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+      },
+      {
+        _id: pageIdCreate3,
+        path: '/np_create3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1._id,
+        lastUpdateUser: dummyUser1._id,
+      },
+    ]);
 
     /*
      * Rename
@@ -614,6 +648,25 @@ describe('PageService page operations with non-public pages', () => {
         isPageTrashed: true,
       },
     ]);
+  });
+
+  describe('Create', () => {
+
+    test('isGrantNormalized is not called when GRANT RESTRICTED', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const path = '/np_create1/isGrantNormalizedCalled';
+      await crowi.pageService.create(path, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+      // isGrantNormalized is not called when GRANT RESTRICTED
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+    test('isGrantNormalized is not called when except for GRANT RESTRICTED', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const path = '/np_create2/isGrantNormalizedCalled';
+      await crowi.pageService.create(path, 'new body', dummyUser1, { grant: Page.GRANT_OWNER });
+      // isGrantNormalized is called when except for GRANT RESTRICTED
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
   });
 
   describe('Rename', () => {

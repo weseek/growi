@@ -52,6 +52,32 @@ describe('PageService page operations with only public pages', () => {
     }
 
     /*
+     * Create
+     */
+    const pageIdForCreate1 = new mongoose.Types.ObjectId();
+    const pageIdForCreate2 = new mongoose.Types.ObjectId();
+
+    // Create Pages
+    await Page.insertMany([
+      {
+        _id: pageIdForCreate1,
+        path: '/v5_ParentForCreate1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: pageIdForCreate2,
+        path: '/v5_ParentForCreate1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+    ]);
+
+    /*
      * Rename
      */
     const pageIdForRename1 = new mongoose.Types.ObjectId();
@@ -883,6 +909,24 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+  });
+
+  describe('Create', () => {
+    test('isGrantNormalized is not called when page created', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const path = '/v5_ParentForCreate1/isGrantNormalizedCalled';
+      await crowi.pageService.create(path, 'body', dummyUser1, {});
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+    test('isGrantNormalized is not called when page force created by system', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const path = '/v5_ParentForCreate2/isGrantNormalizedCalled';
+      await crowi.pageService.forceCreateBySystem(path, 'body', {});
+      // isGrantNormalized is not called when created by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
   });
 
   describe('Rename', () => {
