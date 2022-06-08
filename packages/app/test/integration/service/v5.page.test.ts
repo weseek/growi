@@ -160,7 +160,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId7,
-        path: '/POP2',
+        path: '/resume_rename_7',
         parent: rootPage._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -244,14 +244,14 @@ describe('Test page service methods', () => {
         _id: pageOpId3,
         actionType: 'Rename',
         actionStage: 'Sub',
-        fromPath: '/POP2',
+        fromPath: '/resume_rename_7',
         // toPath NOT exist
         page: {
           _id: pageId7,
           parent: rootPage._id,
           descendantCount: 2,
           isEmpty: false,
-          path: '/POP2',
+          path: '/resume_rename_7',
           revision: pageOpRevisionId3,
           status: 'published',
           grant: 1,
@@ -400,7 +400,7 @@ describe('Test page service methods', () => {
 
     test('Missing property(toPath) for PageOperation should throw error', async() => {
       // path
-      const _path1 = '/POP2';
+      const _path1 = '/resume_rename_7';
       // page
       const _page1 = await Page.findOne({ path: _path1 });
       // page operation
