@@ -176,11 +176,9 @@ describe('Test page service methods', () => {
     const pageOpId1 = new mongoose.Types.ObjectId();
     const pageOpId2 = new mongoose.Types.ObjectId();
     const pageOpId3 = new mongoose.Types.ObjectId();
-    const pageOpId4 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId2 = new mongoose.Types.ObjectId();
     const pageOpRevisionId3 = new mongoose.Types.ObjectId();
-    const pageOpRevisionId4 = new mongoose.Types.ObjectId();
     await PageOperation.insertMany([
       {
         _id: pageOpId1,
