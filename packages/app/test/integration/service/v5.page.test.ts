@@ -403,14 +403,13 @@ describe('Test page service methods', () => {
     });
 
     test('Missing property(toPath) for PageOperation should throw error', async() => {
-      // path
-      const _path1 = '/resume_rename_7';
       // page
+      const _path1 = '/resume_rename_7';
       const _page1 = await Page.findOne({ path: _path1 });
+      expect(_page1).toBeTruthy();
+
       // page operation
       const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
-
-      expect(_page1).toBeTruthy();
       expect(_pageOperation).toBeTruthy();
 
       const promise = resumeRenameSubOperation(_page1);
