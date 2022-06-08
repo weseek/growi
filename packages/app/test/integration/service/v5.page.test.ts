@@ -90,7 +90,7 @@ describe('Test page service methods', () => {
     await Page.insertMany([
       {
         _id: pageId0,
-        path: '/POP0',
+        path: '/resume_rename_0',
         parent: rootPage._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -100,7 +100,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId1,
-        path: '/POP0/renamePOP1',
+        path: '/resume_rename_0/resume_rename_1',
         parent: pageId0._id,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -110,7 +110,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId2,
-        path: '/renamePOP1/renamePOP2',
+        path: '/resume_rename_1/resume_rename_2',
         parent: pageId1,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -120,7 +120,7 @@ describe('Test page service methods', () => {
       },
       {
         _id: pageId3,
-        path: '/renamePOP1/renamePOP2/renamePOP3',
+        path: '/resume_rename_1/resume_rename_2/resume_rename_3',
         parent: pageId2,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -186,14 +186,14 @@ describe('Test page service methods', () => {
         _id: pageOpId1,
         actionType: 'Rename',
         actionStage: 'Sub',
-        fromPath: '/renamePOP1',
-        toPath: '/POP0/renamePOP1',
+        fromPath: '/resume_rename_1',
+        toPath: '/resume_rename_0/resume_rename_1',
         page: {
           _id: pageId1,
           parent: rootPage._id,
           descendantCount: 2,
           isEmpty: false,
-          path: '/renamePOP1',
+          path: '/resume_rename_1',
           revision: pageOpRevisionId1,
           status: 'published',
           grant: 1,
@@ -285,16 +285,16 @@ describe('Test page service methods', () => {
 
     test('it should successfully restart rename operation', async() => {
       // paths before renaming
-      const _path0 = '/POP0';
-      const _path1 = '/POP0/renamePOP1'; // renamed already
-      const _path2 = '/renamePOP1/renamePOP2'; // not renamed yet
-      const _path3 = '/renamePOP1/renamePOP2/renamePOP3'; // not renamed yet
+      const _path0 = '/resume_rename_0'; // will not be renamed
+      const _path1 = '/resume_rename_0/resume_rename_1'; // renamed already
+      const _path2 = '/resume_rename_1/resume_rename_2'; // not renamed yet
+      const _path3 = '/resume_rename_1/resume_rename_2/resume_rename_3'; // not renamed yet
 
       // paths after renaming
-      const path0 = '/POP0';
-      const path1 = '/POP0/renamePOP1';
-      const path2 = '/POP0/renamePOP1/renamePOP2';
-      const path3 = '/POP0/renamePOP1/renamePOP2/renamePOP3';
+      const path0 = '/resume_rename_0';
+      const path1 = '/resume_rename_0/resume_rename_1';
+      const path2 = '/resume_rename_0/resume_rename_1/resume_rename_2';
+      const path3 = '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
 
       // page
       const _page0 = await Page.findOne({ path: _path0 });
