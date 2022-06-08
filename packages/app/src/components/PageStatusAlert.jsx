@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -156,11 +156,6 @@ class PageStatusAlert extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlert, [AppContainer, PageContainer]);
-
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -168,4 +163,14 @@ PageStatusAlert.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(PageStatusAlertWrapper);
+const PageStatusAlertWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageStatusAlert t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlertWrapperFC, [AppContainer, PageContainer]);
+
+export default PageStatusAlertWrapper;

@@ -245,36 +245,34 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
-    const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
-
     return (
       <>
-        <div className={className}>
+        <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
           { pageId != null && isViewMode && (
-            <SubNavButtons
-              isCompactMode={isCompactMode}
-              pageId={pageId}
-              shareLinkId={shareLinkId}
-              revisionId={revisionId}
-              path={path}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={props => (
-                <AdditionalMenuItems
-                  {...props}
-                  pageId={pageId}
-                  revisionId={revisionId}
-                  isLinkSharingDisabled={isLinkSharingDisabled}
-                  onClickTemplateMenuItem={templateMenuItemClickHandler}
-                />
-              )}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-            />
+            <div className="h-50">
+              <SubNavButtons
+                isCompactMode={isCompactMode}
+                pageId={pageId}
+                shareLinkId={shareLinkId}
+                revisionId={revisionId}
+                path={path}
+                disableSeenUserInfoPopover={isSharedUser}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={props => (
+                  <AdditionalMenuItems
+                    {...props}
+                    pageId={pageId}
+                    revisionId={revisionId}
+                    isLinkSharingDisabled={isLinkSharingDisabled}
+                    onClickTemplateMenuItem={templateMenuItemClickHandler}
+                  />
+                )}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+              />
+            </div>
           ) }
-        </div>
-        <div className={`${className} ${isCompactMode ? '' : 'mt-2'}`}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
