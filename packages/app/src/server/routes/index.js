@@ -73,7 +73,7 @@ module.exports = function(crowi, app) {
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
 
-  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, addActivity, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
