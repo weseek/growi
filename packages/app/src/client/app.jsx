@@ -11,7 +11,6 @@ import CommentContainer from '~/client/services/CommentContainer';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
@@ -61,13 +60,12 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
-const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, pageHistoryContainer,
+  appContainer, socketIoContainer, pageContainer,
   commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
