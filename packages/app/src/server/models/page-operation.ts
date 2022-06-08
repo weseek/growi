@@ -106,7 +106,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
-  unprocessableExpiryDate: { type: Date, default: addSeconds(new Date(), 10) },
+  unprocessableExpiryDate: { type: Date, default: () => addSeconds(new Date(), 10) },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
