@@ -11,7 +11,7 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-class TwitterSecurityManagementContents extends React.Component {
+class TwitterSecuritySettingContents extends React.Component {
 
   constructor(props) {
     super(props);
@@ -193,23 +193,23 @@ class TwitterSecurityManagementContents extends React.Component {
 
 }
 
-TwitterSecurityManagementContents.propTypes = {
+TwitterSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementContentsWrapperFC = (props) => {
+const TwitterSecuritySettingContentsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <TwitterSecurityManagementContents t={t} {...props} />;
+  return <TwitterSecuritySettingContents t={t} {...props} />;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const TwitterSecurityManagementContentsWrapper = withUnstatedContainers(TwitterSecurityManagementContentsWrapperFC, [
+const TwitterSecuritySettingContentsWrapper = withUnstatedContainers(TwitterSecuritySettingContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminTwitterSecurityContainer,
 ]);
 
-export default TwitterSecurityManagementContentsWrapper;
+export default TwitterSecuritySettingContentsWrapper;

@@ -15,7 +15,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
-
 const Pager = (props) => {
   if (props.links.length === 0) {
     return null;

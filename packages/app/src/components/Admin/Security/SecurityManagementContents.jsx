@@ -1,6 +1,5 @@
 import React, { Fragment, useMemo, useState } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
