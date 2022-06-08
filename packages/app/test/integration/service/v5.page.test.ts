@@ -380,7 +380,7 @@ describe('Test page service methods', () => {
 
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
       // path before renaming
-      const _path0 = '/resume_rename_4'; // ut of renaming scope
+      const _path0 = '/resume_rename_4'; // out of renaming scope
       const _path1 = '/resume_rename_4/resume_rename_5'; // renamed already
       const _path2 = '/resume_rename_5/resume_rename_6'; // not renamed yet
       // page
