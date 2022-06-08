@@ -6,9 +6,6 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import {
-  SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE, SupportedActionType, ISnapshot,
-} from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -20,7 +17,6 @@ import {
 } from '~/interfaces/page-delete-config';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision,
 } from '~/server/models/page';
@@ -154,79 +150,6 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
-
-    // update
-    this.pageEvent.on('update', async(page, user) => {
-
-      this.pageEvent.onUpdate();
-
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // duplicate
-    this.pageEvent.on('duplicate', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete
-    this.pageEvent.on('delete', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // revert
-    this.pageEvent.on('revert', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // likes
-    this.pageEvent.on('like', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // bookmark
-    this.pageEvent.on('bookmark', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(user, page, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
   }
 
   canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
@@ -2220,29 +2143,6 @@ class PageService {
     });
 
     return shortBodiesMap;
-  }
-
-  private async createAndSendNotifications(user: IUserHasId, target: IPage, action: SupportedActionType) {
-    const { activityService, inAppNotificationService } = this.crowi;
-
-    // Create activity
-    const snapshotForActivity: ISnapshot = { username: user.username };
-    const parameters = {
-      user: user._id,
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target,
-      action,
-      snapshot: snapshotForActivity,
-    };
-    const activity = await activityService.createByParameters(parameters);
-
-    // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
-
-    // Create and send notifications
-    const snapshotForInAppNotification = stringifySnapshot(target);
-    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshotForInAppNotification);
-    await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
   async normalizeParentByPath(path: string, user): Promise<void> {

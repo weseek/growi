@@ -5,7 +5,9 @@ import {
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
-  AllSupportedTargetModelType, AllSupportedActionType, SupportedActionType, ISnapshot,
+  ISnapshot, AllSupportedActionType, SupportedActionType,
+  AllSupportedTargetModelType, SupportedTargetModelType,
+  AllSupportedEventModelType, SupportedEventModelType,
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -16,11 +18,13 @@ const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
-  user: Types.ObjectId | any
+  user: Types.ObjectId
   ip: string
   endpoint: string
-  targetModel: string
+  targetModel: SupportedTargetModelType
   target: Types.ObjectId
+  eventModel: SupportedEventModelType
+  event: Types.ObjectId
   action: SupportedActionType
   snapshot: ISnapshot
 
@@ -56,6 +60,13 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
+  },
+  eventModel: {
+    type: String,
+    enum: AllSupportedEventModelType,
+  },
+  event: {
+    type: Schema.Types.ObjectId,
   },
   action: {
     type: String,

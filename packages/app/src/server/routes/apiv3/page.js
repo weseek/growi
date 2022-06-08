@@ -1,6 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 
+import { SUPPORTED_ACTION_TYPE, SUPPORTED_TARGET_MODEL_TYPE } from '~/interfaces/activity';
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
@@ -162,11 +164,14 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     getPage: [
@@ -306,7 +311,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -330,13 +335,17 @@ module.exports = (crowi) => {
 
     const result = { page };
     result.seenUser = page.seenUsers;
+
+    const parameters = {
+      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      target: page,
+      action: isLiked ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE : SUPPORTED_ACTION_TYPE.ACTION_PAGE_UNLIKE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     res.apiv3({ result });
 
     if (isLiked) {
-      const pageEvent = crowi.event('page');
-      // in-app notification
-      pageEvent.emit('like', page, req.user);
-
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
