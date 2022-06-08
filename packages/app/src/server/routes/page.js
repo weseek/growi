@@ -408,6 +408,10 @@ module.exports = function(crowi, app) {
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -470,6 +474,10 @@ module.exports = function(crowi, app) {
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -649,12 +657,18 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     return redirector(req, res, next, path);
   };
 
   actions.redirectorWithEndOfSlash = async function(req, res, next) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
+
+    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return redirector(req, res, next, path);
   };
