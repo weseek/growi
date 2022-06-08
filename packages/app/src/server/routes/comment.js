@@ -64,8 +64,6 @@ module.exports = function(crowi, app) {
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Types.ObjectId;
 
-  const activityEvent = crowi.event('activity');
-
   const actions = {};
   const api = {};
 
