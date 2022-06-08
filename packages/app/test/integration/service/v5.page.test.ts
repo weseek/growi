@@ -284,7 +284,7 @@ describe('Test page service methods', () => {
 
     test('it should successfully restart rename operation', async() => {
       // paths before renaming
-      const _path0 = '/resume_rename_0'; // will not be renamed
+      const _path0 = '/resume_rename_0'; // out of renaming scope
       const _path1 = '/resume_rename_0/resume_rename_1'; // renamed already
       const _path2 = '/resume_rename_1/resume_rename_2'; // not renamed yet
       const _path3 = '/resume_rename_1/resume_rename_2/resume_rename_3'; // not renamed yet
@@ -380,7 +380,7 @@ describe('Test page service methods', () => {
 
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
       // path
-      const _path0 = '/resume_rename_4';
+      const _path0 = '/resume_rename_4'; // out of renaming scope
       const _path1 = '/resume_rename_4/resume_rename_5'; // renamed already
       const _path2 = '/resume_rename_5/resume_rename_6'; // not renamed yet
       // page
