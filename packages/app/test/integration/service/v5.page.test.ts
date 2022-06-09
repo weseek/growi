@@ -86,6 +86,8 @@ describe('Test page service methods', () => {
     const pageId5 = new mongoose.Types.ObjectId();
     const pageId6 = new mongoose.Types.ObjectId();
     const pageId7 = new mongoose.Types.ObjectId();
+    const pageId8 = new mongoose.Types.ObjectId();
+    const pageId9 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -168,6 +170,35 @@ describe('Test page service methods', () => {
         descendantCount: 0,
         isEmpty: false,
       },
+      {
+        _id: pageId8,
+        path: '/resume_rename_8',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 0,
+        isEmpty: false,
+      },
+      {
+        _id: pageId9,
+        path: '/resume_rename_8/resume_rename_9',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 1,
+        isEmpty: false,
+      },
+      {
+        path: '/resume_rename_9/resume_rename_10',
+        parent: pageId9,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 0,
+        isEmpty: false,
+      },
     ]);
 
     /**
@@ -176,9 +207,11 @@ describe('Test page service methods', () => {
     const pageOpId1 = new mongoose.Types.ObjectId();
     const pageOpId2 = new mongoose.Types.ObjectId();
     const pageOpId3 = new mongoose.Types.ObjectId();
+    const pageOpId4 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId2 = new mongoose.Types.ObjectId();
     const pageOpRevisionId3 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId4 = new mongoose.Types.ObjectId();
 
     await PageOperation.insertMany([
       {
@@ -268,6 +301,34 @@ describe('Test page service methods', () => {
         },
         unprocessableExpiryDate: new Date(),
       },
+      {
+        _id: pageOpId4,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/resume_rename_9',
+        toPath: '/resume_rename_8/resume_rename_9',
+        page: {
+          _id: pageId9,
+          parent: rootPage._id,
+          descendantCount: 1,
+          isEmpty: false,
+          path: '/resume_rename_9',
+          revision: pageOpRevisionId4,
+          status: 'published',
+          grant: Page.GRANT_PUBLIC,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+      },
     ]);
   });
 
@@ -339,6 +400,55 @@ describe('Test page service methods', () => {
       expect(page1.descendantCount).toBe(2);
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
+    });
+    test('it should successfully restart rename operation when unprocessableExpiryDate is null', async() => {
+      // paths before renaming
+      const _path0 = '/resume_rename_8'; // out of renaming scope
+      const _path1 = '/resume_rename_8/resume_rename_9'; // renamed already
+      const _path2 = '/resume_rename_9/resume_rename_10'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/resume_rename_8';
+      const path1 = '/resume_rename_8/resume_rename_9';
+      const path2 = '/resume_rename_8/resume_rename_9/resume_rename_10';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      const _page2 = await Page.findOne({ path: _path2 });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+
+      // page operation
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      expect(_pageOperation).toBeTruthy();
+
+      // rename
+      await resumeRenameSubOperation(_page1);
+
+      // page
+      const page0 = await Page.findById(_page0._id);
+      const page1 = await Page.findById(_page1._id);
+      const page2 = await Page.findById(_page2._id);
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      // check paths after renaming
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1);
+      expect(page2.path).toBe(path2);
+
+      // page operation
+      const pageOperation = await PageOperation.findById(_pageOperation._id);
+      expect(pageOperation).toBeNull(); // should not exist
+
+      // others
+      expect(page1.parent).toStrictEqual(page0._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+      expect(page0.descendantCount).toBe(3);
+      expect(page1.descendantCount).toBe(2);
+      expect(page2.descendantCount).toBe(1);
     });
 
     test('it should fail and throw error if PageOperation is not found', async() => {
