@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -506,9 +506,15 @@ ImportForm.propTypes = {
   onPostImport: PropTypes.func,
 };
 
+const ImportFormWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ImportForm t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, AdminSocketIoContainer]);
+const ImportFormWrapper = withUnstatedContainers(ImportFormWrapperFc, [AppContainer, AdminSocketIoContainer]);
 
-export default withTranslation()(ImportFormWrapper);
+export default ImportFormWrapper;
