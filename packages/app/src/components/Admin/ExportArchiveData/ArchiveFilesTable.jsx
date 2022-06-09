@@ -1,10 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+
 import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
@@ -58,9 +60,14 @@ ArchiveFilesTable.propTypes = {
   onZipFileStatRemove: PropTypes.func.isRequired,
 };
 
+const ArchiveFilesTableWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ArchiveFilesTable t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ArchiveFilesTableWrapper = withUnstatedContainers(ArchiveFilesTable, [AppContainer]);
+const ArchiveFilesTableWrapper = withUnstatedContainers(ArchiveFilesTableWrapperFC, [AppContainer]);
 
-export default withTranslation()(ArchiveFilesTableWrapper);
+export default ArchiveFilesTableWrapper;
