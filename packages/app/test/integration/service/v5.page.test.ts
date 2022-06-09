@@ -502,14 +502,17 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
-      expect(_pageOperation).toBeTruthy();
+      const pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      expect(pageOperation).toBeTruthy();
 
       // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
       // The number 15 seconds has no meaning other than placing time in the furue.
-      await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
+      await PageOperation.findByIdAndUpdate(pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) });
 
       await expect(resumeRenameSubOperation(_page1)).rejects.toThrow(new Error('This page operation is currently being processed'));
+
+      // cleanup
+      await PageOperation.findByIdAndDelete(pageOperation._id);
     });
 
     test('Missing property(toPath) for PageOperation should throw error', async() => {
@@ -519,11 +522,14 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
-      expect(_pageOperation).toBeTruthy();
+      const pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      expect(pageOperation).toBeTruthy();
 
       const promise = resumeRenameSubOperation(_page1);
-      await expect(promise).rejects.toThrow(new Error(`Property toPath is missing which is needed to resume page operation(${_pageOperation._id})`));
+      await expect(promise).rejects.toThrow(new Error(`Property toPath is missing which is needed to resume page operation(${pageOperation._id})`));
+
+      // cleanup
+      await PageOperation.findByIdAndDelete(pageOperation._id);
     });
   });
 });
