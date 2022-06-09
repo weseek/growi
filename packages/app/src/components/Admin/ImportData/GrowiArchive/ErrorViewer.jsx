@@ -1,6 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
@@ -42,9 +43,15 @@ ErrorViewer.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.object),
 };
 
+const ErrorViewerWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ErrorViewer t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ErrorViewerWrapper = withUnstatedContainers(ErrorViewer, []);
+const ErrorViewerWrapper = withUnstatedContainers(ErrorViewerWrapperFc, []);
 
-export default withTranslation()(ErrorViewerWrapper);
+export default ErrorViewerWrapper;
