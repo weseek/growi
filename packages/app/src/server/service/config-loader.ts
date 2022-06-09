@@ -626,7 +626,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'app:activityExpirationSeconds',
     type: ValueType.NUMBER,
-    default: null,
+    default: 7776000,
   },
 };
 
