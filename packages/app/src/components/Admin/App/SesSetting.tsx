@@ -1,16 +1,16 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
-
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
+type Props = {
+  adminAppContainer: AdminAppContainer,
+}
 
-function SmtpSetting(props) {
+const SmtpSetting = (props: Props) => {
   const { adminAppContainer } = props;
 
   return (
@@ -52,16 +52,11 @@ function SmtpSetting(props) {
 
     </React.Fragment>
   );
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
-const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AppContainer, AdminAppContainer]);
-
-SmtpSetting.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
+const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AdminAppContainer]);
 
 export default SmtpSettingWrapper;
