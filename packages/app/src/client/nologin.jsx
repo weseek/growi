@@ -10,7 +10,6 @@ import AppContainer from '~/client/services/AppContainer';
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
@@ -22,18 +21,6 @@ const i18n = i18nFactory();
 
 
 const componentMappings = {};
-
-// render InstallerForm
-const installerFormContainerElem = document.getElementById('installer-form-container');
-if (installerFormContainerElem) {
-  const userName = installerFormContainerElem.dataset.userName;
-  const name = installerFormContainerElem.dataset.name;
-  const email = installerFormContainerElem.dataset.email;
-
-  Object.assign(componentMappings, {
-    'installer-form-container': <InstallerForm userName={userName} name={name} email={email} />,
-  });
-}
 
 const appContainer = new AppContainer();
 appContainer.initApp();
