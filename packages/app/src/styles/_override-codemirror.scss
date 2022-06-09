@@ -41,7 +41,7 @@
   }
 
   // overwrite .CodeMirror-placeholder
-  pre.CodeMirror-placeholder {
+  pre.CodeMirror-line-like.CodeMirror-placeholder {
     color: $text-muted;
   }
 }
