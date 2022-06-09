@@ -47,11 +47,10 @@ class ActivityService {
 
   createTtlIndex = async function() {
     const configManager = this.crowi.configManager;
-    const activityExpirationSeconds = configManager != null ? configManager.getConfig('crowi', 'app:activityExpirationSeconds') : 7776000;
+    const activityExpirationSeconds = configManager != null ? configManager.getConfig('crowi', 'app:activityExpirationSeconds') : 2592000;
     const collection = mongoose.connection.collection('activities');
 
     try {
-      throw Error('えらー');
       const indexes = await collection.indexes();
       const ttlIndex = indexes.find(i => i.name === 'createdAt_1');
       const shoudCreateIndex = ttlIndex == null;
