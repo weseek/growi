@@ -7,10 +7,8 @@ import {
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
@@ -234,7 +232,6 @@ class SelectCollectionsModal extends React.Component {
 
 SelectCollectionsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onExportingRequested: PropTypes.func.isRequired,
@@ -248,9 +245,4 @@ const SelectCollectionsModalWrapperFc = (props) => {
   return <SelectCollectionsModal t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModalWrapperFc, [AppContainer]);
-
-export default SelectCollectionsModalWrapper;
+export default SelectCollectionsModalWrapperFc;
