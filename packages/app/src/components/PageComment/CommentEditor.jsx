@@ -236,7 +236,7 @@ class CommentEditor extends React.Component {
     };
 
     const { growiRenderer } = this.props;
-    const { interceptorManager } = global;
+    const { interceptorManager } = window;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {

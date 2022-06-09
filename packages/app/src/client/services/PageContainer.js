@@ -99,7 +99,7 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager } = global;
+    const { interceptorManager } = window;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
     interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
@@ -219,7 +219,8 @@ export default class PageContainer extends Container {
 
     // Update PageEditor component
     if (editorMode !== EditorMode.Editor) {
-      window.globalEmitter.emit('updateEditorValue', newState.markdown);
+      // eslint-disable-next-line no-undef
+      globalEmitter.emit('updateEditorValue', newState.markdown);
     }
 
     // PageEditorByHackmd component
@@ -459,7 +460,8 @@ export default class PageContainer extends Container {
 
     // Update PageEditor component
     if (editorMode !== EditorMode.Editor) {
-      window.globalEmitter.emit('updateEditorValue', markdown);
+      // eslint-disable-next-line no-undef
+      globalEmitter.emit('updateEditorValue', markdown);
     }
 
     editorContainer.setState({ tags: res.tags });

@@ -36,9 +36,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 const logger = loggerFactory('growi:PageEditor');
 
 
-declare let window: {
-  globalEmitter: EventEmitter,
-};
+declare const globalEmitter: EventEmitter;
+
 
 type EditorRef = {
   setValue: (markdown: string) => void,
@@ -322,10 +321,10 @@ const PageEditor = (props: Props): JSX.Element => {
         scrollSyncHelper.scrollPreview(previewRef.current, line);
       }
     };
-    window.globalEmitter.on('setCaretLine', handler);
+    globalEmitter.on('setCaretLine', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('setCaretLine', handler);
+      globalEmitter.removeListener('setCaretLine', handler);
     };
   }, []);
 
@@ -343,10 +342,10 @@ const PageEditor = (props: Props): JSX.Element => {
         editorRef.current.setValue(markdown);
       }
     };
-    window.globalEmitter.on('updateEditorValue', handler);
+    globalEmitter.on('updateEditorValue', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('updateEditorValue', handler);
+      globalEmitter.removeListener('updateEditorValue', handler);
     };
   }, []);
 
