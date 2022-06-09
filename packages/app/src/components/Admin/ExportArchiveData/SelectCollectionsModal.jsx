@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -242,9 +242,15 @@ SelectCollectionsModal.propTypes = {
   collections: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
+const SelectCollectionsModalWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <SelectCollectionsModal t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModal, [AppContainer]);
+const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModalWrapperFc, [AppContainer]);
 
-export default withTranslation()(SelectCollectionsModalWrapper);
+export default SelectCollectionsModalWrapper;
