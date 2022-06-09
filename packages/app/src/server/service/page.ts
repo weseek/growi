@@ -560,12 +560,12 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, newParent);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, newParent): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
@@ -586,7 +586,7 @@ class PageService {
     // reduce parent's descendantCount
     // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
     const nToReduceForOperationInterruption = -1;
-    await Page.incrementDescendantCountOfPageIds([newParent._id], nToReduceForOperationInterruption);
+    await Page.incrementDescendantCountOfPageIds([page.parent], nToReduceForOperationInterruption);
 
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
     await this.updateDescendantCountOfAncestors(exParentId, nToReduce, true);
@@ -626,10 +626,7 @@ class PageService {
       throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
     }
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const parent = await Page.findById(renamedPage.parent);
-
-    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id, parent);
+    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
 
   }
 
