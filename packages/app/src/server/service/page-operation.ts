@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
-import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
+import PageOperation, { PageActionType, PageActionStage, PageOperationDocument } from '~/server/models/page-operation';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
@@ -33,7 +33,7 @@ class PageOperationService {
   async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
 
-    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename }).sort({ createdAt: 1 });
+    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub }).sort({ createdAt: 1 });
     if (pageOps.length === 0) return;
 
     for await (const pageOp of pageOps) {
