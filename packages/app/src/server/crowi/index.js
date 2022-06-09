@@ -704,6 +704,7 @@ Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
   if (this.activityService == null) {
     this.activityService = new ActivityService(this);
+    await this.activityService.createTtlIndex();
   }
 };
 
