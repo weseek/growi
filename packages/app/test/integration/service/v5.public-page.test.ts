@@ -55,6 +55,7 @@ describe('PageService page operations with only public pages', () => {
      * Create
      */
     const pageIdForCreate1 = new mongoose.Types.ObjectId();
+    const pageIdForCreate2 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -65,12 +66,20 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         isEmpty: true,
       },
+      {
+        _id: pageIdForCreate2,
+        path: '/v5_empty_create_4/v5_create_5',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdForCreate1,
+        isEmpty: false,
+      },
     ]);
 
     /*
      * Create by system
      */
     const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+    const pageIdCreateBySystem2 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -79,6 +88,13 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
         isEmpty: true,
+      },
+      {
+        _id: pageIdCreateBySystem2,
+        path: '/v5_empty_create_by_system4/v5_create_by_system_5',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdCreateBySystem1,
+        isEmpty: false,
       },
     ]);
 
