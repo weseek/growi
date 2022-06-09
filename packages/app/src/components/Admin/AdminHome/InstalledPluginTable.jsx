@@ -1,10 +1,12 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 
 class InstalledPluginTable extends React.Component {
 
@@ -49,9 +51,14 @@ InstalledPluginTable.propTypes = {
   adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
 };
 
+const InstalledPluginTableFc = (props) => {
+  const { t } = useTranslation();
+  return <InstalledPluginTable t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const InstalledPluginTableWrapper = withUnstatedContainers(InstalledPluginTable, [AppContainer, AdminHomeContainer]);
+const InstalledPluginTableWrapper = withUnstatedContainers(InstalledPluginTableFc, [AppContainer, AdminHomeContainer]);
 
-export default withTranslation()(InstalledPluginTableWrapper);
+export default InstalledPluginTableWrapper;
