@@ -52,23 +52,22 @@ class ActivityService {
     const collection = mongoose.connection.collection('activities');
 
     try {
-      const targetField = 'createdAt_1';
-      const indexes = await collection.getIndexes();
-      const isExistTargetField = Object.keys(indexes).includes(targetField);
-      if (isExistTargetField) {
-        await collection.dropIndex(targetField);
+      const indexes = await collection.indexes();
+      const ttlIndex = indexes.find(i => i.name === 'createdAt_1');
+      const shoudCreateIndex = ttlIndex == null;
+      const shoudDropAndCreateIndex = ttlIndex != null && ttlIndex.expireAfterSeconds !== activityExpirationSeconds;
+
+      if (shoudDropAndCreateIndex) {
+        await collection.dropIndex('createdAt_1');
+      }
+
+      if (shoudDropAndCreateIndex || shoudCreateIndex) {
+        await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
       }
     }
     catch (err) {
-      logger.error('Failed to drop target index', err);
-      return;
-    }
-
-    try {
-      await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
-    }
-    catch (err) {
-      logger.error('Failed to create TTL indexes', err);
+      logger.error('Failed to create TTL Index', err);
+      throw err;
     }
   };
 
