@@ -1,5 +1,5 @@
 import React, {
-  UIEventHandler, useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useMemo, useState, SyntheticEvent,
 } from 'react';
 
 
@@ -18,7 +18,7 @@ type Props = {
   inputRef?: React.RefObject<HTMLDivElement>,
   isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
-  onScroll?: UIEventHandler<HTMLDivElement>,
+  onScroll?: (scrollTop: number) => void,
 }
 
 
@@ -28,7 +28,6 @@ const Preview = (props: Props): JSX.Element => {
     appContainer,
     markdown, pagePath,
     inputRef,
-    onScroll,
   } = props;
 
   const [html, setHtml] = useState('');
@@ -89,7 +88,11 @@ const Preview = (props: Props): JSX.Element => {
     <div
       className="page-editor-preview-body"
       ref={inputRef}
-      onScroll={onScroll}
+      onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
+        if (props.onScroll != null) {
+          props.onScroll(event.currentTarget.scrollTop);
+        }
+      }}
     >
       <RevisionBody
         {...props}
@@ -106,4 +109,9 @@ const Preview = (props: Props): JSX.Element => {
  */
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
-export default PreviewWrapper;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const PreviewWrapper2 = (props): JSX.Element => {
+  return <PreviewWrapper {...props} />;
+};
+
+export default PreviewWrapper2;

@@ -5,7 +5,7 @@
 	"Delete": "删除",
 	"delete_all": "删除所有",
 	"Duplicate": "复制",
-  "PathRecovery": "路径修复",
+  "PathRecovery": "路径恢复",
 	"Copy": "复制",
   "preview":"预览",
   "desktop":"电脑",
@@ -156,6 +156,7 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
+  "tag_list": "标签列表",
   "popular_tags": "流行标签",
   "Check All tags": "检查所有标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
@@ -525,7 +526,7 @@
 	"template": {
 		"modal_label": {
 			"Create/Edit Template Page": "创建/编辑模板页",
-			"Create template under": "在下面创建模板页：<br/><code><small>%s</small></code>"
+			"Create template under": "在下面创建模板页"
 		},
 		"option_label": {
 			"create/edit": "创建/编辑模板页。",
@@ -1113,7 +1114,12 @@
     "cancel_bookmark": "取消书签",
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
-    "footprints": "脚印"
+    "footprints": "脚印",
+    "operation": {
+      "attention": {
+        "rename": "重命名子孙页的路径没有成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"
+      }
+    }
   },
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径",

@@ -148,6 +148,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "tag_list": "Tag list",
   "popular_tags": "Popular tags",
   "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
@@ -1110,7 +1111,12 @@
     "cancel_bookmark": "Cancel Bookmark",
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
-    "footprints": "Footprints"
+    "footprints": "Footprints",
+    "operation": {
+      "attention": {
+        "rename": "Renaming paths of descendant pages was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
+      }
+    }
   },
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
