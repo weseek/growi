@@ -90,6 +90,7 @@ describe('Test page service methods', () => {
     const pageId9 = new mongoose.Types.ObjectId();
     const pageId10 = new mongoose.Types.ObjectId();
     const pageId11 = new mongoose.Types.ObjectId();
+    const pageId12 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -208,7 +209,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 2,
+        descendantCount: 3,
         isEmpty: false,
       },
       {
@@ -218,12 +219,22 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
+        descendantCount: 2,
+        isEmpty: false,
+      },
+      {
+        _id: pageId12,
+        path: '/resume_rename_11/resume_rename_12/resume_rename_13',
+        parent: pageId11,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
         descendantCount: 1,
         isEmpty: false,
       },
       {
-        path: '/resume_rename_11/resume_rename_12/resume_rename_13',
-        parent: pageId11,
+        path: '/resume_rename_11/resume_rename_12/resume_rename_13/resume_rename_14',
+        parent: pageId12,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -367,14 +378,14 @@ describe('Test page service methods', () => {
         _id: pageOpId5,
         actionType: 'Rename',
         actionStage: 'Sub',
-        fromPath: '/resume_rename_12',
-        toPath: '/resume_rename_11/resume_rename_12',
+        fromPath: '/resume_rename_11/resume_rename_13',
+        toPath: '/resume_rename_11/resume_rename_12/resume_rename_13',
         page: {
-          _id: pageId11,
-          parent: rootPage._id,
+          _id: pageId12,
+          parent: pageId10,
           descendantCount: 1,
           isEmpty: false,
-          path: '/resume_rename_12',
+          path: '/resume_rename_11/resume_rename_13',
           revision: pageOpRevisionId5,
           status: 'published',
           grant: Page.GRANT_PUBLIC,
@@ -595,55 +606,65 @@ describe('Test page service methods', () => {
     });
 
     test(`it should succeed but 2 extra descendantCount should be added
-    if resumeing gets executed after updating descendantCount of ancestor in renameSubOperation is finished`, async() => {
+    if resumeRenameOperation gets executed after updating descendantCount of ancestor in renameSubOperation is finished`, async() => {
       // paths before renaming
       const _path0 = '/resume_rename_11'; // out of renaming scope
-      const _path1 = '/resume_rename_11/resume_rename_12'; // renamed already
+      const _path1 = '/resume_rename_11/resume_rename_12'; // out of renaming scope
       const _path2 = '/resume_rename_11/resume_rename_12/resume_rename_13'; // renamed already
+      const _path3 = '/resume_rename_11/resume_rename_12/resume_rename_13/resume_rename_14'; // renamed already
 
       // paths after renaming
       const path0 = '/resume_rename_11';
       const path1 = '/resume_rename_11/resume_rename_12';
       const path2 = '/resume_rename_11/resume_rename_12/resume_rename_13';
+      const path3 = '/resume_rename_11/resume_rename_12/resume_rename_13/resume_rename_14';
 
       // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
+      const _page3 = await Page.findOne({ path: _path3 });
       expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const _pageOperation = await PageOperation.findOne({ 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1);
+      await resumeRenameSubOperation(_page2);
 
       // page
       const page0 = await Page.findById(_page0._id);
       const page1 = await Page.findById(_page1._id);
       const page2 = await Page.findById(_page2._id);
+      const page3 = await Page.findById(_page3._id);
       expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
       expect(page0.path).toBe(path0);
       expect(page1.path).toBe(path1);
       expect(page2.path).toBe(path2);
+      expect(page3.path).toBe(path3);
 
       // page operation
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
 
       // others
+      expect(page0.parent).toStrictEqual(rootPage._id);
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
+      expect(page3.parent).toStrictEqual(page2._id);
 
       // 2 extra descendants should be added
-      expect(page0.descendantCount).toBe(4); // originally 2
-      expect(page1.descendantCount).toBe(1);
-      expect(page2.descendantCount).toBe(0);
+      expect(page0.descendantCount).toBe(3); // originally 3
+      expect(page1.descendantCount).toBe(4); // originally 2
+      expect(page2.descendantCount).toBe(1);
+      expect(page3.descendantCount).toBe(0);
     });
   });
 });
