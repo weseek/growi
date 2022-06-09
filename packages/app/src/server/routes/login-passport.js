@@ -1,3 +1,4 @@
+import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
@@ -109,9 +110,11 @@ module.exports = function(crowi, app) {
     const attrMapUsername = passportService.getLdapAttrNameMappedToUsername();
     const attrMapName = passportService.getLdapAttrNameMappedToName();
     const attrMapMail = passportService.getLdapAttrNameMappedToMail();
-    const usernameToBeRegistered = ldapAccountInfo[attrMapUsername];
+    // const usernameToBeRegistered = ldapAccountInfo[attrMapUsername];
+    const usernameToBeRegistered = null;
     const nameToBeRegistered = ldapAccountInfo[attrMapName];
     const mailToBeRegistered = ldapAccountInfo[attrMapMail];
+
     const userInfo = {
       id: ldapAccountId,
       username: usernameToBeRegistered,
@@ -578,7 +581,11 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       /* eslint-disable no-else-return */
-      if (err.name === 'DuplicatedUsernameException') {
+      if (err instanceof NullUsernameToBeRegisteredError) {
+        req.flash('warningMessage', req.t(`message.${err.message}`));
+        return;
+      }
+      else if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
           // associate to existing user
           debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
