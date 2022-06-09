@@ -1,7 +1,6 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
@@ -11,7 +10,11 @@ import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
-function SmtpSetting(props) {
+type Props = {
+  adminAppContainer: AdminAppContainer,
+}
+
+const SmtpSetting = (props: Props) => {
   const { t } = useTranslation();
   const { adminAppContainer } = props;
 
@@ -75,16 +78,10 @@ function SmtpSetting(props) {
       </div>
     </React.Fragment>
   );
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
 const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AppContainer, AdminAppContainer]);
-
-SmtpSetting.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
-
 export default SmtpSettingWrapper;
