@@ -25,6 +25,7 @@ class ActivityService {
 
     this.updateByParameters = this.updateByParameters.bind(this);
 
+    this.createTtlIndex();
     this.initActivityEventListeners();
   }
 
