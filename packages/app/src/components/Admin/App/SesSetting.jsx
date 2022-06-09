@@ -1,14 +1,14 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
-
-
-import AppContainer from '~/client/services/AppContainer';
 import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AppContainer from '~/client/services/AppContainer';
+
+import { withLoadingSppiner } from '../../SuspenseUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 
 function SmtpSetting(props) {
   const { adminAppContainer } = props;
@@ -60,9 +60,8 @@ function SmtpSetting(props) {
 const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AppContainer, AdminAppContainer]);
 
 SmtpSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-export default withTranslation()(SmtpSettingWrapper);
+export default SmtpSettingWrapper;
