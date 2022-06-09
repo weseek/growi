@@ -1,4 +1,5 @@
 import { getModelSafely } from '@growi/core';
+import mongoose from 'mongoose';
 
 import { IActivity } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
@@ -43,6 +44,27 @@ class ActivityService {
       this.activityEvent.emit('updated', activity, target);
     });
   }
+
+  createTtlIndex = async function() {
+    if (this.crowi.configManager == null) {
+      return;
+    }
+
+    const activityExpirationSeconds = this.crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds');
+    if (activityExpirationSeconds == null) {
+      return;
+    }
+
+    const collection = mongoose.connection.collection('activities');
+
+    try {
+      // Set retention period only if activityExpirationSeconds is not null
+      await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
+    }
+    catch (err) {
+      logger.error('Failed to create TTL indexes', err);
+    }
+  };
 
 
   /**

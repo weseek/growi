@@ -150,6 +150,12 @@ Crowi.prototype.init = async function() {
   await this.autoInstall();
 };
 
+Crowi.prototype.afterInit = async function() {
+  if (this.activityService != null) {
+    await this.activityService.createTtlIndex();
+  }
+};
+
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
     return false;
@@ -469,6 +475,8 @@ Crowi.prototype.start = async function() {
 
   // setup Global Error Handlers
   this.setupGlobalErrorHandlers();
+
+  this.afterInit();
 
   return serverListening;
 };
