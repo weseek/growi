@@ -1,24 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-import SmtpSetting from './SmtpSetting';
 import SesSetting from './SesSetting';
+import SmtpSetting from './SmtpSetting';
 
 
 function MailSetting(props) {
-  const { t, adminAppContainer } = props;
+  const { t } = useTranslation();
+  const { adminAppContainer } = props;
 
   const transmissionMethods = ['smtp', 'ses'];
 
   async function submitHandler() {
-    const { t } = props;
-
     try {
       await adminAppContainer.updateMailSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings') }));
@@ -109,9 +110,8 @@ function MailSetting(props) {
 const MailSettingWrapper = withUnstatedContainers(MailSetting, [AppContainer, AdminAppContainer]);
 
 MailSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-export default withTranslation()(MailSettingWrapper);
+export default MailSettingWrapper;
