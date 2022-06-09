@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
@@ -224,7 +224,6 @@ class CommentEditor extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
-        inputRef={(el) => { this.previewElement = el }}
         html={this.state.html}
       />
     );
@@ -281,7 +280,7 @@ class CommentEditor extends React.Component {
   }
 
   renderReady() {
-    const { appContainer, commentContainer, isMobile } = this.props;
+    const { isMobile } = this.props;
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -446,9 +445,9 @@ const CommentEditorWrapper = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
-  const onSlackEnabledFlagChange = (isSlackEnabled) => {
+  const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
     mutateIsSlackEnabled(isSlackEnabled, false);
-  };
+  }, [mutateIsSlackEnabled]);
 
   return (
     <CommentEditorHOCWrapper
