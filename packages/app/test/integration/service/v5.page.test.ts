@@ -183,7 +183,7 @@ describe('Test page service methods', () => {
       {
         _id: pageId9,
         path: '/resume_rename_8/resume_rename_9',
-        parent: rootPage._id,
+        parent: pageId8,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -328,6 +328,7 @@ describe('Test page service methods', () => {
           createRedirectPage: false,
           updateMetadata: true,
         },
+        unprocessableExpiryDate: null,
       },
     ]);
   });
@@ -446,9 +447,9 @@ describe('Test page service methods', () => {
       // others
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
-      expect(page0.descendantCount).toBe(3);
-      expect(page1.descendantCount).toBe(2);
-      expect(page2.descendantCount).toBe(1);
+      expect(page0.descendantCount).toBe(2);
+      expect(page1.descendantCount).toBe(1);
+      expect(page2.descendantCount).toBe(0);
     });
 
     test('it should fail and throw error if PageOperation is not found', async() => {
