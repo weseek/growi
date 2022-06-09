@@ -91,7 +91,9 @@ context('Search all pages', () => {
     cy.get('.rbt-input-main').type('{enter}');
     cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
 
+    cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
@@ -104,7 +106,11 @@ context('Search all pages', () => {
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
+
+    cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+
     cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
@@ -163,7 +169,9 @@ context('Search current tree', () => {
     cy.get('.rbt-input').type('{enter}');
     cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
 
+    cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
@@ -181,7 +189,9 @@ context('Search current tree', () => {
     cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input').type('{enter}');
 
+    cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
 
     cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
 
