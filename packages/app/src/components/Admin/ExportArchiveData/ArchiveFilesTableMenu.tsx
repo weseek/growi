@@ -1,19 +1,15 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 type ArchiveFilesTableMenuProps = {
-  appContainer: AppContainer,
   fileName: string,
   onZipFileStatRemove: (string) => void,
 }
 
-const ArchiveFilesTableMenu: FC<ArchiveFilesTableMenuProps> = (props: ArchiveFilesTableMenuProps) => {
+const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps):JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -34,9 +30,4 @@ const ArchiveFilesTableMenu: FC<ArchiveFilesTableMenuProps> = (props: ArchiveFil
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ArchiveFilesTableMenuWrapper = withUnstatedContainers(ArchiveFilesTableMenu, [AppContainer]);
-
-export default ArchiveFilesTableMenuWrapper;
+export default ArchiveFilesTableMenu;

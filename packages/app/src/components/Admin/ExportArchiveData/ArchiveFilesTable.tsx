@@ -1,22 +1,16 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
-
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
 type ArchiveFilesTableProps = {
-  appContainer: AppContainer,
   zipFileStats: any[],
-  onZipFileStatRemove: () => void,
+  onZipFileStatRemove: any,
 }
 
-const ArchiveFilesTable: FC<ArchiveFilesTableProps> = (props: ArchiveFilesTableProps) => {
+const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -54,9 +48,4 @@ const ArchiveFilesTable: FC<ArchiveFilesTableProps> = (props: ArchiveFilesTableP
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ArchiveFilesTableWrapper = withUnstatedContainers(ArchiveFilesTable, [AppContainer]);
-
-export default ArchiveFilesTableWrapper;
+export default ArchiveFilesTable;
