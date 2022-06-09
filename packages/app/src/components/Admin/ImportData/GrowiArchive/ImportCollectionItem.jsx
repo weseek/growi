@@ -1,8 +1,6 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-
-// eslint-disable-next-line no-unused-vars
 import { useTranslation } from 'react-i18next';
 import { Progress } from 'reactstrap';
 
