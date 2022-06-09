@@ -2,7 +2,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   UncontrolledTooltip,
@@ -191,12 +191,6 @@ class Draft extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
-
-
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -208,4 +202,14 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(DraftWrapper);
+const DraftWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <Draft t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const DraftWrapper = withUnstatedContainers(DraftWrapperFC, [AppContainer]);
+
+export default DraftWrapper;

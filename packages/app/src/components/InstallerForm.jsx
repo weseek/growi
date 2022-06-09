@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import i18next from 'i18next';
-import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import { localeMetadatas } from '~/client/util/i18n';
 
@@ -214,4 +214,9 @@ InstallerForm.propTypes = {
   csrf: PropTypes.string,
 };
 
-export default withTranslation()(InstallerForm);
+const InstallerFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <InstallerForm t={t} {...props} />;
+};
+
+export default InstallerFormWrapperFC;

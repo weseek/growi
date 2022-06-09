@@ -282,8 +282,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-
-        {currentUser != null && (
+        {path != null && currentUser != null && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}
@@ -300,7 +299,6 @@ const GrowiContextualSubNavigation = (props) => {
     path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-
   if (path == null) {
     return <></>;
   }
@@ -314,7 +312,6 @@ const GrowiContextualSubNavigation = (props) => {
     createdAt: createdAt ?? undefined,
     updatedAt: updatedAt ?? undefined,
   };
-
 
   return (
     <GrowiSubNavigation
