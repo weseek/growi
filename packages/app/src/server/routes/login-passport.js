@@ -110,8 +110,7 @@ module.exports = function(crowi, app) {
     const attrMapUsername = passportService.getLdapAttrNameMappedToUsername();
     const attrMapName = passportService.getLdapAttrNameMappedToName();
     const attrMapMail = passportService.getLdapAttrNameMappedToMail();
-    // const usernameToBeRegistered = ldapAccountInfo[attrMapUsername];
-    const usernameToBeRegistered = null;
+    const usernameToBeRegistered = ldapAccountInfo[attrMapUsername];
     const nameToBeRegistered = ldapAccountInfo[attrMapName];
     const mailToBeRegistered = ldapAccountInfo[attrMapMail];
 
