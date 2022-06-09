@@ -59,12 +59,19 @@ class ActivityService {
     const collection = mongoose.connection.collection('activities');
 
     try {
+      const targetField = 'createdAt_1';
       const indexes = await collection.getIndexes();
-      const isExistTargetField = Object.keys(indexes).includes('createdAt_1');
+      const isExistTargetField = Object.keys(indexes).includes(targetField);
       if (isExistTargetField) {
-        await collection.dropIndex('createdAt_1');
+        await collection.dropIndex(targetField);
       }
+    }
+    catch (err) {
+      logger.error('Failed to drop target index', err);
+      return;
+    }
 
+    try {
       // Set retention period only if activityExpirationSeconds is not null
       await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
     }
