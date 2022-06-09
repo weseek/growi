@@ -65,7 +65,6 @@ class ActivityService {
     }
 
     try {
-      // Set retention period only if activityExpirationSeconds is not null
       await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
     }
     catch (err) {
