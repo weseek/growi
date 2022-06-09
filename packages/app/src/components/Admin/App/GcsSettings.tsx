@@ -1,16 +1,17 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
+type Props = {
+  adminAppContainer: AdminAppContainer,
+}
 
-function GcsSetting(props) {
+const GcsSetting = (props: Props) => {
   const { t } = useTranslation();
   const { adminAppContainer } = props;
   const { gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars } = adminAppContainer.state;
@@ -149,16 +150,11 @@ function GcsSetting(props) {
     </>
   );
 
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
-const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AppContainer, AdminAppContainer]);
-
-GcsSetting.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
+const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AdminAppContainer]);
 
 export default GcsSettingWrapper;
