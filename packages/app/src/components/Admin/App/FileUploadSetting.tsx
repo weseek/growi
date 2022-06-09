@@ -1,10 +1,8 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -13,13 +11,19 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import AwsSetting from './AwsSetting';
 import GcsSettings from './GcsSettings';
 
-function FileUploadSetting(props) {
+
+type Props = {
+  adminAppContainer: AdminAppContainer,
+}
+
+
+const FileUploadSetting = (props: Props) => {
   const { t } = useTranslation();
   const { adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
   const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
 
-  async function submitHandler() {
+  const submitHandler = async() => {
     try {
       await adminAppContainer.updateFileUploadSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
@@ -27,7 +31,7 @@ function FileUploadSetting(props) {
     catch (err) {
       toastError(err);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -81,17 +85,12 @@ function FileUploadSetting(props) {
 
     </React.Fragment>
   );
-}
+};
 
 
 /**
  * Wrapper component for using unstated
  */
-const FileUploadSettingWrapper = withUnstatedContainers(FileUploadSetting, [AppContainer, AdminAppContainer]);
-
-FileUploadSetting.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
+const FileUploadSettingWrapper = withUnstatedContainers(FileUploadSetting, [AdminAppContainer]);
 
 export default FileUploadSettingWrapper;
