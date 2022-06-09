@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -102,9 +102,15 @@ UploadForm.propTypes = {
   onVersionMismatch: PropTypes.func,
 };
 
+const UploadFormWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <UploadForm t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UploadFormWrapper = withUnstatedContainers(UploadForm, [AppContainer]);
+const UploadFormWrapper = withUnstatedContainers(UploadFormWrapperFc, [AppContainer]);
 
-export default withTranslation()(UploadFormWrapper);
+export default UploadFormWrapper;
