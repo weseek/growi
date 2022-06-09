@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
 import * as urljoin from 'url-join';
 
@@ -62,7 +63,7 @@ export async function apiv3PostForm<T = any>(path: string, formData: FormData): 
   if (formData.get('_csrf') == null && csrfToken != null) {
     formData.append('_csrf', csrfToken);
   }
-  return apiv3Get<T>(path, formData);
+  return apiv3Post<T>(path, formData);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
