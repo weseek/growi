@@ -46,16 +46,9 @@ class ActivityService {
     });
   }
 
-  createTtlIndex = async function() {
-    if (this.crowi.configManager == null) {
-      return;
-    }
-
-    const activityExpirationSeconds = this.crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds');
-    if (activityExpirationSeconds == null) {
-      return;
-    }
-
+  private createTtlIndex = async function() {
+    const configManager = this.crowi.configManager;
+    const activityExpirationSeconds = configManager != null ? configManager.getConfig('crowi', 'app:activityExpirationSeconds') : 7776000;
     const collection = mongoose.connection.collection('activities');
 
     try {
