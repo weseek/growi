@@ -11,10 +11,8 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
-import { withUnstatedContainers } from '../../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
@@ -240,9 +238,4 @@ const ImportCollectionConfigurationModalWrapperFc = (props) => {
   return <ImportCollectionConfigurationModal t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ImportCollectionConfigurationModalWrapper = withUnstatedContainers(ImportCollectionConfigurationModalWrapperFc, [AppContainer]);
-
-export default ImportCollectionConfigurationModalWrapper;
+export default ImportCollectionConfigurationModalWrapperFc;
