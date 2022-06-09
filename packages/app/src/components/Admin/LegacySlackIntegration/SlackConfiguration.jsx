@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');
@@ -174,7 +172,6 @@ class SlackConfiguration extends React.Component {
 
 SlackConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,
 
 };
@@ -185,6 +182,6 @@ const SlackConfigurationWrapperFc = (props) => {
   return <SlackConfiguration t={t} {...props} />;
 };
 
-const SlackConfigurationWrapper = withUnstatedContainers(SlackConfigurationWrapperFc, [AppContainer, AdminSlackIntegrationLegacyContainer]);
+const SlackConfigurationWrapper = withUnstatedContainers(SlackConfigurationWrapperFc, [AdminSlackIntegrationLegacyContainer]);
 
 export default SlackConfigurationWrapper;
