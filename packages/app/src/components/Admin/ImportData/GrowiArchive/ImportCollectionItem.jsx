@@ -254,9 +254,4 @@ const ImportCollectionItemWrapperFc = (props) => {
   return <ImportCollectionItem t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ImportCollectionItemWrapper = ImportCollectionItemWrapperFc;
-
-export default ImportCollectionItemWrapper;
+export default ImportCollectionItemWrapperFc;
