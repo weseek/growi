@@ -1,9 +1,9 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line no-unused-vars
-import { withTranslation } from 'react-i18next';
-
+import { useTranslation } from 'react-i18next';
 import { Progress } from 'reactstrap';
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
@@ -22,7 +22,7 @@ export const MODE_RESTRICTED_COLLECTION = {
   users: ['insert', 'upsert'],
 };
 
-export default class ImportCollectionItem extends React.Component {
+class ImportCollectionItem extends React.Component {
 
   constructor(props) {
     super(props);
@@ -249,3 +249,16 @@ ImportCollectionItem.defaultProps = {
   modifiedCount: 0,
   errorsCount: 0,
 };
+
+const ImportCollectionItemWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ImportCollectionItem t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ImportCollectionItemWrapper = ImportCollectionItemWrapperFc;
+
+export default ImportCollectionItemWrapper;
