@@ -1,15 +1,17 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-class TwitterSecurityManagementContents extends React.Component {
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
+class TwitterSecuritySettingContents extends React.Component {
 
   constructor(props) {
     super(props);
@@ -191,16 +193,23 @@ class TwitterSecurityManagementContents extends React.Component {
 
 }
 
-
-TwitterSecurityManagementContents.propTypes = {
+TwitterSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementContentsWrapper = withUnstatedContainers(TwitterSecurityManagementContents, [
+const TwitterSecuritySettingContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <TwitterSecuritySettingContents t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const TwitterSecuritySettingContentsWrapper = withUnstatedContainers(TwitterSecuritySettingContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminTwitterSecurityContainer,
 ]);
 
-export default withTranslation()(TwitterSecurityManagementContentsWrapper);
+export default TwitterSecuritySettingContentsWrapper;
