@@ -25,6 +25,29 @@ class PageOperationService {
     await PageOperation.deleteByActionTypes(types);
   }
 
+  async onAfterInit():Promise<void> {
+    await this.executeAllRenameOperationBySystem();
+  }
+
+  // サーバー起動時にDBに残っている actionType が Rename の PageOperation をすべて、createdAt の古いものから順番に実行
+  async executeAllRenameOperationBySystem(): Promise<void> {
+    const Page = this.crowi.model('Page');
+
+    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename }).sort({ createdAt: 1 });
+    if (pageOps.length === 0) return;
+
+    for await (const pageOp of pageOps) {
+      const {
+        page, toPath, options, user,
+      } = pageOp;
+
+      const renamedPage = await Page.findById(pageOp.page._id);
+
+      // rename 実行
+      await this.crowi.pageService.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    }
+  }
+
   /**
    * Check if the operation is operatable
    * @param isRecursively Boolean that determines whether the operation is recursive or not
