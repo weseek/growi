@@ -2,7 +2,7 @@ import React from 'react';
 
 import canvasToBlob from 'async-canvas-to-blob';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
 import {
   Modal,
@@ -110,9 +110,6 @@ class ImageCropModal extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
 ImageCropModal.propTypes = {
   show: PropTypes.bool.isRequired,
   src: PropTypes.string,
@@ -120,4 +117,9 @@ ImageCropModal.propTypes = {
   onCropCompleted: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(ImageCropModal);
+const ImageCropModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ImageCropModal t={t} {...props} />;
+};
+
+export default ImageCropModalWrapperFC;
