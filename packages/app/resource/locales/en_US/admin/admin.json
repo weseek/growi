@@ -150,7 +150,7 @@
   },
   "customize_setting": {
     "default_sidebar_mode": "Default sidebar mode",
-    "default_sidebar_mode_desc": "You can set the sidebar mode for guests visiting the page.",
+    "default_sidebar_mode_desc": "You can set the sidebar mode for new users and guests visiting the page.",
     "layout": "Layout",
     "layout_options": {
       "default": "Default content width",
