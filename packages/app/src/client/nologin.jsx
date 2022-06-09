@@ -56,7 +56,7 @@ if (loginFormElem) {
   };
 
   Object.assign(componentMappings, {
-    'login-form': (
+    [loginFormElem.id]: (
       <LoginForm
         username={username}
         name={name}
@@ -78,7 +78,7 @@ if (loginFormElem) {
 const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
 if (passwordResetRequestFormElem) {
   Object.assign(componentMappings, {
-    'password-reset-request-form': <PasswordResetRequestForm />,
+    [passwordResetRequestFormElem.id]: <PasswordResetRequestForm />,
   });
 }
 
@@ -86,7 +86,7 @@ if (passwordResetRequestFormElem) {
 const passwordResetExecutionFormElem = document.getElementById('password-reset-execution-form');
 if (passwordResetExecutionFormElem) {
   Object.assign(componentMappings, {
-    'password-reset-execution-form': <PasswordResetExecutionForm />,
+    [passwordResetExecutionFormElem.id]: <PasswordResetExecutionForm />,
   });
 }
 
@@ -99,7 +99,7 @@ if (UserActivationForm) {
   const token = UserActivationForm.dataset.token;
 
   Object.assign(componentMappings, {
-    'user-activation-form': (
+    [UserActivationForm.id]: (
       <CompleteUserRegistrationForm
         messageErrors={messageErrors}
         inputs={inputs}
