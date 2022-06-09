@@ -3,16 +3,14 @@ import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import SidebarDockIcon from '../../Icons/SidebarDockIcon';
-import SidebarDrawerIcon from '../../Icons/SidebarDrawerIcon';
+import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
   const [isDrawerMode, setIsDrawerMode] = useState(false);
 
-  const radioButtonHandler = useCallback(() => {
-    setIsDrawerMode(!isDrawerMode);
-  }, [isDrawerMode]);
+  const isDarkMode = isDarkModeByUtil();
+  const colorText = isDarkMode ? 'dark' : 'light';
 
   const onClickSubmit = () => {
     console.log('update!');
@@ -31,32 +29,29 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="custom-control custom-radio my-3">
-            <input
-              type="radio"
-              id="drawerRadioButton"
-              className="custom-control-input mr-1"
-              checked={isDrawerMode}
-              onChange={radioButtonHandler}
-            />
-            <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="drawerRadioButton">
-              <SidebarDrawerIcon />
-              <div className="ml-2">Drawer Mode</div>
-            </label>
-          </div>
-
-          <div className="custom-control custom-radio">
-            <input
-              type="radio"
-              id="dockRadioButton"
-              className="custom-control-input mr-1"
-              checked={!isDrawerMode}
-              onChange={radioButtonHandler}
-            />
-            <label className="custom-control-label d-flex align-items-center admin-customize-sidebar-icon" htmlFor="dockRadioButton">
-              <SidebarDockIcon />
-              <div className="ml-2">Dock Mode</div>
-            </label>
+          <div className="d-flex justify-content-around mt-5">
+            <div id="layoutOptions" className="card-deck">
+              <div
+                className={`card customize-layout-card ${isDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsDrawerMode(true)}
+                role="button"
+              >
+                <img src={`/images/customize-settings/default-${colorText}.svg`} />
+                <div className="card-body text-center">
+                  Drawer Mode
+                </div>
+              </div>
+              <div
+                className={`card customize-layout-card ${!isDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsDrawerMode(false)}
+                role="button"
+              >
+                <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
+                <div className="card-body  text-center">
+                  Dock Mode
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="row my-3">
