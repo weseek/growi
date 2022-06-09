@@ -160,6 +160,7 @@ const GrowiArchiveSectionWrapperFc = (props) => {
 
   return <GrowiArchiveSection t={t} {...props} />;
 };
+
 /**
  * Wrapper component for using unstated
  */
