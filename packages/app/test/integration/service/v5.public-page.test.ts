@@ -55,25 +55,15 @@ describe('PageService page operations with only public pages', () => {
      * Create
      */
     const pageIdForCreate1 = new mongoose.Types.ObjectId();
-    const pageIdForCreate2 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
       {
         _id: pageIdForCreate1,
-        path: '/v5_ParentForCreate1',
+        path: '/v5_empty_create_4',
         grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-      },
-      {
-        _id: pageIdForCreate2,
-        path: '/v5_ParentForCreate1',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
+        isEmpty: true,
       },
     ]);
 
@@ -89,14 +79,6 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
         isEmpty: true,
-      },
-      {
-        path: '/v5_empty_create_by_system4/v5_create_by_system5',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreateBySystem1,
-        isEmpty: false,
       },
     ]);
 
@@ -935,26 +917,49 @@ describe('PageService page operations with only public pages', () => {
   });
 
   describe('Create', () => {
-    test('isGrantNormalized is not called when page created', async() => {
+
+    test('Should create single page', async() => {
       const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
-      const path = '/v5_ParentForCreate1/isGrantNormalizedCalled';
-      await crowi.pageService.create(path, 'body', dummyUser1, {});
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
       // isGrantNormalized is called when GRANT PUBLIC
       expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
     });
 
-    test('isGrantNormalized is not called when page force created by system', async() => {
-      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
-      const path = '/v5_ParentForCreate2/isGrantNormalizedCalled';
-      await crowi.pageService.forceCreateBySystem(path, 'body', {});
-      // isGrantNormalized is not called when created by system
-      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+    });
+
+    test('Should create on empty page', async() => {
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
     });
   });
 
   describe('Create by system', () => {
     test('Should create single page by system', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
+      // isGrantNormalized is not called when created by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
     });
