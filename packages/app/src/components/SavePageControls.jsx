@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -137,6 +137,7 @@ class SavePageControls extends React.Component {
 const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
 
 const SavePageControlsWrapper = (props) => {
+  const { t } = useTranslation();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
@@ -154,6 +155,7 @@ const SavePageControlsWrapper = (props) => {
 
   return (
     <SavePageControlsHOCWrapper
+      t={t}
       {...props}
       editorMode={editorMode}
       grant={grant}
@@ -185,4 +187,4 @@ SavePageControls.propTypes = {
   mutateGrantGroupName: PropTypes.func,
 };
 
-export default withTranslation()(SavePageControlsWrapper);
+export default SavePageControlsWrapper;

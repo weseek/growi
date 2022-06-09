@@ -178,7 +178,11 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 .grw-sidebar {
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
+  // sidebar-centent-bg
+  .grw-navigation-wrap {
+    // Drop a shadow on the light theme. The dark theme makes '$ bgcolor-sidebar-context' brighter than the body.
+    box-shadow: 0px 0px 3px rgba(black, 0.24);
+  }
   // Pagetree
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
@@ -350,6 +354,16 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * GROWI tags
  */
 .grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;

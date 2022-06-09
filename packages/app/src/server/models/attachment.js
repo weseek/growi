@@ -34,7 +34,6 @@ module.exports = function(crowi) {
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
     attachmentType: {
@@ -42,6 +41,8 @@ module.exports = function(crowi) {
       enum: AttachmentType,
       default: undefined,
     },
+  }, {
+    timestamps: { createdAt: true, updatedAt: false },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);

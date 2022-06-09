@@ -232,6 +232,12 @@ module.exports = function(crowi, app) {
       'Last-Modified': attachment.createdAt.toUTCString(),
     });
 
+    if (!attachment.fileSize) {
+      res.set({
+        'Content-Length': attachment.fileSize,
+      });
+    }
+
     // download
     if (forceDownload) {
       res.set({

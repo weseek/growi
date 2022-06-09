@@ -1,10 +1,11 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
-
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 class LoginForm extends React.Component {
@@ -327,11 +328,6 @@ class LoginForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const LoginFormWrapper = withUnstatedContainers(LoginForm, [AppContainer]);
-
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
@@ -351,4 +347,14 @@ LoginForm.propTypes = {
   objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
-export default withTranslation()(LoginFormWrapper);
+const LoginFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <LoginForm t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
+
+export default LoginFormWrapper;

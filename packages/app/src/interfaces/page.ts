@@ -35,7 +35,7 @@ export interface IPage {
 export const PageGrant = {
   GRANT_PUBLIC: 1,
   GRANT_RESTRICTED: 2,
-  GRANT_SPECIFIED: 3,
+  GRANT_SPECIFIED: 3, // DEPRECATED
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
 };
