@@ -29,7 +29,7 @@ class PageOperationService {
     await this.executeAllRenameOperationBySystem();
   }
 
-  // サーバー起動時にDBに残っている actionType が Rename の PageOperation をすべて、createdAt の古いものから順番に実行
+  // execute renameSubOperation on every page operation order by ASC
   async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
 
@@ -43,7 +43,7 @@ class PageOperationService {
 
       const renamedPage = await Page.findById(pageOp.page._id);
 
-      // rename 実行
+      // rename
       await this.crowi.pageService.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
     }
   }
