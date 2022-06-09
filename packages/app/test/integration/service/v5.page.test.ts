@@ -332,7 +332,6 @@ describe('Test page service methods', () => {
       expect(pageOperation).toBeNull(); // should not exist
 
       // others
-      expect(page0.descendantCount).toBe(3);
       expect(page1.parent).toStrictEqual(page0._id);
       expect(page2.parent).toStrictEqual(page1._id);
       expect(page3.parent).toStrictEqual(page2._id);
