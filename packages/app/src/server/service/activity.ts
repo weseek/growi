@@ -1,9 +1,8 @@
 import { getModelSafely } from '@growi/core';
-import mongoose from 'mongoose';
 
 import { IActivity } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
-import { ActivityModel } from '~/server/models/activity';
+import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
@@ -19,12 +18,9 @@ class ActivityService {
 
   activityEvent: any;
 
-  Activity!: ActivityModel;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
-    this.Activity = mongoose.model('Activity') as unknown as ActivityModel;
 
     this.updateByParameters = this.updateByParameters.bind(this);
 
@@ -60,7 +56,7 @@ class ActivityService {
   };
 
   updateByParameters = async function(activityId: string, parameters: ParameterType): Promise<IActivity> {
-    const activity = await this.Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
+    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
     return activity;
   };
