@@ -11,7 +11,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { apiGet, apiPost } from '~/client/util/apiv1-client';
+import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useIsIndentSizeForced, useCurrentPagePath } from '~/stores/context';
 import {
@@ -164,8 +164,6 @@ const PageEditor = (props: Props): JSX.Element => {
 
       const formData = new FormData();
       const { pageId, path } = pageContainer.state;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      formData.append('_csrf', appContainer.csrfToken!);
       formData.append('file', file);
       if (path != null) {
         formData.append('path', path);
@@ -174,7 +172,7 @@ const PageEditor = (props: Props): JSX.Element => {
         formData.append('page_id', pageId);
       }
 
-      res = await apiPost('/attachments.add', formData);
+      res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
@@ -200,7 +198,7 @@ const PageEditor = (props: Props): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [appContainer.csrfToken, editorMode, mutateGrant, pageContainer]);
+  }, [editorMode, mutateGrant, pageContainer]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {

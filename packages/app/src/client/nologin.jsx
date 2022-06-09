@@ -23,10 +23,9 @@ if (installerFormContainerElem) {
   const userName = installerFormContainerElem.dataset.userName;
   const name = installerFormContainerElem.dataset.name;
   const email = installerFormContainerElem.dataset.email;
-  const csrf = installerFormContainerElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
+      <InstallerForm userName={userName} name={name} email={email} />
     </I18nextProvider>,
     installerFormContainerElem,
   );
