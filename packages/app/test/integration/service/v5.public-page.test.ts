@@ -51,6 +51,35 @@ describe('PageService page operations with only public pages', () => {
       rootPage = pages[0];
     }
 
+    const pageIdCreate1 = new mongoose.Types.ObjectId();
+    const pageIdCreate2 = new mongoose.Types.ObjectId();
+    const pageIdCreate3 = new mongoose.Types.ObjectId();
+    const pageIdCreate4 = new mongoose.Types.ObjectId();
+
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    await Page.insertMany([
+      {
+        _id: pageIdCreate1,
+        path: '/v5_empty_create_4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_4/v5_create_5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreate1,
+        isEmpty: false,
+      },
+    ]);
+
     /*
      * Rename
      */
@@ -882,6 +911,42 @@ describe('PageService page operations with only public pages', () => {
         isPageTrashed: true,
       },
     ]);
+
+  });
+
+  describe('create', () => {
+
+    test('Should create single page', async() => {
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+    });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+    });
+
+    test('Should create on empty page', async() => {
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+    });
 
   });
 
