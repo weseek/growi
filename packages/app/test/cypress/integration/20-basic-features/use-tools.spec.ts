@@ -71,7 +71,7 @@ context('Modal for page operation', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click();
-      cy.getByTestid('open-page-move-rename-modal-btn').click();
+      cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
     });
 
     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap4`);
@@ -196,7 +196,7 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-content').should('be.visible');
     cy.screenshot(`${ssPrefix}click-tag-name`, {capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').first().click();
+    cy.getByTestid('open-page-item-control-btn').first().click({force: true});
     cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
@@ -231,18 +231,18 @@ context('Tag Oprations', () =>{
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
+            cy.getByTestid('open-page-item-control-btn').click({force: true});
           });
         }
       });
     });
-    cy.screenshot(`${ssPrefix}-click-three-dots-menu`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-move-rename-modal-btn').click();
+            cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
           });
         }
       });
