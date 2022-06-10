@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -6,29 +7,23 @@ import RevisionBody from '../Page/RevisionBody';
 /**
  * Wrapper component for Page/RevisionBody
  */
-export default class CommentPreview extends React.Component {
+const CommentPreview = (props) => {
 
-  render() {
-    return (
-      <div
-        className="page-comment-preview-body"
-        ref={(elm) => {
-          this.previewElement = elm;
-          this.props.inputRef(elm);
-        }}
-      >
+  return (
+    <div className="page-comment-preview-body">
+      <RevisionBody
+        html={props.html}
+        additionalClassName="comment"
+        isMathJaxEnabled
+        renderMathJaxInRealtime
+      />
+    </div>
+  );
 
-        <RevisionBody
-          {...this.props}
-          additionalClassName="comment"
-        />
-      </div>
-    );
-  }
-
-}
+};
 
 CommentPreview.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func.isRequired, // for getting div element
 };
+
+export default CommentPreview;

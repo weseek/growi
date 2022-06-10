@@ -10,11 +10,9 @@ import { debounce } from 'throttle-debounce';
 import NotAvailableForGuest from './NotAvailableForGuest';
 
 
-declare let window: {
-  globalEmitter: EventEmitter,
-  GraphViewer: {
-    createViewerForElement: (Element) => void,
-  };
+declare const globalEmitter: EventEmitter;
+declare const GraphViewer: {
+  createViewerForElement: (Element) => void,
 };
 
 type Props = {
@@ -35,7 +33,7 @@ const Drawio = (props: Props): JSX.Element => {
 
   const editButtonClickHandler = useCallback(() => {
     const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
-    window.globalEmitter.emit('launchDrawioModal', beginLineNumber, endLineNumber);
+    globalEmitter.emit('launchDrawioModal', beginLineNumber, endLineNumber);
   }, [rangeLineNumberOfMarkdown]);
 
   const renderDrawio = useCallback(() => {
@@ -50,21 +48,20 @@ const Drawio = (props: Props): JSX.Element => {
 
       if (div != null) {
         div.innerHTML = '';
-        window.GraphViewer.createViewerForElement(div);
+        GraphViewer.createViewerForElement(div);
       }
     }
   }, []);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
-  const { GraphViewer } = window;
   useEffect(() => {
     if (GraphViewer == null) {
       return;
     }
 
     renderDrawioWithDebounce();
-  }, [GraphViewer, renderDrawioWithDebounce]);
+  }, [renderDrawioWithDebounce]);
 
   return (
     <div className="editable-with-drawio position-relative">

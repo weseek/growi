@@ -18,7 +18,8 @@ export default class TocAndAnchorConfigurer {
     // set toc render function
     md.set({
       tocCallback: (tocMarkdown, tocArray, tocHtml) => {
-        window.globalEmitter.emit('renderTocHtml', tocHtml);
+        // eslint-disable-next-line no-undef
+        globalEmitter.emit('renderTocHtml', tocHtml);
       },
     });
   }
