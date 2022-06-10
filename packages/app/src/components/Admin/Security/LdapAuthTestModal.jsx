@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -10,8 +10,6 @@ import {
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 import LdapAuthTest from './LdapAuthTest';
 
 
@@ -67,13 +65,16 @@ class LdapAuthTestModal extends React.Component {
 
 LdapAuthTestModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModal, [AppContainer, AdminLdapSecurityContainer]);
+const LdapAuthTestModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <LdapAuthTestModal t={t} {...props} />;
+};
 
-export default withTranslation()(LdapAuthTestModalWrapper);
+const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModalWrapperFC, []);
+
+export default LdapAuthTestModalWrapper;
