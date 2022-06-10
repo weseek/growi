@@ -958,6 +958,9 @@ describe('PageService page operations with only public pages', () => {
       return renamedPage;
     };
 
+    /**
+     * This function only execute MainOperation. SubOperation is basically omitted(only return null)
+     */
     const renameWithOnlyMainOperation = async(page, newPagePath, user, options) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
