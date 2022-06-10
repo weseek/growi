@@ -154,7 +154,6 @@ module.exports = function(crowi, app) {
   const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
-  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -407,8 +406,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-
     const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
@@ -472,8 +469,6 @@ module.exports = function(crowi, app) {
     }
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
-
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
 
     const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -547,7 +542,6 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('layout-growi/shared_page', renderVars);
   };
 
