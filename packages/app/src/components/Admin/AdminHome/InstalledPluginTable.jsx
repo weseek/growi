@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -51,6 +50,6 @@ InstalledPluginTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const InstalledPluginTableWrapper = withUnstatedContainers(InstalledPluginTable, [AppContainer, AdminHomeContainer]);
+const InstalledPluginTableWrapper = withUnstatedContainers(InstalledPluginTable, [AdminHomeContainer]);
 
 export default InstalledPluginTableWrapper;
