@@ -12,6 +12,10 @@ import { useStaticSWR } from './use-static-swr';
 type Nullable<T> = T | null;
 
 
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
+
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
