@@ -102,3 +102,75 @@ context('Access to special pages', () => {
   });
 
 });
+
+context('Access to Template Editing Mode', () => {
+  const ssPrefix = 'access-to-modal-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+    // collapse sidebar
+    cy.collapseSidebar(true);
+  });
+
+
+  it('Access to Template Editor mode for only child pages successfully', () => {
+     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.get('#grw-subnav-container').within(() => {
+       cy.getByTestid('open-page-item-control-btn').click();
+       cy.getByTestid('open-page-template-modal-btn').click();
+    });
+
+     cy.getByTestid('page-template-modal').should('be.visible')
+     cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+     cy.getByTestid('template-button-children').click();
+     cy.url().should('include', '/_template#edit');
+     cy.screenshot();
+  });
+
+  it('Access to Template Editor mode including decendants successfully', () => {
+    cy.visit('/Sandbox/Bootstrap4', {  });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-template-modal-btn').click();
+   });
+
+    cy.getByTestid('page-template-modal').should('be.visible')
+    // cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+    cy.getByTestid('template-button-decendants').click();
+    cy.url().should('include', '/__template#edit');
+    cy.screenshot();
+ });
+
+});
+
+context('Access to /me/all-in-app-notifications', () => {
+  const ssPrefix = 'in-app-notifications-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+    // collapse sidebar
+    cy.collapseSidebar(true);
+  });
+
+  it('All In-App Notification list is successfully loaded', () => {
+    cy.visit('/');
+    cy.get('.notification-wrapper > a').click();
+    cy.get('.notification-wrapper > .dropdown-menu > a').click();
+
+    cy.get('#all-in-app-notifications').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
+
+    cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
+
+    cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
+   });
+
+})
+

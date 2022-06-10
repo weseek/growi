@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
@@ -254,9 +254,14 @@ ExportArchiveDataPage.propTypes = {
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
+const ExportArchiveDataPageWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ExportArchiveDataPage t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AppContainer, AdminSocketIoContainer]);
 
-export default withTranslation()(ExportArchiveDataPageWrapper);
+export default ExportArchiveDataPageWrapper;

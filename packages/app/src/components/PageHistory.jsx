@@ -68,7 +68,7 @@ function PageHistory(props) {
   }
 
   return (
-    <div className="revision-history">
+    <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
