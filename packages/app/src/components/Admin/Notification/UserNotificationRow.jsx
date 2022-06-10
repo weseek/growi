@@ -45,13 +45,14 @@ UserNotificationRow.propTypes = {
   onClickDeleteBtn: PropTypes.func.isRequired,
 };
 
-const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRow, [AppContainer, AdminNotificationContainer]);
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const UserNotificationRowWrapperWrapperFC = (props) => {
   const { t } = useTranslation();
 
-  return <UserNotificationRowWrapper t={t} {...props} />;
+  return <UserNotificationRow t={t} {...props} />;
 };
 
-export default UserNotificationRowWrapperWrapperFC;
+const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRowWrapperWrapperFC, [AppContainer, AdminNotificationContainer]);
+
+
+export default UserNotificationRowWrapper;
