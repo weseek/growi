@@ -1,3 +1,4 @@
+import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
 import { IUser } from './user';
 
@@ -107,7 +108,7 @@ export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPP
 export type ISnapshot = Partial<Pick<IUser, 'username'>>
 
 export type IActivity = {
-  user?: string
+  user?: Ref<IUser>
   ip?: string
   endpoint?: string
   targetModel?: SupportedTargetModelType
