@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
@@ -19,7 +19,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = async() => {
+  const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_header') }));
@@ -27,7 +27,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, adminCustomizeContainer]);
 
   return (
     <React.Fragment>

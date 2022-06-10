@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
@@ -23,7 +23,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = async() => {
+  const onClickSubmit = useCallback(async() => {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
@@ -32,7 +32,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, adminCustomizeContainer]);
 
   return (
     <React.Fragment>

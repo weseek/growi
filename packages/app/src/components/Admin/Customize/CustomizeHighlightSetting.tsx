@@ -16,6 +16,27 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
+const renderHljsDemo = React.memo((adminCustomizeContainer: AdminCustomizeContainer): JSX.Element => {
+
+  /* eslint-disable max-len */
+  const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
+<span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
+  seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
+}
+
+<span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
+<span class="hljs-keyword">this</span>.setSeed(seed);
+}</span>`;
+  /* eslint-enable max-len */
+
+  return (
+    <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
+      {/* eslint-disable-next-line react/no-danger */}
+      <code dangerouslySetInnerHTML={{ __html: html }}></code>
+    </pre>
+  );
+});
+
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
@@ -36,44 +57,26 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
     }
   }, [t, adminCustomizeContainer]);
 
-  const renderHljsDemo = () => {
+  const renderMenuItems = useCallback(() => {
 
-    /* eslint-disable max-len */
-    const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
-  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
-    seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
-  }
+    const items = Object.entries(options).map((option) => {
+      const styleId = option[0];
+      const styleName = option[1].name;
+      const isBorderEnable = option[1].border;
 
-  <span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
-  <span class="hljs-keyword">this</span>.setSeed(seed);
-}</span>`;
-    /* eslint-enable max-len */
+      return (
+        <DropdownItem
+          key={styleId}
+          role="presentation"
+          onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}
+        >
+          <a role="menuitem">{styleName}</a>
+        </DropdownItem>
+      );
+    });
 
-    return (
-      <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
-        {/* eslint-disable-next-line react/no-danger */}
-        <code dangerouslySetInnerHTML={{ __html: html }}></code>
-      </pre>
-    );
-  };
-
-  const menuItem: React.ReactNode[] = [];
-
-  Object.entries(options).forEach((option) => {
-    const styleId = option[0];
-    const styleName = option[1].name;
-    const isBorderEnable = option[1].border;
-
-    menuItem.push(
-      <DropdownItem
-        key={styleId}
-        role="presentation"
-        onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}
-      >
-        <a role="menuitem">{styleName}</a>
-      </DropdownItem>,
-    );
-  });
+    return items;
+  }, [adminCustomizeContainer, options]);
 
   return (
     <React.Fragment>
@@ -91,7 +94,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
                   <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu" role="menu">
-                  {menuItem}
+                  {renderMenuItems()}
                 </DropdownMenu>
               </Dropdown>
               <p className="form-text text-warning">
@@ -121,7 +124,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
           <div className="form-text text-muted">
             <label>Examples:</label>
             <div className="wiki">
-              {renderHljsDemo()}
+              {renderHljsDemo(adminCustomizeContainer)}
             </div>
           </div>
 
