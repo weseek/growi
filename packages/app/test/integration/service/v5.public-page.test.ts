@@ -938,12 +938,16 @@ describe('PageService page operations with only public pages', () => {
   describe('create', () => {
 
     test('Should create single page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
     });
 
     test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
       const childPage = await Page.findOne({ path: '/v5_empty_create2' });
 
@@ -952,9 +956,12 @@ describe('PageService page operations with only public pages', () => {
       expect(childPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
     });
 
     test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
       expect(beforeCreatePage.isEmpty).toBe(true);
 
@@ -967,6 +974,8 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchildPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
     });
 
   });
@@ -974,12 +983,16 @@ describe('PageService page operations with only public pages', () => {
   describe('create by system', () => {
 
     test('Should create single page by system', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
     });
 
     test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
       const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
 
@@ -988,9 +1001,12 @@ describe('PageService page operations with only public pages', () => {
       expect(childPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
     });
 
     test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
       const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
       expect(beforeCreatePage.isEmpty).toBe(true);
 
@@ -1003,6 +1019,8 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchildPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
     });
 
   });

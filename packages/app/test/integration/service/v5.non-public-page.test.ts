@@ -732,6 +732,7 @@ describe('PageService page operations with non-public pages', () => {
 
     describe('Creating a page using existing path', () => {
       test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc4_top';
         const path1 = '/mc4_top/mc1_emp';
         const path2 = '/mc4_top/mc1_emp/mc2_pub';
@@ -756,10 +757,13 @@ describe('PageService page operations with non-public pages', () => {
         expect(_page2).toBeTruthy();
         expect(_page3).toBeTruthy();
         expect(_pageT.descendantCount).toBe(1);
+        // isGrantNormalized is called when GRANT RESTRICTED
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
       test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc5_top';
         const path1 = '/mc5_top/mc3_awl';
         const pathN = '/mc5_top/mc3_awl/mc4_pub'; // used to create
@@ -782,6 +786,8 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageN).toBeTruthy();
         expect(_pageN.parent).toStrictEqual(_page2._id);
         expect(_pageT.descendantCount).toStrictEqual(1);
+        // isGrantNormalized is called when GRANT PUBLIC
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
 
@@ -791,6 +797,7 @@ describe('PageService page operations with non-public pages', () => {
 
     describe('Creating a page using existing path', () => {
       test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc4_top_by_system';
         const path1 = '/mc4_top_by_system/mc1_emp_by_system';
         const path2 = '/mc4_top_by_system/mc1_emp_by_system/mc2_pub_by_system';
@@ -815,10 +822,13 @@ describe('PageService page operations with non-public pages', () => {
         expect(_page2).toBeTruthy();
         expect(_page3).toBeTruthy();
         expect(_pageT.descendantCount).toBe(1);
+        // isGrantNormalized is not called when create by ststem
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
       test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc5_top_by_system';
         const path1 = '/mc5_top_by_system/mc3_awl_by_system';
         const pathN = '/mc5_top_by_system/mc3_awl_by_system/mc4_pub_by_system'; // used to create
@@ -841,6 +851,8 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageN).toBeTruthy();
         expect(_pageN.parent).toStrictEqual(_page2._id);
         expect(_pageT.descendantCount).toStrictEqual(1);
+        // isGrantNormalized is not called when create by ststem
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
 
