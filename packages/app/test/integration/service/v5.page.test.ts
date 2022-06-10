@@ -112,7 +112,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 0,
+        descendantCount: 1,
         isEmpty: false,
       },
       {
@@ -192,7 +192,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 0,
+        descendantCount: 1,
         isEmpty: false,
       },
       {
@@ -231,7 +231,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 2,
+        descendantCount: 3,
         isEmpty: false,
       },
       {
@@ -280,7 +280,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 0,
+        descendantCount: 1,
         isEmpty: false,
       },
       {
@@ -533,7 +533,7 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
 
-      expect(_page0.descendantCount).toBe(0);
+      expect(_page0.descendantCount).toBe(1);
       expect(_page1.descendantCount).toBe(2);
       expect(_page2.descendantCount).toBe(1);
       expect(_page3.descendantCount).toBe(0);
@@ -591,6 +591,10 @@ describe('Test page service methods', () => {
       expect(_page0).toBeTruthy();
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
+
+      expect(_page0.descendantCount).toBe(1);
+      expect(_page1.descendantCount).toBe(1);
+      expect(_page2.descendantCount).toBe(0);
 
       // page operation
       const fromPath = '/resume_rename_9';
@@ -739,7 +743,7 @@ describe('Test page service methods', () => {
 
       // descendantCount
       expect(_page0.descendantCount).toBe(3);
-      expect(_page1.descendantCount).toBe(2);
+      expect(_page1.descendantCount).toBe(3);
       expect(_page2.descendantCount).toBe(1);
       expect(_page3.descendantCount).toBe(0);
 
@@ -810,7 +814,7 @@ describe('Test page service methods', () => {
       // descendantCount
       expect(_page0.descendantCount).toBe(2);
       expect(_page1.descendantCount).toBe(0);
-      expect(_page2.descendantCount).toBe(0);
+      expect(_page2.descendantCount).toBe(1);
       expect(_page3.descendantCount).toBe(1);
       expect(_page4.descendantCount).toBe(0);
 
