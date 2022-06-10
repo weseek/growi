@@ -33,6 +33,13 @@ describe('Test page service methods', () => {
   let globalGroupB;
   let globalGroupC;
 
+  let pageOpId1;
+  let pageOpId2;
+  let pageOpId3;
+  let pageOpId4;
+  let pageOpId5;
+  let pageOpId6;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -301,12 +308,12 @@ describe('Test page service methods', () => {
     /**
      * PageOperation
      */
-    const pageOpId1 = new mongoose.Types.ObjectId();
-    const pageOpId2 = new mongoose.Types.ObjectId();
-    const pageOpId3 = new mongoose.Types.ObjectId();
-    const pageOpId4 = new mongoose.Types.ObjectId();
-    const pageOpId5 = new mongoose.Types.ObjectId();
-    const pageOpId6 = new mongoose.Types.ObjectId();
+    pageOpId1 = new mongoose.Types.ObjectId();
+    pageOpId2 = new mongoose.Types.ObjectId();
+    pageOpId3 = new mongoose.Types.ObjectId();
+    pageOpId4 = new mongoose.Types.ObjectId();
+    pageOpId5 = new mongoose.Types.ObjectId();
+    pageOpId6 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId2 = new mongoose.Types.ObjectId();
     const pageOpRevisionId3 = new mongoose.Types.ObjectId();
@@ -526,8 +533,15 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
 
+      expect(_page0.descendantCount).toBe(0);
+      expect(_page1.descendantCount).toBe(2);
+      expect(_page2.descendantCount).toBe(1);
+      expect(_page3.descendantCount).toBe(0);
+
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const _pageOperation = await PageOperation.findOne({
+        _id: pageOpId1, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(_pageOperation).toBeTruthy();
 
       // rename
@@ -552,10 +566,6 @@ describe('Test page service methods', () => {
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
 
-      // others
-      expect(page1.parent).toStrictEqual(page0._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-      expect(page3.parent).toStrictEqual(page2._id);
       expect(page0.descendantCount).toBe(3);
       expect(page1.descendantCount).toBe(2);
       expect(page2.descendantCount).toBe(1);
@@ -581,7 +591,9 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const _pageOperation = await PageOperation.findOne({
+        _id: pageOpId4, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(_pageOperation).toBeTruthy();
 
       // rename
@@ -661,7 +673,9 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
 
       // page operation
-      const pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const pageOperation = await PageOperation.findOne({
+        _id: pageOpId2, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(pageOperation).toBeTruthy();
 
       // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
@@ -681,7 +695,9 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
 
       // page operation
-      const pageOperation = await PageOperation.findOne({ 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const pageOperation = await PageOperation.findOne({
+        _id: pageOpId3, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(pageOperation).toBeTruthy();
 
       const promise = resumeRenameSubOperation(_page1);
@@ -716,7 +732,9 @@ describe('Test page service methods', () => {
       expect(_page3).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const _pageOperation = await PageOperation.findOne({
+        _id: pageOpId5, 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(_pageOperation).toBeTruthy();
 
       // rename
@@ -739,12 +757,6 @@ describe('Test page service methods', () => {
       // page operation
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
-
-      // others
-      expect(page0.parent).toStrictEqual(rootPage._id);
-      expect(page1.parent).toStrictEqual(page0._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-      expect(page3.parent).toStrictEqual(page2._id);
 
       // 2 extra descendants should be added
       expect(page0.descendantCount).toBe(3); // originally 3
@@ -782,7 +794,9 @@ describe('Test page service methods', () => {
       expect(_page4).toBeTruthy();
 
       // page operation
-      const _pageOperation = await PageOperation.findOne({ 'page._id': _page3._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub });
+      const _pageOperation = await PageOperation.findOne({
+        _id: pageOpId6, 'page._id': _page3._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
       expect(_pageOperation).toBeTruthy();
 
       // rename
@@ -808,13 +822,6 @@ describe('Test page service methods', () => {
       // page operation
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
-
-      // others
-      expect(page0.parent).toStrictEqual(rootPage._id);
-      expect(page1.parent).toStrictEqual(page0._id);
-      expect(page2.parent).toStrictEqual(page0._id);
-      expect(page3.parent).toStrictEqual(page2._id);
-      expect(page4.parent).toStrictEqual(page3._id);
 
       // 2 extra descendants should be subtracted from page1
       expect(page0.descendantCount).toBe(2);
