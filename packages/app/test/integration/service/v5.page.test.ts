@@ -118,7 +118,7 @@ describe('Test page service methods', () => {
       {
         _id: pageId1,
         path: '/resume_rename_0/resume_rename_1',
-        parent: pageId0._id,
+        parent: pageId0,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -158,7 +158,7 @@ describe('Test page service methods', () => {
       {
         _id: pageId5,
         path: '/resume_rename_4/resume_rename_5',
-        parent: pageId0._id,
+        parent: pageId0,
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
