@@ -26,7 +26,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 
-import PageAttachmentPresent from './PageAttachmentPresent';
+import PageAttachmentPresentation from './PageAttachmentPresentation';
 import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
@@ -191,7 +191,7 @@ const PageEditor = (props: Props): JSX.Element => {
       }
       // when attachment
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
-        const element = <PageAttachmentPresent attachment={attachment} fileName={fileName} />;
+        const element = <PageAttachmentPresentation attachment={attachment} fileName={fileName} />;
         insertText = ReactDOMServer.renderToString(element);
       }
       editorRef.current.insertText(insertText);

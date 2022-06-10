@@ -5,7 +5,7 @@ type Props = {
   fileName: string,
 };
 
-const PageAttachmentPresent = (props: Props): JSX.Element => {
+const PageAttachmentPresentation = (props: Props): JSX.Element => {
   // TODO: add use props
   const { attachment, fileName } = props;
 
@@ -74,4 +74,4 @@ const PageAttachmentPresent = (props: Props): JSX.Element => {
   );
 };
 
-export default PageAttachmentPresent;
+export default PageAttachmentPresentation;
