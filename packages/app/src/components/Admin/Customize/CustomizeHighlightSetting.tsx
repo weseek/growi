@@ -16,7 +16,13 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const renderHljsDemo = (isHighlightJsStyleBorderEnabled: boolean): JSX.Element => {
+type HljsDemoProps = {
+  isHighlightJsStyleBorderEnabled: boolean
+}
+
+const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
+
+  const { isHighlightJsStyleBorderEnabled } = props;
 
   /* eslint-disable max-len */
   const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
@@ -35,7 +41,7 @@ const renderHljsDemo = (isHighlightJsStyleBorderEnabled: boolean): JSX.Element =
       <code dangerouslySetInnerHTML={{ __html: html }}></code>
     </pre>
   );
-};
+});
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
@@ -123,7 +129,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
           <div className="form-text text-muted">
             <label>Examples:</label>
             <div className="wiki">
-              {renderHljsDemo(adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled)}
+              <HljsDemo isHighlightJsStyleBorderEnabled={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled} />
             </div>
           </div>
 
