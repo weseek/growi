@@ -787,7 +787,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageN.parent).toStrictEqual(_page2._id);
         expect(_pageT.descendantCount).toStrictEqual(1);
         // isGrantNormalized is called when GRANT PUBLIC
-        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+        expect(isGrantNormalizedSpy).toBeCalledTimes(1);
       });
     });
 
