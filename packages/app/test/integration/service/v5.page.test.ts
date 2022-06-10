@@ -773,7 +773,7 @@ describe('Test page service methods', () => {
       expect(pageOperation).toBeNull(); // should not exist
 
       // 2 extra descendants should be added to page1
-      expect(page0.descendantCount).toBe(3); // originally 3
+      expect(page0.descendantCount).toBe(3);
       expect(page1.descendantCount).toBe(4); // originally 2
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
@@ -848,8 +848,8 @@ describe('Test page service methods', () => {
 
       // 2 extra descendants should be subtracted from page1
       expect(page0.descendantCount).toBe(2);
-      expect(page1.descendantCount).toBe(-2);
-      expect(page2.descendantCount).toBe(2);
+      expect(page1.descendantCount).toBe(-2); // originally 0
+      expect(page2.descendantCount).toBe(2); // originally 0
       expect(page3.descendantCount).toBe(1);
       expect(page4.descendantCount).toBe(0);
     });
