@@ -731,6 +731,12 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
 
+      // descendantCount
+      expect(_page0.descendantCount).toBe(3);
+      expect(_page1.descendantCount).toBe(2);
+      expect(_page2.descendantCount).toBe(1);
+      expect(_page3.descendantCount).toBe(0);
+
       // page operation
       const _pageOperation = await PageOperation.findOne({
         _id: pageOpId5, 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
@@ -758,7 +764,7 @@ describe('Test page service methods', () => {
       const pageOperation = await PageOperation.findById(_pageOperation._id);
       expect(pageOperation).toBeNull(); // should not exist
 
-      // 2 extra descendants should be added
+      // 2 extra descendants should be added to page1
       expect(page0.descendantCount).toBe(3); // originally 3
       expect(page1.descendantCount).toBe(4); // originally 2
       expect(page2.descendantCount).toBe(1);
