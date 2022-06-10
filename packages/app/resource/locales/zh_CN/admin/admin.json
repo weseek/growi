@@ -526,8 +526,9 @@
   },
   "audit_log_management": {
     "username": "帐号",
-    "target_model": "目标模型",
+    "date": "日期",
     "action": "行动",
-    "date": "日期"
+    "ip": "IP地址",
+    "url": "URL"
   }
 }

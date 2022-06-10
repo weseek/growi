@@ -517,8 +517,9 @@
   },
   "audit_log_management": {
     "username": "Username",
-    "target_model": "Target Model",
+    "date": "Date",
     "action": "Action",
-    "date": "Date"
+    "ip": "IP Address",
+    "url": "URL"
   }
 }

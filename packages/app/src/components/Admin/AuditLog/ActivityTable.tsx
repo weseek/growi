@@ -22,9 +22,10 @@ export const ActivityTable : FC<Props> = (props: Props) => {
         <thead>
           <tr>
             <th scope="col">{t('admin:audit_log_management.username')}</th>
-            <th scope="col">{t('admin:audit_log_management.target_model')}</th>
-            <th scope="col">{t('admin:audit_log_management.action')}</th>
             <th scope="col">{t('admin:audit_log_management.date')}</th>
+            <th scope="col">{t('admin:audit_log_management.action')}</th>
+            <th scope="col">{t('admin:audit_log_management.ip')}</th>
+            <th scope="col">{t('admin:audit_log_management.url')}</th>
           </tr>
         </thead>
         <tbody>
@@ -32,9 +33,10 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             return (
               <tr data-testid="activity-table" key={activity._id}>
                 <td>{activity.snapshot?.username}</td>
-                <td>{activity.targetModel}</td>
-                <td>{activity.action}</td>
                 <td>{formatDate(activity.createdAt)}</td>
+                <td>{activity.action}</td>
+                <td>{activity.ip}</td>
+                <td>{activity.endpoint}</td>
               </tr>
             );
           })}

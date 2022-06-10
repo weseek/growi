@@ -516,8 +516,9 @@
   },
   "audit_log_management": {
     "username": "ユーザー名",
-    "target_model": "ターゲットモデル",
+    "date": "日付",
     "action": "アクション",
-    "date": "日付"
+    "ip": "IPアドレス",
+    "url": "URL"
   }
 }
