@@ -36,6 +36,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 onClick={() => setIsDrawerMode(true)}
                 role="button"
               >
+                {/* 画像を後から差し替える */}
                 <img src={`/images/customize-settings/default-${colorText}.svg`} />
                 <div className="card-body text-center">
                   Drawer Mode
@@ -46,6 +47,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 onClick={() => setIsDrawerMode(false)}
                 role="button"
               >
+                {/* 画像を後から差し替える */}
                 <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
                 <div className="card-body  text-center">
                   Dock Mode
