@@ -11,7 +11,7 @@ import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
-type ParameterType = Omit<IActivity, 'createdAt'>
+type UpdateActivityParameterType = Omit<IActivity, 'user' | 'createdAt' | 'ip' | 'endpoint'>
 
 class ActivityService {
 
@@ -29,7 +29,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters: ParameterType, target?: IPage) => {
+    this.activityEvent.on('update', async(activityId: string, parameters: UpdateActivityParameterType, target?: IPage) => {
 
       // update activity
       let activity: IActivity;
@@ -85,7 +85,7 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
-  updateByParameters = async function(activityId: string, parameters: ParameterType): Promise<IActivity> {
+  updateByParameters = async function(activityId: string, parameters: UpdateActivityParameterType): Promise<IActivity> {
     const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
     return activity;
