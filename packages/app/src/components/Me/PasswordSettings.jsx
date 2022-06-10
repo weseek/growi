@@ -2,14 +2,13 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-
 
 class PasswordSettings extends React.Component {
 
@@ -22,6 +21,7 @@ class PasswordSettings extends React.Component {
       newPassword: '',
       newPasswordConfirm: '',
       isPasswordSet: false,
+      minPasswordLength: null,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -32,8 +32,8 @@ class PasswordSettings extends React.Component {
   async componentDidMount() {
     try {
       const res = await apiv3Get('/personal-setting/is-password-set');
-      const { isPasswordSet } = res.data;
-      this.setState({ isPasswordSet });
+      const { isPasswordSet, minPasswordLength } = res.data;
+      this.setState({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
       toastError(err);
@@ -74,9 +74,8 @@ class PasswordSettings extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { newPassword, newPasswordConfirm } = this.state;
+    const { newPassword, newPasswordConfirm, minPasswordLength } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
-
     if (this.state.retrieveError != null) {
       throw new Error(this.state.retrieveError.message);
     }
@@ -131,7 +130,7 @@ class PasswordSettings extends React.Component {
               onChange={(e) => { this.onChangeNewPasswordConfirm(e.target.value) }}
             />
 
-            <p className="form-text text-muted">{t('page_register.form_help.password') }</p>
+            <p className="form-text text-muted">{t('page_register.form_help.password', { target: minPasswordLength }) }</p>
           </div>
         </div>
 
@@ -154,12 +153,19 @@ class PasswordSettings extends React.Component {
 
 }
 
-
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [PersonalContainer]);
-
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
-export default withTranslation()(PasswordSettingsWrapper);
+const PasswordSettingsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PasswordSettings t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettingsWrapperFC, [PersonalContainer]);
+
+export default PasswordSettingsWrapper;

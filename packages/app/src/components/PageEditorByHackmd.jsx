@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
@@ -9,8 +9,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -424,36 +424,6 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
-
-const PageEditorByHackmdWrapper = (props) => {
-  const { data: editorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
-
-  if (editorMode == null) {
-    return null;
-  }
-
-  return (
-    <PageEditorByHackmdHOCWrapper
-      {...props}
-      editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
-    />
-  );
-};
-
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -470,4 +440,37 @@ PageEditorByHackmd.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default withTranslation()(PageEditorByHackmdWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorByHackmdWrapper = (props) => {
+  const { t } = useTranslation();
+  const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: grant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
+
+  if (editorMode == null) {
+    return null;
+  }
+
+  return (
+    <PageEditorByHackmdHOCWrapper
+      {...props}
+      t={t}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannelsData.toString()}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+    />
+  );
+};
+
+export default PageEditorByHackmdWrapper;

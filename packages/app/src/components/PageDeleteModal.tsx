@@ -1,5 +1,5 @@
 import React, {
-  useState, FC, useMemo,
+  useState, FC, useMemo, useEffect,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -82,6 +82,10 @@ const PageDeleteModal: FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
+
+  useEffect(() => {
+    setIsDeleteCompletely(forceDeleteCompletelyMode);
+  }, [forceDeleteCompletelyMode]);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);

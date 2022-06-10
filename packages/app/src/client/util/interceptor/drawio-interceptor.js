@@ -3,7 +3,6 @@ import React from 'react';
 
 import { BasicInterceptor } from '@growi/core';
 import ReactDOM from 'react-dom';
-import { Provider } from 'unstated';
 
 import Drawio from '~/components/Drawio';
 
@@ -14,11 +13,10 @@ import Drawio from '~/components/Drawio';
  */
 export class DrawioInterceptor extends BasicInterceptor {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
     this.previousPreviewContext = null;
-    this.appContainer = appContainer;
   }
 
   /**
@@ -104,7 +102,7 @@ export class DrawioInterceptor extends BasicInterceptor {
    */
   drawioPostRender(contextName, context) {
     const isPreview = (contextName === 'postRenderPreviewHtml');
-    const renderDrawioInRealtime = context.editorSettings?.renderDrawioInRealtime;
+    const renderDrawioInRealtime = context.renderDrawioInRealtime;
 
     Object.keys(context.DrawioMap).forEach((domId) => {
       const elem = document.getElementById(domId);
@@ -125,13 +123,11 @@ export class DrawioInterceptor extends BasicInterceptor {
   renderReactDOM(drawioMapEntry, elem, isPreview) {
     ReactDOM.render(
       // eslint-disable-next-line react/jsx-filename-extension
-      <Provider inject={[this.appContainer]}>
-        <Drawio
-          drawioContent={drawioMapEntry.contentHtml}
-          isPreview={isPreview}
-          rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
-        />
-      </Provider>,
+      <Drawio
+        drawioContent={drawioMapEntry.contentHtml}
+        isPreview={isPreview}
+        rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
+      />,
       elem,
     );
   }

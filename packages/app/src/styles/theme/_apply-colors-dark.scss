@@ -234,7 +234,7 @@ ul.pagination {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: theme-color('light');
+      color: darken($body-color, 10%);
     }
   }
 }
@@ -277,11 +277,11 @@ ul.pagination {
   // Pagetree
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
-      $gray-200,
+      $color-sidebar-context,
       lighten($bgcolor-sidebar-context, 8%),
       lighten($bgcolor-sidebar-context, 15%),
-      $gray-500,
-      $gray-200,
+      darken($color-sidebar-context, 15%),
+      darken($color-sidebar-context, 10%),
       lighten($bgcolor-sidebar-context, 18%),
       lighten($bgcolor-sidebar-context, 24%)
     );
@@ -461,6 +461,16 @@ ul.pagination {
  * GROWI tags
  */
 .grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;

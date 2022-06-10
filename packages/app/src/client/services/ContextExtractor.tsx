@@ -16,7 +16,7 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
   useDefaultIndentSize, useIsIndentSizeForced,
 } from '../../stores/context';
@@ -71,6 +71,7 @@ const ContextExtractorOnce: FC = () => {
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
+  const hasParent = JSON.parse(mainContent?.getAttribute('data-has-parent') || jsonNull);
   const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
   const shareLinksNumber = mainContent?.getAttribute('data-share-links-number');
   const shareLinkId = JSON.parse(mainContent?.getAttribute('data-share-link-id') || jsonNull);
@@ -84,7 +85,6 @@ const ContextExtractorOnce: FC = () => {
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
-  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
@@ -144,6 +144,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useHasParent(hasParent);
 
   // Navigation
   usePreferDrawerModeByUser();
@@ -156,7 +157,6 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSlackChannels(slackChannels);
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);

@@ -1,21 +1,28 @@
-import mongoose from 'mongoose';
-import fs from 'graceful-fs';
 import path from 'path';
-import ExtensibleCustomError from 'extensible-custom-error';
 
+import ExtensibleCustomError from 'extensible-custom-error';
+import fs from 'graceful-fs';
+import mongoose from 'mongoose';
+
+
+import { Lang } from '~/interfaces/lang';
 import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
-import { Lang } from '~/interfaces/lang';
 import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';
 
-import SearchService from './search';
 import ConfigManager from './config-manager';
+import SearchService from './search';
 
 const logger = loggerFactory('growi:service:installer');
 
 export class FailedToCreateAdminUserError extends ExtensibleCustomError {
+}
+
+export type AutoInstallOptions = {
+  allowGuestMode?: boolean,
+  serverDate?: Date,
 }
 
 export class InstallerService {
@@ -43,14 +50,9 @@ export class InstallerService {
   }
 
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
-
-    // TODO typescriptize models/user.js and remove eslint-disable-next-line
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Page = mongoose.model('Page') as any;
-
     try {
       const markdown = fs.readFileSync(filePath);
-      return Page.create(pagePath, markdown, owner, {}) as IPage;
+      return this.crowi.pageService.create(pagePath, markdown, owner, {}) as IPage;
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);
@@ -95,16 +97,21 @@ export class InstallerService {
   /**
    * Execute only once for installing application
    */
-  private async initDB(globalLang: Lang): Promise<void> {
+  private async initDB(globalLang: Lang, options?: AutoInstallOptions): Promise<void> {
     const configManager: ConfigManager = this.crowi.configManager;
 
     const initialConfig = generateConfigsForInstalling();
     initialConfig['app:globalLang'] = globalLang;
+
+    if (options?.allowGuestMode) {
+      initialConfig['security:restrictGuestMode'] = 'Readonly';
+    }
+
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang, initialPagesCreatedAt?: Date): Promise<IUser> {
-    await this.initDB(globalLang);
+  async install(firstAdminUserToSave: IUser, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
+    await this.initDB(globalLang, options);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,7 +149,7 @@ export class InstallerService {
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages
-    await this.createInitialPages(adminUser, globalLang, initialPagesCreatedAt);
+    await this.createInitialPages(adminUser, globalLang, options?.serverDate);
 
     return adminUser;
   }

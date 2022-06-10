@@ -1,5 +1,7 @@
 /* eslint-disable no-use-before-define */
+import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
 
 const crypto = require('crypto');
 
@@ -65,11 +67,11 @@ module.exports = function(crowi) {
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
     },
-    createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
   }, {
+    timestamps: true,
     toObject: {
       transform: (doc, ret, opt) => {
         return omitInsecureAttributes(ret);
@@ -227,9 +229,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.generateImageUrlCached = async function() {
     if (this.isGravatarEnabled) {
-      const email = this.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
+      return generateGravatarSrc(this.email);
     }
     if (this.image != null) {
       return this.image;
@@ -542,7 +542,6 @@ module.exports = function(crowi) {
     newUser.username = tmpUsername;
     newUser.email = email;
     newUser.setPassword(password);
-    newUser.createdAt = Date.now();
     newUser.status = STATUS_INVITED;
 
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -632,7 +631,6 @@ module.exports = function(crowi) {
     if (lang != null) {
       newUser.lang = lang;
     }
-    newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
 
     newUser.save((err, userData) => {
@@ -715,8 +713,22 @@ module.exports = function(crowi) {
     return users;
   };
 
-  userSchema.statics.findUserByUsernameRegex = async function(username, limit) {
-    return this.find({ username: { $regex: username, $options: 'i' } }).limit(limit);
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
+    const opt = option || {};
+    const sortOpt = opt.sortOpt || { username: 1 };
+    const offset = opt.offset || 0;
+    const limit = opt.limit || 10;
+
+    const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status } };
+
+    const users = await this.find(conditions)
+      .sort(sortOpt)
+      .skip(offset)
+      .limit(limit);
+
+    const totalCount = (await this.find(conditions).distinct('username')).length;
+
+    return { users, totalCount };
   };
 
   class UserUpperLimitException {

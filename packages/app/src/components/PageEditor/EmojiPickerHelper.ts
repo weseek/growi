@@ -2,6 +2,9 @@ import { CSSProperties } from 'react';
 
 import i18n from 'i18next';
 
+// https://regex101.com/r/Gqhor8/1
+const EMOJI_PATTERN = new RegExp(/\B:[^:\s]+/);
+
 export default class EmojiPickerHelper {
 
 editor;
@@ -10,7 +13,7 @@ pattern: RegExp;
 
 constructor(editor) {
   this.editor = editor;
-  this.pattern = /:[^:\s]+/;
+  this.pattern = EMOJI_PATTERN;
 }
 
 setStyle = ():CSSProperties => {
