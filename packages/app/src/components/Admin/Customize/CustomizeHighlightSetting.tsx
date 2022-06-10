@@ -16,7 +16,7 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const renderHljsDemo = React.memo((adminCustomizeContainer: AdminCustomizeContainer): JSX.Element => {
+const renderHljsDemo = (adminCustomizeContainer: AdminCustomizeContainer): JSX.Element => {
 
   /* eslint-disable max-len */
   const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
@@ -35,7 +35,7 @@ const renderHljsDemo = React.memo((adminCustomizeContainer: AdminCustomizeContai
       <code dangerouslySetInnerHTML={{ __html: html }}></code>
     </pre>
   );
-});
+};
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
@@ -74,7 +74,6 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
         </DropdownItem>
       );
     });
-
     return items;
   }, [adminCustomizeContainer, options]);
 
