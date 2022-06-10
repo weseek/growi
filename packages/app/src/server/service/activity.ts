@@ -51,16 +51,20 @@ class ActivityService {
     const collection = mongoose.connection.collection('activities');
 
     try {
-      const indexes = await collection.indexes();
-      const ttlIndex = indexes.find(i => i.name === 'createdAt_1');
-      const shoudCreateIndex = ttlIndex == null;
-      const shoudDropAndCreateIndex = ttlIndex != null && ttlIndex.expireAfterSeconds !== activityExpirationSeconds;
+      const targetField = 'createdAt_1';
 
-      if (shoudDropAndCreateIndex) {
-        await collection.dropIndex('createdAt_1');
+      const indexes = await collection.indexes();
+      const foundCreatedAt = indexes.find(i => i.name === targetField);
+
+      const isNotSpec = foundCreatedAt?.expireAfterSeconds == null || foundCreatedAt?.expireAfterSeconds !== activityExpirationSeconds;
+      const shoudDropIndex = foundCreatedAt != null && isNotSpec;
+      const shoudCreateIndex = foundCreatedAt == null || shoudDropIndex;
+
+      if (shoudDropIndex) {
+        await collection.dropIndex(targetField);
       }
 
-      if (shoudDropAndCreateIndex || shoudCreateIndex) {
+      if (shoudCreateIndex) {
         await collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: activityExpirationSeconds });
       }
     }
