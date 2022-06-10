@@ -11,7 +11,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
-  const { t } = useTranslation;
+  const { t } = useTranslation();
   const { appContainer } = props;
   const pathname = window.location.pathname;
 
