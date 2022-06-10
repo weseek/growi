@@ -1,5 +1,6 @@
 import React from 'react';
 
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
@@ -14,12 +15,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const logger = loggerFactory('growi:appSettings');
 
 
-type Props = {
-  adminAppContainer: AdminAppContainer,
-}
-
-
-const AppSetting = (props: Props) => {
+const AppSetting = (props) => {
   const { adminAppContainer } = props;
   const { t } = useTranslation();
 
@@ -174,9 +170,15 @@ const AppSetting = (props: Props) => {
 
 };
 
+
 /**
  * Wrapper component for using unstated
  */
 const AppSettingWrapper = withUnstatedContainers(AppSetting, [AdminAppContainer]);
+
+AppSetting.propTypes = {
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+};
+
 
 export default AppSettingWrapper;
