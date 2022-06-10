@@ -2,12 +2,12 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { useIsGuestUser } from '~/stores/context';
 
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
@@ -110,13 +110,10 @@ class PageAttachment extends React.Component {
       });
   }
 
-  isUserLoggedIn() {
-    return this.props.appContainer.currentUser != null;
-  }
-
 
   render() {
-    const { t } = this.props;
+    const { t, isGuestUser } = this.props;
+
     if (this.state.attachments.length === 0) {
       return (
         <div data-testid="page-attachment">
@@ -126,7 +123,7 @@ class PageAttachment extends React.Component {
     }
 
     let deleteAttachmentModal = '';
-    if (this.isUserLoggedIn()) {
+    if (!isGuestUser) {
       const attachmentToDelete = this.state.attachmentToDelete;
       const deleteModalClose = () => {
         this.setState({ attachmentToDelete: null, deleteError: '' });
@@ -158,7 +155,7 @@ class PageAttachment extends React.Component {
           attachments={this.state.attachments}
           inUse={this.state.inUse}
           onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
-          isUserLoggedIn={this.isUserLoggedIn()}
+          isUserLoggedIn={!isGuestUser}
         />
 
         {deleteAttachmentModal}
@@ -176,16 +173,27 @@ class PageAttachment extends React.Component {
 
 }
 
+PageAttachment.propTypes = {
+  t: PropTypes.func.isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isGuestUser: PropTypes.bool.isRequired,
+};
+
 /**
  * Wrapper component for using unstated
  */
-const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer]);
+const PageAttachmentUnstatedWrapper = withUnstatedContainers(PageAttachment, [PageContainer]);
 
+const PageAttachmentWrapper = (props) => {
+  const { t } = useTranslation();
+  const { data: isGuestUser } = useIsGuestUser();
 
-PageAttachment.propTypes = {
-  t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  if (isGuestUser == null) {
+    return <></>;
+  }
+
+  return <PageAttachmentUnstatedWrapper {...props} t={t} isGuestUser={isGuestUser} />;
 };
 
-export default withTranslation()(PageAttachmentWrapper);
+export default PageAttachmentWrapper;

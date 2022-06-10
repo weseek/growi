@@ -155,6 +155,7 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
+  "tag_list": "标签列表",
   "popular_tags": "流行标签",
   "Check All tags": "检查所有标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
@@ -524,7 +525,7 @@
 	"template": {
 		"modal_label": {
 			"Create/Edit Template Page": "创建/编辑模板页",
-			"Create template under": "在下面创建模板页：<br/><code><small>%s</small></code>"
+			"Create template under": "在下面创建模板页"
 		},
 		"option_label": {
 			"create/edit": "创建/编辑模板页。",
@@ -985,7 +986,8 @@
 		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
 		"application_already_installed": "应用程序已安装。",
 		"email_address_could_not_be_used": "无法使用此电子邮件地址。（确保允许的电子邮件地址）",
-		"user_id_is_not_available": "此用户ID不可用。",
+    "user_id_is_not_available": "此用户ID不可用。",
+    "username_should_not_be_null":"用户名不应为空。请检查管理页面上的身份验证机制设置",
 		"email_address_is_already_registered": "此电子邮件地址已注册。",
 		"can_not_register_maximum_number_of_users": "注册的用户数不能超过最大值。",
 		"failed_to_register": "注册失败。",

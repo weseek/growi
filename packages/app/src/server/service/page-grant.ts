@@ -408,18 +408,19 @@ class PageGrantService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
+    // -- Public only if top page
+    const isOnlyPublicApplicable = isTopPage(page.path);
+    if (isOnlyPublicApplicable) {
+      return {
+        [Page.GRANT_PUBLIC]: null,
+      };
+    }
+
     // Increment an object (type IRecordApplicableGrant)
     // grant is never public, anyone with the link, nor specified
     const data: IRecordApplicableGrant = {
       [Page.GRANT_RESTRICTED]: null, // any page can be restricted
     };
-
-    // -- Public only if top page
-    const isOnlyPublicApplicable = isTopPage(page.path);
-    if (isOnlyPublicApplicable) {
-      data[Page.GRANT_PUBLIC] = null;
-      return data;
-    }
 
     // -- Any grant is allowed if parent is null
     const isAnyGrantApplicable = page.parent == null;

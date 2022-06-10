@@ -1,14 +1,15 @@
 import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
+
 import { PagePathLabel } from '@growi/ui';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { IInAppNotification } from '~/interfaces/in-app-notification';
 
-import FormattedDistanceDate from '../../FormattedDistanceDate';
 import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';
+import FormattedDistanceDate from '../../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -39,8 +40,8 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   }));
 
   return (
-    <div className="p-2">
-      <div>
+    <div className="p-2 overflow-hidden">
+      <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={snapshot.path} />
       </div>
       <i className={`${actionIcon} mr-2`} />
