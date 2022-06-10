@@ -793,6 +793,13 @@ describe('Test page service methods', () => {
       expect(_page3).toBeTruthy();
       expect(_page4).toBeTruthy();
 
+      // descendantCount
+      expect(_page0.descendantCount).toBe(2);
+      expect(_page1.descendantCount).toBe(0);
+      expect(_page2.descendantCount).toBe(0);
+      expect(_page3.descendantCount).toBe(1);
+      expect(_page4.descendantCount).toBe(0);
+
       // page operation
       const _pageOperation = await PageOperation.findOne({
         _id: pageOpId6, 'page._id': _page3._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
