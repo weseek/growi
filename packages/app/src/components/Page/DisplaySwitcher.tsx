@@ -76,7 +76,7 @@ const DisplaySwitcher = (): JSX.Element => {
                           <PageListIcon />
                         </div>
                         {t('page_list')}
-                        {currentPage?.descendantCount != null && <CountBadge count={currentPage.descendantCount + 1} />}
+                        <CountBadge count={currentPage?.descendantCount} offset={1} />
                       </button>
                     ) }
                   </div>
@@ -91,7 +91,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
-                        {currentPage?.commentCount != null && <CountBadge count={currentPage.commentCount} />}
+                        <CountBadge count={currentPage?.commentCount} />
                       </button>
                     </div>
                   ) }

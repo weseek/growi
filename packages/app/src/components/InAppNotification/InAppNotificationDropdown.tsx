@@ -1,19 +1,22 @@
 import React, {
   useState, useEffect, FC, useCallback,
 } from 'react';
+
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+
+import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import InAppNotificationList from './InAppNotificationList';
-import SocketIoContainer from '~/client/services/SocketIoContainer';
-import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
-import { toastError } from '~/client/util/apiNotification';
+import InAppNotificationList from './InAppNotificationList';
+
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
@@ -74,7 +77,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
+    <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparent waves-effect waves-light">
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
