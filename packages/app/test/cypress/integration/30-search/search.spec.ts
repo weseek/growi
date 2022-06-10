@@ -100,8 +100,27 @@ context('Search all pages', () => {
   });
 
   it(`Search all pages by tag is successfully loaded `, () => {
-    const searchText = `tag:help`;
-    cy.visit('/');
+    const tag = 'help';
+    const searchText = `tag:${tag}`;
+
+    // Access "/Sandbox" instead of "/", because "/"" can't be renamed (test rename page modal)
+    cy.visit('/Sandbox');
+    // Add tag
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
+    cy.get('#edit-tag-modal').should('be.visible');
+
+    cy.get('#edit-tag-modal').within(() => {
+      cy.get('.rbt-input-main').type(tag, {force: true});
+      cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
+      cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
+      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
+    });
+
+    cy.get('#edit-tag-modal').within(() => {
+      cy.get('div.modal-footer > button').click();
+    });
+
+    cy.visit('/Sandbox');
     cy.get('.rbt-input').click();
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
@@ -179,8 +198,10 @@ context('Search current tree', () => {
 
 
   it(`Search current tree by tag is successfully loaded`, () => {
-    const searchText = `tag:help`;
-    cy.visit('/');
+    const tag = 'help';
+    const searchText = `tag:${tag}`;
+
+    cy.visit('/Sandbox');
     cy.getByTestid('select-search-scope').first().click({force: true});
     cy.get('.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
 
