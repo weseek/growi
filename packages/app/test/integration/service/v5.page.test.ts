@@ -539,8 +539,10 @@ describe('Test page service methods', () => {
       expect(_page3.descendantCount).toBe(0);
 
       // page operation
+      const fromPath = '/resume_rename_1';
+      const toPath = '/resume_rename_0/resume_rename_1';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId1, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId1, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
@@ -591,8 +593,10 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
 
       // page operation
+      const fromPath = '/resume_rename_9';
+      const toPath = '/resume_rename_8/resume_rename_9';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId4, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId4, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
@@ -673,8 +677,10 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
 
       // page operation
+      const fromPath = '/resume_rename_5';
+      const toPath = '/resume_rename_4/resume_rename_5';
       const pageOperation = await PageOperation.findOne({
-        _id: pageOpId2, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId2, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
       });
       expect(pageOperation).toBeTruthy();
 
@@ -738,8 +744,10 @@ describe('Test page service methods', () => {
       expect(_page3.descendantCount).toBe(0);
 
       // page operation
+      const fromPath = '/resume_rename_11/resume_rename_13';
+      const toPath = '/resume_rename_11/resume_rename_12/resume_rename_13';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId5, 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId5, fromPath, toPath, 'page._id': _page2._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
@@ -807,8 +815,10 @@ describe('Test page service methods', () => {
       expect(_page4.descendantCount).toBe(0);
 
       // page operation
+      const fromPath = '/resume_rename_15/resume_rename_16/resume_rename_18';
+      const toPath = '/resume_rename_15/resume_rename_17/resume_rename_18';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId6, 'page._id': _page3._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId6, fromPath, toPath, 'page._id': _page3._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
