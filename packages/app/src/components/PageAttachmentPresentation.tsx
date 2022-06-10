@@ -47,7 +47,7 @@ const PageAttachmentPresentation = (props: Props): JSX.Element => {
   //   )
   //   : '';
 
-  // TODO: Do I need implement fileInUse?
+  // TODO: Need implement fileInUse?
   // EXAMPLE
   // let fileInUse = '';
   // if (this.props.inUse) {
