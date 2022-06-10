@@ -7,7 +7,6 @@ const logger = loggerFactory('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -230,6 +229,12 @@ module.exports = function(crowi, app) {
       ETag: `Attachment-${attachment._id}`,
       'Last-Modified': attachment.createdAt.toUTCString(),
     });
+
+    if (!attachment.fileSize) {
+      res.set({
+        'Content-Length': attachment.fileSize,
+      });
+    }
 
     // download
     if (forceDownload) {

@@ -58,7 +58,12 @@ export default class RevisionBody extends React.PureComponent {
     const additionalClassName = this.props.additionalClassName || '';
     return (
       <div
-        ref={this.props.inputRef}
+        ref={(elem) => {
+          this.element = elem;
+          if (this.props.inputRef != null) {
+            this.props.inputRef.current = elem;
+          }
+        }}
         id="wiki"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
