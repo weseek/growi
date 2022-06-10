@@ -1,6 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const SortIcons = (props) => {
 
@@ -28,5 +29,4 @@ SortIcons.propTypes = {
   isAsc: PropTypes.bool.isRequired,
 };
 
-
-export default withTranslation()(SortIcons);
+export default SortIcons;
