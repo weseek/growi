@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -43,4 +43,11 @@ NotificationDeleteModal.propTypes = {
   notificationForConfiguration: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(NotificationDeleteModal);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const NotificationDeleteModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <NotificationDeleteModal t={t} {...props} />;
+};
+
+export default NotificationDeleteModalWrapperFC;
