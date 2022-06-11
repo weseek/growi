@@ -32,6 +32,7 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import AdminHome from '../components/Admin/AdminHome/AdminHome';
 import AppSettingsPage from '../components/Admin/App/AppSettingsPage';
 import { AuditLogManagement } from '../components/Admin/AuditLogManagement';
+import { AuditLogSettings } from '../components/Admin/AuditLogSettings';
 import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 import Customize from '../components/Admin/Customize/Customize';
 import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
@@ -110,6 +111,7 @@ Object.assign(componentMappings, {
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-user-group-page': <UserGroupPage />,
   'admin-audit-log': <AuditLogManagement />,
+  'admin-audit-log-settings': <AuditLogSettings />,
   'admin-navigation': <AdminNavigation />,
 });
 
