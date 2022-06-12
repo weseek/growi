@@ -92,7 +92,14 @@ export const AuditLogManagement: FC = () => {
 
   return (
     <div data-testid="admin-auditlog">
-      <h2 className="admin-setting-header mb-3">{t('AuditLog')}</h2>
+      <h2 className="admin-setting-header mb-3">
+        <span>
+          {t('AuditLog')}
+        </span>
+        <a href="/admin/audit-log/settings" className="btn btn-lg">
+          <i className="icon-settings" />
+        </a>
+      </h2>
 
       <div className="form-inline mb-3">
         <SearchUsernameTypeahead
