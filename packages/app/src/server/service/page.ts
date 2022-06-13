@@ -2672,10 +2672,7 @@ class PageService {
     return isUnique;
   }
 
-  // TODO: use socket to send status to the client
   async normalizeAllPublicPages() {
-    // const socket = this.crowi.socketIoService.getAdminSocket();
-
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();
@@ -2692,7 +2689,6 @@ class PageService {
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
         throw err;
       }
     }
@@ -2703,7 +2699,6 @@ class PageService {
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message });
 
       throw err;
     }

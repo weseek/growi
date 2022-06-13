@@ -32,4 +32,4 @@ class PageEvent extends events.EventEmitter {
 
 }
 
-export default PageEvent;
+module.exports = PageEvent;
