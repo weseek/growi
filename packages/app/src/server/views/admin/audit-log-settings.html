@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div id="admin-audit-log-settings">
+<div
+  id="admin-audit-log-settings"
+  activity-expiration-seconds="{{ activityExpirationSeconds }}"
+>
 </div>
 {% endblock content_main %}

@@ -2,12 +2,11 @@ import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useActivityExpirationSeconds } from '~/stores/context';
-
 export const AuditLogSettings: FC = () => {
   const { t } = useTranslation();
 
-  const { data: activityExpirationSecondsData } = useActivityExpirationSeconds();
+  const adminAuditLogSettingsElm = document.getElementById('admin-audit-log-settings');
+  const activityExpirationSeconds = adminAuditLogSettingsElm?.getAttribute('activity-expiration-seconds') || 2592000;
 
   return (
     <div data-testid="admin-auditlog-settings">
