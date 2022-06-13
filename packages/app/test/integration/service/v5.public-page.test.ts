@@ -2,6 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
+import { PageActionType, PageActionStage } from '../../../src/server/models/page-operation';
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
@@ -959,17 +960,27 @@ describe('PageService page operations with only public pages', () => {
     };
 
     /**
-     * This function only execute MainOperation. SubOperation is basically omitted(only return null)
+     * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
+     * If you want to include renameSubOperatoin, call it directly from crowi.pageService
      */
-    const renameWithOnlyMainOperation = async(page, newPagePath, user, options) => {
+    const renameMainOperation = async(page, newPagePath, user, options) => {
+      // create page operation from target page
+      const pageOp = await PageOperation.create({
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: newPagePath,
+        options,
+      });
+
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id);
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       return renamedPage;
     };
@@ -1263,7 +1274,7 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_pageForRename24/v5_pageForRename25';
 
       // only main opearation is run. sub operation is skipped
-      await renameWithOnlyMainOperation(_page1, newPath, dummyUser1, {});
+      await renameMainOperation(_page1, newPath, dummyUser1, {});
 
       const page0 = await Page.findById(_page0._id); // new parent
       const page1 = await Page.findById(_page1._id); // renamed one
