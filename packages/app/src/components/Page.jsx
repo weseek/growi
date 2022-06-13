@@ -12,6 +12,7 @@ import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxPageTags } from '~/stores/tag';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -76,9 +77,9 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -108,9 +109,9 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -172,6 +173,7 @@ Page.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   pagePath: PropTypes.string.isRequired,
+  pageTags:  PropTypes.arrayOf(PropTypes.string),
   editorMode: PropTypes.string.isRequired,
   isGuestUser: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool,
@@ -189,6 +191,7 @@ const PageWrapper = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: pageTags } = useSWRxPageTags();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -237,6 +240,7 @@ const PageWrapper = (props) => {
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
+      pageTags={pageTags}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}
