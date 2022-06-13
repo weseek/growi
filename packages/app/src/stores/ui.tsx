@@ -326,6 +326,13 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
  *                Determined value by context
  *********************************************************** */
 
+export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser } = useCurrentUser();
+  const { data: isDeleted } = useIsDeleted();
+
+  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
+};
+
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
