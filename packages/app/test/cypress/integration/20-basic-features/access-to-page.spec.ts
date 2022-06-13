@@ -146,3 +146,31 @@ context('Access to Template Editing Mode', () => {
 
 });
 
+context('Access to /me/all-in-app-notifications', () => {
+  const ssPrefix = 'in-app-notifications-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+    // collapse sidebar
+    cy.collapseSidebar(true);
+  });
+
+  it('All In-App Notification list is successfully loaded', () => {
+    cy.visit('/');
+    cy.get('.notification-wrapper > a').click();
+    cy.get('.notification-wrapper > .dropdown-menu > a').click();
+
+    cy.get('#all-in-app-notifications').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
+
+    cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
+
+    cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
+   });
+
+})
+

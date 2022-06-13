@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 class Cheatsheet extends React.Component {
 
@@ -103,4 +104,9 @@ Cheatsheet.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(Cheatsheet);
+const CheatsheetWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <Cheatsheet t={t} {...props} />;
+};
+
+export default CheatsheetWrapperFC;
