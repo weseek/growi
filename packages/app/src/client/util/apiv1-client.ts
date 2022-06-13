@@ -58,7 +58,7 @@ export async function apiPost<T>(path: string, params: any & ParamWithCsrfKey = 
   return apiRequest<T>('post', path, params);
 }
 
-export async function apiPostForapiGetm<T>(path: string, formData: FormData): Promise<T> {
+export async function apiPostForm<T>(path: string, formData: FormData): Promise<T> {
   if (formData.get('_csrf') == null && csrfToken != null) {
     formData.append('_csrf', csrfToken);
   }
