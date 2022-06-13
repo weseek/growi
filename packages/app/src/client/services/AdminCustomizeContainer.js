@@ -4,7 +4,7 @@ import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
-import { apiPost } from '../util/apiv1-client';
+import { apiPost, apiPostForm } from '../util/apiv1-client';
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
@@ -446,7 +446,6 @@ export default class AdminCustomizeContainer extends Container {
   async deleteLogo() {
     try {
       const formData = {
-        _csrf:  this.appContainer.csrfToken,
         brandLogoAttachmentId: this.state.brandLogoAttachmentId,
       };
       await apiPost('/attachments.removeBrandLogo', formData);
@@ -467,10 +466,9 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('_csrf', this.appContainer.csrfToken);
       formData.append('attachmentType', AttachmentType.BRAND_LOGO);
       formData.append('brandLogoAttachmentId', this.state.brandLogoAttachmentId);
-      const response = await apiPost('/attachments.uploadBrandLogo', formData);
+      const response = await apiPostForm('/attachments.uploadBrandLogo', formData);
 
       this.setState({
         uploadedLogoSrc: response.attachment.filePathProxied,
