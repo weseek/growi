@@ -71,20 +71,6 @@ export default class AppContainer extends Container {
     window.crowiPlugin = window.growiPlugin;
   }
 
-  get currentUserId() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser._id;
-  }
-
-  get currentUsername() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser.username;
-  }
-
   getConfig() {
     return this.config;
   }
