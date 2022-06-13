@@ -15,7 +15,7 @@ import GiveAdminButton from './GiveAdminButton';
 import RemoveAdminMenuItem from './RemoveAdminMenuItem';
 import SendInvitationEmailButton from './SendInvitationEmailButton';
 import StatusActivateButton from './StatusActivateButton';
-import StatusSuspendedMenuItem from './StatusSuspendedMenuItem';
+import StatusSuspendedMenuItem from './StatusSuspendMenuItem';
 import UserRemoveButton from './UserRemoveButton';
 
 

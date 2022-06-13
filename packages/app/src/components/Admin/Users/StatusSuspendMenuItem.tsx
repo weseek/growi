@@ -1,78 +1,60 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, { useCallback } from 'react';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useTranslation } from 'react-i18next';
+
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { withUnstatedContainers } from '~/components/UnstatedUtils';
+import { IUserHasId } from '~/interfaces/user';
+import { useCurrentUser } from '~/stores/context';
 
-class StatusSuspendedButton extends React.Component {
 
-  constructor(props) {
-    super(props);
+const SuspendAlert = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
 
-    this.onClickDeactiveBtn = this.onClickDeactiveBtn.bind(this);
-  }
+  return (
+    <div className="px-4">
+      <i className="icon-fw icon-ban mb-2"></i>{t('admin:user_management.user_table.deactivate_account')}
+      <p className="alert alert-danger">{t('admin:user_management.user_table.your_own')}</p>
+    </div>
+  );
+});
 
-  async onClickDeactiveBtn() {
-    const { t } = this.props;
 
+type Props = {
+  adminUsersContainer: AdminUsersContainer,
+  user: IUserHasId,
+}
+
+const StatusSuspendMenuItem = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  const { adminUsersContainer, user } = props;
+
+  const { data: currentUser } = useCurrentUser();
+
+  const clickDeactiveBtnHandler = useCallback(async() => {
     try {
-      const username = await this.props.adminUsersContainer.deactivateUser(this.props.user._id);
+      const username = await adminUsersContainer.deactivateUser(user._id);
       toastSuccess(t('toaster.deactivate_user_success', { username }));
     }
     catch (err) {
       toastError(err);
     }
-  }
+  }, [adminUsersContainer, t, user._id]);
 
-  renderSuspendedBtn() {
-    const { t } = this.props;
-
-    return (
-      <button className="dropdown-item" type="button" onClick={() => { this.onClickDeactiveBtn() }}>
+  return user.username !== currentUser?.username
+    ? (
+      <button className="dropdown-item" type="button" onClick={clickDeactiveBtnHandler}>
         <i className="icon-fw icon-ban"></i> {t('admin:user_management.user_table.deactivate_account')}
       </button>
-    );
-  }
-
-  renderSuspendedAlert() {
-    const { t } = this.props;
-
-    return (
-      <div className="px-4">
-        <i className="icon-fw icon-ban mb-2"></i>{t('admin:user_management.user_table.deactivate_account')}
-        <p className="alert alert-danger">{t('admin:user_management.user_table.your_own')}</p>
-      </div>
-    );
-  }
-
-  render() {
-    const { user } = this.props;
-    const { currentUsername } = this.props.appContainer;
-
-    return (
-      <Fragment>
-        {user.username !== currentUsername ? this.renderSuspendedBtn()
-          : this.renderSuspendedAlert()}
-      </Fragment>
-    );
-  }
-
-}
+    )
+    : <SuspendAlert />;
+};
 
 /**
  * Wrapper component for using unstated
  */
-const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedButton, [AppContainer, AdminUsersContainer]);
+const StatusSuspendMenuItemWrapper = withUnstatedContainers(StatusSuspendMenuItem, [AdminUsersContainer]);
 
-StatusSuspendedButton.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
-  user: PropTypes.object.isRequired,
-};
-
-export default withTranslation()(StatusSuspendedFormWrapper);
+export default StatusSuspendMenuItemWrapper;
