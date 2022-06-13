@@ -1,25 +1,29 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
+
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
-const IndentForm = (props) => {
-  const onClickSubmit = async(props) => {
-    const { t } = props;
 
+type Props = {
+  adminMarkDownContainer: AdminMarkDownContainer;
+}
+
+const IndentForm = (props: Props) => {
+  const { t } = useTranslation();
+
+  const onClickSubmit = async(props) => {
     try {
       await props.adminMarkDownContainer.updateIndentSetting();
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.indent_header') }));
@@ -31,7 +35,7 @@ const IndentForm = (props) => {
   };
 
   const renderIndentSizeOption = (props) => {
-    const { t, adminMarkDownContainer } = props;
+    const { adminMarkDownContainer } = props;
     const { adminPreferredIndentSize } = adminMarkDownContainer.state;
 
     return (
@@ -63,7 +67,7 @@ const IndentForm = (props) => {
   };
 
   const renderIndentForceOption = (props) => {
-    const { t, adminMarkDownContainer } = props;
+    const { adminMarkDownContainer } = props;
     const { isIndentSizeForced } = adminMarkDownContainer.state;
 
     const helpIndentInComment = { __html: t('admin:markdown_setting.indent_options.disallow_indent_change_desc') };
@@ -107,9 +111,4 @@ const IndentForm = (props) => {
  */
 const IndentFormWrapper = withUnstatedContainers(IndentForm, [AdminMarkDownContainer]);
 
-IndentForm.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
-};
-
-export default withTranslation()(IndentFormWrapper);
+export default IndentFormWrapper;
