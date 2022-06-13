@@ -1,8 +1,22 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.9](https://github.com/weseek/growi/compare/v5.0.8...v5.0.9) - 2022-06-13
+
+### 🚀 Improvement
+
+- imprv: Render MathJax in Preview tab of comment (#6025) @yuki-takei
+- imprv: Exception handling for user authentication (#6019) @kaoritokashiki
+- imprv: Sidebar background color on light theme and add shadow on dark theme (#6012) @shukmos
+- imprv: Limit display of notification paths (#5991) @jam411
+
+### 🐛 Bug Fixes
+
+- fix: Getting page API is broken (#6023) @yuki-takei
+- fix: MathJax does not working (#6020) @yuki-takei
 
 ## [v5.0.8](https://github.com/weseek/growi/compare/v5.0.7...v5.0.8) - 2022-06-07
 
@@ -111,7 +125,6 @@
 ### 🧰 Maintenance
 
 - support: Typescriptize tag model (#5778) @kaoritokashiki
-
 
 ## [v4.5.20](https://github.com/weseek/growi/compare/v4.5.19...v4.5.20) - 2022-05-12
 
