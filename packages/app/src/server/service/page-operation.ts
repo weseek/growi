@@ -2,11 +2,18 @@ import { pagePathUtils } from '@growi/core';
 
 import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import PageOperation, { PageActionType, PageActionStage, PageOperationDocument } from '~/server/models/page-operation';
+import loggerFactory from '~/utils/logger';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
+const logger = loggerFactory('growi:services:page-operation');
+
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 const AUTO_UPDATE_INTERVAL_SEC = 5;
+
+const {
+  Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
+} = PageActionType;
 
 class PageOperationService {
 
@@ -16,17 +23,15 @@ class PageOperationService {
     this.crowi = crowi;
   }
 
-  // TODO: Remove this code when resuming feature is implemented
   async init(): Promise<void> {
-    const {
-      Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
-    } = PageActionType;
+    // cleanup PageOperation documents
     const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
   }
 
   async onAfterInit(): Promise<void> {
-    await this.executeAllRenameOperationBySystem();
+    // execute rename operation
+    this.executeAllRenameOperationBySystem();
   }
 
   // execute renameSubOperation on every page operation order by ASC
@@ -42,6 +47,10 @@ class PageOperationService {
       } = pageOp;
 
       const renamedPage = await Page.findById(pageOp.page._id);
+      if (renamedPage == null) {
+        logger.warn('operating page is not found');
+        continue;
+      }
 
       // rename
       await this.crowi.pageService.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
