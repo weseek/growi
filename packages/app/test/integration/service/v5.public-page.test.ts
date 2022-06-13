@@ -1291,16 +1291,22 @@ describe('PageService page operations with only public pages', () => {
       // cleanup
       await PageOperation.findOneAndDelete({ fromPath: _path1 });
     });
-    test('should subtract 1 descendantCount from parent page in SubOperation', async() => {
+    test(`should add 1 descendantCount to the new parent page in rename(Main)Operation
+    and subtract 1 descendantCount from the new parent page in rename(Sub)Operation`, async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename26'; // out of renaming scope
+      const _path1 = '/v5_pageForRename27'; // not renamed yet
+      const _path2 = '/v5_pageForRename27/v5_pageForRename28'; // not renamed yet
 
-      const _path0 = '/v5_pageForRename26';
-      const _path1 = '/v5_pageForRename27';
-      const _path2 = '/v5_pageForRename27/v5_pageForRename28';
-
+      // paths after renaming
       const path0 = '/v5_pageForRename26';
       const path1 = '/v5_pageForRename26/v5_pageForRename27';
       const path2 = '/v5_pageForRename26/v5_pageForRename27/v5_pageForRename28';
 
+      // new path: same as path1
+      const newPath = '/v5_pageForRename26/v5_pageForRename27';
+
+      // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
       const _page2 = await Page.findOne({ path: _path2 });
@@ -1312,9 +1318,6 @@ describe('PageService page operations with only public pages', () => {
       expect(_page1.descendantCount).toBe(1);
       expect(_page2.descendantCount).toBe(0);
 
-      const newPath = '/v5_pageForRename26/v5_pageForRename27';
-
-      // main and sub operation are run
       await renamePage(_page1, newPath, dummyUser1, {});
 
       const page0 = await Page.findById(_page0._id); // new parent
