@@ -25,6 +25,9 @@ describe('PageService page operations with only public pages', () => {
 
   let rootPage;
 
+  // page operation ids
+  let pageOpId1;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -86,6 +89,12 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename26 = new mongoose.Types.ObjectId();
     const pageIdForRename27 = new mongoose.Types.ObjectId();
     const pageIdForRename28 = new mongoose.Types.ObjectId();
+
+    const pageIdForRename29 = new mongoose.Types.ObjectId();
+    const pageIdForRename30 = new mongoose.Types.ObjectId();
+
+    pageOpId1 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId1 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -321,6 +330,56 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename27,
         descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename29,
+        path: '/v5_pageForRename29',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdForRename30,
+        path: '/v5_pageForRename29/v5_pageForRename30',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename29,
+        descendantCount: 0,
+      },
+    ]);
+
+    await PageOperation.insertMany([
+      {
+        _id: pageOpId1,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/v5_pageForRename30',
+        toPath: '/v5_pageForRename29/v5_pageForRename30',
+        page: {
+          _id: pageIdForRename30,
+          parent: rootPage._id,
+          descendantCount: 0,
+          isEmpty: false,
+          path: '/resume_rename_1',
+          revision: pageOpRevisionId1,
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+        unprocessableExpiryDate: null,
       },
     ]);
 
@@ -1291,8 +1350,55 @@ describe('PageService page operations with only public pages', () => {
       // cleanup
       await PageOperation.findOneAndDelete({ fromPath: _path1 });
     });
-    test(`should add 1 descendantCount to the new parent page in rename(Main)Operation
-    and subtract 1 descendantCount from the new parent page in rename(Sub)Operation`, async() => {
+
+    test('should subtract 1 descendantCount from a new parent page in renameSubOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename29'; // out of renaming scope
+      const _path1 = '/v5_pageForRename29/v5_pageForRename30'; // already renamed
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename29';
+      const path1 = '/v5_pageForRename29/v5_pageForRename30';
+
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename29/v5_pageForRename30';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+
+      // page operation
+      const fromPath = '/v5_pageForRename30';
+      const toPath = newPath;
+      const pageOperation = await PageOperation.findOne({
+        _id: pageOpId1, fromPath, toPath, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
+      expect(pageOperation).toBeTruthy();
+
+      // descendantCount
+      expect(_page0.descendantCount).toBe(1);
+      expect(_page1.descendantCount).toBe(0);
+
+      // renameSubOperation only
+      await crowi.pageService.renameSubOperation(_page1, newPath, dummyUser1, {}, _page1, pageOperation._id);
+
+      // page
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed one
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1); // renamed
+
+      // descendantCount
+      expect(page0.descendantCount).toBe(0); // originally 1, -1 in Sub.
+      expect(page1.descendantCount).toBe(0);
+    });
+
+    test(`should add 1 descendantCount to the a parent page in rename(Main)Operation
+    and subtract 1 descendantCount from the the parent page in rename(Sub)Operation`, async() => {
       // paths before renaming
       const _path0 = '/v5_pageForRename26'; // out of renaming scope
       const _path1 = '/v5_pageForRename27'; // not renamed yet
