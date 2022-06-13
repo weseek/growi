@@ -112,6 +112,7 @@ const LineBreakFormFC = (props) => {
 const LineBreakFormWrapper = withUnstatedContainers(LineBreakFormFC, [AdminMarkDownContainer]);
 
 LineBreakForm.propTypes = {
+  t: PropTypes.func.isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
