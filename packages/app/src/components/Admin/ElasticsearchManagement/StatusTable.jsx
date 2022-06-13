@@ -3,8 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 class StatusTable extends React.PureComponent {
 
   renderPreInitializedLabel() {
@@ -168,11 +166,6 @@ const StatusTableWrapperFC = (props) => {
   return <StatusTable t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const StatusTableWrapper = withUnstatedContainers(StatusTableWrapperFC, []);
-
 StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -186,4 +179,4 @@ StatusTable.propTypes = {
   aliasesData: PropTypes.object,
 };
 
-export default StatusTableWrapper;
+export default StatusTableWrapperFC;
