@@ -20,7 +20,7 @@ class GitHubSecurityManagementContents extends React.Component {
   }
 
   async onClickSubmit() {
-    const { adminGitHubSecurityContainer, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGitHubSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminGitHubSecurityContainer.updateGitHubSetting();
@@ -199,6 +199,7 @@ const GitHubSecurityManagementContentsWrapper = withUnstatedContainers(GitHubSec
 ]);
 
 GitHubSecurityManagementContents.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
