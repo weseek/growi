@@ -166,10 +166,19 @@ class PageService {
       }
     });
 
+    // Change the parameter of the function into the pages
     // rename
-    this.pageEvent.on('rename', async(page, user) => {
+    this.pageEvent.on('rename', async(page, descendantPages, user) => {
+      const isRecursively = descendantPages != null;
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
+      const pages = [page];
+      if (isRecursively) {
+        descendantPages.forEach((element) => {
+          pages.push(element);
+        });
+      }
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(pages, user, action);
       }
       catch (err) {
         logger.error(err);
@@ -537,13 +546,12 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
-    this.pageEvent.emit('rename', page, user);
+    // this.pageEvent.emit('rename', page, user);
 
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
@@ -554,18 +562,19 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    const descendantPages = await this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    this.pageEvent.emit('rename', page, descendantPages, user);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
 
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    const descendantPages = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -582,6 +591,8 @@ class PageService {
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
+
+    return descendantPages;
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -759,6 +770,7 @@ class PageService {
     }
 
     this.pageEvent.emit('updateMany', pages, user);
+    return pages;
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
@@ -829,12 +841,13 @@ class PageService {
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
+    let pages: ObjectId[] = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await renameDescendants(
+          pages = await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
           logger.debug(`Renaming pages progressing: (count=${count})`);
@@ -861,6 +874,7 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+    return pages;
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
@@ -1842,6 +1856,7 @@ class PageService {
         await this.deletePage(page, user, {}, isRecursively);
       }
     }
+    // Call the pageEvent function with the pagesToDelete as the parameter.
   }
 
   // use the same process in both v4 and v5
@@ -2230,23 +2245,28 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page, user, action) {
+  private async createAndSendNotifications(pages, user, action) {
     const { activityService, inAppNotificationService } = this.crowi;
 
-    const snapshot = stringifySnapshot(page);
+    const snapshot = stringifySnapshot(pages[0]);
 
     // Create activity
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: page,
+      target: pages[0],
       action,
     };
     const activity = await activityService.createByParameters(parameters);
-
     // Get user to be notified
     const targetUsers = await activity.getNotificationTargetUsers();
-
+    if (action === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE || action === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME || action
+      === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE) {
+      pages.forEach((page) => {
+        targetUsers.concat(Subscription.getSubscription(page));
+      });
+    }
+    console.log('The real target users are:\n', targetUsers);
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
