@@ -7,7 +7,7 @@ import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
 type ArchiveFilesTableProps = {
   zipFileStats: any[],
-  onZipFileStatRemove: (string) => void,
+  onZipFileStatRemove: (fileName: string) => void,
 }
 
 const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {

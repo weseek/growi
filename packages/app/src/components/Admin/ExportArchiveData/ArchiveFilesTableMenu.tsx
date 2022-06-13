@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 type ArchiveFilesTableMenuProps = {
   fileName: string,
-  onZipFileStatRemove: (string) => void,
+  onZipFileStatRemove: (fileName: string) => void,
 }
 
 const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps):JSX.Element => {
