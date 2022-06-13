@@ -458,10 +458,10 @@ class LinkEditModal extends React.PureComponent {
 
 }
 
-const LinkEditModalFc = (props) => {
+const LinkEditModalFc = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  return <LinkEditModal t={t} {...props} />;
-};
+  return <LinkEditModal t={t} ref={ref} {...props} />;
+});
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,

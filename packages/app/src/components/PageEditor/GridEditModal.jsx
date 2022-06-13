@@ -249,10 +249,10 @@ class GridEditModal extends React.Component {
 
 }
 
-const GridEditModalFc = (props) => {
+const GridEditModalFc = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  return <GridEditModal t={t} {...props} />;
-};
+  return <GridEditModal t={t} ref={ref} {...props} />;
+});
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
