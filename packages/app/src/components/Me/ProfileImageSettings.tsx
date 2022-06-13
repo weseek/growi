@@ -3,28 +3,19 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiPost } from '~/client/util/apiv1-client';
+import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
 import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import ImageCropModal from './ImageCropModal';
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
-type Props = {
-  appContainer: AppContainer,
-}
-
-const ProfileImageSettings = (props: Props): JSX.Element => {
+const ProfileImageSettings = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const { appContainer } = props;
 
   const { data: currentUser } = useCurrentUser();
 
@@ -55,9 +46,7 @@ const ProfileImageSettings = (props: Props): JSX.Element => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      formData.append('_csrf', appContainer.csrfToken!);
-      const response = await apiPost('/attachments.uploadProfileImage', formData);
+      const response = await apiPostForm('/attachments.uploadProfileImage', formData);
 
       toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
 
@@ -70,7 +59,7 @@ const ProfileImageSettings = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.csrfToken, t]);
+  }, [t]);
 
   const deleteImageHandler = useCallback(async() => {
     try {
@@ -185,4 +174,4 @@ const ProfileImageSettings = (props: Props): JSX.Element => {
 
 };
 
-export default withUnstatedContainers(ProfileImageSettings, [AppContainer]);
+export default ProfileImageSettings;
