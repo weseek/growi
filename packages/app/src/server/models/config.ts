@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { getOrCreateModel } from '@growi/core';
 
 export interface Config {
   _id: Types.ObjectId;
@@ -135,6 +135,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isEnabledStaleNotification': false,
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
+  'customize:isSidebarDrawerMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,
