@@ -38,7 +38,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 role="button"
               >
                 {/* 画像を後から差し替える */}
-                <img src={`/images/customize-settings/default-${colorText}.svg`} />
+                <img src={`/images/customize-settings/drawer-${colorText}.svg`} />
                 <div className="card-body text-center">
                   Drawer Mode
                 </div>
@@ -49,7 +49,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 role="button"
               >
                 {/* 画像を後から差し替える */}
-                <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
+                <img src={`/images/customize-settings/dock-${colorText}.svg`} />
                 <div className="card-body  text-center">
                   Dock Mode
                 </div>
@@ -57,7 +57,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </div>
           </div>
 
-          <Card className="card well my-3">
+          <Card className="card well my-5">
             <CardBody className="px-0 py-2">
               {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_desc')}
             </CardBody>
