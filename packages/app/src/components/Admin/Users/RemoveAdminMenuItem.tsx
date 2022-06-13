@@ -1,81 +1,62 @@
-import React, { Fragment } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { IUserHasId } from '~/interfaces/user';
+import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-class RemoveAdminButton extends React.Component {
 
-  constructor(props) {
-    super(props);
+const RemoveAdminAlert = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
 
-    this.onClickRemoveAdminBtn = this.onClickRemoveAdminBtn.bind(this);
-  }
+  return (
+    <div className="px-4">
+      <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_admin_access')}
+      <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_remove')}</p>
+    </div>
+  );
+});
 
-  async onClickRemoveAdminBtn() {
-    const { t } = this.props;
 
+type Props = {
+  adminUsersContainer: AdminUsersContainer,
+  user: IUserHasId,
+}
+
+const RemoveAdminMenuItem = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  const { adminUsersContainer, user } = props;
+
+  const { data: currentUser } = useCurrentUser();
+
+  const clickRemoveAdminBtnHandler = useCallback(async() => {
     try {
-      const username = await this.props.adminUsersContainer.removeUserAdmin(this.props.user._id);
+      const username = await adminUsersContainer.removeUserAdmin(user._id);
       toastSuccess(t('toaster.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
     }
-  }
+  }, [adminUsersContainer, t, user._id]);
 
 
-  renderRemoveAdminBtn() {
-    const { t } = this.props;
-
-    return (
-      <button className="dropdown-item" type="button" onClick={() => { this.onClickRemoveAdminBtn() }}>
+  return user.username !== currentUser?.username
+    ? (
+      <button className="dropdown-item" type="button" onClick={clickRemoveAdminBtnHandler}>
         <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
       </button>
-    );
-  }
-
-  renderRemoveAdminAlert() {
-    const { t } = this.props;
-
-    return (
-      <div className="px-4">
-        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_admin_access')}
-        <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_remove')}</p>
-      </div>
-    );
-  }
-
-  render() {
-    const { user } = this.props;
-    const { currentUsername } = this.props.appContainer;
-
-    return (
-      <Fragment>
-        {user.username !== currentUsername ? this.renderRemoveAdminBtn()
-          : this.renderRemoveAdminAlert()}
-      </Fragment>
-    );
-  }
-
-}
+    )
+    : <RemoveAdminAlert />;
+};
 
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AppContainer, AdminUsersContainer]);
+const RemoveAdminMenuItemWrapper = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
 
-RemoveAdminButton.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
-  user: PropTypes.object.isRequired,
-};
-
-export default withTranslation()(RemoveAdminButtonWrapper);
+export default RemoveAdminMenuItemWrapper;
