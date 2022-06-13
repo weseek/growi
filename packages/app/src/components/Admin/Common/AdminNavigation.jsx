@@ -1,3 +1,7 @@
+/* eslint-disable no-multi-spaces */
+/* eslint-disable react/jsx-props-no-multi-spaces */
+
+
 import React from 'react';
 
 import { pathUtils } from '@growi/core';
@@ -21,20 +25,20 @@ const AdminNavigation = (props) => {
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
-      case 'app': return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
-      case 'security': return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
-      case 'markdown': return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
-      case 'customize': return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
-      case 'importer': return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
-      case 'export': return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
-      case 'notification': return <><i className="icon-fw icon-bell"></i>            { t('External_Notification')}</>;
-      case 'slack-integration': return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration') }</>;
+      case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
+      case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
+      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
+      case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
+      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
+      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
+      case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('External_Notification')}</>;
+      case 'slack-integration':        return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration') }</>;
       case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('Legacy_Slack_Integration')}</>;
-      case 'users': return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
-      case 'user-groups': return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
-      case 'search': return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-      case 'cloud': return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
-      default: return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
+      case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
+      case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
+      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
+      case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
+      default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
   };
 
@@ -69,19 +73,19 @@ const AdminNavigation = (props) => {
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
     return (
       <>
-        <MenuLink menu="home" isListGroupItems isActive={pathname === '/admin'} isRoot />
-        <MenuLink menu="app" isListGroupItems isActive={isActiveMenu('/app')} />
-        <MenuLink menu="security" isListGroupItems isActive={isActiveMenu('/security')} />
-        <MenuLink menu="markdown" isListGroupItems isActive={isActiveMenu('/markdown')} />
-        <MenuLink menu="customize" isListGroupItems isActive={isActiveMenu('/customize')} />
-        <MenuLink menu="importer" isListGroupItems isActive={isActiveMenu('/importer')} />
-        <MenuLink menu="export" isListGroupItems isActive={isActiveMenu('/export')} />
+        <MenuLink menu="home"         isListGroupItems isActive={pathname === '/admin'} isRoot />
+        <MenuLink menu="app"          isListGroupItems isActive={isActiveMenu('/app')} />
+        <MenuLink menu="security"     isListGroupItems isActive={isActiveMenu('/security')} />
+        <MenuLink menu="markdown"     isListGroupItems isActive={isActiveMenu('/markdown')} />
+        <MenuLink menu="customize"    isListGroupItems isActive={isActiveMenu('/customize')} />
+        <MenuLink menu="importer"     isListGroupItems isActive={isActiveMenu('/importer')} />
+        <MenuLink menu="export"       isListGroupItems isActive={isActiveMenu('/export')} />
         <MenuLink menu="notification" isListGroupItems isActive={isActiveMenu('/notification') || isActiveMenu('/global-notification')} />
         <MenuLink menu="slack-integration" isListGroupItems isActive={isActiveMenu('/slack-integration')} />
         <MenuLink menu="slack-integration-legacy" isListGroupItems isActive={isActiveMenu('/slack-integration-legacy')} />
-        <MenuLink menu="users" isListGroupItems isActive={isActiveMenu('/users')} />
-        <MenuLink menu="user-groups" isListGroupItems isActive={isActiveMenu('/user-groups')} />
-        <MenuLink menu="search" isListGroupItems isActive={isActiveMenu('/search')} />
+        <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
+        <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
+        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
@@ -115,18 +119,17 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left">
-            {pathname === '/admin' && <MenuLabel menu="home" />}
-            {isActiveMenu('/app') && <MenuLabel menu="app" />}
-            {isActiveMenu('/security') && <MenuLabel menu="security" />}
-            {isActiveMenu('/markdown') && <MenuLabel menu="markdown" />}
-            {isActiveMenu('/customize') && <MenuLabel menu="customize" />}
-            {isActiveMenu('/importer') && <MenuLabel menu="importer" />}
-            {isActiveMenu('/export') && <MenuLabel menu="export" />}
+            {pathname === '/admin' &&              <MenuLabel menu="home" />}
+            {isActiveMenu('/app') &&               <MenuLabel menu="app" />}
+            {isActiveMenu('/security') &&          <MenuLabel menu="security" />}
+            {isActiveMenu('/markdown') &&          <MenuLabel menu="markdown" />}
+            {isActiveMenu('/customize') &&         <MenuLabel menu="customize" />}
+            {isActiveMenu('/importer') &&          <MenuLabel menu="importer" />}
+            {isActiveMenu('/export') &&            <MenuLabel menu="export" />}
             {(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && <MenuLabel menu="notification" />}
             {isActiveMenu('/slack-integration') && <MenuLabel menu="slack-integration" />}
-            {isActiveMenu('/users') && <MenuLabel menu="users" />}
-            {isActiveMenu('/user-groups') && <MenuLabel menu="user-groups" />}
-            {isActiveMenu('/search') && <MenuLabel menu="search" />}
+            {isActiveMenu('/users') &&             <MenuLabel menu="users" />}
+            {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
