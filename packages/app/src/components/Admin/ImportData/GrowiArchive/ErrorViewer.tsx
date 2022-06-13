@@ -1,7 +1,5 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 type ErrorViewerProps = {
@@ -9,9 +7,8 @@ type ErrorViewerProps = {
   errors: any[],
   onClose: () => void,
 }
-const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
-  const { t } = useTranslation();
 
+const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
   const { errors } = props;
 
   let value = '(no errors)';
@@ -32,15 +29,6 @@ const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
       </ModalBody>
     </Modal>
   );
-};
-
-ErrorViewer.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
-  errors: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default ErrorViewer;
