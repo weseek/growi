@@ -1,7 +1,6 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { Progress } from 'reactstrap';
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
