@@ -58,6 +58,13 @@ export async function apiPost(path: string, params: any & ParamWithCsrfKey = {})
   return apiRequest('post', path, params);
 }
 
+export async function apiPostForm(path: string, formData: FormData): Promise<unknown> {
+  if (formData.get('_csrf') == null && csrfToken != null) {
+    formData.append('_csrf', csrfToken);
+  }
+  return apiPost(path, formData);
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiDelete(path: string, params: any & ParamWithCsrfKey = {}): Promise<unknown> {
   if (params._csrf == null) {

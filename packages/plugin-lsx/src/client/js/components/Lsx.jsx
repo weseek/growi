@@ -239,7 +239,6 @@ export class Lsx extends React.Component {
 }
 
 Lsx.propTypes = {
-  appContainer: PropTypes.object.isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
 
   forceToFetchData: PropTypes.bool,

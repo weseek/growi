@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -31,6 +31,11 @@ const ContextExtractorOnce: FC = () => {
   const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
   const notFoundContent = document.getElementById('growi-not-found-context');
   const forbiddenContent = document.getElementById('forbidden-page');
+
+  // get csrf token from body element
+  // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
+  const body = document.querySelector('body');
+  const csrfToken = body?.dataset.csrftoken;
 
   /*
    * App Context from DOM
@@ -94,6 +99,8 @@ const ContextExtractorOnce: FC = () => {
   /*
    * use static swr
    */
+  useCsrfToken(csrfToken);
+
   // App
   useCurrentUser(currentUser);
 
@@ -166,7 +173,8 @@ const ContextExtractorOnce: FC = () => {
 
   // Global Socket
   useSetupGlobalSocket();
-  useSetupGlobalAdminSocket();
+  const shouldInitAdminSock = !!currentUser?.isAdmin;
+  useSetupGlobalAdminSocket(shouldInitAdminSock);
 
   return null;
 };
