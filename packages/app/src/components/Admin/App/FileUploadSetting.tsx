@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ const FileUploadSetting = (props: Props) => {
   const { fileUploadType } = adminAppContainer.state;
   const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateFileUploadSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
@@ -31,10 +31,10 @@ const FileUploadSetting = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [adminAppContainer, t]);
 
   return (
-    <React.Fragment>
+    <>
       <p className="card well my-3">
         {t('admin:app_setting.file_upload')}
         <br />
@@ -82,8 +82,7 @@ const FileUploadSetting = (props: Props) => {
       {fileUploadType === 'gcs' && <GcsSettings />}
 
       <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
-
-    </React.Fragment>
+    </>
   );
 };
 

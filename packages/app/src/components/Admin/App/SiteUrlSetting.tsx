@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,7 @@ const SiteUrlSetting = (props: Props) => {
   const { adminAppContainer } = props;
 
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('Site URL settings') }));
@@ -30,7 +30,7 @@ const SiteUrlSetting = (props: Props) => {
       toastError(err);
       logger.error(err);
     }
-  };
+  }, [adminAppContainer, t]);
 
   return (
     <React.Fragment>

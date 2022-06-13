@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,7 @@ const AppSetting = (props) => {
   const { adminAppContainer } = props;
   const { t } = useTranslation();
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateAppSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
@@ -28,7 +28,7 @@ const AppSetting = (props) => {
       toastError(err);
       logger.error(err);
     }
-  };
+  }, [adminAppContainer, t]);
 
 
   return (

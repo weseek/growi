@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ const PluginSetting = (props: Props) => {
   const { adminAppContainer } = props;
 
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updatePluginSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings') }));
@@ -29,7 +29,7 @@ const PluginSetting = (props: Props) => {
       toastError(err);
       logger.error(err);
     }
-  };
+  }, [adminAppContainer, t]);
 
   return (
     <>
