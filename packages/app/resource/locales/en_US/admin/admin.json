@@ -524,7 +524,7 @@
   },
   "audit_log_settings": {
     "activity_expiration_date": "Activity Expiration Date",
-    "activity_expiration_date_explain": "The activity is automatically deleted after the number of seconds set in the environment variable",
+    "activity_expiration_date_explain": "Created activities are automatically deleted after the number of seconds set in the environment variable from the creation time",
     "fixed_by_env_var": "This is fixed by the env var <code>{{key}}={{value}}</code>."
   }
 }
