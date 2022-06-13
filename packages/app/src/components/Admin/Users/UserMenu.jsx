@@ -15,7 +15,7 @@ import GiveAdminButton from './GiveAdminButton';
 import RemoveAdminMenuItem from './RemoveAdminMenuItem';
 import SendInvitationEmailButton from './SendInvitationEmailButton';
 import StatusActivateButton from './StatusActivateButton';
-import StatusSuspendedButton from './StatusSuspendedButton';
+import StatusSuspendedMenuItem from './StatusSuspendedMenuItem';
 import UserRemoveButton from './UserRemoveButton';
 
 
@@ -66,7 +66,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-header">{t('status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-          {user.status === 2 && <StatusSuspendedButton user={user} />}
+          {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
           {user.status === 5 && (
             <SendInvitationEmailButton
               user={user}
