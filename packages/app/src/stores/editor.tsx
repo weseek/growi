@@ -5,7 +5,9 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
+import { IResGetPageTags } from '~/interfaces/tag';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
+import { useSWRxPageTags } from '~/stores/tag';
 
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,

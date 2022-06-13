@@ -1,4 +1,4 @@
-import EditorContainer from '~/client/services/EditorContainer';
+import { ITagNames } from '~/interfaces/tag';
 
 type OptionsToSave = {
   isSlackEnabled: boolean;
@@ -16,11 +16,10 @@ export const getOptionsToSave = (
     grant: number,
     grantUserGroupId: string | null | undefined,
     grantUserGroupName: string | null | undefined,
-    editorContainer: EditorContainer,
+    pageTags: ITagNames,
 ): OptionsToSave => {
-  const optionsToSave = editorContainer.getCurrentOptionsToSave();
   return {
-    ...optionsToSave,
+    pageTags,
     isSlackEnabled,
     slackChannels,
     grant,

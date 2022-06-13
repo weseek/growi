@@ -13,10 +13,13 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useIsIndentSizeForced, useCurrentPagePath } from '~/stores/context';
+import {
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+} from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled,
 } from '~/stores/editor';
+import { useSWRTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -84,6 +87,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: pageId } = useCurrentPageId();
+  const { data: tagsInfoData } = useSWRTagsInfo(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
@@ -121,7 +126,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, tagsInfoData?.tags || []);
 
     try {
       // disable unsaved warning

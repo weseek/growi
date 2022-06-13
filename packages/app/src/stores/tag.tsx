@@ -14,6 +14,7 @@ export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<IR
   );
 };
 
+
 export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, Error> => {
   const { data: pageId } = usePageIdOnHackmd();
   const { data: templateTagData } = useTemplateTagData();

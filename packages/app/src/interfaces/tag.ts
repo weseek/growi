@@ -5,7 +5,7 @@ export type ITag<ID = string> = {
 
 export type IDataTagCount = ITag & {count: number}
 
-type ITagNames = ITag['name'][]
+export type ITagNames = ITag['name'][]
 
 export type IListTagNamesByPage = ITagNames
 
