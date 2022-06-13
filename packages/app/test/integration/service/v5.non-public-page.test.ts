@@ -757,7 +757,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(_page2).toBeTruthy();
         expect(_page3).toBeTruthy();
         expect(_pageT.descendantCount).toBe(1);
-        // isGrantNormalized is called when GRANT RESTRICTED
+        // isGrantNormalized is not called when GRANT RESTRICTED
         expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
