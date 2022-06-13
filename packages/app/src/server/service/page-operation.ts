@@ -38,7 +38,8 @@ class PageOperationService {
   private async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
 
-    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub }).sort({ createdAt: 1 });
+    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub })
+      .sort({ createdAt: 'asc' });
     if (pageOps.length === 0) return;
 
     for await (const pageOp of pageOps) {
