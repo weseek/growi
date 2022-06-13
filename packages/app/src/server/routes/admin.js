@@ -296,8 +296,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.auditLog.settings = (req, res) => {
-    const activityExpirationSeconds = configManager.getConfig('crowi', 'app:activityExpirationSeconds') || 2592000;
-    return res.render('admin/audit-log-settings', { activityExpirationSeconds });
+    return res.render('admin/audit-log-settings');
   };
 
   // Importer management

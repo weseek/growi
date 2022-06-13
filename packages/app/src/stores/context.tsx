@@ -168,6 +168,10 @@ export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number,
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
+export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
