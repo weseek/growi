@@ -6,8 +6,8 @@ type Props = {
   header: string,
   currentCount: number,
   totalCount: number,
-  errorsCount: number,
-  isInProgress: boolean,
+  errorsCount?: number,
+  isInProgress?: boolean,
 }
 
 const LabeledProgressBar = (props: Props): JSX.Element => {
