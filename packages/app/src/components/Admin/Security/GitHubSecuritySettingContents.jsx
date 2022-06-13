@@ -1,13 +1,15 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GitHubSecurityManagementContents extends React.Component {
 
@@ -18,7 +20,7 @@ class GitHubSecurityManagementContents extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGitHubSecurityContainer, adminGeneralSecurityContainer } = this.props;
+    const { adminGitHubSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminGitHubSecurityContainer.updateGitHubSetting();
@@ -183,16 +185,22 @@ class GitHubSecurityManagementContents extends React.Component {
 
 }
 
-
-GitHubSecurityManagementContents.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
-  adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
+const GitHubSecurityManagementContentsFC = (props) => {
+  const { t } = useTranslation();
+  return <GitHubSecurityManagementContents t={t} {...props} />;
 };
 
-const GitHubSecurityManagementContentsWrapper = withUnstatedContainers(GitHubSecurityManagementContents, [
+/**
+ * Wrapper component for using unstated
+ */
+const GitHubSecurityManagementContentsWrapper = withUnstatedContainers(GitHubSecurityManagementContentsFC, [
   AdminGeneralSecurityContainer,
   AdminGitHubSecurityContainer,
 ]);
 
-export default withTranslation()(GitHubSecurityManagementContentsWrapper);
+GitHubSecurityManagementContents.propTypes = {
+  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
+};
+
+export default GitHubSecurityManagementContentsWrapper;
