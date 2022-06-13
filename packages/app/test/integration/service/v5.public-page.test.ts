@@ -1256,13 +1256,18 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('should add 1 descendantCount to parent page in MainOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename24'; // out of renaming scope
+      const _path1 = '/v5_pageForRename25'; // not renamed yet
 
-      const _path0 = '/v5_pageForRename24';
-      const _path1 = '/v5_pageForRename25';
-
+      // paths after renaming
       const path0 = '/v5_pageForRename24';
       const path1 = '/v5_pageForRename24/v5_pageForRename25';
 
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename24/v5_pageForRename25';
+
+      // pages
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
 
@@ -1271,9 +1276,6 @@ describe('PageService page operations with only public pages', () => {
       expect(_page0.descendantCount).toBe(0);
       expect(_page1.descendantCount).toBe(0);
 
-      const newPath = '/v5_pageForRename24/v5_pageForRename25';
-
-      // only main opearation is run. sub operation is skipped
       await renameMainOperation(_page1, newPath, dummyUser1, {});
 
       const page0 = await Page.findById(_page0._id); // new parent
