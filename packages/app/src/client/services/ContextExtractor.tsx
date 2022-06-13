@@ -99,7 +99,7 @@ const ContextExtractorOnce: FC = () => {
   useCurrentUser(currentUser);
 
   // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? configByContextHydrate.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
