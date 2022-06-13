@@ -141,7 +141,6 @@ module.exports = function(crowi, app) {
 
   // auditLog admin
   app.get('/admin/audit-log'                            , loginRequiredStrictly, adminRequired, admin.auditLog.index);
-  app.get('/admin/audit-log/settings'                   , loginRequiredStrictly, adminRequired, admin.auditLog.settings);
 
   // importer management for admin
   app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
