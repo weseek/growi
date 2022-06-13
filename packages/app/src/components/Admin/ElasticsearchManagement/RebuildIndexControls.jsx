@@ -119,6 +119,7 @@ const RebuildIndexControlsFC = (props) => {
 const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControlsFC, [AdminSocketIoContainer]);
 
 RebuildIndexControls.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   isRebuildingProcessing: PropTypes.bool.isRequired,
