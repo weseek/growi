@@ -130,7 +130,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/slack-integration') && <MenuLabel menu="slack-integration" />}
             {isActiveMenu('/users') &&             <MenuLabel menu="users" />}
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
-            {isActiveMenu('/search') &&        <MenuLabel menu="search" />}
+            {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
