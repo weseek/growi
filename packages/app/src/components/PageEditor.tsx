@@ -188,8 +188,10 @@ const PageEditor = (props: Props): JSX.Element => {
       }
       // when attachment
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
-        const element = <PageAttachmentPresentation attachment={attachment} fileName={fileName} />;
-        insertText = ReactDOMServer.renderToString(element);
+        // TODO: define syntax.
+        // const element = <PageAttachmentPresentation attachment={attachment} fileName={fileName} />;
+        // insertText = ReactDOMServer.renderToString(element);
+        insertText = `[${fileName}](${attachment.filePathProxied})`;
       }
       editorRef.current.insertText(insertText);
 
