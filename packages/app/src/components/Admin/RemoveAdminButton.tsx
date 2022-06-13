@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class RemoveAdminButton extends React.Component {
 
