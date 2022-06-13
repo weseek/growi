@@ -17,7 +17,7 @@ class PageOperationService {
   }
 
   // TODO: Remove this code when resuming feature is implemented
-  async init() {
+  async init(): Promise<void> {
     const {
       Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
     } = PageActionType;
@@ -25,12 +25,12 @@ class PageOperationService {
     await PageOperation.deleteByActionTypes(types);
   }
 
-  async onAfterInit():Promise<void> {
+  async onAfterInit(): Promise<void> {
     await this.executeAllRenameOperationBySystem();
   }
 
   // execute renameSubOperation on every page operation order by ASC
-  async executeAllRenameOperationBySystem(): Promise<void> {
+  private async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
 
     const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub }).sort({ createdAt: 1 });
