@@ -1,12 +1,44 @@
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+
 import { apiGet } from '~/client/util/apiv1-client';
-import { IResTagsListApiv1 } from '~/interfaces/tag';
+import { IResGetPageTags, IListTagNamesByPage, IResTagsListApiv1 } from '~/interfaces/tag';
+import { usePageIdOnHackmd, useTemplateTagData, useShareLinkId } from '~/stores/context';
+
 
 export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<IResTagsListApiv1, Error> => {
   return useSWRImmutable(
     ['/tags.list', limit, offset],
     (endpoint, limit, offset) => apiGet(endpoint, { limit, offset }).then((result: IResTagsListApiv1) => result),
   );
+};
+
+export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, Error> => {
+  const { data: pageId } = usePageIdOnHackmd();
+  const { data: templateTagData } = useTemplateTagData();
+  const { data: shareLinkId } = useShareLinkId();
+
+  const fetcher = async(endpoint: string) => {
+    if (shareLinkId != null) {
+      return;
+    }
+
+    let tags: string[] = [];
+    // when the page exists or is a shared page
+    if (pageId != null && shareLinkId == null) {
+      const res = await apiGet<IResGetPageTags>(endpoint, { pageId });
+      tags = res?.tags;
+    }
+    // when the page does not exist
+    else if (templateTagData != null) {
+      tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+    }
+
+    return tags;
+  };
+
+  return useSWR('/pages.getPageTag', fetcher);
 };

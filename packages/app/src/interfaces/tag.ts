@@ -5,11 +5,20 @@ export type ITag<ID = string> = {
 
 export type IDataTagCount = ITag & {count: number}
 
+type ITagNames = ITag['name'][]
+
+export type IListTagNamesByPage = ITagNames
+
 
 export type IResTagsSearchApiv1 = {
   ok: boolean,
-  tags: string[]
+  tags: ITagNames
 }
+
+export type IResGetPageTags = {
+  ok: boolean,
+  tags: ITagNames,
+};
 
 export type IResTagsListApiv1 = {
   ok: boolean,
