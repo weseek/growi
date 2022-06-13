@@ -530,5 +530,10 @@
     "action": "行动",
     "ip": "IP地址",
     "url": "URL"
+  },
+  "audit_log_settings": {
+    "Activity Expiration Date": "活动到期日",
+    "activity_expiration_date_explain": "该活动在环境变量中设定的秒数之后被自动删除",
+    "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>."
   }
 }
