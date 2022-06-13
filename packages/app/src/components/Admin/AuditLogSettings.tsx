@@ -27,7 +27,7 @@ export const AuditLogSettings: FC = () => {
       <p className="form-text text-muted">
         {t('admin:audit_log_settings.activity_expiration_date_explain')}
       </p>
-      <p className="alert alert-warning">
+      <p className="alert alert-warning col-6">
         <i className="icon-exclamation icon-fw">
         </i><b>FIXED</b><br />
         <b
