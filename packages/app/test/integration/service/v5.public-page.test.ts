@@ -1020,7 +1020,6 @@ describe('PageService page operations with only public pages', () => {
 
     /**
      * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
-     * If you want to include renameSubOperatoin, call it directly from crowi.pageService
      */
     const renameMainOperation = async(page, newPagePath, user, options) => {
       // create page operation from target page
