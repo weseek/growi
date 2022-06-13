@@ -9,7 +9,6 @@ import streamToPromise from 'stream-to-promise';
 import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
-import { PageEventName } from '~/interfaces/events/page';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
