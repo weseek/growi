@@ -19,7 +19,6 @@ describe('PageService page operations with only public pages', () => {
   let Comment;
   let ShareLink;
   let PageRedirect;
-  let PageOperation;
   let xssSpy;
 
   let rootPage;
@@ -36,7 +35,6 @@ describe('PageService page operations with only public pages', () => {
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
-    PageOperation = mongoose.model('PageOperation');
 
     /*
      * Common
@@ -80,11 +78,6 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename21 = new mongoose.Types.ObjectId();
     const pageIdForRename22 = new mongoose.Types.ObjectId();
     const pageIdForRename23 = new mongoose.Types.ObjectId();
-    const pageIdForRename24 = new mongoose.Types.ObjectId();
-    const pageIdForRename25 = new mongoose.Types.ObjectId();
-    const pageIdForRename26 = new mongoose.Types.ObjectId();
-    const pageIdForRename27 = new mongoose.Types.ObjectId();
-    const pageIdForRename28 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -275,51 +268,6 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename22,
-      },
-      {
-        _id: pageIdForRename24,
-        path: '/v5_pageForRename24',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        descendantCount: 0,
-      },
-      {
-        _id: pageIdForRename25,
-        path: '/v5_pageForRename25',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        descendantCount: 0,
-      },
-      {
-        _id: pageIdForRename26,
-        path: '/v5_pageForRename26',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        descendantCount: 0,
-      },
-      {
-        _id: pageIdForRename27,
-        path: '/v5_pageForRename27',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        descendantCount: 1,
-      },
-      {
-        _id: pageIdForRename28,
-        path: '/v5_pageForRename27/v5_pageForRename28',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdForRename27,
-        descendantCount: 0,
       },
     ]);
 
@@ -958,22 +906,6 @@ describe('PageService page operations with only public pages', () => {
       return renamedPage;
     };
 
-    /**
-     * This function only execute MainOperation. SubOperation is basically omitted(only return null)
-     */
-    const renameWithOnlyMainOperation = async(page, newPagePath, user, options) => {
-      // mock return value
-      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
-
-      // restores the original implementation
-      mockedRenameSubOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
-
-      return renamedPage;
-    };
-
     test('Should NOT rename top page', async() => {
       expect(rootPage).toBeTruthy();
       let isThrown = false;
@@ -1242,84 +1174,6 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPageChild.isEmpty).toBeTruthy();
       expect(renamedPageGrandchild.isEmpty).toBe(false);
-    });
-
-    test('should add 1 descendantCount to parent page in MainOperation', async() => {
-
-      const _path0 = '/v5_pageForRename24';
-      const _path1 = '/v5_pageForRename25';
-
-      const path0 = '/v5_pageForRename24';
-      const path1 = '/v5_pageForRename24/v5_pageForRename25';
-
-      const _page0 = await Page.findOne({ path: _path0 });
-      const _page1 = await Page.findOne({ path: _path1 });
-
-      expect(_page0).toBeTruthy();
-      expect(_page1).toBeTruthy();
-      expect(_page0.descendantCount).toBe(0);
-      expect(_page1.descendantCount).toBe(0);
-
-      const newPath = '/v5_pageForRename24/v5_pageForRename25';
-
-      // only main opearation is run. sub operation is skipped
-      await renameWithOnlyMainOperation(_page1, newPath, dummyUser1, {});
-
-      const page0 = await Page.findById(_page0._id); // new parent
-      const page1 = await Page.findById(_page1._id); // renamed one
-      expect(page0).toBeTruthy();
-      expect(page1).toBeTruthy();
-
-      expect(page0.path).toBe(path0);
-      expect(page1.path).toBe(path1); // renamed
-      expect(page0.descendantCount).toBe(1); // originally 0, +1 in Main.
-      expect(page1.descendantCount).toBe(0);
-
-      // cleanup
-      await PageOperation.findOneAndDelete({ fromPath: _path1 });
-    });
-    test('should subtract 1 descendantCount from parent page in SubOperation', async() => {
-
-      const _path0 = '/v5_pageForRename26';
-      const _path1 = '/v5_pageForRename27';
-      const _path2 = '/v5_pageForRename27/v5_pageForRename28';
-
-      const path0 = '/v5_pageForRename26';
-      const path1 = '/v5_pageForRename26/v5_pageForRename27';
-      const path2 = '/v5_pageForRename26/v5_pageForRename27/v5_pageForRename28';
-
-      const _page0 = await Page.findOne({ path: _path0 });
-      const _page1 = await Page.findOne({ path: _path1 });
-      const _page2 = await Page.findOne({ path: _path2 });
-
-      expect(_page0).toBeTruthy();
-      expect(_page1).toBeTruthy();
-      expect(_page2).toBeTruthy();
-      expect(_page0.descendantCount).toBe(0);
-      expect(_page1.descendantCount).toBe(1);
-      expect(_page2.descendantCount).toBe(0);
-
-      const newPath = '/v5_pageForRename26/v5_pageForRename27';
-
-      // main and sub operation are run
-      await renamePage(_page1, newPath, dummyUser1, {});
-
-      const page0 = await Page.findById(_page0._id); // new parent
-      const page1 = await Page.findById(_page1._id); // renamed
-      const page2 = await Page.findById(_page2._id); // renamed
-      expect(page0).toBeTruthy();
-      expect(page1).toBeTruthy();
-      expect(page2).toBeTruthy();
-
-      expect(page0.path).toBe(path0);
-      expect(page1.path).toBe(path1);
-      expect(page2.path).toBe(path2);
-      expect(page0.descendantCount).toBe(2); // originally 0, +1 in Main, -1 in Sub, +2 for descendants.
-      expect(page1.descendantCount).toBe(1);
-      expect(page2.descendantCount).toBe(0);
-
-      // cleanup
-      await PageOperation.findOneAndDelete({ fromPath: _path1 });
     });
   });
   describe('Duplicate', () => {
