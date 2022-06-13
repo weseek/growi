@@ -4,10 +4,14 @@ import React, {
 
 
 import AppContainer from '~/client/services/AppContainer';
+import InterceptorManager from '~/services/interceptor-manager';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
+
+
+declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
@@ -34,8 +38,7 @@ const Preview = (props: Props): JSX.Element => {
 
   const { data: editorSettings } = useEditorSettings();
 
-  const { interceptorManager } = appContainer;
-  const growiRenderer = props.appContainer.getRenderer('editor');
+  const growiRenderer = appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
     return {

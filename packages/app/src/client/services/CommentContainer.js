@@ -2,7 +2,7 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { apiGet, apiPost } from '../util/apiv1-client';
+import { apiGet, apiPost, apiPostForm } from '../util/apiv1-client';
 import { apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:services:CommentContainer');
@@ -157,12 +157,11 @@ export default class CommentContainer extends Container {
 
     const endpoint = '/attachments.add';
     const formData = new FormData();
-    formData.append('_csrf', this.appContainer.csrfToken);
     formData.append('file', file);
     formData.append('path', pagePath);
     formData.append('page_id', pageId);
 
-    return apiPost(endpoint, formData);
+    return apiPostForm(endpoint, formData);
   }
 
 }
