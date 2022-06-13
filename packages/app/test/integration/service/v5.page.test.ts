@@ -853,7 +853,7 @@ describe('Test page service methods', () => {
       // 2 extra descendants should be subtracted from page1
       expect(page0.descendantCount).toBe(2);
       expect(page1.descendantCount).toBe(-2); // originally 0
-      expect(page2.descendantCount).toBe(2); // originally 0
+      expect(page2.descendantCount).toBe(2); // originally 1, minus 1 in Sub, +2 for descendants
       expect(page3.descendantCount).toBe(1);
       expect(page4.descendantCount).toBe(0);
     });
