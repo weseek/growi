@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { getOrCreateModel } from '@growi/core';
 
 export interface Config {
   _id: Types.ObjectId;
@@ -242,6 +242,7 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
+    activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
   };
 
   return localConfig;
