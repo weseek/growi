@@ -152,7 +152,7 @@ Crowi.prototype.init = async function() {
 
 Crowi.prototype.afterInit = async function() {
   if (this.pageOperationService != null) {
-    await this.pageOperationService.onAfterInit();
+    this.pageOperationService.onAfterInit();
   }
 };
 
