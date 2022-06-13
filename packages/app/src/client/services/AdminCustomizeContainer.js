@@ -108,7 +108,7 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
         brandLogoAttachmentId: customizeParams.brandLogoAttachmentId,
-        isDefaultLogo: customizeParams.brandLogoAttachmentId === undefined ? true : customizeParams.isDefaultLogo,
+        isDefaultLogo: customizeParams.uploadedLogoSrc == null ? true : customizeParams.isDefaultLogo,
         uploadedLogoSrc: customizeParams.uploadedLogoSrc,
       });
       // search style name from object for display
