@@ -363,7 +363,7 @@ describe('PageService page operations with only public pages', () => {
           parent: rootPage._id,
           descendantCount: 0,
           isEmpty: false,
-          path: '/resume_rename_1',
+          path: '/v5_pageForRename30',
           revision: pageOpRevisionId1,
           status: 'published',
           grant: 1,
