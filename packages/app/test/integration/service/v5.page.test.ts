@@ -231,7 +231,7 @@ describe('Test page service methods', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        descendantCount: 3,
+        descendantCount: 2,
         isEmpty: false,
       },
       {
@@ -743,7 +743,7 @@ describe('Test page service methods', () => {
 
       // descendantCount
       expect(_page0.descendantCount).toBe(3);
-      expect(_page1.descendantCount).toBe(3);
+      expect(_page1.descendantCount).toBe(2);
       expect(_page2.descendantCount).toBe(1);
       expect(_page3.descendantCount).toBe(0);
 
@@ -778,7 +778,7 @@ describe('Test page service methods', () => {
 
       // 2 extra descendants should be added to page1
       expect(page0.descendantCount).toBe(3);
-      expect(page1.descendantCount).toBe(4); // originally 2
+      expect(page1.descendantCount).toBe(3); // originally 2, +1 in Main, -1 in Sub, +2 for new descendants
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
     });
@@ -852,8 +852,8 @@ describe('Test page service methods', () => {
 
       // 2 extra descendants should be subtracted from page1
       expect(page0.descendantCount).toBe(2);
-      expect(page1.descendantCount).toBe(-2); // originally 0
-      expect(page2.descendantCount).toBe(2); // originally 1, minus 1 in Sub, +2 for descendants
+      expect(page1.descendantCount).toBe(-2); // originally 0, -2 for old descendants
+      expect(page2.descendantCount).toBe(2); // originally 1, -1 in Sub, +2 for new descendants
       expect(page3.descendantCount).toBe(1);
       expect(page4.descendantCount).toBe(0);
     });
