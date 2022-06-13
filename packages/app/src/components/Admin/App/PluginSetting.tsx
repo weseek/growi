@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
@@ -62,6 +61,6 @@ const PluginSetting = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const PluginSettingWrapper = withUnstatedContainers(PluginSetting, [AppContainer, AdminAppContainer]);
+const PluginSettingWrapper = withUnstatedContainers(PluginSetting, [AdminAppContainer]);
 
 export default PluginSettingWrapper;

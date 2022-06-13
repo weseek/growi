@@ -14,7 +14,6 @@ const logger = loggerFactory('growi:appSettings');
 
 type Props = {
   adminAppContainer: AdminAppContainer,
-  isLinkSharingDisabled: boolean,
 }
 
 const SiteUrlSetting = (props: Props) => {

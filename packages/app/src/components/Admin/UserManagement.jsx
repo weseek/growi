@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
@@ -221,7 +220,6 @@ class UserManagement extends React.Component {
 
 UserManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
@@ -230,6 +228,6 @@ const UserManagementFc = (props) => {
   return <UserManagement t={t} {...props} />;
 };
 
-const UserManagementWrapper = withUnstatedContainers(UserManagementFc, [AppContainer, AdminUsersContainer]);
+const UserManagementWrapper = withUnstatedContainers(UserManagementFc, [AdminUsersContainer]);
 
 export default UserManagementWrapper;
