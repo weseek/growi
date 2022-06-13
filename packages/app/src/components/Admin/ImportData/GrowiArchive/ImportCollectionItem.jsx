@@ -20,7 +20,7 @@ export const MODE_RESTRICTED_COLLECTION = {
   users: ['insert', 'upsert'],
 };
 
-class ImportCollectionItem extends React.Component {
+export default class ImportCollectionItem extends React.Component {
 
   constructor(props) {
     super(props);
@@ -247,11 +247,3 @@ ImportCollectionItem.defaultProps = {
   modifiedCount: 0,
   errorsCount: 0,
 };
-
-const ImportCollectionItemWrapperFc = (props) => {
-  const { t } = useTranslation();
-
-  return <ImportCollectionItem t={t} {...props} />;
-};
-
-export default ImportCollectionItemWrapperFc;
