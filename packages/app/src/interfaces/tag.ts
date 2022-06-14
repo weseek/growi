@@ -7,6 +7,10 @@ export type IDataTagCount = ITag & {count: number}
 
 export type ITagNames = ITag['name'][]
 
+export type IPageTagsInfo = {
+  tags : ITagNames,
+}
+
 export type IListTagNamesByPage = ITagNames
 
 

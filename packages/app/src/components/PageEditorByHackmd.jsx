@@ -10,8 +10,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-import { useSWRTagsInfo } from '~/stores/page';
+import { useSWRxSlackChannels, useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -454,7 +453,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useSWRTagsInfo(pageId);
+  const { data: tagsInfoData } = useStaticPageTags(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();

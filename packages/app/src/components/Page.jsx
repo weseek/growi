@@ -11,8 +11,8 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useCurrentPagePath, useIsGuestUser, useCurrentPageId,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-import { useSWRTagsInfo } from '~/stores/page';
+import { useSWRxSlackChannels, useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
+// import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -192,11 +192,13 @@ const PageWrapper = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useSWRTagsInfo(pageId);
+  console.log({ pageId });
+  const { data: tagsInfoData } = useStaticPageTags(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
+  // console.log('tagsInfoData', tagsInfoData);
   const pageRef = useRef(null);
 
   // set handler to open DrawioModal
@@ -241,7 +243,7 @@ const PageWrapper = (props) => {
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
-      pageTags={tagsInfoData?.tags || []}
+      pageTags={tagsInfoData.tags || []}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}

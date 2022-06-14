@@ -14,11 +14,12 @@ import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
+import { useStaticPageTags } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRTagsInfo } from '~/stores/page';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -165,7 +166,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -179,11 +180,17 @@ const GrowiContextualSubNavigation = (props) => {
 
   const isViewMode = editorMode === EditorMode.View;
 
+  console.log('editorMode', editorMode);
+
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === EditorMode.Editor) {
+      console.log('tagsUpdatedHandler1');
+      console.log('newTags', newTags);
       return editorContainer.setState({ tags: newTags });
     }
+    console.log('editorMode_2', editorMode);
+
 
     try {
       const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
@@ -198,8 +205,8 @@ const GrowiContextualSubNavigation = (props) => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageId]);
+
+  }, [editorMode, editorContainer, pageId, revisionId, mutateSWRTagsInfo]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -322,7 +329,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={tagsInfoData?.tags || []}
+      tags={isViewMode ? tagsInfoData?.tags || [] : editorContainer.state.tags}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
