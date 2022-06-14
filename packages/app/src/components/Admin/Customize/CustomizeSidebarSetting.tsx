@@ -1,23 +1,54 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
   const [isDrawerMode, setIsDrawerMode] = useState(false);
-  const [isDefaultOpenAtDockMode, setIsDefaultOpenAtDockMode] = useState(false);
+  const [isDefaultClosedAtDockMode, setIsDefaultClosedAtDockMode] = useState(false);
+  const [retrieveError, setRetrieveError] = useState();
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
   const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
   const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
 
-  const onClickSubmit = () => {
-    console.log('update!');
+  const retrieveData = useCallback(async() => {
+    try {
+      const resSidebar = await apiv3Get('/customize-setting/sidebar');
+      setIsDrawerMode(resSidebar.data.isDrawerMode);
+
+      const resIsClosed = await apiv3Get('/customize-setting/isSidebarClosedAtDockMode');
+      setIsDefaultClosedAtDockMode(resIsClosed.data.isSidebarClosedAtDockMode);
+    }
+    catch (err) {
+      setRetrieveError(err);
+      toastError(err);
+    }
+  }, []);
+
+  const onClickSubmit = async() => {
+    try {
+      await apiv3Put('/customize-setting/sidebar', { isDrawerMode });
+      await apiv3Put('/customize-setting/isSidebarClosedAtDockMode', { isDefaultClosedAtDockMode });
+
+      // TODO: 文言を考えて追加する
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      retrieveData();
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
+
+  useEffect(() => {
+    retrieveData();
+  }, [retrieveData]);
 
   return (
     <React.Fragment>
@@ -70,9 +101,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="radio-email-show"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && isDefaultOpenAtDockMode}
+                checked={!isDrawerMode && !isDefaultClosedAtDockMode}
                 disabled={isDrawerMode}
-                onChange={() => { setIsDefaultOpenAtDockMode(true) }}
+                onChange={() => { setIsDefaultClosedAtDockMode(false) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-show">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_open')}
@@ -84,9 +115,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="radio-email-show"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && !isDefaultOpenAtDockMode}
+                checked={!isDrawerMode && isDefaultClosedAtDockMode}
                 disabled={isDrawerMode}
-                onChange={() => { setIsDefaultOpenAtDockMode(false) }}
+                onChange={() => { setIsDefaultClosedAtDockMode(true) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-show">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_close')}
@@ -96,7 +127,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" onClick={onClickSubmit} className="btn btn-primary">{ t('Update') }</button>
+              <button type="button" onClick={onClickSubmit} className="btn btn-primary" disabled={retrieveError != null}>{ t('Update') }</button>
             </div>
           </div>
 
