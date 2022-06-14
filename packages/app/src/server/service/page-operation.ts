@@ -24,17 +24,27 @@ class PageOperationService {
   }
 
   async init(): Promise<void> {
-    // cleanup PageOperation documents
+    // cleanup PageOperation documents except ones with actionType: Rename
     const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
   }
 
-  async onAfterInit(): Promise<void> {
-    // execute rename operation
-    this.executeAllRenameOperationBySystem();
+  /**
+   * run programs that should be executed only after the service is ready
+   */
+  async afterServiceReady(): Promise<void> {
+    try {
+      // execute rename operation
+      await this.executeAllRenameOperationBySystem();
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
-  // execute renameSubOperation on every page operation order by ASC
+  /**
+   * execute renameSubOperation on every page operation for rename ordered by ASC
+   */
   private async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
 
