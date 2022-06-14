@@ -728,7 +728,9 @@ class PassportService implements S2sMessageHandlable {
     const pattern = /^https?:\/\//i;
     // Set protocol if not available on url
     const absUrl = !pattern.test(issuerHost) ? `${protocol}${issuerHost}` : issuerHost;
-    return new URL(absUrl).origin;
+    const url = new URL(absUrl).href;
+    // Remove trailing slash if exists
+    return url.replace(/\/+$/, '');
   }
 
   /**
@@ -775,8 +777,9 @@ class PassportService implements S2sMessageHandlable {
       logger.error('OidcStrategy: setup failed');
       return;
     }
+    const metadataURL = this.getOIDCIssuerHostName(issuerHost);
     const oidcIssuer = await pRetry(async() => {
-      return OIDCIssuer.discover(issuerHost);
+      return OIDCIssuer.discover(metadataURL);
     }, {
       onFailedAttempt: (error) => {
         // get current OIDCIssuer timeout options
