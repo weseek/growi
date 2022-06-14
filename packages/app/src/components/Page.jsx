@@ -12,6 +12,7 @@ import {
   useCurrentPagePath, useIsGuestUser, useCurrentPageId,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -191,7 +192,8 @@ const PageWrapper = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useStaticPageTags(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: pageTags } = useStaticPageTags(tagsInfoData?.tags);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -240,7 +242,7 @@ const PageWrapper = (props) => {
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
-      pageTags={tagsInfoData.tags || []}
+      pageTags={pageTags}
       slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}

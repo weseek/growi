@@ -16,6 +16,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 // TODO: remove this when omitting unstated is completed
 import { useIsEditable, useCurrentPageId } from '~/stores/context';
 import { useStaticPageTags } from '~/stores/editor';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -145,7 +146,8 @@ const SavePageControlsWrapper = (props) => {
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
   const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useStaticPageTags(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: pageTags } = useStaticPageTags(tagsInfoData?.tags);
 
 
   if (isEditable == null || editorMode == null) {
@@ -167,7 +169,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
-      pageTags={tagsInfoData?.tags || []}
+      pageTags={pageTags || []}
     />
   );
 };
@@ -183,7 +185,7 @@ SavePageControls.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
-  pageTags:  PropTypes.arrayOf(PropTypes.string),
+  pageTags: PropTypes.arrayOf(PropTypes.string),
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
