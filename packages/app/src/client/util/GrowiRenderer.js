@@ -105,6 +105,60 @@ export default class GrowiRenderer {
         ]);
         break;
     }
+
+    // function parse(src) {
+    //   if (src.starsWith('(/attachment/')) {
+    //     // const innerText = src.slice(1, src.length - 1);
+    //     return {
+    //       type: 'attachment',
+    //       src,
+    //     };
+    //   }
+    //   return {
+    //     type: 'text',
+    //     src,
+    //   };
+    // }
+
+    // function parseNotation(text) {
+    //   const result = [''];
+    //   for (const char of text) {
+    //     switch (char) {
+    //       case '(':
+    //         result.push(char);
+    //         break;
+    //       case ')':
+    //         result[result.length - 1] += char;
+    //         result.push('');
+    //         break;
+    //       default:
+    //         result[result.length - 1] += char;
+    //         break;
+    //     }
+    //   }
+    //   return result.filter(Boolean).map(parse);
+    // }
+
+    this.md.inline.ruler.after('text', 'my_rule', (state) => {
+
+    });
+
+    this.md.renderer.rules.my_rule = (tokens, idx) => {
+      return '<p>this is test text.</p>';
+    };
+
+    // this.md.inline.ruler.push('grw_attachment_rule', (state) => {
+    //   const parsed = parseNotation(state.src);
+    //   if (parsed.filter(item => item.type === 'attachment').length >= 1) {
+    //     state.tokens[0].type = 'grw_attachment_link';
+    //   }
+    //   return false;
+    // });
+    // this.md.renderer.rules.grw_attachment_link = (tokens, idx) => {
+    //   const token = tokens[idx];
+    //   const parsed = parseNotation(token.content);
+    //   return parsed.map(render).join('');
+    // };
   }
 
   /**
