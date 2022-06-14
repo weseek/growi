@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,7 +23,7 @@ type Props = {
 const IndentForm = (props: Props) => {
   const { t } = useTranslation();
 
-  const onClickSubmit = async(props) => {
+  const onClickSubmit = useCallback(async(props) => {
     try {
       await props.adminMarkDownContainer.updateIndentSetting();
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.indent_header') }));
@@ -32,7 +32,7 @@ const IndentForm = (props: Props) => {
       toastError(err);
       logger.error(err);
     }
-  };
+  }, [t]);
 
   const renderIndentSizeOption = (props) => {
     const { adminMarkDownContainer } = props;
