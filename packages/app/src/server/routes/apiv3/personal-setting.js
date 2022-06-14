@@ -231,7 +231,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.personal, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
 
     try {
       const user = await User.findOne({ _id: req.user.id });
@@ -243,6 +243,10 @@ module.exports = (crowi) => {
 
       const updatedUser = await user.save();
       req.i18n.changeLanguage(req.body.lang);
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PERSONAL_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ updatedUser });
     }
     catch (err) {
@@ -272,11 +276,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser, loginRequiredStrictly, csrf, validator.imageType, apiV3FormValidator, async(req, res) => {
+  router.put('/image-type', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.imageType, apiV3FormValidator, async(req, res) => {
     const { isGravatarEnabled } = req.body;
 
     try {
       const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_IMAGE_TYPE_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -385,11 +393,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/api-token', loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/api-token', loginRequiredStrictly, csrf, addActivity, async(req, res) => {
     const { user } = req;
 
     try {
       const userData = await user.updateApiToken();
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_API_TOKEN_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -425,7 +437,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account associate to me
    */
-  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.associateLdap, apiV3FormValidator, async(req, res) => {
+  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.associateLdap, apiV3FormValidator, async(req, res) => {
     const { passportService } = crowi;
     const { user, body } = req;
     const { username } = body;
@@ -438,6 +450,10 @@ module.exports = (crowi) => {
     try {
       await passport.authenticate('ldapauth');
       const associateUser = await ExternalAccount.associate('ldap', username, user);
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LDAP_ACCOUNT_ASSOCIATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ associateUser });
     }
     catch (err) {
@@ -473,7 +489,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account disassociate to me
    */
-  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
     const { user, body } = req;
     const { providerType, accountId } = body;
 
@@ -484,6 +501,10 @@ module.exports = (crowi) => {
         return res.apiv3Err('disassociate-ldap-account-failed');
       }
       const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LDAP_ACCOUNT_DISCONNECT };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ disassociateUser });
     }
     catch (err) {
@@ -513,7 +534,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const { body } = req;
 
@@ -540,6 +561,10 @@ module.exports = (crowi) => {
     const options = { upsert: true, new: true };
     try {
       const response = await EditorSettings.findOneAndUpdate(query, { $set: document }, options);
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_EDITOR_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(response);
     }
     catch (err) {
@@ -602,7 +627,7 @@ module.exports = (crowi) => {
    *                      description: in-app-notification-settings
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const subscribeRules = req.body.subscribeRules;
 
@@ -613,6 +638,10 @@ module.exports = (crowi) => {
     const options = { upsert: true, new: true, runValidators: true };
     try {
       const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
+
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(response);
     }
     catch (err) {
