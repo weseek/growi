@@ -3523,7 +3523,7 @@ class PageService {
     }
     else {
       const parentId = parentPathOrId;
-      queryBuilder = new PageQueryBuilder(Page.find({ parent: parentId } as any), true); // TODO: improve type
+      queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
