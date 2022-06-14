@@ -108,12 +108,17 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
         brandLogoAttachmentId: customizeParams.brandLogoAttachmentId,
-        isDefaultLogo: customizeParams.uploadedLogoSrc == null ? true : customizeParams.isDefaultLogo,
         uploadedLogoSrc: customizeParams.uploadedLogoSrc,
       });
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
 
+      if (!('isDefaultLogo' in customizeParams)) {
+        this.setState({ isDefaultLogo: true });
+      }
+      else {
+        this.setState({ isDefaultLogo: customizeParams.isDefaultLogo });
+      }
     }
     catch (err) {
       this.setState({ retrieveError: err });
