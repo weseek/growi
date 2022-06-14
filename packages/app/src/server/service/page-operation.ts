@@ -30,7 +30,7 @@ class PageOperationService {
   }
 
   /**
-   * run programs that should be executed only after the service is ready
+   * Execute functions that should be run after the express server is ready.
    */
   async afterExpressServerReady(): Promise<void> {
     try {
