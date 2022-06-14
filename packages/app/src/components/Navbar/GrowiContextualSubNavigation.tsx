@@ -176,7 +176,7 @@ const GrowiContextualSubNavigation = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
-    /* editorContainer, */ isCompactMode, isLinkSharingDisabled,
+    isCompactMode, isLinkSharingDisabled,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
@@ -184,12 +184,11 @@ const GrowiContextualSubNavigation = (props) => {
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === EditorMode.Editor) {
-      console.log('newTags', newTags);
-      return mutateEditorContainerTags(newTags);
+      return mutateEditorContainerTags(newTags, false);
     }
 
     try {
-      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -314,8 +313,6 @@ const GrowiContextualSubNavigation = (props) => {
     createdAt: createdAt ?? undefined,
     updatedAt: updatedAt ?? undefined,
   };
-
-  console.log('tagsOnEditorMode', tagsOnEditorMode);
 
   return (
     <GrowiSubNavigation

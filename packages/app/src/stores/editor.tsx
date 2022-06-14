@@ -7,8 +7,6 @@ import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 import { ITagNames } from '~/interfaces/tag';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
-// import { useSWRxTagsInfo } from '~/stores/page';
-import { useSWRxPageTags } from '~/stores/tag';
 
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
@@ -95,6 +93,5 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
 };
 
 export const useStaticPageTags = (initialTags?: ITagNames): SWRResponse<ITagNames, Error> => {
-  // const { data: pageTags } = useSWRxPageTags();
   return useStaticSWR<ITagNames, Error>('pageTags', undefined, { fallbackData: initialTags || [] });
 };

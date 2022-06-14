@@ -12,7 +12,6 @@ import {
   useCurrentPagePath, useIsGuestUser, useCurrentPageId,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
-// import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -192,13 +191,11 @@ const PageWrapper = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  console.log({ pageId });
   const { data: tagsInfoData } = useStaticPageTags(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
 
-  // console.log('tagsInfoData', tagsInfoData);
   const pageRef = useRef(null);
 
   // set handler to open DrawioModal
