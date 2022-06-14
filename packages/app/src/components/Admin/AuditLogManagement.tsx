@@ -11,10 +11,10 @@ import { useSWRxActivity } from '~/stores/activity';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
+import { AuditLogSettings } from './AuditLog/AuditLogSettings';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
-import { AuditLogSettings } from './AuditLogSettings';
 
 
 const formatDate = (date: Date | null) => {
