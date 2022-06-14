@@ -63,6 +63,10 @@ const RevisionComparer = (props) => {
     isNodiff = sourceRevision._id === targetRevision._id;
   }
 
+  if (currentPageId == null || currentPagePath == null) {
+    return <>{ t('not_found_page.page_not_exist')}</>;
+  }
+
   return (
     <div className="revision-compare">
       <div className="d-flex">
