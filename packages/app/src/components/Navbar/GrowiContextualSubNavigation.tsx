@@ -167,7 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditorMode, mutate: mutateEditorContainerTags } = useStaticPageTags(tagsInfoData?.tags);
+  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode } = useStaticPageTags(tagsInfoData?.tags);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -184,7 +184,7 @@ const GrowiContextualSubNavigation = (props) => {
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
     if (!isViewMode) {
-      return mutateEditorContainerTags(newTags, false);
+      return mutateTagsOnEditMode(newTags, false);
     }
 
     try {
@@ -192,7 +192,7 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      mutateEditorContainerTags(newTags, false);
+      mutateTagsOnEditMode(newTags, false);
 
       toastSuccess('updated tags successfully');
     }
@@ -200,7 +200,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [editorMode, pageId, revisionId, mutateSWRTagsInfo, mutateEditorContainerTags]);
+  }, [isViewMode, mutateTagsOnEditMode, pageId, revisionId, mutateSWRTagsInfo]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -323,7 +323,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags || [] : tagsOnEditorMode}
+      tags={isViewMode ? tagsInfoData?.tags || [] : tagsOnEditMode}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
