@@ -1,7 +1,6 @@
 import path from 'path';
 
-import { allLocales } from '^/next-i18next.config';
-
+import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 const onHeaders = require('on-headers');

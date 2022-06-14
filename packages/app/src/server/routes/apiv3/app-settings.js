@@ -1,7 +1,6 @@
 import { body } from 'express-validator';
 
-import { allLocales } from '^/next-i18next.config';
-
+import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';

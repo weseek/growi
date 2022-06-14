@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { allLocales, localePath } from '^/next-i18next.config';
+import { allLocales, localePath } from '~/next-i18next.config';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
