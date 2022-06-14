@@ -1,12 +1,19 @@
 import { pagePathUtils } from '@growi/core';
 
 import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
-import PageOperation, { PageActionType, PageOperationDocument } from '~/server/models/page-operation';
+import PageOperation, { PageActionType, PageActionStage, PageOperationDocument } from '~/server/models/page-operation';
+import loggerFactory from '~/utils/logger';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
+const logger = loggerFactory('growi:services:page-operation');
+
 const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
 const AUTO_UPDATE_INTERVAL_SEC = 5;
+
+const {
+  Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
+} = PageActionType;
 
 class PageOperationService {
 
@@ -16,13 +23,49 @@ class PageOperationService {
     this.crowi = crowi;
   }
 
-  // TODO: Remove this code when resuming feature is implemented
-  async init() {
-    const {
-      Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
-    } = PageActionType;
+  async init(): Promise<void> {
+    // cleanup PageOperation documents except ones with actionType: Rename
     const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
+  }
+
+  /**
+   * Execute functions that should be run after the express server is ready.
+   */
+  async afterExpressServerReady(): Promise<void> {
+    try {
+      // execute rename operation
+      await this.executeAllRenameOperationBySystem();
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  }
+
+  /**
+   * Execute renameSubOperation on every page operation for rename ordered by createdAt ASC
+   */
+  private async executeAllRenameOperationBySystem(): Promise<void> {
+    const Page = this.crowi.model('Page');
+
+    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub })
+      .sort({ createdAt: 'asc' });
+    if (pageOps.length === 0) return;
+
+    for await (const pageOp of pageOps) {
+      const {
+        page, toPath, options, user,
+      } = pageOp;
+
+      const renamedPage = await Page.findById(pageOp.page._id);
+      if (renamedPage == null) {
+        logger.warn('operating page is not found');
+        continue;
+      }
+
+      // rename
+      await this.crowi.pageService.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    }
   }
 
   /**

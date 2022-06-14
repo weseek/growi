@@ -148,6 +148,16 @@ Crowi.prototype.init = async function() {
   await this.autoInstall();
 };
 
+/**
+ * Execute functions that should be run after the express server is ready.
+ */
+Crowi.prototype.asyncAfterExpressServerReady = async function() {
+  if (this.pageOperationService != null) {
+    await this.pageOperationService.afterExpressServerReady();
+  }
+};
+
+
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
     return false;
@@ -464,6 +474,9 @@ Crowi.prototype.start = async function() {
   // setup Global Error Handlers
   this.setupGlobalErrorHandlers();
 
+  // Execute this asynchronously after the express server is ready so it does not block the ongoing process
+  this.asyncAfterExpressServerReady();
+
   return serverListening;
 };
 
@@ -682,7 +695,6 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
-    // TODO: Remove this code when resuming feature is implemented
     await this.pageOperationService.init();
   }
 };
