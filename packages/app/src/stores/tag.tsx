@@ -4,7 +4,8 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { IResGetPageTags, IListTagNamesByPage, IResTagsListApiv1 } from '~/interfaces/tag';
-import { usePageIdOnHackmd, useTemplateTagData, useShareLinkId } from '~/stores/context';
+import { useCurrentPageId, useTemplateTagData, useShareLinkId } from '~/stores/context';
+import { useSWRxTagsInfo } from '~/stores/page';
 
 
 export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<IResTagsListApiv1, Error> => {
@@ -16,7 +17,8 @@ export const useSWRxTagsList = (limit?: number, offset?: number): SWRResponse<IR
 
 
 export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, Error> => {
-  const { data: pageId } = usePageIdOnHackmd();
+  const { data: pageId } = useCurrentPageId();
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -25,11 +27,13 @@ export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, 
       return;
     }
 
+
     let tags: string[] = [];
     // when the page exists or is a shared page
-    if (pageId != null && shareLinkId == null) {
-      const res = await apiGet<IResGetPageTags>(endpoint, { pageId });
-      tags = res?.tags;
+    if (tagsInfoData != null && pageId != null && shareLinkId == null) {
+      // const res = await apiGet<IResGetPageTags>(endpoint, { pageId });
+      // tags = res?.tags;
+      tags = tagsInfoData.tags;
     }
     // when the page does not exist
     else if (templateTagData != null) {
