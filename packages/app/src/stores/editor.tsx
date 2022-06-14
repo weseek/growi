@@ -5,9 +5,10 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
-import { IResGetPageTags } from '~/interfaces/tag';
+import { ITagNames } from '~/interfaces/tag';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
-import { useSWRxTagsInfo } from '~/stores/page';
+// import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxPageTags } from '~/stores/tag';
 
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
@@ -93,7 +94,8 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useStaticPageTags = (pageId: string | null | undefined): SWRResponse<IResGetPageTags['tags'], Error> => {
-  const { data: pageTags } = useSWRxTagsInfo(pageId);
-  return useStaticSWR<IResGetPageTags['tags'], Error>('pageTags', pageTags || [], { fallbackData: [] });
+export const useStaticPageTags = (pageId: string | null | undefined): SWRResponse<ITagNames, Error> => {
+  const { data: pageTags } = useSWRxPageTags();
+  console.log('pageTags_hoge', pageTags);
+  return useStaticSWR<ITagNames, Error>('pageTags', pageTags || [], { fallbackData: pageTags });
 };

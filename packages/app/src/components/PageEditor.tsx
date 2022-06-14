@@ -87,6 +87,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = useStaticPageTags(pageId);
   const { data: tagsInfoData } = useStaticPageTags(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -125,7 +126,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, tagsInfoData?.tags || []);
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
 
     try {
       // disable unsaved warning
