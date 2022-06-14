@@ -61,7 +61,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="d-flex flex-column align-items-center">
+          <div className="px-3">
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
