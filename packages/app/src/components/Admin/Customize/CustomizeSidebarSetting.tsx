@@ -9,8 +9,8 @@ import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
-  const [isDrawerMode, setIsDrawerMode] = useState(false);
-  const [isDefaultClosedAtDockMode, setIsDefaultClosedAtDockMode] = useState(false);
+  const [isSidebarDrawerMode, setIsSidebarDrawerMode] = useState(false);
+  const [isSidebarClosedAtDockMode, setIsSidebarClosedAtDockMode] = useState(false);
   const [retrieveError, setRetrieveError] = useState();
 
   const isDarkMode = isDarkModeByUtil();
@@ -21,10 +21,10 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const retrieveData = useCallback(async() => {
     try {
       const resSidebar = await apiv3Get('/customize-setting/sidebar');
-      setIsDrawerMode(resSidebar.data.isDrawerMode);
+      setIsSidebarDrawerMode(resSidebar.data.isSidebarDrawerMode);
 
       const resIsClosed = await apiv3Get('/customize-setting/isSidebarClosedAtDockMode');
-      setIsDefaultClosedAtDockMode(resIsClosed.data.isSidebarClosedAtDockMode);
+      setIsSidebarClosedAtDockMode(resIsClosed.data.isSidebarClosedAtDockMode);
     }
     catch (err) {
       setRetrieveError(err);
@@ -34,11 +34,10 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
   const onClickSubmit = async() => {
     try {
-      await apiv3Put('/customize-setting/sidebar', { isDrawerMode });
-      await apiv3Put('/customize-setting/isSidebarClosedAtDockMode', { isDefaultClosedAtDockMode });
+      await apiv3Put('/customize-setting/sidebar', { isSidebarDrawerMode });
+      await apiv3Put('/customize-setting/isSidebarClosedAtDockMode', { isSidebarClosedAtDockMode });
 
-      // TODO: 文言を考えて追加する
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
       retrieveData();
     }
     catch (err) {
@@ -66,8 +65,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           <div className="d-flex justify-content-around mt-5">
             <div id="layoutOptions" className="card-deck">
               <div
-                className={`card customize-layout-card ${isDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsDrawerMode(true)}
+                className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsSidebarDrawerMode(true)}
                 role="button"
               >
                 <img src={drawerIconFileName} />
@@ -76,8 +75,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 </div>
               </div>
               <div
-                className={`card customize-layout-card ${!isDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsDrawerMode(false)}
+                className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsSidebarDrawerMode(false)}
                 role="button"
               >
                 <img src={dockIconFileName} />
@@ -98,28 +97,28 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
-                id="radio-email-show"
+                id="is-open"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && !isDefaultClosedAtDockMode}
-                disabled={isDrawerMode}
-                onChange={() => { setIsDefaultClosedAtDockMode(false) }}
+                checked={!isSidebarDrawerMode && !isSidebarClosedAtDockMode}
+                disabled={isSidebarDrawerMode}
+                onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
-              <label className="custom-control-label" htmlFor="radio-email-show">
+              <label className="custom-control-label" htmlFor="is-open">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
-                id="radio-email-show"
+                id="is-closed"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && isDefaultClosedAtDockMode}
-                disabled={isDrawerMode}
-                onChange={() => { setIsDefaultClosedAtDockMode(true) }}
+                checked={!isSidebarDrawerMode && isSidebarClosedAtDockMode}
+                disabled={isSidebarDrawerMode}
+                onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
-              <label className="custom-control-label" htmlFor="radio-email-show">
+              <label className="custom-control-label" htmlFor="is-closed">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>
