@@ -109,6 +109,9 @@ module.exports = (crowi) => {
     sidebar: [
       body('isSidebarDrawerMode').isBoolean(),
     ],
+    isSidebarClosedAtDockMode: [
+      body('isSidebarClosedAtDockMode').isBoolean(),
+    ],
     function: [
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
@@ -370,6 +373,41 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-sidebar-failed'));
     }
   });
+
+  // isSidebarClosedAtDockMode
+  router.get('/isSidebarClosedAtDockMode', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    try {
+      const isSidebarClosedAtDockMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
+      return res.apiv3({ isSidebarClosedAtDockMode });
+    }
+    catch (err) {
+      const msg = 'Error occurred in getting isSidebarClosedAtDockMode';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-isSidebarClosedAtDockMode-failed'));
+    }
+  });
+
+  router.put(
+    '/isSidebarClosedAtDockMode', loginRequiredStrictly, adminRequired, csrf, validator.isSidebarClosedAtDockMode, apiV3FormValidator, async(req, res) => {
+      const requestParams = {
+        'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
+      };
+
+      try {
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+        const customizedParams = {
+          isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+        };
+        return res.apiv3({ customizedParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating isSidebarClosedAtDockMode';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-isSidebarClosedAtDockMode-failed'));
+      }
+    },
+  );
 
   /**
    * @swagger
