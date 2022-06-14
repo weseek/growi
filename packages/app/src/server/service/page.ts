@@ -173,9 +173,9 @@ class PageService {
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
       const pages = [page];
       if (isRecursively) {
-        descendantPages.forEach((element) => {
+        for (const element of descendantPages) {
           pages.push(element);
-        });
+        }
       }
       try {
         await this.createAndSendNotifications(pages, user, action);
@@ -551,7 +551,6 @@ class PageService {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
-    // this.pageEvent.emit('rename', page, user);
 
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
@@ -562,8 +561,7 @@ class PageService {
     /*
      * Sub Operation
      */
-    const descendantPages = await this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
-    this.pageEvent.emit('rename', page, descendantPages, user);
+    await this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
@@ -574,7 +572,7 @@ class PageService {
     const exParentId = page.parent;
 
     // update descendants first
-    const descendantPages = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
 
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
@@ -592,7 +590,6 @@ class PageService {
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
-    return descendantPages;
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -841,15 +838,16 @@ class PageService {
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
-    let pages: ObjectId[] = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          pages = await renameDescendants(
+          await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
+          console.log('Below are the descendant pages:\n', batch);
+          pageEvent.emit('rename', targetPage, batch, user);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -874,7 +872,6 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
-    return pages;
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
