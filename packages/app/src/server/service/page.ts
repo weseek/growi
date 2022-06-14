@@ -3523,6 +3523,7 @@ class PageService {
     }
     else {
       const parentId = parentPathOrId;
+      // Use $eq for user-controlled sources. see: https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/#recommendation
       queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
     }
     await queryBuilder.addViewerCondition(user, userGroups);
