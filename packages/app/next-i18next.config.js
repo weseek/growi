@@ -11,5 +11,5 @@ const i18nextConfigs = {
 
 module.exports = {
   ...i18nextConfigs,
-  allLocales: [i18nextConfigs.defaultLocale].concat(i18nextConfigs.locales),
+  allLocales: [i18nextConfigs.i18n.defaultLocale].concat(i18nextConfigs.i18n.locales),
 };
