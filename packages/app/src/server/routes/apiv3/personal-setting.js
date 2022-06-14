@@ -1,12 +1,14 @@
 import { body } from 'express-validator';
 
+import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { listLocaleIds } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
 
-
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
 import InAppNotificationSettings from '../../models/in-app-notification-settings';
+
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -69,8 +71,11 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const { User, ExternalAccount } = crowi.models;
+
+  const activityEvent = crowi.event('activity');
 
   const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
 
@@ -340,7 +345,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.password, apiV3FormValidator, async(req, res) => {
     const { body, user } = req;
     const { oldPassword, newPassword } = body;
 
@@ -349,6 +354,8 @@ module.exports = (crowi) => {
     }
     try {
       const userData = await user.updatePassword(newPassword);
+      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PASSWORD_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ userData });
     }
     catch (err) {
