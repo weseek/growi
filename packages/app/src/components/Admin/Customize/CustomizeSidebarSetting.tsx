@@ -12,6 +12,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
+  const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
+  const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
 
   const onClickSubmit = () => {
     console.log('update!');
@@ -37,7 +39,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 onClick={() => setIsDrawerMode(true)}
                 role="button"
               >
-                <img src={`/images/customize-settings/drawer-${colorText}.svg`} />
+                <img src={drawerIconFileName} />
                 <div className="card-body text-center">
                   Drawer Mode
                 </div>
@@ -47,7 +49,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 onClick={() => setIsDrawerMode(false)}
                 role="button"
               >
-                <img src={`/images/customize-settings/dock-${colorText}.svg`} />
+                <img src={dockIconFileName} />
                 <div className="card-body  text-center">
                   Dock Mode
                 </div>
@@ -61,7 +63,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="d-flex flex-column align-items-center">
+          <div className="px-3">
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
