@@ -27,12 +27,9 @@ export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, 
       return;
     }
 
-
     let tags: string[] = [];
     // when the page exists or is a shared page
     if (tagsInfoData != null && pageId != null && shareLinkId == null) {
-      // const res = await apiGet<IResGetPageTags>(endpoint, { pageId });
-      // tags = res?.tags;
       tags = tagsInfoData.tags;
     }
     // when the page does not exist
@@ -41,6 +38,8 @@ export const useSWRxPageTags = (): SWRResponse<IListTagNamesByPage | undefined, 
         return str !== ''; // filter empty values
       });
     }
+
+    console.log('tags_useSWRxPageTags', tags);
 
     return tags;
   };
