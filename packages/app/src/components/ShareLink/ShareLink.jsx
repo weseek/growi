@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 
 import PageContainer from '~/client/services/PageContainer';
@@ -112,14 +112,19 @@ class ShareLink extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
-
 ShareLink.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(ShareLinkWrapper);
+const ShareLinkWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ShareLink t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkWrapper = withUnstatedContainers(ShareLinkWrapperFC, [PageContainer]);
+
+export default ShareLinkWrapper;

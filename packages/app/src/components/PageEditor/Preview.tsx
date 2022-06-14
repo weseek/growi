@@ -4,10 +4,14 @@ import React, {
 
 
 import AppContainer from '~/client/services/AppContainer';
+import InterceptorManager from '~/services/interceptor-manager';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
+
+
+declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
@@ -28,15 +32,13 @@ const Preview = (props: Props): JSX.Element => {
     appContainer,
     markdown, pagePath,
     inputRef,
-    onScroll,
   } = props;
 
   const [html, setHtml] = useState('');
 
   const { data: editorSettings } = useEditorSettings();
 
-  const { interceptorManager } = appContainer;
-  const growiRenderer = props.appContainer.getRenderer('editor');
+  const growiRenderer = appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
     return {
@@ -110,4 +112,9 @@ const Preview = (props: Props): JSX.Element => {
  */
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
-export default PreviewWrapper;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const PreviewWrapper2 = (props): JSX.Element => {
+  return <PreviewWrapper {...props} />;
+};
+
+export default PreviewWrapper2;

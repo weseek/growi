@@ -245,7 +245,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+  router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
     const { pageId, path } = req.query;
 
     if (pageId == null && path == null) {
@@ -255,10 +256,10 @@ module.exports = (crowi) => {
     let page;
     try {
       if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, req.user);
+        page = await Page.findByIdAndViewer(pageId, user);
       }
       else {
-        page = await Page.findByPathAndViewer(path, req.user);
+        page = await Page.findByPathAndViewer(path, user);
       }
     }
     catch (err) {

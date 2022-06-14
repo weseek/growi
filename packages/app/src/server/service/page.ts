@@ -2294,7 +2294,7 @@ class PageService {
         grantedUsers: notEmptyParent.grantedUsers,
       };
 
-      systematicallyCreatedPage = await this.createBySystem(
+      systematicallyCreatedPage = await this.forceCreateBySystem(
         path,
         '',
         options,
@@ -2635,10 +2635,7 @@ class PageService {
     return isUnique;
   }
 
-  // TODO: use socket to send status to the client
   async normalizeAllPublicPages() {
-    // const socket = this.crowi.socketIoService.getAdminSocket();
-
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();
@@ -2655,7 +2652,6 @@ class PageService {
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
         throw err;
       }
     }
@@ -2666,7 +2662,6 @@ class PageService {
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message });
 
       throw err;
     }
@@ -2710,7 +2705,7 @@ class PageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmit = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -2729,7 +2724,7 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmit);
   }
 
   private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
@@ -2775,12 +2770,19 @@ class PageService {
   }
 
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
+      pathOrRegExps: (RegExp | string)[],
+      publicPathsToNormalize: string[],
+      grantFiltersByUser: { $or: any[] },
+      user,
+      shouldEmit = false,
+      count = 0,
+      skiped = 0,
+      isFirst = true,
   ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
-    const socket = this.crowi.socketIoService.getAdminSocket();
+    const socket = shouldEmit ? this.crowi.socketIoService.getAdminSocket() : null;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2802,7 +2804,7 @@ class PageService {
     // Limit pages to get
     const total = await Page.countDocuments(matchFilter);
     if (isFirst) {
-      socket.emit(SocketEventName.PMStarted, { total });
+      socket?.emit(SocketEventName.PMStarted, { total });
     }
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
@@ -2909,13 +2911,13 @@ class PageService {
           nextSkiped += res.result.writeErrors.length;
           logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
 
-          socket.emit(SocketEventName.PMMigrating, { count: nextCount });
-          socket.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
+          socket?.emit(SocketEventName.PMMigrating, { count: nextCount });
+          socket?.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
@@ -2923,7 +2925,7 @@ class PageService {
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
           }
         }
         catch (err) {
@@ -2945,11 +2947,11 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(matchFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, shouldEmit, nextCount, nextSkiped, false);
     }
 
     // End
-    socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
+    socket?.emit(SocketEventName.PMEnded, { isSucceeded: true });
 
     return nextCount;
   }
@@ -3368,7 +3370,7 @@ class PageService {
     return savedPage;
   }
 
-  private async canProcessCreateBySystem(
+  private async canProcessForceCreateBySystem(
       path: string,
       grantData: {
         grant: number,
@@ -3379,7 +3381,15 @@ class PageService {
     return this.canProcessCreate(path, grantData, false);
   }
 
-  async createBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
+  /**
+   * @private
+   * This method receives the same arguments as the PageService.create method does except for the added type '{ grantedUsers?: ObjectIdLike[] }'.
+   * This additional value is used to determine the grantedUser of the page to be created by system.
+   * This method must not run isGrantNormalized method to validate grant. **If necessary, run it before use this method.**
+   * -- Reason 1: This is because it is not expected to use this method when the grant validation is required.
+   * -- Reason 2: This is because it is not expected to use this method when the program cannot determine the operator.
+   */
+  private async forceCreateBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -3409,9 +3419,9 @@ class PageService {
     if (isGrantOwner && grantedUsers?.length !== 1) {
       throw Error('grantedUser must exist when grant is GRANT_OWNER');
     }
-    const canProcessCreateBySystem = await this.canProcessCreateBySystem(path, grantData);
-    if (!canProcessCreateBySystem) {
-      throw Error('Cannnot process createBySystem');
+    const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
+    if (!canProcessForceCreateBySystem) {
+      throw Error('Cannnot process forceCreateBySystem');
     }
 
     // Prepare a page document

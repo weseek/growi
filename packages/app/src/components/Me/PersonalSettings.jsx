@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
@@ -13,9 +13,9 @@ import InAppNotificationSettings from './InAppNotificationSettings';
 import PasswordSettings from './PasswordSettings';
 import UserSettings from './UserSettings';
 
-const PersonalSettings = (props) => {
+const PersonalSettings = () => {
 
-  const { t } = props;
+  const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
     return {
@@ -67,8 +67,4 @@ const PersonalSettings = (props) => {
 
 };
 
-PersonalSettings.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-};
-
-export default withTranslation()(PersonalSettings);
+export default PersonalSettings;

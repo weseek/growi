@@ -1,6 +1,5 @@
 import { Container } from 'unstated';
 
-import InterceptorManager from '~/services/interceptor-manager';
 
 import GrowiRenderer from '../util/GrowiRenderer';
 import { i18nFactory } from '../util/i18n';
@@ -13,11 +12,6 @@ export default class AppContainer extends Container {
 
   constructor() {
     super();
-
-    // get csrf token from body element
-    // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
-    const body = document.querySelector('body');
-    this.csrfToken = body.dataset.csrftoken;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
@@ -51,8 +45,6 @@ export default class AppContainer extends Container {
     this.isDocSaved = true;
 
     this.originRenderer = new GrowiRenderer(this);
-
-    this.interceptorManager = new InterceptorManager();
 
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
@@ -91,13 +83,6 @@ export default class AppContainer extends Container {
       return null;
     }
     return this.currentUser.username;
-  }
-
-  /**
-   * @return {Object} window.Crowi (js/legacy/crowi.js)
-   */
-  getCrowiForJquery() {
-    return window.Crowi;
   }
 
   getConfig() {
@@ -141,10 +126,6 @@ export default class AppContainer extends Container {
   registerComponentInstance(id, instance) {
     if (instance == null) {
       throw new Error('The specified instance must not be null');
-    }
-
-    if (this.componentInstances[id] != null) {
-      throw new Error('The specified instance couldn\'t register because the same id has already been registered');
     }
 
     this.componentInstances[id] = instance;

@@ -2,7 +2,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -153,12 +153,19 @@ class PasswordSettings extends React.Component {
 
 }
 
-
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [PersonalContainer]);
-
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
-export default withTranslation()(PasswordSettingsWrapper);
+const PasswordSettingsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PasswordSettings t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettingsWrapperFC, [PersonalContainer]);
+
+export default PasswordSettingsWrapper;
