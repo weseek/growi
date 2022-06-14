@@ -69,7 +69,7 @@ export const generateApiRateLimitConfig = (): ApiRateLimitConfigResult => {
 
   // get config
   const apiRateLimitConfig = generateApiRateLimitConfigFromEndpoint(envVar, apiRateConfigTargets, false);
-  const apiRateLimitConfigWithRegExp = generateApiRateLimitConfigFromEndpoint(envVar, apiRateConfigTargets, true);
+  const apiRateLimitConfigWithRegExp = generateApiRateLimitConfigFromEndpoint(envVar, apiRateConfigTargetsWithRegExp, true);
 
   const config = { ...defaultConfig, ...apiRateLimitConfig };
   const configWithRegExp = { ...defaultConfigWithRegExp, ...apiRateLimitConfigWithRegExp };
