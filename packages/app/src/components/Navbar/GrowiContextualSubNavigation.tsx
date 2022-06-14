@@ -167,7 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: editorContainerTags, mutate: mutateEditorContainerTags } = useStaticPageTags(pageId);
+  const { data: tagsOnEditorMode, mutate: mutateEditorContainerTags } = useStaticPageTags(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -181,18 +181,13 @@ const GrowiContextualSubNavigation = (props) => {
 
   const isViewMode = editorMode === EditorMode.View;
 
-  console.log('editorMode', editorMode);
-
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === EditorMode.Editor) {
-      console.log('tagsUpdatedHandler1');
       console.log('newTags', newTags);
       // return editorContainer.setState({ tags: newTags });
       return mutateEditorContainerTags(newTags);
     }
-    console.log('editorMode_2', editorMode);
-
 
     try {
       const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
@@ -332,7 +327,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags || [] : editorContainerTags}
+      tags={isViewMode ? tagsInfoData?.tags || [] : tagsOnEditorMode}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
