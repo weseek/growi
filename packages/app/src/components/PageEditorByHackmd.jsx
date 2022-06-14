@@ -11,6 +11,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -453,7 +454,8 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useStaticPageTags(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: pageTags } = useStaticPageTags(tagsInfoData?.tags);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -469,7 +471,7 @@ const PageEditorByHackmdWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
-      pageTags={tagsInfoData?.tags || []}
+      pageTags={pageTags || []}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
