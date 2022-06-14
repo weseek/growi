@@ -94,7 +94,7 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useStaticPageTags = (): SWRResponse<ITagNames, Error> => {
-  const { data: pageTags } = useSWRxPageTags();
-  return useStaticSWR<ITagNames, Error>('pageTags', undefined, { fallbackData: pageTags });
+export const useStaticPageTags = (initialTags?: ITagNames): SWRResponse<ITagNames, Error> => {
+  // const { data: pageTags } = useSWRxPageTags();
+  return useStaticSWR<ITagNames, Error>('pageTags', undefined, { fallbackData: initialTags || [] });
 };

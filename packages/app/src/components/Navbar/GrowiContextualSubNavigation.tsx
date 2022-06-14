@@ -167,7 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditorMode, mutate: mutateEditorContainerTags } = useStaticPageTags(pageId);
+  const { data: tagsOnEditorMode, mutate: mutateEditorContainerTags } = useStaticPageTags(tagsInfoData?.tags);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -185,7 +185,6 @@ const GrowiContextualSubNavigation = (props) => {
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === EditorMode.Editor) {
       console.log('newTags', newTags);
-      // return editorContainer.setState({ tags: newTags });
       return mutateEditorContainerTags(newTags);
     }
 
@@ -194,9 +193,7 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      mutateEditorContainerTags(newTags);
-      // update editorContainer.state
-      // editorContainer.setState({ tags });
+      mutateEditorContainerTags(newTags, false);
 
       toastSuccess('updated tags successfully');
     }
@@ -317,6 +314,8 @@ const GrowiContextualSubNavigation = (props) => {
     createdAt: createdAt ?? undefined,
     updatedAt: updatedAt ?? undefined,
   };
+
+  console.log('tagsOnEditorMode', tagsOnEditorMode);
 
   return (
     <GrowiSubNavigation
