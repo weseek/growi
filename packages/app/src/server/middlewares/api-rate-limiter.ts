@@ -33,8 +33,8 @@ const allRegExp = new RegExp(Object.keys(configWithRegExp).join('|'));
 const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(key));
 const valuesWithRegExp = Object.values(configWithRegExp);
 
-const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, points: number) => {
-  const consumePoints = defaultMaxPoints / points;
+const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, maxRequests: number) => {
+  const consumePoints = Math.floor(defaultMaxPoints / maxRequests);
   await rateLimiter.consume(key, consumePoints);
 };
 
