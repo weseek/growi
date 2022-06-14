@@ -167,6 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: editorContainerTags, mutate: mutateEditorContainerTags } = useStaticPageTags(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -175,7 +176,7 @@ const GrowiContextualSubNavigation = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
-    editorContainer, isCompactMode, isLinkSharingDisabled,
+    /* editorContainer, */ isCompactMode, isLinkSharingDisabled,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
@@ -187,7 +188,8 @@ const GrowiContextualSubNavigation = (props) => {
     if (editorMode === EditorMode.Editor) {
       console.log('tagsUpdatedHandler1');
       console.log('newTags', newTags);
-      return editorContainer.setState({ tags: newTags });
+      // return editorContainer.setState({ tags: newTags });
+      return mutateEditorContainerTags(newTags);
     }
     console.log('editorMode_2', editorMode);
 
@@ -197,8 +199,9 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
+      mutateEditorContainerTags(newTags);
       // update editorContainer.state
-      editorContainer.setState({ tags });
+      // editorContainer.setState({ tags });
 
       toastSuccess('updated tags successfully');
     }
@@ -206,7 +209,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [editorMode, editorContainer, pageId, revisionId, mutateSWRTagsInfo]);
+  }, [editorMode, pageId, revisionId, mutateSWRTagsInfo, mutateEditorContainerTags]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -329,7 +332,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags || [] : editorContainer.state.tags}
+      tags={isViewMode ? tagsInfoData?.tags || [] : editorContainerTags}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
