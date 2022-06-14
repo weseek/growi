@@ -159,7 +159,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -171,14 +171,8 @@ class PageService {
     this.pageEvent.on('rename', async(page, descendantPages, user) => {
       const isRecursively = descendantPages != null;
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
-      const pages = [page];
-      if (isRecursively) {
-        for (const element of descendantPages) {
-          pages.push(element);
-        }
-      }
       try {
-        await this.createAndSendNotifications(pages, user, action);
+        await this.createAndSendNotifications(page, descendantPages, user, action);
       }
       catch (err) {
         logger.error(err);
@@ -188,7 +182,7 @@ class PageService {
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -198,7 +192,7 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
       }
       catch (err) {
         logger.error(err);
@@ -208,7 +202,7 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -218,7 +212,7 @@ class PageService {
     // revert
     this.pageEvent.on('revert', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -228,7 +222,7 @@ class PageService {
     // likes
     this.pageEvent.on('like', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
       }
       catch (err) {
         logger.error(err);
@@ -238,7 +232,7 @@ class PageService {
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
+        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
       }
       catch (err) {
         logger.error(err);
@@ -546,6 +540,7 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    this.pageEvent.emit('rename', page, null, user);
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
@@ -846,7 +841,6 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
-          console.log('Below are the descendant pages:\n', batch);
           pageEvent.emit('rename', targetPage, batch, user);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
@@ -2242,28 +2236,25 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(pages, user, action) {
+  private async createAndSendNotifications(page, descendantPages, user, action) {
     const { activityService, inAppNotificationService } = this.crowi;
 
-    const snapshot = stringifySnapshot(pages[0]);
+    const snapshot = stringifySnapshot(page);
 
     // Create activity
     const parameters = {
       user: user._id,
       targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: pages[0],
+      target: page,
       action,
     };
     const activity = await activityService.createByParameters(parameters);
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
-    if (action === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE || action === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME || action
-      === SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE) {
-      pages.forEach((page) => {
-        targetUsers.concat(Subscription.getSubscription(page));
-      });
+    let targetUsers = await activity.getNotificationTargetUsers();
+    if (descendantPages != null) {
+      const targetDescendantsUsers = await Subscription.getSubscriptions(user._id, descendantPages);
+      targetUsers = targetUsers.concat(targetDescendantsUsers);
     }
-    console.log('The real target users are:\n', targetUsers);
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);

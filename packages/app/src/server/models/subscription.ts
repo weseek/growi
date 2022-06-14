@@ -26,6 +26,7 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
   getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  getSubscriptions(actionUser: Types.ObjectId, targets: Types.ObjectId[]): Promise<Types.ObjectId[]>
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -85,6 +86,11 @@ subscriptionSchema.statics.getSubscription = async function(target) {
 
 subscriptionSchema.statics.getUnsubscription = async function(target) {
   return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
+};
+
+subscriptionSchema.statics.getSubscriptions = async function(actionUser, targets) {
+  return (await this.find({ $in: targets, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user'))
+    .filter(item => (item.toString() !== actionUser.toString()));
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);
