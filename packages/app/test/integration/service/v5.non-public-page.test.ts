@@ -201,6 +201,118 @@ describe('PageService page operations with non-public pages', () => {
       rootPage = pages[0];
     }
 
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreate1 = new mongoose.Types.ObjectId();
+    const pageIdCreate2 = new mongoose.Types.ObjectId();
+    const pageIdCreate3 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreate1,
+        path: '/mc4_top/mc1_emp',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/mc4_top/mc1_emp/mc2_pub',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreate1,
+        isEmpty: false,
+      },
+      {
+        path: '/mc5_top/mc3_awl',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdCreate2,
+        path: '/mc4_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdCreate3,
+        path: '/mc5_top',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+    ]);
+
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+    const pageIdCreateBySystem2 = new mongoose.Types.ObjectId();
+    const pageIdCreateBySystem3 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreateBySystem1,
+        path: '/mc4_top_by_system/mc1_emp_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/mc4_top_by_system/mc1_emp_by_system/mc2_pub_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreateBySystem1,
+        isEmpty: false,
+      },
+      {
+        path: '/mc5_top_by_system/mc3_awl_by_system',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+      },
+      {
+        _id: pageIdCreateBySystem2,
+        path: '/mc4_top_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdCreateBySystem3,
+        path: '/mc5_top_by_system',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+    ]);
+
     /*
      * Rename
      */
@@ -614,6 +726,136 @@ describe('PageService page operations with non-public pages', () => {
         isPageTrashed: true,
       },
     ]);
+  });
+
+  describe('create', () => {
+
+    describe('Creating a page using existing path', () => {
+      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+        const pathT = '/mc4_top';
+        const path1 = '/mc4_top/mc1_emp';
+        const path2 = '/mc4_top/mc1_emp/mc2_pub';
+        const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: path2 });
+        const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
+        expect(page3).toBeNull();
+
+        // use existing path
+        await crowi.pageService.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const _page2 = await Page.findOne({ path: path2 });
+        const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_page3).toBeTruthy();
+        expect(_pageT.descendantCount).toBe(1);
+        // isGrantNormalized is not called when GRANT RESTRICTED
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+      });
+    });
+    describe('Creating a page under a page with grant RESTRICTED', () => {
+      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+        const pathT = '/mc5_top';
+        const path1 = '/mc5_top/mc3_awl';
+        const pathN = '/mc5_top/mc3_awl/mc4_pub'; // used to create
+        const pageT = await Page.findOne({ path: pathT });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeNull();
+
+        await crowi.pageService.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC }); // newly crated
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_pageN).toBeTruthy();
+        expect(_pageN.parent).toStrictEqual(_page2._id);
+        expect(_pageT.descendantCount).toStrictEqual(1);
+        // isGrantNormalized is called when GRANT PUBLIC
+        expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+      });
+    });
+
+  });
+
+  describe('create by system', () => {
+
+    describe('Creating a page using existing path', () => {
+      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+        const pathT = '/mc4_top_by_system';
+        const path1 = '/mc4_top_by_system/mc1_emp_by_system';
+        const path2 = '/mc4_top_by_system/mc1_emp_by_system/mc2_pub_by_system';
+        const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const page2 = await Page.findOne({ path: path2 });
+        const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeTruthy();
+        expect(page3).toBeNull();
+
+        // use existing path
+        await crowi.pageService.forceCreateBySystem(path1, 'new body', { grant: Page.GRANT_RESTRICTED });
+
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        const _page2 = await Page.findOne({ path: path2 });
+        const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_page3).toBeTruthy();
+        expect(_pageT.descendantCount).toBe(1);
+        // isGrantNormalized is not called when create by ststem
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+      });
+    });
+    describe('Creating a page under a page with grant RESTRICTED', () => {
+      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+        const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+        const pathT = '/mc5_top_by_system';
+        const path1 = '/mc5_top_by_system/mc3_awl_by_system';
+        const pathN = '/mc5_top_by_system/mc3_awl_by_system/mc4_pub_by_system'; // used to create
+        const pageT = await Page.findOne({ path: pathT });
+        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
+        expect(pageT).toBeTruthy();
+        expect(page1).toBeTruthy();
+        expect(page2).toBeNull();
+
+        await crowi.pageService.forceCreateBySystem(pathN, 'new body', { grant: Page.GRANT_PUBLIC });
+
+        const _pageT = await Page.findOne({ path: pathT });
+        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
+        const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
+        const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC }); // newly crated
+        expect(_pageT).toBeTruthy();
+        expect(_page1).toBeTruthy();
+        expect(_page2).toBeTruthy();
+        expect(_pageN).toBeTruthy();
+        expect(_pageN.parent).toStrictEqual(_page2._id);
+        expect(_pageT.descendantCount).toStrictEqual(1);
+        // isGrantNormalized is not called when create by ststem
+        expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+      });
+    });
+
   });
 
   describe('Rename', () => {

@@ -174,7 +174,8 @@ const ContextExtractorOnce: FC = () => {
 
   // Global Socket
   useSetupGlobalSocket();
-  useSetupGlobalAdminSocket();
+  const shouldInitAdminSock = !!currentUser?.isAdmin;
+  useSetupGlobalAdminSocket(shouldInitAdminSock);
 
   return null;
 };
