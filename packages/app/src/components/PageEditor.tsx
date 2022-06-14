@@ -2,12 +2,10 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
-
 import EventEmitter from 'events';
 
 import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
-import * as ReactDOMServer from 'react-dom/server';
 import { throttle, debounce } from 'throttle-debounce';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -25,8 +23,6 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-
-import PageAttachmentPresentation from './PageAttachmentPresentation';
 import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
@@ -188,10 +184,8 @@ const PageEditor = (props: Props): JSX.Element => {
       }
       // when attachment
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
-        // TODO: define syntax.
-        // const element = <PageAttachmentPresentation attachment={attachment} fileName={fileName} />;
-        // insertText = ReactDOMServer.renderToString(element);
-        insertText = `[${fileName}](${attachment.filePathProxied})`;
+        // TODO: add more content info (ex: ... uploadTime:%{Data.now()}\nuploadUser*${user.date()}\n ... )
+        insertText = `~~~attachment\nfilename:${fileName}\nurl:${attachment.filePathProxied}\n~~~`;
       }
       editorRef.current.insertText(insertText);
 

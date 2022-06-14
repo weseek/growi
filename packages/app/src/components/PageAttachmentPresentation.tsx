@@ -1,13 +1,13 @@
 import React from 'react';
 
 type Props = {
-  attachment: any,
   fileName: string,
+  url: string,
 };
 
 const PageAttachmentPresentation = (props: Props): JSX.Element => {
   // TODO: add use props
-  const { attachment, fileName } = props;
+  const { fileName, url } = props;
 
   // TODO: format [icon name, date, byte, ...]
   // EXAMPLE
@@ -58,13 +58,12 @@ const PageAttachmentPresentation = (props: Props): JSX.Element => {
   return (
     <div className="mt-4 card border-primary">
       <div className="card-body">
-        <a className="bg-info text-white" href={attachment.filePathProxied}>{fileName}</a>
+        <a className="bg-info text-white" href={url}>{fileName}</a>
         <ul>
           {/* TODO: Attachemnt picture */}
           {/* TODO: User picture */}
           {/* <UserPicture user={attachment.creator} size="sm"></UserPicture> */}
           {/* TODO: Date */}
-          <li>{Date.now()}</li>
           {/* TODO: Data byte */}
           {/* TODO: Trash button */}
           {/* TODO: Download button */}
