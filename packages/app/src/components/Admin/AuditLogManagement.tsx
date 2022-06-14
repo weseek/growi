@@ -14,6 +14,7 @@ import { ActivityTable } from './AuditLog/ActivityTable';
 import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
+import { AuditLogSettings } from './AuditLogSettings';
 
 
 const formatDate = (date: Date | null) => {
@@ -31,6 +32,7 @@ export const AuditLogManagement: FC = () => {
   /*
    * State
    */
+  const [isSettingPage, setIsSettingPage] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -92,66 +94,77 @@ export const AuditLogManagement: FC = () => {
 
   return (
     <div data-testid="admin-auditlog">
+      <button type="button" className="btn btn-outline-secondary mb-4" onClick={() => setIsSettingPage(!isSettingPage)}>
+        {
+          isSettingPage
+            ? <><i className="fa fa-hand-o-left mr-1" />{t('admin:audit_log_management.return')}</>
+            : <><i className="fa icon-settings mr-1" />{t('admin:audit_log_management.settings')}</>
+        }
+      </button>
+
       <h2 className="admin-setting-header mb-3">
         <span>
-          {t('AuditLog')}
+          {isSettingPage ? t('AuditLog Settings') : t('AuditLog')}
         </span>
-        <a href="/admin/audit-log/settings" className="btn btn-lg">
-          <i className="icon-settings" />
-        </a>
       </h2>
 
-      <div className="form-inline mb-3">
-        <SearchUsernameTypeahead
-          onChange={setUsernamesHandler}
-        />
+      {isSettingPage ? (
+        <AuditLogSettings />
+      ) : (
+        <>
+          <div className="form-inline mb-3">
+            <SearchUsernameTypeahead
+              onChange={setUsernamesHandler}
+            />
 
-        <DateRangePicker
-          startDate={startDate}
-          endDate={endDate}
-          onChange={datePickerChangedHandler}
-        />
+            <DateRangePicker
+              startDate={startDate}
+              endDate={endDate}
+              onChange={datePickerChangedHandler}
+            />
 
-        <SelectActionDropdown
-          dropdownItems={[
-            { actionCategory: 'Page', actionNames: PageActions },
-            { actionCategory: 'Comment', actionNames: CommentActions },
-          ]}
-          actionMap={actionMap}
-          onChangeAction={actionCheckboxChangedHandler}
-          onChangeMultipleAction={multipleActionCheckboxChangedHandler}
-        />
+            <SelectActionDropdown
+              dropdownItems={[
+                { actionCategory: 'Page', actionNames: PageActions },
+                { actionCategory: 'Comment', actionNames: CommentActions },
+              ]}
+              actionMap={actionMap}
+              onChangeAction={actionCheckboxChangedHandler}
+              onChangeMultipleAction={multipleActionCheckboxChangedHandler}
+            />
 
-        <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-          <i className="icon icon-reload" />
-        </button>
-      </div>
-
-      <p
-        className="ml-2"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: activityCounter }}
-      />
-
-      { isLoading
-        ? (
-          <div className="text-muted text-center mb-5">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+            <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
+              <i className="icon icon-reload" />
+            </button>
           </div>
-        )
-        : (
-          <ActivityTable activityList={activityList} />
-        )
-      }
 
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setActivePageHandler}
-        totalItemsCount={totalActivityNum}
-        pagingLimit={PAGING_LIMIT}
-        align="center"
-        size="sm"
-      />
+          <p
+            className="ml-2"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: activityCounter }}
+          />
+
+          { isLoading
+            ? (
+              <div className="text-muted text-center mb-5">
+                <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+              </div>
+            )
+            : (
+              <ActivityTable activityList={activityList} />
+            )
+          }
+
+          <PaginationWrapper
+            activePage={activePage}
+            changePage={setActivePageHandler}
+            totalItemsCount={totalActivityNum}
+            pagingLimit={PAGING_LIMIT}
+            align="center"
+            size="sm"
+          />
+        </>
+      )}
     </div>
   );
 };
