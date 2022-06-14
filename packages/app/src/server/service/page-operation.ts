@@ -43,7 +43,7 @@ class PageOperationService {
   }
 
   /**
-   * execute renameSubOperation on every page operation for rename ordered by createdAt ASC
+   * Execute renameSubOperation on every page operation for rename ordered by createdAt ASC
    */
   private async executeAllRenameOperationBySystem(): Promise<void> {
     const Page = this.crowi.model('Page');
