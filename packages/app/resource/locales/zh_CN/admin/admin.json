@@ -148,6 +148,13 @@
     }
   },
   "customize_setting": {
+    "default_sidebar_mode": {
+      "title": "默认的侧边栏模式",
+      "desc": "你可以为新用户和访问该网页的客人设置侧边栏模式。",
+      "dock_mode_default_desc": "当选择Dock模式时，可以设置侧边栏的初始状态。",
+      "dock_mode_default_open": "从头开始翻页",
+      "dock_mode_default_close": "从头开始打开关闭的页面"
+    },
     "layout": "布局",
     "layout_options": {
       "default": "默认内容宽度 ",
