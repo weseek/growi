@@ -32,7 +32,7 @@ class PageOperationService {
   /**
    * run programs that should be executed only after the service is ready
    */
-  async afterServiceReady(): Promise<void> {
+  async afterExpressServerReady(): Promise<void> {
     try {
       // execute rename operation
       await this.executeAllRenameOperationBySystem();

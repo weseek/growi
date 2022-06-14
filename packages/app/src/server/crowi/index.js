@@ -150,11 +150,10 @@ Crowi.prototype.init = async function() {
 
 /**
  * Execute functions that should be run after the express server is ready.
- * Functions here does not block the
  */
 Crowi.prototype.asyncAfterExpressServerReady = async function() {
   if (this.pageOperationService != null) {
-    await this.pageOperationService.afterServiceReady();
+    await this.pageOperationService.afterExpressServerReady();
   }
 };
 
