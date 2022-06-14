@@ -539,6 +539,11 @@ class PageService {
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
+    // 5.increase parent's descendantCount.
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToIncreaseForOperationInterruption = 1;
+    await Page.incrementDescendantCountOfPageIds([newParent._id], nToIncreaseForOperationInterruption);
+
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
@@ -578,7 +583,11 @@ class PageService {
       this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
     }
 
-    // reduce ancestore's descendantCount
+    // reduce parent's descendantCount
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToReduceForOperationInterruption = -1;
+    await Page.incrementDescendantCountOfPageIds([renamedPage.parent], nToReduceForOperationInterruption);
+
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
     await this.updateDescendantCountOfAncestors(exParentId, nToReduce, true);
 
@@ -2675,10 +2684,7 @@ class PageService {
     return isUnique;
   }
 
-  // TODO: use socket to send status to the client
   async normalizeAllPublicPages() {
-    // const socket = this.crowi.socketIoService.getAdminSocket();
-
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();
@@ -2695,7 +2701,6 @@ class PageService {
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
         throw err;
       }
     }
@@ -2706,7 +2711,6 @@ class PageService {
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message });
 
       throw err;
     }
@@ -2750,7 +2754,7 @@ class PageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmit = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -2769,7 +2773,7 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmit);
   }
 
   private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
@@ -2815,12 +2819,19 @@ class PageService {
   }
 
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
+      pathOrRegExps: (RegExp | string)[],
+      publicPathsToNormalize: string[],
+      grantFiltersByUser: { $or: any[] },
+      user,
+      shouldEmit = false,
+      count = 0,
+      skiped = 0,
+      isFirst = true,
   ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
-    const socket = this.crowi.socketIoService.getAdminSocket();
+    const socket = shouldEmit ? this.crowi.socketIoService.getAdminSocket() : null;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2842,7 +2853,7 @@ class PageService {
     // Limit pages to get
     const total = await Page.countDocuments(matchFilter);
     if (isFirst) {
-      socket.emit(SocketEventName.PMStarted, { total });
+      socket?.emit(SocketEventName.PMStarted, { total });
     }
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
@@ -2949,13 +2960,13 @@ class PageService {
           nextSkiped += res.result.writeErrors.length;
           logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
 
-          socket.emit(SocketEventName.PMMigrating, { count: nextCount });
-          socket.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
+          socket?.emit(SocketEventName.PMMigrating, { count: nextCount });
+          socket?.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
@@ -2963,7 +2974,7 @@ class PageService {
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
           }
         }
         catch (err) {
@@ -2985,11 +2996,11 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(matchFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
+      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, shouldEmit, nextCount, nextSkiped, false);
     }
 
     // End
-    socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
+    socket?.emit(SocketEventName.PMEnded, { isSucceeded: true });
 
     return nextCount;
   }

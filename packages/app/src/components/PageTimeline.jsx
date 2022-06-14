@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -107,11 +107,6 @@ class PageTimeline extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
-
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -119,4 +114,14 @@ PageTimeline.propTypes = {
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default withTranslation()(PageTimelineWrapper);
+const PageTimelineWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageTimeline t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const PageTimelineWrapper = withUnstatedContainers(PageTimelineWrapperFC, [AppContainer, PageContainer]);
+
+export default PageTimelineWrapper;

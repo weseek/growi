@@ -2,7 +2,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -130,8 +130,6 @@ class AssociateModal extends React.Component {
 
 }
 
-const AssociateModalWrapper = withUnstatedContainers(AssociateModal, [AppContainer, PersonalContainer]);
-
 AssociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -141,5 +139,14 @@ AssociateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
+const AssociateModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <AssociateModal t={t} {...props} />;
+};
 
-export default withTranslation()(AssociateModalWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const AssociateModalWrapper = withUnstatedContainers(AssociateModalWrapperFC, [AppContainer, PersonalContainer]);
+
+export default AssociateModalWrapper;

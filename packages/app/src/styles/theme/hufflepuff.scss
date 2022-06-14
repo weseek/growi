@@ -216,7 +216,7 @@ html[dark] {
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 7%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: $subthemecolor;
+  $bgcolor-sidebar-context: lighten($themedark, 5%);
   // Sidebar list group
   $bgcolor-sidebar-list-group: lighten($subthemecolor, 5%);
 

@@ -10,3 +10,9 @@ export class PathAlreadyExistsError extends ExtensibleCustomError {
   }
 
 }
+
+
+/*
+* User Authentication
+*/
+export class NullUsernameToBeRegisteredError extends ExtensibleCustomError {}

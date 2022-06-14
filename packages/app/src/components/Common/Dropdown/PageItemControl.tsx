@@ -43,6 +43,7 @@ type CommonProps = {
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
+  alignRight?: boolean,
 }
 
 
@@ -59,7 +60,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem,
-    additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename,
+    additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
 
@@ -232,7 +233,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }} right={alignRight}>
       {contents}
     </DropdownMenu>
   );
