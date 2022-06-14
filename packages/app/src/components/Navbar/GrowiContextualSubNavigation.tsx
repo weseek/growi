@@ -323,7 +323,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags || [] : tagsOnEditMode}
+      tags={isViewMode ? tagsInfoData?.tags : tagsOnEditMode}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}

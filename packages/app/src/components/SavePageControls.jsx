@@ -169,7 +169,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
-      pageTags={pageTags || []}
+      pageTags={pageTags}
     />
   );
 };
