@@ -18,13 +18,10 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
   const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
 
-  const retrieveData = useCallback(async() => {
+  const retrieveIsSidebarDrawerMode = useCallback(async() => {
     try {
-      const resSidebar = await apiv3Get('/customize-setting/sidebar');
-      setIsSidebarDrawerMode(resSidebar.data.isSidebarDrawerMode);
-
-      const resIsClosed = await apiv3Get('/customize-setting/isSidebarClosedAtDockMode');
-      setIsSidebarClosedAtDockMode(resIsClosed.data.isSidebarClosedAtDockMode);
+      const res = await apiv3Get('/customize-setting/sidebar');
+      setIsSidebarDrawerMode(res.data.isSidebarDrawerMode);
     }
     catch (err) {
       setRetrieveError(err);
@@ -32,18 +29,47 @@ const CustomizeSidebarsetting = (): JSX.Element => {
     }
   }, []);
 
-  const onClickSubmit = async() => {
+  const retrieveIsSidebarClosedAtDockMode = useCallback(async() => {
+    try {
+      const res = await apiv3Get('/customize-setting/isSidebarClosedAtDockMode');
+      setIsSidebarClosedAtDockMode(res.data.isSidebarClosedAtDockMode);
+    }
+    catch (err) {
+      setRetrieveError(err);
+      toastError(err);
+    }
+  }, []);
+
+  const retrieveData = useCallback(async() => {
+    await retrieveIsSidebarDrawerMode();
+    await retrieveIsSidebarClosedAtDockMode();
+  }, [retrieveIsSidebarDrawerMode, retrieveIsSidebarClosedAtDockMode]);
+
+  const submitIsSidebarDrawerMode = useCallback(async() => {
     try {
       await apiv3Put('/customize-setting/sidebar', { isSidebarDrawerMode });
-      await apiv3Put('/customize-setting/isSidebarClosedAtDockMode', { isSidebarClosedAtDockMode });
-
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
-      retrieveData();
     }
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, isSidebarDrawerMode]);
+
+  const submitIsSidebarClosedAtDockMode = useCallback(async() => {
+    try {
+      await apiv3Put('/customize-setting/isSidebarClosedAtDockMode', { isSidebarClosedAtDockMode });
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.dock_mode_default') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, isSidebarClosedAtDockMode]);
+
+  const onClickSubmit = useCallback(async() => {
+    await submitIsSidebarDrawerMode();
+    await submitIsSidebarClosedAtDockMode();
+    retrieveData();
+  }, [retrieveData, submitIsSidebarClosedAtDockMode, submitIsSidebarDrawerMode]);
 
   useEffect(() => {
     retrieveData();
