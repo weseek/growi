@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { AllSupportedTargetModelType } from '~/interfaces/activity';
+import { AllSupportedTargetModel } from '~/interfaces/activity';
 import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
 
 
@@ -38,7 +38,7 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   targetModel: {
     type: String,
     required: true,
-    enum: AllSupportedTargetModelType,
+    enum: AllSupportedTargetModel,
   },
   target: {
     type: Schema.Types.ObjectId,

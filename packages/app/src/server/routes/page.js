@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedTargetModel, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -1000,7 +1000,7 @@ module.exports = function(crowi, app) {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE,
     };
@@ -1242,7 +1242,7 @@ module.exports = function(crowi, app) {
     result.isCompletely = isCompletely;
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
       action: isCompletely ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE,
     };
@@ -1300,7 +1300,7 @@ module.exports = function(crowi, app) {
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT,
     };

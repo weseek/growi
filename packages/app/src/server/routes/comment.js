@@ -1,5 +1,5 @@
 
-import { SUPPORTED_ACTION_TYPE, SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE } from '~/interfaces/activity';
+import { SUPPORTED_ACTION_TYPE, SupportedTargetModel, SUPPORTED_EVENT_MODEL_TYPE } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /**
@@ -262,7 +262,7 @@ module.exports = function(crowi, app) {
     );
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
       eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
       event: createdComment,
