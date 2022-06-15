@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -10,15 +10,25 @@ import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import PageTimeline from './PageTimeline';
 
+/**
+ * Replace url in address bar with new path and query parameters
+ */
+const replaceURLHistory = (pageId, path) => {
+  if (pageId != null) {
+    const queryParameters = window.location.search;
+    window.history.replaceState(null, '', `${path}${queryParameters}`);
+  }
+};
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: pageId } = useCurrentPageId();
   const { data: path } = useCurrentPagePath();
 
-  if (pageId != null) {
-    window.history.replaceState(null, '', path);
-  }
+  // replace url in address bar
+  useEffect(() => {
+    replaceURLHistory(pageId, path);
+  }, [pageId, path]);
 
   const navTabMapping = useMemo(() => {
     return {
