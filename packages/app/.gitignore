@@ -8,6 +8,7 @@ test/cypress/videos
 .reg
 
 # dist
+/build/
 /dist/
 /transpiled/
 /report/
@@ -15,7 +16,6 @@ test/cypress/videos
 /public/static/styles
 /public/uploads
 /tmp/
-*.d.ts
 
 # dist (for GROWI v4.x and below)
 /public/*.chunk.js

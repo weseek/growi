@@ -26,6 +26,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# typescript
+*.tsbuildinfo
+
 # IDE, dev #
 .idea
 *.orig
