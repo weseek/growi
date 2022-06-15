@@ -14,7 +14,6 @@ import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
-import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
