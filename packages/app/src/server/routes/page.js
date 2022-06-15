@@ -607,13 +607,7 @@ module.exports = function(crowi, app) {
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const { redirectFrom, originalEmptyPageId } = req.query;
-
-    // originalEmptyPageId exists when user accesses an empty page by pageId
-    if (originalEmptyPageId != null) {
-      req.pageId = originalEmptyPageId;
-      return _notFound(req, res);
-    }
+    const { redirectFrom } = req.query;
 
     const includeEmpty = true;
     const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
