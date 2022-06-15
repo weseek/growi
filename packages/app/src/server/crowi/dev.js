@@ -96,6 +96,7 @@ class CrowiDev {
   setupExpressAfterListening(app) {
     // this.setupHeaderDebugger(app);
     // this.setupBrowserSync(app);
+    this.setupWebpackHmr(app);
     this.setupNextjsStackFrame(app);
   }
 
@@ -125,6 +126,11 @@ class CrowiDev {
   //   });
   //   app.use(require('connect-browser-sync')(bs));
   // }
+
+  setupWebpackHmr(app) {
+    const next = nextFactory(this.crowi);
+    app.all('/_next/webpack-hmr', next.delegateToNext);
+  }
 
   setupNextjsStackFrame(app) {
     const next = nextFactory(this.crowi);
