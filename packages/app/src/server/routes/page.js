@@ -428,14 +428,9 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      url.searchParams.append('originalEmptyPageId', page._id); // add this to distingish if user access the empty page intentionally
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      req.pageId = page._id;
+      req.pagePath = page.path;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
