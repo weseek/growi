@@ -56,7 +56,6 @@ const logger = loggerFactory('growi:admin');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-
 // create unstated container instance
 const adminAppContainer = new AdminAppContainer(appContainer);
 const adminImportContainer = new AdminImportContainer(appContainer);
