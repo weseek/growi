@@ -184,7 +184,8 @@ const GrowiContextualSubNavigation = (props) => {
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
     if (!isViewMode) {
-      return mutateTagsOnEditMode(newTags, false);
+      mutateTagsOnEditMode(newTags, false);
+      return;
     }
 
     try {
