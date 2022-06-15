@@ -185,6 +185,7 @@ const PageEditor = (props: Props): JSX.Element => {
       // when attachment
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
         // TODO: add more content info (ex: ... uploadTime:%{Data.now()}\nuploadUser*${user.date()}\n ... )
+        // TODO: checkpass
         insertText = `~~~attachment\nfilename:${fileName}\nurl:${attachment.filePathProxied}\n~~~`;
       }
       editorRef.current.insertText(insertText);
