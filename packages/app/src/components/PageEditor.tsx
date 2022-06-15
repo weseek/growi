@@ -19,6 +19,7 @@ import {
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, useStaticPageTags,
 } from '~/stores/editor';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -87,8 +88,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = useStaticPageTags(pageId);
-  const { data: tagsInfoData } = useStaticPageTags(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: pageTags } = useStaticPageTags(tagsInfoData?.tags);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
@@ -145,7 +146,7 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer]);
+  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer, pageTags]);
 
 
   /**
