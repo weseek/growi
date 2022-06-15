@@ -75,7 +75,7 @@ export const SupportedAction = {
   ACTION_COMMENT_REMOVE,
 } as const;
 
-export const SUPPORTED_ACTION_TO_NOTIFIED_TYPE = {
+export const SupportedActionToNotified = {
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
   ACTION_PAGE_UPDATE,
@@ -113,7 +113,7 @@ export const CommentActions = Object.values({
 export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
 export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedAction = Object.values(SupportedAction);
-export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
+export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);
 
 /*
  * Type
