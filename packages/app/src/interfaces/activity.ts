@@ -40,7 +40,7 @@ export const SupportedTargetModel = {
   MODEL_PAGE,
 } as const;
 
-export const SUPPORTED_EVENT_MODEL_TYPE = {
+export const SupportedEventModel = {
   MODEL_COMMENT,
 } as const;
 
@@ -111,7 +111,7 @@ export const CommentActions = Object.values({
  * Array
  */
 export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
-export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
+export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
 
@@ -119,7 +119,7 @@ export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_T
  * Type
  */
 export type SupportedTargetModelType = typeof SupportedTargetModel[keyof typeof SupportedTargetModel];
-export type SupportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
+export type SupportedEventModelType = typeof SupportedEventModel[keyof typeof SupportedEventModel];
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
 export type ISnapshot = Partial<Pick<IUser, 'username'>>
