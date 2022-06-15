@@ -594,6 +594,9 @@ module.exports = function(crowi, app) {
     res.render('layout-growi/page_list', renderVars);
   };
 
+  /**
+   * Redirect process for single non-empty page
+   */
   async function redirectOperationForSinglePage(page, req, res) {
     const url = new URL('https://dummy.origin');
     url.pathname = `/${page._id}`;
