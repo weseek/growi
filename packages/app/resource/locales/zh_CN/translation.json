@@ -5,6 +5,7 @@
 	"Delete": "删除",
 	"delete_all": "删除所有",
 	"Duplicate": "复制",
+  "PathRecovery": "路径恢复",
 	"Copy": "复制",
   "preview":"预览",
   "desktop":"电脑",
@@ -1116,6 +1117,15 @@
     "cancel_bookmark": "取消书签",
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
-    "footprints": "脚印"
+    "footprints": "脚印",
+    "operation": {
+      "attention": {
+        "rename": "重命名子孙页的路径没有成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"
+      }
+    }
+  },
+  "page_operation":{
+    "paths_recovered": "成功恢复了页面路径",
+    "path_recovery_failed":"路径恢复失败"
   }
 }

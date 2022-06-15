@@ -15,11 +15,6 @@ export default class AppContainer extends Container {
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
-
     const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
 
@@ -69,20 +64,6 @@ export default class AppContainer extends Container {
     window.crowi = this;
     window.crowiRenderer = originRenderer;
     window.crowiPlugin = window.growiPlugin;
-  }
-
-  get currentUserId() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser._id;
-  }
-
-  get currentUsername() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser.username;
   }
 
   getConfig() {
