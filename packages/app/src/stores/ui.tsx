@@ -7,12 +7,12 @@ import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import { boolean } from 'yargs';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
@@ -280,11 +280,6 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   );
 };
 
-interface ISidebarConfig {
-  isSidebarDrawerMode: boolean,
-  isSidebarClosedAtDockMode: boolean
-}
-
 type SidebarConfigOperation = {
   update: (updateData: Partial<ISidebarConfig>) => void,
 }
@@ -296,7 +291,7 @@ export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & Sidebar
   );
   return {
     ...swrResponse,
-    update: (updateData) => {
+    update: async(updateData) => {
       const { data, mutate } = swrResponse;
 
       if (data == null) {
@@ -306,7 +301,7 @@ export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & Sidebar
       mutate({ ...data, ...updateData }, false);
 
       // invoke API
-      apiv3Put('/customize-setting/sidebar', updateData);
+      await apiv3Put('/customize-setting/sidebar', updateData);
     },
   };
 };
