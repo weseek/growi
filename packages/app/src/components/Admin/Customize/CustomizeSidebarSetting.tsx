@@ -10,8 +10,8 @@ import { useSidebarConfig } from '~/stores/ui';
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: sidebarConfig, update } = useSidebarConfig();
-  const [isSidebarDrawerMode, setIsSidebarDrawerMode] = useState(sidebarConfig?.isSidebarDrawerMode);
-  const [isSidebarClosedAtDockMode, setIsSidebarClosedAtDockMode] = useState(sidebarConfig?.isSidebarClosedAtDockMode);
+  const [isSidebarDrawerMode, setIsSidebarDrawerMode] = useState(false);
+  const [isSidebarClosedAtDockMode, setIsSidebarClosedAtDockMode] = useState(false);
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
@@ -26,6 +26,13 @@ const CustomizeSidebarsetting = (): JSX.Element => {
     update(sidebarConfig);
     toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
   }, [t, isSidebarDrawerMode, isSidebarClosedAtDockMode, update]);
+
+  useEffect(() => {
+    if (sidebarConfig != null) {
+      setIsSidebarDrawerMode(sidebarConfig?.isSidebarDrawerMode);
+      setIsSidebarClosedAtDockMode(sidebarConfig?.isSidebarClosedAtDockMode);
+    }
+  }, [sidebarConfig]);
 
   return (
     <React.Fragment>
