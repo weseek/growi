@@ -1,15 +1,24 @@
 import React, { useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
+import { useCurrentPageId, useCurrentPagePath } from '~/stores/context';
+
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import PageListIcon from './Icons/PageListIcon';
+import TimeLineIcon from './Icons/TimeLineIcon';
 import PageTimeline from './PageTimeline';
 
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
+  const { data: pageId } = useCurrentPageId();
+  const { data: path } = useCurrentPagePath();
+
+  if (pageId != null) {
+    window.history.replaceState(null, '', path);
+  }
 
   const navTabMapping = useMemo(() => {
     return {
