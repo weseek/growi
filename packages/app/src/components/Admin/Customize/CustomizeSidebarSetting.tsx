@@ -29,8 +29,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
   useEffect(() => {
     if (sidebarConfig != null) {
-      setIsSidebarDrawerMode(sidebarConfig?.isSidebarDrawerMode);
-      setIsSidebarClosedAtDockMode(sidebarConfig?.isSidebarClosedAtDockMode);
+      setIsSidebarDrawerMode(sidebarConfig.isSidebarDrawerMode);
+      setIsSidebarClosedAtDockMode(sidebarConfig.isSidebarClosedAtDockMode);
     }
   }, [sidebarConfig]);
 
