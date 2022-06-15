@@ -12,10 +12,10 @@ import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GiveAdminButton from './GiveAdminButton';
-import RemoveAdminButton from './RemoveAdminButton';
+import RemoveAdminMenuItem from './RemoveAdminMenuItem';
 import SendInvitationEmailButton from './SendInvitationEmailButton';
 import StatusActivateButton from './StatusActivateButton';
-import StatusSuspendedButton from './StatusSuspendedButton';
+import StatusSuspendedMenuItem from './StatusSuspendMenuItem';
 import UserRemoveButton from './UserRemoveButton';
 
 
@@ -66,7 +66,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-header">{t('status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-          {user.status === 2 && <StatusSuspendedButton user={user} />}
+          {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
           {user.status === 5 && (
             <SendInvitationEmailButton
               user={user}
@@ -88,7 +88,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.administrator_menu')}</li>
         <li>
-          {user.admin === true && <RemoveAdminButton user={user} />}
+          {user.admin === true && <RemoveAdminMenuItem user={user} />}
           {user.admin === false && <GiveAdminButton user={user} />}
         </li>
       </Fragment>
