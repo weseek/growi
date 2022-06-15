@@ -1,4 +1,4 @@
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
@@ -33,7 +33,7 @@ module.exports = function(crowi, app) {
     // remove session.redirectTo
     delete req.session.redirectTo;
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_SUCCESS };
+    const parameters = { action: SupportedAction.ACTION_LOGIN_SUCCESS };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.safeRedirect(redirectTo);
@@ -47,7 +47,7 @@ module.exports = function(crowi, app) {
   const loginFailureHandler = async(req, res, message) => {
     req.flash('errorMessage', message || req.t('message.sign_in_failure'));
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGIN_FAILURE };
+    const parameters = { action: SupportedAction.ACTION_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.redirect('/login');

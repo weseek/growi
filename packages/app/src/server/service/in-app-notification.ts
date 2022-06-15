@@ -1,7 +1,7 @@
 import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
-import { AllSupportedActionToNotifiedType, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { AllSupportedActionToNotifiedType, SupportedAction } from '~/interfaces/activity';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import { IPage } from '~/interfaces/page';
@@ -203,7 +203,7 @@ export default class InAppNotificationService {
     const shouldNotification = activity != null && target != null && (AllSupportedActionToNotifiedType as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
-      if (activity.action === SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE) {
+      if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
         mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
       }
       const notificationTargetUsers = await activity?.getNotificationTargetUsers();

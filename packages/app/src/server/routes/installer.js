@@ -1,4 +1,4 @@
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { InstallerService, FailedToCreateAdminUserError } from '../service/installer';
@@ -59,7 +59,7 @@ module.exports = function(crowi) {
 
       req.flash('successMessage', req.t('message.complete_to_install2'));
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_REGISTRATION_SUCCESS };
+      const parameters = { action: SupportedAction.ACTION_REGISTRATION_SUCCESS };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.redirect('/');

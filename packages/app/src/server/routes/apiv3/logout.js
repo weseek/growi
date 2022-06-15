@@ -1,4 +1,4 @@
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loggerFactory from '~/utils/logger';
 
@@ -17,7 +17,7 @@ module.exports = (crowi) => {
     req.session.destroy();
 
     const activityId = res.locals.activity._id;
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_LOGOUT };
+    const parameters = { action: SupportedAction.ACTION_LOGOUT };
     activityEvent.emit('update', activityId, parameters);
 
     return res.send();

@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core';
 
-import { SUPPORTED_ACTION_TYPE, SupportedTargetModel } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
@@ -340,7 +340,7 @@ module.exports = (crowi) => {
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: isLiked ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE : SUPPORTED_ACTION_TYPE.ACTION_PAGE_UNLIKE,
+      action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 

@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
@@ -244,7 +244,7 @@ module.exports = (crowi) => {
       const updatedUser = await user.save();
       req.i18n.changeLanguage(req.body.lang);
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ updatedUser });
@@ -282,7 +282,7 @@ module.exports = (crowi) => {
     try {
       const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_IMAGE_TYPE_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_IMAGE_TYPE_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userData });
@@ -362,7 +362,7 @@ module.exports = (crowi) => {
     }
     try {
       const userData = await user.updatePassword(newPassword);
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_PASSWORD_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_PASSWORD_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ userData });
     }
@@ -399,7 +399,7 @@ module.exports = (crowi) => {
     try {
       const userData = await user.updateApiToken();
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_API_TOKEN_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_API_TOKEN_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userData });
@@ -451,7 +451,7 @@ module.exports = (crowi) => {
       await passport.authenticate('ldapauth');
       const associateUser = await ExternalAccount.associate('ldap', username, user);
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_LDAP_ACCOUNT_ASSOCIATE };
+      const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_ASSOCIATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ associateUser });
@@ -502,7 +502,7 @@ module.exports = (crowi) => {
       }
       const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
+      const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ disassociateUser });
@@ -562,7 +562,7 @@ module.exports = (crowi) => {
     try {
       const response = await EditorSettings.findOneAndUpdate(query, { $set: document }, options);
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_EDITOR_SETTINGS_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_EDITOR_SETTINGS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3(response);
@@ -639,7 +639,7 @@ module.exports = (crowi) => {
     try {
       const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
 
-      const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3(response);

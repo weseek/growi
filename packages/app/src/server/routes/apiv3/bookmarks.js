@@ -1,4 +1,4 @@
-import { SUPPORTED_ACTION_TYPE, SupportedTargetModel } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loggerFactory from '~/utils/logger';
 
@@ -313,7 +313,7 @@ module.exports = (crowi) => {
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: bool ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK : SUPPORTED_ACTION_TYPE.ACTION_PAGE_UNBOOKMARK,
+      action: bool ? SupportedAction.ACTION_PAGE_BOOKMARK : SupportedAction.ACTION_PAGE_UNBOOKMARK,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
