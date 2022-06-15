@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import {
-  SupportedActionType, AllSupportedActionType, PageActions, CommentActions,
+  SupportedActionType, AllSupportedAction, PageActions, CommentActions,
 } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 
@@ -39,7 +39,7 @@ export const AuditLogManagement: FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(AllSupportedActionType.map(action => [action, true])),
+    new Map<SupportedActionType, boolean>(AllSupportedAction.map(action => [action, true])),
   );
 
   /*

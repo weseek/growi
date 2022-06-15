@@ -1,5 +1,5 @@
 
-import { SUPPORTED_ACTION_TYPE, SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /**
@@ -262,11 +262,11 @@ module.exports = function(crowi, app) {
     );
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
       event: createdComment,
-      action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE,
+      action: SupportedAction.ACTION_COMMENT_CREATE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
@@ -398,7 +398,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE };
+    const parameters = { action: SupportedAction.ACTION_COMMENT_UPDATE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     res.json(ApiResponse.success({ comment: updatedComment }));
@@ -480,7 +480,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_COMMENT_REMOVE };
+    const parameters = { action: SupportedAction.ACTION_COMMENT_REMOVE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.json(ApiResponse.success({}));

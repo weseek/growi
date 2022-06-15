@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
@@ -15,7 +15,7 @@ export const generateAddActivityMiddleware = crowi => async(req: AuthorizedReque
   const parameter = {
     ip:  req.ip,
     endpoint: req.originalUrl,
-    action: SUPPORTED_ACTION_TYPE.ACTION_UNSETTLED,
+    action: SupportedAction.ACTION_UNSETTLED,
     user: req.user?._id,
     snapshot: {
       username: req.user?.username,

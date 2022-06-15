@@ -3,7 +3,7 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -55,7 +55,7 @@ module.exports = (crowi: Crowi): Router => {
       }
 
       // add action to query
-      const canContainActionFilterToQuery = parsedSearchFilter.actions.every(a => AllSupportedActionType.includes(a));
+      const canContainActionFilterToQuery = parsedSearchFilter.actions.every(a => AllSupportedAction.includes(a));
       if (canContainActionFilterToQuery) {
         Object.assign(query, { action: parsedSearchFilter.actions });
       }

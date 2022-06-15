@@ -1,4 +1,4 @@
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
@@ -330,9 +330,9 @@ module.exports = (crowi) => {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: createdPage,
-      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
+      action: SupportedAction.ACTION_PAGE_CREATE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
@@ -553,9 +553,9 @@ module.exports = (crowi) => {
 
     const activityId = res.locals.activity._id;
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
+      action: SupportedAction.ACTION_PAGE_RENAME,
     };
     activityEvent.emit('update', activityId, parameters, page);
 
@@ -759,9 +759,9 @@ module.exports = (crowi) => {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE,
+      action: SupportedAction.ACTION_PAGE_DUPLICATE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 

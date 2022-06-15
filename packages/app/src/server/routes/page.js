@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -406,7 +406,7 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.render(view, renderVars);
@@ -470,7 +470,7 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.render(view, renderVars);
@@ -651,7 +651,7 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return redirector(req, res, next, path);
@@ -661,7 +661,7 @@ module.exports = function(crowi, app) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
 
-    const parameters = { action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_VIEW };
+    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return redirector(req, res, next, path);
@@ -1000,9 +1000,9 @@ module.exports = function(crowi, app) {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE,
+      action: SupportedAction.ACTION_PAGE_UPDATE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
   };
@@ -1242,9 +1242,9 @@ module.exports = function(crowi, app) {
     result.isCompletely = isCompletely;
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: isCompletely ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE,
+      action: isCompletely ? SupportedAction.ACTION_PAGE_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
@@ -1300,9 +1300,9 @@ module.exports = function(crowi, app) {
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT,
+      action: SupportedAction.ACTION_PAGE_REVERT,
     };
     activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
