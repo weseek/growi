@@ -180,6 +180,9 @@ module.exports = (crowi) => {
       body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
       body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
+    resumeRenamePage: [
+      body('pageId').isMongoId().withMessage('pageId is required'),
+    ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
@@ -552,6 +555,29 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3(result);
+  });
+
+  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, csrf, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
+
+    const { pageId } = req.body;
+    const { user } = req;
+
+    // The user has permission to resume rename operation if page is returned.
+    const page = await Page.findByIdAndViewer(pageId, user, null, true);
+    if (page == null) {
+      const msg = 'The operation is forbidden for this user';
+      const code = 'forbidden-user';
+      return res.apiv3Err(new ErrorV3(msg, code), 403);
+    }
+
+    try {
+      await crowi.pageService.resumeRenameSubOperation(page);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+    return res.apiv3();
   });
 
   /**
