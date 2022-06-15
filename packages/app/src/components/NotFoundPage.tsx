@@ -13,7 +13,7 @@ import PageTimeline from './PageTimeline';
 /**
  * Replace url in address bar with new path and query parameters
  */
-const replaceURLHistory = (pageId, path) => {
+const replaceURLHistory = (pageId: string, path: string) => {
   if (pageId != null) {
     const queryParameters = window.location.search;
     window.history.replaceState(null, '', `${path}${queryParameters}`);
@@ -27,6 +27,7 @@ const NotFoundPage = (): JSX.Element => {
 
   // replace url in address bar
   useEffect(() => {
+    if (pageId == null || path == null) return;
     replaceURLHistory(pageId, path);
   }, [pageId, path]);
 
