@@ -40,8 +40,6 @@ const RevisionComparer = (props) => {
   }
 
   const generateURL = (pathName) => {
-    if (pathName == null) return null;
-
     const { origin } = window.location;
 
     const url = new URL(pathName, origin);
