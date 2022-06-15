@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/context';
 
@@ -16,7 +17,7 @@ import PageTimeline from './PageTimeline';
 const replaceURLHistory = (pageId: string, path: string) => {
   if (pageId != null) {
     const queryParameters = window.location.search;
-    window.history.replaceState(null, '', `${path}${queryParameters}`);
+    window.history.replaceState(null, '', urljoin(path, queryParameters));
   }
 };
 
