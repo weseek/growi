@@ -561,7 +561,7 @@ class PageService {
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike) {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
@@ -685,7 +685,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename', page, null, user);
 
     return renamedPage;
   }
@@ -762,7 +762,6 @@ class PageService {
     }
 
     this.pageEvent.emit('updateMany', pages, user);
-    return pages;
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
@@ -1847,7 +1846,6 @@ class PageService {
         await this.deletePage(page, user, {}, isRecursively);
       }
     }
-    // Call the pageEvent function with the pagesToDelete as the parameter.
   }
 
   // use the same process in both v4 and v5
@@ -2252,8 +2250,8 @@ class PageService {
     // Get user to be notified
     let targetUsers = await activity.getNotificationTargetUsers();
     if (descendantPages != null) {
-      const targetDescendantsUsers = await Subscription.getSubscriptions(user._id, descendantPages);
-      targetUsers = targetUsers.concat(targetDescendantsUsers);
+      const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
+      targetUsers = targetUsers.concat(targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString())));
     }
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);

@@ -681,7 +681,6 @@ module.exports = (crowi) => {
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
-    // console.log('The page is duplicated recursively?', isRecursively, pageId);
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
