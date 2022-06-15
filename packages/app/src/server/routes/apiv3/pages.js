@@ -1,4 +1,4 @@
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedTarget, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
@@ -330,7 +330,7 @@ module.exports = (crowi) => {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTarget.MODEL_PAGE,
       target: createdPage,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
     };
@@ -553,7 +553,7 @@ module.exports = (crowi) => {
 
     const activityId = res.locals.activity._id;
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTarget.MODEL_PAGE,
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME,
     };
@@ -759,7 +759,7 @@ module.exports = (crowi) => {
     }
 
     const parameters = {
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
+      targetModel: SupportedTarget.MODEL_PAGE,
       target: page,
       action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE,
     };

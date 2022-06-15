@@ -36,7 +36,7 @@ const ACTION_COMMENT_CREATE = 'COMMENT_CREATE';
 const ACTION_COMMENT_UPDATE = 'COMMENT_UPDATE';
 const ACTION_COMMENT_REMOVE = 'COMMENT_REMOVE';
 
-export const SUPPORTED_TARGET_MODEL_TYPE = {
+export const SupportedTarget = {
   MODEL_PAGE,
 } as const;
 
@@ -110,7 +110,7 @@ export const CommentActions = Object.values({
 /*
  * Array
  */
-export const AllSupportedTargetModelType = Object.values(SUPPORTED_TARGET_MODEL_TYPE);
+export const AllSupportedTargetModel = Object.values(SupportedTarget);
 export const AllSupportedEventModelType = Object.values(SUPPORTED_EVENT_MODEL_TYPE);
 export const AllSupportedActionType = Object.values(SUPPORTED_ACTION_TYPE);
 export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_TO_NOTIFIED_TYPE);
@@ -118,7 +118,7 @@ export const AllSupportedActionToNotifiedType = Object.values(SUPPORTED_ACTION_T
 /*
  * Type
  */
-export type SupportedTargetModelType = typeof SUPPORTED_TARGET_MODEL_TYPE[keyof typeof SUPPORTED_TARGET_MODEL_TYPE];
+export type SupportedTargetModelType = typeof SupportedTarget[keyof typeof SupportedTarget];
 export type SupportedEventModelType = typeof SUPPORTED_EVENT_MODEL_TYPE[keyof typeof SUPPORTED_EVENT_MODEL_TYPE];
 export type SupportedActionType = typeof SUPPORTED_ACTION_TYPE[keyof typeof SUPPORTED_ACTION_TYPE];
 
