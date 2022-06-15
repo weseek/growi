@@ -556,7 +556,7 @@ class PageService {
     /*
      * Sub Operation
      */
-    await this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
