@@ -5,6 +5,7 @@
   "Delete": "削除",
   "delete_all": "全て削除",
   "Duplicate": "複製",
+  "PathRecovery": "パスを修復",
   "Copy": "コピー",
   "preview":"プレビュー",
   "desktop":"パソコン",
@@ -1104,6 +1105,15 @@
     "cancel_bookmark": "ブックマークを取り消す",
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
-    "footprints": "足跡"
+    "footprints": "足跡",
+    "operation": {
+      "attention": {
+        "rename": "配下のページパスの更新が正常に行われませんでした。3点リーダーからメニューを開き、「パスを修復」を選択してしてください。"
+      }
+    }
+  },
+  "page_operation":{
+    "paths_recovered": "パスを修復しました",
+    "path_recovery_failed":"パスを修復できませんでした"
   }
 }
