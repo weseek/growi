@@ -5,7 +5,6 @@ import loggerFactory from '~/utils/logger';
 
 import nextFactory from '../routes/next';
 
-const onHeaders = require('on-headers');
 const swig = require('swig-templates');
 
 const logger = loggerFactory('growi:crowi:dev');
