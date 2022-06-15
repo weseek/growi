@@ -685,8 +685,6 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, null, user);
-
     return renamedPage;
   }
 
