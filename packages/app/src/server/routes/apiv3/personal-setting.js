@@ -362,8 +362,10 @@ module.exports = (crowi) => {
     }
     try {
       const userData = await user.updatePassword(newPassword);
+
       const parameters = { action: SupportedAction.ACTION_USER_PASSWORD_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ userData });
     }
     catch (err) {
