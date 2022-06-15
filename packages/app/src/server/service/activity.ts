@@ -30,8 +30,6 @@ class ActivityService {
 
   initActivityEventListeners(): void {
     this.activityEvent.on('update', async(activityId: string, parameters: UpdateActivityParameterType, target?: IPage) => {
-
-      // update activity
       let activity: IActivity;
       try {
         activity = await this.updateByParameters(activityId, parameters);
@@ -74,11 +72,6 @@ class ActivityService {
     }
   };
 
-
-  /**
-     * @param {object} parameters
-     * @return {Promise}
-     */
   createByParameters = function(parameters) {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
 
@@ -91,10 +84,6 @@ class ActivityService {
     return activity;
   };
 
-  /**
-   * @param {User} user
-   * @return {Promise}
-   */
   findByUser = function(user) {
     return this.find({ user }).sort({ createdAt: -1 }).exec();
   };
