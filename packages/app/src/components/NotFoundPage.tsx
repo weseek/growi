@@ -3,7 +3,7 @@ import React, { useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { useCurrentPageId, useCurrentPagePath } from '~/stores/context';
+import { useCurrentPageId, useCurrentPagePath, useNotFoundTargetPathOrId } from '~/stores/context';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
@@ -23,12 +23,14 @@ const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: pageId } = useCurrentPageId();
   const { data: path } = useCurrentPagePath();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
 
-  // replace url in address bar
+  // replace url in address bar with path when accessing empty page by permalink
   useEffect(() => {
-    if (pageId == null || path == null) return;
-    replaceURLHistory(path);
-  }, [pageId, path]);
+    if (pageId != null && path != null && !notFoundTargetPathOrId?.includes('/')) {
+      replaceURLHistory(path);
+    }
+  }, [pageId, path, notFoundTargetPathOrId]);
 
   const navTabMapping = useMemo(() => {
     return {
