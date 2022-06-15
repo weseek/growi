@@ -12,6 +12,7 @@ import {
 
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as forgotPassword from './forgot-password';
+import nextFactory from './next';
 import * as privateLegacyPages from './private-legacy-pages';
 import * as userActivation from './user-activation';
 
@@ -54,6 +55,8 @@ module.exports = function(crowi, app) {
   const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
+  const next = nextFactory(crowi);
+
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
@@ -71,7 +74,9 @@ module.exports = function(crowi, app) {
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
 
-  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.get('/_next/*'                  , next.delegateToNext);
+
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
@@ -241,7 +246,7 @@ module.exports = function(crowi, app) {
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
 
-  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
+  app.get('/*/$'                   , loginRequired , injectUserUISettings, next.delegateToNext);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
 
 };

@@ -3,6 +3,8 @@ import path from 'path';
 import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
+import nextFactory from '../routes/next';
+
 const onHeaders = require('on-headers');
 const swig = require('swig-templates');
 
@@ -93,35 +95,41 @@ class CrowiDev {
    * @param {any} app express
    */
   setupExpressAfterListening(app) {
-    this.setupHeaderDebugger(app);
-    this.setupBrowserSync(app);
+    // this.setupHeaderDebugger(app);
+    // this.setupBrowserSync(app);
+    this.setupNextjsStackFrame(app);
   }
 
-  setupHeaderDebugger(app) {
-    logger.debug('setupHeaderDebugger');
+  // setupHeaderDebugger(app) {
+  //   logger.debug('setupHeaderDebugger');
 
-    app.use((req, res, next) => {
-      onHeaders(res, () => {
-        logger.debug('HEADERS GOING TO BE WRITTEN');
-      });
-      next();
-    });
-  }
+  //   app.use((req, res, next) => {
+  //     onHeaders(res, () => {
+  //       logger.debug('HEADERS GOING TO BE WRITTEN');
+  //     });
+  //     next();
+  //   });
+  // }
 
-  setupBrowserSync(app) {
-    logger.debug('setupBrowserSync');
+  // setupBrowserSync(app) {
+  //   logger.debug('setupBrowserSync');
 
-    const browserSync = require('browser-sync');
-    const bs = browserSync.create().init({
-      logSnippet: false,
-      notify: false,
-      files: [
-        `${this.crowi.viewsDir}/**/*.html`,
-        `${this.crowi.publicDir}/**/*.js`,
-        `${this.crowi.publicDir}/**/*.css`,
-      ],
-    });
-    app.use(require('connect-browser-sync')(bs));
+  //   const browserSync = require('browser-sync');
+  //   const bs = browserSync.create().init({
+  //     logSnippet: false,
+  //     notify: false,
+  //     files: [
+  //       `${this.crowi.viewsDir}/**/*.html`,
+  //       `${this.crowi.publicDir}/**/*.js`,
+  //       `${this.crowi.publicDir}/**/*.css`,
+  //     ],
+  //   });
+  //   app.use(require('connect-browser-sync')(bs));
+  // }
+
+  setupNextjsStackFrame(app) {
+    const next = nextFactory(this.crowi);
+    app.get('/__nextjs_original-stack-frame', next.delegateToNext);
   }
 
 }

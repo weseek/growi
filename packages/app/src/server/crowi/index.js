@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-
 import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
-
+import next from 'next';
 
 import pkg from '^/package.json';
 
@@ -426,8 +425,13 @@ Crowi.prototype.getTokens = function() {
 };
 
 Crowi.prototype.start = async function() {
+  const dev = process.env.NODE_ENV !== 'production';
+  this.nextApp = next({ dev });
+
+  await this.nextApp.prepare();
+
   // init CrowiDev
-  if (this.node_env === 'development') {
+  if (dev) {
     const CrowiDev = require('./dev');
     this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
