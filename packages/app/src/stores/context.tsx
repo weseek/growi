@@ -48,7 +48,7 @@ export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<N
   return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData);
 };
 
-export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+export const useCurrentDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData);
 };
 

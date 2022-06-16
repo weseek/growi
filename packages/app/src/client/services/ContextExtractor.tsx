@@ -12,7 +12,7 @@ import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websoc
 
 import {
   useSiteUrl,
-  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
+  useCurrentCreatedAt, useDeleteUsername, useCurrentDeletedAt, useHasChildren, useHasDraftOnHackmd,
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
@@ -124,7 +124,7 @@ const ContextExtractorOnce: FC = () => {
   // Page
   useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
-  useDeletedAt(deletedAt);
+  useCurrentDeletedAt(deletedAt);
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
