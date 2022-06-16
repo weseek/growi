@@ -719,18 +719,26 @@ class PassportService implements S2sMessageHandlable {
 
   /**
    * Sanitize issuer Host / URL to match specified format
-   * Acceptable format : eg. https://hostname.com
+   * Acceptable formats :
+   * - https://hostname.com/auth/
+   * - domain only (hostname.com)
+   * - Full metadata url (https://hostname.com/auth/v2/.well-known/openid-configuration)
    * @param issuerHost string
-   * @returns string URL.origin
+   * @returns string URL/.well-known/openid-configuration
    */
-  getOIDCIssuerHostName(issuerHost) {
+  getOIDCMetadataURL(issuerHost) {
     const protocol = 'https://';
     const pattern = /^https?:\/\//i;
+    const metadataPath = '/.well-known/openid-configuration';
+    // If URL is full path with .well-known/openid-configuration
+    if (issuerHost.endsWith(metadataPath)) {
+      return issuerHost;
+    }
     // Set protocol if not available on url
     const absUrl = !pattern.test(issuerHost) ? `${protocol}${issuerHost}` : issuerHost;
     const url = new URL(absUrl).href;
     // Remove trailing slash if exists
-    return url.replace(/\/+$/, '');
+    return `${url.replace(/\/+$/, '')}${metadataPath}`;
   }
 
   /**
@@ -743,12 +751,12 @@ class PassportService implements S2sMessageHandlable {
  */
   async isOidcHostReachable(issuerHost) {
     try {
-      const hostname = this.getOIDCIssuerHostName(issuerHost);
+      const metadataUrl = this.getOIDCMetadataURL(issuerHost);
       const client = require('axios').default;
       axiosRetry(client, {
         retries: 3,
       });
-      const response = await client.get(`${hostname}/.well-known/openid-configuration`);
+      const response = await client.get(metadataUrl);
       // Check for valid OIDC Issuer configuration
       if (!response.data.issuer) {
         logger.debug('OidcStrategy: Invalid OIDC Issuer configurations');
@@ -777,7 +785,7 @@ class PassportService implements S2sMessageHandlable {
       logger.error('OidcStrategy: setup failed');
       return;
     }
-    const metadataURL = this.getOIDCIssuerHostName(issuerHost);
+    const metadataURL = this.getOIDCMetadataURL(issuerHost);
     const oidcIssuer = await pRetry(async() => {
       return OIDCIssuer.discover(metadataURL);
     }, {
