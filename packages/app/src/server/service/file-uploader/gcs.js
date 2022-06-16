@@ -17,20 +17,13 @@ module.exports = function(crowi) {
     return configManager.getConfig('crowi', 'gcs:bucket');
   }
 
-  /**
-   * see https://googleapis.dev/nodejs/storage/latest/Storage.html
-   */
   function getGcsInstance() {
     if (_instance == null) {
       const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
-      if (keyFilename == null) {
-        // Create a client that uses Application Default Credentials
-        _instance = new Storage();
-      }
-      else {
-        // Create a client with explicit credentials
-        _instance = new Storage({ keyFilename });
-      }
+      // see https://googleapis.dev/nodejs/storage/latest/Storage.html
+      _instance = keyFilename != null
+        ? new Storage({ keyFilename }) // Create a client with explicit credentials
+        : new Storage(); // Create a client that uses Application Default Credentials
     }
     return _instance;
   }
