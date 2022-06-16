@@ -17,8 +17,6 @@ import Subscription from './subscription';
 
 const logger = loggerFactory('growi:models:activity');
 
-type CreateActivityParameterType = Pick<IActivity, 'user' | 'createdAt' | 'ip' | 'endpoint' | 'snapshot'>
-type UpdateActivityParameterType = Omit<IActivity, 'user' | 'createdAt' | 'ip' | 'endpoint'>
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId
@@ -115,13 +113,13 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   return activeNotificationUsers;
 };
 
-activitySchema.statics.createByParameters = async function(parameters: CreateActivityParameterType): Promise<IActivity> {
+activitySchema.statics.createByParameters = async function(parameters): Promise<IActivity> {
   const activity = await this.create(parameters) as unknown as IActivity;
 
   return activity;
 };
 
-activitySchema.statics.updateByParameters = async function(activityId: string, parameters: UpdateActivityParameterType): Promise<IActivity> {
+activitySchema.statics.updateByParameters = async function(activityId: string, parameters): Promise<IActivity> {
   const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
   return activity;

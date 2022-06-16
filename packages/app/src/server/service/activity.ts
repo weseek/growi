@@ -10,8 +10,6 @@ import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
-type UpdateActivityParameterType = Omit<IActivity, 'user' | 'createdAt' | 'ip' | 'endpoint'>
-
 class ActivityService {
 
   crowi!: Crowi;
@@ -26,7 +24,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters: UpdateActivityParameterType, target?: IPage) => {
+    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
       let activity: IActivity;
       try {
         activity = await Activity.updateByParameters(activityId, parameters);
