@@ -22,6 +22,8 @@ class ActivityService {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
 
+    this.shoudUpdateActivity = this.shoudUpdateActivity.bind(this);
+
     this.initActivityEventListeners();
   }
 
@@ -40,9 +42,9 @@ class ActivityService {
     });
   }
 
-  shoudCreateActivity = function(action: SupportedActionType): boolean {
+  shoudUpdateActivity = function(action: SupportedActionType): boolean {
     const configManager = this.crowi.configManager;
-    const auditLogActionGroupSize = configManager != null ? configManager.getConfig('crowi', 'app:auditLogActionGroupSize') : 'SMALL';
+    const auditLogActionGroupSize = configManager != null ? configManager.getConfig('crowi', 'app:auditLogActionGroupSize') : ActionGroupSize.Small;
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
