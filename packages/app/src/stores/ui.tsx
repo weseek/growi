@@ -10,7 +10,9 @@ import useSWRImmutable from 'swr/immutable';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
@@ -276,6 +278,72 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
       fallback: calcDrawerMode,
     },
   );
+};
+
+type SidebarConfigOption = {
+  update: () => Promise<void>,
+  isSidebarDrawerMode: boolean|undefined,
+  isSidebarClosedAtDockMode: boolean|undefined,
+  setIsSidebarDrawerMode: (isSidebarDrawerMode: boolean) => void,
+  setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode: boolean) => void
+}
+
+export const useSWRxSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
+  const swrResponse = useSWRImmutable<ISidebarConfig>(
+    '/customize-setting/sidebar',
+    endpoint => apiv3Get(endpoint).then(result => result.data),
+  );
+  return {
+    ...swrResponse,
+    update: async() => {
+      const { data } = swrResponse;
+
+      if (data == null) {
+        return;
+      }
+
+      const { isSidebarDrawerMode, isSidebarClosedAtDockMode } = data;
+
+      const updateData = {
+        isSidebarDrawerMode,
+        isSidebarClosedAtDockMode,
+      };
+
+      // invoke API
+      await apiv3Put('/customize-setting/sidebar', updateData);
+    },
+    isSidebarDrawerMode: swrResponse.data?.isSidebarDrawerMode,
+    isSidebarClosedAtDockMode: swrResponse.data?.isSidebarClosedAtDockMode,
+    setIsSidebarDrawerMode: (isSidebarDrawerMode) => {
+      const { data, mutate } = swrResponse;
+
+      if (data == null) {
+        return;
+      }
+
+      const updateData = {
+        isSidebarDrawerMode,
+      };
+
+      // update isSidebarDrawerMode in cache, not revalidate
+      mutate({ ...data, ...updateData }, false);
+
+    },
+    setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode) => {
+      const { data, mutate } = swrResponse;
+
+      if (data == null) {
+        return;
+      }
+
+      const updateData = {
+        isSidebarClosedAtDockMode,
+      };
+
+      // update isSidebarClosedAtDockMode in cache, not revalidate
+      mutate({ ...data, ...updateData }, false);
+    },
+  };
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {

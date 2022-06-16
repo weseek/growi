@@ -1,23 +1,32 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
+import { useSWRxSidebarConfig } from '~/stores/ui';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
-  const [isDrawerMode, setIsDrawerMode] = useState(false);
-  const [isDefaultOpenAtDockMode, setIsDefaultOpenAtDockMode] = useState(false);
+  const {
+    update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
+  } = useSWRxSidebarConfig();
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
   const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
   const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
 
-  const onClickSubmit = () => {
-    console.log('update!');
-  };
+  const onClickSubmit = useCallback(async() => {
+    try {
+      await update();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, update]);
 
   return (
     <React.Fragment>
@@ -35,8 +44,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           <div className="d-flex justify-content-around mt-5">
             <div id="layoutOptions" className="card-deck">
               <div
-                className={`card customize-layout-card ${isDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsDrawerMode(true)}
+                className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsSidebarDrawerMode(true)}
                 role="button"
               >
                 <img src={drawerIconFileName} />
@@ -45,8 +54,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 </div>
               </div>
               <div
-                className={`card customize-layout-card ${!isDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsDrawerMode(false)}
+                className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
+                onClick={() => setIsSidebarDrawerMode(false)}
                 role="button"
               >
                 <img src={dockIconFileName} />
@@ -67,28 +76,28 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
-                id="radio-email-show"
+                id="is-open"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && isDefaultOpenAtDockMode}
-                disabled={isDrawerMode}
-                onChange={() => { setIsDefaultOpenAtDockMode(true) }}
+                checked={!isSidebarDrawerMode && !isSidebarClosedAtDockMode}
+                disabled={isSidebarDrawerMode}
+                onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
-              <label className="custom-control-label" htmlFor="radio-email-show">
+              <label className="custom-control-label" htmlFor="is-open">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
             <div className="custom-control custom-radio my-3">
               <input
                 type="radio"
-                id="radio-email-show"
+                id="is-closed"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isDrawerMode && !isDefaultOpenAtDockMode}
-                disabled={isDrawerMode}
-                onChange={() => { setIsDefaultOpenAtDockMode(false) }}
+                checked={!isSidebarDrawerMode && isSidebarClosedAtDockMode}
+                disabled={isSidebarDrawerMode}
+                onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
-              <label className="custom-control-label" htmlFor="radio-email-show">
+              <label className="custom-control-label" htmlFor="is-closed">
                 {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>

@@ -10,6 +10,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body, query } = require('express-validator');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -104,6 +105,10 @@ module.exports = (crowi) => {
     ],
     theme: [
       body('themeType').isString(),
+    ],
+    sidebar: [
+      body('isSidebarDrawerMode').isBoolean(),
+      body('isSidebarClosedAtDockMode').isBoolean(),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
@@ -331,6 +336,42 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating theme';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-theme-failed'));
+    }
+  });
+
+  // sidebar
+  router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    try {
+      const isSidebarDrawerMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode');
+      const isSidebarClosedAtDockMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
+      return res.apiv3({ isSidebarDrawerMode, isSidebarClosedAtDockMode });
+    }
+    catch (err) {
+      const msg = 'Error occurred in getting sidebar';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-sidebar-failed'));
+    }
+  });
+
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
+      'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isSidebarDrawerMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+        isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating sidebar';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-sidebar-failed'));
     }
   });
 
