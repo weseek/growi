@@ -213,8 +213,9 @@ class CommentEditor extends React.Component {
     catch (err) {
       this.apiErrorHandler(err);
     }
-
-    this.editor.terminateUploadingState();
+    finally {
+      this.editor.terminateUploadingState();
+    }
   }
 
   apiErrorHandler(error) {
