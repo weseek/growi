@@ -5,7 +5,7 @@ import {
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
-  ISnapshot, AllSupportedAction, SupportedActionType,
+  IActivity, ISnapshot, AllSupportedAction, SupportedActionType,
   AllSupportedTargetModel, SupportedTargetModelType,
   AllSupportedEventModel, SupportedEventModelType,
 } from '~/interfaces/activity';
@@ -13,6 +13,7 @@ import {
 import loggerFactory from '../../utils/logger';
 
 import Subscription from './subscription';
+
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -110,6 +111,18 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
     status: User.STATUS_ACTIVE,
   }).distinct('_id');
   return activeNotificationUsers;
+};
+
+activitySchema.statics.createByParameters = async function(parameters): Promise<IActivity> {
+  const activity = await this.create(parameters) as unknown as IActivity;
+
+  return activity;
+};
+
+activitySchema.statics.updateByParameters = async function(activityId: string, parameters): Promise<IActivity> {
+  const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
+
+  return activity;
 };
 
 activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {

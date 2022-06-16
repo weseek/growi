@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { IUserHasId } from '~/interfaces/user';
+import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 
@@ -23,7 +24,7 @@ export const generateAddActivityMiddleware = crowi => async(req: AuthorizedReque
   };
 
   try {
-    const activity = await crowi.activityService.createByParameters(parameter);
+    const activity = await Activity.createByParameters(parameter);
     res.locals.activity = activity;
   }
   catch (err) {
