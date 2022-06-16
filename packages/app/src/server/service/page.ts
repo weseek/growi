@@ -2248,12 +2248,12 @@ class PageService {
     };
     const activity = await activityService.createByParameters(parameters);
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
+    let targetUsers = await activity.getNotificationTargetUsers();
     if (descendantPages != null) {
       const User = this.crowi.model('User');
       const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
       const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
-      targetUsers.concat(await User.find({
+      targetUsers = targetUsers.concat(await User.find({
         _id: { $in: descendantsUsers },
         status: User.STATUS_ACTIVE,
       }).distinct('_id'));
