@@ -69,10 +69,6 @@ class ActivityService {
     }
   };
 
-  findByUser = function(user) {
-    return this.find({ user }).sort({ createdAt: -1 }).exec();
-  };
-
 }
 
 module.exports = ActivityService;
