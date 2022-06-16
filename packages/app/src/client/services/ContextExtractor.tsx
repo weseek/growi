@@ -66,8 +66,11 @@ const ContextExtractorOnce: FC = () => {
   // updatedAt
   const updatedAtAttribute = mainContent?.getAttribute('data-page-updated-at');
   const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
+  // deletedAt
+  const deletedAtAttribute = mainContent?.getAttribute('data-page-deleted-at');
+  const deletedAt: Date | null = (deletedAtAttribute != null) ? new Date(deletedAtAttribute) : null;
 
-  const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
+
   const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
