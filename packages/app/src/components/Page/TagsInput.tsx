@@ -35,7 +35,8 @@ const TagsInput: FC<Props> = (props: Props) => {
     }
   }, [props]);
 
-  const searchHandler = useCallback(async() => {
+  const searchHandler = useCallback(async(query: string) => {
+    setSearchQuery(query);
     setLoading(true);
     try {
       tagsSearchData?.tags.unshift(searchQuery);
@@ -74,7 +75,7 @@ const TagsInput: FC<Props> = (props: Props) => {
         multiple
         newSelectionPrefix=""
         onChange={changeHandler}
-        onSearch={(query) => { setSearchQuery(query); searchHandler() }}
+        onSearch={query => searchHandler(query)}
         onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
         placeholder="tag name"
