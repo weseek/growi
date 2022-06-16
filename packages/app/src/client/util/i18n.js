@@ -1,7 +1,8 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import locales from '^/resource/locales';
+
+import locales from '^/public/static/locales';
 
 const aliasesMapping = {};
 Object.values(locales).forEach((locale) => {
@@ -13,7 +14,7 @@ Object.values(locales).forEach((locale) => {
   });
 });
 
-// extract metadata list from 'resource/locales/${locale}/meta.json'
+// extract metadata list from 'public/static/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
 
 export const i18nFactory = (userLocaleId) => {
