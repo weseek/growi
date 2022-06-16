@@ -1,4 +1,3 @@
-import { getModelSafely } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { IActivity } from '~/interfaces/activity';
@@ -23,8 +22,6 @@ class ActivityService {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
 
-    this.updateByParameters = this.updateByParameters.bind(this);
-
     this.initActivityEventListeners();
   }
 
@@ -32,7 +29,7 @@ class ActivityService {
     this.activityEvent.on('update', async(activityId: string, parameters: UpdateActivityParameterType, target?: IPage) => {
       let activity: IActivity;
       try {
-        activity = await this.updateByParameters(activityId, parameters);
+        activity = await Activity.updateByParameters(activityId, parameters);
       }
       catch (err) {
         logger.error('Update activity failed', err);
@@ -70,18 +67,6 @@ class ActivityService {
       logger.error('Failed to create TTL Index', err);
       throw err;
     }
-  };
-
-  createByParameters = function(parameters) {
-    const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-
-    return Activity.create(parameters);
-  };
-
-  updateByParameters = async function(activityId: string, parameters: UpdateActivityParameterType): Promise<IActivity> {
-    const activity = await Activity.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
-
-    return activity;
   };
 
   findByUser = function(user) {
