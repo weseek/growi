@@ -743,7 +743,6 @@ module.exports = function(crowi, app) {
       attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
       const attachmentConfigParams = {
         'customize:brandLogoAttachmentId': attachment.id,
-        'customize:isDefaultLogo': false,
         'customize:uploadedLogoSrc': attachment.filePathProxied,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);

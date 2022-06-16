@@ -494,7 +494,7 @@ export default class AdminCustomizeContainer extends Container {
   async updateCustomizeLogo() {
     try {
       const response = await apiv3Put('/customize-setting/customize-logo', {
-        isDefaultLogo: this.state.isDefaultLogo,
+        isDefaultLogo: this.state.uploadedLogoSrc == null ? true : this.state.isDefaultLogo,
         brandLogoAttachmentId: this.state.brandLogoAttachmentId,
         uploadedLogoSrc: this.state.uploadedLogoSrc,
       });
