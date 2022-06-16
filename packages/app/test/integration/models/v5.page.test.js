@@ -745,7 +745,6 @@ describe('Page', () => {
 
           expect(page1.grant).toBe(Page.GRANT_USER_GROUP);
           expect(page1.grantedGroup._id).toStrictEqual(groupIdA);
-          expect(page1.parent).toStrictEqual(rootPage._id);
         });
 
         test('successfully change to GRANT_USER_GROUP from GRANT_OWNER if parent page is GRANT_PUBLIC', async() => {
