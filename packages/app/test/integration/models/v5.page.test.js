@@ -888,23 +888,26 @@ describe('Page', () => {
       });
       describe('update grant of a page under a page with GRANT_OWNER', () => {
         test('Fail to change from GRNAT_OWNER', async() => {
+          // path
           const path1 = '/mup35_owner';
           const path2 = '/mup35_owner/mup36_owner';
+          // page
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
           const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
-          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA }; // change to groupA
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          await expect(updatePage(_page2, 'new', 'old', pModelUser1, options))
+          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
+          await expect(updatePage(_page2, 'new', 'old', pModelUser1, options)) // from GRANT_OWNER to GRANT_USER_GROUP(groupIdA)
             .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
 
-          const page2 = await Page.findOne({ path: path2 });
-          const pageN = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // not exist
+          const page1 = await Page.findById(_page1.id);
+          const page2 = await Page.findById(_page2.id);
+          expect(page1).toBeTruthy();
           expect(page2).toBeTruthy();
-          expect(pageN).toBeNull();
-          expect(page2.grant).toBe(Page.GRANT_OWNER);
-          expect(page2.grantedUsers).toStrictEqual([pModelUser1._id]);
+          expect(page2.grant).toBe(Page.GRANT_OWNER); // should be the same before the update
+          expect(page2.grantedUsers).toStrictEqual([pModelUser1._id]); // should be the same before the update
+          expect(page2.grantedGroup).toBeUndefined(); // no group should be set
         });
       });
 
