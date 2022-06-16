@@ -349,6 +349,9 @@ class PageService {
     const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+    const isContainerFluid: boolean = page.isContainerFluid !== undefined
+      ? page.isContainerFluid
+      : this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     return {
       data: page,
@@ -358,6 +361,7 @@ class PageService {
         isBookmarked,
         isLiked,
         subscriptionStatus: subscription?.status,
+        isContainerFluid,
       },
     };
   }
