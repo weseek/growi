@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { useTranslation } from 'react-i18next';
+
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 
 const PasswordResetRequestForm = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
 
   const changeEmail = (inputValue) => {
@@ -23,7 +22,7 @@ const PasswordResetRequestForm = (props) => {
     }
 
     try {
-      await appContainer.apiv3Post('/forgot-password', { email });
+      await apiv3Post('/forgot-password', { email });
       toastSuccess(t('forgot_password.success_to_send_email'));
     }
     catch (err) {
@@ -53,14 +52,7 @@ const PasswordResetRequestForm = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PasswordResetRequestFormWrapper = withUnstatedContainers(PasswordResetRequestForm, [AppContainer]);
-
 PasswordResetRequestForm.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(PasswordResetRequestFormWrapper);
+export default PasswordResetRequestForm;

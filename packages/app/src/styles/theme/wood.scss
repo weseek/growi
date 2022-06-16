@@ -91,7 +91,7 @@ html[dark] {
   $bgcolor-sidebar: $themecolor;
   // Sidebar contents
   $color-sidebar-context: #9d7406;
-  $bgcolor-sidebar-context: transparent;
+  $bgcolor-sidebar-context: lighten($themecolor, 38%);
   // Sidebar list group
   $bgcolor-sidebar-list-group: rgba(#f7f5f1, 0.5);
   // Sidebar resize button

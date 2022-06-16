@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
@@ -7,7 +8,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -35,7 +35,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -53,13 +52,22 @@ describe('Page', () => {
     const pModelUserId3 = new mongoose.Types.ObjectId();
     await User.insertMany([
       {
-        _id: pModelUserId1, name: 'pmodelUser1', username: 'pmodelUser1', email: 'pmodelUser1@example.com',
+        _id: pModelUserId1,
+        name: 'pmodelUser1',
+        username: 'pmodelUser1',
+        email: 'pmodelUser1@example.com',
       },
       {
-        _id: pModelUserId2, name: 'pmodelUser2', username: 'pmodelUser2', email: 'pmodelUser2@example.com',
+        _id: pModelUserId2,
+        name: 'pmodelUser2',
+        username: 'pmodelUser2',
+        email: 'pmodelUser2@example.com',
       },
       {
-        _id: pModelUserId3, name: 'pModelUser3', username: 'pModelUser3', email: 'pModelUser3@example.com',
+        _id: pModelUserId3,
+        name: 'pModelUser3',
+        username: 'pModelUser3',
+        email: 'pModelUser3@example.com',
       },
     ]);
     pModelUser1 = await User.findOne({ _id: pModelUserId1 });
@@ -132,79 +140,6 @@ describe('Page', () => {
         relatedGroup: groupIdC,
         relatedUser: pModelUserId3,
         createdAt: new Date(),
-      },
-    ]);
-
-    const pageIdCreate1 = new mongoose.Types.ObjectId();
-    const pageIdCreate2 = new mongoose.Types.ObjectId();
-    const pageIdCreate3 = new mongoose.Types.ObjectId();
-    const pageIdCreate4 = new mongoose.Types.ObjectId();
-
-    /**
-     * create
-     * mc_ => model create
-     * emp => empty => page with isEmpty: true
-     * pub => public => GRANT_PUBLIC
-     */
-    await Page.insertMany([
-      {
-        _id: pageIdCreate1,
-        path: '/v5_empty_create_4',
-        grant: Page.GRANT_PUBLIC,
-        parent: rootPage._id,
-        isEmpty: true,
-      },
-      {
-        path: '/v5_empty_create_4/v5_create_5',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate1,
-        isEmpty: false,
-      },
-      {
-        _id: pageIdCreate2,
-        path: '/mc4_top/mc1_emp',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-        isEmpty: true,
-      },
-      {
-        path: '/mc4_top/mc1_emp/mc2_pub',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: pageIdCreate2,
-        isEmpty: false,
-      },
-      {
-        path: '/mc5_top/mc3_awl',
-        grant: Page.GRANT_RESTRICTED,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-      },
-      {
-        _id: pageIdCreate3,
-        path: '/mc4_top',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        parent: rootPage._id,
-        descendantCount: 1,
-      },
-      {
-        _id: pageIdCreate4,
-        path: '/mc5_top',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        parent: rootPage._id,
-        descendantCount: 0,
       },
     ]);
 
@@ -412,158 +347,6 @@ describe('Page', () => {
         descendantCount: 0,
       },
     ]);
-
-    /**
-     * getParentAndFillAncestors
-     */
-    const pageIdPAF1 = new mongoose.Types.ObjectId();
-    const pageIdPAF2 = new mongoose.Types.ObjectId();
-    const pageIdPAF3 = new mongoose.Types.ObjectId();
-
-    await Page.insertMany([
-      {
-        _id: pageIdPAF1,
-        path: '/PAF1',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        parent: rootPage._id,
-        descendantCount: 0,
-      },
-      {
-        _id: pageIdPAF2,
-        path: '/emp_anc3',
-        grant: Page.GRANT_PUBLIC,
-        isEmpty: true,
-        descendantCount: 1,
-        parent: rootPage._id,
-      },
-      {
-        path: '/emp_anc3/PAF3',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        descendantCount: 0,
-        parent: pageIdPAF2,
-      },
-      {
-        _id: pageIdPAF3,
-        path: '/emp_anc4',
-        grant: Page.GRANT_PUBLIC,
-        isEmpty: true,
-        descendantCount: 1,
-        parent: rootPage._id,
-      },
-      {
-        path: '/emp_anc4/PAF4',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-        descendantCount: 0,
-        parent: pageIdPAF3,
-      },
-      {
-        path: '/emp_anc4',
-        grant: Page.GRANT_OWNER,
-        grantedUsers: [dummyUser1._id],
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        isEmpty: false,
-      },
-    ]);
-
-  });
-  describe('create', () => {
-
-    test('Should create single page', async() => {
-      const page = await Page.create('/v5_create1', 'create1', dummyUser1, {});
-      expect(page).toBeTruthy();
-      expect(page.parent).toStrictEqual(rootPage._id);
-    });
-
-    test('Should create empty-child and non-empty grandchild', async() => {
-      const grandchildPage = await Page.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
-      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
-
-      expect(childPage.isEmpty).toBe(true);
-      expect(grandchildPage).toBeTruthy();
-      expect(childPage).toBeTruthy();
-      expect(childPage.parent).toStrictEqual(rootPage._id);
-      expect(grandchildPage.parent).toStrictEqual(childPage._id);
-    });
-
-    test('Should create on empty page', async() => {
-      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
-      expect(beforeCreatePage.isEmpty).toBe(true);
-
-      const childPage = await Page.create('/v5_empty_create_4', 'body', dummyUser1, {});
-      const grandchildPage = await Page.findOne({ parent: childPage._id });
-
-      expect(childPage).toBeTruthy();
-      expect(childPage.isEmpty).toBe(false);
-      expect(childPage.revision.body).toBe('body');
-      expect(grandchildPage).toBeTruthy();
-      expect(childPage.parent).toStrictEqual(rootPage._id);
-      expect(grandchildPage.parent).toStrictEqual(childPage._id);
-    });
-
-    describe('Creating a page using existing path', () => {
-      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
-        const pathT = '/mc4_top';
-        const path1 = '/mc4_top/mc1_emp';
-        const path2 = '/mc4_top/mc1_emp/mc2_pub';
-        const pageT = await Page.findOne({ path: pathT, descendantCount: 1 });
-        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const page2 = await Page.findOne({ path: path2 });
-        const page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        expect(pageT).toBeTruthy();
-        expect(page1).toBeTruthy();
-        expect(page2).toBeTruthy();
-        expect(page3).toBeNull();
-
-        // use existing path
-        await Page.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
-
-        const _pageT = await Page.findOne({ path: pathT });
-        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const _page2 = await Page.findOne({ path: path2 });
-        const _page3 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        expect(_pageT).toBeTruthy();
-        expect(_page1).toBeTruthy();
-        expect(_page2).toBeTruthy();
-        expect(_page3).toBeTruthy();
-        expect(_pageT.descendantCount).toBe(1);
-      });
-    });
-    describe('Creating a page under a page with grant RESTRICTED', () => {
-      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
-        const pathT = '/mc5_top';
-        const path1 = '/mc5_top/mc3_awl';
-        const pathN = '/mc5_top/mc3_awl/mc4_pub'; // used to create
-        const pageT = await Page.findOne({ path: pathT });
-        const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        const page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        expect(pageT).toBeTruthy();
-        expect(page1).toBeTruthy();
-        expect(page2).toBeNull();
-
-        await Page.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
-
-        const _pageT = await Page.findOne({ path: pathT });
-        const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
-        const _page2 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC, isEmpty: true });
-        const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_PUBLIC }); // newly crated
-        expect(_pageT).toBeTruthy();
-        expect(_page1).toBeTruthy();
-        expect(_page2).toBeTruthy();
-        expect(_pageN).toBeTruthy();
-        expect(_pageN.parent).toStrictEqual(_page2._id);
-        expect(_pageT.descendantCount).toStrictEqual(1);
-      });
-    });
 
   });
 
@@ -777,86 +560,5 @@ describe('Page', () => {
       });
     });
 
-  });
-
-  describe('getParentAndFillAncestors', () => {
-    test('return parent if exist', async() => {
-      const page1 = await Page.findOne({ path: '/PAF1' });
-      const parent = await Page.getParentAndFillAncestors(page1.path, dummyUser1);
-      expect(parent).toBeTruthy();
-      expect(page1.parent).toStrictEqual(parent._id);
-    });
-    test('create parent and ancestors when they do not exist, and return the new parent', async() => {
-      const path1 = '/emp_anc1';
-      const path2 = '/emp_anc1/emp_anc2';
-      const path3 = '/emp_anc1/emp_anc2/PAF2';
-      const _page1 = await Page.findOne({ path: path1 }); // not exist
-      const _page2 = await Page.findOne({ path: path2 }); // not exist
-      const _page3 = await Page.findOne({ path: path3 }); // not exist
-      expect(_page1).toBeNull();
-      expect(_page2).toBeNull();
-      expect(_page3).toBeNull();
-
-      const parent = await Page.getParentAndFillAncestors(path3, dummyUser1);
-      const page1 = await Page.findOne({ path: path1 });
-      const page2 = await Page.findOne({ path: path2 });
-      const page3 = await Page.findOne({ path: path3 });
-
-      expect(parent._id).toStrictEqual(page2._id);
-      expect(parent.path).toStrictEqual(page2.path);
-      expect(parent.parent).toStrictEqual(page2.parent);
-
-      expect(parent).toBeTruthy();
-      expect(page1).toBeTruthy();
-      expect(page2).toBeTruthy();
-      expect(page3).toBeNull();
-
-      expect(page1.parent).toStrictEqual(rootPage._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-    });
-    test('return parent even if the parent page is empty', async() => {
-      const path1 = '/emp_anc3';
-      const path2 = '/emp_anc3/PAF3';
-      const _page1 = await Page.findOne({ path: path1, isEmpty: true });
-      const _page2 = await Page.findOne({ path: path2, isEmpty: false });
-      expect(_page1).toBeTruthy();
-      expect(_page2).toBeTruthy();
-
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
-      const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
-      const page2 = await Page.findOne({ path: path2, isEmpty: false });
-
-      // check for the parent (should be the same as page1)
-      expect(parent._id).toStrictEqual(page1._id);
-      expect(parent.path).toStrictEqual(page1.path);
-      expect(parent.parent).toStrictEqual(page1.parent);
-
-      expect(page1.parent).toStrictEqual(rootPage._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-    });
-    test("should find parent while NOT updating private legacy page's parent", async() => {
-      const path1 = '/emp_anc4';
-      const path2 = '/emp_anc4/PAF4';
-      const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
-      const _page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
-      const _page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
-      expect(_page1).toBeTruthy();
-      expect(_page2).toBeTruthy();
-      expect(_page3).toBeTruthy();
-      expect(_page3.parent).toBeNull();
-
-      const parent = await Page.getParentAndFillAncestors(_page2.path, dummyUser1);
-      const page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
-      const page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
-      const page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
-      expect(page1).toBeTruthy();
-      expect(page2).toBeTruthy();
-      expect(page3).toBeTruthy();
-      expect(page3.parent).toBeNull(); // parent property of page in private legacy pages should be null
-
-      expect(page1._id).toStrictEqual(parent._id);
-      expect(page2.parent).toStrictEqual(parent._id);
-
-    });
   });
 });

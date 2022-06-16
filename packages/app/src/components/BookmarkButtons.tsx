@@ -1,12 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
-import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
+
+import { useIsGuestUser } from '~/stores/context';
 
 import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
-import { useIsGuestUser } from '~/stores/context';
 
 interface Props {
   bookmarkCount?: number
@@ -37,6 +38,17 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     }
   };
 
+  const getTooltipMessage = useCallback(() => {
+    if (isGuestUser) {
+      return 'Not available for guest';
+    }
+
+    if (isBookmarked) {
+      return 'tooltip.cancel_bookmark';
+    }
+    return 'tooltip.bookmark';
+  }, [isGuestUser, isBookmarked]);
+
   return (
     <div className="btn-group" role="group" aria-label="Bookmark buttons">
       <button
@@ -49,11 +61,9 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
       </button>
 
-      {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
+      <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+        {t(getTooltipMessage())}
+      </UncontrolledTooltip>
 
       { !hideTotalNumber && (
         <>

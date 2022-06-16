@@ -1,6 +1,6 @@
-import loggerFactory from '~/utils/logger';
-import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import UserGroup from '~/server/models/user-group';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -12,12 +12,10 @@ const router = express.Router();
 
 const { body, param, query } = require('express-validator');
 const { sanitizeQuery } = require('express-validator');
-
 const mongoose = require('mongoose');
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
-
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 const { ObjectId } = mongoose.Types;
@@ -699,21 +697,13 @@ module.exports = (crowi) => {
    *                      description: the associative entity between user and userGroup
    */
   router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, apiV3FormValidator, async(req, res) => {
-    const { id, username } = req.params;
+    const { id: userGroupId, username } = req.params;
 
     try {
-      const [userGroup, user] = await Promise.all([
-        UserGroup.findById(id),
-        User.findUserByUsername(username),
-      ]);
+      const removedUserRes = await crowi.userGroupService.removeUserByUsername(userGroupId, username);
+      const serializedUser = serializeUserSecurely(removedUserRes.user);
 
-      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
-
-      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
-      const serializedUser = serializeUserSecurely(user);
-
-      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: removedUserRes.deletedGroupsCount });
     }
     catch (err) {
       const msg = 'Error occurred while removing the user from groups.';

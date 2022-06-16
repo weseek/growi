@@ -55,8 +55,8 @@ html[dark] {
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
 
   // Sidebar contents
-  $color-sidebar-context: #00c2c4;
-  $bgcolor-sidebar-context: #020b0b;
+  $color-sidebar-context: #2cfbff;
+  $bgcolor-sidebar-context: #184040;
 
   // Sidebar list group
   $bgcolor-sidebar-list-group: #162126; // optional
@@ -103,22 +103,5 @@ html[dark] {
   pre {
     color: #95abba;
     background-color: #1f1f22;
-  }
-
-  /*
- * GROWI Sidebar
- */
-  .grw-sidebar {
-    // Pagetree
-    .grw-pagetree {
-      @include override-list-group-item-for-pagetree(
-        $color-list,
-        $bgcolor-sidebar-list-group,
-        $color-list-hover,
-        $bgcolor-list-hover,
-        $color-list-active,
-        lighten($bgcolor-list-hover, 5%)
-      );
-    }
   }
 }

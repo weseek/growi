@@ -27,7 +27,7 @@ module.exports = (crowi) => {
 
       if (isCreatableName && !isPageNameTaken) {
         try {
-          const promise = Page.create(path, body, user, { grant: Page.GRANT_PUBLIC, grantUserGroupId: null });
+          const promise = crowi.pageService.create(path, body, user, { grant: Page.GRANT_PUBLIC, grantUserGroupId: null });
           promises.push(promise);
         }
         catch (err) {

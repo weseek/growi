@@ -1,16 +1,21 @@
 import React, { useState, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const ArchiveCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
@@ -56,7 +61,7 @@ const ArchiveCreateModal = (props) => {
 
   async function done() {
     try {
-      await appContainer.apiv3Post('/page/archive', {
+      await apiv3Post('/page/archive', {
         rootPagePath: props.path,
         isCommentDownload,
         isAttachmentFileDownload,
@@ -229,10 +234,7 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
-const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
-
 ArchiveCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
@@ -241,4 +243,9 @@ ArchiveCreateModal.propTypes = {
   errorMessage: PropTypes.string,
 };
 
-export default withTranslation()(ArchiveCreateModalWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
+
+export default ArchiveCreateModalWrapper;

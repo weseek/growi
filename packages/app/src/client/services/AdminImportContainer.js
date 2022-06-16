@@ -3,6 +3,8 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Get } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -48,7 +50,7 @@ export default class AdminImportContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveImportSettingsData() {
-    const response = await this.appContainer.apiv3.get('/import/');
+    const response = await apiv3Get('/import/');
     const {
       importSettingsParams,
     } = response.data;
@@ -73,7 +75,7 @@ export default class AdminImportContainer extends Container {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
       };
-      await this.appContainer.apiPost('/admin/import/esa', params);
+      await apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
     }
     catch (err) {
@@ -88,7 +90,7 @@ export default class AdminImportContainer extends Container {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
       };
-      await this.appContainer.apiPost('/admin/import/testEsaAPI', params);
+      await apiPost('/admin/import/testEsaAPI', params);
       toastSuccess('Test connection to esa success.');
     }
     catch (error) {
@@ -102,7 +104,7 @@ export default class AdminImportContainer extends Container {
       'importer:esa:access_token': this.state.esaAccessToken,
     };
     try {
-      await this.appContainer.apiPost('/admin/settings/importerEsa', params);
+      await apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Updated');
     }
     catch (err) {
@@ -117,7 +119,7 @@ export default class AdminImportContainer extends Container {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
       };
-      await this.appContainer.apiPost('/admin/import/qiita', params);
+      await apiPost('/admin/import/qiita', params);
       toastSuccess('Import posts from qiita:team success.');
     }
     catch (err) {
@@ -133,7 +135,7 @@ export default class AdminImportContainer extends Container {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
       };
-      await this.appContainer.apiPost('/admin/import/testQiitaAPI', params);
+      await apiPost('/admin/import/testQiitaAPI', params);
       toastSuccess('Test connection to qiita:team success.');
     }
     catch (err) {
@@ -148,7 +150,7 @@ export default class AdminImportContainer extends Container {
       'importer:qiita:access_token': this.state.qiitaAccessToken,
     };
     try {
-      await this.appContainer.apiPost('/admin/settings/importerQiita', params);
+      await apiPost('/admin/settings/importerQiita', params);
       toastSuccess('Updated');
     }
     catch (err) {

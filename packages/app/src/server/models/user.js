@@ -1,16 +1,17 @@
 /* eslint-disable no-use-before-define */
+import { allLocales } from '~/next-i18next.config';
+import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
+
+const crypto = require('crypto');
 
 const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
-const md5 = require('md5');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const crypto = require('crypto');
-
-const { listLocaleIds, migrateDeprecatedLocaleId } = require('~/utils/locale-utils');
 
 const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
@@ -58,26 +59,22 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: listLocaleIds(),
+      enum: allLocales,
       default: 'en_US',
     },
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
     },
-    createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
   }, {
+    timestamps: true,
     toObject: {
       transform: (doc, ret, opt) => {
         return omitInsecureAttributes(ret);
       },
     },
-  });
-  // eslint-disable-next-line prefer-arrow-callback
-  userSchema.pre('validate', function() {
-    this.lang = migrateDeprecatedLocaleId(this.lang);
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
@@ -226,9 +223,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.generateImageUrlCached = async function() {
     if (this.isGravatarEnabled) {
-      const email = this.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
+      return generateGravatarSrc(this.email);
     }
     if (this.image != null) {
       return this.image;
@@ -393,8 +388,16 @@ module.exports = function(crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = async function() {
-    return this.find({ admin: true });
+  userSchema.statics.findAdmins = async function(option) {
+    const sort = option?.sort ?? { createdAt: -1 };
+
+    let status = option?.status ?? [STATUS_ACTIVE];
+    if (!Array.isArray(status)) {
+      status = [status];
+    }
+
+    return this.find({ admin: true, status: { $in: status } })
+      .sort(sort);
   };
 
   userSchema.statics.findUserByUsername = function(username) {
@@ -533,7 +536,6 @@ module.exports = function(crowi) {
     newUser.username = tmpUsername;
     newUser.email = email;
     newUser.setPassword(password);
-    newUser.createdAt = Date.now();
     newUser.status = STATUS_INVITED;
 
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -623,7 +625,6 @@ module.exports = function(crowi) {
     if (lang != null) {
       newUser.lang = lang;
     }
-    newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
 
     newUser.save((err, userData) => {
@@ -704,6 +705,24 @@ module.exports = function(crowi) {
       throw new Error('No user found');
     }
     return users;
+  };
+
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
+    const opt = option || {};
+    const sortOpt = opt.sortOpt || { username: 1 };
+    const offset = opt.offset || 0;
+    const limit = opt.limit || 10;
+
+    const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status } };
+
+    const users = await this.find(conditions)
+      .sort(sortOpt)
+      .skip(offset)
+      .limit(limit);
+
+    const totalCount = (await this.find(conditions).distinct('username')).length;
+
+    return { users, totalCount };
   };
 
   class UserUpperLimitException {

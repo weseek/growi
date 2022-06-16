@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const ApiErrorMessage = (props) => {
+  const { t } = useTranslation();
   const {
-    t, errorCode, errorMessage, targetPath,
+    errorCode, errorMessage, targetPath,
   } = props;
 
   function reload() {
@@ -71,11 +72,9 @@ const ApiErrorMessage = (props) => {
 };
 
 ApiErrorMessage.propTypes = {
-  t:            PropTypes.func.isRequired, //  i18next
-
   errorCode:    PropTypes.string,
   errorMessage: PropTypes.string,
   targetPath:   PropTypes.string,
 };
 
-export default withTranslation()(ApiErrorMessage);
+export default ApiErrorMessage;

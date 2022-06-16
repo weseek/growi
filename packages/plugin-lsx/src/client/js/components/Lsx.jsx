@@ -4,6 +4,7 @@ import React from 'react';
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line no-unused-vars
@@ -24,13 +25,14 @@ export class Lsx extends React.Component {
       isError: false,
       isCacheExists: false,
       nodeTree: undefined,
+      basisViewersCount: undefined,
       errorMessage: '',
     };
 
     this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const { lsxContext, forceToFetchData } = this.props;
 
     // get state object cache
@@ -58,13 +60,17 @@ export class Lsx extends React.Component {
     const pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
     try {
-      const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
+      const res = await axios.get('/_api/plugins/lsx', {
+        params: {
+          pagePath,
+          options: lsxContext.options,
+        },
+      });
 
-      lsxContext.activeUsersCount = res.activeUsersCount;
-
-      if (res.ok) {
-        const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
-        this.setState({ nodeTree });
+      if (res.data.ok) {
+        const basisViewersCount = res.data.toppageViewersCount;
+        const nodeTree = this.generatePageNodeTree(pagePath, res.data.pages);
+        this.setState({ nodeTree, basisViewersCount });
       }
     }
     catch (error) {
@@ -219,7 +225,7 @@ export class Lsx extends React.Component {
           </div>
         ) }
         { nodeTree && (
-          <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />
+          <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} basisViewersCount={this.state.basisViewersCount} />
         ) }
       </div>
     );
@@ -233,7 +239,6 @@ export class Lsx extends React.Component {
 }
 
 Lsx.propTypes = {
-  appContainer: PropTypes.object.isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
 
   forceToFetchData: PropTypes.bool,
