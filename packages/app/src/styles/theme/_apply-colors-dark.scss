@@ -234,7 +234,7 @@ ul.pagination {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: theme-color('light');
+      color: darken($body-color, 10%);
     }
   }
 }
@@ -277,19 +277,27 @@ ul.pagination {
   // Pagetree
   .grw-pagetree {
     @include override-list-group-item-for-pagetree(
-      $color-list,
-      $bgcolor-sidebar-list-group,
-      $color-list-hover,
-      $bgcolor-list-hover,
-      $color-list-active,
-      lighten($bgcolor-list-hover, 5%)
+      $color-sidebar-context,
+      lighten($bgcolor-sidebar-context, 8%),
+      lighten($bgcolor-sidebar-context, 15%),
+      darken($color-sidebar-context, 15%),
+      darken($color-sidebar-context, 10%),
+      lighten($bgcolor-sidebar-context, 18%),
+      lighten($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
       @include button-outline-svg-icon-variant($secondary, $gray-200);
     }
-    .grw-pagetree-count {
-      color: $gray-400;
-      background: $gray-700;
+    .btn-page-item-control {
+      @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+      @include hover() {
+        background-color: lighten($bgcolor-sidebar-context, 20%);
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        background-color: lighten($bgcolor-sidebar-context, 34%);
+      }
+      box-shadow: none !important;
     }
   }
   .private-legacy-pages-link {
@@ -302,11 +310,12 @@ ul.pagination {
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
   @include hover() {
-    background-color: $gray-600;
+    background-color: $gray-700;
   }
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     color: $gray-200;
+    background-color: $gray-600;
   }
   box-shadow: none !important;
 }
@@ -459,6 +468,16 @@ ul.pagination {
 }
 
 /*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
  * admin settings
  */
 .admin-setting-header {
@@ -469,6 +488,10 @@ ul.pagination {
 * grw-side-contents
 */
 .grw-side-contents-sticky-container {
+  .grw-count-badge {
+    @include count-badge($gray-400, $gray-700);
+  }
+
   .grw-border-vr {
     border-color: $border-color-toc;
   }

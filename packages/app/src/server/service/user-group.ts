@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
 
-import loggerFactory from '~/utils/logger';
-import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
+
+import { IUser } from '~/interfaces/user';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -76,7 +79,7 @@ class UserGroupService {
 
     // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    if (isIncludesObjectId(descendantsWithTarget, parent._id)) {
+    if (isIncludesObjectId(descendantsWithTarget.map(d => d._id), parent._id)) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }
 
@@ -127,6 +130,22 @@ class UserGroupService {
     await UserGroupRelation.removeAllByUserGroups(groupsToDelete);
 
     return deletedGroups;
+  }
+
+  async removeUserByUsername(userGroupId: ObjectIdLike, username: string): Promise<{user: IUser, deletedGroupsCount: number}> {
+    const User = this.crowi.model('User');
+
+    const [userGroup, user] = await Promise.all([
+      UserGroup.findById(userGroupId),
+      User.findUserByUsername(username),
+    ]);
+
+    const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+    const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+    const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
+
+    return { user, deletedGroupsCount: deleteManyRes.deletedCount };
   }
 
 }

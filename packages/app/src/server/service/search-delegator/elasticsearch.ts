@@ -3,6 +3,7 @@ import { URL } from 'url';
 
 import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
+import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
@@ -13,7 +14,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  SearchDelegator, SearchableData, QueryTerms,
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
 } from '../../interfaces/search';
 import { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
@@ -40,9 +41,11 @@ const ES_SORT_ORDER = {
   [ASC]: 'asc',
 };
 
+const AVAILABLE_KEYS = ['match', 'not_match', 'phrase', 'not_phrase', 'prefix', 'not_prefix', 'tag', 'not_tag'];
+
 type Data = any;
 
-class ElasticsearchDelegator implements SearchDelegator<Data> {
+class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
 
   name!: SearchDelegatorName.DEFAULT
 
@@ -591,7 +594,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         if (invokeGarbageCollection) {
           try {
             // First aid to prevent unexplained memory leaks
-            global.gc();
+            logger.info('global.gc() invoked.');
+            gc();
           }
           catch (err) {
             logger.error('fail garbage collection: ', err);
@@ -739,7 +743,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     return query;
   }
 
-  appendCriteriaForQueryString(query, parsedKeywords: QueryTerms) {
+  appendCriteriaForQueryString(query, parsedKeywords: ESQueryTerms): void {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
     if (parsedKeywords.match.length > 0) {
@@ -950,8 +954,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
+
+    if (terms == null) {
+      throw Error('Cannnot process search since terms is undefined.');
+    }
 
     const from = option.offset || null;
     const size = option.limit || null;
@@ -970,6 +978,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendHighlight(query);
 
     return this.searchKeyword(query);
+  }
+
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is ESQueryTerms {
+    const entries = Object.entries(terms);
+
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && typeof val?.length === 'number' && val.length > 0);
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<ESTermsKey>[] {
+    const entries = Object.entries(terms);
+
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
   async syncPageUpdated(page, user) {

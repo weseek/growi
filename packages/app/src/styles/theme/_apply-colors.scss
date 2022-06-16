@@ -45,6 +45,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
+@import '~emoji-mart/css/emoji-mart'; // Emoji-mart style
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
@@ -78,10 +79,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 // Dropdown
 .grw-personal-dropdown {
-  .grw-icon-container svg {
+  .grw-sidebar-mode-icon svg {
+    fill: $secondary;
+  }
+  .grw-color-mode-icon svg {
     fill: $color-global;
   }
-  .grw-icon-container-muted svg {
+  .grw-color-mode-icon-muted svg {
     fill: $secondary;
   }
 }
@@ -475,13 +479,11 @@ ul.pagination {
   .list-group {
     .list-group-item {
       a {
-        color: $color-global;
         svg {
           fill: $color-global;
         }
 
         @include hover() {
-          color: $color-global;
           svg {
             fill: $color-global;
           }
@@ -493,10 +495,6 @@ ul.pagination {
         svg {
           fill: $color-page-list-group-item-meta;
         }
-      }
-
-      .page-list-snippet {
-        color: $gray-600;
       }
 
       &.list-group-item-action {
@@ -699,4 +697,11 @@ mark.rbt-highlight-text {
   width: 7px;
   height: 7px;
   background-color: $primary;
+}
+
+/*
+Emoji picker modal
+*/
+.emoji-picker-modal {
+  background-color: transparent !important;
 }

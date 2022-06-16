@@ -1,15 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import AppContainer from '~/client/services/AppContainer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import RevisionRenderer from './RevisionRenderer';
+
 
 /**
  * Load data from server and render RevisionBody component
@@ -47,7 +50,7 @@ class LegacyRevisionLoader extends React.Component {
 
     // load data with REST API
     try {
-      const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
+      const res = await apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
         markdown: res.data?.revision?.body,

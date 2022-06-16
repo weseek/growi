@@ -1,13 +1,14 @@
+import { getOrCreateModel } from '@growi/core';
 import {
   Types, Document, Schema, Model,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { getOrCreateModel } from '@growi/core';
-import { ActivityDocument } from './activity';
-import ActivityDefine from '../util/activityDefine';
-
+import { AllSupportedTargetModelType, AllSupportedActionType } from '~/interfaces/activity';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+
+import { ActivityDocument } from './activity';
+
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
@@ -45,7 +46,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   targetModel: {
     type: String,
     require: true,
-    enum: ActivityDefine.getSupportTargetModelNames(),
+    enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -55,7 +56,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   action: {
     type: String,
     require: true,
-    enum: ActivityDefine.getSupportActionNames(),
+    enum: AllSupportedActionType,
   },
   activities: [
     {
@@ -70,14 +71,12 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     index: true,
     require: true,
   },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
   snapshot: {
     type: String,
     require: true,
   },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 inAppNotificationSchema.plugin(mongoosePaginate);
 

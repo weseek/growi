@@ -1,6 +1,6 @@
+import { envUtils } from '@growi/core';
 import { parseISO } from 'date-fns';
 
-import { envUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
@@ -216,6 +216,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'autoInstall:globalLang',
     type:    ValueType.STRING,
     default: null,
+  },
+  AUTO_INSTALL_ALLOW_GUEST_MODE: {
+    ns:      'crowi',
+    key:     'autoInstall:allowGuestMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
   },
   AUTO_INSTALL_SERVER_DATE: {
     ns:      'crowi',
@@ -609,6 +615,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:ogpUri',
     type:    ValueType.STRING,
     default: null,
+  },
+  MIN_PASSWORD_LENGTH: {
+    ns: 'crowi',
+    key: 'app:minPasswordLength',
+    type: ValueType.NUMBER,
+    default: 8,
   },
 };
 

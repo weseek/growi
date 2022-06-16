@@ -5,6 +5,7 @@ import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
 
+import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -152,7 +153,6 @@ module.exports = function(crowi, app) {
   const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
-  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -411,7 +411,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -429,14 +428,9 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      url.searchParams.append('originalEmptyPageId', page._id); // add this to distingish if user access the empty page intentionally
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      req.pageId = page._id;
+      req.pagePath = page.path;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
@@ -474,7 +468,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -544,7 +537,6 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('layout-growi/shared_page', renderVars);
   };
 
@@ -602,6 +594,9 @@ module.exports = function(crowi, app) {
     res.render('layout-growi/page_list', renderVars);
   };
 
+  /**
+   * Redirect process for single non-empty page
+   */
   async function redirectOperationForSinglePage(page, req, res) {
     const url = new URL('https://dummy.origin');
     url.pathname = `/${page._id}`;
@@ -615,13 +610,7 @@ module.exports = function(crowi, app) {
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const { redirectFrom, originalEmptyPageId } = req.query;
-
-    // originalEmptyPageId exists when user accesses an empty page by pageId
-    if (originalEmptyPageId != null) {
-      req.pageId = originalEmptyPageId;
-      return _notFound(req, res);
-    }
+    const { redirectFrom } = req.query;
 
     const includeEmpty = true;
     const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
@@ -810,7 +799,7 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(pagePath, body, req.user, options);
+    const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
@@ -1281,6 +1270,10 @@ module.exports = function(crowi, app) {
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
     catch (err) {
+      if (err instanceof PathAlreadyExistsError) {
+        logger.error('Path already exists', err);
+        return res.json(ApiResponse.error(err, 'already_exists', err.targetPath));
+      }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
     }

@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-import { format, parse } from 'date-fns';
 
 import { isInteger } from 'core-js/fn/number';
+import { format, parse } from 'date-fns';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import PageContainer from '~/client/services/PageContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 
 class ShareLinkForm extends React.Component {
 
@@ -110,7 +110,7 @@ class ShareLinkForm extends React.Component {
 
   async handleIssueShareLink() {
     const {
-      t, appContainer, pageContainer,
+      t, pageContainer,
     } = this.props;
     const { pageId } = pageContainer.state;
     const { description } = this.state;
@@ -125,7 +125,7 @@ class ShareLinkForm extends React.Component {
     }
 
     try {
-      await appContainer.apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
+      await apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
       this.closeForm();
       toastSuccess(t('toaster.issue_share_link'));
     }
@@ -258,16 +258,20 @@ class ShareLinkForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
-
 ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onCloseForm: PropTypes.func,
 };
 
-export default withTranslation()(ShareLinkFormWrapper);
+const ShareLinkFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ShareLinkForm t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkFormWrapperFC, [PageContainer]);
+
+export default ShareLinkFormWrapper;

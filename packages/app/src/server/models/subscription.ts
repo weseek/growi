@@ -1,12 +1,11 @@
+import { getOrCreateModel } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { getOrCreateModel } from '@growi/core';
-
+import { AllSupportedTargetModelType } from '~/interfaces/activity';
 import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
 
-import ActivityDefine from '../util/activityDefine';
 
 export interface ISubscription {
   user: Types.ObjectId
@@ -39,7 +38,7 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   targetModel: {
     type: String,
     require: true,
-    enum: ActivityDefine.getSupportTargetModelNames(),
+    enum: AllSupportedTargetModelType,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -51,7 +50,8 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
     require: true,
     enum: AllSubscriptionStatusType,
   },
-  createdAt: { type: Date, default: new Date() },
+}, {
+  timestamps: true,
 });
 
 subscriptionSchema.methods.isSubscribing = function() {

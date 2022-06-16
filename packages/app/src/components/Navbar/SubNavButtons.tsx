@@ -1,23 +1,22 @@
 import React, { useCallback } from 'react';
 
+import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-
-import { useSWRxPageInfo } from '../../stores/page';
-import { useSWRBookmarkInfo } from '../../stores/bookmark';
-import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
-import SubscribeButton from '../SubscribeButton';
-import LikeButtons from '../LikeButtons';
+import { useSWRBookmarkInfo } from '../../stores/bookmark';
+import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
-import SeenUserInfo from '../User/SeenUserInfo';
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
+import LikeButtons from '../LikeButtons';
+import SubscribeButton from '../SubscribeButton';
+import SeenUserInfo from '../User/SeenUserInfo';
 
 
 type CommonProps = {
@@ -190,6 +189,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
+          alignRight
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}

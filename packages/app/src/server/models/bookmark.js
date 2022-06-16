@@ -16,7 +16,8 @@ module.exports = function(crowi) {
   bookmarkSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     user: { type: ObjectId, ref: 'User', index: true },
-    createdAt: { type: Date, default: Date.now },
+  }, {
+    timestamps: { createdAt: true, updatedAt: false },
   });
   bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
   bookmarkSchema.plugin(mongoosePaginate);
@@ -61,7 +62,7 @@ module.exports = function(crowi) {
   bookmarkSchema.statics.add = async function(page, user) {
     const Bookmark = this;
 
-    const newBookmark = new Bookmark({ page, user, createdAt: Date.now() });
+    const newBookmark = new Bookmark({ page, user });
 
     try {
       const bookmark = await newBookmark.save();

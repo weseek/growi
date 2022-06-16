@@ -2,24 +2,24 @@ import MarkdownIt from 'markdown-it';
 
 import loggerFactory from '~/utils/logger';
 
-import Linker from './PreProcessor/Linker';
 import CsvToTable from './PreProcessor/CsvToTable';
 import EasyGrid from './PreProcessor/EasyGrid';
+import Linker from './PreProcessor/Linker';
 import XssFilter from './PreProcessor/XssFilter';
-
+import BlockdiagConfigurer from './markdown-it/blockdiag';
+import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
 import EmojiConfigurer from './markdown-it/emoji';
 import FooternoteConfigurer from './markdown-it/footernote';
-import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
 import HeaderConfigurer from './markdown-it/header';
+import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
+import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
+import LinkerByRelativePathConfigurer from './markdown-it/link-by-relative-path';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
 import TableConfigurer from './markdown-it/table';
+import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
-import BlockdiagConfigurer from './markdown-it/blockdiag';
-import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
-import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
-import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 const logger = loggerFactory('growi:util:GrowiRenderer');
 
@@ -40,9 +40,9 @@ export default class GrowiRenderer {
     }
     else {
       this.preProcessors = [
-        new EasyGrid(appContainer),
-        new Linker(appContainer),
-        new CsvToTable(appContainer),
+        new EasyGrid(),
+        new Linker(),
+        new CsvToTable(),
         new XssFilter(appContainer),
       ];
       this.postProcessors = [
@@ -68,11 +68,12 @@ export default class GrowiRenderer {
     this.isMarkdownItConfigured = false;
 
     this.markdownItConfigurers = [
+      new LinkerByRelativePathConfigurer(appContainer),
       new TaskListsConfigurer(appContainer),
-      new HeaderConfigurer(appContainer),
-      new EmojiConfigurer(appContainer),
+      new HeaderConfigurer(),
+      new EmojiConfigurer(),
       new MathJaxConfigurer(appContainer),
-      new DrawioViewerConfigurer(appContainer),
+      new DrawioViewerConfigurer(),
       new PlantUMLConfigurer(appContainer),
       new BlockdiagConfigurer(appContainer),
     ];
@@ -80,29 +81,27 @@ export default class GrowiRenderer {
     // add configurers according to mode
     switch (mode) {
       case 'page': {
-        const pageContainer = appContainer.getContainer('PageContainer');
-
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(appContainer),
-          new TocAndAnchorConfigurer(appContainer, pageContainer.setTocHtml),
-          new HeaderLineNumberConfigurer(appContainer),
-          new HeaderWithEditLinkConfigurer(appContainer),
-          new TableWithHandsontableButtonConfigurer(appContainer),
+          new FooternoteConfigurer(),
+          new TocAndAnchorConfigurer(),
+          new HeaderLineNumberConfigurer(),
+          new HeaderWithEditLinkConfigurer(),
+          new TableWithHandsontableButtonConfigurer(),
         ]);
         break;
       }
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(appContainer),
-          new HeaderLineNumberConfigurer(appContainer),
-          new TableConfigurer(appContainer),
+          new FooternoteConfigurer(),
+          new HeaderLineNumberConfigurer(),
+          new TableConfigurer(),
         ]);
         break;
       // case 'comment':
       //   break;
       default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(appContainer),
+          new TableConfigurer(),
         ]);
         break;
     }

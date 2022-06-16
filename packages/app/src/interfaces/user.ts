@@ -1,3 +1,4 @@
+import { IAttachment } from './attachment';
 import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
 
@@ -6,7 +7,10 @@ export type IUser = {
   username: string;
   email: string;
   password: string;
+  image?: string, // for backward conpatibility
+  imageAttachment?: Ref<IAttachment>,
   imageUrlCached: string;
+  isGravatarEnabled: boolean,
   admin: boolean;
 }
 

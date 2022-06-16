@@ -1,18 +1,16 @@
 import React from 'react';
 
 import { IPageHasId } from '~/interfaces/page';
-
+import { IUser } from '~/interfaces/user';
 import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
 import TagLabels from '../Page/TagLabels';
+import PagePathNav from '../PagePathNav';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
-
-import PagePathNav from '../PagePathNav';
-import { IUser } from '~/interfaces/user';
 
 
 type Props = {
@@ -85,9 +83,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column py-md-2" style={{ gap: `${isCompactMode ? '5px' : '0'}` }}>
-          { Controls && <Controls></Controls> }
-        </div>
+        { Controls && <Controls></Controls> }
 
         {/* Page Authors */}
         { (showPageAuthors && !isCompactMode) && (

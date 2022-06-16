@@ -10,6 +10,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import httpErrorHandler from '../../middlewares/http-error-handler';
 import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
 
+
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -25,11 +26,13 @@ module.exports = (crowi) => {
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
 
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+
   const validator = {
     password: [
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 8 })
-        .withMessage('password must be at least 8 characters long'),
+        .isLength({ min: minPasswordLength })
+        .withMessage(`password must be at least ${minPasswordLength} characters long`),
       // checking if password confirmation matches password
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
