@@ -4,7 +4,6 @@ import React, {
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import { toastError } from '~/client/util/apiNotification';
 import { useSWRxTagsSearch } from '~/stores/tag';
 
 type TypeaheadInstance = {
@@ -26,9 +25,9 @@ const TagsInput: FC<Props> = (props: Props) => {
   const [resultTags, setResultTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: tagsSearchData, error } = useSWRxTagsSearch(searchQuery);
+  const { data: tagsSearch, error } = useSWRxTagsSearch(searchQuery);
 
-  const isLoading = error == null && tagsSearchData === undefined;
+  const isLoading = error == null && tagsSearch === undefined;
 
   const changeHandler = useCallback((selected: string[]) => {
     if (props.onTagsUpdated != null) {
@@ -37,10 +36,13 @@ const TagsInput: FC<Props> = (props: Props) => {
   }, [props]);
 
   const searchHandler = useCallback(async(query: string) => {
+    const tagsSearchData = tagsSearch?.tags || [];
     setSearchQuery(query);
-    tagsSearchData?.tags.unshift(searchQuery);
-    setResultTags(Array.from(new Set(tagsSearchData?.tags)));
-  }, [searchQuery, tagsSearchData?.tags]);
+
+    tagsSearchData.unshift(searchQuery);
+    setResultTags(Array.from(new Set(tagsSearchData)));
+
+  }, [searchQuery, tagsSearch?.tags]);
 
   const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
     if (event.key === ' ') {
