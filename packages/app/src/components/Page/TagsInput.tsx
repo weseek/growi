@@ -1,11 +1,11 @@
 import React, {
   FC, useRef, useState, useCallback,
 } from 'react';
+
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import { apiGet } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/apiNotification';
-import { IResTagsSearchApiv1 } from '~/interfaces/tag';
+import { useSWRxTagsSearch } from '~/stores/tag';
 
 type TypeaheadInstance = {
   _handleMenuItemSelect: (activeItem: string, event: React.KeyboardEvent) => void,
@@ -25,6 +25,9 @@ const TagsInput: FC<Props> = (props: Props) => {
 
   const [resultTags, setResultTags] = useState<string[]>([]);
   const [isLoading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const { data: tagsSearchData } = useSWRxTagsSearch(searchQuery);
 
   const changeHandler = useCallback((selected: string[]) => {
     if (props.onTagsUpdated != null) {
@@ -32,13 +35,11 @@ const TagsInput: FC<Props> = (props: Props) => {
     }
   }, [props]);
 
-  const searchHandler = useCallback(async(query: string) => {
+  const searchHandler = useCallback(async() => {
     setLoading(true);
     try {
-      // TODO: 91698 SWRize
-      const res = await apiGet('/tags.search', { q: query }) as IResTagsSearchApiv1;
-      res.tags.unshift(query);
-      setResultTags(Array.from(new Set(res.tags)));
+      tagsSearchData?.tags.unshift(searchQuery);
+      setResultTags(Array.from(new Set(tagsSearchData?.tags)));
     }
     catch (err) {
       toastError(err);
@@ -46,7 +47,7 @@ const TagsInput: FC<Props> = (props: Props) => {
     finally {
       setLoading(false);
     }
-  }, []);
+  }, [searchQuery, tagsSearchData?.tags]);
 
   const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
     if (event.key === ' ') {
@@ -73,7 +74,7 @@ const TagsInput: FC<Props> = (props: Props) => {
         multiple
         newSelectionPrefix=""
         onChange={changeHandler}
-        onSearch={searchHandler}
+        onSearch={(query) => { setSearchQuery(query); searchHandler() }}
         onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
         placeholder="tag name"
