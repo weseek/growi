@@ -13,7 +13,8 @@ import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { apiPostForm } from '~/client/util/apiv1-client';
+import { useCurrentPagePath, useCurrentPageId, useCurrentUser } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
@@ -189,25 +190,31 @@ class CommentEditor extends React.Component {
     }
   }
 
-  uploadHandler(file) {
-    this.props.commentContainer.uploadAttachment(file)
-      .then((res) => {
-        const attachment = res.attachment;
-        const fileName = attachment.originalName;
+  async uploadHandler(file) {
+    const pagePath = this.props.currentPagePath;
+    const pageId = this.props.currentPageId;
+    const endpoint = '/attachments.add';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('path', pagePath);
+    formData.append('page_id', pageId);
+    try {
+      const res = await apiPostForm(endpoint, formData);
+      const attachment = res.attachment;
+      const fileName = attachment.originalName;
+      let insertText = `[${fileName}](${attachment.filePathProxied})`;
+      // when image
+      if (attachment.fileFormat.startsWith('image/')) {
+        // modify to "![fileName](url)" syntax
+        insertText = `!${insertText}`;
+      }
+      this.editor.insertText(insertText);
+    }
+    catch (err) {
+      this.apiErrorHandler(err);
+    }
 
-        let insertText = `[${fileName}](${attachment.filePathProxied})`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = `!${insertText}`;
-        }
-        this.editor.insertText(insertText);
-      })
-      .catch(this.apiErrorHandler)
-      // finally
-      .then(() => {
-        this.editor.terminateUploadingState();
-      });
+    this.editor.terminateUploadingState();
   }
 
   apiErrorHandler(error) {
@@ -423,6 +430,8 @@ CommentEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
+  currentPagePath: PropTypes.string.isRequired,
+  currentPageId: PropTypes.string.isRequired,
   slackChannels: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
@@ -443,6 +452,7 @@ const CommentEditorWrapper = (props) => {
   const { data: currentUser } = useCurrentUser();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPageId } = useCurrentPageId();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
   const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
@@ -452,6 +462,8 @@ const CommentEditorWrapper = (props) => {
   return (
     <CommentEditorHOCWrapper
       {...props}
+      currentPagePath={currentPagePath}
+      currentPageId={currentPageId}
       onSlackEnabledFlagChange={onSlackEnabledFlagChange}
       slackChannels={slackChannelsData.toString()}
       isSlackEnabled={isSlackEnabled}

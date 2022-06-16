@@ -152,16 +152,4 @@ export default class CommentContainer extends Container {
       });
   }
 
-  uploadAttachment(file) {
-    const { pageId, pagePath } = this.getPageContainer().state;
-
-    const endpoint = '/attachments.add';
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('path', pagePath);
-    formData.append('page_id', pageId);
-
-    return apiPostForm(endpoint, formData);
-  }
-
 }
