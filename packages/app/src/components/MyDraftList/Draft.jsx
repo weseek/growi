@@ -1,18 +1,17 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
+import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   UncontrolledTooltip,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
 import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class Draft extends React.Component {
 
@@ -60,7 +59,7 @@ class Draft extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
+    const { interceptorManager } = window;
     await interceptorManager.process('prePreProcess', context)
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown, context);
@@ -192,12 +191,6 @@ class Draft extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
-
-
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -209,4 +202,14 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(DraftWrapper);
+const DraftWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <Draft t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const DraftWrapper = withUnstatedContainers(DraftWrapperFC, [AppContainer]);
+
+export default DraftWrapper;

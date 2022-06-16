@@ -1,9 +1,10 @@
 import { Ref, Nullable } from './common';
-import { IUser } from './user';
-import { IRevision, HasRevisionShortbody } from './revision';
-import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { IPageOperationProcessData } from './page-operation';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
+import { ITag } from './tag';
+import { IUser } from './user';
 
 
 export interface IPage {
@@ -18,7 +19,7 @@ export interface IPage {
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  grant: number,
+  grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
   lastUpdateUser: Ref<IUser>,
@@ -32,9 +33,18 @@ export interface IPage {
   deletedAt: Date,
 }
 
+export const PageGrant = {
+  GRANT_PUBLIC: 1,
+  GRANT_RESTRICTED: 2,
+  GRANT_SPECIFIED: 3, // DEPRECATED
+  GRANT_OWNER: 4,
+  GRANT_USER_GROUP: 5,
+};
+export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
+
 export type IPageHasId = IPage & HasObjectId;
 
-export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
+export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
 export type IPageInfo = {
   isV5Compatible: boolean,
@@ -107,6 +117,14 @@ export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
 export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
 export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+
+export type IPageGrantData = {
+  grant: number,
+  grantedGroup?: {
+    id: string,
+    name: string
+  }
+}
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

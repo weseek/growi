@@ -1,17 +1,18 @@
-export type ITag = {
+export type ITag<ID = string> = {
+  _id: ID
   name: string,
-  createdAt: Date;
 }
 
-export type ITagHasCount = ITag & { count: number }
+export type IDataTagCount = ITag & {count: number}
 
-export type ITagsSearchApiv1Result = {
+
+export type IResTagsSearchApiv1 = {
   ok: boolean,
   tags: string[]
 }
 
-export type ITagsListApiv1Result = {
+export type IResTagsListApiv1 = {
   ok: boolean,
-  data: ITagHasCount[],
+  data: IDataTagCount[],
   totalCount: number,
 }

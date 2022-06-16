@@ -1,8 +1,186 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.9](https://github.com/weseek/growi/compare/v5.0.8...v5.0.9) - 2022-06-13
+
+### 🚀 Improvement
+
+- imprv: Render MathJax in Preview tab of comment (#6025) @yuki-takei
+- imprv: Exception handling for user authentication (#6019) @kaoritokashiki
+- imprv: Sidebar background color on light theme and add shadow on dark theme (#6012) @shukmos
+- imprv: Limit display of notification paths (#5991) @jam411
+
+### 🐛 Bug Fixes
+
+- fix: Getting page API is broken (#6023) @yuki-takei
+- fix: MathJax does not working (#6020) @yuki-takei
+
+## [v5.0.8](https://github.com/weseek/growi/compare/v5.0.7...v5.0.8) - 2022-06-07
+
+### 🚀 Improvement
+
+- imprv: Fix subnavigation spacing (#5995) @yuki-takei
+- imprv: Set Content-Length header in response of attachment (#5972) @hiroki-hgs
+- imprv: Fix sidebar tag layout (#5984) @jam411
+- imprv: PageStatusAlert labels when data is outdated (#5961) @yuki-takei
+- imprv: Delete NotFoundAlert from not found page (#5919) @Shunm634-source
+
+### 🐛 Bug Fixes
+
+- fix: Too many footstamps icons are shown by lsx output 3 (#6000) @yuki-takei
+- fix: Adjust PageItemControl alignment (#5994) @yuki-takei
+- fix: CodeMirror placeholder color (#5993) @yuki-takei
+- fix: Chinese notation is broken on create new page modal (#5973) @jam411
+- fix: Document timestamps does not updated (#5979) @yuki-takei
+- fix: Slack channels are not automatically filled after setting up user trigger notification on v5.0.x (#5911) @kaoritokashiki
+- fix: Login required when viewing sharelink page (#5959) @yuki-takei
+- fix: Editor scroll sync by Preview scrolling does not work (#5949) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Enable garbage collection at runtime with expose-gc package (#5986) @yuki-takei
+- support: Upgrade aws-sdk to v3 (#5863) @mudana-grune
+
+## [v4.5.22](https://github.com/weseek/growi/compare/v4.5.21...v4.5.22) - 2022-06-07
+
+### 🐛 Bug Fixes
+
+- fix: Fixed the bug of auto-filling unintended values into the Email field of the User settings (#5885) @Shunm634-source
+- fix: google-oauth2 Automatically bind external accounts does not work (#5891) @kaoritokashiki
+- fix: Slack channels are not automatically filled after setting up user trigger notification (#5976) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: Enable garbage collection at runtime with expose-gc package (#5998) @kaoritokashiki
+
+## [v5.0.7](https://github.com/weseek/growi/compare/v5.0.6...v5.0.7) - 2022-05-30
+
+### 💎 Features
+
+- feat: Set the min length of passwords by environment variable (#5899) @Shunm634-source
+- feat: API to find username (#5907) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Page is not rendered for guest (#5930) @yuki-takei
+- fix: Server error due to the canDeleteLogic method (#5927) @hakumizuki
+- fix: Show pagename on toastr when page deleted (#5772) @hirokei-camel
+- fix: Search result screen is broken under content 100% setting (#5917) @jam411
+
+## [v5.0.6](https://github.com/weseek/growi/compare/v5.0.5...v5.0.6) - 2022-05-27
+
+### 💎 Features
+
+- feat: Emoji - replace emojione to emojimart (#5668) @kaoritokashiki
+- feat: Show username suggestion for mention in comment (#5856) @mudana-grune
+- feat: Send in-app notification when containing username mention in comment  (#5906) @mudana-grune
+- feat: Customize menu in navbar for guest user (#5858) @yukendev
+- feat: Admin only page convert by path (#5902) @hakumizuki
+- feat: Fix grant alert (#5903) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Automatic login after registration (#5860) @hiroki-hgs
+- imprv: Add tooltip to SubNavButtons (#5887) @miya
+- imprv: Mixin of argument-of-override-list-group-item-for-pagetree for dark theme (#5904) @shukmos
+- imprv: Move code to the appropriate place for fix browser auto-complete email wiith username (#5892) @Yohei-Shiina
+- imprv: Initial rendering when opening Custom Sidebar (#5880) @Kami-jo
+- imprv: Add contributors to staff credit (#5841) @hiroki-hgs
+
+### 🐛 Bug Fixes
+
+- fix: Can not toggle textlint function on v5.0.x (#5854) @kaoritokashiki
+- fix(google-oauth2): Automatically bind external accounts  does not work on v5.0.x (#5886) @kaoritokashiki
+
+## [v4.5.21](https://github.com/weseek/growi/compare/v4.5.20...v4.5.21) - 2022-05-23
+
+### 🐛 Bug Fixes
+
+- fix: Can not toggle textlint function on v4.5.x (https://github.com/weseek/growi/pull/5855) @kaoritokashiki
+- fix: Error on searching (https://github.com/weseek/growi/pull/5873) @miya
+
+## [v5.0.5](https://github.com/weseek/growi/compare/v5.0.4...v5.0.5) - 2022-05-16
+
+### 💎 Features
+
+- feat: Empty trash button in trash page (#5816) @yukendev
+
+### 🚀 Improvement
+
+- imprv: Count badge colors (#5835) @shukmos
+- imprv: List group background colors on PageTree (#5812) @shukmos
+- imprv: Page path auto complete function for page rename modal (#5805) @kaoritokashiki
+- imprv: Show toastr when converting is completed on Private Legacy Page (#5810) @yukendev
+- imprv: Create parent pages as needed by path that includes slash (#5809) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Change the execution user of the official docker image to root (#5846) @yuki-takei
+- fix: Display admin link only with logged in (#5799) @hirokei-camel
+- fix: Error when renaming (#5793) @miya
+
+### 🧰 Maintenance
+
+- support: Typescriptize tag model (#5778) @kaoritokashiki
+
+## [v4.5.20](https://github.com/weseek/growi/compare/v4.5.19...v4.5.20) - 2022-05-12
+
+### 🐛 Bug Fixes
+
+- fix: Guest user cannot access share link pages (#5819) @kaoritokashiki
+
+## [v5.0.4](https://github.com/weseek/growi/compare/v5.0.3...v5.0.4) - 2022-04-28
+
+### 💎 Features
+
+- feat: Private legacy pages convert by path (#5787) @hakumizuki
+- feat: Generate activity when page is created (#5765) @miya
+- feat: Private legacy pages convert by path API (#5760) @hakumizuki
+- feat:  Create notification when page is reverted (#5756) @miya
+- feat: Create notification when page is duplicated (#5749) @miya
+- feat: Add count badge to Page List button and Comment button (#5740) @yukendev
+- feat: Infinite scroll for Recent Changes in Sidebar (#5647) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Change GET method to POST for logout operation (#5751) @kaoritokashiki
+- imprv: Redesign tags (#5730) @miya
+- imprv: i18n for already_exists error in PutBackPageModal (#5747) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (#5788) @yuki-takei
+- fix: Include any public pages as applicable ancestors (#5786) @hakumizuki
+- fix: Not create unnecessary empty pages when ancestors are public (#5774) @hakumizuki
+- fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
+- fix:  footstamp-icon size (#5759) @kaoritokashiki
+
+## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
+
+### 🐛 Bug Fixes
+
+- fix: Swiping to previous/next page for Mac users (4.5.x) (#5758) @hirokei-camel
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+
+## [v5.0.3](https://github.com/weseek/growi/compare/v5.0.2...v5.0.3) - 2022-04-21
+
+### 💎 Features
+
+- feat: Search on private legacy pages (#5723) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Dark theme color optimization (#5737) @shukmos
+- imprv: Change the order of menu items (#5722) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
+- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
 
@@ -51,6 +229,31 @@
 - ci(deps): bump actions/download-artifact from 2 to 3 (#5687) @dependabot
 - support: Migration for setting sparce option to slack member id (#5694) @kaoritokashiki
 - support: Update eslint-config-weseek (#5673) @yuki-takei
+
+## [v4.5.18](https://github.com/weseek/growi/compare/v4.5.17...v4.5.18) - 2022-04-15
+
+### 🐛 Bug Fixes
+
+- fix: One Time Token is not available for v4.5.x (#5713) @miya
+- fix: Prevent auto completing email with username stored by browser in /me page for v4.5.x (#5703) @Yohei-Shiina
+- fix: Page view count stops at 15 (#5705) @miya
+
+## [v4.5.17](https://github.com/weseek/growi/compare/v4.5.16...v4.5.17) - 2022-04-07
+
+### 🐛 Bug Fixes
+
+- fix: Elasticsearch doesn't work properly on production (#5676) @Yohei-Shiina
+
+## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
+
+### 💎 Features
+
+- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
+
+### 🐛 Bug Fixes
+
+- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
+- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
 
 ## [v5.0.0](https://github.com/weseek/growi/compare/v4.5.15...v5.0.0) - 2022-04-01
 
@@ -101,17 +304,6 @@
 - support: dependabot dot-drop (#5204) @LuqmanHakim-Grune
 - support: update nanoid yarn.lock v3.1.30 to v3.2.0 (#5216) @LuqmanHakim-Grune
 - support: update validator version (#5562) @LuqmanHakim-Grune
-
-## [v4.5.16](https://github.com/weseek/growi/compare/v4.5.15...v4.5.16) - 2022-04-06
-
-### 💎 Features
-
-- feat: Support Elasticsearch 7 (#5613) @Yohei-Shiina
-
-### 🐛 Bug Fixes
-
-- fix: Domain whitelist is not respected (fix #5408) (#5488) @yuto-oweseek
-- fix: Add tags to pages restricted by specified groups on View mode (for v4.5.x) (#5487) @yuto-oweseek
 
 ## [v4.5.15](https://github.com/weseek/growi/compare/v4.5.14...v4.5.15) - 2022-02-17
 

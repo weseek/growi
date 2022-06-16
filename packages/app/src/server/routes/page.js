@@ -1,9 +1,11 @@
 import { pagePathUtils } from '@growi/core';
-import urljoin from 'url-join';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
+import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
+
+import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -151,7 +153,6 @@ module.exports = function(crowi, app) {
   const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
-  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -402,7 +403,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -464,7 +464,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -534,7 +533,6 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('layout-growi/shared_page', renderVars);
   };
 
@@ -790,7 +788,7 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(pagePath, body, req.user, options);
+    const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
@@ -1261,6 +1259,10 @@ module.exports = function(crowi, app) {
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
     catch (err) {
+      if (err instanceof PathAlreadyExistsError) {
+        logger.error('Path already exists', err);
+        return res.json(ApiResponse.error(err, 'already_exists', err.targetPath));
+      }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
     }

@@ -11,7 +11,7 @@ import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { IPageWithMeta } from '~/interfaces/page';
-import { useSWRxFullTextSearch } from '~/stores/search';
+import { useSWRxSearch } from '~/stores/search';
 
 
 type ResetFormButtonProps = {
@@ -61,8 +61,9 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isForcused, setFocused] = useState(false);
 
-  const { data: searchResult, error: searchError } = useSWRxFullTextSearch(
+  const { data: searchResult, error: searchError } = useSWRxSearch(
     disableIncrementalSearch ? null : searchKeyword,
+    null,
     { limit: 10 },
   );
 

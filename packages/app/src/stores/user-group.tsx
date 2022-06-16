@@ -1,14 +1,26 @@
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-
 import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
   UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult,
   UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
+
+
+type MyUserGroupRelationsResult = {
+  userGroupRelations: IUserGroupRelationHasId[],
+}
+
+export const useSWRxMyUserGroupRelations = (shouldFetch: boolean): SWRResponse<IUserGroupRelationHasId[], Error> => {
+  return useSWR(
+    shouldFetch ? '/me/user-group-relations' : null,
+    endpoint => apiGet(endpoint).then(result => (result as MyUserGroupRelationsResult).userGroupRelations),
+  );
+};
 
 export const useSWRxUserGroup = (groupId: string | undefined): SWRResponse<IUserGroupHasId, Error> => {
   return useSWRImmutable(

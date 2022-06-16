@@ -10,7 +10,6 @@
     <div id="content-main" class="content-main d-flex"
       data-path="{{ encodeURI(path) }}"
       data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-      data-slack-channels="{% if page %}{{ page.slackChannels }}{% endif %}"
       data-page-is-not-creatable="true"
       data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
       data-identical-path="true"

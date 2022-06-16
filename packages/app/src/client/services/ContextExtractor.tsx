@@ -1,5 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
+
 import { pagePathUtils } from '@growi/core';
+
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import {
+  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
 
 import {
   useSiteUrl,
@@ -7,16 +16,10 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken,
 } from '../../stores/context';
-import {
-  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
-} from '~/stores/ui';
-import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -28,6 +31,11 @@ const ContextExtractorOnce: FC = () => {
   const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
   const notFoundContent = document.getElementById('growi-not-found-context');
   const forbiddenContent = document.getElementById('forbidden-page');
+
+  // get csrf token from body element
+  // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
+  const body = document.querySelector('body');
+  const csrfToken = body?.dataset.csrftoken;
 
   /*
    * App Context from DOM
@@ -68,6 +76,7 @@ const ContextExtractorOnce: FC = () => {
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
+  const hasParent = JSON.parse(mainContent?.getAttribute('data-has-parent') || jsonNull);
   const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
   const shareLinksNumber = mainContent?.getAttribute('data-share-links-number');
   const shareLinkId = JSON.parse(mainContent?.getAttribute('data-share-link-id') || jsonNull);
@@ -81,7 +90,6 @@ const ContextExtractorOnce: FC = () => {
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
-  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
@@ -91,6 +99,8 @@ const ContextExtractorOnce: FC = () => {
   /*
    * use static swr
    */
+  useCsrfToken(csrfToken);
+
   // App
   useCurrentUser(currentUser);
 
@@ -107,6 +117,8 @@ const ContextExtractorOnce: FC = () => {
   useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
   useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
+  useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
+  useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
 
 
   // Page
@@ -139,6 +151,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useHasParent(hasParent);
 
   // Navigation
   usePreferDrawerModeByUser();
@@ -151,7 +164,6 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSlackChannels(slackChannels);
   useSelectedGrant(grant);
   useSelectedGrantGroupId(grantGroupId);
   useSelectedGrantGroupName(grantGroupName);
@@ -161,7 +173,8 @@ const ContextExtractorOnce: FC = () => {
 
   // Global Socket
   useSetupGlobalSocket();
-  useSetupGlobalAdminSocket();
+  const shouldInitAdminSock = !!currentUser?.isAdmin;
+  useSetupGlobalAdminSocket(shouldInitAdminSock);
 
   return null;
 };

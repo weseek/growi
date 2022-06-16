@@ -2,10 +2,11 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
-
-const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 /**
  * Service container for personal settings page (PersonalSettings.jsx)
@@ -26,8 +27,6 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en_US',
       isGravatarEnabled: false,
-      isUploadedPicture: false,
-      uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       apiToken: '',
       slackMemberId: '',
@@ -47,7 +46,7 @@ export default class PersonalContainer extends Container {
    */
   async retrievePersonalData() {
     try {
-      const response = await this.appContainer.apiv3.get('/personal-setting/');
+      const response = await apiv3Get('/personal-setting/');
       const { currentUser } = response.data;
       this.setState({
         name: currentUser.name,
@@ -67,30 +66,11 @@ export default class PersonalContainer extends Container {
   }
 
   /**
-   * define a function for uploaded picture
-   */
-  getUploadedPictureSrc(user) {
-    if (user == null) {
-      return DEFAULT_IMAGE;
-    }
-    if (user.image) {
-      this.setState({ isUploadedPicture: true });
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      this.setState({ isUploadedPicture: true });
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
-  }
-
-  /**
    * retrieve external accounts that linked me
    */
   async retrieveExternalAccounts() {
     try {
-      const response = await this.appContainer.apiv3.get('/personal-setting/external-accounts');
+      const response = await apiv3Get('/personal-setting/external-accounts');
       const { externalAccounts } = response.data;
 
       this.setState({ externalAccounts });
@@ -151,7 +131,7 @@ export default class PersonalContainer extends Container {
    */
   async updateBasicInfo() {
     try {
-      const response = await this.appContainer.apiv3.put('/personal-setting/', {
+      const response = await apiv3Put('/personal-setting/', {
         name: this.state.name,
         email: this.state.email,
         isEmailPublished: this.state.isEmailPublished,
@@ -176,65 +156,11 @@ export default class PersonalContainer extends Container {
   }
 
   /**
-   * Update profile image
-   * @memberOf PersonalContainer
-   */
-  async updateProfileImage() {
-    try {
-      const response = await this.appContainer.apiv3.put('/personal-setting/image-type', {
-        isGravatarEnabled: this.state.isGravatarEnabled,
-      });
-      const { userData } = response.data;
-      this.setState({
-        isGravatarEnabled: userData.isGravatarEnabled,
-      });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to update profile image');
-    }
-  }
-
-  /**
-   * Upload image
-   */
-  async uploadAttachment(file) {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('_csrf', this.appContainer.csrfToken);
-      const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
-      this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to upload profile image');
-    }
-  }
-
-  /**
-   * Delete image
-   */
-  async deleteProfileImage() {
-    try {
-      await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
-      this.setState({ isUploadedPicture: false, uploadedPictureSrc: DEFAULT_IMAGE });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to delete profile image');
-    }
-  }
-
-  /**
    * Associate LDAP account
    */
   async associateLdapAccount(account) {
     try {
-      await this.appContainer.apiv3.put('/personal-setting/associate-ldap', account);
+      await apiv3Put('/personal-setting/associate-ldap', account);
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -248,7 +174,7 @@ export default class PersonalContainer extends Container {
    */
   async disassociateLdapAccount(account) {
     try {
-      await this.appContainer.apiv3.put('/personal-setting/disassociate-ldap', account);
+      await apiv3Put('/personal-setting/disassociate-ldap', account);
     }
     catch (err) {
       this.setState({ retrieveError: err });

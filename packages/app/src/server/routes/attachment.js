@@ -7,7 +7,6 @@ const logger = loggerFactory('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -231,6 +230,12 @@ module.exports = function(crowi, app) {
       'Last-Modified': attachment.createdAt.toUTCString(),
     });
 
+    if (!attachment.fileSize) {
+      res.set({
+        'Content-Length': attachment.fileSize,
+      });
+    }
+
     // download
     if (forceDownload) {
       res.set({
@@ -437,7 +442,7 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await Page.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
+      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
       pageCreated = true;
       pageId = page._id;
     }

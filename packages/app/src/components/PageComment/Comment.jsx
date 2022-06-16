@@ -1,23 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-
-import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
+
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { useCurrentUser } from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
-import RevisionBody from '../Page/RevisionBody';
-import Username from '../User/Username';
-import CommentEditor from './CommentEditor';
-import CommentControl from './CommentControl';
 import HistoryIcon from '../Icons/HistoryIcon';
+import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
+import Username from '../User/Username';
+
+import CommentControl from './CommentControl';
+import CommentEditor from './CommentEditor';
+
 
 /**
  *
@@ -68,17 +69,19 @@ class Comment extends React.PureComponent {
       return;
     }
 
-    const { interceptorManager } = this.props.appContainer;
+    const { interceptorManager } = window;
 
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
 
   isCurrentUserEqualsToAuthor() {
-    const { creator } = this.props.comment;
-    if (creator == null) {
+    const { comment, currentUser } = this.props;
+    const { creator } = comment;
+
+    if (creator == null || currentUser == null) {
       return false;
     }
-    return creator.username === this.props.appContainer.currentUsername;
+    return creator.username === currentUser.username;
   }
 
   isCurrentRevision() {
@@ -130,7 +133,7 @@ class Comment extends React.PureComponent {
   async renderHtml() {
 
     const { growiRenderer, appContainer } = this.props;
-    const { interceptorManager } = appContainer;
+    const { interceptorManager } = window;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
@@ -235,12 +238,16 @@ Comment.propTypes = {
   isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
+  currentUser: PropTypes.object,
   onComment: PropTypes.func,
 };
 
 const CommentWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <Comment t={t} {...props} />;
+
+  const { data: currentUser } = useCurrentUser();
+
+  return <Comment t={t} currentUser={currentUser} {...props} />;
 };
 
 /**

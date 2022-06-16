@@ -2,11 +2,12 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -23,7 +24,7 @@ class ApiSettings extends React.Component {
     const { t, appContainer, personalContainer } = this.props;
 
     try {
-      await appContainer.apiv3Put('/personal-setting/api-token');
+      await apiv3Put('/personal-setting/api-token');
 
       await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
@@ -96,12 +97,20 @@ class ApiSettings extends React.Component {
 
 }
 
-const ApiSettingsWrapper = withUnstatedContainers(ApiSettings, [AppContainer, PersonalContainer]);
-
 ApiSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
-export default withTranslation()(ApiSettingsWrapper);
+const ApiSettingsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ApiSettings t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ApiSettingsWrapper = withUnstatedContainers(ApiSettingsWrapperFC, [AppContainer, PersonalContainer]);
+
+export default ApiSettingsWrapper;

@@ -1,27 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 
+import { UserPicture } from '@growi/ui';
+import PropTypes from 'prop-types';
 import {
   Button,
   TabContent, TabPane,
 } from 'reactstrap';
-
 import * as toastr from 'toastr';
 
-import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useIsMobile } from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import NotAvailableForGuest from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import CommentPreview from './CommentPreview';
-import NotAvailableForGuest from '../NotAvailableForGuest';
-import { CustomNavTab } from '../CustomNavigation/CustomNav';
 
 
 const navTabMapping = {
@@ -63,6 +65,7 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       isSlackConfigured: config.isSlackConfigured,
+      slackChannels: this.props.slackChannels,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -76,8 +79,8 @@ class CommentEditor extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
+    this.fetchSlackChannels = this.fetchSlackChannels.bind(this);
   }
 
   updateState(value) {
@@ -96,12 +99,18 @@ class CommentEditor extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
-  onSlackEnabledFlagChange(isSlackEnabled) {
-    this.props.commentContainer.setState({ isSlackEnabled });
+  fetchSlackChannels(slackChannels) {
+    this.setState({ slackChannels });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.slackChannels !== prevProps.slackChannels) {
+      this.fetchSlackChannels(this.props.slackChannels);
+    }
   }
 
   onSlackChannelsChange(slackChannels) {
-    this.props.commentContainer.setState({ slackChannels });
+    this.setState({ slackChannels });
   }
 
   initializeEditor() {
@@ -164,8 +173,8 @@ class CommentEditor extends React.Component {
           this.state.comment,
           this.state.isMarkdown,
           replyTo,
-          commentContainer.state.isSlackEnabled,
-          commentContainer.state.slackChannels,
+          this.props.isSlackEnabled,
+          this.state.slackChannels,
         );
       }
       this.initializeEditor();
@@ -215,7 +224,6 @@ class CommentEditor extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
-        inputRef={(el) => { this.previewElement = el }}
         html={this.state.html}
       />
     );
@@ -227,7 +235,7 @@ class CommentEditor extends React.Component {
     };
 
     const { growiRenderer } = this.props;
-    const interceptorManager = this.props.appContainer.interceptorManager;
+    const { interceptorManager } = window;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -272,11 +280,10 @@ class CommentEditor extends React.Component {
   }
 
   renderReady() {
-    const { appContainer, commentContainer } = this.props;
+    const { isMobile } = this.props;
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
-    const emojiStrategy = appContainer.getEmojiStrategy();
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
@@ -307,13 +314,13 @@ class CommentEditor extends React.Component {
                 value={this.state.comment}
                 isGfmMode={this.state.isMarkdown}
                 lineNumbers={false}
-                isMobile={appContainer.isMobile}
+                isMobile={isMobile}
                 isUploadable={this.state.isUploadable}
                 isUploadableFile={this.state.isUploadableFile}
-                emojiStrategy={emojiStrategy}
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
+                isComment
               />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
@@ -358,9 +365,9 @@ class CommentEditor extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled={commentContainer.state.isSlackEnabled}
-                    slackChannels={commentContainer.state.slackChannels}
-                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                    isSlackEnabled={this.props.isSlackEnabled}
+                    slackChannels={this.state.slackChannels}
+                    onEnabledFlagChange={this.props.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
                   />
@@ -383,14 +390,14 @@ class CommentEditor extends React.Component {
   }
 
   render() {
-    const { appContainer } = this.props;
+    const { currentUser } = this.props;
     const { isReadyToUse } = this.state;
 
     return (
       <div className="form page-comment-form">
         <div className="comment-form">
           <div className="comment-form-user">
-            <UserPicture user={appContainer.currentUser} noLink noTooltip />
+            <UserPicture user={currentUser} noLink noTooltip />
           </div>
           <div className="comment-form-main">
             { !isReadyToUse
@@ -405,13 +412,22 @@ class CommentEditor extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const CommentEditorHOCWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
+  slackChannels: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  currentUser: PropTypes.instanceOf(Object),
+  isMobile: PropTypes.bool,
   isForNewComment: PropTypes.bool,
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
@@ -419,11 +435,30 @@ CommentEditor.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
+  onSlackEnabledFlagChange: PropTypes.func,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+const CommentEditorWrapper = (props) => {
+  const { data: isMobile } = useIsMobile();
+  const { data: currentUser } = useCurrentUser();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
+  const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
+    mutateIsSlackEnabled(isSlackEnabled, false);
+  }, [mutateIsSlackEnabled]);
+
+  return (
+    <CommentEditorHOCWrapper
+      {...props}
+      onSlackEnabledFlagChange={onSlackEnabledFlagChange}
+      slackChannels={slackChannelsData.toString()}
+      isSlackEnabled={isSlackEnabled}
+      currentUser={currentUser}
+      isMobile={isMobile}
+    />
+  );
+};
 
 export default CommentEditorWrapper;

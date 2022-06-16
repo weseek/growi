@@ -48,6 +48,26 @@ body .page-list {
       i {
         margin-right: 2px;
       }
+
+      .footstamp-icon {
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+      .seen-users-count {
+        &.strength-0,
+        &.strength-1,
+        &.strength-2 {
+          font-weight: bold;
+        }
+        &.strength-3 {
+          font-weight: normal;
+        }
+        &.strength-4 {
+          opacity: 0.5;
+        }
+      }
     }
 
     // after second level indent
@@ -66,17 +86,6 @@ body .page-list {
     .list-group-item {
       min-height: 136px;
 
-      .page-list-meta {
-        .meta-icon {
-          width: 14px;
-          height: 14px;
-          margin-right: 14px;
-        }
-        .footstamp-icon {
-          margin-right: 2px;
-        }
-      }
-
       .page-list-updated-at {
         font-size: 12px;
       }
@@ -86,21 +95,6 @@ body .page-list {
       }
     }
   }
-}
-
-.popular-page-high {
-  font-size: 1.1em;
-  font-weight: bold;
-  color: darken($red, 5%);
-}
-
-.popular-page-mid {
-  font-weight: bold;
-  color: #e47800;
-}
-
-.popular-page-low {
-  color: #ab7c7c;
 }
 
 .card-timeline {
