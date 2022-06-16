@@ -638,7 +638,7 @@ class PassportService implements S2sMessageHandlable {
       : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
 
     // Prevent request timeout error on app init
-    const oidcIssuer = await this.getOIDCIssuerInstace(issuerHost);
+    const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
     if (oidcIssuer != null) {
       logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
@@ -726,7 +726,7 @@ class PassportService implements S2sMessageHandlable {
    * @param issuerHost string
    * @returns string URL/.well-known/openid-configuration
    */
-  getOIDCMetadataURL(issuerHost) {
+  getOIDCMetadataURL(issuerHost: string) : string {
     const protocol = 'https://';
     const pattern = /^https?:\/\//i;
     const metadataPath = '/.well-known/openid-configuration';
@@ -746,10 +746,10 @@ class PassportService implements S2sMessageHandlable {
  * Check and initialize connection to OIDC issuer host
  * Prevent request timeout error on app init
  *
- * @param issuerHost
+ * @param issuerHost string
  * @returns boolean
  */
-  async isOidcHostReachable(issuerHost) {
+  async isOidcHostReachable(issuerHost: string): Promise<boolean | undefined> {
     try {
       const metadataUrl = this.getOIDCMetadataURL(issuerHost);
       const client = require('axios').default;
@@ -773,10 +773,10 @@ class PassportService implements S2sMessageHandlable {
    * Get oidcIssuer object
    * Utilize p-retry package to retry oidcIssuer initialization 3 times
    *
-   * @param issuerHost
+   * @param issuerHost string
    * @returns instance of OIDCIssuer
    */
-  async getOIDCIssuerInstace(issuerHost) {
+  async getOIDCIssuerInstance(issuerHost: string): Promise<void | OIDCIssuer> {
     const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:timeoutMultiplier');
     const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
     const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
