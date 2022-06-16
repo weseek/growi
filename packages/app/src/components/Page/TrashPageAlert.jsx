@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +43,10 @@ const TrashPageAlert = (props) => {
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
+
+  const formatDate = (date) => {
+    return format(date, 'yyyy/MM/dd HH:mm');
+  };
 
   function openPutbackPageModalHandler() {
     const putBackedHandler = (path) => {
@@ -95,7 +100,7 @@ const TrashPageAlert = (props) => {
               <br />
               <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
               <span className="ml-2">
-                Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
+                Deleted by {deletedUserName || lastUpdateUsername} at {formatDate(deletedAt) || formatDate(updatedAt)}
               </span>
             </>
           )}

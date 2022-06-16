@@ -48,8 +48,8 @@ export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<N
   return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData);
 };
 
-export const useCurrentDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData);
+export const useCurrentDeletedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
+  return useStaticSWR<Nullable<Date>, Error>('deletedAt', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
