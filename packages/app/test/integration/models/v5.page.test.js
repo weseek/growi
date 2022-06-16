@@ -916,23 +916,26 @@ describe('Page', () => {
     describe('Changing grant to GRANT_USER_GROUP', () => {
       describe('update grant of a page under a page with GRANT_PUBLIC', () => {
         test('successfully change to GRANT_USER_GROUP from GRANT_PUBLIC if parent page is GRANT_PUBLIC', async() => {
+          // path
           const path1 = '/mup24_pub';
           const path2 = '/mup24_pub/mup25_pub';
-          const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC });
-          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
+          // page
+          const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC }); // out of update scope
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC }); // update target
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser1, options);
+          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
+          const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser1, options); // to GRANT_USER_GROUP(groupIdA)
 
-          const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-          const page2 = await Page.findOne({ path: path2 });
+          const page1 = await Page.findById(_page1._id);
+          const page2 = await Page.findById(_page2._id);
           expect(page1).toBeTruthy();
           expect(page2).toBeTruthy();
           expect(updatedPage).toBeTruthy();
           expect(updatedPage._id).toStrictEqual(page2._id);
 
+          // check page2 grant and group
           expect(page2.grant).toBe(Page.GRANT_USER_GROUP);
           expect(page2.grantedGroup._id).toStrictEqual(groupIdA);
         });
