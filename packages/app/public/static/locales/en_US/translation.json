@@ -5,6 +5,7 @@
   "Delete": "Delete",
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
+  "PathRecovery": "Path recovery",
   "Copy": "Copy",
   "preview":"Preview",
   "desktop":"Desktop",
@@ -1111,6 +1112,15 @@
     "cancel_bookmark": "Cancel Bookmark",
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
-    "footprints": "Footprints"
+    "footprints": "Footprints",
+    "operation": {
+      "attention": {
+        "rename": "Renaming paths of descendant pages was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
+      }
+    }
+  },
+  "page_operation":{
+    "paths_recovered": "Paths recovered successfully",
+    "path_recovery_failed":"Path recovery failed"
   }
 }
