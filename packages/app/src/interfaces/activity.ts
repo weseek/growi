@@ -75,6 +75,12 @@ export const SupportedAction = {
   ACTION_COMMENT_REMOVE,
 } as const;
 
+export const ActionGroupSize = {
+  Small: 'SMALL',
+  Medium: 'MEDIUM',
+  Large: 'LARGE',
+} as const;
+
 export const SmallActionGroup = {
   ACTION_LOGIN_SUCCESS,
   ACTION_LOGIN_FAILURE,

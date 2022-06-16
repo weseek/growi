@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-import { IActivity } from '~/interfaces/activity';
+import {
+  IActivity, SupportedActionType, ActionGroupSize, AllSmallAction, AllMediumAction, AllLargeAction,
+} from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
@@ -36,6 +38,22 @@ class ActivityService {
 
       this.activityEvent.emit('updated', activity, target);
     });
+  }
+
+  shoudCreateActivity = function(action: SupportedActionType): boolean {
+    const configManager = this.crowi.configManager;
+    const auditLogActionGroupSize = configManager != null ? configManager.getConfig('crowi', 'app:auditLogActionGroupSize') : 'SMALL';
+
+    switch (auditLogActionGroupSize) {
+      case ActionGroupSize.Small:
+        return (AllSmallAction as ReadonlyArray<string>).includes(action);
+      case ActionGroupSize.Medium:
+        return (AllMediumAction as ReadonlyArray<string>).includes(action);
+      case ActionGroupSize.Large:
+        return (AllLargeAction as ReadonlyArray<string>).includes(action);
+      default:
+        return false;
+    }
   }
 
   createTtlIndex = async function() {
