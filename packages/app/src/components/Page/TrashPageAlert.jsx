@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
+import { useCurrentUpdatedAt, useShareLinkId, useCurrentDeletedAt } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
@@ -24,7 +24,7 @@ const TrashPageAlert = (props) => {
   const { t } = useTranslation();
   const { pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
+    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName,
   } = pageContainer.state;
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
@@ -38,6 +38,7 @@ const TrashPageAlert = (props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
+  const { data: deletedAt } = useCurrentDeletedAt();
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();

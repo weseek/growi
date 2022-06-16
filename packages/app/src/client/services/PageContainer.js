@@ -56,7 +56,6 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
