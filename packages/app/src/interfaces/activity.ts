@@ -154,6 +154,9 @@ export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
 export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedAction = Object.values(SupportedAction);
 export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);
+export const AllSmallAction = Object.values(SmallActionGroup);
+export const AllMediumAction = Object.values(MediumActionGroup);
+export const AllLargeAction = Object.values(LargeActionGroup);
 
 /*
  * Type
