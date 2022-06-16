@@ -29,6 +29,18 @@ class ActivityService {
 
   initActivityEventListeners(): void {
     this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
+      const shoudUpdate = this.shoudUpdateActivity(parameters.action);
+      if (!shoudUpdate) {
+        try {
+          await Activity.deleteOne({ _id: activityId });
+        }
+        catch (err) {
+          logger.error('Delete activity failed', err);
+          return;
+        }
+        return;
+      }
+
       let activity: IActivity;
       try {
         activity = await Activity.updateByParameters(activityId, parameters);
