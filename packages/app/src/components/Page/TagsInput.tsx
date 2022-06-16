@@ -75,7 +75,7 @@ const TagsInput: FC<Props> = (props: Props) => {
         multiple
         newSelectionPrefix=""
         onChange={changeHandler}
-        onSearch={query => searchHandler(query)}
+        onSearch={searchHandler}
         onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
         placeholder="tag name"
