@@ -3,15 +3,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 import { useSidebarConfig } from '~/stores/ui';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: sidebarConfig, update } = useSidebarConfig();
-  const [isSidebarDrawerMode, setIsSidebarDrawerMode] = useState(false);
-  const [isSidebarClosedAtDockMode, setIsSidebarClosedAtDockMode] = useState(false);
+  const {
+    update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
+  } = useSidebarConfig();
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
@@ -23,16 +23,14 @@ const CustomizeSidebarsetting = (): JSX.Element => {
       isSidebarDrawerMode,
       isSidebarClosedAtDockMode,
     };
-    update(sidebarConfig);
-    toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
-  }, [t, isSidebarDrawerMode, isSidebarClosedAtDockMode, update]);
-
-  useEffect(() => {
-    if (sidebarConfig != null) {
-      setIsSidebarDrawerMode(sidebarConfig.isSidebarDrawerMode);
-      setIsSidebarClosedAtDockMode(sidebarConfig.isSidebarClosedAtDockMode);
+    try {
+      await update(sidebarConfig);
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
     }
-  }, [sidebarConfig]);
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, isSidebarDrawerMode, isSidebarClosedAtDockMode, update]);
 
   return (
     <React.Fragment>

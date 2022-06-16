@@ -280,11 +280,15 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   );
 };
 
-type SidebarConfigOperation = {
-  update: (updateData: Partial<ISidebarConfig>) => void,
+type SidebarConfigOption = {
+  update: (updateData: Partial<ISidebarConfig>) => Promise<void>,
+  isSidebarDrawerMode: boolean|undefined,
+  isSidebarClosedAtDockMode: boolean|undefined,
+  setIsSidebarDrawerMode: (isSidebarDrawerMode: boolean) => void,
+  setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode: boolean) => void
 }
 
-export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOperation => {
+export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
   const swrResponse = useSWRImmutable<ISidebarConfig>(
     '/customize-setting/sidebar',
     endpoint => apiv3Get(endpoint).then(result => result.data),
@@ -302,6 +306,37 @@ export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & Sidebar
 
       // invoke API
       await apiv3Put('/customize-setting/sidebar', updateData);
+    },
+    isSidebarDrawerMode: swrResponse.data?.isSidebarDrawerMode,
+    isSidebarClosedAtDockMode: swrResponse.data?.isSidebarClosedAtDockMode,
+    setIsSidebarDrawerMode: (isSidebarDrawerMode) => {
+      const { data, mutate } = swrResponse;
+
+      if (data == null) {
+        return;
+      }
+
+      const updateData = {
+        isSidebarDrawerMode,
+      };
+
+      // update isSidebarDrawerMode in cache, not revalidate
+      mutate({ ...data, ...updateData }, false);
+
+    },
+    setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode) => {
+      const { data, mutate } = swrResponse;
+
+      if (data == null) {
+        return;
+      }
+
+      const updateData = {
+        isSidebarClosedAtDockMode,
+      };
+
+      // update isSidebarClosedAtDockMode in cache, not revalidate
+      mutate({ ...data, ...updateData }, false);
     },
   };
 };

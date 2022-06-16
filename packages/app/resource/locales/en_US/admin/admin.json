@@ -152,7 +152,6 @@
     "default_sidebar_mode": {
       "title": "Default sidebar mode",
       "desc": "You can set the sidebar mode for new users and guests visiting the page.",
-      "dock_mode_default": "Initial state of Dock Mode",
       "dock_mode_default_desc": "You can set the initial state of the sidebar when Dock Mode is selected.",
       "dock_mode_default_open": "Open the page as it was opened from the beginning",
       "dock_mode_default_close": "Open the page as it was closed from the beginning"
