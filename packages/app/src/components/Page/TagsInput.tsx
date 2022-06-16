@@ -24,10 +24,11 @@ const TagsInput: FC<Props> = (props: Props) => {
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
   const [resultTags, setResultTags] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: tagsSearchData } = useSWRxTagsSearch(searchQuery);
+  const { data: tagsSearchData, error } = useSWRxTagsSearch(searchQuery);
+
+  const isLoading = error == null && tagsSearchData === undefined;
 
   const changeHandler = useCallback((selected: string[]) => {
     if (props.onTagsUpdated != null) {
@@ -37,17 +38,8 @@ const TagsInput: FC<Props> = (props: Props) => {
 
   const searchHandler = useCallback(async(query: string) => {
     setSearchQuery(query);
-    setLoading(true);
-    try {
-      tagsSearchData?.tags.unshift(searchQuery);
-      setResultTags(Array.from(new Set(tagsSearchData?.tags)));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setLoading(false);
-    }
+    tagsSearchData?.tags.unshift(searchQuery);
+    setResultTags(Array.from(new Set(tagsSearchData?.tags)));
   }, [searchQuery, tagsSearchData?.tags]);
 
   const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
