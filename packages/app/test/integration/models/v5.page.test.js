@@ -775,18 +775,34 @@ describe('Page', () => {
       });
       describe('update grant of a page under a page with GRANT_USER_GROUP', () => {
         test('successfully change to GRANT_USER_GROUP if the group to set is the child or descendant of the parent page group', async() => {
-          const path1 = '/mup29_A';
-          const path2 = '/mup29_A/mup30_owner';
-          const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
-          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdB }; // change to groupB
+          // path
+          const _path1 = '/mup29_A';
+          const _path2 = '/mup29_A/mup30_owner';
+          // page
+          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+          const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] }); // update target
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser3, options);
+          // group parent check
+          const _groupA = await UserGroup.findById(groupIdA);
+          const _groupB = await UserGroup.findById(groupIdB);
+          const _groupC = await UserGroup.findById(groupIdC);
+          expect(_groupA).toBeTruthy();
+          expect(_groupB).toBeTruthy();
+          expect(_groupC).toBeTruthy();
 
-          const page1 = await Page.findOne({ path: path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const page2 = await Page.findOne({ path: path2 });
+          // group parent check
+          expect(_groupA.parent).toBeUndefined(); // parent of groupA is undefined
+          expect(_groupB.parent).toStrictEqual(_groupA._id); // parent of groupB is groupA
+          expect(_groupC.parent).toStrictEqual(_groupB._id); // parent of groupC is groupB
+
+          // First round
+          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdB };
+          const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser3, options); // from GRANT_OWNER to GRANT_USER_GROUP(groupIdB)
+
+          const page1 = await Page.findById(_page1._id);
+          const page2 = await Page.findById(_page2._id);
           expect(page1).toBeTruthy();
           expect(page2).toBeTruthy();
           expect(updatedPage).toBeTruthy();
@@ -796,13 +812,14 @@ describe('Page', () => {
           expect(page2.grantedGroup._id).toStrictEqual(groupIdB);
           expect(page2.grantedUsers.length).toBe(0);
 
-          // second round to change to grandchild group
-          const secondTimesOptions = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdC }; // change to groupC
-          const secondTimesUpdatedPage = await updatePage(_page2, 'new', 'old', pModelUser3, secondTimesOptions);
+          // Second round
+          // Update group to groupC which is a grandchild from pageA's point of view
+          const secondRoundOptions = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdC }; // from GRANT_USER_GROUP(groupIdB) to GRANT_USER_GROUP(groupIdC)
+          const secondRoundUpdatedPage = await updatePage(_page2, 'new', 'new', pModelUser3, secondRoundOptions);
 
-          expect(secondTimesUpdatedPage).toBeTruthy();
-          expect(secondTimesUpdatedPage.grant).toBe(Page.GRANT_USER_GROUP);
-          expect(secondTimesUpdatedPage.grantedGroup._id).toStrictEqual(groupIdC);
+          expect(secondRoundUpdatedPage).toBeTruthy();
+          expect(secondRoundUpdatedPage.grant).toBe(Page.GRANT_USER_GROUP);
+          expect(secondRoundUpdatedPage.grantedGroup._id).toStrictEqual(groupIdC);
         });
         test('Fail to change to GRANT_USER_GROUP if the group to set is NOT the child or descendant of the parent page group', async() => {
           const path1 = '/mup31_A';
