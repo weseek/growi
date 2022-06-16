@@ -5,13 +5,13 @@ import { Card, CardBody } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
-import { useSidebarConfig } from '~/stores/ui';
+import { useSWRxSidebarConfig } from '~/stores/ui';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
   const {
     update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
-  } = useSidebarConfig();
+  } = useSWRxSidebarConfig();
 
   const isDarkMode = isDarkModeByUtil();
   const colorText = isDarkMode ? 'dark' : 'light';
@@ -19,18 +19,14 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
 
   const onClickSubmit = useCallback(async() => {
-    const sidebarConfig = {
-      isSidebarDrawerMode,
-      isSidebarClosedAtDockMode,
-    };
     try {
-      await update(sidebarConfig);
+      await update();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, isSidebarDrawerMode, isSidebarClosedAtDockMode, update]);
+  }, [t, update]);
 
   return (
     <React.Fragment>

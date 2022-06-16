@@ -281,28 +281,33 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
 };
 
 type SidebarConfigOption = {
-  update: (updateData: Partial<ISidebarConfig>) => Promise<void>,
+  update: () => Promise<void>,
   isSidebarDrawerMode: boolean|undefined,
   isSidebarClosedAtDockMode: boolean|undefined,
   setIsSidebarDrawerMode: (isSidebarDrawerMode: boolean) => void,
   setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode: boolean) => void
 }
 
-export const useSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
+export const useSWRxSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
   const swrResponse = useSWRImmutable<ISidebarConfig>(
     '/customize-setting/sidebar',
     endpoint => apiv3Get(endpoint).then(result => result.data),
   );
   return {
     ...swrResponse,
-    update: async(updateData) => {
-      const { data, mutate } = swrResponse;
+    update: async() => {
+      const { data } = swrResponse;
 
       if (data == null) {
         return;
       }
 
-      mutate({ ...data, ...updateData }, false);
+      const { isSidebarDrawerMode, isSidebarClosedAtDockMode } = data;
+
+      const updateData = {
+        isSidebarDrawerMode,
+        isSidebarClosedAtDockMode,
+      };
 
       // invoke API
       await apiv3Put('/customize-setting/sidebar', updateData);
