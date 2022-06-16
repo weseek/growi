@@ -784,20 +784,10 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          // group
-          const _groupA = await UserGroup.findById(groupIdA);
-          const _groupB = await UserGroup.findById(groupIdB);
-          const _groupC = await UserGroup.findById(groupIdC);
-          expect(_groupA).toBeTruthy();
-          expect(_groupB).toBeTruthy();
-          expect(_groupC).toBeTruthy();
-          // group parent check
-          expect(_groupA.parent).toBeUndefined(); // parent of groupA is undefined
-          expect(_groupB.parent).toStrictEqual(_groupA._id); // parent of groupB is groupA
-          expect(_groupC.parent).toStrictEqual(_groupB._id); // parent of groupC is groupB
+          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdB };
 
           // First round
-          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdB };
+          // Group relation(parent -> child): groupIdA -> groupIdB -> groupIdC
           const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser3, options); // from GRANT_OWNER to GRANT_USER_GROUP(groupIdB)
 
           const page1 = await Page.findById(_page1._id);
@@ -859,19 +849,9 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          // group
-          const _groupA = await UserGroup.findById(groupIdA);
-          const _groupB = await UserGroup.findById(groupIdB);
-          const _groupC = await UserGroup.findById(groupIdC);
-          expect(_groupA).toBeTruthy();
-          expect(_groupB).toBeTruthy();
-          expect(_groupC).toBeTruthy();
-          // group parent check
-          expect(_groupA.parent).toBeUndefined(); // parent of groupA is undefined
-          expect(_groupB.parent).toStrictEqual(_groupA._id); // parent of groupB is groupA
-          expect(_groupC.parent).toStrictEqual(_groupB._id); // parent of groupC is groupB
-
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
+
+          // Group relation(parent -> child): groupIdA -> groupIdB -> groupIdC
           // this should fail because the groupC is a descendant of groupA
           await expect(updatePage(_page2, 'new', 'old', pModelUser3, options)) // from GRANT_OWNER to GRANT_USER_GROUP(groupIdA)
             .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
