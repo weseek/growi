@@ -1,13 +1,26 @@
 import React from 'react';
 
-type Props = {
-  fileName: string,
-  url: string,
-};
+import * as ReactDOMServer from 'react-dom/server';
 
-const PageAttachmentPresentation = (props: Props): JSX.Element => {
+const PageAttachmentPresentation = (props): JSX.Element => {
+  // TODO: Create a match statement, regex.
+  // EXAMPLE:
+  // https://regex101.com/hogehoge
+  // const match = ...;
+  // const contents = tokens[idx].content.split('\n');
+  // let filename = null;
+  // let url = null;
+  // contents.forEach((data) => {
+  //   if (data.substr(0, data.indexOf(':')) === 'filename') {
+  //     filename = data.substr(data.indexOf(':') + 1);
+  //   }
+  //   else if (data.substr(0, data.indexOf(':')) === 'url') {
+  //     url = data.substr(data.indexOf(':') + 1);
+  //   }
+  // });
+
   // TODO: add use props
-  const { fileName, url } = props;
+  // const { attchmentId } = props;
 
   // TODO: format [icon name, date, byte, ...]
   // EXAMPLE
@@ -53,6 +66,8 @@ const PageAttachmentPresentation = (props: Props): JSX.Element => {
   // if (this.props.inUse) {
   //   fileInUse = <span className="attachment-in-use badge badge-pill badge-info">In Use</span>;
   // }
+  const fileName = 'testfile';
+  const url = '/attachment/hoge';
 
   // TODO: create rich attachemnt layout
   return (
@@ -73,4 +88,4 @@ const PageAttachmentPresentation = (props: Props): JSX.Element => {
   );
 };
 
-export default PageAttachmentPresentation;
+export default ReactDOMServer.renderToString(<PageAttachmentPresentation />);
