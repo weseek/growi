@@ -630,7 +630,7 @@ module.exports = function(crowi, app) {
     }
 
     if (nonEmptyPages.length === 1) {
-      const nonEmptyPage = pages.find(p => !p.isEmpty); // find the nonEmpty Page
+      const nonEmptyPage = nonEmptyPages[0];
       return redirectOperationForSinglePage(nonEmptyPage, req, res);
     }
 
