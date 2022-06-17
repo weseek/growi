@@ -15,7 +15,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useIsEditable, useCurrentPageId } from '~/stores/context';
-import { useStaticPageTags } from '~/stores/editor';
+import { usePageTagsForEditors } from '~/stores/editor';
 import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -147,7 +147,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
   const { data: pageId } = useCurrentPageId();
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: pageTags } = useStaticPageTags(tagsInfoData?.tags);
+  const { data: pageTags } = usePageTagsForEditors(tagsInfoData?.tags);
 
 
   if (isEditable == null || editorMode == null) {

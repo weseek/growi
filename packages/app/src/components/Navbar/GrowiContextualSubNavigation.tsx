@@ -14,7 +14,7 @@ import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
-import { useStaticPageTags } from '~/stores/editor';
+import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -167,7 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode } = useStaticPageTags(tagsInfoData?.tags);
+  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode } = usePageTagsForEditors(tagsInfoData?.tags);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
