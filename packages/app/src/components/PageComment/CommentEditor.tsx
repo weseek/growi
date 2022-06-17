@@ -272,8 +272,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     catch (err) {
       apiErrorHandler(err);
     }
-
-    editorRef.current.terminateUploadingState();
+    finally {
+      editorRef.current.terminateUploadingState();
+    }
   };
 
   const getCommentHtml = () => {
