@@ -154,12 +154,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   }, [mutateIsSlackEnabled]);
 
   useEffect(() => {
-    // if (this.props.slackChannels !== prevProps.slackChannels) {
-    //   this.fetchSlackChannels(this.props.slackChannels);
-    // }
-    // 実装を考える必要あり
     fetchSlackChannels(slackChannelsData?.toString());
-  });
+  }, [slackChannelsData]);
 
   const onSlackChannelsChange = (slackChannels: string) => {
     setSlackChannels(slackChannels);
@@ -430,6 +426,14 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 /**
  * Wrapper component for using unstated
  */
-const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+const CommentEditorHOCWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+
+const CommentEditorWrapper = (props): JSX.Element => {
+  return (
+    <CommentEditorHOCWrapper
+      {...props}
+    />
+  );
+};
 
 export default CommentEditorWrapper;
