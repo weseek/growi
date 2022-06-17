@@ -119,6 +119,7 @@ activitySchema.statics.createByParameters = async function(parameters): Promise<
   return activity;
 };
 
+// Check if you should update using ActivityService.shoudUpdateActivity
 activitySchema.statics.updateByParameters = async function(activityId: string, parameters): Promise<IActivity> {
   const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 

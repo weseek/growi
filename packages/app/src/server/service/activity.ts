@@ -33,12 +33,12 @@ class ActivityService {
       if (!shoudUpdate) {
         try {
           await Activity.deleteOne({ _id: activityId });
+          return;
         }
         catch (err) {
           logger.error('Delete activity failed', err);
           return;
         }
-        return;
       }
 
       let activity: IActivity;
