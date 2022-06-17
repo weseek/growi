@@ -279,6 +279,13 @@ module.exports = function(crowi, app) {
     renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
+  async function addRenderVarsWhenEmptyPage(renderVars, pageId) {
+    if (pageId == null) {
+      return;
+    }
+    renderVars.pageId = pageId;
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -333,9 +340,10 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
-
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
-
+    if (req.pageId != null) {
+      await addRenderVarsWhenEmptyPage(renderVars, req.pageId);
+    }
     return res.render(view, renderVars);
   }
 
@@ -420,13 +428,9 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      req.pageId = page._id;
+      req.pagePath = page.path;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
@@ -596,40 +600,41 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    const builder = new PageQueryBuilder(Page.find({ path }));
+    const includeEmpty = true;
+    const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
+
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+
     await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
-
     const pages = await builder.query.lean().clone().exec('find');
+    const nonEmptyPages = pages.filter(p => !p.isEmpty);
 
-    if (pages.length >= 2) {
-
-      // populate to list
-      builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-      const identicalPathPages = await builder.query.lean().exec('find');
-
+    if (nonEmptyPages.length >= 2) {
       return res.render('layout-growi/identical-path-page', {
-        identicalPathPages,
+        identicalPathPages: nonEmptyPages,
         redirectFrom,
         path,
       });
     }
 
-    if (pages.length === 1) {
+    if (nonEmptyPages.length === 1) {
+      const nonEmptyPage = nonEmptyPages[0];
       const url = new URL('https://dummy.origin');
-      url.pathname = `/${pages[0]._id}`;
+
+      url.pathname = `/${nonEmptyPage._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
         url.searchParams.append(key, value);
       });
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    // Exclude isEmpty page to handle _notFound or forbidden
-    const isForbidden = await Page.exists({ path, isEmpty: false });
-    if (isForbidden) {
-      req.isForbidden = true;
+    // Processing of nonEmptyPage is finished by the time this code is read
+    // If any pages exist then they should be empty
+    const emptyPage = pages[0];
+    if (emptyPage != null) {
+      req.pageId = emptyPage._id;
       return _notFound(req, res);
     }
-
     // redirect by PageRedirect
     const pageRedirect = await PageRedirect.findOne({ fromPath: path });
     if (pageRedirect != null) {

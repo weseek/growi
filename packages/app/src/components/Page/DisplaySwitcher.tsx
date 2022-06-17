@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPageInNotFoundContext,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -36,7 +36,7 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-
+  const { data: isEmptyPageInNotFoundContext } = useIsEmptyPageInNotFoundContext();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
@@ -97,9 +97,11 @@ const DisplaySwitcher = (): JSX.Element => {
                   ) }
 
                   <div className="d-none d-lg-block">
-                    <div id="revision-toc" className="revision-toc">
-                      <TableOfContents />
-                    </div>
+                    {!isEmptyPageInNotFoundContext && (
+                      <div id="revision-toc" className="revision-toc">
+                        <TableOfContents />
+                      </div>
+                    )}
                     <ContentLinkButtons />
                   </div>
 

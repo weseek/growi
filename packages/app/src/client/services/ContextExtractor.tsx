@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPageInNotFoundContext,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -57,7 +57,8 @@ const ContextExtractorOnce: FC = () => {
    */
   const revisionId = mainContent?.getAttribute('data-page-revision-id');
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
-  const pageId = mainContent?.getAttribute('data-page-id') || null;
+  const pageId = mainContent?.getAttribute('data-page-id') || notFoundContent?.getAttribute('data-page-id');
+
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
   // createdAt
@@ -91,6 +92,7 @@ const ContextExtractorOnce: FC = () => {
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
+  const isEmptyPage = notFoundContent != null && pageId != null;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
@@ -151,6 +153,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useIsEmptyPageInNotFoundContext(isEmptyPage);
   useHasParent(hasParent);
 
   // Navigation
