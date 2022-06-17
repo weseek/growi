@@ -41,4 +41,4 @@ const nextConfig = {
 
 };
 
-module.exports = withTM(nextConfig)
+module.exports = withTM(nextConfig);
