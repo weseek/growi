@@ -181,13 +181,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   const isViewMode = editorMode === EditorMode.View;
 
-  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
-    // It will not be reflected in the DB until the page is refreshed
-    if (!isViewMode) {
-      mutateTagsOnEditMode(newTags, false);
-      return;
-    }
-
+  const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
       await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
 
@@ -201,7 +195,13 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [isViewMode, mutateTagsOnEditMode, pageId, revisionId, mutateSWRTagsInfo]);
+  }, [mutateTagsOnEditMode, pageId, revisionId, mutateSWRTagsInfo]);
+
+  const tagsUpdatedHandlerForEditMode = useCallback(async(newTags: string[]) => {
+    // It will not be reflected in the DB until the page is refreshed
+    mutateTagsOnEditMode(newTags, false);
+    return;
+  }, [mutateTagsOnEditMode]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -325,7 +325,7 @@ const GrowiContextualSubNavigation = (props) => {
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
       tags={isViewMode ? tagsInfoData?.tags : tagsOnEditMode}
-      tagsUpdatedHandler={tagsUpdatedHandler}
+      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
     />
