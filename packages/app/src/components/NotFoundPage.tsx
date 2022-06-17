@@ -32,7 +32,9 @@ const NotFoundPage = (): JSX.Element => {
     const isPathLink = notFoundTargetPathOrId?.includes('/');
 
     if (isEmptyPage && isPathExist && !isPathLink) {
-      replaceURLHistory(path);
+      // The (as string) below is a workaround for the case. See the link. (Fixed in typescript version 4.4)
+      // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html#control-flow-analysis-of-aliased-conditions-and-discriminants
+      replaceURLHistory(path as string);
     }
   }, [pageId, path, notFoundTargetPathOrId]);
 
