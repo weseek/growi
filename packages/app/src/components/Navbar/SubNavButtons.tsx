@@ -16,6 +16,7 @@ import {
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
+import SwitchContentWidthButton from '../SwitchContentWidthButton';
 import SeenUserInfo from '../User/SeenUserInfo';
 
 
@@ -144,9 +145,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     return <></>;
   }
 
+  const switchContentWidthHandler = () => {
+    // TODO Implement switch content width
+  };
 
   const {
-    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked, isContainerFluid,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
@@ -154,6 +158,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
+      <SwitchContentWidthButton
+        isContainerFluid={isContainerFluid}
+        onSwitchContentWidthClicked={switchContentWidthHandler}
+      >
+
+      </SwitchContentWidthButton>
       <span>
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
