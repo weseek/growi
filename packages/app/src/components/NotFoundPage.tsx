@@ -27,7 +27,7 @@ const NotFoundPage = (): JSX.Element => {
 
   // replace url in address bar with path when accessing empty page by permalink
   useEffect(() => {
-    const isEmptyPage = pageId != null;
+    const isEmptyPage = pageId != null; // Todo: should be improved. https://redmine.weseek.co.jp/issues/98152
     const isPathExist = path != null;
     const isPathLink = notFoundTargetPathOrId?.includes('/');
 
