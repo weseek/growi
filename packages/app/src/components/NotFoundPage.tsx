@@ -27,7 +27,11 @@ const NotFoundPage = (): JSX.Element => {
 
   // replace url in address bar with path when accessing empty page by permalink
   useEffect(() => {
-    if (pageId != null && path != null && !notFoundTargetPathOrId?.includes('/')) {
+    const isEmptyPage = pageId != null;
+    const isPathExist = path != null;
+    const isPathLink = notFoundTargetPathOrId?.includes('/');
+
+    if (isEmptyPage && isPathExist && !isPathLink) {
       replaceURLHistory(path);
     }
   }, [pageId, path, notFoundTargetPathOrId]);
