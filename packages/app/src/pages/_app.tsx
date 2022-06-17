@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { AppProps } from 'next/app';
 
 // import { appWithTranslation } from '~/i18n';
@@ -9,7 +11,7 @@ import '~/styles/theme/default.scss';
 // import { useGrowiVersion } from '../stores/context';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
-function GrowiApp({ Component, pageProps }: AppProps) {
+function GrowiApp({ Component, pageProps }: AppProps): JSX.Element {
   // useInterceptorManager(new InterceptorManager());
   // useGrowiVersion(pageProps.growiVersion);
 
@@ -20,4 +22,4 @@ function GrowiApp({ Component, pageProps }: AppProps) {
 
 // export default appWithTranslation(GrowiApp);
 
-export default GrowiApp
+export default GrowiApp;
