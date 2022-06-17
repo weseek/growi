@@ -1,10 +1,8 @@
-import packageJSON from './package.json';
+import { listScopedPackages } from './src/utils/next.config.utils';
 
 // define transpiled packages for '@growi/*'
-const withTM = require('next-transpile-modules')([
-  '@growi/core',
-  '@growi/ui',
-]);
+const scopedPackages = listScopedPackages(['@growi']);
+const withTM = require('next-transpile-modules')(scopedPackages);
 
 // define additional entries
 const additionalWebpackEntries = {
