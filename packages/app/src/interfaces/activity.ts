@@ -84,6 +84,7 @@ export const ActionGroupSize = {
 export const SmallActionGroup = {
   ACTION_LOGIN_SUCCESS,
   ACTION_LOGIN_FAILURE,
+  ACTION_LOGOUT,
   ACTION_PAGE_CREATE,
   ACTION_PAGE_DELETE,
 } as const;
