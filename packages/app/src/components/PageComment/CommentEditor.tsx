@@ -59,7 +59,7 @@ type PropsType = {
   currentCommentId: string
 }
 
-interface ICommentEditorOperation {
+type EditorRef = {
   setGfmMode: (value: boolean) => void,
   setValue: (value: string) => void,
   insertText: (text: string) => void,
@@ -92,10 +92,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
-  const editorRef = useRef<ICommentEditorOperation>(null);
-
-  // TODO: typescriptize Editor
-  const AnyEditor = Editor as any;
+  const editorRef = useRef<EditorRef>(null);
 
   const updateState = (value:string) => {
     setComment(value);
@@ -318,6 +315,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
+    // TODO: typescriptize Editor
+    const AnyEditor = Editor as any;
 
     return (
       <>
