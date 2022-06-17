@@ -167,15 +167,15 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode, sync: syncPageTagsForEditors } = usePageTagsForEditors(/* tagsInfoData?.tags */);
+  const { data: tagsOnEditMode, sync: syncPageTagsForEditors } = usePageTagsForEditors();
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   useEffect(() => {
-    syncPageTagsForEditors(tagsInfoData?.tags);
     // Run only when tagsInfoData has been updated
+    syncPageTagsForEditors(tagsInfoData?.tags);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
 
