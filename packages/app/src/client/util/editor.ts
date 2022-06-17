@@ -1,5 +1,3 @@
-import { ITagNames } from '~/interfaces/tag';
-
 type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;
@@ -16,7 +14,7 @@ export const getOptionsToSave = (
     grant: number,
     grantUserGroupId: string | null | undefined,
     grantUserGroupName: string | null | undefined,
-    pageTags: ITagNames,
+    pageTags: string[],
 ): OptionsToSave => {
   return {
     pageTags,

@@ -5,7 +5,6 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
-import { ITagNames } from '~/interfaces/tag';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
@@ -92,6 +91,6 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useStaticPageTags = (initialTags?: ITagNames): SWRResponse<ITagNames, Error> => {
-  return useStaticSWR<ITagNames, Error>('pageTags', undefined, { fallbackData: initialTags || [] });
+export const useStaticPageTags = (initialTags?: string[]): SWRResponse<string[], Error> => {
+  return useStaticSWR<string[], Error>('pageTags', undefined, { fallbackData: initialTags || [] });
 };
