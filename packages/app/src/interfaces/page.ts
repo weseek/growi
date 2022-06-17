@@ -12,7 +12,7 @@ export interface IPage {
   status: string,
   revision: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: Ref<IUser>,
+  creator: any,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],

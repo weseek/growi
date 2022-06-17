@@ -915,6 +915,19 @@ export function generateGrantCondition(
 
 schema.statics.generateGrantCondition = generateGrantCondition;
 
+schema.statics.findNotEmptyClosestAncestor = async function(path: string): Promise<PageDocument> {
+  const builderForAncestors = new PageQueryBuilder(this.find(), false); // empty page not included
+
+  const ancestors = await builderForAncestors
+    .addConditionToListOnlyAncestors(path) // only ancestor paths
+    .addConditionToSortPagesByDescPath() // sort by path in Desc. Long to Short.
+    .query
+    .exec();
+
+  return ancestors[0];
+};
+
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike

@@ -131,14 +131,15 @@ export default (crowi: Crowi): Router => {
 
       for (const page of pages) {
         // construct isIPageInfoForListing
-        const basicPageInfo = pageService.constructBasicPageInfo(page);
+        // eslint-disable-next-line no-await-in-loop
+        const basicPageInfo = await pageService.constructBasicPageInfo(page, req.user);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
+            isAbleToDeleteCompletely: pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
