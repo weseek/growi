@@ -1,8 +1,23 @@
-import '../styles-next/globals.css';
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+// import { appWithTranslation } from '~/i18n';
+
+import '~/styles/style-app.scss';
+import '~/styles/theme/default.scss';
+// import InterceptorManager from '~/service/interceptor-manager';
+
+// import { useGrowiVersion } from '../stores/context';
+// import { useInterceptorManager } from '~/stores/interceptor';
+
+function GrowiApp({ Component, pageProps }: AppProps) {
+  // useInterceptorManager(new InterceptorManager());
+  // useGrowiVersion(pageProps.growiVersion);
+
+  return (
+    <Component {...pageProps} />
+  );
 }
 
-export default MyApp;
+// export default appWithTranslation(GrowiApp);
+
+export default GrowiApp
