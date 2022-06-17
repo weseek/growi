@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import styles from '../styles/Home.module.css';
+import styles from '../styles-next/Home.module.css';
 
 const Home: NextPage = () => {
   return (
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
           >
             <h2>Deploy &rarr;</h2>
             <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
+              aaaInstantly deploy your Next.js site to a public URL with Vercel.
             </p>
           </a>
         </div>
