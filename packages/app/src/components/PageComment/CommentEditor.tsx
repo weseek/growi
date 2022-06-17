@@ -84,7 +84,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const isUploadableFile = config.upload.file;
   const isSlackConfigured = config.isSlackConfigured;
 
-  const [isReadyToUse, setIsReadyToUse] = useState(isForNewComment);
+  const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
   const [isMarkdown, setIsMarkdown] = useState(false);
   const [html, setHtml] = useState('');
@@ -230,7 +230,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     postComment();
   };
 
-  const apiErrorHandler = (error) => {
+  const apiErrorHandler = (error: Error) => {
     toastr.error(error.message, 'Error occured', {
       closeButton: true,
       progressBar: true,
@@ -412,9 +412,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
           <UserPicture user={currentUser} noLink noTooltip />
         </div>
         <div className="comment-form-main">
-          { !isReadyToUse
-            ? renderBeforeReady()
-            : renderReady()
+          { isReadyToUse
+            ? renderReady()
+            : renderBeforeReady()
           }
         </div>
       </div>
