@@ -18,7 +18,7 @@ export default class EditorContainer extends Container {
     this.appContainer.registerContainer(this);
 
     this.state = {
-      tags: [],
+      tags: null,
     };
 
     this.isSetBeforeunloadEventHandler = false;
