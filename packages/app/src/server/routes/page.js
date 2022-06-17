@@ -595,18 +595,6 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * Redirect process for single non-empty page
-   */
-  async function redirectOperationForSinglePage(page, req, res) {
-    const url = new URL('https://dummy.origin');
-    url.pathname = `/${page._id}`;
-    Object.entries(req.query).forEach(([key, value], i) => {
-      url.searchParams.append(key, value);
-    });
-    return res.safeRedirect(urljoin(url.pathname, url.search));
-  }
-
-  /**
    * redirector
    */
   async function redirector(req, res, next, path) {
@@ -631,7 +619,13 @@ module.exports = function(crowi, app) {
 
     if (nonEmptyPages.length === 1) {
       const nonEmptyPage = nonEmptyPages[0];
-      return redirectOperationForSinglePage(nonEmptyPage, req, res);
+      const url = new URL('https://dummy.origin');
+
+      url.pathname = `/${nonEmptyPage._id}`;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
     // Processing of nonEmptyPage is finished by the time this code is read
