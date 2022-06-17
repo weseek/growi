@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -167,11 +167,17 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode } = usePageTagsForEditors(tagsInfoData?.tags);
+  const { data: tagsOnEditMode, mutate: mutateTagsOnEditMode, sync: syncPageTagsForEditors } = usePageTagsForEditors(/* tagsInfoData?.tags */);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  useEffect(() => {
+    syncPageTagsForEditors(tagsInfoData?.tags);
+    // Run only when tagsInfoData has been updated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsInfoData?.tags]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 

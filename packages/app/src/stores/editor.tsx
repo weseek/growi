@@ -8,9 +8,10 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useCurrentPageId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
@@ -91,6 +92,24 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const usePageTagsForEditors = (initialTags?: string[]): SWRResponse<string[], Error> => {
-  return useStaticSWR<string[], Error>('pageTags', undefined, { fallbackData: initialTags || [] });
+export type IPageTagsForEditorsOption = {
+  sync: (tags?: string[]) => void;
+}
+
+export const usePageTagsForEditors = (): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+  // const { data: pageId } = useCurrentPageId();
+  // const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+
+  const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
+  return {
+    ...swrResult,
+    // sync: (): void => {
+    //   const { mutate } = swrResult;
+    //   mutate(tagsInfoData?.tags || []);
+    // },
+    sync: (tags): void => {
+      const { mutate } = swrResult;
+      mutate(tags || []);
+    },
+  };
 };
