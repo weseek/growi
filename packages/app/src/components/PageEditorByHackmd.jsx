@@ -453,9 +453,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: pageTags } = usePageTagsForEditors(tagsInfoData?.tags);
+  const { data: pageTags } = usePageTagsForEditors();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();

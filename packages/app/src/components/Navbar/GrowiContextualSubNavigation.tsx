@@ -193,7 +193,7 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      mutateTagsOnEditMode(newTags, false);
+      syncPageTagsForEditors(newTags);
 
       toastSuccess('updated tags successfully');
     }
@@ -201,13 +201,13 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [mutateTagsOnEditMode, pageId, revisionId, mutateSWRTagsInfo]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, syncPageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
-    mutateTagsOnEditMode(newTags, false);
+    syncPageTagsForEditors(newTags);
     return;
-  }, [mutateTagsOnEditMode]);
+  }, [syncPageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {

@@ -87,9 +87,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageId } = useCurrentPageId();
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: pageTags } = usePageTagsForEditors(tagsInfoData?.tags);
+  const { data: pageTags } = usePageTagsForEditors();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
