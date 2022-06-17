@@ -426,14 +426,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 /**
  * Wrapper component for using unstated
  */
-const CommentEditorHOCWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
-
-const CommentEditorWrapper = (props): JSX.Element => {
-  return (
-    <CommentEditorHOCWrapper
-      {...props}
-    />
-  );
-};
+const CommentEditorWrapper = withUnstatedContainers<unknown, Partial<PropsType>>(
+  CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer],
+);
 
 export default CommentEditorWrapper;
