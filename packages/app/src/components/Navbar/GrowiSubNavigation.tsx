@@ -2,6 +2,7 @@ import React from 'react';
 
 import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
+import { useCurrentPagePath } from '~/stores/context';
 import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
@@ -33,6 +34,7 @@ type Props = {
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
+  const { data: currentPath } = useCurrentPagePath();
 
   const {
     page,
@@ -71,7 +73,8 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
         ) }
 
         <div className="grw-path-nav-container">
-          { showTagLabel && !isCompactMode && (
+          {/* "/trash" page does not exist on page collection and unable to add tags  */}
+          { showTagLabel && !isCompactMode && currentPath !== '/trash' && (
             <div className="grw-taglabels-container">
               <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
