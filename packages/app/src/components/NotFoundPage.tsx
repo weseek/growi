@@ -27,8 +27,14 @@ const NotFoundPage = (): JSX.Element => {
 
   // replace url in address bar with path when accessing empty page by permalink
   useEffect(() => {
-    if (pageId != null && path != null && !notFoundTargetPathOrId?.includes('/')) {
-      replaceURLHistory(path);
+    const isEmptyPage = pageId != null; // Todo: should be improved. https://redmine.weseek.co.jp/issues/98152
+    const isPathExist = path != null;
+    const isPathLink = notFoundTargetPathOrId?.includes('/');
+
+    if (isEmptyPage && isPathExist && !isPathLink) {
+      // The (as string) below is a workaround for the case. See the link. (Fixed in typescript version 4.4)
+      // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html#control-flow-analysis-of-aliased-conditions-and-discriminants
+      replaceURLHistory(path as string);
     }
   }, [pageId, path, notFoundTargetPathOrId]);
 
