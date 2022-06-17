@@ -17,7 +17,18 @@ const nextConfig = {
     tsconfigPath: 'tsconfig.build.client.json',
   },
 
+  /** @param config {import('next').NextConfig} */
   webpack(config, options) {
+
+    // Avoid "Module not found: Can't resolve 'fs'"
+    // See: https://stackoverflow.com/a/68511591
+    if (!options.isServer) {
+      config.resolve.fallback.fs = false;
+    }
+
+    // See: https://webpack.js.org/configuration/externals/
+    // This provides a way of excluding dependencies from the output bundles
+    config.externals.push('dtrace-provider');
 
     // configure additional entries
     const orgEntry = config.entry;
