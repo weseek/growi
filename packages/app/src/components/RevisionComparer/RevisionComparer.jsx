@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -31,7 +31,8 @@ const RevisionComparer = (props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { t, revisionComparerContainer } = props;
+  const { t } = useTranslation();
+  const { revisionComparerContainer } = props;
 
   const { path, pageId } = revisionComparerContainer.pageContainer.state;
 
@@ -113,16 +114,14 @@ const RevisionComparer = (props) => {
   );
 };
 
+RevisionComparer.propTypes = {
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
+  revisions: PropTypes.array,
+};
+
 /**
  * Wrapper component for using unstated
  */
 const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionComparerContainer]);
 
-RevisionComparer.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
-
-  revisions: PropTypes.array,
-};
-
-export default withTranslation()(RevisionComparerWrapper);
+export default RevisionComparerWrapper;

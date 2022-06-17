@@ -1,23 +1,23 @@
 import React, { Fragment, useMemo } from 'react';
+
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
+import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
-import HistoryIcon from './Icons/HistoryIcon';
-import AttachmentIcon from './Icons/AttachmentIcon';
-import ShareLinkIcon from './Icons/ShareLinkIcon';
-
-import { withUnstatedContainers } from './UnstatedUtils';
 
 import { useCurrentPageId } from '~/stores/context';
 
+import AttachmentIcon from './Icons/AttachmentIcon';
+import HistoryIcon from './Icons/HistoryIcon';
+import PageListIcon from './Icons/PageListIcon';
+import ShareLinkIcon from './Icons/ShareLinkIcon';
+import TimeLineIcon from './Icons/TimeLineIcon';
+import { withUnstatedContainers } from './UnstatedUtils';
+
+
 const PageAccessoriesModalControl = (props) => {
+  const { t } = useTranslation();
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
+    pageAccessoriesContainer, isGuestUser, isSharedUser,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
 
@@ -92,18 +92,17 @@ const PageAccessoriesModalControl = (props) => {
     </div>
   );
 };
-/**
- * Wrapper component for using unstated
- */
-const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, []);
 
 PageAccessoriesModalControl.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
   pageAccessoriesContainer: PropTypes.any,
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
 };
 
-export default withTranslation()(PageAccessoriesModalControlWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, []);
+
+export default PageAccessoriesModalControlWrapper;

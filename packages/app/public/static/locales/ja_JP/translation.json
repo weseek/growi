@@ -5,6 +5,7 @@
   "Delete": "削除",
   "delete_all": "全て削除",
   "Duplicate": "複製",
+  "PathRecovery": "パスを修復",
   "Copy": "コピー",
   "preview":"プレビュー",
   "desktop":"パソコン",
@@ -146,6 +147,7 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
+  "tag_list": "タグ一覧",
   "popular_tags": "人気のタグ",
   "Check All tags": "全てのタグを見る",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
@@ -214,7 +216,7 @@
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、8文字以上の半角英数字または記号等を設定してください。",
+      "password": "パスワードには、{{target}}文字以上の半角英数字または記号等を設定してください。",
       "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
     }
   },
@@ -437,6 +439,7 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_page": "ゴミ箱に入れました",
   "deleted_pages": "{{path}} をゴミ箱に入れました",
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
@@ -975,6 +978,7 @@
     "application_already_installed": "アプリケーションのインストールが完了しました。",
     "email_address_could_not_be_used":"このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
     "user_id_is_not_available":"このユーザーIDは使用できません。",
+    "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
     "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
     "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
     "failed_to_register":"登録に失敗しました。",
@@ -1101,6 +1105,15 @@
     "cancel_bookmark": "ブックマークを取り消す",
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
-    "footprints": "足跡"
+    "footprints": "足跡",
+    "operation": {
+      "attention": {
+        "rename": "配下のページパスの更新が正常に行われませんでした。3点リーダーからメニューを開き、「パスを修復」を選択してしてください。"
+      }
+    }
+  },
+  "page_operation":{
+    "paths_recovered": "パスを修復しました",
+    "path_recovery_failed":"パスを修復できませんでした"
   }
 }

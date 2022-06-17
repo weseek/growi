@@ -33,7 +33,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
       pagePath: this.props.pagePath,
-      renderDrawioInRealtime: this.props.editorSettings.renderDrawioInRealtime,
+      renderDrawioInRealtime: this.props.editorSettings?.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
     };
   }
@@ -58,7 +58,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     const HeaderLinkArray = Array.from(HeaderLink);
     addSmoothScrollEvent(HeaderLinkArray, blinkElem);
 
-    const { interceptorManager } = this.props.appContainer;
+    const { interceptorManager } = window;
 
     interceptorManager.process('postRenderHtml', this.currentRenderingContext);
   }
@@ -134,7 +134,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
       highlightKeywords,
     } = this.props;
 
-    const { interceptorManager } = appContainer;
+    const { interceptorManager } = window;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRender', context);
@@ -178,7 +178,7 @@ LegacyRevisionRenderer.propTypes = {
   pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
-  editorSettings: PropTypes.any.isRequired,
+  editorSettings: PropTypes.any,
 };
 
 /**
@@ -190,10 +190,6 @@ const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRende
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const RevisionRenderer = (props) => {
   const { data: editorSettings } = useEditorSettings();
-
-  if (editorSettings == null) {
-    return <></>;
-  }
 
   return <LegacyRevisionRendererWrapper {...props} editorSettings={editorSettings} />;
 };

@@ -1,9 +1,12 @@
 import React from 'react';
 
+import EventEmitter from 'events';
+
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
 import PutbackPageModal from '~/components/PutbackPageModal';
+import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
@@ -29,6 +32,9 @@ if (!window) {
 // setup xss library
 const xss = new Xss();
 window.xss = xss;
+
+window.globalEmitter = new EventEmitter();
+window.interceptorManager = new InterceptorManager();
 
 // create unstated container instance
 const appContainer = new AppContainer();

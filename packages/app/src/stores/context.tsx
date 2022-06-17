@@ -12,6 +12,10 @@ import { useStaticSWR } from './use-static-swr';
 type Nullable<T> = T | null;
 
 
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
+
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
@@ -88,8 +92,8 @@ export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nu
   return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
 
-export const useShareLinkId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinkId', initialData);
+export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -118,10 +122,6 @@ export const useCreator = (initialData?: Nullable<any>): SWRResponse<Nullable<an
 
 export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
-};
-
-export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
@@ -197,12 +197,13 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 
 export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: currentPagePath } = useCurrentPagePath();
+
+  const pathname = window.location.pathname;
 
   return useSWRImmutable(
-    ['isSharedUser', isGuestUser, currentPagePath],
-    (key: Key, isGuestUser: boolean, currentPagePath: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(currentPagePath as string);
+    ['isSharedUser', isGuestUser, pathname],
+    (key: Key, isGuestUser: boolean, pathname: string) => {
+      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };

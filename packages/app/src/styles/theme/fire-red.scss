@@ -56,7 +56,7 @@ html[light] {
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: #ebebeb;
+  $bgcolor-sidebar-context: #ececec;
   // Sidebar list group
   // $bgcolor-sidebar-list-group: #; // optional
 
@@ -152,7 +152,7 @@ html[dark] {
   $color-resize-button-hover: $color-global;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: #2e2e2e;
+  $bgcolor-sidebar-context: #413f3f;
   $color-sidebar-context: $color-global;
   // Sidebar list group
   // $bgcolor-sidebar-list-group: #; // optional

@@ -5,6 +5,7 @@
   "Delete": "Delete",
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
+  "PathRecovery": "Path recovery",
   "Copy": "Copy",
   "preview":"Preview",
   "desktop":"Desktop",
@@ -147,6 +148,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "tag_list": "Tag list",
   "popular_tags": "Popular tags",
   "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
@@ -212,7 +214,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 8 characters long.",
+      "password": "Your password must be at least {{target}} characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
@@ -437,6 +439,7 @@
     "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
+  "deleted_page": "Moved to the trash",
   "deleted_pages": "{{path}} has been deleted",
   "deleted_pages_completely": "{{path}} has been deleted completely",
   "renamed_pages": "{{path}} has been renamed",
@@ -982,6 +985,7 @@
     "application_already_installed": "Application already installed.",
     "email_address_could_not_be_used": "This email address could not be used. (Make sure the allowed email address)",
     "user_id_is_not_available":"This User ID is not available.",
+    "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
     "failed_to_register":"Failed to register.",
@@ -1108,6 +1112,15 @@
     "cancel_bookmark": "Cancel Bookmark",
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
-    "footprints": "Footprints"
+    "footprints": "Footprints",
+    "operation": {
+      "attention": {
+        "rename": "Renaming paths of descendant pages was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
+      }
+    }
+  },
+  "page_operation":{
+    "paths_recovered": "Paths recovered successfully",
+    "path_recovery_failed":"Path recovery failed"
   }
 }
