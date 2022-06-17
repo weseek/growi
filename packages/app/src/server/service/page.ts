@@ -203,9 +203,12 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
+    this.pageEvent.on('deleteCompletely', async(page, descendantPages, user) => {
+      const isRecursively = descendantPages != null;
+      console.log('isRecursively?\n', isRecursively);
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY;
       try {
-        await this.createAndSendNotifications(page, null, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, descendantPages, user, action);
       }
       catch (err) {
         logger.error(err);
@@ -1723,10 +1726,6 @@ class PageService {
     // delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
-    if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
-    }
-
     if (isRecursively) {
       let pageOp;
       try {
@@ -1747,6 +1746,9 @@ class PageService {
        * Main Operation
        */
       this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+    }
+    else if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1773,7 +1775,7 @@ class PageService {
     }
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
+      this.pageEvent.emit('deleteCompletely', page, null, user);
     }
 
     return;
@@ -1800,6 +1802,8 @@ class PageService {
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
+    const pageEvent = this.pageEvent;
+
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
@@ -1809,6 +1813,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
+          pageEvent.emit('deleteCompletely', targetPage, batch, user);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -2255,17 +2260,20 @@ class PageService {
       action,
     };
     const activity = await activityService.createByParameters(parameters);
+    console.log('What are the descendant pages\n', descendantPages);
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
+    let targetUsers = await activity.getNotificationTargetUsers();
     if (descendantPages != null) {
       const User = this.crowi.model('User');
       const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
       const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
-      targetUsers.concat(await User.find({
+      console.log('Who are the target users?\n', descendantsUsers);
+      targetUsers = targetUsers.concat(await User.find({
         _id: { $in: descendantsUsers },
         status: User.STATUS_ACTIVE,
       }).distinct('_id'));
     }
+    console.log('Who are the target users?\n', targetUsers);
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
