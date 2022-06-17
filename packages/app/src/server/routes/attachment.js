@@ -773,7 +773,6 @@ module.exports = function(crowi, app) {
       // update attachmentId immediately
       const attachmentConfigParams = {
         'customize:brandLogoAttachmentId': null,
-        'customize:isDefaultLogo': true,
         'customize:uploadedLogoSrc': null,
       };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);

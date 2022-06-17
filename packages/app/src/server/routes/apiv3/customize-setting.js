@@ -173,7 +173,8 @@ module.exports = (crowi) => {
    *                      description: customize params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-
+    const defaultLogoConfig = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+    const isDefaultLogo = defaultLogoConfig === undefined || defaultLogoConfig;
     const customizeParams = {
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
@@ -193,7 +194,7 @@ module.exports = (crowi) => {
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
       brandLogoAttachmentId: await crowi.configManager.getConfig('crowi', 'customize:brandLogoAttachmentId'),
-      isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+      isDefaultLogo,
       uploadedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
     };
 
