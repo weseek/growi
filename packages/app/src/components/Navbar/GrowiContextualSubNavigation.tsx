@@ -167,7 +167,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsOnEditMode, sync: syncPageTagsForEditors } = usePageTagsForEditors();
+  const { data: tagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors();
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -330,7 +330,7 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags : tagsOnEditMode}
+      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
       tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
