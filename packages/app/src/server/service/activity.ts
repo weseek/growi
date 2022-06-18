@@ -49,16 +49,21 @@ class ActivityService {
     const configManager = this.crowi.configManager;
     const auditLogActionGroupSize = configManager != null ? configManager.getConfig('crowi', 'app:auditLogActionGroupSize') : ActionGroupSize.Small;
 
+    let shoudUpdate = false;
+
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        return [AllSmallAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
+        shoudUpdate = (AllSmallAction as ReadonlyArray<string>).includes(action);
+        break;
       case ActionGroupSize.Medium:
-        return [...AllMediumAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
+        shoudUpdate = (AllMediumAction as ReadonlyArray<string>).includes(action);
+        break;
       case ActionGroupSize.Large:
-        return [...AllLargeAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
-      default:
-        return false;
+        shoudUpdate = (AllLargeAction as ReadonlyArray<string>).includes(action);
+        break;
     }
+
+    return shoudUpdate || (AllSupportedActionToNotified as ReadonlyArray<string>).includes(action);
   }
 
   createTtlIndex = async function() {
