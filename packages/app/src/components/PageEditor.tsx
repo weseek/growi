@@ -19,7 +19,6 @@ import {
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
 } from '~/stores/editor';
-import { useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -87,7 +86,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageTags } = usePageTagsForEditors();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();

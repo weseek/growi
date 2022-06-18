@@ -8,7 +8,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageToRenameWithMeta, IPageWithMeta,
+} from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -167,7 +169,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors();
+  const { data: tagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -175,7 +177,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
-    syncPageTagsForEditors(tagsInfoData?.tags);
+    syncPageTagsForEditors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
 
@@ -207,7 +209,8 @@ const GrowiContextualSubNavigation = (props) => {
     // It will not be reflected in the DB until the page is refreshed
     syncPageTagsForEditors(newTags);
     return;
-  }, [syncPageTagsForEditors]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsInfoData?.tags]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {

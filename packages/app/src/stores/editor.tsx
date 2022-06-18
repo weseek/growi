@@ -96,14 +96,15 @@ export type IPageTagsForEditorsOption = {
   sync: (tags?: string[]) => void;
 }
 
-export const usePageTagsForEditors = (): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
 
   return {
     ...swrResult,
-    sync: (tags): void => {
+    sync: (newTags?: string[]): void => {
       const { mutate } = swrResult;
-      mutate(tags || [], false);
+      mutate(newTags || tagsInfoData?.tags || [], false);
     },
   };
 };
