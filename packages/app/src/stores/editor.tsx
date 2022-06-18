@@ -8,7 +8,7 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useCurrentPageId,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
