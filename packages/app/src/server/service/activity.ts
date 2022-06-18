@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSmallAction, AllMediumAction, AllLargeAction,
+  IActivity, SupportedActionType, ActionGroupSize, AllSmallAction, AllMediumAction, AllLargeAction, AllSupportedActionToNotified,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -60,11 +60,11 @@ class ActivityService {
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        return (AllSmallAction as ReadonlyArray<string>).includes(action);
+        return [AllSmallAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
       case ActionGroupSize.Medium:
-        return (AllMediumAction as ReadonlyArray<string>).includes(action);
+        return [...AllMediumAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
       case ActionGroupSize.Large:
-        return (AllLargeAction as ReadonlyArray<string>).includes(action);
+        return [...AllLargeAction as ReadonlyArray<string>, ...AllSupportedActionToNotified as ReadonlyArray<string>].includes(action);
       default:
         return false;
     }
