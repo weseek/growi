@@ -31,6 +31,7 @@ class ActivityService {
     this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
       let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
+
       if (shoudUpdate) {
         try {
           activity = await Activity.updateByParameters(activityId, parameters);
