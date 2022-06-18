@@ -25,7 +25,7 @@ type Props = {
   isCompactMode?: boolean,
 
   tags?: string[],
-  tagsUpdatedHandler?: (newTags: string[]) => Promise<void>,
+  tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
 
   controls?: React.FunctionComponent,
   additionalClasses?: string[],

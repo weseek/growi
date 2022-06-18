@@ -205,12 +205,10 @@ const GrowiContextualSubNavigation = (props) => {
 
   }, [pageId, revisionId, mutateSWRTagsInfo, syncPageTagsForEditors]);
 
-  const tagsUpdatedHandlerForEditMode = useCallback(async(newTags: string[]) => {
+  const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
-    syncPageTagsForEditors(newTags);
-    return;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tagsInfoData?.tags]);
+    return syncPageTagsForEditors(newTags);
+  }, [syncPageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
