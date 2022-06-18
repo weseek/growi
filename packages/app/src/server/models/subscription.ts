@@ -24,9 +24,9 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
   upsertSubscription(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
-  getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  getSubscriptions(targets: Types.ObjectId[]): Promise<Types.ObjectId[]>
+  getSubscription(target: Types.ObjectId | Document): Promise<Types.ObjectId[]>
+  getUnsubscription(target: Types.ObjectId | Document): Promise<Types.ObjectId[]>
+  getSubscriptions(targets: Types.ObjectId[] | Document[]): Promise<Types.ObjectId[]>
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -80,15 +80,15 @@ subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
   return this.upsertSubscription(user, 'Page', pageId, status);
 };
 
-subscriptionSchema.statics.getSubscription = async function(target) {
+subscriptionSchema.statics.getSubscription = async function(target: Types.ObjectId | undefined) {
   return this.find({ target, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.getUnsubscription = async function(target) {
+subscriptionSchema.statics.getUnsubscription = async function(target: Types.ObjectId | undefined) {
   return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.getSubscriptions = async function(targets) {
+subscriptionSchema.statics.getSubscriptions = async function(targets: Document[] | Types.ObjectId[]) {
   return this.find({ $in: targets, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 

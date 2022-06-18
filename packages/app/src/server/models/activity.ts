@@ -72,8 +72,8 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   const { user: actionUser, target } = this;
 
   const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription((target as Types.ObjectId)),
-    Subscription.getUnsubscription((target as Types.ObjectId)),
+    Subscription.getSubscription(target),
+    Subscription.getUnsubscription(target),
   ]);
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {

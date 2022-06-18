@@ -2234,7 +2234,7 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page, descendantPages, user, action) {
+  private async createAndSendNotifications(page: PageDocument, descendantPages: PageDocument[] | null, user: any, action) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
