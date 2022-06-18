@@ -89,7 +89,7 @@ export const SmallActionGroup = {
   ACTION_PAGE_DELETE,
 } as const;
 
-// SmallActionGroup + Action by all general users - PAGE_VIEW
+// SmallActionGroup + Action by all General Users - PAGE_VIEW
 export const MediumActionGroup = {
   ...SmallActionGroup,
   ACTION_USER_PERSONAL_SETTINGS_UPDATE,
@@ -116,7 +116,7 @@ export const MediumActionGroup = {
   ACTION_COMMENT_REMOVE,
 } as const;
 
-// MediumActionGroup + All Actions by Admin User + PAGE_VIEW
+// MediumActionGroup + All Actions by Admin Users + PAGE_VIEW
 export const LargeActionGroup = {
   ...MediumActionGroup,
   ACTION_PAGE_VIEW,
