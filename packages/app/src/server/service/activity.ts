@@ -29,28 +29,19 @@ class ActivityService {
 
   initActivityEventListeners(): void {
     this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
+      let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
-      if (!shoudUpdate) {
+      if (shoudUpdate) {
         try {
-          await Activity.deleteOne({ _id: activityId });
-          return;
+          activity = await Activity.updateByParameters(activityId, parameters);
         }
         catch (err) {
-          logger.error('Delete activity failed', err);
+          logger.error('Update activity failed', err);
           return;
         }
-      }
 
-      let activity: IActivity;
-      try {
-        activity = await Activity.updateByParameters(activityId, parameters);
+        this.activityEvent.emit('updated', activity, target);
       }
-      catch (err) {
-        logger.error('Update activity failed', err);
-        return;
-      }
-
-      this.activityEvent.emit('updated', activity, target);
     });
   }
 
