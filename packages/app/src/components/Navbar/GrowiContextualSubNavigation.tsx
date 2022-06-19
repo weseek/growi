@@ -5,10 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { getIdForRef } from '~/interfaces/common';
 import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -182,14 +185,17 @@ const GrowiContextualSubNavigation = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
-    isCompactMode, isLinkSharingDisabled,
+    isCompactMode, isLinkSharingDisabled, pageContainer,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
+
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const updatedRevisionId = getIdForRef(res.savedPage.revision);
+      await pageContainer.setState({ revisionId: updatedRevisionId });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -201,7 +207,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, syncPageTagsForEditors]);
+  }, [pageId, revisionId, pageContainer, mutateSWRTagsInfo, syncPageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
@@ -341,11 +347,12 @@ const GrowiContextualSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer]);
+const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
 
 GrowiContextualSubNavigation.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
   isLinkSharingDisabled: PropTypes.bool,

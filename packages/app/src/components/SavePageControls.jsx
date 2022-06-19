@@ -14,9 +14,8 @@ import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useIsEditable, useCurrentPageId } from '~/stores/context';
+import { useIsEditable } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
-import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
