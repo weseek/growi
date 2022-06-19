@@ -15,7 +15,13 @@ export default class AppContainer extends Container {
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
-    const userLocaleId = this.currentUser?.lang;
+    // init i18n
+    const currentUserElem = document.getElementById('growi-current-user');
+    let userLocaleId;
+    if (currentUserElem != null) {
+      const currentUser = JSON.parse(currentUserElem.textContent);
+      userLocaleId = currentUser?.lang;
+    }
     this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};

@@ -170,7 +170,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors();
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -178,7 +178,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
-    syncPageTagsForEditors(tagsInfoData?.tags);
+    syncPageTagsForEditors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
 
@@ -199,7 +199,7 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      syncPageTagsForEditors(newTags);
+      mutatePageTagsForEditors(newTags);
 
       toastSuccess('updated tags successfully');
     }
@@ -207,13 +207,13 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, pageContainer, mutateSWRTagsInfo, syncPageTagsForEditors]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
 
-  const tagsUpdatedHandlerForEditMode = useCallback(async(newTags: string[]) => {
+  const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
-    syncPageTagsForEditors(newTags);
+    mutatePageTagsForEditors(newTags);
     return;
-  }, [syncPageTagsForEditors]);
+  }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {

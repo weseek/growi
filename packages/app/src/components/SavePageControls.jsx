@@ -144,7 +144,8 @@ const SavePageControlsWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
-  const { data: pageTags } = usePageTagsForEditors();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
 
 
   if (isEditable == null || editorMode == null) {

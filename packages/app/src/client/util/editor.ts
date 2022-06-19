@@ -7,7 +7,6 @@ type OptionsToSave = {
   grantUserGroupName?: string | null;
 };
 
-// TODO: Remove editorContainer upon migration to SWR
 export const getOptionsToSave = (
     isSlackEnabled: boolean,
     slackChannels: string,

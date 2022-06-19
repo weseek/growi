@@ -9,10 +9,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useCurrentPagePath, useIsGuestUser, useCurrentPageId,
+  useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
-import { useSWRxTagsInfo } from '~/stores/page';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -191,7 +190,7 @@ const PageWrapper = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageTags, sync: syncPageTagsForEditors } = usePageTagsForEditors();
+  const { data: pageTags } = usePageTagsForEditors();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
