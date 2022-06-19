@@ -16,6 +16,6 @@ export const isPopulated = <T>(ref: Ref<T>): ref is T & HasObjectId => {
 
 export const getIdForRef = <T>(ref: Ref<T>): string => {
   return isPopulated(ref)
-    ? ref._id.toString()
+    ? ref._id
     : ref;
 };
