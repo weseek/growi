@@ -102,9 +102,9 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 
   return {
     ...swrResult,
-    sync: (newTagsOnEdit?: string[]): void => {
+    sync: (): void => {
       const { mutate } = swrResult;
-      mutate(newTagsOnEdit || tagsInfoData?.tags || [], false);
+      mutate(tagsInfoData?.tags || [], false);
     },
   };
 };

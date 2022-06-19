@@ -169,7 +169,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -195,7 +195,7 @@ const GrowiContextualSubNavigation = (props) => {
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      syncPageTagsForEditors(newTags);
+      mutatePageTagsForEditors(newTags);
 
       toastSuccess('updated tags successfully');
     }
@@ -203,12 +203,13 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, syncPageTagsForEditors]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
-    return syncPageTagsForEditors(newTags);
-  }, [syncPageTagsForEditors]);
+    mutatePageTagsForEditors(newTags);
+    return;
+  }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
