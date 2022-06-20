@@ -49,15 +49,13 @@ type PropsType = {
   commentContainer: CommentContainer,
 
   growiRenderer: GrowiRenderer,
-  isForNewComment: boolean,
-  replyTo: string,
-  currrentCommentId: string,
-  commentBody: string,
-  commentCreator: string,
-  onCancelButtonClicked: (id: string) => void,
-  onCommentButtonClicked: () => void,
-
-  currentCommentId: string
+  isForNewComment?: boolean,
+  replyTo?: string,
+  currentCommentId?: string,
+  commentBody?: string,
+  commentCreator?: string,
+  onCancelButtonClicked?: () => void,
+  onCommentButtonClicked?: () => void,
 }
 
 type EditorRef = {
@@ -180,7 +178,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     }
 
     if (onCancelButtonClicked != null) {
-      onCancelButtonClicked(replyTo || currentCommentId);
+      onCancelButtonClicked();
     }
   };
 
