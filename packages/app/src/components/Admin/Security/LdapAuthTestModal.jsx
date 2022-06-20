@@ -1,7 +1,6 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -64,17 +63,10 @@ class LdapAuthTestModal extends React.Component {
 
 
 LdapAuthTestModal.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestModalWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <LdapAuthTestModal t={t} {...props} />;
-};
-
-const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModalWrapperFC, []);
+const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModal, []);
 
 export default LdapAuthTestModalWrapper;
