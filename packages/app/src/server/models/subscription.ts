@@ -10,7 +10,7 @@ import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/
 export interface ISubscription {
   user: Types.ObjectId
   targetModel: string
-  target: Types.ObjectId
+  target: Types.ObjectId | Document
   status: string
   createdAt: Date
 
@@ -80,11 +80,11 @@ subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
   return this.upsertSubscription(user, 'Page', pageId, status);
 };
 
-subscriptionSchema.statics.getSubscription = async function(target: Types.ObjectId | undefined) {
+subscriptionSchema.statics.getSubscription = async function(target: Types.ObjectId | Document) {
   return this.find({ target, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.getUnsubscription = async function(target: Types.ObjectId | undefined) {
+subscriptionSchema.statics.getUnsubscription = async function(target: Types.ObjectId | Document) {
   return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
 };
 
