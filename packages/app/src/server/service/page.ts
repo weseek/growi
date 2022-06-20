@@ -3301,6 +3301,8 @@ class PageService {
   async create(path: string, body: string, user, options: PageCreateOptions = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    const isContainerFluid = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3347,7 +3349,9 @@ class PageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
-
+    if (isContainerFluid != null) {
+      page.isContainerFluid = isContainerFluid;
+    }
     // Save
     let savedPage = await page.save();
 
