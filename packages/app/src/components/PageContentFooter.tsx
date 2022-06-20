@@ -5,7 +5,6 @@ import { IUser } from '../interfaces/user';
 
 import AuthorInfo from './Navbar/AuthorInfo';
 
-
 type Props = {
   createdAt: Date,
   updatedAt: Date,
