@@ -98,8 +98,6 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'fix-page-grant-alert': <FixPageGrantAlert />,
-
   'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
@@ -132,6 +130,12 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
+
+  if (!pageContainer.state.isEmpty) {
+    Object.assign(componentMappings, {
+      'fix-page-grant-alert': <FixPageGrantAlert />,
+    });
+  }
 
   // show the Page accessory modal when query of "compare" is requested
   if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
