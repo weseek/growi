@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -492,8 +491,6 @@ class SecuritySetting extends React.Component {
 
 SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  csrf: PropTypes.string,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
@@ -502,9 +499,6 @@ const SecuritySettingWrapperFC = (props) => {
   return <SecuritySetting t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SecuritySettingWrapper = withUnstatedContainers(SecuritySettingWrapperFC, [AppContainer, AdminGeneralSecurityContainer]);
+const SecuritySettingWrapper = withUnstatedContainers(SecuritySettingWrapperFC, [AdminGeneralSecurityContainer]);
 
 export default SecuritySettingWrapper;
