@@ -10,7 +10,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant, IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import {
-  useCurrentPageId, useCurrentUser, useHasParent, useIsEmptyPageInNotFoundContext,
+  useCurrentPageId, useCurrentUser, useHasParent,
 } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
@@ -236,12 +236,11 @@ const FixPageGrantAlert = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: pageId } = useCurrentPageId();
   const { data: hasParent } = useHasParent();
-  const { data: isEmptyPage } = useIsEmptyPageInNotFoundContext();
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
-  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(currentUser != null && !isEmptyPage ? pageId : null);
-  const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null && !isEmptyPage ? pageId : null);
+  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(currentUser != null ? pageId : null);
+  const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null ? pageId : null);
 
   // Dependencies
   if (!hasParent) {
