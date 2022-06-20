@@ -4,7 +4,7 @@ import { AppProps } from 'next/app';
 
 // import { appWithTranslation } from '~/i18n';
 
-import '~/styles/style-app.scss';
+import '~/styles/style-next.scss';
 import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
