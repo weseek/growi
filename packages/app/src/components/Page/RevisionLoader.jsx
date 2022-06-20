@@ -8,8 +8,6 @@ import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import RevisionRenderer from './RevisionRenderer';
 
 
@@ -139,9 +137,4 @@ const RevisionLoaderWrapperFC = (props) => {
   return <RevisionLoader t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionLoaderWrapper = withUnstatedContainers(RevisionLoaderWrapperFC, []);
-
-export default RevisionLoaderWrapper;
+export default RevisionLoaderWrapperFC;
