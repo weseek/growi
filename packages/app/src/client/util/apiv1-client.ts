@@ -30,7 +30,7 @@ class Apiv1ErrorHandler extends Error {
 
 }
 
-export async function apiRequest(method: string, path: string, params: unknown): Promise<unknown> {
+export async function apiRequest<T>(method: string, path: string, params: unknown): Promise<T> {
   const res = await axios[method](urljoin(apiv1Root, path), params);
 
   if (res.data.ok) {
@@ -46,29 +46,29 @@ export async function apiRequest(method: string, path: string, params: unknown):
   throw new Error(res.data.error);
 }
 
-export async function apiGet(path: string, params: unknown = {}): Promise<unknown> {
-  return apiRequest('get', path, { params });
+export async function apiGet<T>(path: string, params: unknown = {}): Promise<T> {
+  return apiRequest<T>('get', path, { params });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiPost(path: string, params: any & ParamWithCsrfKey = {}): Promise<unknown> {
+export async function apiPost<T>(path: string, params: any & ParamWithCsrfKey = {}): Promise<T> {
   if (params._csrf == null) {
     params._csrf = csrfToken;
   }
-  return apiRequest('post', path, params);
+  return apiRequest<T>('post', path, params);
 }
 
-export async function apiPostForm(path: string, formData: FormData): Promise<unknown> {
+export async function apiPostForm<T>(path: string, formData: FormData): Promise<T> {
   if (formData.get('_csrf') == null && csrfToken != null) {
     formData.append('_csrf', csrfToken);
   }
-  return apiPost(path, formData);
+  return apiPost<T>(path, formData);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiDelete(path: string, params: any & ParamWithCsrfKey = {}): Promise<unknown> {
+export async function apiDelete<T>(path: string, params: any & ParamWithCsrfKey = {}): Promise<T> {
   if (params._csrf == null) {
     params._csrf = csrfToken;
   }
-  return apiRequest('delete', path, { data: params });
+  return apiRequest<T>('delete', path, { data: params });
 }
