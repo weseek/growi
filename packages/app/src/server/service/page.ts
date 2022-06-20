@@ -2661,7 +2661,7 @@ class PageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], null);
+      await this.normalizeParentRecursively(['/'], null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
