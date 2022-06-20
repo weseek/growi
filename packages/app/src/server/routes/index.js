@@ -244,7 +244,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, next.delegateToNext);
 
   app.get('/*/$'                   , loginRequired , injectUserUISettings, next.delegateToNext);
   app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
