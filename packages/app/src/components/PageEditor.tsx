@@ -186,7 +186,7 @@ const PageEditor = (props: Props): JSX.Element => {
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
         // TODO: checkpass
         console.log(formData);
-        insertText = `~~~attachment\nformData:${formData}\n~~~`;
+        insertText = `~~~attachment\n~~~`;
       }
       editorRef.current.insertText(insertText);
 
