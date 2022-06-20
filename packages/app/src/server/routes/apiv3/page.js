@@ -215,6 +215,10 @@ module.exports = (crowi) => {
     subscribeStatus: [
       query('pageId').isString(),
     ],
+    contentWidth: [
+      body('pageId').isString(),
+      body('bool').isBoolean(),
+    ],
   };
 
   /**
@@ -781,6 +785,19 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to update subscribe status', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.put('/content-width', accessTokenParser, loginRequiredStrictly, csrf, validator.contentWidth, apiV3FormValidator, async(req, res) => {
+    const { pageId, bool: isContainerFluid } = req.body;
+
+    try {
+      const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
+      return res.apiv3({ page });
+    }
+    catch (err) {
+      logger.error('update-content-width-failed', err);
       return res.apiv3Err(err, 500);
     }
   });

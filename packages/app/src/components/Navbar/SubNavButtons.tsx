@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
+import {
+  toggleBookmark, toggleLike, toggleSubscribe, toggleContentWidth,
+} from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
@@ -141,13 +143,20 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
+  const switchContentWidthClickHandler = useCallback(async() => {
+    if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
+    }
+    await toggleContentWidth(pageId, pageInfo.isContainerFluid);
+    mutatePageInfo();
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
-
-  const switchContentWidthHandler = () => {
-    // TODO Implement switch content width
-  };
 
   const {
     sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked, isContainerFluid,
@@ -160,7 +169,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     <div className="d-flex" style={{ gap: '2px' }}>
       <SwitchContentWidthButton
         isContainerFluid={isContainerFluid}
-        onSwitchContentWidthClicked={switchContentWidthHandler}
+        onSwitchContentWidthClicked={switchContentWidthClickHandler}
       >
 
       </SwitchContentWidthButton>

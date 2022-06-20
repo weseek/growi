@@ -27,7 +27,8 @@ const SwitchContentWidthButton: FC<Props> = (props: Props) => {
         onClick={handleClick}
         className={`btn btn-switch-content-width border-1 ${!isContainerFluid ? 'active' : ''}`}
       >
-        Default
+        <i className="fa fa-compress" aria-hidden="true"></i>
+
       </button>
       <UncontrolledTooltip placement="top" target="default-container-button" fade={false}>
         Default container width
@@ -38,7 +39,7 @@ const SwitchContentWidthButton: FC<Props> = (props: Props) => {
         onClick={handleClick}
         className={`btn btn-switch-content-width border-1 ${isContainerFluid ? 'active' : ''}`}
       >
-        Full Width
+        <i className="fa fa-expand" aria-hidden="true"></i>
       </button>
       <UncontrolledTooltip placement="top" target="fluid-container-button" fade={false}>
         Fluid container width
