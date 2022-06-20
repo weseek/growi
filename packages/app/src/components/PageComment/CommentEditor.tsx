@@ -16,10 +16,11 @@ import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
-import InterceptorManager from '~/services/interceptor-manager';
+import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { useCurrentPagePath, useCurrentPageId, useCurrentUser } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
+
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
@@ -112,7 +113,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       parsedHTML: '',
     };
 
-    const interceptorManager: InterceptorManager = (window as CustomWindow).interceptorManager;
+    const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
