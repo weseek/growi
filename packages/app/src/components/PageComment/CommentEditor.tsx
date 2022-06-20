@@ -136,10 +136,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     renderHtml(comment);
   }, [comment, renderHtml]);
 
-  const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
-    mutateIsSlackEnabled(isSlackEnabled, false);
-  }, [mutateIsSlackEnabled]);
-
   useEffect(() => {
     if (slackChannels === undefined) { return }
     setSlackChannels(slackChannelsData?.toString());
@@ -365,7 +361,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                   <SlackNotification
                     isSlackEnabled
                     slackChannels={slackChannelsData?.toString() ?? ''}
-                    onEnabledFlagChange={onSlackEnabledFlagChange}
+                    onEnabledFlagChange={isSlackEnabled => mutateIsSlackEnabled(isSlackEnabled, false)}
                     onChannelChange={setSlackChannels}
                     id="idForComment"
                   />
