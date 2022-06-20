@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPageInNotFoundContent,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -93,7 +93,7 @@ const ContextExtractorOnce: FC = () => {
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContext?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
-  const isEmptyPageInNotFoundContent = JSON.parse(mainContent?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
+  const isEmptyPage = JSON.parse(mainContent?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
@@ -154,7 +154,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
-  useIsEmptyPageInNotFoundContent(isEmptyPageInNotFoundContent);
+  useIsEmptyPage(isEmptyPage);
   useHasParent(hasParent);
 
   // Navigation
