@@ -68,8 +68,8 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, commentContainer, growiRenderer, isForNewComment,
-    replyTo, currentCommentId, commentBody, commentCreator,
+    appContainer, commentContainer, growiRenderer, isForNewComment, replyTo,
+    currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -93,19 +93,15 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const editorRef = useRef<EditorRef>(null);
 
-  const updateState = (value:string) => {
-    setComment(value);
-  };
-
-  const updateStateCheckbox = (event) => {
+  const updateStateCheckbox = useCallback((event) => {
     if (editorRef.current == null) { return }
     const value = event.target.checked;
     setIsMarkdown(value);
     // changeMode
     editorRef.current.setGfmMode(value);
-  };
+  }, []);
 
-  const renderHtml = (markdown: string) => {
+  const renderHtml = useCallback((markdown: string) => {
     const context = {
       markdown,
       parsedHTML: '',
@@ -133,31 +129,23 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       })
       // process interceptors for post rendering
       .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  };
+  }, [growiRenderer]);
 
-  const handleSelect = (activeTab: string) => {
+  const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
     renderHtml(comment);
-  };
-
-  const fetchSlackChannels = (slackChannels: string|undefined) => {
-    if (slackChannels === undefined) { return }
-    setSlackChannels(slackChannels);
-  };
+  }, [comment, renderHtml]);
 
   const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
     mutateIsSlackEnabled(isSlackEnabled, false);
   }, [mutateIsSlackEnabled]);
 
   useEffect(() => {
-    fetchSlackChannels(slackChannelsData?.toString());
-  }, [slackChannelsData]);
+    if (slackChannels === undefined) { return }
+    setSlackChannels(slackChannelsData?.toString());
+  }, [slackChannelsData, slackChannels]);
 
-  const onSlackChannelsChange = (slackChannels: string) => {
-    setSlackChannels(slackChannels);
-  };
-
-  const initializeEditor = () => {
+  const initializeEditor = useCallback(() => {
     setComment('');
     setIsMarkdown(true);
     setHtml('');
@@ -166,11 +154,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     // reset value
     if (editorRef.current == null) { return }
     editorRef.current.setValue('');
-  };
+  }, []);
 
-  const cancelButtonClickedHandler = () => {
-    const { onCancelButtonClicked } = props;
-
+  const cancelButtonClickedHandler = useCallback(() => {
     // change state to not ready
     // when this editor is for the new comment mode
     if (isForNewComment) {
@@ -180,10 +166,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     if (onCancelButtonClicked != null) {
       onCancelButtonClicked();
     }
-  };
+  }, [isForNewComment, onCancelButtonClicked]);
 
-  const postComment = async() => {
-    const { onCommentButtonClicked } = props;
+  const postComment = useCallback(async() => {
     try {
       if (currentCommentId != null) {
         await commentContainer.putComment(
@@ -212,21 +197,20 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
-  };
+  }, [
+    comment, commentContainer, currentCommentId, commentCreator, initializeEditor,
+    isMarkdown, isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
+  ]);
 
-  const commentButtonClickedHandler = () => {
-    postComment();
-  };
-
-  const ctrlEnterHandler = (event) => {
+  const ctrlEnterHandler = useCallback((event) => {
     if (event != null) {
       event.preventDefault();
     }
 
     postComment();
-  };
+  }, [postComment]);
 
-  const apiErrorHandler = (error: Error) => {
+  const apiErrorHandler = useCallback((error: Error) => {
     toastr.error(error.message, 'Error occured', {
       closeButton: true,
       progressBar: true,
@@ -235,9 +219,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       hideDuration: '100',
       timeOut: '3000',
     });
-  };
+  }, []);
 
-  const uploadHandler = async(file) => {
+  const uploadHandler = useCallback(async(file) => {
 
     if (editorRef.current == null) { return }
 
@@ -267,17 +251,17 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  };
+  }, [apiErrorHandler, currentPageId, currentPagePath]);
 
-  const getCommentHtml = () => {
+  const getCommentHtml = useCallback(() => {
     return (
       <CommentPreview
         html={html}
       />
     );
-  };
+  }, [html]);
 
-  const renderBeforeReady = (): JSX.Element => {
+  const renderBeforeReady = useCallback((): JSX.Element => {
     return (
       <div className="text-center">
         <NotAvailableForGuest>
@@ -291,7 +275,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
         </NotAvailableForGuest>
       </div>
     );
-  };
+  }, []);
 
   const renderReady = () => {
 
@@ -308,7 +292,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
-        onClick={commentButtonClickedHandler}
+        onClick={postComment}
       >
         Comment
       </Button>
@@ -331,7 +315,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                 isMobile={isMobile}
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
-                onChange={updateState}
+                onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
@@ -382,7 +366,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                     isSlackEnabled
                     slackChannels={slackChannelsData?.toString() ?? ''}
                     onEnabledFlagChange={onSlackEnabledFlagChange}
-                    onChannelChange={onSlackChannelsChange}
+                    onChannelChange={setSlackChannels}
                     id="idForComment"
                   />
                 </div>
