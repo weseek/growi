@@ -29,7 +29,7 @@ const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
   const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
-  const notFoundContent = document.getElementById('growi-not-found-context');
+  const notFoundContext = document.getElementById('growi-not-found-context');
   const forbiddenContent = document.getElementById('forbidden-page');
 
   // get csrf token from body element
@@ -57,7 +57,7 @@ const ContextExtractorOnce: FC = () => {
    */
   const revisionId = mainContent?.getAttribute('data-page-revision-id');
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
-  const pageId = mainContent?.getAttribute('data-page-id') || notFoundContent?.getAttribute('data-page-id');
+  const pageId = mainContent?.getAttribute('data-page-id') || notFoundContext?.getAttribute('data-page-id');
 
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
@@ -90,9 +90,9 @@ const ContextExtractorOnce: FC = () => {
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
-  const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
+  const isNotFoundPermalink = JSON.parse(notFoundContext?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
-  const isEmptyPage = notFoundContent != null && pageId != null;
+  const isEmptyPage = JSON.parse(notFoundContext?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
