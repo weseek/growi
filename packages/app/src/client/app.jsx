@@ -14,7 +14,6 @@ import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
-import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
@@ -66,11 +65,10 @@ const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContaine
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
-const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
   appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
-  commentContainer, editorContainer, tagContainer, personalContainer,
+  commentContainer, editorContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');

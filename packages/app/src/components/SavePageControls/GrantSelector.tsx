@@ -9,7 +9,7 @@ import {
 } from 'reactstrap';
 
 
-import { isNotRef } from '~/interfaces/common';
+import { isPopulated } from '~/interfaces/common';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
@@ -170,7 +170,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     const userRelatedGroups: IUserGroupHasId[] = myUserGroupRelations
       .map((relation) => {
         // relation.relatedGroup should be populated by server
-        return isNotRef(relation.relatedGroup) ? relation.relatedGroup : undefined;
+        return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
       })
       // exclude undefined elements
       .filter((elem): elem is IUserGroupHasId => elem != null);

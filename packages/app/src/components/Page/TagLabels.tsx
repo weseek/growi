@@ -6,7 +6,7 @@ import TagEditModal from './TagEditModal';
 type Props = {
   tags?: string[],
   isGuestUser: boolean,
-  tagsUpdateInvoked?: (tags: string[]) => Promise<void>,
+  tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
 

@@ -1,13 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class BasicSecurityManagementContents extends React.Component {
 
@@ -124,9 +125,15 @@ BasicSecurityManagementContents.propTypes = {
   adminBasicSecurityContainer: PropTypes.instanceOf(AdminBasicSecurityContainer).isRequired,
 };
 
-const BasicSecurityManagementContentsWrapper = withUnstatedContainers(BasicSecurityManagementContents, [
+const BasicSecurityManagementContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <BasicSecurityManagementContents t={t} {...props} />;
+};
+
+const BasicSecurityManagementContentsWrapper = withUnstatedContainers(BasicSecurityManagementContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminBasicSecurityContainer,
 ]);
 
-export default withTranslation()(BasicSecurityManagementContentsWrapper);
+export default BasicSecurityManagementContentsWrapper;
