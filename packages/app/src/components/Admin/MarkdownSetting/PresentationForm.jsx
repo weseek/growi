@@ -1,14 +1,14 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:markdown:presentation');
@@ -127,8 +127,6 @@ class PresentationForm extends React.Component {
 
 }
 
-const PresentationFormWrapper = withUnstatedContainers(PresentationForm, [AppContainer, AdminMarkDownContainer]);
-
 PresentationForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -136,4 +134,12 @@ PresentationForm.propTypes = {
 
 };
 
-export default withTranslation()(PresentationFormWrapper);
+const PresentationFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <PresentationForm t={t} {...props} />;
+};
+
+const PresentationFormWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+
+export default PresentationFormWrapper;

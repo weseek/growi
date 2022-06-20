@@ -1,25 +1,24 @@
 import React, { Fragment, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
-
-import LdapSecuritySetting from './LdapSecuritySetting';
-import LocalSecuritySetting from './LocalSecuritySetting';
-import SamlSecuritySetting from './SamlSecuritySetting';
-import OidcSecuritySetting from './OidcSecuritySetting';
-import SecuritySetting from './SecuritySetting';
-import BasicSecuritySetting from './BasicSecuritySetting';
-import GoogleSecuritySetting from './GoogleSecuritySetting';
-import GitHubSecuritySetting from './GitHubSecuritySetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
-import FacebookSecuritySetting from './FacebookSecuritySetting';
-import ShareLinkSetting from './ShareLinkSetting';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-function SecurityManagementContents(props) {
-  const { t } = props;
+import BasicSecuritySetting from './BasicSecuritySetting';
+import FacebookSecuritySetting from './FacebookSecuritySetting';
+import GitHubSecuritySetting from './GitHubSecuritySetting';
+import GoogleSecuritySetting from './GoogleSecuritySetting';
+import LdapSecuritySetting from './LdapSecuritySetting';
+import LocalSecuritySetting from './LocalSecuritySetting';
+import OidcSecuritySetting from './OidcSecuritySetting';
+import SamlSecuritySetting from './SamlSecuritySetting';
+import SecuritySetting from './SecuritySetting';
+import ShareLinkSetting from './ShareLinkSetting';
+import TwitterSecuritySetting from './TwitterSecuritySetting';
+
+const SecurityManagementContents = () => {
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('passport_local');
   const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
@@ -144,10 +143,6 @@ function SecurityManagementContents(props) {
     </div>
   );
 
-}
-
-SecurityManagementContents.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(SecurityManagementContents);
+export default SecurityManagementContents;
