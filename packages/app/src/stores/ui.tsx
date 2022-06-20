@@ -17,7 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -287,8 +287,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
 };
 
 
-export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
-  return useStaticSWR<Nullable<number>, Error>('grant', initialData);
+export const useSelectedGrant = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('grant', initialData);
 };
 
 export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -301,6 +301,36 @@ export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRRe
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
   return useStaticSWR('globalSearchTypeahead', initialData);
+};
+
+type PageTreeDescCountMapUtils = {
+  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
+  getDescCount(pageId?: string): number | null | undefined
+}
+
+export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
+  const key = 'pageTreeDescCountMap';
+
+  const swrResponse = useStaticSWR<UpdateDescCountData, Error>(key, initialData, { fallbackData: new Map() });
+
+  return {
+    ...swrResponse,
+    getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
+    update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
+  };
+};
+
+
+/** **********************************************************
+ *                          SWR Hooks
+ *                Determined value by context
+ *********************************************************** */
+
+export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser } = useCurrentUser();
+  const { data: isDeleted } = useIsDeleted();
+
+  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
@@ -366,21 +396,4 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : key,
     () => isPageExist && !isUserPage,
   );
-};
-
-type PageTreeDescCountMapUtils = {
-  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
-  getDescCount(pageId?: string): number | null | undefined
-}
-
-export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
-  const key = 'pageTreeDescCountMap';
-
-  const swrResponse = useStaticSWR<UpdateDescCountData, Error>(key, initialData, { fallbackData: new Map() });
-
-  return {
-    ...swrResponse,
-    getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
-    update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
-  };
 };

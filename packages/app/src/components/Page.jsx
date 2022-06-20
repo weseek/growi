@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -9,9 +9,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useCurrentPagePath, useIsGuestUser, useSlackChannels,
+  useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -47,10 +47,6 @@ class Page extends React.Component {
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.appContainer.registerComponentInstance('Page', this);
   }
 
   /**
@@ -191,25 +187,57 @@ const PageWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+
+  const pageRef = useRef(null);
+
+  // set handler to open DrawioModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchDrawioModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchDrawioModal', handler);
+    };
+  }, []);
+
+  // set handler to open HandsontableModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchHandsontableModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchHandsontableModal', handler);
+    };
+  }, []);
 
   if (currentPagePath == null || editorMode == null || isGuestUser == null) {
     return null;
   }
 
+
   return (
     <Page
       {...props}
+      ref={pageRef}
       pagePath={currentPagePath}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      slackChannels={slackChannelsData.toString()}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

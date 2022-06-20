@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from './PageListItemL';
@@ -53,7 +55,7 @@ const PageList = (props: Props): JSX.Element => {
 
   return (
     <div className="page-list">
-      <ul className="page-list-ul list-group-flush">
+      <ul className="page-list-ul list-group list-group-flush">
         {pageList}
       </ul>
     </div>

@@ -1,45 +1,41 @@
 import React, { useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
-
-
+import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
-import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
-} from '~/stores/ui';
-import {
-  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
-} from '~/stores/modal';
-
-
+import { exportAsMarkdown } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiPost } from '~/client/util/apiv1-client';
+import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
+import {
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
 import { useSWRTagsInfo } from '~/stores/page';
+import {
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+} from '~/stores/ui';
 
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiPost } from '~/client/util/apiv1-client';
-
-import HistoryIcon from '../Icons/HistoryIcon';
-import AttachmentIcon from '../Icons/AttachmentIcon';
-import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
-import { SubNavButtons } from './SubNavButtons';
-import PageEditorModeManager from './PageEditorModeManager';
-import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PresentationIcon from '../Icons/PresentationIcon';
 import CreateTemplateModal from '../CreateTemplateModal';
-import { exportAsMarkdown } from '~/client/services/page-operation';
+import AttachmentIcon from '../Icons/AttachmentIcon';
+import HistoryIcon from '../Icons/HistoryIcon';
+import PresentationIcon from '../Icons/PresentationIcon';
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+
+import { GrowiSubNavigation } from './GrowiSubNavigation';
+import PageEditorModeManager from './PageEditorModeManager';
+import { SubNavButtons } from './SubNavButtons';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -101,6 +97,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
+        data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -111,6 +108,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
+        data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -136,6 +134,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={openPageTemplateModalHandler}
         className="grw-page-control-dropdown-item"
+        data-testid="open-page-template-modal-btn"
       >
         <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
         { t('template.option_label.create/edit') }
@@ -246,36 +245,34 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
-    const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
-
     return (
       <>
-        <div className={className}>
+        <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
           { pageId != null && isViewMode && (
-            <SubNavButtons
-              isCompactMode={isCompactMode}
-              pageId={pageId}
-              shareLinkId={shareLinkId}
-              revisionId={revisionId}
-              path={path}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={props => (
-                <AdditionalMenuItems
-                  {...props}
-                  pageId={pageId}
-                  revisionId={revisionId}
-                  isLinkSharingDisabled={isLinkSharingDisabled}
-                  onClickTemplateMenuItem={templateMenuItemClickHandler}
-                />
-              )}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-            />
+            <div className="h-50">
+              <SubNavButtons
+                isCompactMode={isCompactMode}
+                pageId={pageId}
+                shareLinkId={shareLinkId}
+                revisionId={revisionId}
+                path={path}
+                disableSeenUserInfoPopover={isSharedUser}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={props => (
+                  <AdditionalMenuItems
+                    {...props}
+                    pageId={pageId}
+                    revisionId={revisionId}
+                    isLinkSharingDisabled={isLinkSharingDisabled}
+                    onClickTemplateMenuItem={templateMenuItemClickHandler}
+                  />
+                )}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+              />
+            </div>
           ) }
-        </div>
-        <div className={`${className} ${isCompactMode ? '' : 'mt-2'}`}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
@@ -285,7 +282,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {currentUser != null && (
+        {path != null && currentUser != null && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}
@@ -302,7 +299,6 @@ const GrowiContextualSubNavigation = (props) => {
     path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-
   if (path == null) {
     return <></>;
   }
@@ -316,7 +312,6 @@ const GrowiContextualSubNavigation = (props) => {
     createdAt: createdAt ?? undefined,
     updatedAt: updatedAt ?? undefined,
   };
-
 
   return (
     <GrowiSubNavigation
