@@ -155,8 +155,12 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiContextualSubNavigation isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
-    'display-switcher': <DisplaySwitcher />,
   });
+  if (!pageContainer.state.isEmpty) {
+    Object.assign(componentMappings, {
+      'display-switcher': <DisplaySwitcher />,
+    });
+  }
 }
 
 const renderMainComponents = () => {

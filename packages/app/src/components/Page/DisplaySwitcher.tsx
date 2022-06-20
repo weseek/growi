@@ -36,7 +36,6 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-  const { data: isEmptyPage } = useIsEmptyPageInNotFoundContent();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
@@ -60,7 +59,7 @@ const DisplaySwitcher = (): JSX.Element => {
         <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
-            { isPageExist && !isEmptyPage && (
+            { isPageExist && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
