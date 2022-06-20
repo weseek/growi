@@ -256,7 +256,7 @@ module.exports = (crowi) => {
     let page;
     try {
       if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, user);
+        page = await Page.findByIdAndViewer(pageId, user, {}, true);
       }
       else {
         page = await Page.findByPathAndViewer(path, user);
