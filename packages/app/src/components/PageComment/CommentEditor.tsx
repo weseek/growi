@@ -59,6 +59,7 @@ type PropsType = {
 }
 
 type EditorRef = {
+  setGfmMode: (value: boolean) => void,
   setValue: (value: string) => void,
   insertText: (text: string) => void,
   terminateUploadingState: () => void,
@@ -94,6 +95,14 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const updateState = (value:string) => {
     setComment(value);
+  };
+
+  const updateStateCheckbox = (event) => {
+    if (editorRef.current == null) { return }
+    const value = event.target.checked;
+    setIsMarkdown(value);
+    // changeMode
+    editorRef.current.setGfmMode(value);
   };
 
   const renderHtml = (markdown: string) => {
@@ -342,6 +351,27 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
         <div className="comment-submit">
           <div className="d-flex">
+            <label className="mr-2">
+              {activeTab === 'comment_editor' && (
+                <span className="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="comment-form-is-markdown"
+                    name="isMarkdown"
+                    checked={isMarkdown}
+                    value="1"
+                    onChange={updateStateCheckbox}
+                  />
+                  <label
+                    className="ml-2 custom-control-label"
+                    htmlFor="comment-form-is-markdown"
+                  >
+                    Markdown
+                  </label>
+                </span>
+              ) }
+            </label>
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
