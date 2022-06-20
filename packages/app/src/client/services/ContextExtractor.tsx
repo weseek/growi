@@ -92,7 +92,7 @@ const ContextExtractorOnce: FC = () => {
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isNotFoundPermalink = JSON.parse(notFoundContext?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
-  const isEmptyPage = JSON.parse(notFoundContext?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
+  const isEmptyPageInNotFoundContext = JSON.parse(notFoundContext?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
@@ -153,7 +153,7 @@ const ContextExtractorOnce: FC = () => {
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
-  useIsEmptyPageInNotFoundContext(isEmptyPage);
+  useIsEmptyPageInNotFoundContext(isEmptyPageInNotFoundContext);
   useHasParent(hasParent);
 
   // Navigation
