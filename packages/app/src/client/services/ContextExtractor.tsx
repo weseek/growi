@@ -57,6 +57,7 @@ const ContextExtractorOnce: FC = () => {
    */
   const revisionId = mainContent?.getAttribute('data-page-revision-id');
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
+  // assign `null` to avoid returning empty string
   const pageId = (mainContent?.getAttribute('data-page-id') || notFoundContext?.getAttribute('data-page-id')) || null;
 
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
