@@ -354,7 +354,6 @@ class PageService {
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
-    // isDeletable & isAbleToDeleteCompletely
     let creatorId = page.creator;
     if (page.isEmpty) {
       // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
