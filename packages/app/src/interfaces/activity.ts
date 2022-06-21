@@ -142,10 +142,21 @@ export const MediumActionGroup = {
   ACTION_COMMENT_REMOVE,
 } as const;
 
-// MediumActionGroup + All Actions by Admin Users + PAGE_VIEW
+// MediumActionGroup + All Actions by Admin Users - PAGE_VIEW
 export const LargeActionGroup = {
   ...MediumActionGroup,
-  ACTION_PAGE_VIEW,
+  ACTION_ADMIN_SECURITY_SETTINGS_UPDATE,
+  ACTION_ADMIN_LINE_BREAK_UPDATE,
+  ACTION_ADMIN_LAYOUT_UPDATE,
+  ACTION_ADMIN_ARCHIVE_DATA_UPLOAD,
+  ACTION_ADMIN_ARCHIVE_DATA_CREATE,
+  ACTION_ADMIN_USER_NOTIFICATION_SETTINGS_ADD,
+  ACTION_ADMIN_SLACK_WORKSPACE_CREATE,
+  ACTION_ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE,
+  ACTION_ADMIN_USERS_INVITE,
+  ACTION_ADMIN_USER_GROUP_CREATE,
+  ACTION_ADMIN_SEARCH_INDICES_NORMALIZE,
+  ACTION_ADMIN_SEARCH_INDICES_REBUILD,
 } as const;
 
 export const SupportedActionToNotified = {
@@ -187,9 +198,9 @@ export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
 export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedAction = Object.values(SupportedAction);
 export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);
-export const AllSmallAction = Object.values(SmallActionGroup);
-export const AllMediumAction = Object.values(MediumActionGroup);
-export const AllLargeAction = Object.values(LargeActionGroup);
+export const AllSmallGroupActions = Object.values(SmallActionGroup);
+export const AllMediumGroupActions = Object.values(MediumActionGroup);
+export const AllLargeGroupActions = Object.values(LargeActionGroup);
 
 /*
  * Type

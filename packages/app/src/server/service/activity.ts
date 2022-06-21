@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSmallAction, AllMediumAction, AllLargeAction, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, ActionGroupSize, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -54,13 +54,13 @@ class ActivityService {
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        shoudUpdate = (AllSmallAction as ReadonlyArray<string>).includes(action);
+        shoudUpdate = (AllSmallGroupActions as ReadonlyArray<string>).includes(action);
         break;
       case ActionGroupSize.Medium:
-        shoudUpdate = (AllMediumAction as ReadonlyArray<string>).includes(action);
+        shoudUpdate = (AllMediumGroupActions as ReadonlyArray<string>).includes(action);
         break;
       case ActionGroupSize.Large:
-        shoudUpdate = (AllLargeAction as ReadonlyArray<string>).includes(action);
+        shoudUpdate = (AllLargeGroupActions as ReadonlyArray<string>).includes(action);
         break;
     }
 
