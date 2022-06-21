@@ -169,6 +169,14 @@ class PageOperationService {
     clearInterval(timerObj);
   }
 
+  async getAncestorsByFromAndToPath(fromPath: string, toPath: string) {
+    const fromAncestors = await this.crowi.getParentAndFillAncestorsBySystem(fromPath);
+    const toAncestors = await this.crowi.getParentAndFillAncestorsBySystem(toPath);
+    console.log({ fromAncestors });
+    console.log({ toAncestors });
+    return;
+  }
+
 }
 
 export default PageOperationService;
