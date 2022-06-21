@@ -1,6 +1,9 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 
@@ -91,6 +94,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   /**
    * @swagger
@@ -152,7 +158,7 @@ module.exports = (crowi) => {
    *                schema:
   *                   $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, apiV3FormValidator, async(req, res) => {
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
@@ -165,6 +171,10 @@ module.exports = (crowi) => {
         isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
         isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_LINE_BREAK_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ lineBreaksParams });
     }
     catch (err) {
