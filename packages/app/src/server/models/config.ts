@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { getOrCreateModel } from '@growi/core';
 
 export interface Config {
   _id: Types.ObjectId;
@@ -194,6 +194,7 @@ schema.statics.getLocalconfig = function(crowi) {
       title: crowi.appService.getAppTitle(),
       url: crowi.appService.getSiteUrl(),
       confidential: crowi.appService.getAppConfidential(),
+      version: crowi.version,
     },
     upload: {
       image: crowi.fileUploadService.getIsUploadable(),

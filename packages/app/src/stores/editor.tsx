@@ -11,6 +11,7 @@ import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
@@ -89,4 +90,21 @@ export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
     undefined,
     { fallbackData: false },
   );
+};
+
+export type IPageTagsForEditorsOption = {
+  sync: (tags?: string[]) => void;
+}
+
+export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
+
+  return {
+    ...swrResult,
+    sync: (): void => {
+      const { mutate } = swrResult;
+      mutate(tagsInfoData?.tags || [], false);
+    },
+  };
 };
