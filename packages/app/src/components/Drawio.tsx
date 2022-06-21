@@ -28,8 +28,8 @@ const Drawio = (props: Props): JSX.Element => {
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
-  const globalEmitter: EventEmitter = (window as CustomWindow).globalEmitter;
-  const GraphViewer: IGraphViewer = (window as CustomWindow).GraphViewer;
+  const globalEmitter: EventEmitter = useMemo(() => (window as CustomWindow).globalEmitter, []);
+  const GraphViewer: IGraphViewer = useMemo(() => (window as CustomWindow).GraphViewer, []);
 
   const editButtonClickHandler = useCallback(() => {
     const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
