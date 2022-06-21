@@ -159,7 +159,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -182,7 +182,7 @@ class PageService {
     // duplicate
     this.pageEvent.on('duplicate', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
       }
       catch (err) {
         logger.error(err);
@@ -192,7 +192,7 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
       }
       catch (err) {
         logger.error(err);
@@ -202,7 +202,7 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -212,7 +212,7 @@ class PageService {
     // revert
     this.pageEvent.on('revert', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
       }
       catch (err) {
         logger.error(err);
@@ -222,7 +222,7 @@ class PageService {
     // likes
     this.pageEvent.on('like', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
       }
       catch (err) {
         logger.error(err);
@@ -232,7 +232,7 @@ class PageService {
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK, null);
+        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
       }
       catch (err) {
         logger.error(err);
@@ -2234,7 +2234,7 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page: PageDocument, user: any, action: any, descendantPages: PageDocument[] | null = null) {
+  private async createAndSendNotifications(page: PageDocument, user: any, action: any, descendantPages?: PageDocument[]) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
@@ -2249,7 +2249,7 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
     // Get user to be notified
     let targetUsers = await activity.getNotificationTargetUsers();
-    if (descendantPages != null) {
+    if (descendantPages !== undefined && descendantPages.length > 0) {
       const User = this.crowi.model('User');
       const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
       const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
