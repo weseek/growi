@@ -8,12 +8,12 @@ import '~/styles/style-next.scss';
 import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
-// import { useGrowiVersion } from '../stores/context';
+import { useGrowiVersion } from '../stores/context';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 function GrowiApp({ Component, pageProps }: AppProps): JSX.Element {
   // useInterceptorManager(new InterceptorManager());
-  // useGrowiVersion(pageProps.growiVersion);
+  useGrowiVersion(pageProps.growiVersion);
 
   return (
     <Component {...pageProps} />
