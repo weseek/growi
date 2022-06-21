@@ -2186,8 +2186,8 @@ class PageService {
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
-    if (page.isEmpty) {
 
+    if (page.isEmpty) {
       return {
         isV5Compatible: true,
         isEmpty: true,
