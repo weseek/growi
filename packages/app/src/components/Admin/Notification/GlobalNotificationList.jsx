@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
@@ -174,8 +174,6 @@ class GlobalNotificationList extends React.Component {
 
 }
 
-const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AppContainer, AdminNotificationContainer]);
-
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -183,4 +181,12 @@ GlobalNotificationList.propTypes = {
 
 };
 
-export default withTranslation()(GlobalNotificationListWrapper);
+const GlobalNotificationListWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <GlobalNotificationList t={t} {...props} />;
+};
+
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationListWrapperFC, [AppContainer, AdminNotificationContainer]);
+
+export default GlobalNotificationListWrapper;

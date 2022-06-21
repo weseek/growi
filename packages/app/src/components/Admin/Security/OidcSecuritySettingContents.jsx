@@ -1,14 +1,15 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class OidcSecurityManagementContents extends React.Component {
 
@@ -462,15 +463,18 @@ class OidcSecurityManagementContents extends React.Component {
 
 OidcSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
-const OidcSecurityManagementContentsWrapper = withUnstatedContainers(OidcSecurityManagementContents, [
-  AppContainer,
+const OidcSecurityManagementContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <OidcSecurityManagementContents t={t} {...props} />;
+};
+
+const OidcSecurityManagementContentsWrapper = withUnstatedContainers(OidcSecurityManagementContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminOidcSecurityContainer,
 ]);
 
-export default withTranslation()(OidcSecurityManagementContentsWrapper);
+export default OidcSecurityManagementContentsWrapper;
