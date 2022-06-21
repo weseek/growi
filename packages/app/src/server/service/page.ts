@@ -2178,8 +2178,8 @@ class PageService {
     if (page.isEmpty) {
       // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
       // Use creator id of ancestor page to determine whether the empty page is deletable
-      const notEmptyClosestAncestor = await Page.findNotEmptyClosestAncestor(page.path);
-      const creatorId = notEmptyClosestAncestor.creator;
+      const nonEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      const creatorId = nonEmptyClosestAncestor != null ? nonEmptyClosestAncestor.creator : page.creator;
 
       const isDeletable = this.canDelete(page.path, creatorId, operator, false);
       const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, operator, false); // use normal delete config
