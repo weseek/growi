@@ -357,7 +357,7 @@ class PageService {
     let creatorId = page.creator;
     if (page.isEmpty) {
       // Need non-empty ancestor page to get its creatorId because empty page does NOT have it.
-      // Use creator id of ancestor page to determine whether the empty page is deletable
+      // Use creatorId of ancestor page to determine whether the empty page is deletable
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
