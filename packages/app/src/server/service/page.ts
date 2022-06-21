@@ -363,13 +363,15 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    pageInfo.isDeletable = this.canDelete(page.path, creatorId, user, false);
-    pageInfo.isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+    const isDeletable = this.canDelete(page.path, creatorId, user, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
       meta: {
         ...metadataForGuest,
+        isDeletable,
+        isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,
         subscriptionStatus: subscription?.status,
@@ -2184,7 +2186,6 @@ class PageService {
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
-
     if (page.isEmpty) {
 
       return {
