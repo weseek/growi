@@ -37,10 +37,12 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickSwitchContentWidthMenuItem?: (pageId: string, isContainerFluid?: boolean) => Promise<void>,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
   alignRight?: boolean,
+  isContainerFluid?: boolean
 }
 
 
@@ -55,10 +57,16 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickSwitchContentWidthMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
+  const switchContentWidthHandler = useCallback(async() => {
+    if (!isIPageInfoForOperation(pageInfo) || onClickSwitchContentWidthMenuItem == null) {
+      return;
+    }
+    await onClickSwitchContentWidthMenuItem(pageId, pageInfo.isContainerFluid);
+  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
@@ -129,6 +137,16 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             <p>
               {t('search_result.currently_not_implemented')}
             </p>
+          </DropdownItem>
+        ) }
+
+        { isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+          <DropdownItem
+            onClick={switchContentWidthHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="fa fa-fw fa-text-width grw-page-control-dropdown-icon"></i>
+            { !pageInfo.isContainerFluid ? t('Full Width') : t('Default Width') }
           </DropdownItem>
         ) }
 
@@ -224,7 +242,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidthMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -241,6 +259,16 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       setShouldFetch(true);
     }
   }, [isOpen, presetPageInfo, shouldFetch]);
+
+  const switchContentWidthMenuItemHandler = useCallback(async(_pageId: string, _isContainerFluid: boolean) => {
+    if (onClickSwitchContentWidthMenuItem != null) {
+      await onClickSwitchContentWidthMenuItem(_pageId, _isContainerFluid);
+    }
+
+    if (shouldFetch) {
+      mutatePageInfo();
+    }
+  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -292,6 +320,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickRenameMenuItem={renameMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
+        onClickSwitchContentWidthMenuItem={switchContentWidthMenuItemHandler}
       />
     </Dropdown>
   );

@@ -18,7 +18,6 @@ import {
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
-import SwitchContentWidthButton from '../SwitchContentWidthButton';
 import SeenUserInfo from '../User/SeenUserInfo';
 
 
@@ -167,12 +166,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      <SwitchContentWidthButton
-        isContainerFluid={isContainerFluid}
-        onSwitchContentWidthClicked={switchContentWidthClickHandler}
-      >
-
-      </SwitchContentWidthButton>
       <span>
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
@@ -211,6 +204,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
           onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          onClickSwitchContentWidthMenuItem={switchContentWidthClickHandler}
         />
       )}
     </div>

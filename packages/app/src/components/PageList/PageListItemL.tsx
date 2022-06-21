@@ -14,7 +14,7 @@ import urljoin from 'url-join';
 
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { bookmark, unbookmark, toggleContentWidth } from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
 } from '~/interfaces/page';
@@ -122,6 +122,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
+  };
+
+  const switchContentWidthMenuItemClickHandler = async(_pageId: string, _isContainerFluid: boolean): Promise<void> => {
+    await toggleContentWidth(_pageId, _isContainerFluid);
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
@@ -235,6 +239,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRevertMenuItem={revertMenuItemClickHandler}
+                  onClickSwitchContentWidthMenuItem={switchContentWidthMenuItemClickHandler}
                 />
               </div>
             </div>
