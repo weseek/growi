@@ -1,14 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
+import { useTranslation } from 'react-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 const DeleteSlackBotSettingsModal = React.memo((props) => {
-  const { t } = props;
+  const { t } = useTranslation();
 
   function closeModal() {
     if (props.onClose == null) {
@@ -86,11 +85,10 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
 });
 
 DeleteSlackBotSettingsModal.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   isResetAll: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   onClickDeleteButton: PropTypes.func,
 };
 
-export default withTranslation()(DeleteSlackBotSettingsModal);
+export default DeleteSlackBotSettingsModal;

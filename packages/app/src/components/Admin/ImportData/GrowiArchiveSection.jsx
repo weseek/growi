@@ -1,13 +1,11 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import ImportForm from './GrowiArchive/ImportForm';
@@ -152,12 +150,12 @@ class GrowiArchiveSection extends React.Component {
 
 GrowiArchiveSection.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiArchiveSectionWrapper = withUnstatedContainers(GrowiArchiveSection, [AppContainer]);
+const GrowiArchiveSectionWrapperFc = (props) => {
+  const { t } = useTranslation();
 
-export default withTranslation()(GrowiArchiveSectionWrapper);
+  return <GrowiArchiveSection t={t} {...props} />;
+};
+
+export default GrowiArchiveSectionWrapperFc;

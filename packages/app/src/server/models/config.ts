@@ -194,6 +194,7 @@ schema.statics.getLocalconfig = function(crowi) {
       title: crowi.appService.getAppTitle(),
       url: crowi.appService.getSiteUrl(),
       confidential: crowi.appService.getAppConfidential(),
+      version: crowi.version,
     },
     upload: {
       image: crowi.fileUploadService.getIsUploadable(),

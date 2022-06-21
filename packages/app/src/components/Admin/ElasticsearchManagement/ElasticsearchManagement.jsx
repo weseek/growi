@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -226,10 +226,15 @@ class ElasticsearchManagement extends React.Component {
 
 }
 
+const ElasticsearchManagementWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ElasticsearchManagement t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, AdminSocketIoContainer]);
+const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagementWrapperFC, [AppContainer, AdminSocketIoContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -237,4 +242,4 @@ ElasticsearchManagement.propTypes = {
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
-export default withTranslation()(ElasticsearchManagementWrapper);
+export default ElasticsearchManagementWrapper;

@@ -172,6 +172,10 @@ export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse
   return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
 };
 
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts

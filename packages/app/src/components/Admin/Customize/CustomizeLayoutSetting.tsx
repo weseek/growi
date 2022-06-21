@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
@@ -11,8 +9,8 @@ import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 const isDarkMode = isDarkModeByUtil();
 const colorText = isDarkMode ? 'dark' : 'light';
 
-const CustomizeLayoutSetting = (props) => {
-  const { t, appContainer } = props;
+const CustomizeLayoutSetting = (): JSX.Element => {
+  const { t } = useTranslation();
 
   const [isContainerFluid, setIsContainerFluid] = useState(false);
   const [retrieveError, setRetrieveError] = useState();
@@ -85,10 +83,4 @@ const CustomizeLayoutSetting = (props) => {
   );
 };
 
-CustomizeLayoutSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(CustomizeLayoutSetting);
+export default CustomizeLayoutSetting;
