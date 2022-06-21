@@ -15,6 +15,7 @@
     // "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
+    "noImplicitOverride": true,
 
     /* Additional Checks */
     "noUnusedLocals": false,
