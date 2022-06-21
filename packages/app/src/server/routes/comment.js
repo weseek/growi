@@ -229,7 +229,7 @@ module.exports = function(crowi, app) {
     const revisionId = commentForm.revision_id;
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
-    const isMarkdown = commentForm.is_markdown;
+    const isMarkdown = false;
     const replyTo = commentForm.replyTo;
     const commentEvent = crowi.event('comment');
 
@@ -343,7 +343,7 @@ module.exports = function(crowi, app) {
     const { commentForm } = req.body;
 
     const commentStr = commentForm.comment;
-    const isMarkdown = commentForm.is_markdown;
+    const isMarkdown = false;
     const commentId = commentForm.comment_id;
     const revision = commentForm.revision_id;
 

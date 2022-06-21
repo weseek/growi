@@ -99,7 +99,7 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  postComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels) {
+  postComment(comment, replyTo, isSlackEnabled, slackChannels) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
     return apiPost('/comments.add', {
@@ -107,7 +107,6 @@ export default class CommentContainer extends Container {
         comment,
         page_id: pageId,
         revision_id: revisionId,
-        is_markdown: isMarkdown,
         replyTo,
       },
       slackNotificationForm: {
@@ -125,13 +124,12 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  putComment(comment, isMarkdown, commentId, author) {
+  putComment(comment, commentId, author) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
     return apiPost('/comments.update', {
       commentForm: {
         comment,
-        is_markdown: isMarkdown,
         revision_id: revisionId,
         comment_id: commentId,
       },
