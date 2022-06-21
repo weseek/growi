@@ -1,3 +1,4 @@
+
 /* eslint-disable cypress/no-unnecessary-waiting */
 context('Page icon buttons', () => {
   const ssPrefix = 'page-icon-buttons-';
