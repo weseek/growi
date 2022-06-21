@@ -1,14 +1,11 @@
 import { SlackbotType, defaultSupportedSlackEventActions } from '@growi/slack';
 
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-const mongoose = require('mongoose');
-const express = require('express');
-const { body, query, param } = require('express-validator');
-const axios = require('axios');
-const urljoin = require('url-join');
 
 const {
   getConnectionStatus, getConnectionStatuses,
@@ -16,6 +13,11 @@ const {
   defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
   REQUEST_TIMEOUT_FOR_GTOP,
 } = require('@growi/slack');
+const axios = require('axios');
+const express = require('express');
+const { body, query, param } = require('express-validator');
+const mongoose = require('mongoose');
+const urljoin = require('url-join');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -54,7 +56,11 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
   const SlackAppIntegration = crowi.model('SlackAppIntegration');
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     botType: [
@@ -441,7 +447,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to create slack app integration
    */
-  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
     if (SlackAppIntegrationRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';
@@ -465,6 +471,10 @@ module.exports = (crowi) => {
         permissionsForSlackEvents: initialPermissionsForSlackEventActions,
         isPrimary: count === 0,
       });
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_SLACK_WORKSPACE_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
