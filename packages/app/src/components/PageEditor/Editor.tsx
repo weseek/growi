@@ -11,6 +11,7 @@ import {
 import { toastError } from '~/client/util/apiNotification';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
+import { useIsMobile } from '~/stores/ui';
 
 import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
@@ -21,7 +22,6 @@ type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,
   noCdn?: boolean,
-  isMobile?: boolean
   isUploadable?: boolean,
   isUploadableFile?: boolean,
   onChange?: () => void,
@@ -39,16 +39,17 @@ type DropzoneRef = {
 
 const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const {
-    isMobile, onUpload, isUploadable, isUploadableFile, indentSize,
+    onUpload, isUploadable, isUploadableFile, indentSize,
   } = props;
 
   const [dropzoneActive, setDropzoneActive] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isCheatsheetModalShown, setIsCheatsheetModalShown] = useState(false);
 
+  const { t } = useTranslation();
   const { data: editorSettings } = useEditorSettings();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { t } = useTranslation();
+  const { data: isMobile } = useIsMobile();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
   const cmEditorRef = useRef<CodeMirrorEditor>(null);
