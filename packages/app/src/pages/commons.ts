@@ -6,8 +6,9 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
-  currentPagePath: string,
+  currentPathname: string,
   appTitle: string,
+  siteUrl: string,
   confidential: string,
   customTitleTemplate: string,
   growiVersion: string,
@@ -23,12 +24,13 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
-  const currentPagePath = decodeURI(url.pathname);
+  const currentPathname = decodeURI(url.pathname);
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
-    currentPagePath,
+    currentPathname,
     appTitle: appService.getAppTitle(),
+    siteUrl: appService.getSiteUrl(),
     confidential: appService.getAppConfidential() || '',
     customTitleTemplate: customizeService.customTitleTemplate,
     growiVersion: crowi.version,

@@ -16,8 +16,16 @@ export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> =
   return useStaticSWR<string, Error>('csrfToken', initialData);
 };
 
+export const useAppTitle = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('appTitle', initialData);
+};
+
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
+};
+
+export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('confidential', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
