@@ -319,7 +319,7 @@ module.exports = (crowi) => {
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTING_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ appSettingParams });
