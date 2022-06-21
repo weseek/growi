@@ -1,7 +1,10 @@
+import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:user-group');
 
@@ -77,6 +80,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const {
     User,
@@ -400,7 +406,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that failed to create or send email
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
@@ -419,6 +425,9 @@ module.exports = (crowi) => {
         failedEmailList = failedEmailList.concat(sendEmail.failedToSendEmailList);
       }
     }
+
+    const parameters = { action: SupportedAction.ACTION_ADMIN_USERS_INVITE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.apiv3({
       createdUserList: createUser.createdUserList,
