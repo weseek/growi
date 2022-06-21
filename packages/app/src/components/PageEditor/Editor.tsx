@@ -1,10 +1,14 @@
-import React, { useState, useRef, useImperativeHandle } from 'react';
+import React, {
+  useState, useRef, useImperativeHandle, useCallback,
+} from 'react';
 
 import Dropzone from 'react-dropzone';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
+import { toastError } from '~/client/util/apiNotification';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 
@@ -44,6 +48,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
 
   const { data: editorSettings } = useEditorSettings();
   const { data: defaultIndentSize } = useDefaultIndentSize();
+  const { t } = useTranslation();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
   const cmEditorRef = useRef<CodeMirrorEditor>(null);
@@ -57,23 +62,23 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
       if (editorSubstance == null) { return }
       editorSubstance.forceToFocus();
     },
-    setValue: (newValue) => {
+    setValue: (newValue: string) => {
       if (editorSubstance == null) { return }
       editorSubstance.setValue(newValue);
     },
-    setGfmMode: (bool) => {
+    setGfmMode: (bool: boolean) => {
       if (editorSubstance == null) { return }
       editorSubstance.setGfmMode(bool);
     },
-    setCaretLine: (line) => {
+    setCaretLine: (line: number) => {
       if (editorSubstance == null) { return }
       editorSubstance.setCaretLine(line);
     },
-    setScrollTopByLine: (line) => {
+    setScrollTopByLine: (line: number) => {
       if (editorSubstance == null) { return }
       editorSubstance.setScrollTopByLine(line);
     },
-    insertText: (text) => {
+    insertText: (text: string) => {
       if (editorSubstance == null) { return }
       editorSubstance.insertText(text);
     },
@@ -89,16 +94,16 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   /**
    * dispatch onUpload event
    */
-  const dispatchUpload = (files) => {
+  const dispatchUpload = useCallback((files) => {
     if (onUpload != null) {
       onUpload(files);
     }
-  };
+  }, [onUpload]);
 
   /**
    * get acceptable(uploadable) file type
    */
-  const getAcceptableType = () => {
+  const getAcceptableType = useCallback(() => {
     let accept = 'null'; // reject all
     if (isUploadable) {
       if (!isUploadableFile) {
@@ -110,10 +115,12 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     }
 
     return accept;
-  };
+  }, [isUploadable, isUploadableFile]);
 
-  const pasteFilesHandler = (event) => {
+  const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
+
+    toastError(t('toaster.file_upload_failed'));
 
     // abort if length is not 1
     if (items.length < 1) {
@@ -130,13 +137,12 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
         }
       }
       catch (e) {
-        // TODO: need error handling
-        // logger.error(e);
+        toastError(t('toaster.file_upload_failed'));
       }
     }
-  };
+  }, [dispatchUpload, getAcceptableType, t]);
 
-  const dragEnterHandler = (event) => {
+  const dragEnterHandler = useCallback((event) => {
     const dataTransfer = event.dataTransfer;
 
     // do nothing if contents is not files
@@ -145,13 +151,9 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     }
 
     setDropzoneActive(true);
-  };
+  }, []);
 
-  const dragLeaveHandler = () => {
-    setDropzoneActive(false);
-  };
-
-  const dropHandler = (accepted) => {
+  const dropHandler = useCallback((accepted) => {
     // rejected
     if (accepted.length !== 1) { // length should be 0 or 1 because `multiple={false}` is set
       setDropzoneActive(false);
@@ -161,18 +163,14 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     const file = accepted[0];
     dispatchUpload(file);
     setIsUploading(true);
-  };
+  }, [dispatchUpload]);
 
-  const showMarkdownHelp = () => {
-    setIsCheatsheetModalShown(true);
-  };
-
-  const addAttachmentHandler = () => {
+  const addAttachmentHandler = useCallback(() => {
     if (dropzoneRef.current == null) { return }
     dropzoneRef.current.open();
-  };
+  }, []);
 
-  const getDropzoneClassName = (isDragAccept, isDragReject) => {
+  const getDropzoneClassName = useCallback((isDragAccept: boolean, isDragReject: boolean) => {
     let className = 'dropzone';
     if (!isUploadable) {
       className += ' dropzone-unuploadable';
@@ -199,9 +197,9 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     }
 
     return className;
-  };
+  }, [isUploadable, isUploading, isUploadableFile]);
 
-  const renderDropzoneOverlay = () => {
+  const renderDropzoneOverlay = useCallback(() => {
     return (
       <div className="overlay overlay-dropzone-active">
         {isUploading
@@ -215,16 +213,16 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
         {!isUploading && <span className="overlay-content"></span>}
       </div>
     );
-  };
+  }, [isUploading]);
 
-  const getNavbarItems = (): JSX.Element[] => {
+  const getNavbarItems = useCallback((): JSX.Element[] => {
     if (editorSubstance == null) { return [] }
     // concat common items and items specific to CodeMirrorEditor or TextAreaEditor
     const navbarItems = editorSubstance.getNavbarItems() ?? [];
     return navbarItems;
-  };
+  }, [editorSubstance]);
 
-  const renderNavbar = () => {
+  const renderNavbar = useCallback(() => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
@@ -235,9 +233,9 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
         </ul>
       </div>
     );
-  };
+  }, [getNavbarItems]);
 
-  const renderCheatsheetModal = () => {
+  const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {
       setIsCheatsheetModalShown(false);
     };
@@ -252,17 +250,17 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
         </ModalBody>
       </Modal>
     );
-  };
+  }, [isCheatsheetModalShown]);
+
+  if (editorSettings == null) {
+    return <></>;
+  }
 
   const flexContainer: React.CSSProperties = {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
   };
-
-  if (editorSettings == null) {
-    return <></>;
-  }
 
   return (
     <>
@@ -273,7 +271,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
           noClick
           noKeyboard
           multiple={false}
-          onDragLeave={dragLeaveHandler}
+          onDragLeave={() => { setDropzoneActive(false) }}
           onDrop={dropHandler}
         >
           {({
@@ -296,8 +294,9 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
                     indentSize={indentSize ?? defaultIndentSize}
                     onPasteFiles={pasteFilesHandler}
                     onDragEnter={dragEnterHandler}
-                    onMarkdownHelpButtonClicked={showMarkdownHelp}
+                    onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
                     onAddAttachmentButtonClicked={addAttachmentHandler}
+                    editorSettings={editorSettings}
                     {...props}
                   />
                 )}
