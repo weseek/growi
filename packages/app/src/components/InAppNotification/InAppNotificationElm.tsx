@@ -119,6 +119,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'reverted';
       actionIcon = 'icon-action-undo';
       break;
+    case 'PAGE_RECURSIVELY_RENAME':
+      actionMsg = 'renamed under';
+      actionIcon = 'icon-action-redo';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';

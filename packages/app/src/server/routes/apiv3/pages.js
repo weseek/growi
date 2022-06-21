@@ -538,9 +538,7 @@ module.exports = (crowi) => {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
-
     const result = { page: serializePageSecurely(renamedPage ?? page) };
-
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
