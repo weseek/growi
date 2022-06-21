@@ -1,3 +1,13 @@
+import EventEmitter from 'events';
+
 import Xss from '~/services/xss';
 
-export type CustomWindow = Window & typeof globalThis & { xss: Xss };
+import { IGraphViewer } from './graph-viewer';
+import { IInterceptorManager } from './interceptor-manager';
+
+export type CustomWindow = Window
+                         & typeof globalThis
+                         & { xss: Xss }
+                         & { interceptorManager: IInterceptorManager }
+                         & { globalEmitter: EventEmitter }
+                         & { GraphViewer: IGraphViewer };
