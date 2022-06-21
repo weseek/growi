@@ -331,7 +331,18 @@ class PageService {
       };
     }
 
-    const pageInfo = await this.constructBasicPageInfo(page, user);
+    const isGuestUser = user == null;
+    const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
+
+    if (page.isEmpty) {
+      // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
+      // Use creator id of ancestor page to determine whether the empty page is deletable
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      const creatorId = notEmptyClosestAncestor.creator;
+
+      pageInfo.isDeletable = this.canDelete(page.path, creatorId, user, false);
+      pageInfo.isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+    }
 
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
@@ -340,7 +351,7 @@ class PageService {
       ...pageInfo,
       bookmarkCount,
     };
-    const isGuestUser = user == null;
+
     if (isGuestUser) {
       return {
         data: page,
@@ -2169,36 +2180,23 @@ class PageService {
     });
   }
 
-  async constructBasicPageInfo(page: IPage, operator): Promise<IPageInfo | IPageInfoForEntity> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    const isGuestUser = operator == null;
+  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
-      // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
-      // Use creator id of ancestor page to determine whether the empty page is deletable
-      const nonEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      const creatorId = nonEmptyClosestAncestor != null ? nonEmptyClosestAncestor.creator : page.creator;
-
-      const isDeletable = this.canDelete(page.path, creatorId, operator, false);
-      const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, operator, false); // use normal delete config
 
       return {
         isV5Compatible: true,
         isEmpty: true,
         isMovable,
-        isDeletable,
-        isAbleToDeleteCompletely,
+        isDeletable: false,
+        isAbleToDeleteCompletely: false,
         isRevertible: false,
       };
     }
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
-
-    const isDeletable = this.canDelete(page.path, page.creator, operator, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, page.creator, operator, false); // use normal delete config
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
@@ -2208,8 +2206,8 @@ class PageService {
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
       isMovable,
-      isDeletable,
-      isAbleToDeleteCompletely,
+      isDeletable: isMovable,
+      isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
     };
 
