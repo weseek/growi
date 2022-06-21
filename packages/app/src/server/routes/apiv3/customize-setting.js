@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
@@ -10,6 +13,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body, query } = require('express-validator');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -92,6 +96,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const { customizeService } = crowi;
 
@@ -235,7 +242,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.put('/layout', loginRequiredStrictly, adminRequired, csrf, validator.layout, apiV3FormValidator, async(req, res) => {
+  router.put('/layout', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isContainerFluid': req.body.isContainerFluid,
     };
@@ -245,6 +252,10 @@ module.exports = (crowi) => {
       const customizedParams = {
         isContainerFluid: await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_LAYOUT_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ customizedParams });
     }
     catch (err) {
