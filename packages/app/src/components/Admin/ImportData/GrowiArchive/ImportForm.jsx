@@ -1,10 +1,9 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
@@ -290,7 +289,7 @@ class ImportForm extends React.Component {
 
   async import() {
     const {
-      appContainer, fileName, onPostImport, t,
+      fileName, onPostImport, t,
     } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
@@ -497,7 +496,6 @@ class ImportForm extends React.Component {
 
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   fileName: PropTypes.string,
@@ -506,9 +504,15 @@ ImportForm.propTypes = {
   onPostImport: PropTypes.func,
 };
 
+const ImportFormWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ImportForm t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, AdminSocketIoContainer]);
+const ImportFormWrapper = withUnstatedContainers(ImportFormWrapperFc, [AdminSocketIoContainer]);
 
-export default withTranslation()(ImportFormWrapper);
+export default ImportFormWrapper;

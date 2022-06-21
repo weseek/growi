@@ -1,15 +1,15 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { tags, attrs } from '~/services/xss/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { tags, attrs } from '~/services/xss/recommended-whitelist';
-
-import AppContainer from '~/client/services/AppContainer';
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import WhiteListInput from './WhiteListInput';
@@ -162,7 +162,6 @@ class XssForm extends React.Component {
 
 }
 
-const XssFormWrapper = withUnstatedContainers(XssForm, [AppContainer, AdminMarkDownContainer]);
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -170,4 +169,12 @@ XssForm.propTypes = {
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
-export default withTranslation()(XssFormWrapper);
+const XssFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <XssForm t={t} {...props} />;
+};
+
+const XssFormWrapper = withUnstatedContainers(XssFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+
+export default XssFormWrapper;

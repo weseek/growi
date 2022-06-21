@@ -1,7 +1,8 @@
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 class CheckBoxForSerchUserOption extends React.Component {
 
@@ -25,7 +26,6 @@ class CheckBoxForSerchUserOption extends React.Component {
 
 }
 
-
 CheckBoxForSerchUserOption.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -34,4 +34,9 @@ CheckBoxForSerchUserOption.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(CheckBoxForSerchUserOption);
+const CheckBoxForSerchUserOptionWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <CheckBoxForSerchUserOption t={t} {...props} />;
+};
+
+export default CheckBoxForSerchUserOptionWrapperFC;
