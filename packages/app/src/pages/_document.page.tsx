@@ -1,10 +1,11 @@
+import React from 'react';
+
+import fs from 'fs';
+
 import Document, {
   DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
 } from 'next/document';
-
-import fs from 'fs';
-import path from 'path';
 
 // import { renderScriptTagsByGroup, renderStyleTagsByGroup } from '~/service/cdn-resources-loader';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
