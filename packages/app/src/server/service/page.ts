@@ -334,16 +334,6 @@ class PageService {
     const isGuestUser = user == null;
     const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
 
-    if (page.isEmpty) {
-      // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
-      // Use creator id of ancestor page to determine whether the empty page is deletable
-      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      const creatorId = notEmptyClosestAncestor.creator;
-
-      pageInfo.isDeletable = this.canDelete(page.path, creatorId, user, false);
-      pageInfo.isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
-    }
-
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
 
@@ -363,6 +353,18 @@ class PageService {
     const isLiked: boolean = page.isLiked(user);
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+
+
+    // isDeletable & isAbleToDeleteCompletely
+    let creatorId = page.creator;
+    if (page.isEmpty) {
+      // Need non-empty ancestor page to get its creator id because empty page does NOT have it.
+      // Use creator id of ancestor page to determine whether the empty page is deletable
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      creatorId = notEmptyClosestAncestor.creator;
+    }
+    pageInfo.isDeletable = this.canDelete(page.path, creatorId, user, false);
+    pageInfo.isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
