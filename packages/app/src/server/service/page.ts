@@ -205,7 +205,6 @@ class PageService {
     // delete completely
     this.pageEvent.on('deleteCompletely', async(page, descendantPages, user) => {
       const isRecursively = descendantPages != null;
-      console.log('isRecursively?\n', isRecursively);
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY;
       try {
         await this.createAndSendNotifications(page, user, action, descendantPages);
@@ -216,9 +215,11 @@ class PageService {
     });
 
     // revert
-    this.pageEvent.on('revert', async(page, user) => {
+    this.pageEvent.on('revert', async(page, descendantPages, user) => {
+      const isRecursively = descendantPages != null;
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_REVERT : SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT;
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(page, user, action, descendantPages);
       }
       catch (err) {
         logger.error(err);
@@ -1934,10 +1935,9 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
-    this.pageEvent.emit('revert', page, user);
-
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      this.pageEvent.emit('revert', page, null, user);
     }
     else {
       let pageOp;
@@ -2035,7 +2035,7 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
-    this.pageEvent.emit('revert', page, user);
+    this.pageEvent.emit('revert', page, null, user);
 
     return updatedPage;
   }
@@ -2052,12 +2052,14 @@ class PageService {
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
+    const pageEvent = this.pageEvent;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
+          pageEvent.emit('revert', targetPage, batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
