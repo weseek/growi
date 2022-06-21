@@ -16,6 +16,7 @@ const nextConfig = {
   typescript: {
     tsconfigPath: 'tsconfig.build.client.json',
   },
+  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {

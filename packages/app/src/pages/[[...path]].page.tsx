@@ -16,9 +16,8 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
-// import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
+// import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
@@ -37,6 +36,8 @@ import {
 //   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
 //   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig,
 } from '../stores/context';
+
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
