@@ -9,9 +9,17 @@ import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import { useGrowiVersion } from '../stores/context';
+
+import { CommonProps } from './commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
-function GrowiApp({ Component, pageProps }: AppProps): JSX.Element {
+// modified version - allows for custom pageProps type
+// see: https://stackoverflow.com/a/67464299
+type GrowiAppProps<P> = {
+  pageProps: P;
+} & Omit<AppProps<P>, 'pageProps'>;
+
+function GrowiApp({ Component, pageProps }: GrowiAppProps<CommonProps>): JSX.Element {
   // useInterceptorManager(new InterceptorManager());
   useGrowiVersion(pageProps.growiVersion);
 
