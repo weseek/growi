@@ -354,7 +354,6 @@ class PageService {
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
-
     // isDeletable & isAbleToDeleteCompletely
     let creatorId = page.creator;
     if (page.isEmpty) {
