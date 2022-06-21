@@ -1,9 +1,12 @@
 import { body } from 'express-validator';
 
+import { SupportedAction } from '~/interfaces/activity';
 import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
@@ -151,6 +154,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     appSetting: [
@@ -294,7 +300,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -312,6 +318,10 @@ module.exports = (crowi) => {
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTING_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ appSettingParams });
     }
     catch (err) {
