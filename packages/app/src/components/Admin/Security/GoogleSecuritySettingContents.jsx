@@ -2,12 +2,11 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -193,18 +192,21 @@ class GoogleSecurityManagementContents extends React.Component {
 
 }
 
+const GoogleSecurityManagementContentsFc = (props) => {
+  const { t } = useTranslation();
+  return <GoogleSecurityManagementContents t={t} {...props} />;
+};
+
 
 GoogleSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementContentsWrapper = withUnstatedContainers(GoogleSecurityManagementContents, [
-  AppContainer,
+const GoogleSecurityManagementContentsWrapper = withUnstatedContainers(GoogleSecurityManagementContentsFc, [
   AdminGeneralSecurityContainer,
   AdminGoogleSecurityContainer,
 ]);
 
-export default withTranslation()(GoogleSecurityManagementContentsWrapper);
+export default GoogleSecurityManagementContentsWrapper;

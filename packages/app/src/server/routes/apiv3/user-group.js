@@ -1,8 +1,11 @@
+import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -31,6 +34,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const {
     UserGroupRelation,
@@ -222,13 +228,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.create, apiV3FormValidator, async(req, res) => {
     const { name, description = '', parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
       const userGroupDescription = crowi.xss.process(description);
       const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup }, 201);
     }

@@ -1,11 +1,12 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-
-import AppContainer from '~/client/services/AppContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 
 import NotificationTypeIcon from './NotificationTypeIcon';
 
@@ -35,9 +36,6 @@ class UserNotificationRow extends React.PureComponent {
 
 }
 
-
-const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRow, [AppContainer, AdminNotificationContainer]);
-
 UserNotificationRow.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -47,4 +45,14 @@ UserNotificationRow.propTypes = {
   onClickDeleteBtn: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserNotificationRowWrapper);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const UserNotificationRowWrapperWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <UserNotificationRow t={t} {...props} />;
+};
+
+const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRowWrapperWrapperFC, [AppContainer, AdminNotificationContainer]);
+
+
+export default UserNotificationRowWrapper;

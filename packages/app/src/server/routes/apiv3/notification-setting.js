@@ -1,8 +1,11 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
-import UpdatePost from '../../models/update-post';
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import UpdatePost from '../../models/update-post';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
@@ -91,6 +94,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
@@ -158,7 +164,8 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: user trigger notifications for updated
   */
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -167,6 +174,10 @@ module.exports = (crowi) => {
         createdUser: await UpdatePost.createUpdatePost(pathPattern, channel, req.user),
         userNotifications: await UpdatePost.findAll(),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_NOTIFICATION_SETTINGS_ADD };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ responseParams }, 201);
     }
     catch (err) {

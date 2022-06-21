@@ -1,11 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class StatusActivateButton extends React.Component {
 
@@ -39,10 +41,15 @@ class StatusActivateButton extends React.Component {
 
 }
 
+const StatusActivateFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <StatusActivateButton t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const StatusActivateFormWrapper = withUnstatedContainers(StatusActivateButton, [AppContainer, AdminUsersContainer]);
+const StatusActivateFormWrapper = withUnstatedContainers(StatusActivateFormWrapperFC, [AppContainer, AdminUsersContainer]);
 
 StatusActivateButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -52,4 +59,4 @@ StatusActivateButton.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(StatusActivateFormWrapper);
+export default StatusActivateFormWrapper;

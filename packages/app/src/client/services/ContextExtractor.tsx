@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useActivityExpirationSeconds,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useActivityExpirationSeconds, useGrowiVersion,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -120,7 +120,7 @@ const ContextExtractorOnce: FC = () => {
   useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
   useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
   useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
-
+  useGrowiVersion(configByContextHydrate.crowi.version);
 
   // Page
   useCurrentCreatedAt(createdAt);

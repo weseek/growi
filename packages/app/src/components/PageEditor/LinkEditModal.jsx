@@ -3,7 +3,7 @@ import React from 'react';
 import path from 'path';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -458,6 +458,11 @@ class LinkEditModal extends React.PureComponent {
 
 }
 
+const LinkEditModalFc = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
+  return <LinkEditModal t={t} ref={ref} {...props} />;
+});
+
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -467,6 +472,6 @@ LinkEditModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModalFc, [PageContainer]);
 
-export default withTranslation('translation', { withRef: true })(LinkEditModalWrapper);
+export default LinkEditModalWrapper;

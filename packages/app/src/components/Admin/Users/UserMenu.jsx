@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
 } from 'reactstrap';
@@ -116,7 +116,12 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
+const UserMenuWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserMenu t={t} {...props} />;
+};
+
+const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AppContainer, AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -126,4 +131,4 @@ UserMenu.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserMenuWrapper);
+export default UserMenuWrapper;

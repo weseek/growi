@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3PostForm } from '~/client/util/apiv3-client';
@@ -97,4 +97,10 @@ UploadForm.propTypes = {
   onVersionMismatch: PropTypes.func,
 };
 
-export default withTranslation()(UploadForm);
+const UploadFormWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <UploadForm t={t} {...props} />;
+};
+
+export default UploadFormWrapperFc;

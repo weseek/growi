@@ -1,19 +1,18 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
+import { useTranslation } from 'react-i18next';
 // import Button from 'react-bootstrap/es/Button';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 class UserInviteModal extends React.Component {
 
@@ -281,10 +280,15 @@ class UserInviteModal extends React.Component {
 
 }
 
+const UserInviteModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserInviteModal t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = withUnstatedContainers(UserInviteModal, [AppContainer, AdminUsersContainer]);
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AppContainer, AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {
@@ -293,4 +297,4 @@ UserInviteModal.propTypes = {
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
-export default withTranslation()(UserInviteModalWrapper);
+export default UserInviteModalWrapper;
