@@ -36,6 +36,15 @@ export const toggleBookmark = async(pageId: string, currentValue?: boolean): Pro
   }
 };
 
+export const toggleContentWidth = async(pageId: string, currentValue?: boolean): Promise<void> => {
+  try {
+    await apiv3Put('/page/content-width', { pageId, bool: !currentValue });
+  }
+  catch (err) {
+    toastError(err);
+  }
+};
+
 export const bookmark = async(pageId: string): Promise<void> => {
   try {
     await apiv3Put('/bookmarks', { pageId, bool: true });
