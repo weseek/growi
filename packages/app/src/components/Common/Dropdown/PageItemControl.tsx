@@ -59,9 +59,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    pageId, isLoading,
-    pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
+    pageId, isLoading, pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickRevertMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
@@ -269,9 +269,8 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit,
-    children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
+    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
