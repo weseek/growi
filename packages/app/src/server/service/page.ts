@@ -1435,7 +1435,7 @@ class PageService {
     }
     else { // always recursive
       deletedPage = page;
-      await this.deleteEmptyTarget(page);
+      await Page.deleteOne({ _id: page._id, isEmpty: true });
     }
 
     // 1. Update descendantCount
@@ -1500,12 +1500,6 @@ class PageService {
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
-  }
-
-  private async deleteEmptyTarget(page): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    await Page.deleteOne({ _id: page._id, isEmpty: true });
   }
 
   async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
