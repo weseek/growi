@@ -11,16 +11,19 @@ function getURLQueryParamValue(key: string) {
 const queryCompareFormat = new RegExp(/([a-z0-9]){24}...([a-z0-9]){24}/);
 
 const ShowPageAccessoriesModal = (): JSX.Element => {
-  const { open: openPageAccessories } = usePageAccessoriesModal();
+  const { data: status, open: openPageAccessories } = usePageAccessoriesModal();
   useEffect(() => {
     const pageIdParams = getURLQueryParamValue('compare');
+    if (status == null || status.isOpened === true) {
+      return;
+    }
     if (pageIdParams != null) {
       if (queryCompareFormat.test(pageIdParams)) {
         openPageAccessories(PageAccessoriesModalContents.PageHistory);
+
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [openPageAccessories, status]);
   return <></>;
 };
 
