@@ -32,10 +32,10 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error>
 };
 
 export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
-  const { data: currentPageId } = useCurrentPageId();
+  const { data: _currentPageId } = useCurrentPageId();
   const { data: isEmptyPage } = useIsEmptyPage();
-  const isNonEmptyPageId = currentPageId != null && !isEmptyPage; // False if the page is empty
-  return useSWRxPage(isNonEmptyPageId ? currentPageId : undefined, shareLinkId);
+  const currentPageId = (isEmptyPage || _currentPageId == null) ? undefined : _currentPageId; // undefined if page is empty
+  return useSWRxPage(currentPageId, shareLinkId);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
