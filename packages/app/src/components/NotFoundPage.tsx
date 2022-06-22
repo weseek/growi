@@ -31,7 +31,6 @@ const NotFoundPage = (): JSX.Element => {
       return;
     }
     const isPermalink = !notFoundTargetPathOrId?.includes('/');
-
     if (isEmptyPage && isPermalink) {
       replaceURLHistory(path);
     }
