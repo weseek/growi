@@ -50,6 +50,9 @@ class ActivityService {
   getAvailableActions = function(): SupportedActionType[] {
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
 
+    // TODO: 97982, 97986
+    // Update AvailableActions taking into account the values of "AUDIT_LOG_EXCLUDE_ACTIONS" and “AUDIT_LOG_ADDITONAL_ACTIONS"
+
     const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified];
 
     switch (auditLogActionGroupSize) {
