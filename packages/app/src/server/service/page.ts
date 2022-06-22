@@ -2257,7 +2257,7 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
     // Get user to be notified
     let targetUsers = await activity.getNotificationTargetUsers();
-    if (descendantPages !== undefined && descendantPages.length > 0) {
+    if (descendantPages != null && descendantPages.length > 0) {
       const User = this.crowi.model('User');
       const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
       const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
