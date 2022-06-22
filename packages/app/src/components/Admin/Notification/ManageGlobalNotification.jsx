@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -312,12 +312,19 @@ class ManageGlobalNotification extends React.Component {
 
 }
 
-const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AppContainer]);
-
 ManageGlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
 };
 
-export default withTranslation()(ManageGlobalNotificationWrapper);
+const ManageGlobalNotificationWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <ManageGlobalNotification t={t} {...props} />;
+};
+
+const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
+
+
+export default ManageGlobalNotificationWrapper;

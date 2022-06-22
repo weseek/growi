@@ -12,6 +12,10 @@ import { useStaticSWR } from './use-static-swr';
 type Nullable<T> = T | null;
 
 
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
+
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
@@ -120,10 +124,6 @@ export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Null
   return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
 };
 
-export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData);
-};
-
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
@@ -166,6 +166,10 @@ export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boole
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+};
+
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
 };
 
 

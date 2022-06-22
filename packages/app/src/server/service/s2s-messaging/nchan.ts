@@ -1,11 +1,13 @@
 import path from 'path';
-import WebSocket from 'ws';
+
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import WebSocket from 'ws';
 
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../../models/vo/s2s-message';
+
 import { AbstractS2sMessagingService } from './base';
 
 const logger = loggerFactory('growi:service:s2s-messaging:nchan');
@@ -56,7 +58,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
   /**
    * @inheritdoc
    */
-  async publish(s2sMessage: S2sMessage): Promise<void> {
+  override async publish(s2sMessage: S2sMessage): Promise<void> {
     await super.publish(s2sMessage);
 
     const url = this.constructUrl(this.publishPath).toString();
@@ -69,7 +71,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
   /**
    * @inheritdoc
    */
-  addMessageHandler(handlable) {
+  override addMessageHandler(handlable) {
     if (this.socket == null) {
       logger.error('socket has not initialized yet.');
       return;
@@ -82,7 +84,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
   /**
    * @inheritdoc
    */
-  removeMessageHandler(handlable) {
+  override removeMessageHandler(handlable) {
     if (this.socket == null) {
       logger.error('socket has not initialized yet.');
       return;

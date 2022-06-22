@@ -1,16 +1,18 @@
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
+import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
-import { useCurrentUser, useDefaultIndentSize, useIsGuestUser } from './context';
+import {
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
+} from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
-
-export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSlackEnabled', isEnabled, { fallbackData: false });
-};
 
 
 type EditorSettingsOperation = {
@@ -68,4 +70,41 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
     undefined,
     { fallbackData: defaultIndentSize },
   );
+};
+
+/*
+* Slack Notification
+*/
+export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResponse<string[], Error> => {
+  const shouldFetch: boolean = currentPagePath != null;
+  return useSWR(
+    shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
+    (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
+    { fallbackData: [''] },
+  );
+};
+
+export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR(
+    'isSlackEnabled',
+    undefined,
+    { fallbackData: false },
+  );
+};
+
+export type IPageTagsForEditorsOption = {
+  sync: (tags?: string[]) => void;
+}
+
+export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
+
+  return {
+    ...swrResult,
+    sync: (): void => {
+      const { mutate } = swrResult;
+      mutate(tagsInfoData?.tags || [], false);
+    },
+  };
 };

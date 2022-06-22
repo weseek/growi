@@ -6,6 +6,9 @@ import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
 import PutbackPageModal from '~/components/PutbackPageModal';
+import ShortcutsModal from '~/components/ShortcutsModal';
+import SystemVersion from '~/components/SystemVersion';
+import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
@@ -31,6 +34,7 @@ const xss = new Xss();
 window.xss = xss;
 
 window.globalEmitter = new EventEmitter();
+window.interceptorManager = new InterceptorManager();
 
 // create unstated container instance
 const appContainer = new AppContainer();
@@ -59,8 +63,11 @@ const componentMappings = {
   'page-accessories-modal': <PageAccessoriesModal />,
   'descendants-page-list-modal': <DescendantsPageListModal />,
   'page-put-back-modal': <PutbackPageModal />,
+  'shortcuts-modal': <ShortcutsModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
+  'system-version': <SystemVersion />,
+
 
 };
 

@@ -11,12 +11,12 @@ import mongoose from 'mongoose';
 import pkg from '^/package.json';
 
 import CdnResourcesService from '~/services/cdn-resources-service';
-import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
+import PageOperation, { PageActionType } from '../models/page-operation';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
@@ -72,7 +72,6 @@ function Crowi() {
   this.pageService = null;
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
-  this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
   this.activityService = null;
@@ -148,6 +147,16 @@ Crowi.prototype.init = async function() {
 
   await this.autoInstall();
 };
+
+/**
+ * Execute functions that should be run after the express server is ready.
+ */
+Crowi.prototype.asyncAfterExpressServerReady = async function() {
+  if (this.pageOperationService != null) {
+    await this.pageOperationService.afterExpressServerReady();
+  }
+};
+
 
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
@@ -313,10 +322,6 @@ Crowi.prototype.getSlackLegacy = function() {
   return this.slackLegacy;
 };
 
-Crowi.prototype.getInterceptorManager = function() {
-  return this.interceptorManager;
-};
-
 Crowi.prototype.getGlobalNotificationService = function() {
   return this.globalNotificationService;
 };
@@ -468,6 +473,9 @@ Crowi.prototype.start = async function() {
 
   // setup Global Error Handlers
   this.setupGlobalErrorHandlers();
+
+  // Execute this asynchronously after the express server is ready so it does not block the ongoing process
+  this.asyncAfterExpressServerReady();
 
   return serverListening;
 };
@@ -687,7 +695,6 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
-    // TODO: Remove this code when resuming feature is implemented
     await this.pageOperationService.init();
   }
 };

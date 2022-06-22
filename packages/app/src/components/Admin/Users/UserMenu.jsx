@@ -1,20 +1,23 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
 } from 'reactstrap';
 
-import StatusActivateButton from './StatusActivateButton';
-import StatusSuspendedButton from './StatusSuspendedButton';
-import UserRemoveButton from './UserRemoveButton';
-import RemoveAdminButton from './RemoveAdminButton';
-import GiveAdminButton from './GiveAdminButton';
-import SendInvitationEmailButton from './SendInvitationEmailButton';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
+import GiveAdminButton from './GiveAdminButton';
+import RemoveAdminMenuItem from './RemoveAdminMenuItem';
+import SendInvitationEmailButton from './SendInvitationEmailButton';
+import StatusActivateButton from './StatusActivateButton';
+import StatusSuspendedMenuItem from './StatusSuspendMenuItem';
+import UserRemoveButton from './UserRemoveButton';
+
 
 class UserMenu extends React.Component {
 
@@ -63,7 +66,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-header">{t('status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-          {user.status === 2 && <StatusSuspendedButton user={user} />}
+          {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
           {user.status === 5 && (
             <SendInvitationEmailButton
               user={user}
@@ -85,7 +88,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.administrator_menu')}</li>
         <li>
-          {user.admin === true && <RemoveAdminButton user={user} />}
+          {user.admin === true && <RemoveAdminMenuItem user={user} />}
           {user.admin === false && <GiveAdminButton user={user} />}
         </li>
       </Fragment>
@@ -113,7 +116,12 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
+const UserMenuWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserMenu t={t} {...props} />;
+};
+
+const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AppContainer, AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -123,4 +131,4 @@ UserMenu.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserMenuWrapper);
+export default UserMenuWrapper;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
@@ -13,7 +13,8 @@ import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
@@ -64,6 +65,7 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       isSlackConfigured: config.isSlackConfigured,
+      slackChannels: this.props.slackChannels,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -77,8 +79,8 @@ class CommentEditor extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
+    this.fetchSlackChannels = this.fetchSlackChannels.bind(this);
   }
 
   updateState(value) {
@@ -97,12 +99,18 @@ class CommentEditor extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
-  onSlackEnabledFlagChange(isSlackEnabled) {
-    this.props.commentContainer.setState({ isSlackEnabled });
+  fetchSlackChannels(slackChannels) {
+    this.setState({ slackChannels });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.slackChannels !== prevProps.slackChannels) {
+      this.fetchSlackChannels(this.props.slackChannels);
+    }
   }
 
   onSlackChannelsChange(slackChannels) {
-    this.props.commentContainer.setState({ slackChannels });
+    this.setState({ slackChannels });
   }
 
   initializeEditor() {
@@ -165,8 +173,8 @@ class CommentEditor extends React.Component {
           this.state.comment,
           this.state.isMarkdown,
           replyTo,
-          commentContainer.state.isSlackEnabled,
-          commentContainer.state.slackChannels,
+          this.props.isSlackEnabled,
+          this.state.slackChannels,
         );
       }
       this.initializeEditor();
@@ -216,7 +224,6 @@ class CommentEditor extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
-        inputRef={(el) => { this.previewElement = el }}
         html={this.state.html}
       />
     );
@@ -228,7 +235,7 @@ class CommentEditor extends React.Component {
     };
 
     const { growiRenderer } = this.props;
-    const interceptorManager = this.props.appContainer.interceptorManager;
+    const { interceptorManager } = window;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -273,7 +280,7 @@ class CommentEditor extends React.Component {
   }
 
   renderReady() {
-    const { appContainer, commentContainer, isMobile } = this.props;
+    const { isMobile } = this.props;
     const { activeTab } = this.state;
 
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -358,9 +365,9 @@ class CommentEditor extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled={commentContainer.state.isSlackEnabled}
-                    slackChannels={commentContainer.state.slackChannels}
-                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                    isSlackEnabled={this.props.isSlackEnabled}
+                    slackChannels={this.state.slackChannels}
+                    onEnabledFlagChange={this.props.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
                   />
@@ -416,6 +423,8 @@ CommentEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
+  slackChannels: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   currentUser: PropTypes.instanceOf(Object),
   isMobile: PropTypes.bool,
@@ -426,15 +435,26 @@ CommentEditor.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
+  onSlackEnabledFlagChange: PropTypes.func,
 };
 
 const CommentEditorWrapper = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: currentUser } = useCurrentUser();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
+  const onSlackEnabledFlagChange = useCallback((isSlackEnabled) => {
+    mutateIsSlackEnabled(isSlackEnabled, false);
+  }, [mutateIsSlackEnabled]);
 
   return (
     <CommentEditorHOCWrapper
       {...props}
+      onSlackEnabledFlagChange={onSlackEnabledFlagChange}
+      slackChannels={slackChannelsData.toString()}
+      isSlackEnabled={isSlackEnabled}
       currentUser={currentUser}
       isMobile={isMobile}
     />

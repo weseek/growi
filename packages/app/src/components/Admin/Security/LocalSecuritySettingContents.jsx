@@ -1,14 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class LocalSecuritySettingContents extends React.Component {
 
@@ -249,10 +251,15 @@ LocalSecuritySettingContents.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
-const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContents, [
+const LocalSecuritySettingContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <LocalSecuritySettingContents t={t} {...props} />;
+};
+
+const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContentsWrapperFC, [
   AppContainer,
   AdminGeneralSecurityContainer,
   AdminLocalSecurityContainer,
 ]);
 
-export default withTranslation()(LocalSecuritySettingContentsWrapper);
+export default LocalSecuritySettingContentsWrapper;
