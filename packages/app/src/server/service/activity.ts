@@ -58,12 +58,12 @@ class ActivityService {
 
   getAvailableActions = function(): SupportedActionType[] {
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
-    const auditLogAdditonalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditonalActions');
+    const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
-    let additonalActions: SupportedActionType[] = [];
-    if (auditLogAdditonalActions != null) {
-      additonalActions = parseActionString(auditLogAdditonalActions);
+    let additionalActions: SupportedActionType[] = [];
+    if (auditLogAdditionalActions != null) {
+      additionalActions = parseActionString(auditLogAdditionalActions);
     }
 
     let excludeActions: SupportedActionType[] = [];
@@ -71,7 +71,7 @@ class ActivityService {
       excludeActions = parseActionString(auditLogExcludeActions);
     }
 
-    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified, ...additonalActions];
+    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified, ...additionalActions];
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:

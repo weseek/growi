@@ -634,9 +634,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.STRING,
     default: 'SMALL',
   },
-  AUDIT_LOG_ADDITONAL_ACTIONS: {
+  AUDIT_LOG_ADDITIONAL_ACTIONS: {
     ns: 'crowi',
-    key: 'app:auditLogAdditonalActions',
+    key: 'app:auditLogAdditionalActions',
     type: ValueType.STRING,
     default: null,
   },
