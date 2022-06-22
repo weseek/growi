@@ -145,6 +145,7 @@ export const MediumActionGroup = {
 // MediumActionGroup + All Actions by Admin Users - PAGE_VIEW
 export const LargeActionGroup = {
   ...MediumActionGroup,
+  ACTION_ADMIN_APP_SETTINGS_UPDATE,
   ACTION_ADMIN_SECURITY_SETTINGS_UPDATE,
   ACTION_ADMIN_LINE_BREAK_UPDATE,
   ACTION_ADMIN_LAYOUT_UPDATE,
