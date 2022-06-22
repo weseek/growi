@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -14,7 +14,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
-
 
 const Pager = (props) => {
   if (props.links.length === 0) {
@@ -192,12 +191,20 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer, AdminGeneralSecurityContainer]);
-
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-export default withTranslation()(ShareLinkSettingWrapper);
+const ShareLinkSettingWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ShareLinkSetting t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSettingWrapperFC, [AppContainer, AdminGeneralSecurityContainer]);
+
+export default ShareLinkSettingWrapper;

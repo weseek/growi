@@ -1,24 +1,28 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
+
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-import SmtpSetting from './SmtpSetting';
 import SesSetting from './SesSetting';
+import SmtpSetting from './SmtpSetting';
 
 
-function MailSetting(props) {
-  const { t, adminAppContainer } = props;
+type Props = {
+  adminAppContainer: AdminAppContainer,
+}
+
+
+const MailSetting = (props: Props) => {
+  const { t } = useTranslation();
+  const { adminAppContainer } = props;
 
   const transmissionMethods = ['smtp', 'ses'];
 
   async function submitHandler() {
-    const { t } = props;
-
     try {
       await adminAppContainer.updateMailSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings') }));
@@ -101,17 +105,11 @@ function MailSetting(props) {
     </React.Fragment>
   );
 
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
-const MailSettingWrapper = withUnstatedContainers(MailSetting, [AppContainer, AdminAppContainer]);
+const MailSettingWrapper = withUnstatedContainers(MailSetting, [AdminAppContainer]);
 
-MailSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
-
-export default withTranslation()(MailSettingWrapper);
+export default MailSettingWrapper;

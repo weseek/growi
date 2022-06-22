@@ -1,11 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import { Progress } from 'reactstrap';
 
-const LabeledProgressBar = (props) => {
+type Props = {
+  header: string,
+  currentCount: number,
+  totalCount: number,
+  errorsCount?: number,
+  isInProgress?: boolean,
+}
 
+const LabeledProgressBar = (props: Props): JSX.Element => {
   const {
     header, currentCount, totalCount, errorsCount, isInProgress,
   } = props;
@@ -27,12 +32,4 @@ const LabeledProgressBar = (props) => {
 
 };
 
-LabeledProgressBar.propTypes = {
-  header: PropTypes.string.isRequired,
-  currentCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  errorsCount: PropTypes.number,
-  isInProgress: PropTypes.bool,
-};
-
-export default withTranslation()(LabeledProgressBar);
+export default LabeledProgressBar;
