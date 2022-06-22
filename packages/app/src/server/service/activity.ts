@@ -1,3 +1,4 @@
+import { differenceWith } from 'lodash';
 import mongoose from 'mongoose';
 
 import {
@@ -11,6 +12,14 @@ import Crowi from '../crowi';
 
 
 const logger = loggerFactory('growi:service:ActivityService');
+
+const parseActionString = (actionsString: SupportedActionType): SupportedActionType[] => {
+  if (actionsString == null) {
+    return [];
+  }
+
+  return (actionsString as string).split(',').map(value => value.trim()) as SupportedActionType[];
+};
 
 class ActivityService {
 
@@ -49,11 +58,20 @@ class ActivityService {
 
   getAvailableActions = function(): SupportedActionType[] {
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
+    const auditLogAdditonalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditonalActions');
+    const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
-    // TODO: 97982, 97986
-    // Update AvailableActions taking into account the values of "AUDIT_LOG_EXCLUDE_ACTIONS" and “AUDIT_LOG_ADDITONAL_ACTIONS"
+    let additonalActions: SupportedActionType[] = [];
+    if (auditLogAdditonalActions != null) {
+      additonalActions = parseActionString(auditLogAdditonalActions);
+    }
 
-    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified];
+    let excludeActions: SupportedActionType[] = [];
+    if (auditLogExcludeActions != null) {
+      excludeActions = parseActionString(auditLogExcludeActions);
+    }
+
+    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified, ...additonalActions];
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
@@ -67,7 +85,8 @@ class ActivityService {
         break;
     }
 
-    return Array.from(new Set(availableActions));
+    // availableActions - excludeActions
+    return differenceWith(Array.from(new Set(availableActions)), excludeActions);
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
