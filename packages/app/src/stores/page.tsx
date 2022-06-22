@@ -13,7 +13,7 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
-import { useCurrentPageId, useCurrentPagePath } from './context';
+import { useCurrentPageId, useCurrentPagePath, useIsEmptyPage } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
@@ -33,8 +33,9 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error>
 
 export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
   const { data: currentPageId } = useCurrentPageId();
-
-  return useSWRxPage(currentPageId ?? undefined, shareLinkId);
+  const { data: isEmptyPage } = useIsEmptyPage();
+  const isPageIdExist = !isEmptyPage && currentPageId != null; // False if the page is empty
+  return useSWRxPage(isPageIdExist ? currentPageId : undefined, shareLinkId);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
