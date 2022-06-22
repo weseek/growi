@@ -156,7 +156,7 @@ export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRRespon
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
-export const useIsEmptyPageInNotFoundContext = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEmptyPageInNotFoundContext', initialData);
 };
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {

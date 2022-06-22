@@ -279,11 +279,10 @@ module.exports = function(crowi, app) {
     renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
-  async function addRenderVarsWhenEmptyPage(renderVars, pageId) {
-    if (pageId == null) {
-      return;
-    }
+  async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
+    if (!isEmpty) return;
     renderVars.pageId = pageId;
+    renderVars.isEmpty = isEmpty;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -341,9 +340,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
-    if (req.pageId != null) {
-      await addRenderVarsWhenEmptyPage(renderVars, req.pageId);
-    }
+    await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
     return res.render(view, renderVars);
   }
 
@@ -430,6 +427,7 @@ module.exports = function(crowi, app) {
     if (page.isEmpty) {
       req.pageId = page._id;
       req.pagePath = page.path;
+      req.isEmpty = page.isEmpty;
       return _notFound(req, res);
     }
 
@@ -633,6 +631,7 @@ module.exports = function(crowi, app) {
     const emptyPage = pages[0];
     if (emptyPage != null) {
       req.pageId = emptyPage._id;
+      req.isEmpty = emptyPage.isEmpty;
       return _notFound(req, res);
     }
     // redirect by PageRedirect
