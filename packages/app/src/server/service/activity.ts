@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, ActionGroupSize, AllSupportedAction,
+  AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -17,7 +18,8 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
     return [];
   }
 
-  return (actionsString as string).split(',').map(value => value.trim()) as SupportedActionType[];
+  const actions = (actionsString as string).split(',').map(value => value.trim()) as SupportedActionType[];
+  return actions.filter(action => AllSupportedAction.includes(action));
 };
 
 class ActivityService {
@@ -89,6 +91,7 @@ class ActivityService {
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
+    console.log(this.getAvailableActions());
     return this.getAvailableActions().includes(action);
   }
 
