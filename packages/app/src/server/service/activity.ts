@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-import { IActivity } from '~/interfaces/activity';
+import {
+  IActivity, SupportedActionType, ActionGroupSize, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+} from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
@@ -20,22 +22,56 @@ class ActivityService {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
 
+    this.getAvailableActions = this.getAvailableActions.bind(this);
+    this.shoudUpdateActivity = this.shoudUpdateActivity.bind(this);
+
     this.initActivityEventListeners();
   }
 
   initActivityEventListeners(): void {
     this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
       let activity: IActivity;
-      try {
-        activity = await Activity.updateByParameters(activityId, parameters);
-      }
-      catch (err) {
-        logger.error('Update activity failed', err);
-        return;
-      }
+      const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
-      this.activityEvent.emit('updated', activity, target);
+      if (shoudUpdate) {
+        try {
+          activity = await Activity.updateByParameters(activityId, parameters);
+        }
+        catch (err) {
+          logger.error('Update activity failed', err);
+          return;
+        }
+
+        this.activityEvent.emit('updated', activity, target);
+      }
     });
+  }
+
+  getAvailableActions = function(): SupportedActionType[] {
+    const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
+
+    // TODO: 97982, 97986
+    // Update AvailableActions taking into account the values of "AUDIT_LOG_EXCLUDE_ACTIONS" and “AUDIT_LOG_ADDITONAL_ACTIONS"
+
+    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified];
+
+    switch (auditLogActionGroupSize) {
+      case ActionGroupSize.Small:
+        availableActions.push(...AllSmallGroupActions);
+        break;
+      case ActionGroupSize.Medium:
+        availableActions.push(...AllMediumGroupActions);
+        break;
+      case ActionGroupSize.Large:
+        availableActions.push(...AllLargeGroupActions);
+        break;
+    }
+
+    return Array.from(new Set(availableActions));
+  }
+
+  shoudUpdateActivity = function(action: SupportedActionType): boolean {
+    return this.getAvailableActions().includes(action);
   }
 
   createTtlIndex = async function() {
