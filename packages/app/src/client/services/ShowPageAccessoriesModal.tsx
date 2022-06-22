@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
@@ -12,18 +12,22 @@ const queryCompareFormat = new RegExp(/([a-z0-9]){24}...([a-z0-9]){24}/);
 
 const ShowPageAccessoriesModal = (): JSX.Element => {
   const { data: status, open: openPageAccessories } = usePageAccessoriesModal();
+  const [isOpenDone, setIsOpenDone] = useState(false);
   useEffect(() => {
     const pageIdParams = getURLQueryParamValue('compare');
     if (status == null || status.isOpened === true) {
       return;
     }
+    if (isOpenDone === true) {
+      return;
+    }
     if (pageIdParams != null) {
       if (queryCompareFormat.test(pageIdParams)) {
         openPageAccessories(PageAccessoriesModalContents.PageHistory);
-
+        setIsOpenDone(true);
       }
     }
-  }, [openPageAccessories, status]);
+  }, [openPageAccessories, status, isOpenDone]);
   return <></>;
 };
 
