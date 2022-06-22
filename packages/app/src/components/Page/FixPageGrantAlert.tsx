@@ -9,9 +9,7 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant, IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
-import {
-  useCurrentPageId, useCurrentUser, useHasParent,
-} from '~/stores/context';
+import { useCurrentPageId, useCurrentUser, useHasParent } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
 
 type ModalProps = {
