@@ -16,11 +16,12 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -39,7 +40,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath,
+  collectAncestorPaths, isMovablePage, canMoveByPath, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -542,6 +543,11 @@ class PageService {
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
+    // 5.increase parent's descendantCount.
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToIncreaseForOperationInterruption = 1;
+    await Page.incrementDescendantCountOfPageIds([newParent._id], nToIncreaseForOperationInterruption);
+
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
@@ -568,10 +574,24 @@ class PageService {
 
     const exParentId = page.parent;
 
+    const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
+    try {
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    }
+    catch (err) {
+      logger.warn(err);
+      throw Error(err);
+    }
+    finally {
+      this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
+    }
 
-    // reduce ancestore's descendantCount
+    // reduce parent's descendantCount
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToReduceForOperationInterruption = -1;
+    await Page.incrementDescendantCountOfPageIds([renamedPage.parent], nToReduceForOperationInterruption);
+
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
     await this.updateDescendantCountOfAncestors(exParentId, nToReduce, true);
 
@@ -581,11 +601,37 @@ class PageService {
 
     // Remove leaf empty pages if not moving to under the ex-target position
     if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
-      // remove empty pages at leaf position
+    // remove empty pages at leaf position
       await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
+  async resumeRenameSubOperation(renamedPage: PageDocument): Promise<void> {
+
+    // findOne PageOperation
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': renamedPage._id };
+    const pageOp = await PageOperation.findOne(filter);
+    if (pageOp == null) {
+      throw Error('There is nothing to be processed right now');
+    }
+    const isProcessable = pageOp.isProcessable();
+    if (!isProcessable) {
+      throw Error('This page operation is currently being processed');
+    }
+
+    const {
+      page, toPath, options, user,
+    } = pageOp;
+
+    // check property
+    if (toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+    }
+
+    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -3470,6 +3516,107 @@ class PageService {
     this.pageEvent.emit('create', savedPage, dummyUser);
 
     return savedPage;
+  }
+
+  /*
+   * Find all children by parent's path or id. Using id should be prioritized
+   */
+  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    let queryBuilder: PageQueryBuilder;
+    if (hasSlash(parentPathOrId)) {
+      const path = parentPathOrId;
+      const regexp = generateChildrenRegExp(path);
+      queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+    }
+    else {
+      const parentId = parentPathOrId;
+      // Use $eq for user-controlled sources. see: https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/#recommendation
+      queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
+    }
+    await queryBuilder.addViewerCondition(user, userGroups);
+
+    const pages = await queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    return pages;
+  }
+
+  async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
+    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+
+    // get pages at once
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
+    await queryBuilder.addViewerCondition(user, userGroups);
+    const pages = await queryBuilder
+      .addConditionAsOnTree()
+      .addConditionToMinimizeDataForRendering()
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    this.injectIsTargetIntoPages(pages, path);
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    /*
+     * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+     */
+    const pathToChildren: Record<string, PageDocument[]> = {};
+    const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+    sortedPaths.every((path) => {
+      const children = pages.filter(page => pathlib.dirname(page.path) === path);
+      if (children.length === 0) {
+        return false; // break when children do not exist
+      }
+      pathToChildren[path] = children;
+      return true;
+    });
+
+    return pathToChildren;
+  }
+
+  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
+    pages.forEach((page) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+    });
+  }
+
+  /**
+   * Inject processData into page docuements
+   * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
+   */
+  private async injectProcessDataIntoPagesByActionTypes(
+      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+      actionTypes: PageActionType[],
+  ): Promise<void> {
+
+    const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
+    if (pageOperations == null || pageOperations.length === 0) {
+      return;
+    }
+
+    const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
+    const operatingPageIds: string[] = Object.keys(processInfo);
+
+    // inject processData into pages
+    pages.forEach((page) => {
+      const pageId = page._id.toString();
+      if (operatingPageIds.includes(pageId)) {
+        const processData: IPageOperationProcessData = processInfo[pageId];
+        page.processData = processData;
+      }
+    });
   }
 
 }
