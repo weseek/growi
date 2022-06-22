@@ -17,7 +17,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -41,6 +41,7 @@ import {
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
+import { PageModel } from '~/server/models/page';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -124,11 +125,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // const { data: editorMode } = useEditorMode();
 
-  let pageWithMeta;
+  let pageWithMeta: IPageWithMeta | undefined;
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
-  // useSWRxCurrentPage(page); // TODO: store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -188,7 +190,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 PageAlerts<br />
                 {/* <DisplaySwitcher /> */}
                 DisplaySwitcher<br />
-                revision: {pageWithMeta.data.revision}<br />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
                 PageStatusAlert
@@ -235,8 +236,8 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
-  // await page.populateDataToShowRevision();
-  props.pageWithMetaStr = JSON.stringify(serializeUserSecurely(result));
+  await (page as unknown as PageModel).populateDataToShowRevision();
+  props.pageWithMetaStr = JSON.stringify(result);
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {

@@ -5,7 +5,7 @@ import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta, IPageInfoAll,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
@@ -18,24 +18,25 @@ import { useCurrentPageId, useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
-export const useSWRxPage = (pageId?: string, shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR(
+export const useSWRxPage = (pageId?: string, shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+  return useSWR<IPageHasId, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
+    { fallbackData: initialData },
   );
 };
 
 export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR(
+  return useSWR<IPageHasId, Error>(
     path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
+export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  return useSWRxPage(currentPageId ?? undefined, shareLinkId);
+  return useSWRxPage(currentPageId ?? undefined, shareLinkId, initialData);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -105,14 +106,16 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
+    initialData?: IPageInfoAll,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
-  return useSWRImmutable(
+  return useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
     pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
+    { fallbackData: initialData },
   );
 };
 
