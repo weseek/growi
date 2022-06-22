@@ -8,7 +8,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+} from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -208,8 +210,12 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
+      if (page.data._id !== null) {
+        window.location.href = `/${page.data._id}`;
+        return;
+      }
       window.location.reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
@@ -245,6 +251,18 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
+    let additionalMenuItemsRenderer;
+    if (revisionId != null) {
+      additionalMenuItemsRenderer = props => (
+        <AdditionalMenuItems
+          {...props}
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+          onClickTemplateMenuItem={templateMenuItemClickHandler}
+        />
+      );
+    }
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
@@ -258,15 +276,7 @@ const GrowiContextualSubNavigation = (props) => {
                 path={path}
                 disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={props => (
-                  <AdditionalMenuItems
-                    {...props}
-                    pageId={pageId}
-                    revisionId={revisionId}
-                    isLinkSharingDisabled={isLinkSharingDisabled}
-                    onClickTemplateMenuItem={templateMenuItemClickHandler}
-                  />
-                )}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}

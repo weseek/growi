@@ -36,7 +36,6 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();

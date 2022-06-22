@@ -16,7 +16,7 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useIsEmptyPageInNotFoundContext,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -388,12 +388,13 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
+  const { data: isEmptyPageInNotFoundContext } = useIsEmptyPageInNotFoundContext();
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    (includesUndefined || isEmptyPageInNotFoundContext) ? null : key,
     () => isPageExist && !isUserPage,
   );
 };
