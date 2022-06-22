@@ -3,7 +3,7 @@ import React, { useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { useCurrentPageId, useCurrentPagePath, useNotFoundTargetPathOrId } from '~/stores/context';
+import { useCurrentPagePath, useIsEmptyPage, useNotFoundTargetPathOrId } from '~/stores/context';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
@@ -21,7 +21,7 @@ const replaceURLHistory = (path: string) => {
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: pageId } = useCurrentPageId();
+  const { data: isEmptyPage } = useIsEmptyPage();
   const { data: path } = useCurrentPagePath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
 
@@ -30,15 +30,12 @@ const NotFoundPage = (): JSX.Element => {
     if (path == null) {
       return;
     }
-
-    const isEmptyPage = pageId != null; // Todo: should be improved. https://redmine.weseek.co.jp/issues/98152
     const isPermalink = !notFoundTargetPathOrId?.includes('/');
+
     if (isEmptyPage && isPermalink) {
-      // The (as string) below is a workaround for the case. See the link. (Fixed in typescript version 4.4)
-      // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html#control-flow-analysis-of-aliased-conditions-and-discriminants
-      replaceURLHistory(path as string);
+      replaceURLHistory(path);
     }
-  }, [pageId, path, notFoundTargetPathOrId]);
+  }, [path, isEmptyPage, notFoundTargetPathOrId]);
 
   const navTabMapping = useMemo(() => {
     return {
