@@ -10,12 +10,19 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message:
+    'Too many requests sent from this IP, please try again after 15 minutes',
+});
 
 /**
  * @swagger
@@ -789,7 +796,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/content-width', accessTokenParser, loginRequiredStrictly, csrf, validator.contentWidth, apiV3FormValidator, async(req, res) => {
+  router.put('/content-width', apiLimiter, accessTokenParser, loginRequiredStrictly, csrf, validator.contentWidth, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isContainerFluid } = req.body;
 
     try {
