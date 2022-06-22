@@ -59,7 +59,6 @@ type PropsType = {
 }
 
 type EditorRef = {
-  setGfmMode: (value: boolean) => void,
   setValue: (value: string) => void,
   insertText: (text: string) => void,
   terminateUploadingState: () => void,
@@ -85,21 +84,12 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
-  const [isMarkdown, setIsMarkdown] = useState(false);
   const [html, setHtml] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
   const editorRef = useRef<EditorRef>(null);
-
-  const updateStateCheckbox = useCallback((event) => {
-    if (editorRef.current == null) { return }
-    const value = event.target.checked;
-    setIsMarkdown(value);
-    // changeMode
-    editorRef.current.setGfmMode(value);
-  }, []);
 
   const renderHtml = useCallback((markdown: string) => {
     const context = {
@@ -143,7 +133,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const initializeEditor = useCallback(() => {
     setComment('');
-    setIsMarkdown(true);
     setHtml('');
     setActiveTab('comment_editor');
     setError(undefined);
@@ -169,7 +158,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       if (currentCommentId != null) {
         await commentContainer.putComment(
           comment,
-          isMarkdown,
           currentCommentId,
           commentCreator,
         );
@@ -177,7 +165,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       else {
         await commentContainer.postComment(
           comment,
-          isMarkdown,
           replyTo,
           isSlackEnabled,
           slackChannels,
@@ -195,7 +182,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [
     comment, commentContainer, currentCommentId, commentCreator, initializeEditor,
-    isMarkdown, isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
+    isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
   ]);
 
   const ctrlEnterHandler = useCallback((event) => {
@@ -275,7 +262,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const renderReady = () => {
 
-    const commentPreview = isMarkdown ? getCommentHtml() : null;
+    const commentPreview = getCommentHtml();
 
     const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
     const cancelButton = (
@@ -306,7 +293,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
               <AnyEditor
                 ref={editorRef}
                 value={comment}
-                isGfmMode={isMarkdown}
                 lineNumbers={false}
                 isMobile={isMobile}
                 isUploadable={isUploadable}
@@ -331,27 +317,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
         <div className="comment-submit">
           <div className="d-flex">
-            <label className="mr-2">
-              {activeTab === 'comment_editor' && (
-                <span className="custom-control custom-checkbox">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="comment-form-is-markdown"
-                    name="isMarkdown"
-                    checked={isMarkdown}
-                    value="1"
-                    onChange={updateStateCheckbox}
-                  />
-                  <label
-                    className="ml-2 custom-control-label"
-                    htmlFor="comment-form-is-markdown"
-                  >
-                    Markdown
-                  </label>
-                </span>
-              ) }
-            </label>
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
