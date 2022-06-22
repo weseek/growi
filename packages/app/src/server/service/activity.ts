@@ -13,7 +13,7 @@ import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
-const parseActionString = (actionsString: SupportedActionType): SupportedActionType[] => {
+const parseActionString = (actionsString: string): SupportedActionType[] => {
   if (actionsString == null) {
     return [];
   }
