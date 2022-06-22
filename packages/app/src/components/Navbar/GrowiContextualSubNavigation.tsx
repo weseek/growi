@@ -14,7 +14,7 @@ import {
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
@@ -153,6 +153,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: createdAt } = useCurrentCreatedAt();
   const { data: updatedAt } = useCurrentUpdatedAt();
   const { data: pageId } = useCurrentPageId();
+  const { data: emptyPageId } = useEmptyPageId();
   const { data: revisionId } = useRevisionId();
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
@@ -247,6 +248,8 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const ControlComponents = useCallback(() => {
+    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
     }
@@ -266,11 +269,11 @@ const GrowiContextualSubNavigation = (props) => {
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageId != null && isViewMode && (
+          { pageIdForSubNavButtons != null && isViewMode && (
             <div className="h-50">
               <SubNavButtons
                 isCompactMode={isCompactMode}
-                pageId={pageId}
+                pageId={pageIdForSubNavButtons}
                 shareLinkId={shareLinkId}
                 revisionId={revisionId}
                 path={path}
@@ -302,7 +305,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
