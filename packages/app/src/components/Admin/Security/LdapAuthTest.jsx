@@ -1,10 +1,9 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import loggerFactory from '~/utils/logger';
@@ -129,10 +128,14 @@ class LdapAuthTest extends React.Component {
 
 }
 
+const LdapAuthTestFc = (props) => {
+  const { t } = useTranslation();
+  return <LdapAuthTest t={t} {...props} />;
+};
+
 
 LdapAuthTest.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 
   username: PropTypes.string.isRequired,
@@ -141,6 +144,6 @@ LdapAuthTest.propTypes = {
   onChangePassword: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestWrapper = withUnstatedContainers(LdapAuthTest, [AppContainer, AdminLdapSecurityContainer]);
+const LdapAuthTestWrapper = withUnstatedContainers(LdapAuthTestFc, [AdminLdapSecurityContainer]);
 
-export default withTranslation()(LdapAuthTestWrapper);
+export default LdapAuthTestWrapper;

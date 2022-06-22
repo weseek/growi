@@ -410,3 +410,31 @@ export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupCon
     },
   };
 };
+
+/*
+ * ShortcutsModal
+ */
+type ShortcutsModalStatus = {
+  isOpened: boolean,
+}
+
+type ShortcutsModalUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & ShortcutsModalUtils => {
+
+  const initialStatus: ShortcutsModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<ShortcutsModalStatus, Error>('shortcutsModal', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open() {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close() {
+      swrResponse.mutate({ isOpened: false });
+    },
+  };
+};
