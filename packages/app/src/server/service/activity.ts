@@ -18,8 +18,8 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
     return [];
   }
 
-  const actions = (actionsString as string).split(',').map(value => value.trim()) as SupportedActionType[];
-  return actions.filter(action => AllSupportedAction.includes(action));
+  const actions = actionsString.split(',').map(value => value.trim());
+  return actions.filter(action => (AllSupportedAction as ReadonlyArray<string>).includes(action)) as SupportedActionType[];
 };
 
 class ActivityService {
