@@ -390,13 +390,12 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
-  const { data: isEmptyPage } = useIsEmptyPage();
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
-    (includesUndefined || isEmptyPage) ? null : key,
+    (includesUndefined) ? null : key,
     () => isPageExist && !isUserPage,
   );
 };
