@@ -53,6 +53,7 @@ export type IPageInfo = {
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
+  isContainerFluid?: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {
@@ -67,7 +68,6 @@ export type IPageInfoForOperation = IPageInfoForEntity & {
   isBookmarked?: boolean,
   isLiked?: boolean,
   subscriptionStatus?: SubscriptionStatusType,
-  isContainerFluid?: boolean,
 }
 
 export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;

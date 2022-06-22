@@ -145,8 +145,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={switchContentWidthHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="fa fa-fw fa-text-width grw-page-control-dropdown-icon"></i>
-            { !pageInfo.isContainerFluid ? t('Full Width') : t('Default Width') }
+            <i className={`fa fa-fw ${!pageInfo.isContainerFluid ? 'fa-toggle-off' : 'fa-toggle-on'} grw-page-control-dropdown-icon`}>
+            </i>
+            { t('wide_view') }
           </DropdownItem>
         ) }
 
@@ -257,6 +258,14 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
     if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
       setShouldFetch(true);
+    }
+    if (presetPageInfo?.isContainerFluid) {
+      if (!$('body').hasClass('growi-layout-fluid')) {
+        $('body').addClass('growi-layout-fluid');
+      }
+    }
+    else if ($('body').hasClass('growi-layout-fluid')) {
+      $('body').removeClass('growi-layout-fluid');
     }
   }, [isOpen, presetPageInfo, shouldFetch]);
 
