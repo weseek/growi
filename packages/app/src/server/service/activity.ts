@@ -22,6 +22,7 @@ class ActivityService {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
 
+    this.getAvailableActions = this.getAvailableActions.bind(this);
     this.shoudUpdateActivity = this.shoudUpdateActivity.bind(this);
 
     this.initActivityEventListeners();
@@ -46,25 +47,28 @@ class ActivityService {
     });
   }
 
-  shoudUpdateActivity = function(action: SupportedActionType): boolean {
-    const configManager = this.crowi.configManager;
-    const auditLogActionGroupSize = configManager != null ? configManager.getConfig('crowi', 'app:auditLogActionGroupSize') : ActionGroupSize.Small;
+  getAvailableActions = function(): SupportedActionType[] {
+    const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
 
-    let shoudUpdate = false;
+    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified];
 
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        shoudUpdate = (AllSmallGroupActions as ReadonlyArray<string>).includes(action);
+        availableActions.push(...AllSmallGroupActions);
         break;
       case ActionGroupSize.Medium:
-        shoudUpdate = (AllMediumGroupActions as ReadonlyArray<string>).includes(action);
+        availableActions.push(...AllMediumGroupActions);
         break;
       case ActionGroupSize.Large:
-        shoudUpdate = (AllLargeGroupActions as ReadonlyArray<string>).includes(action);
+        availableActions.push(...AllLargeGroupActions);
         break;
     }
 
-    return shoudUpdate || (AllSupportedActionToNotified as ReadonlyArray<string>).includes(action);
+    return Array.from(new Set(availableActions));
+  }
+
+  shoudUpdateActivity = function(action: SupportedActionType): boolean {
+    return this.getAvailableActions().includes(action);
   }
 
   createTtlIndex = async function() {
