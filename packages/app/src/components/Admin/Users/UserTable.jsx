@@ -1,15 +1,17 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
 
 import { UserPicture } from '@growi/ui';
-import UserMenu from './UserMenu';
+import dateFnsFormat from 'date-fns/format';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
 import SortIcons from './SortIcons';
+import UserMenu from './UserMenu';
+
 
 class UserTable extends React.Component {
 
@@ -216,11 +218,14 @@ class UserTable extends React.Component {
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
 };
 
-const UserTableWrapper = withUnstatedContainers(UserTable, [AppContainer, AdminUsersContainer]);
+const UserTableWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserTable t={t} {...props} />;
+};
 
-export default withTranslation()(UserTableWrapper);
+const UserTableWrapper = withUnstatedContainers(UserTableWrapperFC, [AdminUsersContainer]);
+
+export default UserTableWrapper;
