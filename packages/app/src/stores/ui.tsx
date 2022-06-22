@@ -341,7 +341,6 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: isSharedUser } = useIsSharedUser();
 
   const pageId = currentPageId ?? emptyPageId;
-
   const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
   const isPageExist = pageId != null;
 
