@@ -129,10 +129,10 @@ export default (crowi: Crowi): Router => {
 
       const idToPageInfoMap: Record<string, IPageInfoAll> = {};
 
+      const isGuestUser = req.user == null;
       for (const page of pages) {
         // construct isIPageInfoForListing
-        // eslint-disable-next-line no-await-in-loop
-        const basicPageInfo = await pageService.constructBasicPageInfo(page, req.user);
+        const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

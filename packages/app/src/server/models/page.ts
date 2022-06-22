@@ -915,7 +915,12 @@ export function generateGrantCondition(
 
 schema.statics.generateGrantCondition = generateGrantCondition;
 
-schema.statics.findNotEmptyClosestAncestor = async function(path: string): Promise<PageDocument> {
+// find ancestor page with isEmpty: false. If parameter path is '/', return undefined
+schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
+  if (path === '/') {
+    return;
+  }
+
   const builderForAncestors = new PageQueryBuilder(this.find(), false); // empty page not included
 
   const ancestors = await builderForAncestors
