@@ -33,6 +33,7 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error>
 
 export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
   const { data: currentPageId } = useCurrentPageId();
+
   return useSWRxPage(currentPageId ?? undefined, shareLinkId);
 };
 
