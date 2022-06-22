@@ -229,7 +229,7 @@ module.exports = function(crowi, app) {
     const revisionId = commentForm.revision_id;
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
-    const isMarkdown = false; // comment is always not markdown (https://github.com/weseek/growi/pull/6096)
+    const isMarkdown = commentForm.is_markdown ?? true; // comment is always markdown (https://github.com/weseek/growi/pull/6096)
     const replyTo = commentForm.replyTo;
     const commentEvent = crowi.event('comment');
 
@@ -343,7 +343,7 @@ module.exports = function(crowi, app) {
     const { commentForm } = req.body;
 
     const commentStr = commentForm.comment;
-    const isMarkdown = false; // comment is always not markdown (https://github.com/weseek/growi/pull/6096)
+    const isMarkdown = commentForm.is_markdown ?? true; // comment is always markdown (https://github.com/weseek/growi/pull/6096)
     const commentId = commentForm.comment_id;
     const revision = commentForm.revision_id;
 
