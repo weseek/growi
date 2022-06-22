@@ -277,6 +277,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
+    // TODO: create Responses, Error handling/
     return responseForAttachment(req, res, attachment);
   };
 
@@ -301,6 +302,20 @@ module.exports = function(crowi, app) {
     return responseForAttachment(req, res, attachment);
   };
 
+  /**
+   * @api {get} /attachments.getData get attachments data
+   * @apiName get
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} attachmentId
+   */
+  api.getData = async function(req, res) {
+    const id = req.query.id;
+
+    const attachment = await Attachment.findById(id);
+
+    res.json(ApiResponse.success({ attachment }));
+  };
 
   /**
    * @swagger
