@@ -1,4 +1,3 @@
-import { differenceWith } from 'lodash';
 import mongoose from 'mongoose';
 
 import {
@@ -61,18 +60,8 @@ class ActivityService {
     const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
-    let additionalActions: SupportedActionType[] = [];
-    if (auditLogAdditionalActions != null) {
-      additionalActions = parseActionString(auditLogAdditionalActions);
-    }
-
-    let excludeActions: SupportedActionType[] = [];
-    if (auditLogExcludeActions != null) {
-      excludeActions = parseActionString(auditLogExcludeActions);
-    }
-
-    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified, ...additionalActions];
-
+    // Set base action group
+    const availableActions: SupportedActionType[] = [];
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
         availableActions.push(...AllSmallGroupActions);
@@ -85,8 +74,18 @@ class ActivityService {
         break;
     }
 
-    // availableActions - excludeActions
-    return differenceWith(Array.from(new Set(availableActions)), excludeActions);
+    // Push additionalActions
+    const additionalActions = parseActionString(auditLogAdditionalActions);
+    availableActions.push(...additionalActions);
+
+    // Filter with excludeActions
+    const excludeActions = parseActionString(auditLogExcludeActions);
+    const filteredAvailableActions = availableActions.filter(action => !excludeActions.includes(action));
+
+    // Push essentialActions
+    filteredAvailableActions.push(...AllSupportedActionToNotified);
+
+    return Array.from(new Set(filteredAvailableActions));
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
