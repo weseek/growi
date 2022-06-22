@@ -694,6 +694,7 @@ export const getPageSchema = (crowi) => {
     const Revision = crowi.model('Revision');
     const format = options.format || 'markdown';
     const grantUserGroupId = options.grantUserGroupId || null;
+    const isContainerFluid = crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -715,7 +716,9 @@ export const getPageSchema = (crowi) => {
     page.creator = user;
     page.lastUpdateUser = user;
     page.status = STATUS_PUBLISHED;
-
+    if (isContainerFluid != null) {
+      page.isContainerFluid = isContainerFluid;
+    }
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
 

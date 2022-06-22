@@ -349,6 +349,9 @@ class PageService {
     const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+    const isContainerFluid: boolean = page.isContainerFluid !== undefined
+      ? page.isContainerFluid
+      : this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     return {
       data: page,
@@ -358,6 +361,7 @@ class PageService {
         isBookmarked,
         isLiked,
         subscriptionStatus: subscription?.status,
+        isContainerFluid,
       },
     };
   }
@@ -3297,6 +3301,8 @@ class PageService {
   async create(path: string, body: string, user, options: PageCreateOptions = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    const isContainerFluid = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3343,7 +3349,9 @@ class PageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
-
+    if (isContainerFluid != null) {
+      page.isContainerFluid = isContainerFluid;
+    }
     // Save
     let savedPage = await page.save();
 

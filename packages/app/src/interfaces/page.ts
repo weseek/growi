@@ -28,6 +28,7 @@ export interface IPage {
   pageIdOnHackmd: string,
   revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
+  isContainerFluid: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
@@ -66,6 +67,7 @@ export type IPageInfoForOperation = IPageInfoForEntity & {
   isBookmarked?: boolean,
   isLiked?: boolean,
   subscriptionStatus?: SubscriptionStatusType,
+  isContainerFluid?: boolean,
 }
 
 export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
@@ -81,7 +83,7 @@ export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPa
 export const isIPageInfoForOperation = (pageInfo: any | undefined): pageInfo is IPageInfoForOperation => {
   return pageInfo != null
     && isIPageInfoForEntity(pageInfo)
-    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
+    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo || 'isContainerFluid' in pageInfo);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
