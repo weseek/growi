@@ -19,7 +19,7 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
   }
 
   const actions = actionsString.split(',').map(value => value.trim());
-  return actions.filter(action => (AllSupportedAction as ReadonlyArray<string>).includes(action)) as SupportedActionType[];
+  return actions.filter(action => (AllSupportedAction as string[]).includes(action)) as SupportedActionType[];
 };
 
 class ActivityService {
@@ -91,7 +91,6 @@ class ActivityService {
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
-    console.log(this.getAvailableActions());
     return this.getAvailableActions().includes(action);
   }
 
