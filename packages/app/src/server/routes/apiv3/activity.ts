@@ -55,8 +55,8 @@ module.exports = (crowi: Crowi): Router => {
 
       // add action to query
       const availableActions = crowi.activityService.getAvailableActions(false);
-      const displayableActions = parsedSearchFilter.actions.filter(action => availableActions.includes(action));
-      Object.assign(query, { action: displayableActions });
+      const searchableActions = parsedSearchFilter.actions.filter(action => availableActions.includes(action));
+      Object.assign(query, { action: searchableActions });
 
       // add date to query
       const startDate = parseISO(parsedSearchFilter.dates.startDate);
