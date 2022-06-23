@@ -23,6 +23,7 @@ class BasicInfoSettings extends React.Component {
     const { t, personalContainer } = this.props;
 
     try {
+      // TODO: SWRize apiv3Put /personal-setting/ -> https://redmine.weseek.co.jp/issues/98160
       await personalContainer.updateBasicInfo();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
