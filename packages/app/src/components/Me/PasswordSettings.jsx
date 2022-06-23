@@ -1,14 +1,12 @@
-
 import React from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { usePersonalSettingsInfo } from '~/stores/personal-settings';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 class PasswordSettings extends React.Component {
 
@@ -43,7 +41,7 @@ class PasswordSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, personalContainer } = this.props;
+    const { t, mutatePersonalSetting } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
@@ -51,7 +49,9 @@ class PasswordSettings extends React.Component {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
-      await personalContainer.retrievePersonalData();
+      if (mutatePersonalSetting != null) {
+        mutatePersonalSetting();
+      }
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
     catch (err) {
@@ -155,17 +155,13 @@ class PasswordSettings extends React.Component {
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
+  mutatePersonalSetting: PropTypes.func,
 };
 
 const PasswordSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <PasswordSettings t={t} {...props} />;
+  const { data: personalSettingsInfoData, mutate: mutatePersonalSetting, sync: syncPersonalSettingsInfo } = usePersonalSettingsInfo();
+  return <PasswordSettings t={t} mutatePersonalSetting={mutatePersonalSetting} syncPersonalSettingsInfo={syncPersonalSettingsInfo} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettingsWrapperFC, [PersonalContainer]);
-
-export default PasswordSettingsWrapper;
+export default PasswordSettingsWrapperFC;

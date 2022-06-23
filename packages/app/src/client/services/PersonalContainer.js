@@ -65,47 +65,48 @@ export default class PersonalContainer extends Container {
     }
   }
 
+
   /**
    * Change name
    */
-  changeName(inputValue) {
-    this.setState({ name: inputValue });
-  }
+  // changeName(inputValue) {
+  //   this.setState({ name: inputValue });
+  // }
 
   /**
    * Change email
    */
-  changeEmail(inputValue) {
-    this.setState({ email: inputValue });
-  }
+  // changeEmail(inputValue) {
+  //   this.setState({ email: inputValue });
+  // }
 
   /**
    * Change Slack Member ID
    */
-  changeSlackMemberId(inputValue) {
-    this.setState({ slackMemberId: inputValue });
-  }
+  // changeSlackMemberId(inputValue) {
+  //   this.setState({ slackMemberId: inputValue });
+  // }
 
   /**
    * Change isEmailPublished
    */
-  changeIsEmailPublished(boolean) {
-    this.setState({ isEmailPublished: boolean });
-  }
+  // changeIsEmailPublished(boolean) {
+  //   this.setState({ isEmailPublished: boolean });
+  // }
 
   /**
    * Change lang
    */
-  changeLang(lang) {
-    this.setState({ lang });
-  }
+  // changeLang(lang) {
+  //   this.setState({ lang });
+  // }
 
   /**
    * Change isGravatarEnabled
    */
-  changeIsGravatarEnabled(boolean) {
-    this.setState({ isGravatarEnabled: boolean });
-  }
+  // changeIsGravatarEnabled(boolean) {
+  //   this.setState({ isGravatarEnabled: boolean });
+  // }
 
   /**
    * Update basic info
