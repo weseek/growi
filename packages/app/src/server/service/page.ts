@@ -26,6 +26,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
+import PageEvent from '../events/page';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
@@ -168,7 +169,7 @@ class PageService {
 
     // Change the parameter of the function into the pages
     // rename
-    this.pageEvent.on('rename', async(page, descendantPages, user) => {
+    this.pageEvent.on('rename', async(page, user, descendantPages?) => {
       const isRecursively = descendantPages != null;
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
       try {
@@ -190,9 +191,11 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user) => {
+    this.pageEvent.on('delete', async(page, user, descendantPages?) => {
+      const isRecursively = descendantPages != null;
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE;
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, user, action, descendantPages);
       }
       catch (err) {
         logger.error(err);
@@ -540,7 +543,8 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-    this.pageEvent.emit('rename', page, null, user);
+    this.pageEvent.emit('rename', page, user);
+
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
@@ -685,7 +689,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, null, user);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
@@ -840,7 +844,7 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
-          pageEvent.emit('rename', targetPage, batch, user);
+          pageEvent.emit('rename', targetPage, user, batch);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1415,6 +1419,9 @@ class PageService {
        */
       this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
+    else {
+      this.pageEvent.emit('delete', page, user);
+    }
 
     return deletedPage;
   }
@@ -1440,7 +1447,6 @@ class PageService {
         throw err;
       }
     }
-    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1592,6 +1598,7 @@ class PageService {
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
+    const pageEvent = this.pageEvent;
 
     const writeStream = new Writable({
       objectMode: true,
@@ -1601,6 +1608,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
+          pageEvent.emit('delete', targetPage, user, batch);
           logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -2249,7 +2257,7 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
     // Get user to be notified
     let targetUsers = await activity.getNotificationTargetUsers();
-    if (descendantPages !== undefined && descendantPages.length > 0) {
+    if (descendantPages != null && descendantPages.length > 0) {
       const User = this.crowi.model('User');
       const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
       const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
