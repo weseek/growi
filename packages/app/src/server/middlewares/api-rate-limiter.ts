@@ -43,7 +43,7 @@ module.exports = () => {
   return async(req: Request, res: Response, next: NextFunction) => {
 
     const endpoint = req.path;
-    const key = md5(req.ip + endpoint + req.method);
+    const key = md5(`${req.ip}_${endpoint}_${req.method}`);
 
     let customizedConfig;
     const configForEndpoint = configWithoutRegExp[endpoint];
