@@ -538,7 +538,7 @@ describe('PageService', () => {
     });
   });
 
-  describe.only('delete page', () => {
+  describe('delete page', () => {
     let getDeletedPageNameSpy;
     let pageEventSpy;
     let deleteDescendantsWithStreamSpy;
