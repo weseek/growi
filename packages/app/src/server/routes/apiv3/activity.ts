@@ -3,7 +3,6 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { AllSupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -55,10 +54,9 @@ module.exports = (crowi: Crowi): Router => {
       }
 
       // add action to query
-      const canContainActionFilterToQuery = parsedSearchFilter.actions.every(a => AllSupportedAction.includes(a));
-      if (canContainActionFilterToQuery) {
-        Object.assign(query, { action: parsedSearchFilter.actions });
-      }
+      const availableActions = crowi.activityService.getAvailableActions(false);
+      const displayableActions = parsedSearchFilter.actions.filter(action => availableActions.includes(action));
+      Object.assign(query, { action: displayableActions });
 
       // add date to query
       const startDate = parseISO(parsedSearchFilter.dates.startDate);

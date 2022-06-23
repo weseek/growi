@@ -57,7 +57,7 @@ class ActivityService {
     });
   }
 
-  getAvailableActions = function(): SupportedActionType[] {
+  getAvailableActions = function(isIncludeEssentialActions = true): SupportedActionType[] {
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
     const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
@@ -85,7 +85,9 @@ class ActivityService {
     const filteredAvailableActions = availableActions.filter(action => !excludeActions.includes(action));
 
     // Push essentialActions
-    filteredAvailableActions.push(...AllSupportedActionToNotified);
+    if (isIncludeEssentialActions) {
+      filteredAvailableActions.push(...AllSupportedActionToNotified);
+    }
 
     return Array.from(new Set(filteredAvailableActions));
   }
