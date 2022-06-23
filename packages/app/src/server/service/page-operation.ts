@@ -8,7 +8,9 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 const logger = loggerFactory('growi:services:page-operation');
 
-const { isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage } = pagePathUtils;
+const {
+  isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage, collectAncestorPaths,
+} = pagePathUtils;
 const AUTO_UPDATE_INTERVAL_SEC = 5;
 
 const {
@@ -169,12 +171,13 @@ class PageOperationService {
     clearInterval(timerObj);
   }
 
-  async getAncestorsByFromAndToPath(fromPath: string, toPath: string) {
-    const fromAncestors = await this.crowi.getParentAndFillAncestorsBySystem(fromPath);
-    const toAncestors = await this.crowi.getParentAndFillAncestorsBySystem(toPath);
-    console.log({ fromAncestors });
-    console.log({ toAncestors });
-    return;
+  // get all ancestors paths
+  getAncestorsPathsByFromAndToPath(fromPath: string, toPath: string): string[] {
+    const fromAncestorsPaths = collectAncestorPaths(fromPath);
+    const toAncestorsPaths = collectAncestorPaths(toPath);
+    // merge duplicate paths
+    const mergedPaths = Array.from(new Set(toAncestorsPaths.concat(fromAncestorsPaths)));
+    return mergedPaths;
   }
 
 }
