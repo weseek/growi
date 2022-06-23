@@ -22,7 +22,6 @@ export default class PersonalContainer extends Container {
       retrieveError: null,
       name: '',
       email: '',
-      registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
       lang: 'en_US',
       isGravatarEnabled: false,
