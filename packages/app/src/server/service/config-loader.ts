@@ -628,6 +628,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 2592000, // 30 days
   },
+  AUDIT_LOG_ACTION_GROUP_SIZE: {
+    ns: 'crowi',
+    key: 'app:auditLogActionGroupSize',
+    type: ValueType.STRING,
+    default: 'SMALL',
+  },
 };
 
 

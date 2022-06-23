@@ -103,6 +103,65 @@ export const SupportedAction = {
   ACTION_ADMIN_SITE_URL_UPDATE,
 } as const;
 
+export const ActionGroupSize = {
+  Small: 'SMALL',
+  Medium: 'MEDIUM',
+  Large: 'LARGE',
+} as const;
+
+export const SmallActionGroup = {
+  ACTION_LOGIN_SUCCESS,
+  ACTION_LOGIN_FAILURE,
+  ACTION_LOGOUT,
+  ACTION_PAGE_CREATE,
+  ACTION_PAGE_DELETE,
+} as const;
+
+// SmallActionGroup + Action by all General Users - PAGE_VIEW
+export const MediumActionGroup = {
+  ...SmallActionGroup,
+  ACTION_USER_PERSONAL_SETTINGS_UPDATE,
+  ACTION_USER_IMAGE_TYPE_UPDATE,
+  ACTION_USER_LDAP_ACCOUNT_ASSOCIATE,
+  ACTION_USER_LDAP_ACCOUNT_DISCONNECT,
+  ACTION_USER_PASSWORD_UPDATE,
+  ACTION_USER_API_TOKEN_UPDATE,
+  ACTION_USER_EDITOR_SETTINGS_UPDATE,
+  ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE,
+  ACTION_PAGE_LIKE,
+  ACTION_PAGE_UNLIKE,
+  ACTION_PAGE_BOOKMARK,
+  ACTION_PAGE_UNBOOKMARK,
+  ACTION_PAGE_CREATE,
+  ACTION_PAGE_UPDATE,
+  ACTION_PAGE_RENAME,
+  ACTION_PAGE_DUPLICATE,
+  ACTION_PAGE_DELETE,
+  ACTION_PAGE_DELETE_COMPLETELY,
+  ACTION_PAGE_REVERT,
+  ACTION_COMMENT_CREATE,
+  ACTION_COMMENT_UPDATE,
+  ACTION_COMMENT_REMOVE,
+} as const;
+
+// MediumActionGroup + All Actions by Admin Users - PAGE_VIEW
+export const LargeActionGroup = {
+  ...MediumActionGroup,
+  ACTION_ADMIN_APP_SETTINGS_UPDATE,
+  ACTION_ADMIN_SECURITY_SETTINGS_UPDATE,
+  ACTION_ADMIN_LINE_BREAK_UPDATE,
+  ACTION_ADMIN_LAYOUT_UPDATE,
+  ACTION_ADMIN_ARCHIVE_DATA_UPLOAD,
+  ACTION_ADMIN_ARCHIVE_DATA_CREATE,
+  ACTION_ADMIN_USER_NOTIFICATION_SETTINGS_ADD,
+  ACTION_ADMIN_SLACK_WORKSPACE_CREATE,
+  ACTION_ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE,
+  ACTION_ADMIN_USERS_INVITE,
+  ACTION_ADMIN_USER_GROUP_CREATE,
+  ACTION_ADMIN_SEARCH_INDICES_NORMALIZE,
+  ACTION_ADMIN_SEARCH_INDICES_REBUILD,
+} as const;
+
 export const SupportedActionToNotified = {
   ACTION_PAGE_LIKE,
   ACTION_PAGE_BOOKMARK,
@@ -142,6 +201,9 @@ export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
 export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedAction = Object.values(SupportedAction);
 export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);
+export const AllSmallGroupActions = Object.values(SmallActionGroup);
+export const AllMediumGroupActions = Object.values(MediumActionGroup);
+export const AllLargeGroupActions = Object.values(LargeActionGroup);
 
 /*
  * Type
