@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -58,7 +58,8 @@ const ContextExtractorOnce: FC = () => {
   const revisionId = mainContent?.getAttribute('data-page-revision-id');
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
   // assign `null` to avoid returning empty string
-  const pageId = (mainContent?.getAttribute('data-page-id') || notFoundContext?.getAttribute('data-page-id')) || null;
+  const pageId = mainContent?.getAttribute('data-page-id') || null;
+  const emptyPageId = notFoundContext?.getAttribute('data-page-id') || null;
 
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
@@ -138,6 +139,7 @@ const ContextExtractorOnce: FC = () => {
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
   useCurrentPageId(pageId);
+  useEmptyPageId(emptyPageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);

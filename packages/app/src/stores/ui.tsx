@@ -16,7 +16,7 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useIsEmptyPage,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -336,11 +336,13 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
+  const { data: emptyPageId } = useEmptyPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [currentPageId, isTrashPage, isSharedUser].some(v => v === undefined);
-  const isPageExist = currentPageId != null;
+  const pageId = currentPageId ?? emptyPageId;
+  const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const isPageExist = pageId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
@@ -388,13 +390,12 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
-  const { data: isEmptyPageInNotFoundContext } = useIsEmptyPage();
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
-    (includesUndefined || isEmptyPageInNotFoundContext) ? null : key,
+    includesUndefined ? null : key,
     () => isPageExist && !isUserPage,
   );
 };
