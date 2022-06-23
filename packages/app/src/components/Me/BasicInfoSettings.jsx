@@ -34,9 +34,16 @@ class BasicInfoSettings extends React.Component {
 
   render() {
     const {
-      t, appContainer, personalSettingsInfo, mutatePersonalSettingsInfo, error,
+      t, appContainer, personalSettingsInfo, onChangePersonalSettings, error,
     } = this.props;
     const { registrationWhiteList } = appContainer.getConfig();
+
+    const changePersonalSettingsHandler = (data) => {
+      if (onChangePersonalSettings == null) {
+        return;
+      }
+      onChangePersonalSettings(data);
+    };
 
 
     return (
@@ -50,7 +57,7 @@ class BasicInfoSettings extends React.Component {
               type="text"
               name="userForm[name]"
               defaultValue={personalSettingsInfo.name}
-              onChange={(e) => { mutatePersonalSettingsInfo({ ...personalSettingsInfo, name: e.target.value }) }}
+              onChange={(e) => { changePersonalSettingsHandler({ ...personalSettingsInfo, name: e.target.value }) }}
             />
           </div>
         </div>
@@ -63,7 +70,7 @@ class BasicInfoSettings extends React.Component {
               type="text"
               name="userForm[email]"
               defaultValue={personalSettingsInfo.email}
-              onChange={(e) => { mutatePersonalSettingsInfo({ ...personalSettingsInfo, email: e.target.value }) }}
+              onChange={(e) => { changePersonalSettingsHandler({ ...personalSettingsInfo, email: e.target.value }) }}
             />
             {registrationWhiteList.length !== 0 && (
               <div className="form-text text-muted">
@@ -86,7 +93,7 @@ class BasicInfoSettings extends React.Component {
                 className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={personalSettingsInfo.isEmailPublished}
-                onChange={() => mutatePersonalSettingsInfo({ ...personalSettingsInfo, isEmailPublished: true })}
+                onChange={() => changePersonalSettingsHandler({ ...personalSettingsInfo, isEmailPublished: true })}
               />
               <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
             </div>
@@ -97,7 +104,7 @@ class BasicInfoSettings extends React.Component {
                 className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={!personalSettingsInfo.isEmailPublished}
-                onChange={() => mutatePersonalSettingsInfo({ ...personalSettingsInfo, isEmailPublished: false })}
+                onChange={() => changePersonalSettingsHandler({ ...personalSettingsInfo, isEmailPublished: false })}
               />
               <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
             </div>
@@ -116,7 +123,7 @@ class BasicInfoSettings extends React.Component {
                     className="custom-control-input"
                     name="userForm[lang]"
                     checked={personalSettingsInfo.lang === meta.id}
-                    onChange={() => { mutatePersonalSettingsInfo({ ...personalSettingsInfo, lang: meta.id }) }}
+                    onChange={() => { changePersonalSettingsHandler({ ...personalSettingsInfo, lang: meta.id }) }}
                   />
                   <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
                 </div>
@@ -133,7 +140,7 @@ class BasicInfoSettings extends React.Component {
               key={personalSettingsInfo.slackMemberId}
               name="userForm[slackMemberId]"
               defaultValue={personalSettingsInfo.slackMemberId}
-              onChange={(e) => { mutatePersonalSettingsInfo({ ...personalSettingsInfo, slackMemberId: e.target.value }) }}
+              onChange={(e) => { changePersonalSettingsHandler({ ...personalSettingsInfo, slackMemberId: e.target.value }) }}
             />
           </div>
         </div>
@@ -163,7 +170,7 @@ BasicInfoSettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
   personalSettingsInfo: PropTypes.object,
-  mutatePersonalSettingsInfo: PropTypes.func,
+  onChangePersonalSettings: PropTypes.func,
   error: PropTypes.object,
 };
 
@@ -182,7 +189,7 @@ const BasicInfoSettingsWrapperFC = (props) => {
     <BasicInfoSettings
       t={t}
       personalSettingsInfo={usePersonalSettingsInfoResult.data || {}}
-      mutatePersonalSettingsInfo={usePersonalSettingsInfoResult.mutate}
+      onChangePersonalSettings={usePersonalSettingsInfoResult.mutate}
       error={usePersonalSettingsInfoResult.error}
       {...props}
     />
