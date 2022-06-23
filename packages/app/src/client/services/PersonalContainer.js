@@ -66,23 +66,6 @@ export default class PersonalContainer extends Container {
   }
 
   /**
-   * retrieve external accounts that linked me
-   */
-  async retrieveExternalAccounts() {
-    try {
-      const response = await apiv3Get('/personal-setting/external-accounts');
-      const { externalAccounts } = response.data;
-
-      this.setState({ externalAccounts });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to fetch external accounts');
-    }
-  }
-
-  /**
    * Change name
    */
   changeName(inputValue) {

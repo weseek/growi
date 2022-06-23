@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import PropTypes from 'prop-types';
@@ -14,6 +13,7 @@ import {
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -48,7 +48,7 @@ class AssociateModal extends React.Component {
   }
 
   async onClickAddBtn() {
-    const { t, personalContainer } = this.props;
+    const { t, personalContainer, mutatePersonalExternalAccounts } = this.props;
     const { username, password } = this.state;
 
     try {
@@ -59,11 +59,8 @@ class AssociateModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-    try {
-      await personalContainer.retrieveExternalAccounts();
-    }
-    catch (err) {
-      toastError(err);
+    if (mutatePersonalExternalAccounts != null) {
+      mutatePersonalExternalAccounts();
     }
   }
 
@@ -137,11 +134,13 @@ AssociateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  mutatePersonalExternalAccounts: PropTypes.func,
 };
 
 const AssociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <AssociateModal t={t} {...props} />;
+  const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
+  return <AssociateModal t={t} mutatePersonalExternalAccounts={mutatePersonalExternalAccounts} {...props} />;
 };
 
 /**
