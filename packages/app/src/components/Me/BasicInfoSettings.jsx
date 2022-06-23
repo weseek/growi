@@ -168,22 +168,21 @@ BasicInfoSettings.propTypes = {
 
 const BasicInfoSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  // const { data: personalSettingsInfo, mutate: mutatePersonalSettingsInfo, sync: syncPersonalSettingsInfo } = usePersonalSettingsInfo();
-  const swrResult = usePersonalSettingsInfo();
+  const usePersonalSettingsInfoResult = usePersonalSettingsInfo();
 
 
   useEffect(() => {
     // Sync only when getting personal settings data from DB
-    swrResult.sync();
+    usePersonalSettingsInfoResult.sync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [swrResult.personalSettingsDataFromDB]);
+  }, [usePersonalSettingsInfoResult.personalSettingsDataFromDB]);
 
   return (
     <BasicInfoSettings
       t={t}
-      personalSettingsInfo={swrResult.data || {}}
-      mutatePersonalSettingsInfo={swrResult.mutate}
-      error={swrResult.error}
+      personalSettingsInfo={usePersonalSettingsInfoResult.data || {}}
+      mutatePersonalSettingsInfo={usePersonalSettingsInfoResult.mutate}
+      error={usePersonalSettingsInfoResult.error}
       {...props}
     />
   );
