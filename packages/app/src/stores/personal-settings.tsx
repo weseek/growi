@@ -9,8 +9,8 @@ import { apiv3Get } from '../client/util/apiv3-client';
 
 import { useStaticSWR } from './use-static-swr';
 
-// retrievePersonalData
-export const useSWRxPersonalSettingsInfo = (): SWRResponse<IUser, Error> => {
+
+const useSWRxPersonalSettingsInfo = (): SWRResponse<IUser, Error> => {
   return useSWR(
     '/personal-setting',
     endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
