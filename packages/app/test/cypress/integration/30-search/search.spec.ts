@@ -83,27 +83,7 @@ context('Search all pages', () => {
 
   it(`Search all pages by word is successfully loaded`, () => {
     const searchText = 'help';
-    cy.visit('/');
-    cy.get('.rbt-input').click();
-    cy.screenshot(`${ssPrefix}search-input-focused`, { capture: 'viewport'});
-    cy.get('.rbt-input-main').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text`, { capture: 'viewport'});
-    cy.get('.rbt-input-main').type('{enter}');
-    cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
-
-    cy.getByTestid('search-result-base').should('be.visible');
-    cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
-
-    cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
-  });
-
-  it(`Search all pages by tag is successfully loaded `, () => {
-    const tag = 'help';
-    const searchText = `tag:${tag}`;
-
-    // Access "/Sandbox" instead of "/", because "/"" can't be renamed (test rename page modal)
+    const tag = 'help'
     cy.visit('/Sandbox');
     // Add tag
     cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
@@ -120,21 +100,26 @@ context('Search all pages', () => {
       cy.get('div.modal-footer > button').click();
     });
 
+    // Access "/Sandbox" instead of "/", because "/"" can't be renamed (test rename page modal)
     cy.visit('/Sandbox');
     cy.get('.rbt-input').click();
+    cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}search-input-focused`);
+    })
+
     cy.get('.rbt-input-main').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
+    cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
     cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
 
-    // Add Bookmark
+    //Add bookmark
     cy.getByTestid('add-remove-bookmark-btn').first().click({force: true});
     cy.get('.btn-bookmark.active').should('be.visible');
     cy.screenshot(`${ssPrefix}add-bookmark`, {capture: 'viewport'});
@@ -159,12 +144,31 @@ context('Search all pages', () => {
     cy.getByTestid('open-page-delete-modal-btn').first().click({ force: true});
     cy.getByTestid('page-delete-modal').should('be.visible');
     cy.screenshot(`${ssPrefix}delete-page`, {capture: 'viewport'});
+  });
+
+  it(`Search all pages by tag is successfully loaded `, () => {
+    const tag = 'help';
+    const searchText = `tag:${tag}`;
+
+    cy.visit('/');
+    cy.get('.rbt-input').click();
+    cy.get('.rbt-input-main').type(`${searchText}`);
+    cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
+    cy.get('.rbt-input-main').type('{enter}');
+
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
+    cy.getByTestid('open-page-item-control-btn').first().click();
+    cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
   });
 
 });
 
-context('Search current tree', () => {
+context('Search current tree with "prefix":', () => {
   const ssPrefix = 'search-current-tree-';
 
   beforeEach(() => {
@@ -182,7 +186,9 @@ context('Search current tree', () => {
     cy.getByTestid('select-search-scope').first().click({force: true});
     cy.get('.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
     cy.get('.rbt-input').click();
-    cy.screenshot(`${ssPrefix}search-input-focused`, { capture: 'viewport'});
+    cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}search-input-focused`);
+    })
     cy.get('.rbt-input').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input').type('{enter}');
@@ -194,57 +200,6 @@ context('Search current tree', () => {
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
-  });
-
-
-  it(`Search current tree by tag is successfully loaded`, () => {
-    const tag = 'help';
-    const searchText = `tag:${tag}`;
-
-    cy.visit('/Sandbox');
-    cy.getByTestid('select-search-scope').first().click({force: true});
-    cy.get('.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
-
-    cy.get('.rbt-input').click();
-    cy.get('.rbt-input').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
-    cy.get('.rbt-input').type('{enter}');
-
-    cy.getByTestid('search-result-base').should('be.visible');
-    cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
-
-    cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
-
-    cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
-
-    // Add Bookmark
-    cy.getByTestid('add-remove-bookmark-btn').first().click({force: true});
-    cy.get('.btn-bookmark.active').should('be.visible');
-    cy.screenshot(`${ssPrefix}add-bookmark`, {capture: 'viewport'});
-
-    // Duplicate page
-    cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
-    cy.getByTestid('page-duplicate-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}duplicate-page`, {capture: 'viewport'});
-
-    // Close Modal
-    cy.get('body').type('{esc}');
-
-    // Move / Rename Page
-    cy.getByTestid('open-page-move-rename-modal-btn').first().click({force: true});
-    cy.getByTestid('page-rename-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}move-rename-page`, {capture: 'viewport'});
-
-    // Close Modal
-    cy.get('body').type('{esc}');
-
-    // Delete page
-    cy.getByTestid('open-page-delete-modal-btn').first().click({ force: true});
-    cy.getByTestid('page-delete-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}delete-page`, {capture: 'viewport'});
-
   });
 
 });
