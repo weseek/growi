@@ -618,7 +618,7 @@ class PageService {
     }
 
     const {
-      page, toPath, options, user,
+      page, fromPath, toPath, options, user,
     } = pageOp;
 
     // check property
@@ -626,8 +626,17 @@ class PageService {
       throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
     }
 
-    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    // this want be used only in this method
+    const renameAndRecountDescendantCount = async(
+        page, user, options, renamedPage: PageDocument, pageOpId, fromPath:string, toPath:string,
+    ): Promise<void> => {
+      await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
+      // get ancestors
+      const ancestors = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
+      await this.recountAndUpdateDescendantCount(ancestors);
+    };
 
+    renameAndRecountDescendantCount(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -3043,6 +3052,39 @@ class PageService {
     const nMigratablePages = await builder.query.exec();
 
     return nMigratablePages;
+  }
+
+  /**
+   * Todo: need refactoring
+   */
+  async recountAndUpdateDescendantCount(paths: string[]): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionToListByPathsArray(paths); // find by paths
+    builder.addConditionToSortPagesByDescPath(); // sort in DESC
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    const recountWriteStream = new Writable({
+      objectMode: true,
+      async write(pageDocuments, encoding, callback) {
+        for await (const document of pageDocuments) {
+          const descendantCount = await Page.recountDescendantCount(document._id);
+          await Page.findByIdAndUpdate(document._id, { descendantCount });
+        }
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+    aggregatedPages
+      .pipe(createBatchStream(BATCH_SIZE))
+      .pipe(recountWriteStream);
+
+    await streamToPromise(recountWriteStream);
   }
 
   /**
