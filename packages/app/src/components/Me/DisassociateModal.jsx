@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import PropTypes from 'prop-types';
@@ -13,6 +12,7 @@ import {
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -26,7 +26,7 @@ class DisassociateModal extends React.Component {
   }
 
   async onClickDisassociateBtn() {
-    const { t, personalContainer } = this.props;
+    const { t, personalContainer, onDisassociated } = this.props;
     const { providerType, accountId } = this.props.accountForDisassociate;
 
     try {
@@ -37,11 +37,9 @@ class DisassociateModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-    try {
-      await personalContainer.retrieveExternalAccounts();
-    }
-    catch (err) {
-      toastError(err);
+
+    if (onDisassociated != null) {
+      onDisassociated();
     }
   }
 
@@ -81,12 +79,14 @@ DisassociateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   accountForDisassociate: PropTypes.object.isRequired,
+  onDisassociated: PropTypes.func,
 
 };
 
 const DisassociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <DisassociateModal t={t} {...props} />;
+  const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
+  return <DisassociateModal t={t} onDisassociated={mutatePersonalExternalAccounts} {...props} />;
 };
 
 /**
