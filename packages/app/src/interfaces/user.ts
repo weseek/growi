@@ -12,6 +12,7 @@ export type IUser = {
   imageUrlCached: string;
   isGravatarEnabled: boolean,
   admin: boolean;
+  apiToken?: string;
 }
 
 export type IUserGroupRelation = {

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { usePersonalSettingsInfo } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -14,8 +15,9 @@ type Props = {
 
 const ApiSettings = (props: Props) => {
 
-  const { personalContainer } = props;
   const { t } = useTranslation();
+  const { data: personalSettingsInfoData } = usePersonalSettingsInfo();
+  const { personalContainer } = props;
 
   const submitHandler = async() => {
 
@@ -39,7 +41,7 @@ const ApiSettings = (props: Props) => {
       <div className="row mb-3">
         <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
         <div className="col-md-6">
-          {personalContainer.state.apiToken != null
+          {personalSettingsInfoData?.apiToken != null
             ? (
               <input
                 data-testid="grw-api-settings-input"
@@ -47,7 +49,7 @@ const ApiSettings = (props: Props) => {
                 className="form-control"
                 type="text"
                 name="apiToken"
-                value={personalContainer.state.apiToken}
+                value={personalSettingsInfoData.apiToken}
                 readOnly
               />
             )
