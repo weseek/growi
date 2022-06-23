@@ -1,57 +1,122 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 
 import PropTypes from 'prop-types';
 import * as ReactDOMServer from 'react-dom/server';
 
+import { toastError } from '~/client/util/apiNotification';
 import { apiGet } from '~/client/util/apiv1-client';
 
-import { toastError } from '../apiNotification';
+const PageAttachmentPresentation = (props) => {
+  const { attachmentId } = props;
+  const [url, setUrl] = useState('');
+  const [filename, setFileName] = useState('');
 
-class PageAttachmentPresentation extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      // activePage: 1,
-      // totalAttachments: 0,
-      // limit: Infinity,
-      attachments: [],
-      // inUse: {},
-      // attachmentToDelete: null,
-      // deleting: false,
-      // deleteError: '',
-    };
-    const { attachmentId } = this.props;
-
-    this.getAttachment(attachmentId);
-    // this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
-    // this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
-  }
-
-  async getAttachment(_id: string): Promise<void> {
-    const res: any = await apiGet('/attachments.get', { id: _id });
-
+  // TODO: Use useCallback
+  async function getAttachment(_id) {
+    const res = await apiGet('/attachments.get', { id: _id });
+    const attachment = res.attachment;
     try {
-      const attachment = res.attachment;
-      const fileName = attachment.originalName;
-      console.log(fileName);
+      setUrl(attachment.filePathProxied);
+      setFileName(attachment.originalName);
     }
     catch (err) {
+      // TODO: don't use toastError();
       toastError(err);
     }
   }
 
-  render() {
-    return (
-      <div>
-        test renderer.
-      </div>
-    );
-  }
+  getAttachment(attachmentId);
 
-}
+  return (
+    <div className="mt-4 card border-primary">
+      <div className="card-body">
+        <a className="bg-info text-white" href={url}>{filename}</a>
+        <ul>
+          {/* TODO: Attachemnt picture */}
+          {/* TODO: User picture */}
+          {/* <UserPicture user={attachment.creator} size="sm"></UserPicture> */}
+          {/* TODO: Date */}
+          {/* TODO: Data byte */}
+          {/* TODO: Trash button */}
+          {/* TODO: Download button */}
+        </ul>
+      </div>
+    </div>
+  );
+
+};
+
+// class PageAttachmentPresentation extends React.Component {
+
+//   // static propTypes: { attachmentId: PropTypes.Validator<string>; };
+//   filename = 'tt';
+
+//   url = 'tt';
+
+//   constructor(props) {
+//     super(props);
+
+//     // this.state = {
+//     //   // activePage: 1,
+//     //   // totalAttachments: 0,
+//     //   // limit: Infinity,
+//     //   // inUse: {},
+//     //   // attachmentToDelete: null,
+//     //   // deleting: false,
+//     //   // deleteError: '',
+//     //   url: '',
+//     //   filename: '',
+//     // };
+
+//     this.getAttachment = this.getAttachment.bind(this);
+//     // this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
+//     // this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
+//   }
+
+//   async getAttachment(_id) {
+//     const res = await apiGet('/attachments.get', { id: _id });
+//     const attachment = res.attachment;
+//     this.filename = attachment.originalName;
+//     this.url = attachment.filePathProxied;
+//     try {
+//       const attachment = res.attachment;
+//       this.filename = attachment.originalName;
+//       this.url = attachment.filePathProxied;
+//       // this.setState({
+//       //   url: attachment.filePathProxied,
+//       //   filename: attachment.originalName,
+//       // });
+//     }
+//     catch (err) {
+//       toastError(err);
+//     }
+//   }
+
+
+//   render() {
+//     const { attachmentId } = this.props;
+//     this.getAttachment(attachmentId);
+
+//     return (
+//       <div className="mt-4 card border-primary">
+//         <div className="card-body">
+//           <a className="bg-info text-white" href={this.url}>{this.filename}</a>
+//           <ul>
+//             {/* TODO: Attachemnt picture */}
+//             {/* TODO: User picture */}
+//             {/* <UserPicture user={attachment.creator} size="sm"></UserPicture> */}
+//             {/* TODO: Date */}
+//             {/* TODO: Data byte */}
+//             {/* TODO: Trash button */}
+//             {/* TODO: Download button */}
+//           </ul>
+//         </div>
+//       </div>
+//     );
+//   }
+
+// }
 
 PageAttachmentPresentation.propTypes = {
   attachmentId: PropTypes.string.isRequired,
@@ -152,6 +217,6 @@ PageAttachmentPresentation.propTypes = {
 // };
 
 export function testfucn(_id) {
-  console.log(_id);
+  console.log(ReactDOMServer.renderToString(<PageAttachmentPresentation attachmentId={_id} />));
   return ReactDOMServer.renderToString(<PageAttachmentPresentation attachmentId={_id} />);
 }

@@ -21,7 +21,7 @@ export default class AttachmentConfigurer {
       if (attachmentId == null) {
         return '<></>';
       }
-      testfucn(attachmentId);
+      return testfucn(attachmentId);
     };
   }
 
