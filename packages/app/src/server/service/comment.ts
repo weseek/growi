@@ -6,6 +6,8 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
+import { prepareSlackMessageForComment } from '../util/slack';
+
 
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
@@ -22,12 +24,15 @@ class CommentService {
 
   commentEvent!: any;
 
+  slackIntegrationService;
+
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
+    this.slackIntegrationService = crowi.slackIntegrationService;
 
     // init
     this.initCommentEventListeners();
@@ -101,22 +106,25 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // Add mentioned users to targetUsers
-    const mentionedUsers = await this.getMentionedUsers(activity.event);
-    targetUsers = targetUsers.concat(mentionedUsers);
+    const commentObject = await this.getComment(activity.event);
+    const { comment } = commentObject;
+    const mentionedUsers = await this.getMentionedUsers(comment);
+    const usersForInAppNotification = mentionedUsers.map((user) => {
+      return user._id;
+    });
+
+    // Add mentioned users to targetUsers (for inAppNotification)
+    targetUsers = targetUsers.concat(usersForInAppNotification);
 
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
+
+    // Send notification to slack users
+    await this.sendNotificationToSlackUsers(mentionedUsers, commentObject, page);
   };
 
-  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
-    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
-    const User = getModelSafely('User') || require('../models/user')(this.crowi);
-
-    // Get comment by comment ID
-    const commentData = await Comment.findOne({ _id: commentId });
-    const { comment } = commentData;
-
+  private getMentionedUsers = async(comment: string): Promise<Types.ObjectId[]> => {
+    const User = this.getUserModel();
     const usernamesFromComment = comment.match(USERNAME_PATTERN);
 
     // Get username from comment and remove duplicate username
@@ -125,10 +133,38 @@ class CommentService {
     }))];
 
     // Get mentioned users ID
-    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
-    return mentionedUserIDs?.map((user) => {
-      return user._id;
+    const mentionedUsers = await User.find({ username: { $in: mentionedUsernames } });
+    return mentionedUsers?.map((user) => {
+      return user;
     });
+  }
+
+  private getComment = async(commentId: Types.ObjectId): Promise<any> => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const comment = await Comment.findOne({ _id: commentId });
+    return comment;
+  }
+
+
+  private sendNotificationToSlackUsers = async(users: any[], comment: any, page:any) : Promise<void> => {
+    const User = this.getUserModel();
+    const { creator } = comment;
+
+    const appTitle = this.crowi.appService?.getAppTitle();
+    const siteUrl = this.crowi.appService?.getSiteUrl();
+    const commentCreator = await User.findOne({ _id: creator });
+
+    users.map(async(user) => {
+      if (user.slackMemberId !== undefined) {
+        const messageObj = prepareSlackMessageForComment(comment, commentCreator, appTitle, siteUrl, user.slackMemberId, page.path);
+        return this.slackIntegrationService.postMessage(messageObj);
+      }
+      return;
+    });
+  }
+
+  private getUserModel = () => {
+    return getModelSafely('User') || require('../models/user')(this.crowi);
   }
 
 }
