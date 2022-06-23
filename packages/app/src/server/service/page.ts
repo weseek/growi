@@ -169,7 +169,7 @@ class PageService {
 
     // Change the parameter of the function into the pages
     // rename
-    this.pageEvent.on('rename', async(page, user, descendantPages) => {
+    this.pageEvent.on('rename', async(page, user, descendantPages?) => {
       const isRecursively = descendantPages != null;
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
       try {
@@ -191,7 +191,7 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user, descendantPages) => {
+    this.pageEvent.on('delete', async(page, user, descendantPages?) => {
       const isRecursively = descendantPages != null;
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE;
       try {
@@ -543,7 +543,7 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-    this.pageEvent.emit('rename', page, user, null);
+    this.pageEvent.emit('rename', page, user);
 
     // create page redirect
     if (options.createRedirectPage) {
@@ -689,7 +689,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user, null);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
@@ -1420,7 +1420,7 @@ class PageService {
       this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
     else {
-      this.pageEvent.emit('delete', page, user, null);
+      this.pageEvent.emit('delete', page, user);
     }
 
     return deletedPage;
@@ -1508,7 +1508,7 @@ class PageService {
       }
     }
 
-    this.pageEvent.emit('delete', page, user, null);
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
