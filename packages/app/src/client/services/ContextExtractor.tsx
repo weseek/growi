@@ -14,7 +14,7 @@ import {
   useSiteUrl,
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useCurrentPageId, usePageIdOnHackmd, usePageUser, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
@@ -137,7 +137,6 @@ const ContextExtractorOnce: FC = () => {
   useCurrentPageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
-  useCurrentPagePath(path);
   useRevisionCreatedAt(revisionCreatedAt);
   useRevisionId(revisionId);
   useRevisionIdHackmdSynced(revisionIdHackmdSynced);

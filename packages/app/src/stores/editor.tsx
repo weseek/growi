@@ -75,7 +75,7 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 /*
 * Slack Notification
 */
-export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResponse<string[], Error> => {
+export const useSWRxSlackChannels = (currentPagePath?: string): SWRResponse<string[], Error> => {
   const shouldFetch: boolean = currentPagePath != null;
   return useSWR(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,

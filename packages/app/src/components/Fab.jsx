@@ -2,10 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 
 import StickyEvents from 'sticky-events';
 
-
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useCurrentPathname, useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import CreatePageIcon from './Icons/CreatePageIcon';
@@ -15,13 +15,13 @@ const logger = loggerFactory('growi:cli:Fab');
 
 const Fab = () => {
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPathname } = useCurrentPathname();
 
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPath = '' } = useCurrentPagePath();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
-
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -48,6 +48,7 @@ const Fab = () => {
     };
   }, [stickyChangeHandler]);
 
+  const basePath = currentPage?.path ?? currentPathname ?? '';
   function renderPageCreateButton() {
     return (
       <>
@@ -55,7 +56,7 @@ const Fab = () => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={() => openCreateModal(currentPath)}
+            onClick={() => openCreateModal(basePath)}
           >
             <CreatePageIcon />
           </button>

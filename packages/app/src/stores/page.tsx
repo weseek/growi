@@ -14,12 +14,12 @@ import { apiGet } from '../client/util/apiv1-client';
 import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPagePath } from './context';
+import { useCurrentPageId } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
 export const useSWRxPage = (pageId?: string, shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
-  return useSWR<IPageHasId, Error>(
+  return useSWRImmutable<IPageHasId, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
     { fallbackData: initialData },
@@ -27,16 +27,16 @@ export const useSWRxPage = (pageId?: string, shareLinkId?: string, initialData?:
 };
 
 export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR<IPageHasId, Error>(
+  return useSWRImmutable<IPageHasId, Error>(
     path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  return useSWRxPage(currentPageId ?? undefined, shareLinkId, initialData);
+  return useSWRxPage(currentPageId ?? undefined, shareLinkId);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,12 +83,12 @@ export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boo
 };
 
 export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
 
-  const path = currentPagePath == null || termNumber == null
+  const path = currentPage?.path == null || termNumber == null
     ? null
-    : currentPagePath;
+    : currentPage?.path;
 
   return useSWRxPageList(path, pageNumber, termNumber);
 };

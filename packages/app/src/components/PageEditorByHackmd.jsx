@@ -9,7 +9,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
+import { useCurrentPageId } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -18,6 +18,7 @@ import loggerFactory from '~/utils/logger';
 
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -449,8 +450,8 @@ const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, 
 const PageEditorByHackmdWrapper = (props) => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);

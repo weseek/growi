@@ -14,7 +14,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+  useIsEditable, useIsIndentSizeForced, useCurrentPageId,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -31,6 +31,7 @@ import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 
 // TODO: remove this when omitting unstated is completed
@@ -88,8 +89,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();

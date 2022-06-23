@@ -17,7 +17,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -32,12 +32,12 @@ import { BasicLayout } from '../components/BasicLayout';
 
 
 import {
-  useCurrentUser, useCurrentPagePath,
+  useCurrentUser, useCurrentPageId,
   useOwnerOfCurrentPage,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCurrentPathname,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -92,9 +92,17 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
+  useCurrentPathname(props.currentPathname);
 
   // page
-  useCurrentPagePath(props.currentPathname);
+  let pageWithMeta: IPageWithMeta | undefined;
+  if (props.pageWithMetaStr != null) {
+    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
+  }
+  const currentPageId = pageWithMeta?.data._id;
+  useCurrentPageId(currentPageId);
+  useSWRxPage(currentPageId, undefined, pageWithMeta?.data); // store initial data
+  useSWRxPageInfo(currentPageId, undefined, pageWithMeta?.meta); // store initial data
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
@@ -124,13 +132,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // });
 
   // const { data: editorMode } = useEditorMode();
-
-  let pageWithMeta: IPageWithMeta | undefined;
-  if (props.pageWithMetaStr != null) {
-    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
-  }
-  useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
   const classNames: string[] = [];
   // switch (editorMode) {

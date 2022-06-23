@@ -8,9 +8,7 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
-import {
-  useCurrentPagePath, useIsGuestUser,
-} from '~/stores/context';
+import { useIsGuestUser } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -25,6 +23,7 @@ import LinkEditModal from './PageEditor/LinkEditModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 const logger = loggerFactory('growi:Page');
 
@@ -184,11 +183,11 @@ Page.propTypes = {
 };
 
 const PageWrapper = (props) => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageTags } = usePageTagsForEditors();
   const { data: grant } = useSelectedGrant();

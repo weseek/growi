@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DevidedPagePath } from '@growi/core';
 
 import { IPageHasId } from '~/interfaces/page';
-import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
+import { useCurrentPathname, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
@@ -62,8 +62,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
 
   const pageIds = pages.map(page => page._id) as string[];
 
-
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: isSharedUser } = useIsSharedUser();
 
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
@@ -77,11 +76,11 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
 
       <div className="grw-side-contents-container">
         <div className="grw-page-accessories-control pb-1">
-          { currentPath != null && !isSharedUser && (
+          { currentPathname != null && !isSharedUser && (
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between"
-              onClick={() => openDescendantPageListModal(currentPath)}
+              onClick={() => openDescendantPageListModal(currentPathname)}
             >
               <PageListIcon />
               {t('page_list')}
@@ -93,7 +92,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
 
       <div className="flex-grow-1 flex-basis-0 mw-0">
 
-        <IdenticalPathAlert path={currentPath} />
+        <IdenticalPathAlert path={currentPathname} />
 
         <div className="page-list">
           <ul className="page-list-ul list-group list-group-flush">
