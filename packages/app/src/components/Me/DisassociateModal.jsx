@@ -26,7 +26,7 @@ class DisassociateModal extends React.Component {
   }
 
   async onClickDisassociateBtn() {
-    const { t, personalContainer, mutatePersonalExternalAccounts } = this.props;
+    const { t, personalContainer, onDisassociated } = this.props;
     const { providerType, accountId } = this.props.accountForDisassociate;
 
     try {
@@ -38,8 +38,8 @@ class DisassociateModal extends React.Component {
       toastError(err);
     }
 
-    if (mutatePersonalExternalAccounts != null) {
-      mutatePersonalExternalAccounts();
+    if (onDisassociated != null) {
+      onDisassociated();
     }
   }
 
@@ -79,14 +79,14 @@ DisassociateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   accountForDisassociate: PropTypes.object.isRequired,
-  mutatePersonalExternalAccounts: PropTypes.func,
+  onDisassociated: PropTypes.func,
 
 };
 
 const DisassociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
-  return <DisassociateModal t={t} mutatePersonalExternalAccounts={mutatePersonalExternalAccounts} {...props} />;
+  return <DisassociateModal t={t} onDisassociated={mutatePersonalExternalAccounts} {...props} />;
 };
 
 /**

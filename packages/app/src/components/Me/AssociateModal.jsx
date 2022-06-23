@@ -48,7 +48,7 @@ class AssociateModal extends React.Component {
   }
 
   async onClickAddBtn() {
-    const { t, personalContainer, mutatePersonalExternalAccounts } = this.props;
+    const { t, personalContainer, onAssociated } = this.props;
     const { username, password } = this.state;
 
     try {
@@ -59,8 +59,8 @@ class AssociateModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-    if (mutatePersonalExternalAccounts != null) {
-      mutatePersonalExternalAccounts();
+    if (onAssociated != null) {
+      onAssociated();
     }
   }
 
@@ -134,13 +134,13 @@ AssociateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  mutatePersonalExternalAccounts: PropTypes.func,
+  onAssociated: PropTypes.func,
 };
 
 const AssociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
-  return <AssociateModal t={t} mutatePersonalExternalAccounts={mutatePersonalExternalAccounts} {...props} />;
+  return <AssociateModal t={t} onAssociated={mutatePersonalExternalAccounts} {...props} />;
 };
 
 /**
