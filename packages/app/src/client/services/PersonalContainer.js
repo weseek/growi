@@ -2,8 +2,7 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { apiPost } from '../util/apiv1-client';
-import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+import { apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
@@ -40,73 +39,6 @@ export default class PersonalContainer extends Container {
   static getClassName() {
     return 'PersonalContainer';
   }
-
-  /**
-   * retrieve personal data
-   */
-  async retrievePersonalData() {
-    try {
-      const response = await apiv3Get('/personal-setting/');
-      const { currentUser } = response.data;
-      this.setState({
-        name: currentUser.name,
-        email: currentUser.email,
-        isEmailPublished: currentUser.isEmailPublished,
-        lang: currentUser.lang,
-        isGravatarEnabled: currentUser.isGravatarEnabled,
-        apiToken: currentUser.apiToken,
-        slackMemberId: currentUser.slackMemberId,
-      });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to fetch personal data');
-    }
-  }
-
-
-  /**
-   * Change name
-   */
-  // changeName(inputValue) {
-  //   this.setState({ name: inputValue });
-  // }
-
-  /**
-   * Change email
-   */
-  // changeEmail(inputValue) {
-  //   this.setState({ email: inputValue });
-  // }
-
-  /**
-   * Change Slack Member ID
-   */
-  // changeSlackMemberId(inputValue) {
-  //   this.setState({ slackMemberId: inputValue });
-  // }
-
-  /**
-   * Change isEmailPublished
-   */
-  // changeIsEmailPublished(boolean) {
-  //   this.setState({ isEmailPublished: boolean });
-  // }
-
-  /**
-   * Change lang
-   */
-  // changeLang(lang) {
-  //   this.setState({ lang });
-  // }
-
-  /**
-   * Change isGravatarEnabled
-   */
-  // changeIsGravatarEnabled(boolean) {
-  //   this.setState({ isGravatarEnabled: boolean });
-  // }
 
   /**
    * Update basic info
