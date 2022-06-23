@@ -90,7 +90,7 @@ context('Search all pages', () => {
     cy.get('#edit-tag-modal').should('be.visible');
 
     cy.get('#edit-tag-modal').within(() => {
-      cy.get('.rbt-input-main').type(tag, {force: true});
+      cy.get('.rbt-input-main').type(tag).trigger('change');
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
       cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
