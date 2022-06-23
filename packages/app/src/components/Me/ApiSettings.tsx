@@ -10,13 +10,13 @@ import { usePersonalSettingsInfo } from '~/stores/personal-settings';
 const ApiSettings = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: personalSettingsInfoData, mutate } = usePersonalSettingsInfo();
+  const { data: personalSettingsInfoData, mutate: mutatePersonalSettingsInfo } = usePersonalSettingsInfo();
 
   const submitHandler = async() => {
 
     try {
       const result = await apiv3Put('/personal-setting/api-token');
-      mutate(result.data.userData);
+      mutatePersonalSettingsInfo(result.data.userData);
 
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
