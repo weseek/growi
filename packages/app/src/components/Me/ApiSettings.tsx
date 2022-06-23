@@ -2,29 +2,22 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { usePersonalSettingsInfo } from '~/stores/personal-settings';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 
-type Props = {
-  personalContainer: PersonalContainer,
-}
-
-const ApiSettings = (props: Props) => {
+const ApiSettings = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: personalSettingsInfoData } = usePersonalSettingsInfo();
-  const { personalContainer } = props;
+  const { data: personalSettingsInfoData, mutate } = usePersonalSettingsInfo();
 
   const submitHandler = async() => {
 
     try {
-      await apiv3Put('/personal-setting/api-token');
+      const result = await apiv3Put('/personal-setting/api-token');
+      mutate(result.data.userData);
 
-      await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
     catch (err) {
@@ -93,9 +86,4 @@ const ApiSettings = (props: Props) => {
 };
 
 
-/**
- * Wrapper component for using unstated
- */
-const ApiSettingsWrapper = withUnstatedContainers(ApiSettings, [PersonalContainer]);
-
-export default ApiSettingsWrapper;
+export default ApiSettings;
