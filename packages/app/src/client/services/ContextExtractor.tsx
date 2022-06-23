@@ -18,7 +18,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -119,7 +119,7 @@ const ContextExtractorOnce: FC = () => {
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
   useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
   useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
-
+  useGrowiVersion(configByContextHydrate.crowi.version);
 
   // Page
   useCurrentCreatedAt(createdAt);
@@ -173,7 +173,8 @@ const ContextExtractorOnce: FC = () => {
 
   // Global Socket
   useSetupGlobalSocket();
-  useSetupGlobalAdminSocket();
+  const shouldInitAdminSock = !!currentUser?.isAdmin;
+  useSetupGlobalAdminSocket(shouldInitAdminSock);
 
   return null;
 };

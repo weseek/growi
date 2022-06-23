@@ -1,6 +1,6 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -47,7 +47,6 @@ const PagingSizeUncontrolledDropdown = (props) => {
 
 
 PagingSizeUncontrolledDropdown.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   label: PropTypes.string,
   toggleLabel: PropTypes.number,
   dropdownItemSize: PropTypes.array,
@@ -55,4 +54,4 @@ PagingSizeUncontrolledDropdown.propTypes = {
   onChangeDropdownItem: PropTypes.func,
 };
 
-export default withTranslation()(PagingSizeUncontrolledDropdown);
+export default PagingSizeUncontrolledDropdown;

@@ -21,7 +21,7 @@ interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
 
 class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
 
-  render(): ReactNode {
+  override render(): ReactNode {
 
     const {
       value, isGfmMode, lineNumbers, options, forwardedRef,
