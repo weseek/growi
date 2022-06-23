@@ -22,7 +22,7 @@ class PasswordSettings extends React.Component {
       minPasswordLength: null,
     };
 
-    this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
 
   }
@@ -40,8 +40,8 @@ class PasswordSettings extends React.Component {
 
   }
 
-  async onClickSubmit() {
-    const { t, mutatePersonalSetting } = this.props;
+  async submitHandler() {
+    const { t, onSubmit } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
@@ -49,8 +49,8 @@ class PasswordSettings extends React.Component {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
-      if (mutatePersonalSetting != null) {
-        mutatePersonalSetting();
+      if (onSubmit != null) {
+        onSubmit();
       }
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
@@ -140,7 +140,7 @@ class PasswordSettings extends React.Component {
               data-testid="grw-password-settings-update-button"
               type="button"
               className="btn btn-primary"
-              onClick={this.onClickSubmit}
+              onClick={this.submitHandler}
               disabled={isIncorrectConfirmPassword}
             >
               {t('Update')}
@@ -155,13 +155,13 @@ class PasswordSettings extends React.Component {
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  mutatePersonalSetting: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 const PasswordSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: personalSettingsInfoData, mutate: mutatePersonalSetting, sync: syncPersonalSettingsInfo } = usePersonalSettingsInfo();
-  return <PasswordSettings t={t} mutatePersonalSetting={mutatePersonalSetting} syncPersonalSettingsInfo={syncPersonalSettingsInfo} {...props} />;
+  const { mutate: mutatePersonalSetting, sync: syncPersonalSettingsInfo } = usePersonalSettingsInfo();
+  return <PasswordSettings t={t} onSubmit={mutatePersonalSetting} syncPersonalSettingsInfo={syncPersonalSettingsInfo} {...props} />;
 };
 
 export default PasswordSettingsWrapperFC;
