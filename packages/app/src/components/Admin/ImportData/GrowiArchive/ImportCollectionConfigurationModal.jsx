@@ -1,8 +1,9 @@
 /* eslint-disable react/no-danger */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -12,8 +13,6 @@ import {
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
-import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
@@ -233,9 +232,10 @@ ImportCollectionConfigurationModal.propTypes = {
   option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ImportCollectionConfigurationModalWrapper = withUnstatedContainers(ImportCollectionConfigurationModal, [AppContainer]);
+const ImportCollectionConfigurationModalWrapperFc = (props) => {
+  const { t } = useTranslation();
 
-export default withTranslation()(ImportCollectionConfigurationModalWrapper);
+  return <ImportCollectionConfigurationModal t={t} {...props} />;
+};
+
+export default ImportCollectionConfigurationModalWrapperFc;

@@ -1,26 +1,30 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { getIdForRef } from '~/interfaces/common';
 import {
   IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
+import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRTagsInfo } from '~/stores/page';
+import { useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -168,41 +172,51 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
+  useEffect(() => {
+    // Run only when tagsInfoData has been updated
+    syncPageTagsForEditors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsInfoData?.tags]);
+
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
-    editorContainer, isCompactMode, isLinkSharingDisabled,
+    isCompactMode, isLinkSharingDisabled, pageContainer,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
-  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
-    // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === EditorMode.Editor) {
-      return editorContainer.setState({ tags: newTags });
-    }
 
+  const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
-      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const updatedRevisionId = getIdForRef(res.savedPage.revision);
+      await pageContainer.setState({ revisionId: updatedRevisionId });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
-      // update editorContainer.state
-      editorContainer.setState({ tags });
+      mutatePageTagsForEditors(newTags);
 
       toastSuccess('updated tags successfully');
     }
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageId]);
+
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+
+  const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
+    // It will not be reflected in the DB until the page is refreshed
+    mutatePageTagsForEditors(newTags);
+    return;
+  }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -335,8 +349,8 @@ const GrowiContextualSubNavigation = (props) => {
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={tagsInfoData?.tags || []}
-      tagsUpdatedHandler={tagsUpdatedHandler}
+      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
+      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       controls={ControlComponents}
       additionalClasses={['container-fluid']}
     />
@@ -346,11 +360,12 @@ const GrowiContextualSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer]);
+const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
 
 GrowiContextualSubNavigation.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
   isLinkSharingDisabled: PropTypes.bool,

@@ -25,7 +25,7 @@ type Props = {
   isCompactMode?: boolean,
 
   tags?: string[],
-  tagsUpdatedHandler?: (newTags: string[]) => Promise<void>,
+  tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
 
   controls?: React.FunctionComponent,
   additionalClasses?: string[],
@@ -71,7 +71,8 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
         ) }
 
         <div className="grw-path-nav-container">
-          { showTagLabel && !isCompactMode && (
+          {/* "/trash" page does not exist on page collection and unable to add tags  */}
+          { showTagLabel && !isCompactMode && path !== '/trash' && (
             <div className="grw-taglabels-container">
               <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>

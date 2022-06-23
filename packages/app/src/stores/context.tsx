@@ -175,6 +175,10 @@ export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number,
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
