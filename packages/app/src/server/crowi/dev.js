@@ -1,9 +1,10 @@
 import path from 'path';
-import { listLocaleIds } from '~/utils/locale-utils';
+
+import { allLocales } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
-const swig = require('swig-templates');
 const onHeaders = require('on-headers');
+const swig = require('swig-templates');
 
 const logger = loggerFactory('growi:crowi:dev');
 
@@ -41,9 +42,9 @@ class CrowiDev {
    */
   requireForAutoReloadServer() {
     // load all json files for live reloading
-    listLocaleIds()
+    allLocales
       .forEach((localeId) => {
-        require(path.join(this.crowi.localeDir, localeId, 'translation.json'));
+        require(path.join(this.crowi.publicDir, 'static/locales', localeId, 'translation.json'));
       });
   }
 

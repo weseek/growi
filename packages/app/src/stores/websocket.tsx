@@ -33,15 +33,19 @@ export const useGlobalSocket = (): SWRResponse<Socket, Error> => {
 /*
  * Global Admin Socket
  */
-export const useSetupGlobalAdminSocket = (): SWRResponse<Socket, Error> => {
-  const socket = io(GLOBAL_ADMIN_SOCKET_NS, {
-    transports: ['websocket'],
-  });
+export const useSetupGlobalAdminSocket = (shouldInit: boolean): SWRResponse<Socket, Error> => {
+  let socket: Socket | undefined;
 
-  socket.on('error', (err) => { logger.error(err) });
-  socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
+  if (shouldInit) {
+    socket = io(GLOBAL_ADMIN_SOCKET_NS, {
+      transports: ['websocket'],
+    });
 
-  return useStaticSWR(GLOBAL_ADMIN_SOCKET_KEY, socket);
+    socket.on('error', (err) => { logger.error(err) });
+    socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
+  }
+
+  return useStaticSWR(shouldInit ? GLOBAL_ADMIN_SOCKET_KEY : null, socket);
 };
 
 export const useGlobalAdminSocket = (): SWRResponse<Socket, Error> => {
