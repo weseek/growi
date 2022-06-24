@@ -3112,7 +3112,6 @@ class PageService {
     this.emitUpdateDescCount(updateDescCountData);
   }
 
-
   private emitUpdateDescCount(data: UpdateDescCountRawData): void {
     const socket = this.crowi.socketIoService.getDefaultSocket();
 
