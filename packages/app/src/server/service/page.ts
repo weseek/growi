@@ -620,17 +620,9 @@ class PageService {
       page, fromPath, toPath, options, user,
     } = pageOp;
 
-    // this want be used only in this method
-    const renameAndRecountDescendantCount = async(
-        page, user, options, renamedPage: PageDocument, pageOpId, fromPath:string, toPath:string,
-    ): Promise<void> => {
-      await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
-      // get ancestors
-      const ancestors = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
-      await this.recountAndUpdateDescendantCount(ancestors);
-    };
-
-    renameAndRecountDescendantCount(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    const ancestors = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
+    await this.recountAndUpdateDescendantCount(ancestors);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
