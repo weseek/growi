@@ -86,7 +86,9 @@ class ActivityService {
     excludeActions.forEach(action => availableActionsSet.delete(action));
 
     // Add essentialActions
-    AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+    if (isIncludeEssentialActions) {
+      AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+    }
 
     return Array.from(availableActionsSet);
   }
