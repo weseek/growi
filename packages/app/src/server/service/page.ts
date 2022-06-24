@@ -634,7 +634,11 @@ class PageService {
       page, fromPath, toPath, options, user,
     } = pageOp;
 
-    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    this.fixPathsAndDescendantCount(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+  }
+
+  async fixPathsAndDescendantCount(page, user, options, renamedPage, pageOpId, fromPath, toPath): Promise<void> {
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
     const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
     await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
