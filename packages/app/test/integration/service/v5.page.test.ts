@@ -342,13 +342,13 @@ describe('Test page service methods', () => {
 
   describe('restart renameOperation', () => {
     const resumeRenameSubOperation = async(renamePage, pageOp) => {
-      const mockedFixPathsAndDescendantCount = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCount').mockReturnValue(null);
+      const mockedPathsAndDescendantCountOfAncestors = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors').mockReturnValue(null);
       await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp);
 
-      const argsForRenameSubOperation = mockedFixPathsAndDescendantCount.mock.calls[0];
+      const argsForRenameSubOperation = mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
 
-      mockedFixPathsAndDescendantCount.mockRestore();
-      await crowi.pageService.fixPathsAndDescendantCount(...argsForRenameSubOperation);
+      mockedPathsAndDescendantCountOfAncestors.mockRestore();
+      await crowi.pageService.fixPathsAndDescendantCountOfAncestors(...argsForRenameSubOperation);
     };
 
     test('it should successfully restart rename operation', async() => {
