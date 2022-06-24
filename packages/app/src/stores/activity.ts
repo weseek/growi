@@ -14,9 +14,9 @@ export const useSWRxActivity = (limit?: number, offset?: number, searchFilter?: 
   );
 };
 
-export const useSWRxSearchableActions = (): SWRResponse<SupportedActionType[], Error> => {
+export const useSWRxAvailableActions = (): SWRResponse<SupportedActionType[], Error> => {
   return useSWRImmutable(
-    ['/activity/searchable-actions'],
-    endpoint => apiv3Get(endpoint).then(result => result.data.searchableActions),
+    ['/activity/available-actions'],
+    endpoint => apiv3Get(endpoint).then(result => result.data.availableActions),
   );
 };

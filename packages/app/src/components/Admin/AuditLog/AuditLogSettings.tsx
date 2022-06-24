@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
-import { useSWRxSearchableActions } from '~/stores/activity';
+import { useSWRxAvailableActions } from '~/stores/activity';
 import { useActivityExpirationSeconds } from '~/stores/context';
 
 export const AuditLogSettings: FC = () => {
@@ -14,8 +14,8 @@ export const AuditLogSettings: FC = () => {
   const { data: activityExpirationSecondsData } = useActivityExpirationSeconds();
   const activityExpirationSeconds = activityExpirationSecondsData != null ? activityExpirationSecondsData : 2592000;
 
-  const { data: searchableActionsData } = useSWRxSearchableActions();
-  const searchableActions = searchableActionsData != null ? searchableActionsData : [];
+  const { data: availableActionsData } = useSWRxAvailableActions();
+  const availableActions = availableActionsData != null ? availableActionsData : [];
 
   return (
     <>
@@ -45,7 +45,7 @@ export const AuditLogSettings: FC = () => {
       </p>
       <Collapse isOpen={isExpandActionList}>
         <ul className="list-group">
-          { searchableActions.map(action => (
+          { availableActions.map(action => (
             <li className="list-group-item">{ action }</li>
           )) }
         </ul>
