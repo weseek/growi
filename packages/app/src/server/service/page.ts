@@ -3098,7 +3098,6 @@ class PageService {
     builder.addConditionToSortPagesByDescPath();
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-
     await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
   }
 
