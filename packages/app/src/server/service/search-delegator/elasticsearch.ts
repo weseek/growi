@@ -437,7 +437,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   addAllPages() {
     const Page = mongoose.model('Page');
-    return this.updateOrInsertPages(() => Page.find(), { isEmittingProgressEvent: true, invokeGarbageCollection: true }, true);
+    return this.updateOrInsertPages(() => Page.find(), { shouldEmitAvailable: true, invokeGarbageCollection: true });
   }
 
   updateOrInsertPageById(pageId) {
@@ -456,8 +456,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option: any = {}, shouldEmit = false) {
-    const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
+  async updateOrInsertPages(queryFactory, option: any = {}) {
+    const { shouldEmitAvailable = false, invokeGarbageCollection = false } = option;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -465,7 +465,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
-    const socket = shouldEmit ? this.socketIoService.getAdminSocket() : null;
+    const socket = shouldEmitAvailable ? this.socketIoService.getAdminSocket() : null;
 
     // prepare functions invoked from custom streams
     const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
@@ -583,7 +583,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
           logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
 
-          if (isEmittingProgressEvent) {
+          if (shouldEmitAvailable) {
             socket?.emit('addPageProgress', { totalCount, count, skipped });
           }
         }
@@ -607,7 +607,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       final(callback) {
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
-        if (isEmittingProgressEvent) {
+        if (shouldEmitAvailable) {
           socket?.emit('finishAddPage', { totalCount, count, skipped });
         }
         callback();
@@ -623,7 +623,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
-    console.log('処理の実行が完了しました！');
   }
 
   deletePages(pages) {
