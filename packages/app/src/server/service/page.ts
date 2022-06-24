@@ -621,8 +621,8 @@ class PageService {
     } = pageOp;
 
     await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
-    const ancestors = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
-    await this.recountAndUpdateDescendantCount(ancestors);
+    const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
+    await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -3040,19 +3040,8 @@ class PageService {
     return nMigratablePages;
   }
 
-  /**
-   * Todo: need refactoring
-   */
-  async recountAndUpdateDescendantCount(paths: string[]): Promise<void> {
-    const BATCH_SIZE = 200;
+  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize?:number): Promise<void> {
     const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
-
-    const builder = new PageQueryBuilder(Page.find(), true);
-    builder.addConditionToListByPathsArray(paths); // find by paths
-    builder.addConditionToSortPagesByDescPath(); // sort in DESC
-
-    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
@@ -3066,11 +3055,24 @@ class PageService {
         callback();
       },
     });
-    aggregatedPages
-      .pipe(createBatchStream(BATCH_SIZE))
+    pageCursor
+      .pipe(createBatchStream(batchSize))
       .pipe(recountWriteStream);
 
     await streamToPromise(recountWriteStream);
+  }
+
+  async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionToListByPathsArray(paths); // find by paths
+    builder.addConditionToSortPagesByDescPath(); // sort in DESC
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
   }
 
   /**
@@ -3090,25 +3092,7 @@ class PageService {
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
 
-
-    const recountWriteStream = new Writable({
-      objectMode: true,
-      async write(pageDocuments, encoding, callback) {
-        for await (const document of pageDocuments) {
-          const descendantCount = await Page.recountDescendantCount(document._id);
-          await Page.findByIdAndUpdate(document._id, { descendantCount });
-        }
-        callback();
-      },
-      final(callback) {
-        callback();
-      },
-    });
-    aggregatedPages
-      .pipe(createBatchStream(BATCH_SIZE))
-      .pipe(recountWriteStream);
-
-    await streamToPromise(recountWriteStream);
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
   }
 
   // update descendantCount of all pages that are ancestors of a provided pageId by count
