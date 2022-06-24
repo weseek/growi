@@ -287,19 +287,3 @@ export const generateChildrenRegExp = (path: string): RegExp => {
   // ex. /parent/any_child OR /any_level1
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
-
-// Sort paths by `/` count in descending order .
-export const sortPathsBySlashCountInDesc = (paths: string[]): string[] => {
-  const pattern = /\//g; // matching all '/'
-  const sortedPaths = paths.sort((_a, _b) => {
-    if (_a === '/') {
-      return 1;
-    }
-    const a = _a.match(pattern);
-    const b = _b.match(pattern);
-    if (a == null || b == null) return 0;
-
-    return b.length - a.length; // Descending
-  });
-  return sortedPaths;
-};
