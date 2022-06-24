@@ -490,7 +490,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
       'mail:transmissionMethod': req.body.transmissionMethod,
@@ -502,6 +502,8 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SMTP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -524,9 +526,11 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send test mail for smtp
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     try {
       await sendTestEmail(req.user.email);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_TEST_SUBMIT };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({});
     }
     catch (err) {
@@ -560,7 +564,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
@@ -582,7 +586,8 @@ module.exports = (crowi) => {
 
     await mailService.initialize();
     mailService.publishUpdatedMessage();
-
+    const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SES_UPDATE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.apiv3({ mailSettingParams });
   });
 
