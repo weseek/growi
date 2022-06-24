@@ -20,11 +20,10 @@ class BasicInfoSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, personalContainer } = this.props;
+    const { t, update } = this.props;
 
     try {
-      // TODO: SWRize apiv3Put /personal-setting/ -> https://redmine.weseek.co.jp/issues/98160
-      await personalContainer.updateBasicInfo();
+      await update();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
@@ -171,6 +170,7 @@ BasicInfoSettings.propTypes = {
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
   personalSettingsInfo: PropTypes.object,
   onChangePersonalSettings: PropTypes.func,
+  update: PropTypes.func,
   error: PropTypes.object,
 };
 
@@ -191,6 +191,7 @@ const BasicInfoSettingsWrapperFC = (props) => {
       personalSettingsInfo={usePersonalSettingsInfoResult.data || {}}
       onChangePersonalSettings={usePersonalSettingsInfoResult.mutate}
       error={usePersonalSettingsInfoResult.error}
+      update={usePersonalSettingsInfoResult.update}
       {...props}
     />
   );

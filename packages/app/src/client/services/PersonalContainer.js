@@ -39,36 +39,6 @@ export default class PersonalContainer extends Container {
     return 'PersonalContainer';
   }
 
-  /**
-   * Update basic info
-   * @memberOf PersonalContainer
-   * @return {Array} basic info
-   */
-  async updateBasicInfo() {
-    try {
-      const response = await apiv3Put('/personal-setting/', {
-        name: this.state.name,
-        email: this.state.email,
-        isEmailPublished: this.state.isEmailPublished,
-        lang: this.state.lang,
-        slackMemberId: this.state.slackMemberId,
-      });
-      const { updatedUser } = response.data;
-
-      this.setState({
-        name: updatedUser.name,
-        email: updatedUser.email,
-        isEmailPublished: updatedUser.isEmailPublished,
-        lang: updatedUser.lang,
-        slackMemberId: updatedUser.slackMemberId,
-      });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to update personal data');
-    }
-  }
 
   /**
    * Associate LDAP account

@@ -11,8 +11,11 @@ export type IUser = {
   imageAttachment?: Ref<IAttachment>,
   imageUrlCached: string;
   isGravatarEnabled: boolean,
-  admin: boolean;
-  apiToken?: string;
+  isEmailPublished: boolean,
+  admin: boolean,
+  apiToken?: string,
+  lang: string,
+  slackMemberId?: string,
 }
 
 export type IUserGroupRelation = {
