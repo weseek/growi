@@ -36,6 +36,11 @@ export type SearchableData<T = Partial<QueryTerms>> = {
   terms: T
 }
 
+export type UpdateOrInsertPagesOpts = {
+  shouldEmitAvailable?: boolean
+  invokeGarbageCollection?: boolean
+}
+
 // Terms Key types
 export type AllTermsKey = keyof QueryTerms;
 export type UnavailableTermsKey<K extends AllTermsKey> = Exclude<AllTermsKey, K>;

@@ -14,7 +14,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey, UpdateOrInsertPagesOpts,
 } from '../../interfaces/search';
 import { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
@@ -456,7 +456,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option: any = {}) {
+  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}) {
     const { shouldEmitAvailable = false, invokeGarbageCollection = false } = option;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
