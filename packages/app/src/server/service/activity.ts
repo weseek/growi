@@ -58,9 +58,14 @@ class ActivityService {
   }
 
   getAvailableActions = function(isIncludeEssentialActions = true): SupportedActionType[] {
+    const auditLogEnabled = this.crowi.configManager.getConfig('crowi', 'app:auditLogEnabled') || false;
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
     const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
+
+    if (!auditLogEnabled) {
+      return AllSupportedActionToNotified;
+    }
 
     const availableActionsSet = new Set<SupportedActionType>();
 
