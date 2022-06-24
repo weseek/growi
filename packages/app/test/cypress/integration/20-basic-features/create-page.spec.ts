@@ -1,4 +1,4 @@
-context('Create pgae', () => {
+context('Create page', () => {
   const ssPrefix = 'create-page-';
 
   beforeEach(() => {
