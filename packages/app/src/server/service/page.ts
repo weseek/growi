@@ -3041,6 +3041,41 @@ class PageService {
   }
 
   /**
+   * update descendantCount of the following pages
+   * - page that has the same path as the provided path
+   * - pages that are descendants of the above page
+   */
+  async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionAsOnTree();
+    builder.addConditionToListWithDescendants(path);
+    builder.addConditionToSortPagesByDescPath();
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+  }
+
+  /**
+   * update descendantCount of the pages sequentially from path containing more `/` to path containing less
+   */
+  async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionToListByPathsArray(paths); // find by paths
+    builder.addConditionToSortPagesByDescPath(); // sort in DESC
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+  }
+
+  /**
    * Recount descendantCount of pages one by one
    */
   async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize?:number): Promise<void> {
@@ -3065,25 +3100,6 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
-  /**
-   * update descendantCount of the following pages
-   * - page that has the same path as the provided path
-   * - pages that are descendants of the above page
-   */
-  async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
-    const BATCH_SIZE = 200;
-    const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
-
-    const builder = new PageQueryBuilder(Page.find(), true);
-    builder.addConditionAsOnTree();
-    builder.addConditionToListWithDescendants(path);
-    builder.addConditionToSortPagesByDescPath();
-
-    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
-  }
-
   // update descendantCount of all pages that are ancestors of a provided pageId by count
   async updateDescendantCountOfAncestors(pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean): Promise<void> {
     const Page = this.crowi.model('Page');
@@ -3096,21 +3112,6 @@ class PageService {
     this.emitUpdateDescCount(updateDescCountData);
   }
 
-  /**
-   * update descendantCount of the pages sequentially from path containing more `/` to path containing less
-   */
-  async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
-    const BATCH_SIZE = 200;
-    const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
-
-    const builder = new PageQueryBuilder(Page.find(), true);
-    builder.addConditionToListByPathsArray(paths); // find by paths
-    builder.addConditionToSortPagesByDescPath(); // sort in DESC
-
-    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
-  }
 
   private emitUpdateDescCount(data: UpdateDescCountRawData): void {
     const socket = this.crowi.socketIoService.getDefaultSocket();
