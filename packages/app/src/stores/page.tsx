@@ -14,7 +14,9 @@ import { apiGet } from '../client/util/apiv1-client';
 import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPagePath } from './context';
+import {
+  useCurrentPageId, useCurrentPagePath, useTemplateTagData, useShareLinkId,
+} from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
@@ -92,14 +94,35 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
   return useSWRxPageList(path, pageNumber, termNumber);
 };
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo, Error> => {
+
+export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
   const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
-    return {
-      tags: response.tags,
-    };
-  }));
+  const { data: templateTagData } = useTemplateTagData();
+  const { data: shareLinkId } = useShareLinkId();
+
+  const fetcher = async(endpoint: string) => {
+    if (shareLinkId != null) {
+      return;
+    }
+
+    let tags: string[] = [];
+    // when the page exists or is a shared page
+    if (pageId != null && shareLinkId == null) {
+      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
+      tags = res?.tags;
+    }
+    // when the page does not exist
+    else if (templateTagData != null) {
+      tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+    }
+
+    return { tags };
+  };
+
+  return useSWRImmutable(key, fetcher);
 };
 
 export const useSWRxPageInfo = (
