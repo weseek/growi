@@ -355,7 +355,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
@@ -366,6 +366,9 @@ module.exports = (crowi) => {
       const siteUrlSettingParams = {
         siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_SITE_URL_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ siteUrlSettingParams });
     }
     catch (err) {
