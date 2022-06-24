@@ -29,7 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -604,11 +604,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(renamedPage: PageDocument): Promise<void> {
-
-    // findOne PageOperation
-    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': renamedPage._id };
-    const pageOp = await PageOperation.findOne(filter);
+  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
     if (pageOp == null) {
       throw Error('There is nothing to be processed right now');
     }
@@ -616,15 +612,13 @@ class PageService {
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
     }
+    if (pageOp.toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume rename operation(${pageOp._id})`);
+    }
 
     const {
       page, fromPath, toPath, options, user,
     } = pageOp;
-
-    // check property
-    if (toPath == null) {
-      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
-    }
 
     // this want be used only in this method
     const renameAndRecountDescendantCount = async(

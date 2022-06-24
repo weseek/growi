@@ -36,8 +36,10 @@ class PageOperationService {
    */
   async afterExpressServerReady(): Promise<void> {
     try {
+      const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub })
+        .sort({ createdAt: 'asc' });
       // execute rename operation
-      await this.executeAllRenameOperationBySystem();
+      await this.executeAllRenameOperationBySystem(pageOps);
     }
     catch (err) {
       logger.error(err);
@@ -47,17 +49,12 @@ class PageOperationService {
   /**
    * Execute renameSubOperation on every page operation for rename ordered by createdAt ASC
    */
-  private async executeAllRenameOperationBySystem(): Promise<void> {
-    const Page = this.crowi.model('Page');
-
-    const pageOps = await PageOperation.find({ actionType: PageActionType.Rename, actionStage: PageActionStage.Sub })
-      .sort({ createdAt: 'asc' });
+  private async executeAllRenameOperationBySystem(pageOps: PageOperationDocument[]): Promise<void> {
     if (pageOps.length === 0) return;
 
+    const Page = this.crowi.model('Page');
+
     for await (const pageOp of pageOps) {
-      const {
-        page, toPath, options, user,
-      } = pageOp;
 
       const renamedPage = await Page.findById(pageOp.page._id);
       if (renamedPage == null) {
@@ -66,7 +63,7 @@ class PageOperationService {
       }
 
       // rename
-      await this.crowi.pageService.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+      await this.crowi.pageService.resumeRenameSubOperation(renamedPage, pageOp);
     }
   }
 
@@ -178,6 +175,11 @@ class PageOperationService {
     // merge duplicate paths
     const mergedPaths = Array.from(new Set(toAncestorsPaths.concat(fromAncestorsPaths)));
     return mergedPaths;
+  }
+
+  async getRenameSubOperationByPageId(pageId: ObjectIdLike): Promise<PageOperationDocument | null> {
+    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': pageId };
+    return PageOperation.findOne(filter);
   }
 
 }
