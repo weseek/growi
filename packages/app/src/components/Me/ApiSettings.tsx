@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -7,12 +7,12 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { usePersonalSettingsInfo } from '~/stores/personal-settings';
 
 
-const ApiSettings = (): JSX.Element => {
+const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: personalSettingsInfoData, mutate: mutatePersonalSettingsInfo } = usePersonalSettingsInfo();
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
 
     try {
       const result = await apiv3Put('/personal-setting/api-token');
@@ -24,7 +24,7 @@ const ApiSettings = (): JSX.Element => {
       toastError(err);
     }
 
-  };
+  }, [mutatePersonalSettingsInfo, t]);
 
   return (
     <>
@@ -83,7 +83,7 @@ const ApiSettings = (): JSX.Element => {
 
   );
 
-};
+});
 
 
 export default ApiSettings;
