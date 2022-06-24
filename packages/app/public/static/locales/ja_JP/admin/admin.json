@@ -149,6 +149,13 @@
     }
   },
   "customize_setting": {
+    "default_sidebar_mode": {
+      "title": "デフォルトのサイドバーモード",
+      "desc": "新規ユーザー、ページを訪れたゲストのサイドバーモードを設定できます。",
+      "dock_mode_default_desc": "Dock Mode選択時のサイドバーの初期状態を設定できます。",
+      "dock_mode_default_open": "初めから開いた状態でページを開く",
+      "dock_mode_default_close": "初めから閉じた状態でページを開く"
+    },
     "layout": "レイアウト",
     "layout_options": {
       "default": "デフォルトのコンテンツ幅",

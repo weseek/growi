@@ -943,6 +943,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   appendHighlight(query) {
     query.body.highlight = {
+      max_analyzed_offset: 1000000 - 1, // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
       fields: {
         '*': {
           fragment_size: 40,
