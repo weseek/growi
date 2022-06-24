@@ -3040,6 +3040,9 @@ class PageService {
     return nMigratablePages;
   }
 
+  /**
+   * Recount descendantCount of pages one by one
+   */
   async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize?:number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
@@ -3062,6 +3065,10 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
+  /**
+   * Update descendantCount of pages that has a path matching one of the given paths.
+   * It is processed sequentially from longer path to shorter path.
+   */
   async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
