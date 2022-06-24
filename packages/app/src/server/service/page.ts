@@ -3066,7 +3066,7 @@ class PageService {
   }
 
   /**
-   * pdate descendantCount of the pages sequentially from path containing more `/` to path containing less
+   * update descendantCount of the pages sequentially from path containing more `/` to path containing less
    */
   async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
     const BATCH_SIZE = 200;
