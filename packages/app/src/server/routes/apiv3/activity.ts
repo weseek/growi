@@ -3,7 +3,7 @@ import express, { Request, Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
-import { AllSupportedAction } from '~/interfaces/activity';
+import { ISearchFilter } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -46,23 +46,28 @@ module.exports = (crowi: Crowi): Router => {
     const query = {};
 
     try {
-      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string);
+      const parsedSearchFilter = JSON.parse(req.query.searchFilter as string) as ISearchFilter;
 
       // add username to query
-      const canContainUsernameFilterToQuery = parsedSearchFilter.usernames.every(u => typeof u === 'string');
-      if (canContainUsernameFilterToQuery && parsedSearchFilter.usernames.length > 0) {
+      const canContainUsernameFilterToQuery = (
+        parsedSearchFilter.usernames != null
+        && parsedSearchFilter.usernames.length > 0
+        && parsedSearchFilter.usernames.every(u => typeof u === 'string')
+      );
+      if (canContainUsernameFilterToQuery) {
         Object.assign(query, { 'snapshot.username': parsedSearchFilter.usernames });
       }
 
       // add action to query
-      const canContainActionFilterToQuery = parsedSearchFilter.actions.every(a => AllSupportedAction.includes(a));
-      if (canContainActionFilterToQuery) {
-        Object.assign(query, { action: parsedSearchFilter.actions });
+      if (parsedSearchFilter.actions != null) {
+        const availableActions = crowi.activityService.getAvailableActions(false);
+        const searchableActions = parsedSearchFilter.actions.filter(action => availableActions.includes(action));
+        Object.assign(query, { action: searchableActions });
       }
 
       // add date to query
-      const startDate = parseISO(parsedSearchFilter.dates.startDate);
-      const endDate = parseISO(parsedSearchFilter.dates.endDate);
+      const startDate = parseISO(parsedSearchFilter?.dates?.startDate || '');
+      const endDate = parseISO(parsedSearchFilter?.dates?.endDate || '');
       if (isValid(startDate) && isValid(endDate)) {
         Object.assign(query, {
           createdAt: {
