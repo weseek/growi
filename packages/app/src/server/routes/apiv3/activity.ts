@@ -102,5 +102,10 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  router.get('/searchable-actions', accessTokenParser, loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
+    const searchableActions = crowi.activityService.getAvailableActions(false);
+    return res.apiv3({ searchableActions });
+  });
+
   return router;
 };
