@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -160,8 +160,14 @@ PasswordSettings.propTypes = {
 
 const PasswordSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { mutate: mutatePersonalSetting, sync: syncPersonalSettingsInfo } = usePersonalSettingsInfo();
-  return <PasswordSettings t={t} onSubmit={mutatePersonalSetting} syncPersonalSettingsInfo={syncPersonalSettingsInfo} {...props} />;
+  const { mutate: mutatePersonalSetting } = usePersonalSettingsInfo();
+
+  const submitHandler = useCallback(() => {
+    mutatePersonalSetting();
+  }, [mutatePersonalSetting]);
+
+
+  return <PasswordSettings t={t} onSubmit={submitHandler} {...props} />;
 };
 
 export default PasswordSettingsWrapperFC;
