@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, ActionGroupSize, AllSupportedAction,
+  AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -11,6 +12,15 @@ import Crowi from '../crowi';
 
 
 const logger = loggerFactory('growi:service:ActivityService');
+
+const parseActionString = (actionsString: string): SupportedActionType[] => {
+  if (actionsString == null) {
+    return [];
+  }
+
+  const actions = actionsString.split(',').map(value => value.trim());
+  return actions.filter(action => (AllSupportedAction as string[]).includes(action)) as SupportedActionType[];
+};
 
 class ActivityService {
 
@@ -49,25 +59,36 @@ class ActivityService {
 
   getAvailableActions = function(): SupportedActionType[] {
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
+    const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
+    const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
-    // TODO: 97982, 97986
-    // Update AvailableActions taking into account the values of "AUDIT_LOG_EXCLUDE_ACTIONS" and “AUDIT_LOG_ADDITONAL_ACTIONS"
+    const availableActionsSet = new Set<SupportedActionType>();
 
-    const availableActions: SupportedActionType[] = [...AllSupportedActionToNotified];
-
+    // Set base action group
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        availableActions.push(...AllSmallGroupActions);
+        AllSmallGroupActions.forEach(action => availableActionsSet.add(action));
         break;
       case ActionGroupSize.Medium:
-        availableActions.push(...AllMediumGroupActions);
+        AllMediumGroupActions.forEach(action => availableActionsSet.add(action));
         break;
       case ActionGroupSize.Large:
-        availableActions.push(...AllLargeGroupActions);
+        AllLargeGroupActions.forEach(action => availableActionsSet.add(action));
         break;
     }
 
-    return Array.from(new Set(availableActions));
+    // Add additionalActions
+    const additionalActions = parseActionString(auditLogAdditionalActions);
+    additionalActions.forEach(action => availableActionsSet.add(action));
+
+    // Delete excludeActions
+    const excludeActions = parseActionString(auditLogExcludeActions);
+    excludeActions.forEach(action => availableActionsSet.delete(action));
+
+    // Add essentialActions
+    AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+
+    return Array.from(availableActionsSet);
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
