@@ -62,32 +62,33 @@ class ActivityService {
     const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
+    const availableActionsSet = new Set<SupportedActionType>();
+
     // Set base action group
-    const availableActions: SupportedActionType[] = [];
     switch (auditLogActionGroupSize) {
       case ActionGroupSize.Small:
-        availableActions.push(...AllSmallGroupActions);
+        AllSmallGroupActions.forEach(action => availableActionsSet.add(action));
         break;
       case ActionGroupSize.Medium:
-        availableActions.push(...AllMediumGroupActions);
+        AllMediumGroupActions.forEach(action => availableActionsSet.add(action));
         break;
       case ActionGroupSize.Large:
-        availableActions.push(...AllLargeGroupActions);
+        AllLargeGroupActions.forEach(action => availableActionsSet.add(action));
         break;
     }
 
-    // Push additionalActions
+    // Add additionalActions
     const additionalActions = parseActionString(auditLogAdditionalActions);
-    availableActions.push(...additionalActions);
+    additionalActions.forEach(action => availableActionsSet.add(action));
 
-    // Filter with excludeActions
+    // Delete excludeActions
     const excludeActions = parseActionString(auditLogExcludeActions);
-    const filteredAvailableActions = availableActions.filter(action => !excludeActions.includes(action));
+    excludeActions.forEach(action => availableActionsSet.delete(action));
 
-    // Push essentialActions
-    filteredAvailableActions.push(...AllSupportedActionToNotified);
+    // Add essentialActions
+    AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
 
-    return Array.from(new Set(filteredAvailableActions));
+    return Array.from(availableActionsSet);
   }
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
