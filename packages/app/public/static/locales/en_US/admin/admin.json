@@ -532,6 +532,9 @@
     "return": "Return",
     "activity_expiration_date": "Audit Log expiration date",
     "activity_expiration_date_explain": "Created Audit Log are automatically deleted after the number of seconds set in the environment variable from the creation time",
-    "fixed_by_env_var": "This is fixed by the env var <code>{{key}}={{value}}</code>."
+    "fixed_by_env_var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
+    "available_action_list": "Search / View All Available Actions",
+    "available_action_list_explain": "List of actions that can be search / view in the Audit Log",
+    "action_list": "Action List"
   }
 }
