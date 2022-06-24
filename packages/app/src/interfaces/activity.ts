@@ -230,3 +230,9 @@ export type IActivity = {
 }
 
 export type IActivityHasId = IActivity & HasObjectId;
+
+export type ISearchFilter = {
+  usernames?: string[]
+  dates?: {startDate: string | null, endDate: string | null}
+  actions?: SupportedActionType[]
+}
