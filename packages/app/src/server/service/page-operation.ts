@@ -168,7 +168,9 @@ class PageOperationService {
     clearInterval(timerObj);
   }
 
-  // get all ancestors paths
+  /**
+   * Get ancestor's paths using fromPath and toPath. Merge same paths if any.
+   */
   getAncestorsPathsByFromAndToPath(fromPath: string, toPath: string): string[] {
     const fromAncestorsPaths = collectAncestorPaths(fromPath);
     const toAncestorsPaths = collectAncestorPaths(toPath);
