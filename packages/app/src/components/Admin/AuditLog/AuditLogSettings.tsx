@@ -45,7 +45,7 @@ export const AuditLogSettings: FC = () => {
       <Collapse isOpen={isExpandActionList}>
         <ul className="list-group">
           { availableActions.map(action => (
-            <li className="list-group-item">{ action }</li>
+            <li key={action} className="list-group-item">{ action }</li>
           )) }
         </ul>
       </Collapse>
