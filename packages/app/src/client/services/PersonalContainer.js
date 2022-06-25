@@ -179,60 +179,6 @@ export default class PersonalContainer extends Container {
     }
   }
 
-  /**
-   * Update profile image
-   * @memberOf PersonalContainer
-   */
-  async updateProfileImage() {
-    try {
-      const response = await apiv3Put('/personal-setting/image-type', {
-        isGravatarEnabled: this.state.isGravatarEnabled,
-      });
-      const { userData } = response.data;
-      this.setState({
-        isGravatarEnabled: userData.isGravatarEnabled,
-      });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to update profile image');
-    }
-  }
-
-  /**
-   * Upload image
-   */
-  async uploadAttachment(file) {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('_csrf', this.appContainer.csrfToken);
-      formData.append('attachmentType', AttachmentType.PROFILE_IMAGE);
-      const response = await apiPost('/attachments.uploadProfileImage', formData);
-      this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to upload profile image');
-    }
-  }
-
-  /**
-   * Delete image
-   */
-  async deleteProfileImage() {
-    try {
-      await apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
-      this.setState({ isUploadedPicture: false, uploadedPictureSrc: DEFAULT_IMAGE });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      logger.error(err);
-      throw new Error('Failed to delete profile image');
-    }
-  }
 
   /**
    * Associate LDAP account
