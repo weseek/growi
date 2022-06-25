@@ -3,8 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
-import { useSWRxAvailableActions } from '~/stores/activity';
-import { useActivityExpirationSeconds } from '~/stores/context';
+import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores/context';
 
 export const AuditLogSettings: FC = () => {
   const { t } = useTranslation();
@@ -14,7 +13,7 @@ export const AuditLogSettings: FC = () => {
   const { data: activityExpirationSecondsData } = useActivityExpirationSeconds();
   const activityExpirationSeconds = activityExpirationSecondsData != null ? activityExpirationSecondsData : 2592000;
 
-  const { data: availableActionsData } = useSWRxAvailableActions();
+  const { data: availableActionsData } = useAuditLogAvailableActions();
   const availableActions = availableActionsData != null ? availableActionsData : [];
 
   return (
