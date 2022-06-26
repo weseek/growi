@@ -960,6 +960,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         },
       },
     };
+
+    if (!this.isElasticsearchV6) {
+      query.body.highlight.max_analyzed_offset = 1000000 - 1; // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
+    }
   }
 
   async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
