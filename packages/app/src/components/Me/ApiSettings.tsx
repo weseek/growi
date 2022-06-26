@@ -4,19 +4,19 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { usePersonalSettingsInfo } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings } from '~/stores/personal-settings';
 
 
 const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: personalSettingsInfoData, mutate: mutatePersonalSettingsInfo } = usePersonalSettingsInfo();
+  const { data: personalSettingsData, mutate: mutatePersonalSettings } = useSWRxPersonalSettings();
 
   const submitHandler = useCallback(async() => {
 
     try {
       const result = await apiv3Put('/personal-setting/api-token');
-      mutatePersonalSettingsInfo(result.data.userData);
+      mutatePersonalSettings(result.data.userData);
 
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
@@ -24,7 +24,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       toastError(err);
     }
 
-  }, [mutatePersonalSettingsInfo, t]);
+  }, [mutatePersonalSettings, t]);
 
   return (
     <>
@@ -34,7 +34,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       <div className="row mb-3">
         <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
         <div className="col-md-6">
-          {personalSettingsInfoData?.apiToken != null
+          {personalSettingsData?.apiToken != null
             ? (
               <input
                 data-testid="grw-api-settings-input"
@@ -42,7 +42,7 @@ const ApiSettings = React.memo((): JSX.Element => {
                 className="form-control"
                 type="text"
                 name="apiToken"
-                value={personalSettingsInfoData.apiToken}
+                value={personalSettingsData.apiToken}
                 readOnly
               />
             )

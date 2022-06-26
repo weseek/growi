@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { usePersonalSettingsInfo } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings } from '~/stores/personal-settings';
 
 
 class PasswordSettings extends React.Component {
@@ -160,7 +160,7 @@ PasswordSettings.propTypes = {
 
 const PasswordSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { mutate: mutatePersonalSetting } = usePersonalSettingsInfo();
+  const { mutate: mutatePersonalSetting } = useSWRxPersonalSettings();
 
   const submitHandler = useCallback(() => {
     mutatePersonalSetting();

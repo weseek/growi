@@ -6,7 +6,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
-import { usePersonalSettingsInfo } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -22,14 +22,14 @@ const BasicInfoSettings = (props: Props) => {
   } = props;
 
   const {
-    data: personalSettingsInfo, mutate, error, personalSettingsDataFromDB, sync,
-  } = usePersonalSettingsInfo();
+    data: personalSettingsInfo, mutate, error,
+  } = useSWRxPersonalSettings();
 
   useEffect(() => {
-    // Sync only when getting personal settings data from DB
-    sync();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personalSettingsDataFromDB]);
+    // Mutate only when getting personal settings data from DB
+    mutate(personalSettingsInfo);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personalSettingsInfo]);
 
   const submitHandler = async() => {
 
