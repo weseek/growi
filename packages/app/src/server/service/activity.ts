@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSupportedAction,
+  IActivity, SupportedActionType, ActionGroupSize, AllSupportedActions,
   AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
@@ -19,7 +19,7 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
   }
 
   const actions = actionsString.split(',').map(value => value.trim());
-  return actions.filter(action => (AllSupportedAction as string[]).includes(action)) as SupportedActionType[];
+  return actions.filter(action => (AllSupportedActions as string[]).includes(action)) as SupportedActionType[];
 };
 
 class ActivityService {
