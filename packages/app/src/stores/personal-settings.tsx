@@ -7,14 +7,10 @@ import { apiv3Get } from '../client/util/apiv3-client';
 
 
 export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
-  const swrResult = useSWR(
+  return useSWR(
     '/personal-setting',
     endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
   );
-
-  return {
-    ...swrResult,
-  };
 };
 
 
