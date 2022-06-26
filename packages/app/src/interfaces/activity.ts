@@ -208,7 +208,7 @@ export const CommentActions = Object.values({
 /*
  * Array
  */
-export const AllSupportedTargetModel = Object.values(SupportedTargetModel);
+export const AllSupportedTargetModels = Object.values(SupportedTargetModel);
 export const AllSupportedEventModel = Object.values(SupportedEventModel);
 export const AllSupportedAction = Object.values(SupportedAction);
 export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);

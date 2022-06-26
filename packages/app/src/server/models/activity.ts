@@ -6,7 +6,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
   IActivity, ISnapshot, AllSupportedAction, SupportedActionType,
-  AllSupportedTargetModel, SupportedTargetModelType,
+  AllSupportedTargetModels, SupportedTargetModelType,
   AllSupportedEventModel, SupportedEventModelType,
 } from '~/interfaces/activity';
 
@@ -56,7 +56,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   targetModel: {
     type: String,
-    enum: AllSupportedTargetModel,
+    enum: AllSupportedTargetModels,
   },
   target: {
     type: Schema.Types.ObjectId,
