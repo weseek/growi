@@ -178,7 +178,7 @@ export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number,
 };
 
 export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData);
+  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
 
 export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
