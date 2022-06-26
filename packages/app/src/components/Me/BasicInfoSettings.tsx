@@ -35,6 +35,7 @@ const BasicInfoSettings = (props: Props) => {
     try {
       // TODO: SWRize apiv3Put /personal-setting/ -> https://redmine.weseek.co.jp/issues/98160
       await personalContainer.updateBasicInfo();
+      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
