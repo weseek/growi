@@ -1,8 +1,18 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.22...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.23...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.23](https://github.com/weseek/growi/compare/v4.5.22...v4.5.23) - 2022-06-26
+
+### 🚀 Improvement
+
+imprv: Create a GCS client that uses Application Default Credentials (#6052) @Yohei-Shiina
+
+### 🐛 Bug Fixes
+
+fix: Set max_analyzed_offset to elasticsearch querying options (#6118) @hakumizuki
 
 ## [v4.5.22](https://github.com/weseek/growi/compare/v4.5.21...v4.5.22) - 2022-06-07
 
