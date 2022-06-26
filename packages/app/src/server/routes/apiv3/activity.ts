@@ -44,7 +44,7 @@ module.exports = (crowi: Crowi): Router => {
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';
       logger.error(msg);
-      return res.apiv3Err(msg, 406);
+      return res.apiv3Err(msg, 405);
     }
 
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
