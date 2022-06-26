@@ -245,6 +245,7 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
+    auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
     activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
     auditLogAvailableActions: crowi.activityService.getAvailableActions(false),
     isSidebarDrawerMode: crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
