@@ -64,7 +64,7 @@ class ActivityService {
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
 
     if (!auditLogEnabled) {
-      return AllSupportedActionToNotified;
+      return AllEssentialActions;
     }
 
     const availableActionsSet = new Set<SupportedActionType>();
