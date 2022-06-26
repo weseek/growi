@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSupportedAction,
-  AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -19,7 +19,7 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
   }
 
   const actions = actionsString.split(',').map(value => value.trim());
-  return actions.filter(action => (AllSupportedAction as string[]).includes(action)) as SupportedActionType[];
+  return actions.filter(action => (AllSupportedActions as string[]).includes(action)) as SupportedActionType[];
 };
 
 class ActivityService {
@@ -87,7 +87,7 @@ class ActivityService {
 
     // Add essentialActions
     if (isIncludeEssentialActions) {
-      AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+      AllEssentialActions.forEach(action => availableActionsSet.add(action));
     }
 
     return Array.from(availableActionsSet);

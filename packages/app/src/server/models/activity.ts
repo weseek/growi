@@ -5,9 +5,9 @@ import {
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
-  IActivity, ISnapshot, AllSupportedAction, SupportedActionType,
-  AllSupportedTargetModel, SupportedTargetModelType,
-  AllSupportedEventModel, SupportedEventModelType,
+  IActivity, ISnapshot, AllSupportedActions, SupportedActionType,
+  AllSupportedTargetModels, SupportedTargetModelType,
+  AllSupportedEventModels, SupportedEventModelType,
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -56,7 +56,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   targetModel: {
     type: String,
-    enum: AllSupportedTargetModel,
+    enum: AllSupportedTargetModels,
   },
   target: {
     type: Schema.Types.ObjectId,
@@ -64,14 +64,14 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   eventModel: {
     type: String,
-    enum: AllSupportedEventModel,
+    enum: AllSupportedEventModels,
   },
   event: {
     type: Schema.Types.ObjectId,
   },
   action: {
     type: String,
-    enum: AllSupportedAction,
+    enum: AllSupportedActions,
     required: true,
   },
   snapshot: snapshotSchema,
