@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSupportedActions,
-  AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -87,7 +87,7 @@ class ActivityService {
 
     // Add essentialActions
     if (isIncludeEssentialActions) {
-      AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+      AllEssentialActions.forEach(action => availableActionsSet.add(action));
     }
 
     return Array.from(availableActionsSet);

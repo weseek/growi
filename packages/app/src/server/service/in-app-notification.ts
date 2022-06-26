@@ -1,7 +1,7 @@
 import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
-import { AllSupportedActionToNotified, SupportedAction } from '~/interfaces/activity';
+import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import { IPage } from '~/interfaces/page';
@@ -53,7 +53,7 @@ export default class InAppNotificationService {
   initActivityEventListeners(): void {
     this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
       try {
-        const shouldNotification = activity != null && target != null && (AllSupportedActionToNotified as ReadonlyArray<string>).includes(activity.action);
+        const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
           await this.createInAppNotification(activity, target);
         }
@@ -200,7 +200,7 @@ export default class InAppNotificationService {
   };
 
   createInAppNotification = async function(activity: ActivityDocument, target: IPage): Promise<void> {
-    const shouldNotification = activity != null && target != null && (AllSupportedActionToNotified as ReadonlyArray<string>).includes(activity.action);
+    const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {

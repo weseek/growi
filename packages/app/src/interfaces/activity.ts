@@ -110,6 +110,19 @@ export const SupportedAction = {
   ACTION_ADMIN_SEARCH_INDICES_REBUILD,
 } as const;
 
+// Action required for notification
+export const EssentialActionGroup = {
+  ACTION_PAGE_LIKE,
+  ACTION_PAGE_BOOKMARK,
+  ACTION_PAGE_UPDATE,
+  ACTION_PAGE_RENAME,
+  ACTION_PAGE_DUPLICATE,
+  ACTION_PAGE_DELETE,
+  ACTION_PAGE_DELETE_COMPLETELY,
+  ACTION_PAGE_REVERT,
+  ACTION_COMMENT_CREATE,
+} as const;
+
 export const ActionGroupSize = {
   Small: 'SMALL',
   Medium: 'MEDIUM',
@@ -173,18 +186,6 @@ export const LargeActionGroup = {
   ACTION_ADMIN_SEARCH_INDICES_REBUILD,
 } as const;
 
-export const SupportedActionToNotified = {
-  ACTION_PAGE_LIKE,
-  ACTION_PAGE_BOOKMARK,
-  ACTION_PAGE_UPDATE,
-  ACTION_PAGE_RENAME,
-  ACTION_PAGE_DUPLICATE,
-  ACTION_PAGE_DELETE,
-  ACTION_PAGE_DELETE_COMPLETELY,
-  ACTION_PAGE_REVERT,
-  ACTION_COMMENT_CREATE,
-} as const;
-
 /*
  * For AuditLogManagement.tsx
  */
@@ -211,7 +212,7 @@ export const CommentActions = Object.values({
 export const AllSupportedTargetModels = Object.values(SupportedTargetModel);
 export const AllSupportedEventModels = Object.values(SupportedEventModel);
 export const AllSupportedActions = Object.values(SupportedAction);
-export const AllSupportedActionToNotified = Object.values(SupportedActionToNotified);
+export const AllEssentialActions = Object.values(EssentialActionGroup);
 export const AllSmallGroupActions = Object.values(SmallActionGroup);
 export const AllMediumGroupActions = Object.values(MediumActionGroup);
 export const AllLargeGroupActions = Object.values(LargeActionGroup);
