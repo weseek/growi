@@ -6,7 +6,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
-import { useSWRxPersonalSettings } from '~/stores/personal-settings';
+import { usePersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -22,14 +22,13 @@ const BasicInfoSettings = (props: Props) => {
   } = props;
 
   const {
-    data: personalSettingsInfo, mutate, error,
-  } = useSWRxPersonalSettings();
+    data: personalSettingsInfo, mutate, sync, error, personalSettingsDataFromDB,
+  } = usePersonalSettings();
 
   useEffect(() => {
-    // Mutate only when getting personal settings data from DB
-    mutate(personalSettingsInfo);
+    sync();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personalSettingsInfo]);
+  }, [personalSettingsDataFromDB]);
 
   const submitHandler = async() => {
 
@@ -45,16 +44,6 @@ const BasicInfoSettings = (props: Props) => {
 
 
   const { registrationWhiteList } = appContainer.getConfig();
-
-  const isLoading = personalSettingsInfo == null;
-
-  if (isLoading) {
-    return (
-      <div className="text-center">
-        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
-      </div>
-    );
-  }
 
   const changePersonalSettingsHandler = (updateData) => {
     if (personalSettingsInfo == null) {

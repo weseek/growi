@@ -4,19 +4,20 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { useSWRxPersonalSettings } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 
 const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: personalSettingsData, mutate: mutatePersonalSettings } = useSWRxPersonalSettings();
+  const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();
+  const { data: personalSettingsData } = usePersonalSettings();
 
   const submitHandler = useCallback(async() => {
 
     try {
-      const result = await apiv3Put('/personal-setting/api-token');
-      mutatePersonalSettings(result.data.userData);
+      await apiv3Put('/personal-setting/api-token');
+      mutateDatabaseData();
 
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
@@ -24,7 +25,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       toastError(err);
     }
 
-  }, [mutatePersonalSettings, t]);
+  }, [mutateDatabaseData, t]);
 
   return (
     <>
