@@ -754,7 +754,9 @@ describe('Page', () => {
           const path2 = '/mup27_pub/mup28_owner';
           // page
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC }); // out of update scope
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] }); // update target
+          const _page2 = await Page.findOne({
+            path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1], parent: _page1._id,
+          }); // update target
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
@@ -781,7 +783,9 @@ describe('Page', () => {
           const _path2 = '/mup29_A/mup30_owner';
           // page
           const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] }); // update target
+          const _page2 = await Page.findOne({
+            path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1], parent: _page1._id,
+          }); // update target
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
@@ -817,7 +821,9 @@ describe('Page', () => {
           const _path2 = '/mup31_A/mup32_owner';
           // page
           const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1._id] }); // update target
+          const _page2 = await Page.findOne({ // update target
+            path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1._id], parent: _page1._id,
+          });
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
@@ -846,7 +852,9 @@ describe('Page', () => {
           const _path2 = '/mup33_C/mup34_owner';
           // page
           const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // groupC
-          const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3] }); // update target
+          const _page2 = await Page.findOne({ // update target
+            path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3], parent: _page1._id,
+          });
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
@@ -874,7 +882,9 @@ describe('Page', () => {
           const path2 = '/mup35_owner/mup36_owner';
           // page
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1] });
+          const _page2 = await Page.findOne({ // update target
+            path: path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1], parent: _page1._id,
+          });
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
