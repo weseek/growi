@@ -52,6 +52,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
+      isEmpty: mainContent.getAttribute('data-page-is-empty'),
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -134,29 +135,6 @@ export default class PageContainer extends Container {
    */
   static getClassName() {
     return 'PageContainer';
-  }
-
-  /**
-   * whether to Empty Trash Page
-   * not displayed when guest user and not on trash page
-   */
-  get isAbleToShowEmptyTrashButton() {
-    const { currentUser } = this.appContainer;
-    const { path, hasChildren } = this.state;
-
-    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
-  }
-
-  /**
-   * whether to display trash management buttons
-   * ex.) undo, delete completly
-   * not displayed when guest user
-   */
-  get isAbleToShowTrashPageManagementButtons() {
-    const { currentUser } = this.appContainer;
-    const { isDeleted } = this.state;
-
-    return (isDeleted && currentUser != null);
   }
 
   /**

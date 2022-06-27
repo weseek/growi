@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class StatusSuspendedButton extends React.Component {
 
@@ -62,10 +64,15 @@ class StatusSuspendedButton extends React.Component {
 
 }
 
+const StatusSuspendedFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <StatusSuspendedButton t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedButton, [AppContainer, AdminUsersContainer]);
+const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedFormWrapperFC, [AppContainer, AdminUsersContainer]);
 
 StatusSuspendedButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -75,4 +82,4 @@ StatusSuspendedButton.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(StatusSuspendedFormWrapper);
+export default StatusSuspendedFormWrapper;
