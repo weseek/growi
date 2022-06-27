@@ -58,10 +58,11 @@ const PersonalSettings = () => {
     };
   }, [t]);
 
+  const isNoPassword = window.location.hash === '#password';
 
   return (
     <div data-testid="grw-personal-settings">
-      <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+      <CustomNavAndContents defaultTabIndex={isNoPassword && 2} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
     </div>
   );
 
