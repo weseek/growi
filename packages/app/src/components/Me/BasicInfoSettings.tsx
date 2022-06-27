@@ -33,7 +33,7 @@ const BasicInfoSettings = (props: Props) => {
   const submitHandler = async() => {
 
     try {
-      updateBasicInfo();
+      await updateBasicInfo();
       // revaridate
       mutateDatabaseData();
       sync();
