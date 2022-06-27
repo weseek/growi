@@ -23,7 +23,7 @@ type Props = {
 }
 
 
-const DisassociateModal = (props: Props) => {
+const DisassociateModal = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
@@ -31,7 +31,7 @@ const DisassociateModal = (props: Props) => {
 
   const { providerType, accountId } = props.accountForDisassociate;
 
-  const onClickDisassociateBtn = async() => {
+  const disassociateAccountHandler = async() => {
 
     try {
       await disassociateLdapAccount({ providerType, accountId });
@@ -60,7 +60,7 @@ const DisassociateModal = (props: Props) => {
         <button type="button" className="btn btn-sm btn-outline-secondary" onClick={props.onClose}>
           { t('Cancel') }
         </button>
-        <button type="button" className="btn btn-sm btn-danger" onClick={onClickDisassociateBtn}>
+        <button type="button" className="btn btn-sm btn-danger" onClick={disassociateAccountHandler}>
           <i className="ti-unlink"></i>
           { t('Disassociate') }
         </button>
