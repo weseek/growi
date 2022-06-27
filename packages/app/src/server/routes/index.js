@@ -190,7 +190,7 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.add);
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , comment.api.remove);
   apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, attachment.api.uploadProfileImage);
   apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , attachment.api.remove);

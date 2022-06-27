@@ -353,7 +353,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
