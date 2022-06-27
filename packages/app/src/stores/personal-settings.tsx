@@ -21,6 +21,7 @@ export type IPersonalSettingsInfoOption = {
   personalSettingsDataFromDB: Nullable<IUser>,
   sync: () => void,
   update: () => void,
+  associateLdapAccount: (account: { username: string, password: string }) => void,
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
@@ -54,6 +55,10 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
 
       // invoke API
       apiv3Put('/personal-setting/', updateData);
+    },
+    associateLdapAccount: (account) => {
+      // invoke API
+      apiv3Put('/personal-setting/associate-ldap', account);
     },
   };
 };
