@@ -38,13 +38,11 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
       mutate(personalSettingsDataFromDB);
     },
     update: () => {
-      const { data, mutate } = swrResult;
+      const { data } = swrResult;
 
       if (data == null) {
         return;
       }
-
-      mutate({ ...data }, false);
 
       const updateData = {
         name: data.name,
