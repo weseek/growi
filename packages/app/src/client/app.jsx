@@ -7,7 +7,6 @@ import { I18nextProvider } from 'react-i18next';
 import { SWRConfig } from 'swr';
 import { Provider } from 'unstated';
 
-import CommentContainer from '~/client/services/CommentContainer';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -64,13 +63,12 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
-const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
   appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
-  commentContainer, editorContainer, tagContainer, personalContainer,
+  editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
