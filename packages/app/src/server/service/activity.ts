@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, ActionGroupSize, AllSupportedAction,
-  AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions, AllSupportedActionToNotified,
+  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
@@ -19,7 +19,7 @@ const parseActionString = (actionsString: string): SupportedActionType[] => {
   }
 
   const actions = actionsString.split(',').map(value => value.trim());
-  return actions.filter(action => (AllSupportedAction as string[]).includes(action)) as SupportedActionType[];
+  return actions.filter(action => (AllSupportedActions as string[]).includes(action)) as SupportedActionType[];
 };
 
 class ActivityService {
@@ -58,9 +58,14 @@ class ActivityService {
   }
 
   getAvailableActions = function(isIncludeEssentialActions = true): SupportedActionType[] {
+    const auditLogEnabled = this.crowi.configManager.getConfig('crowi', 'app:auditLogEnabled') || false;
     const auditLogActionGroupSize = this.crowi.configManager.getConfig('crowi', 'app:auditLogActionGroupSize') || ActionGroupSize.Small;
     const auditLogAdditionalActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogAdditionalActions');
     const auditLogExcludeActions = this.crowi.configManager.getConfig('crowi', 'app:auditLogExcludeActions');
+
+    if (!auditLogEnabled) {
+      return AllEssentialActions;
+    }
 
     const availableActionsSet = new Set<SupportedActionType>();
 
@@ -87,7 +92,7 @@ class ActivityService {
 
     // Add essentialActions
     if (isIncludeEssentialActions) {
-      AllSupportedActionToNotified.forEach(action => availableActionsSet.add(action));
+      AllEssentialActions.forEach(action => availableActionsSet.add(action));
     }
 
     return Array.from(availableActionsSet);

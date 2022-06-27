@@ -697,7 +697,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -707,6 +707,8 @@ module.exports = (crowi) => {
       const pluginSettingParams = {
         isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_PLUGIN_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ pluginSettingParams });
     }
     catch (err) {

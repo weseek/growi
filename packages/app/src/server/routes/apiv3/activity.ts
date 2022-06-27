@@ -40,6 +40,13 @@ module.exports = (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   router.get('/', apiLimiter, accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+    const auditLogEnabled = crowi.configManager?.getConfig('crowi', 'app:auditLogEnabled') || false;
+    if (!auditLogEnabled) {
+      const msg = 'AuditLog is not enabled';
+      logger.error(msg);
+      return res.apiv3Err(msg, 405);
+    }
+
     const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
 
