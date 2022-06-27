@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
@@ -780,12 +780,24 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+
+      const parameters = {};
+      if (SubscriptionStatusType.SUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_SUBSCRIBE });
+      }
+      else if (SubscriptionStatusType.UNSUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_UNSUBSCRIBE });
+      }
+      if ('action' in parameters) {
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+      }
+
       return res.apiv3({ subscription });
     }
     catch (err) {
