@@ -23,7 +23,9 @@ export type IPersonalSettingsInfoOption = {
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
   const { data: personalSettingsDataFromDB } = useSWRxPersonalSettings();
 
-  const swrResult = useStaticSWR<IUser, Error>('personalSettingsInfo', undefined);
+  const key = personalSettingsDataFromDB != null ? 'personalSettingsInfo' : null;
+
+  const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });
 
   return {
     ...swrResult,
