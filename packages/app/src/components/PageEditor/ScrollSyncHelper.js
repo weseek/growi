@@ -144,7 +144,7 @@ class ScrollSyncHelper {
 
       scrollTo -= this.getParentElementOffset(previewElement);
 
-      previewElement.scrollTop += scrollTo;
+      previewElement.scrollTop = previewElement.scrollTop + scrollTo;
     }
   }
 
