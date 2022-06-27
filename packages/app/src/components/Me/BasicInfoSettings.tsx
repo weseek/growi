@@ -18,10 +18,11 @@ const BasicInfoSettings = (props: Props) => {
   const { appContainer } = props;
 
   const {
+    data: personalSettingsDataFromDB,
     mutate: mutateDatabaseData,
   } = useSWRxPersonalSettings();
   const {
-    data: personalSettingsInfo, mutate, sync, update, error, personalSettingsDataFromDB,
+    data: personalSettingsInfo, mutate, sync, updateBasicInfo, error,
   } = usePersonalSettings();
 
   useEffect(() => {
@@ -32,8 +33,10 @@ const BasicInfoSettings = (props: Props) => {
   const submitHandler = async() => {
 
     try {
-      update();
+      updateBasicInfo();
+      // revaridate
       mutateDatabaseData();
+      sync();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {

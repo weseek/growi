@@ -1,7 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
 
-
-import { Nullable } from '~/interfaces/common';
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
 
@@ -18,9 +16,8 @@ export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
 };
 
 export type IPersonalSettingsInfoOption = {
-  personalSettingsDataFromDB: Nullable<IUser>,
   sync: () => void,
-  update: () => void,
+  updateBasicInfo: () => void,
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
@@ -30,14 +27,13 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
 
   return {
     ...swrResult,
-    personalSettingsDataFromDB,
 
     // Sync with database
     sync: (): void => {
       const { mutate } = swrResult;
       mutate(personalSettingsDataFromDB);
     },
-    update: () => {
+    updateBasicInfo: () => {
       const { data } = swrResult;
 
       if (data == null) {
