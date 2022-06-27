@@ -188,8 +188,7 @@ const PageEditor = (props: Props): JSX.Element => {
       }
       // when attachment
       else if (attachment.filePathProxied.startsWith('/attachment/')) {
-        insertText = `~~~attachment\nattachmentId:${attachment._id}\nfileName:${attachment.originalName}
-fileSize:${attachment.fileSize}\ncreateData:${attachment.createdAt}\n~~~`;
+        insertText = `~~~attachment\n${attachment._id}\n${attachment.originalName}\n${attachment.fileSize}\n${attachment.createdAt}\n~~~`;
       }
       editorRef.current.insertText(insertText);
 
