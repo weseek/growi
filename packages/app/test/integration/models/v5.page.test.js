@@ -358,7 +358,7 @@ describe('Page', () => {
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
-        parent: rootPage,
+        parent: pageIdUpd14,
         descendantCount: 0,
       },
       {
@@ -368,7 +368,6 @@ describe('Page', () => {
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
         descendantCount: 0,
-        parent: rootPage._id,
       },
       {
         _id: pageIdUpd15,
@@ -705,7 +704,7 @@ describe('Page', () => {
           const path2 = '/mup24_pub/mup25_pub';
           // page
           const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC }); // out of update scope
-          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC }); // update target
+          const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_PUBLIC, parent: _page1._id }); // update target
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
@@ -731,10 +730,6 @@ describe('Page', () => {
           const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_RESTRICTED });
           expect(_page1).toBeTruthy();
 
-          // parent's grant check
-          const _parent = await Page.findById(_page1.parent);
-          expect(_parent.grant).toBe(Page.GRANT_PUBLIC);
-
           const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupId: groupIdA };
           const updatedPage = await updatePage(_page1, 'new', 'old', pModelUser1, options); // from GRANT_RESTRICTED to GRANT_USER_GROUP(groupIdA)
 
@@ -743,8 +738,14 @@ describe('Page', () => {
           expect(updatedPage).toBeTruthy();
           expect(updatedPage._id).toStrictEqual(page1._id);
 
+          // updated page
           expect(page1.grant).toBe(Page.GRANT_USER_GROUP);
           expect(page1.grantedGroup._id).toStrictEqual(groupIdA);
+
+          // parent's grant check
+          const _parent = await Page.findById(page1.parent);
+          expect(_parent.grant).toBe(Page.GRANT_PUBLIC);
+
         });
 
         test('successfully change to GRANT_USER_GROUP from GRANT_OWNER if parent page is GRANT_PUBLIC', async() => {
