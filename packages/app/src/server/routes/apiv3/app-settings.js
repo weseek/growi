@@ -614,73 +614,65 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put(
-    '/file-upload-setting',
-    loginRequiredStrictly,
-    adminRequired,
-    csrf,
-    addActivity,
-    validator.fileUploadSetting,
-    apiV3FormValidator,
-    async(req, res) => {
-      const { fileUploadType } = req.body;
+  //  eslint-disable-next-line max-len
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+    const { fileUploadType } = req.body;
 
-      const requestParams = {
-        'app:fileUploadType': fileUploadType,
+    const requestParams = {
+      'app:fileUploadType': fileUploadType,
+    };
+
+    if (fileUploadType === 'gcs') {
+      requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
+      requestParams['gcs:bucket'] = req.body.gcsBucket;
+      requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
+      requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
+    }
+
+    if (fileUploadType === 'aws') {
+      requestParams['aws:s3Region'] = req.body.s3Region;
+      requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
+      requestParams['aws:s3Bucket'] = req.body.s3Bucket;
+      requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
+      requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
+      requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
+    }
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await crowi.setUpFileUpload(true);
+      crowi.fileUploaderSwitchService.publishUpdatedMessage();
+
+      const responseParams = {
+        fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       };
 
       if (fileUploadType === 'gcs') {
-        requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
-        requestParams['gcs:bucket'] = req.body.gcsBucket;
-        requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
-        requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
+        responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
+        responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
+        responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        responseParams.gcsReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode ');
       }
 
       if (fileUploadType === 'aws') {
-        requestParams['aws:s3Region'] = req.body.s3Region;
-        requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
-        requestParams['aws:s3Bucket'] = req.body.s3Bucket;
-        requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
-        requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
-        requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
+        responseParams.s3Region = crowi.configManager.getConfig('crowi', 'aws:s3Region');
+        responseParams.s3CustomEndpoint = crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+        responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
+        responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
+        responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
+        responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating fileUploadType';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+    }
 
-      try {
-        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
-        await crowi.setUpFileUpload(true);
-        crowi.fileUploaderSwitchService.publishUpdatedMessage();
-
-        const responseParams = {
-          fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
-        };
-
-        if (fileUploadType === 'gcs') {
-          responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
-          responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
-          responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
-          responseParams.gcsReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode ');
-        }
-
-        if (fileUploadType === 'aws') {
-          responseParams.s3Region = crowi.configManager.getConfig('crowi', 'aws:s3Region');
-          responseParams.s3CustomEndpoint = crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
-          responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
-          responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
-          responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
-          responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
-        }
-        const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
-        activityEvent.emit('update', res.locals.activity._id, parameters);
-        return res.apiv3({ responseParams });
-      }
-      catch (err) {
-        const msg = 'Error occurred in updating fileUploadType';
-        logger.error('Error', err);
-        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-      }
-
-    },
-  );
+  });
 
   /**
    * @swagger
