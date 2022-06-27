@@ -10,12 +10,14 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getIdForRef } from '~/interfaces/common';
-import { IPageHasId, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import {
+  IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+} from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -155,6 +157,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: createdAt } = useCurrentCreatedAt();
   const { data: updatedAt } = useCurrentUpdatedAt();
   const { data: pageId } = useCurrentPageId();
+  const { data: emptyPageId } = useEmptyPageId();
   const { data: revisionId } = useRevisionId();
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
@@ -222,8 +225,12 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
+      if (page.data._id !== null) {
+        window.location.href = `/${page.data._id}`;
+        return;
+      }
       window.location.reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
@@ -255,32 +262,38 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const ControlComponents = useCallback(() => {
+    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
     }
 
+    let additionalMenuItemsRenderer;
+    if (revisionId != null) {
+      additionalMenuItemsRenderer = props => (
+        <AdditionalMenuItems
+          {...props}
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+          onClickTemplateMenuItem={templateMenuItemClickHandler}
+        />
+      );
+    }
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageId != null && isViewMode && (
+          { pageIdForSubNavButtons != null && isViewMode && (
             <div className="h-50">
               <SubNavButtons
                 isCompactMode={isCompactMode}
-                pageId={pageId}
+                pageId={pageIdForSubNavButtons}
                 shareLinkId={shareLinkId}
                 revisionId={revisionId}
                 path={path}
                 disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={props => (
-                  <AdditionalMenuItems
-                    {...props}
-                    pageId={pageId}
-                    revisionId={revisionId}
-                    isLinkSharingDisabled={isLinkSharingDisabled}
-                    onClickTemplateMenuItem={templateMenuItemClickHandler}
-                  />
-                )}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -306,7 +319,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
