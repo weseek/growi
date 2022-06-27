@@ -26,32 +26,35 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
 
   const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });
 
+  // Sync with database
+  const sync = (): void => {
+    const { mutate } = swrResult;
+    mutate(personalSettingsDataFromDB);
+  };
+
+  const updateBasicInfo = (): void => {
+    const { data } = swrResult;
+
+    if (data == null) {
+      return;
+    }
+
+    const updateData = {
+      name: data.name,
+      email: data.email,
+      isEmailPublished: data.isEmailPublished,
+      lang: data.lang,
+      slackMemberId: data.slackMemberId,
+    };
+
+    // invoke API
+    apiv3Put('/personal-setting/', updateData);
+  };
+
   return {
     ...swrResult,
-
-    // Sync with database
-    sync: (): void => {
-      const { mutate } = swrResult;
-      mutate(personalSettingsDataFromDB);
-    },
-    updateBasicInfo: () => {
-      const { data } = swrResult;
-
-      if (data == null) {
-        return;
-      }
-
-      const updateData = {
-        name: data.name,
-        email: data.email,
-        isEmailPublished: data.isEmailPublished,
-        lang: data.lang,
-        slackMemberId: data.slackMemberId,
-      };
-
-      // invoke API
-      apiv3Put('/personal-setting/', updateData);
-    },
+    sync,
+    updateBasicInfo,
   };
 };
 
