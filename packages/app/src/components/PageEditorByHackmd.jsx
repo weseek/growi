@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +9,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useCurrentPagePath } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -172,9 +172,9 @@ class PageEditorByHackmd extends React.Component {
    */
   async onSaveWithShortcut(markdown) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     try {
       // disable unsaved warning
@@ -434,6 +434,7 @@ PageEditorByHackmd.propTypes = {
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
@@ -451,6 +452,8 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -466,6 +469,7 @@ const PageEditorByHackmdWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
+      pageTags={pageTags}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}

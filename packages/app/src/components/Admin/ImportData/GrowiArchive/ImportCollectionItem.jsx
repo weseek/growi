@@ -1,9 +1,6 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-// eslint-disable-next-line no-unused-vars
-import { withTranslation } from 'react-i18next';
-
 import { Progress } from 'reactstrap';
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';

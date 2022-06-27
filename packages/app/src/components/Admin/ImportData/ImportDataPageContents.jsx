@@ -1,11 +1,13 @@
-import React, { Fragment } from 'react';
-import { withTranslation } from 'react-i18next';
+import React from 'react';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminImportContainer from '~/client/services/AdminImportContainer';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GrowiArchiveSection from './GrowiArchiveSection';
-
-import AdminImportContainer from '~/client/services/AdminImportContainer';
 
 class ImportDataPageContents extends React.Component {
 
@@ -237,9 +239,15 @@ ImportDataPageContents.propTypes = {
   adminImportContainer: PropTypes.instanceOf(AdminImportContainer).isRequired,
 };
 
+const ImportDataPageContentsWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ImportDataPageContents t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ImportDataPageContentsWrapper = withUnstatedContainers(ImportDataPageContents, [AdminImportContainer]);
+const ImportDataPageContentsWrapper = withUnstatedContainers(ImportDataPageContentsWrapperFc, [AdminImportContainer]);
 
-export default withTranslation()(ImportDataPageContentsWrapper);
+export default ImportDataPageContentsWrapper;

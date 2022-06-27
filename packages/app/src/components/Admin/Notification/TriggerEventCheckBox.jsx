@@ -1,6 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const TriggerEventCheckBox = (props) => {
   const { t } = props;
@@ -33,5 +34,11 @@ TriggerEventCheckBox.propTypes = {
   children: PropTypes.object.isRequired,
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const TriggerEventCheckBoxWrapperFC = (props) => {
+  const { t } = useTranslation();
 
-export default withTranslation()(TriggerEventCheckBox);
+  return <TriggerEventCheckBox t={t} {...props} />;
+};
+
+export default TriggerEventCheckBoxWrapperFC;

@@ -59,13 +59,6 @@ export default class EditorContainer extends Container {
     }
   }
 
-  getCurrentOptionsToSave() {
-    const opt = {
-      pageTags: this.state.tags,
-    };
-
-    return opt;
-  }
 
   // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {

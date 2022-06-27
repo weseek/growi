@@ -27,10 +27,6 @@ module.exports = function(crowi, req, locals) {
     return crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version : '-';
   };
 
-  locals.growiVersion = function() {
-    return crowi.version;
-  };
-
   // token getter
   locals.csrf = function() {
     return req.csrfToken;
