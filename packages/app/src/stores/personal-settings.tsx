@@ -32,7 +32,7 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     mutate();
   };
 
-  const updateBasicInfo = (): void => {
+  const updateBasicInfo = async(): Promise<void> => {
     const { data } = swrResult;
 
     if (data == null) {
@@ -48,7 +48,7 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     };
 
     // invoke API
-    apiv3Put('/personal-setting/', updateData);
+    await apiv3Put('/personal-setting/', updateData);
   };
 
   return {
