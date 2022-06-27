@@ -3070,7 +3070,7 @@ class PageService {
     builder.addConditionToSortPagesByDescPath();
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
   }
 
   /**
@@ -3086,13 +3086,13 @@ class PageService {
     builder.addConditionToSortPagesByDescPath(); // sort in DESC
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
   }
 
   /**
    * Recount descendantCount of pages one by one
    */
-  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize?:number): Promise<void> {
+  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,

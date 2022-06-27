@@ -174,9 +174,8 @@ class PageOperationService {
   getAncestorsPathsByFromAndToPath(fromPath: string, toPath: string): string[] {
     const fromAncestorsPaths = collectAncestorPaths(fromPath);
     const toAncestorsPaths = collectAncestorPaths(toPath);
-    // merge duplicate paths
-    const mergedPaths = Array.from(new Set(toAncestorsPaths.concat(fromAncestorsPaths)));
-    return mergedPaths;
+    // merge duplicate paths and return paths of ancestors
+    return Array.from(new Set(toAncestorsPaths.concat(fromAncestorsPaths)));
   }
 
   async getRenameSubOperationByPageId(pageId: ObjectIdLike): Promise<PageOperationDocument | null> {
