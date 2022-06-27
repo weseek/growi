@@ -10,9 +10,8 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
+import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -26,11 +25,11 @@ class DisassociateModal extends React.Component {
   }
 
   async onClickDisassociateBtn() {
-    const { t, personalContainer, mutatePersonalExternalAccounts } = this.props;
+    const { t, disassociateLdapAccount, mutatePersonalExternalAccounts } = this.props;
     const { providerType, accountId } = this.props.accountForDisassociate;
 
     try {
-      await personalContainer.disassociateLdapAccount({ providerType, accountId });
+      await disassociateLdapAccount({ providerType, accountId });
       this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
@@ -74,25 +73,33 @@ class DisassociateModal extends React.Component {
 DisassociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   accountForDisassociate: PropTypes.object.isRequired,
   mutatePersonalExternalAccounts: PropTypes.func,
+  disassociateLdapAccount: PropTypes.func,
 
 };
 
 const DisassociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
-  return <DisassociateModal t={t} mutatePersonalExternalAccounts={mutatePersonalExternalAccounts} {...props} />;
+  const { disassociateLdapAccount } = usePersonalSettings();
+  return (
+    <DisassociateModal
+      t={t}
+      mutatePersonalExternalAccounts={mutatePersonalExternalAccounts}
+      disassociateLdapAccount={disassociateLdapAccount}
+      {...props}
+    />
+  );
 };
 
 /**
  * Wrapper component for using unstated
  */
-const DisassociateModalWrapper = withUnstatedContainers(DisassociateModalWrapperFC, [AppContainer, PersonalContainer]);
+const DisassociateModalWrapper = withUnstatedContainers(DisassociateModalWrapperFC, [AppContainer]);
 
 
 export default DisassociateModalWrapper;
