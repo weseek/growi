@@ -743,8 +743,8 @@ describe('Page', () => {
           expect(page1.grantedGroup._id).toStrictEqual(groupIdA);
 
           // parent's grant check
-          const _parent = await Page.findById(page1.parent);
-          expect(_parent.grant).toBe(Page.GRANT_PUBLIC);
+          const parent = await Page.findById(page1.parent);
+          expect(parent.grant).toBe(Page.GRANT_PUBLIC);
 
         });
 
@@ -782,10 +782,10 @@ describe('Page', () => {
           const _path1 = '/mup29_A';
           const _path2 = '/mup29_A/mup30_owner';
           // page
-          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-          const _page2 = await Page.findOne({
+          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // out of update scope
+          const _page2 = await Page.findOne({ // update target
             path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1], parent: _page1._id,
-          }); // update target
+          });
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
