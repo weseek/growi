@@ -1,4 +1,4 @@
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { mutate, SWRResponse } from 'swr';
 
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
@@ -29,7 +29,7 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
   // Sync with database
   const sync = (): void => {
     const { mutate } = swrResult;
-    mutate(personalSettingsDataFromDB);
+    mutate();
   };
 
   const updateBasicInfo = (): void => {
