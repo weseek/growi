@@ -858,4 +858,10 @@ describe('Test page service methods', () => {
       expect(page4.descendantCount).toBe(0);
     });
   });
+
+  describe.only('recountAndUpdateDescendantCountOfPages', () => {
+    test('test1', async() => {
+      expect(true).toBe(true);
+    });
+  });
 });
