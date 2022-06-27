@@ -175,7 +175,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
             slackChannels,
           },
         };
-        postComment(postCommentArgs);
+        await postComment(postCommentArgs);
       }
 
       initializeEditor();
