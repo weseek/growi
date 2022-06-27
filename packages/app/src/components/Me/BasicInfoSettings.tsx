@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
-import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
+import { usePersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -17,7 +17,6 @@ const BasicInfoSettings = (props: Props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
 
-  const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
   } = usePersonalSettings();
@@ -27,8 +26,6 @@ const BasicInfoSettings = (props: Props) => {
 
     try {
       await updateBasicInfo();
-      // revaridate
-      mutateDatabaseData();
       sync();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
@@ -44,7 +41,7 @@ const BasicInfoSettings = (props: Props) => {
     if (personalSettingsInfo == null) {
       return;
     }
-    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData });
+    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData }, false);
   };
 
 

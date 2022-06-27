@@ -21,15 +21,16 @@ export type IPersonalSettingsInfoOption = {
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
-  const { data: personalSettingsDataFromDB } = useSWRxPersonalSettings();
+  const { data: personalSettingsDataFromDB, mutate: revalidate } = useSWRxPersonalSettings();
   const key = personalSettingsDataFromDB != null ? 'personalSettingsInfo' : null;
 
   const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });
 
   // Sync with database
-  const sync = (): void => {
+  const sync = async(): Promise<void> => {
     const { mutate } = swrResult;
-    mutate();
+    const result = await revalidate();
+    mutate(result);
   };
 
   const updateBasicInfo = async(): Promise<void> => {
