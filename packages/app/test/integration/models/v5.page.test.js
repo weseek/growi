@@ -385,7 +385,7 @@ describe('Page', () => {
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
-        parent: rootPage,
+        parent: pageIdUpd15,
         grantedUsers: [pModelUserId1],
         descendantCount: 0,
       },
