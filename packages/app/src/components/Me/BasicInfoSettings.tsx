@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
 import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
@@ -12,21 +11,17 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 type Props = {
   appContainer: AppContainer,
-  personalContainer: PersonalContainer,
 }
 
 const BasicInfoSettings = (props: Props) => {
   const { t } = useTranslation();
-  const {
-    // personalContainer will be removed by 98160
-    appContainer, /* personalContainer, */
-  } = props;
+  const { appContainer } = props;
 
   const {
     mutate: mutateDatabaseData,
   } = useSWRxPersonalSettings();
   const {
-    data: personalSettingsInfo, mutate, sync, error, personalSettingsDataFromDB,
+    data: personalSettingsInfo, mutate, sync, update, error, personalSettingsDataFromDB,
   } = usePersonalSettings();
 
   useEffect(() => {
@@ -37,8 +32,7 @@ const BasicInfoSettings = (props: Props) => {
   const submitHandler = async() => {
 
     try {
-      // TODO: SWRize apiv3Put /personal-setting/ -> https://redmine.weseek.co.jp/issues/98160
-      // await personalContainer.updateBasicInfo();
+      update();
       mutateDatabaseData();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
@@ -179,6 +173,6 @@ const BasicInfoSettings = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer, PersonalContainer]);
+const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer]);
 
 export default BasicInfoSettingsWrapper;
