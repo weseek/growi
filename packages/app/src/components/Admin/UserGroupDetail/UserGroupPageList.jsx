@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -84,9 +84,14 @@ UserGroupPageList.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupPageListWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupPageList t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageListWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupPageListWrapper);
+export default UserGroupPageListWrapper;

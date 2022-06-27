@@ -421,7 +421,7 @@ export const getPageSchema = (crowi) => {
   };
 
   /**
-   * find pages that is match with `path` and its descendants whitch user is able to manage
+   * find pages that is match with `path` and its descendants which user is able to manage
    */
   pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}, includeEmpty = false) {
     if (user == null) {
