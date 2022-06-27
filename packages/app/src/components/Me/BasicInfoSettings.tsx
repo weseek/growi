@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -17,18 +17,11 @@ const BasicInfoSettings = (props: Props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
 
+  const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();
   const {
-    data: personalSettingsDataFromDB,
-    mutate: mutateDatabaseData,
-  } = useSWRxPersonalSettings();
-  const {
-    data: personalSettingsInfo, mutate, sync, updateBasicInfo, error,
+    data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
   } = usePersonalSettings();
 
-  useEffect(() => {
-    sync();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personalSettingsDataFromDB]);
 
   const submitHandler = async() => {
 
@@ -51,7 +44,7 @@ const BasicInfoSettings = (props: Props) => {
     if (personalSettingsInfo == null) {
       return;
     }
-    mutate({ ...personalSettingsInfo, ...updateData });
+    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData });
   };
 
 
