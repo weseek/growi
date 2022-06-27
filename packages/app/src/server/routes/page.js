@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
+import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -411,8 +412,24 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
+    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
+    if (shoudCreateActivity) {
+      const parameter = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_PAGE_VIEW,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
+      try {
+        await Activity.createByParameters(parameter);
+      }
+      catch (err) {
+        logger.error('Create activity failed', err);
+      }
+    }
 
     return res.render(view, renderVars);
   }
@@ -472,8 +489,24 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
+    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
+    if (shoudCreateActivity) {
+      const parameter = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_PAGE_VIEW,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
+      try {
+        await Activity.createByParameters(parameter);
+      }
+      catch (err) {
+        logger.error('Create activity failed', err);
+      }
+    }
 
     return res.render(view, renderVars);
   }
@@ -655,8 +688,24 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
-    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
+    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
+    if (shoudCreateActivity) {
+      const parameter = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_PAGE_VIEW,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
+      try {
+        await Activity.createByParameters(parameter);
+      }
+      catch (err) {
+        logger.error('Create activity failed', err);
+      }
+    }
 
     return redirector(req, res, next, path);
   };
@@ -665,8 +714,24 @@ module.exports = function(crowi, app) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
 
-    const parameters = { action: SupportedAction.ACTION_PAGE_VIEW };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
+    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
+    if (shoudCreateActivity) {
+      const parameter = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_PAGE_VIEW,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
+      try {
+        await Activity.createByParameters(parameter);
+      }
+      catch (err) {
+        logger.error('Create activity failed', err);
+      }
+    }
 
     return redirector(req, res, next, path);
   };

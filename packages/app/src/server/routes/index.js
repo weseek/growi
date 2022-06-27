@@ -73,7 +73,7 @@ module.exports = function(crowi, app) {
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
 
-  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, addActivity, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
@@ -245,9 +245,9 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , addActivity, injectUserUISettings, page.showPage);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
 
-  app.get('/*/$'                   , loginRequired , addActivity, injectUserUISettings, page.redirectorWithEndOfSlash);
-  app.get('/*'                     , loginRequired , addActivity, autoReconnectToSearch, injectUserUISettings, page.redirector);
+  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
 
 };
