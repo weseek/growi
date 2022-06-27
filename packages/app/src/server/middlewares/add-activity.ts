@@ -14,7 +14,7 @@ interface AuthorizedRequest extends Request {
 
 export const generateAddActivityMiddleware = crowi => async(req: AuthorizedRequest, res: Response, next: NextFunction): Promise<void> => {
   if (req.method === 'GET') {
-    logger.error('This middleware is not available for GET requests');
+    logger.warn('This middleware is not available for GET requests');
     return next();
   }
 
