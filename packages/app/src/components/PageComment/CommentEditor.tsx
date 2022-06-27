@@ -13,7 +13,7 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
+import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { useSWRxPageComment } from '~/stores/comment';
@@ -74,7 +74,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
-  const { mutate: mutateComment } = useSWRxPageComment(currentPageId);
+  const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
@@ -156,34 +156,28 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [isForNewComment, onCancelButtonClicked]);
 
-  const postComment = useCallback(async() => {
+  const postCommentHandler = useCallback(async() => {
     try {
       if (currentCommentId != null) {
         // update current comment
-        await apiPost('/comments.update', {
-          commentForm: {
-            comment,
-            revision_id: revisionId,
-            comment_id: currentCommentId,
-          },
-        });
+        await updateComment(comment, revisionId, currentCommentId);
       }
       else {
         // post new comment
-        await apiPost('/comments.add', {
+        const postCommentArgs = {
           commentForm: {
             comment,
-            page_id: currentPageId,
-            revision_id: revisionId,
+            revisionId,
             replyTo,
           },
           slackNotificationForm: {
             isSlackEnabled,
             slackChannels,
           },
-        });
+        };
+        postComment(postCommentArgs);
       }
-      mutateComment();
+
       initializeEditor();
 
       if (onCommentButtonClicked != null) {
@@ -204,8 +198,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       event.preventDefault();
     }
 
-    postComment();
-  }, [postComment]);
+    postCommentHandler();
+  }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
     toastr.error(error.message, 'Error occured', {
@@ -289,7 +283,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
-        onClick={postComment}
+        onClick={postCommentHandler}
       >
         Comment
       </Button>
