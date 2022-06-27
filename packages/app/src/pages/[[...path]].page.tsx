@@ -42,6 +42,7 @@ import {
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
 import { PageModel } from '~/server/models/page';
+import { isValidObjectId } from 'mongoose';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -224,14 +225,18 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   const { currentPathname } = props;
 
-  const pageId = currentPathname.substring(1);
+  // determine pageId
+  let pageId;
+  const pageIdStr = currentPathname.substring(1);
+  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true); // includeEmpty = true, isSharedPage = false
+  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
 
   if (page == null) {
+    const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
     // check the page is forbidden or just does not exist.
-    props.isForbidden = await Page.count({ _id: pageId }) > 0;
+    props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
