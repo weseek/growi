@@ -14,10 +14,13 @@ import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { apiPostForm } from '~/client/util/apiv1-client';
+import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
-import { useCurrentPagePath, useCurrentPageId, useCurrentUser } from '~/stores/context';
+import { useSWRxPageComment } from '~/stores/comment';
+import {
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+} from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
@@ -73,6 +76,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
+  const { mutate: mutateComment } = useSWRxPageComment(currentPageId);
+  const { data: revisionId } = useRevisionId();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -156,20 +161,31 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const postComment = useCallback(async() => {
     try {
       if (currentCommentId != null) {
-        await commentContainer.putComment(
-          comment,
-          currentCommentId,
-          commentCreator,
-        );
+        // update current comment
+        await apiPost('/comments.update', {
+          commentForm: {
+            comment,
+            revision_id: revisionId,
+            comment_id: currentCommentId,
+          },
+        });
       }
       else {
-        await commentContainer.postComment(
-          comment,
-          replyTo,
-          isSlackEnabled,
-          slackChannels,
-        );
+        // post new comment
+        await apiPost('/comments.add', {
+          commentForm: {
+            comment,
+            page_id: currentPageId,
+            revision_id: revisionId,
+            replyTo,
+          },
+          slackNotificationForm: {
+            isSlackEnabled,
+            slackChannels,
+          },
+        });
       }
+      mutateComment();
       initializeEditor();
 
       if (onCommentButtonClicked != null) {
