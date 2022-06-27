@@ -49,8 +49,6 @@ import TagPage from '../components/TagPage';
 import TrashPageList from '../components/TrashPageList';
 
 import { appContainer, componentMappings } from './base';
-import { toastError } from './util/apiNotification';
-
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -96,8 +94,6 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'fix-page-grant-alert': <FixPageGrantAlert />,
-
   'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
@@ -130,11 +126,10 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
-
-  // show the Page accessory modal when query of "compare" is requested
-  if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
-    toastError('Sorry, opening PageAccessoriesModal is not implemented yet in v5.');
-  //   pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
+  if (!pageContainer.state.isEmpty) {
+    Object.assign(componentMappings, {
+      'fix-page-grant-alert': <FixPageGrantAlert />,
+    });
   }
 }
 if (pageContainer.state.creator != null) {
