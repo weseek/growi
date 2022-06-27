@@ -121,7 +121,6 @@ Crowi.prototype.init = async function() {
     this.setupSearcher(),
     this.setupMailer(),
     this.setupSlackIntegrationService(),
-    this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
     this.setupAttachmentService(),
@@ -377,13 +376,6 @@ Crowi.prototype.setupMailer = async function() {
   if (this.s2sMessagingService != null) {
     this.s2sMessagingService.addMessageHandler(this.mailService);
   }
-};
-
-Crowi.prototype.setupCsrf = async function() {
-  const Tokens = require('csrf');
-  this.tokens = new Tokens();
-
-  return Promise.resolve();
 };
 
 Crowi.prototype.autoInstall = function() {

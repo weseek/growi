@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import csrf from 'csurf';
+
 import { allLocales, localePath } from '~/next-i18next.config';
 
 module.exports = function(crowi, app) {
@@ -73,8 +75,6 @@ module.exports = function(crowi, app) {
     const Config = mongoose.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
-    req.csrfToken = null;
-
     res.locals.req = req;
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
@@ -132,6 +132,9 @@ module.exports = function(crowi, app) {
     sessionMiddleware(req, res, next);
   });
 
+  // csurf should be initialized after express-session
+  app.use(csrf({ cookie: false }));
+
   // passport
   debug('initialize Passport');
   app.use(passport.initialize());
@@ -148,7 +151,6 @@ module.exports = function(crowi, app) {
   const middlewares = require('../util/middlewares')(crowi, app);
   app.use(middlewares.swigFilters(swig));
   app.use(middlewares.swigFunctions());
-  app.use(middlewares.csrfKeyGenerator());
 
   app.use(i18nMiddleware.handle(i18next));
 };
