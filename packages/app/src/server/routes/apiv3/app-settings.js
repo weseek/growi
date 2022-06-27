@@ -739,15 +739,17 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
-
+    const parameters = {};
     try {
       if (flag) {
         await crowi.appService.startMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
       }
       else {
         await crowi.appService.endMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
       }
     }
     catch (err) {
@@ -758,6 +760,14 @@ module.exports = (crowi) => {
       else {
         res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
       }
+    }
+
+    if (Object.is(parameters.action, SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED)) {
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+    }
+
+    if (Object.is(parameters.action, SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED)) {
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
 
     res.apiv3({ flag });
