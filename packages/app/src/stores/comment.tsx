@@ -2,7 +2,7 @@ import useSWR, { SWRResponse } from 'swr';
 
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 
-import { ICommentHasIdList } from '../interfaces/comment';
+import { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
 import { Nullable } from '../interfaces/common';
 
 type IResponseComment = {
@@ -10,21 +10,9 @@ type IResponseComment = {
   ok: boolean,
 }
 
-type CommentPost = {
-  commentForm: {
-    comment: string,
-    revisionId: string,
-    replyTo: string|undefined
-  },
-  slackNotificationForm: {
-    isSlackEnabled: boolean|undefined,
-    slackChannels: string|undefined,
-  },
-}
-
 type CommentOperation = {
   update(comment: string, revisionId: string, commentId: string): Promise<void>,
-  post(args: CommentPost): Promise<void>
+  post(args: ICommentPostArgs): Promise<void>
 }
 
 export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<ICommentHasIdList, Error> & CommentOperation => {
@@ -47,7 +35,7 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
     mutate();
   };
 
-  const post = async(args: CommentPost) => {
+  const post = async(args: ICommentPostArgs) => {
     const { mutate } = swrResponse;
     const { commentForm, slackNotificationForm } = args;
     const { comment, revisionId, replyTo } = commentForm;
