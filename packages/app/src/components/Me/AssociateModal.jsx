@@ -11,7 +11,6 @@ import {
 
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
@@ -50,12 +49,11 @@ class AssociateModal extends React.Component {
 
   async onClickAddBtn() {
     const {
-      t, personalContainer, associateLdapAccount, mutatePersonalExternalAccounts,
+      t, associateLdapAccount, mutatePersonalExternalAccounts,
     } = this.props;
     const { username, password } = this.state;
 
     try {
-      // await personalContainer.associateLdapAccount({ username, password });
       await associateLdapAccount({ username, password });
       this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
@@ -134,7 +132,6 @@ class AssociateModal extends React.Component {
 AssociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -152,6 +149,6 @@ const AssociateModalWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const AssociateModalWrapper = withUnstatedContainers(AssociateModalWrapperFC, [AppContainer, PersonalContainer]);
+const AssociateModalWrapper = withUnstatedContainers(AssociateModalWrapperFC, [AppContainer]);
 
 export default AssociateModalWrapper;
