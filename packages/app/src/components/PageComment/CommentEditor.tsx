@@ -189,8 +189,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       setError(errorMessage);
     }
   }, [
-    comment, currentCommentId, commentCreator, initializeEditor,
+    comment, currentCommentId, initializeEditor,
     isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
+    postComment, revisionId, updateComment,
   ]);
 
   const ctrlEnterHandler = useCallback((event) => {
