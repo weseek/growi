@@ -113,7 +113,7 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
 
   const { logoSrc } = props;
   return logoSrc != null
-    ? (<img src={logoSrc} className="picture picture-lg " id="settingBrandLogo" width="32" />)
+    ? (<img src={logoSrc} className="picture picture-lg p-2" id="settingBrandLogo" width="32" />)
     : <GrowiLogo />;
 
 });
