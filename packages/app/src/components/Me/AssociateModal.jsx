@@ -49,21 +49,12 @@ class AssociateModal extends React.Component {
 
   async onClickAddBtn() {
     const {
-      t, associateLdapAccount, mutatePersonalExternalAccounts,
+      onAssociate, onClose,
     } = this.props;
     const { username, password } = this.state;
 
-    try {
-      await associateLdapAccount({ username, password });
-      this.props.onClose();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    if (mutatePersonalExternalAccounts != null) {
-      mutatePersonalExternalAccounts();
-    }
+    onAssociate({ username, password });
+    onClose();
   }
 
   render() {
@@ -135,15 +126,20 @@ AssociateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  mutatePersonalExternalAccounts: PropTypes.func,
-  associateLdapAccount: PropTypes.func,
+  onAssociate: PropTypes.func.isRequired,
 };
 
 const AssociateModalWrapperFC = (props) => {
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
   const { associateLdapAccount } = usePersonalSettings();
-  return <AssociateModal t={t} mutatePersonalExternalAccounts={mutatePersonalExternalAccounts} associateLdapAccount={associateLdapAccount} {...props} />;
+
+  const associateLdapAccountHandler = (account) => {
+    associateLdapAccount(account);
+    mutatePersonalExternalAccounts();
+  };
+
+  return <AssociateModal t={t} onAssociate={associateLdapAccountHandler} {...props} />;
 };
 
 /**

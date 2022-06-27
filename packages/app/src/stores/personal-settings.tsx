@@ -1,7 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
 
-
-import { Nullable } from '~/interfaces/common';
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
 
@@ -18,51 +16,60 @@ export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
 };
 
 export type IPersonalSettingsInfoOption = {
-  personalSettingsDataFromDB: Nullable<IUser>,
   sync: () => void,
-  update: () => void,
-  associateLdapAccount: (account: { username: string, password: string }) => void,
-  disassociateLdapAccount: (account: { providerType: string, accountId: string }) => void,
+  updateBasicInfo: () => Promise<void>,
+  associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
+  disassociateLdapAccount: (account: { providerType: string, accountId: string }) => Promise<void>,
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
-  const { data: personalSettingsDataFromDB } = useSWRxPersonalSettings();
+  const { data: personalSettingsDataFromDB, mutate: revalidate } = useSWRxPersonalSettings();
+  const key = personalSettingsDataFromDB != null ? 'personalSettingsInfo' : null;
 
-  const swrResult = useStaticSWR<IUser, Error>('personalSettingsInfo', undefined);
+  const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });
+
+  // Sync with database
+  const sync = async(): Promise<void> => {
+    const { mutate } = swrResult;
+    const result = await revalidate();
+    mutate(result);
+  };
+
+  const updateBasicInfo = async(): Promise<void> => {
+    const { data } = swrResult;
+
+    if (data == null) {
+      return;
+    }
+
+    const updateData = {
+      name: data.name,
+      email: data.email,
+      isEmailPublished: data.isEmailPublished,
+      lang: data.lang,
+      slackMemberId: data.slackMemberId,
+    };
+
+    // invoke API
+    await apiv3Put('/personal-setting/', updateData);
+  };
+
+
+  const associateLdapAccount = async(account) => {
+    await apiv3Put('/personal-setting/associate-ldap', account);
+  };
+
+  const disassociateLdapAccount = async(account) => {
+    await apiv3Put('/personal-setting/disassociate-ldap', account);
+  };
+
 
   return {
     ...swrResult,
-    personalSettingsDataFromDB,
-
-    // Sync with database
-    sync: (): void => {
-      const { mutate } = swrResult;
-      mutate(personalSettingsDataFromDB);
-    },
-    update: () => {
-      const { data } = swrResult;
-
-      if (data == null) {
-        return;
-      }
-
-      const updateData = {
-        name: data.name,
-        email: data.email,
-        isEmailPublished: data.isEmailPublished,
-        lang: data.lang,
-        slackMemberId: data.slackMemberId,
-      };
-
-      // invoke API
-      apiv3Put('/personal-setting/', updateData);
-    },
-    associateLdapAccount: (account) => {
-      apiv3Put('/personal-setting/associate-ldap', account);
-    },
-    disassociateLdapAccount: (account) => {
-      apiv3Put('/personal-setting/disassociate-ldap', account);
-    },
+    sync,
+    updateBasicInfo,
+    associateLdapAccount,
+    disassociateLdapAccount,
   };
 };
 

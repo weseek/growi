@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
-import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
+import { usePersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -18,22 +18,15 @@ const BasicInfoSettings = (props: Props) => {
   const { appContainer } = props;
 
   const {
-    mutate: mutateDatabaseData,
-  } = useSWRxPersonalSettings();
-  const {
-    data: personalSettingsInfo, mutate, sync, update, error, personalSettingsDataFromDB,
+    data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
   } = usePersonalSettings();
 
-  useEffect(() => {
-    sync();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personalSettingsDataFromDB]);
 
   const submitHandler = async() => {
 
     try {
-      update();
-      mutateDatabaseData();
+      await updateBasicInfo();
+      sync();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
@@ -48,7 +41,7 @@ const BasicInfoSettings = (props: Props) => {
     if (personalSettingsInfo == null) {
       return;
     }
-    mutate({ ...personalSettingsInfo, ...updateData });
+    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData });
   };
 
 
