@@ -614,7 +614,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  //  eslint-disable-next-line max-len
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -661,7 +662,8 @@ module.exports = (crowi) => {
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
         responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
-
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
     }
     catch (err) {
