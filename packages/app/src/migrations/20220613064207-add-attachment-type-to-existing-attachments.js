@@ -14,7 +14,7 @@ module.exports = {
     const Attachment = getModelSafely('Attachment') || attachmentModel();
 
     // Add attachmentType for wiki page
-    // Filter pages where "attachmentType" doesn't exists and "page" is not null
+    // Filter pages where "attachmentType" doesn't exist and "page" is not null
     const operationsForWikiPage = {
       updateMany:
          {
@@ -24,7 +24,7 @@ module.exports = {
     };
 
     // Add attachmentType for profile image
-    // Filter pages where "attachmentType" doesn't exists and  "page" is  null
+    // Filter pages where "attachmentType" doesn't exist and "page" is null
     const operationsForProfileImage = {
       updateMany:
         {
