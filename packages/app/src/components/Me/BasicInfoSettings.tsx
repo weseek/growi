@@ -41,7 +41,7 @@ const BasicInfoSettings = (props: Props) => {
     if (personalSettingsInfo == null) {
       return;
     }
-    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData }, false);
+    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData });
   };
 
 
