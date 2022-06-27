@@ -6,7 +6,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { localeMetadatas } from '~/client/util/i18n';
-import { usePersonalSettings } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -18,9 +18,13 @@ type Props = {
 const BasicInfoSettings = (props: Props) => {
   const { t } = useTranslation();
   const {
-    appContainer, personalContainer,
+    // personalContainer will be removed by 98160
+    appContainer, /* personalContainer, */
   } = props;
 
+  const {
+    mutate: mutateDatabaseData,
+  } = useSWRxPersonalSettings();
   const {
     data: personalSettingsInfo, mutate, sync, error, personalSettingsDataFromDB,
   } = usePersonalSettings();
@@ -34,8 +38,8 @@ const BasicInfoSettings = (props: Props) => {
 
     try {
       // TODO: SWRize apiv3Put /personal-setting/ -> https://redmine.weseek.co.jp/issues/98160
-      await personalContainer.updateBasicInfo();
-      mutate();
+      // await personalContainer.updateBasicInfo();
+      mutateDatabaseData();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
