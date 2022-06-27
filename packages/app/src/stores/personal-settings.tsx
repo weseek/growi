@@ -10,7 +10,7 @@ import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 import { useStaticSWR } from './use-static-swr';
 
 
-const useSWRxPersonalSettingsInfo = (): SWRResponse<IUser, Error> => {
+export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
   return useSWR(
     '/personal-setting',
     endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
@@ -23,14 +23,16 @@ export type IPersonalSettingsInfoOption = {
   update: () => void,
 }
 
-export const usePersonalSettingsInfo = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
-  const { data: personalSettingsDataFromDB } = useSWRxPersonalSettingsInfo();
+export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
+  const { data: personalSettingsDataFromDB } = useSWRxPersonalSettings();
 
   const swrResult = useStaticSWR<IUser, Error>('personalSettingsInfo', undefined);
 
   return {
     ...swrResult,
     personalSettingsDataFromDB,
+
+    // Sync with database
     sync: (): void => {
       const { mutate } = swrResult;
       mutate(personalSettingsDataFromDB);
@@ -57,7 +59,6 @@ export const usePersonalSettingsInfo = (): SWRResponse<IUser, Error> & IPersonal
     },
   };
 };
-
 
 export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccount[], Error> => {
   return useSWR(

@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { usePersonalSettingsInfo } from '~/stores/personal-settings';
+import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 
-const ApiSettings = (): JSX.Element => {
+const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: personalSettingsInfoData, mutate: mutatePersonalSettingsInfo } = usePersonalSettingsInfo();
+  const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();
+  const { data: personalSettingsData } = usePersonalSettings();
 
-  const submitHandler = async() => {
+  const submitHandler = useCallback(async() => {
 
     try {
-      const result = await apiv3Put('/personal-setting/api-token');
-      mutatePersonalSettingsInfo(result.data.userData);
+      await apiv3Put('/personal-setting/api-token');
+      mutateDatabaseData();
 
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
@@ -24,7 +25,7 @@ const ApiSettings = (): JSX.Element => {
       toastError(err);
     }
 
-  };
+  }, [mutateDatabaseData, t]);
 
   return (
     <>
@@ -34,7 +35,7 @@ const ApiSettings = (): JSX.Element => {
       <div className="row mb-3">
         <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
         <div className="col-md-6">
-          {personalSettingsInfoData?.apiToken != null
+          {personalSettingsData?.apiToken != null
             ? (
               <input
                 data-testid="grw-api-settings-input"
@@ -42,7 +43,7 @@ const ApiSettings = (): JSX.Element => {
                 className="form-control"
                 type="text"
                 name="apiToken"
-                value={personalSettingsInfoData.apiToken}
+                value={personalSettingsData.apiToken}
                 readOnly
               />
             )
@@ -83,7 +84,7 @@ const ApiSettings = (): JSX.Element => {
 
   );
 
-};
+});
 
 
 export default ApiSettings;
