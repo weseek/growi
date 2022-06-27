@@ -103,6 +103,9 @@ describe('Test page service methods', () => {
     const pageId15 = new mongoose.Types.ObjectId();
     const pageId16 = new mongoose.Types.ObjectId();
     const pageId17 = new mongoose.Types.ObjectId();
+    const pageId18 = new mongoose.Types.ObjectId();
+    const pageId19 = new mongoose.Types.ObjectId();
+    const pageId20 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -301,6 +304,54 @@ describe('Test page service methods', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         descendantCount: 0,
+        isEmpty: false,
+      },
+      {
+        _id: pageId18,
+        path: '/fix_descendantCount_1',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 100, // broken
+        isEmpty: false,
+      },
+      {
+        _id: pageId19,
+        path: '/fix_descendantCount_1/fix_descendantCount_2',
+        parent: pageId18,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 100, // broken
+        isEmpty: true,
+      },
+      {
+        path: '/fix_descendantCount_1/fix_descendantCount_2/fix_descendantCount_3',
+        parent: pageId19,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 100, // broken
+        isEmpty: false,
+      },
+      {
+        _id: pageId20,
+        path: '/fix_descendantCount_4',
+        parent: rootPage._id,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 100, // broken
+        isEmpty: false,
+      },
+      {
+        path: '/fix_descendantCount_4/fix_descendantCount_5',
+        parent: pageId20,
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        descendantCount: 100, // broken
         isEmpty: false,
       },
     ]);
@@ -856,6 +907,80 @@ describe('Test page service methods', () => {
       expect(page2.descendantCount).toBe(2); // originally 1, -1 in Sub, +2 for new descendants
       expect(page3.descendantCount).toBe(1);
       expect(page4.descendantCount).toBe(0);
+    });
+  });
+  describe('updateDescendantCountOfPagesWithPaths', () => {
+    test('should fix descendantCount of pages with one of the given paths', async() => {
+      // path
+      const _path1 = '/fix_descendantCount_1';
+      const _path2 = '/fix_descendantCount_1/fix_descendantCount_2'; // empty
+      const _path3 = '/fix_descendantCount_1/fix_descendantCount_2/fix_descendantCount_3';
+      const _path4 = '/fix_descendantCount_4';
+      const _path5 = '/fix_descendantCount_4/fix_descendantCount_5';
+      // page
+      const _page1 = await Page.findOne({ path: _path1 });
+      const _page2 = await Page.findOne({ path: _path2 });
+      const _page3 = await Page.findOne({ path: _path3 });
+      const _page4 = await Page.findOne({ path: _path4 });
+      const _page5 = await Page.findOne({ path: _path5 });
+      // check existance
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_page4).toBeTruthy();
+      expect(_page5).toBeTruthy();
+      // check descendantCount (all broken)
+      expect(_page1.descendantCount).toBe(100);
+      expect(_page2.descendantCount).toBe(100);
+      expect(_page3.descendantCount).toBe(100);
+      expect(_page4.descendantCount).toBe(100);
+      expect(_page5.descendantCount).toBe(100);
+      // check isEmpty
+      expect(_page1.isEmpty).toBe(false);
+      expect(_page2.isEmpty).toBe(true);
+      expect(_page3.isEmpty).toBe(false);
+      expect(_page4.isEmpty).toBe(false);
+      expect(_page5.isEmpty).toBe(false);
+      // check parent
+      expect(_page1.parent).toStrictEqual(rootPage._id);
+      expect(_page2.parent).toStrictEqual(_page1._id);
+      expect(_page3.parent).toStrictEqual(_page2._id);
+      expect(_page4.parent).toStrictEqual(rootPage._id);
+      expect(_page5.parent).toStrictEqual(_page4._id);
+
+      await crowi.pageService.updateDescendantCountOfPagesWithPaths([_path1, _path2, _path3, _path4, _path5]);
+
+      // page
+      const page1 = await Page.findById(_page1._id);
+      const page2 = await Page.findById(_page2._id);
+      const page3 = await Page.findById(_page3._id);
+      const page4 = await Page.findById(_page4._id);
+      const page5 = await Page.findById(_page5._id);
+
+      // check existance
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+      expect(page4).toBeTruthy();
+      expect(page5).toBeTruthy();
+      // check descendantCount (all fixed)
+      expect(page1.descendantCount).toBe(1);
+      expect(page2.descendantCount).toBe(1);
+      expect(page3.descendantCount).toBe(0);
+      expect(page4.descendantCount).toBe(1);
+      expect(page5.descendantCount).toBe(0);
+      // check isEmpty
+      expect(page1.isEmpty).toBe(false);
+      expect(page2.isEmpty).toBe(true);
+      expect(page3.isEmpty).toBe(false);
+      expect(page4.isEmpty).toBe(false);
+      expect(page5.isEmpty).toBe(false);
+      // check parent
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+      expect(page3.parent).toStrictEqual(page2._id);
+      expect(page4.parent).toStrictEqual(rootPage._id);
+      expect(page5.parent).toStrictEqual(page4._id);
     });
   });
 });
