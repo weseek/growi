@@ -3092,7 +3092,7 @@ class PageService {
   /**
    * Recount descendantCount of pages one by one
    */
-  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize?:number): Promise<void> {
+  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,
