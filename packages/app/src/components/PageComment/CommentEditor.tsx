@@ -10,14 +10,16 @@ import {
 import * as toastr from 'toastr';
 
 import AppContainer from '~/client/services/AppContainer';
-import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
-import { useCurrentPagePath, useCurrentPageId, useCurrentUser } from '~/stores/context';
+import { useSWRxPageComment } from '~/stores/comment';
+import {
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+} from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
@@ -46,7 +48,6 @@ const navTabMapping = {
 
 type PropsType = {
   appContainer: AppContainer,
-  commentContainer: CommentContainer,
 
   growiRenderer: GrowiRenderer,
   isForNewComment?: boolean,
@@ -67,12 +68,14 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, commentContainer, growiRenderer, isForNewComment, replyTo,
+    appContainer, growiRenderer, isForNewComment, replyTo,
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
+  const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
+  const { data: revisionId } = useRevisionId();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -153,23 +156,28 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [isForNewComment, onCancelButtonClicked]);
 
-  const postComment = useCallback(async() => {
+  const postCommentHandler = useCallback(async() => {
     try {
       if (currentCommentId != null) {
-        await commentContainer.putComment(
-          comment,
-          currentCommentId,
-          commentCreator,
-        );
+        // update current comment
+        await updateComment(comment, revisionId, currentCommentId);
       }
       else {
-        await commentContainer.postComment(
-          comment,
-          replyTo,
-          isSlackEnabled,
-          slackChannels,
-        );
+        // post new comment
+        const postCommentArgs = {
+          commentForm: {
+            comment,
+            revisionId,
+            replyTo,
+          },
+          slackNotificationForm: {
+            isSlackEnabled,
+            slackChannels,
+          },
+        };
+        await postComment(postCommentArgs);
       }
+
       initializeEditor();
 
       if (onCommentButtonClicked != null) {
@@ -181,8 +189,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       setError(errorMessage);
     }
   }, [
-    comment, commentContainer, currentCommentId, commentCreator, initializeEditor,
+    comment, currentCommentId, initializeEditor,
     isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
+    postComment, revisionId, updateComment,
   ]);
 
   const ctrlEnterHandler = useCallback((event) => {
@@ -190,8 +199,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       event.preventDefault();
     }
 
-    postComment();
-  }, [postComment]);
+    postCommentHandler();
+  }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
     toastr.error(error.message, 'Error occured', {
@@ -275,7 +284,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
-        onClick={postComment}
+        onClick={postCommentHandler}
       >
         Comment
       </Button>
@@ -370,7 +379,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
  * Wrapper component for using unstated
  */
 const CommentEditorWrapper = withUnstatedContainers<unknown, Partial<PropsType>>(
-  CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer],
+  CommentEditor, [AppContainer, PageContainer, EditorContainer],
 );
 
 export default CommentEditorWrapper;
