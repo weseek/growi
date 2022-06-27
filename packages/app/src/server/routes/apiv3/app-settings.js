@@ -762,11 +762,7 @@ module.exports = (crowi) => {
       }
     }
 
-    if (Object.is(parameters.action, SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED)) {
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
-
-    if (Object.is(parameters.action, SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED)) {
+    if ('action' in parameters) {
       activityEvent.emit('update', res.locals.activity._id, parameters);
     }
 
