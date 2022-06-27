@@ -3070,7 +3070,7 @@ class PageService {
     builder.addConditionToSortPagesByDescPath();
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
   }
 
   /**
@@ -3086,7 +3086,7 @@ class PageService {
     builder.addConditionToSortPagesByDescPath(); // sort in DESC
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
-    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages);
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
   }
 
   /**
