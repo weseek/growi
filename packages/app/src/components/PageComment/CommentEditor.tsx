@@ -10,7 +10,6 @@ import {
 import * as toastr from 'toastr';
 
 import AppContainer from '~/client/services/AppContainer';
-import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
@@ -49,7 +48,6 @@ const navTabMapping = {
 
 type PropsType = {
   appContainer: AppContainer,
-  commentContainer: CommentContainer,
 
   growiRenderer: GrowiRenderer,
   isForNewComment?: boolean,
@@ -70,7 +68,7 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, commentContainer, growiRenderer, isForNewComment, replyTo,
+    appContainer, growiRenderer, isForNewComment, replyTo,
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -197,7 +195,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       setError(errorMessage);
     }
   }, [
-    comment, commentContainer, currentCommentId, commentCreator, initializeEditor,
+    comment, currentCommentId, commentCreator, initializeEditor,
     isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
   ]);
 
@@ -386,7 +384,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
  * Wrapper component for using unstated
  */
 const CommentEditorWrapper = withUnstatedContainers<unknown, Partial<PropsType>>(
-  CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer],
+  CommentEditor, [AppContainer, PageContainer, EditorContainer],
 );
 
 export default CommentEditorWrapper;
