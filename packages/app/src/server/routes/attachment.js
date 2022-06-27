@@ -557,7 +557,7 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-    const attachmentType = req.body.attachmentType;
+
     // check type
     const acceptableFileType = /image\/.+/;
     if (!file.mimetype.match(acceptableFileType)) {
@@ -567,7 +567,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
+      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -716,7 +716,7 @@ module.exports = function(crowi, app) {
     }
 
     const file = req.file;
-    const { attachmentType, brandLogoAttachmentId } = req.body;
+    const { brandLogoAttachmentId } = req.body;
 
     let previousAttachmentId;
     if (brandLogoAttachmentId === 'null' || brandLogoAttachmentId === 'undefined') {
@@ -740,7 +740,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, null, attachmentType);
+      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
       const attachmentConfigParams = {
         'customize:brandLogoAttachmentId': attachment.id,
         'customize:uploadedLogoSrc': attachment.filePathProxied,

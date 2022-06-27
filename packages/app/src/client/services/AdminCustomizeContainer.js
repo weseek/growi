@@ -1,6 +1,5 @@
 import { Container } from 'unstated';
 
-import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
@@ -465,7 +464,6 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('attachmentType', AttachmentType.BRAND_LOGO);
       formData.append('brandLogoAttachmentId', this.state.brandLogoAttachmentId);
       const response = await apiPostForm('/attachments.uploadBrandLogo', formData);
 

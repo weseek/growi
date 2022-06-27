@@ -121,7 +121,6 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
 const GrowiNavbar = (props) => {
 
   const { appContainer } = props;
-  const { currentUser } = appContainer;
   const {
     crowi, isSearchServiceConfigured, uploadedLogoSrc, isDefaultLogo,
   } = appContainer.config;
