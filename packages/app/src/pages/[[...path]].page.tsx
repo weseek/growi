@@ -19,6 +19,7 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
+import Xss from '~/services/xss';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -40,6 +41,8 @@ import {
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
   useCurrentPageId
 } from '../stores/context';
+
+import { useXss } from '../stores/xss'
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
 import { PageModel } from '~/server/models/page';
@@ -92,6 +95,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
+  useXss(new Xss())
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
