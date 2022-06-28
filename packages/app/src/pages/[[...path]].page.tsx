@@ -57,6 +57,7 @@ type Props = CommonProps & {
   currentUser: string,
 
   pageWithMetaStr: string,
+  originalUrl: string,
   // pageUser?: any,
   // redirectTo?: string;
   // redirectFrom?: string;
@@ -84,7 +85,6 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
-  originalUrl: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
