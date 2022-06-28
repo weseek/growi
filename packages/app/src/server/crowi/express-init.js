@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { allLocales, localePath } from '~/next-i18next.config';
+import { i18n, localePath } from '~/next-i18next.config';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -42,7 +42,7 @@ module.exports = function(crowi, app) {
     .init({
       // debug: true,
       fallbackLng: ['en_US'],
-      whitelist: allLocales,
+      whitelist: i18n.locales,
       backend: {
         loadPath: `${localePath}/{{lng}}/translation.json`,
       },
@@ -82,7 +82,7 @@ module.exports = function(crowi, app) {
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
-      language:   allLocales,
+      language: i18n.locales,
       restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
       registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
