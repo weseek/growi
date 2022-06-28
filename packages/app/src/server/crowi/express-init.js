@@ -75,6 +75,10 @@ module.exports = function(crowi, app) {
     const Config = mongoose.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+
     res.locals.req = req;
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
@@ -89,6 +93,10 @@ module.exports = function(crowi, app) {
     res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();
+  });
+
+  app.options('*', (req, res) => {
+    res.sendStatus(200);
   });
 
   app.set('port', crowi.port);
