@@ -1,13 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
 
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import dateFnsFormat from 'date-fns/format';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserGroupUserTable extends React.Component {
 
@@ -115,9 +117,14 @@ UserGroupUserTable.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupUserTableWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupUserTable t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTableWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupUserTableWrapper);
+export default UserGroupUserTableWrapper;

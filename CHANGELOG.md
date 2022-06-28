@@ -1,8 +1,51 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.10](https://github.com/weseek/growi/compare/v5.0.9...v5.0.10) - 2022-06-27
+
+### 💎 Features
+
+- feat: Sidebar default mode settings (#6111) @yukendev
+- feat: Get GCS instance that uses Application Default Credentials for v5 (#6051) @Yohei-Shiina
+- feat: Resume rename on server boot (#5862)(#6014) @Yohei-Shiina
+- feat: Show page item control menu on empty page (#6070)(#6103) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Show page control on subnavigation at existing empty page  (#5638) @Yohei-Shiina
+- imprv: Remove toc and page authors in empty page (#5661) @Yohei-Shiina
+- imprv: SWRize apiGet /tag.search (#6062) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Scrolling preview (#6148) @yuki-takei
+- fix: Show page history comparation modal on init (#6072) @hirokei-camel
+- fix: Ensure backword compatibility for ES6 when using max_analyzed_offset (#6121) @hakumizuki
+- fix: Set max_analyzed_offset to elasticsearch querying options (#6115) @hakumizuki
+- fix: Revision err when updating tags (#6073) @kaoritokashiki
+- fix: Support 3 types of syntax for OpenID Connect Issuer Host (#6061) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Omit comment container (#6147) @yuki-takei
+- support: Upgrade typescript to ^4.6.0 (#6082) @hakumizuki
+
+## [v5.0.9](https://github.com/weseek/growi/compare/v5.0.8...v5.0.9) - 2022-06-13
+
+### 🚀 Improvement
+
+- imprv: Render MathJax in Preview tab of comment (#6025) @yuki-takei
+- imprv: Exception handling for user authentication (#6019) @kaoritokashiki
+- imprv: Sidebar background color on light theme and add shadow on dark theme (#6012) @shukmos
+- imprv: Limit display of notification paths (#5991) @jam411
+
+### 🐛 Bug Fixes
+
+- fix: Getting page API is broken (#6023) @yuki-takei
+- fix: MathJax does not working (#6020) @yuki-takei
 
 ## [v5.0.8](https://github.com/weseek/growi/compare/v5.0.7...v5.0.8) - 2022-06-07
 
@@ -111,7 +154,6 @@
 ### 🧰 Maintenance
 
 - support: Typescriptize tag model (#5778) @kaoritokashiki
-
 
 ## [v4.5.20](https://github.com/weseek/growi/compare/v4.5.19...v4.5.20) - 2022-05-12
 

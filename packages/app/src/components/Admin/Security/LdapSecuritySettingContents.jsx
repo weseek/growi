@@ -1,13 +1,14 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import LdapAuthTestModal from './LdapAuthTestModal';
 
 
@@ -432,15 +433,18 @@ class LdapSecuritySettingContents extends React.Component {
 
 LdapSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const LdapSecuritySettingContentsWrapper = withUnstatedContainers(LdapSecuritySettingContents, [
-  AppContainer,
+const LdapSecuritySettingContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <LdapSecuritySettingContents t={t} {...props} />;
+};
+
+const LdapSecuritySettingContentsWrapper = withUnstatedContainers(LdapSecuritySettingContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminLdapSecurityContainer,
 ]);
 
-export default withTranslation()(LdapSecuritySettingContentsWrapper);
+export default LdapSecuritySettingContentsWrapper;
