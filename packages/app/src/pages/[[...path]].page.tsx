@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { isValidObjectId } from 'mongoose';
@@ -159,17 +159,17 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const alertForNextRouter = () => {
+  const alertForNextRouter = useCallback(() => {
     window.alert('alert!!!');
     return;
-  };
+  }, []);
 
-  const alertForJs = (e) => {
+  const alertForJs = useCallback((e) => {
     e.preventDefault();
     window.alert('alert!!!');
     e.returnValue = '';
     return;
-  };
+  },[]);
 
   /*
   *  Route changes by Browser
