@@ -64,7 +64,9 @@ export default class EditorContainer extends Container {
   showUnsavedWarning(e) {
     // Cancel the event
     e.preventDefault();
+
     // display browser default message
+    // Chrome requires returnValue to be set. -> https://www.bugbugnow.net/2022/01/beforeunload-dialog.html
     e.returnValue = '';
     return '';
   }

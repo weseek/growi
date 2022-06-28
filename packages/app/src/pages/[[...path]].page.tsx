@@ -159,11 +159,38 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
+  const alertForNextRouter = () => {
+    window.alert('alert!!!');
+    return;
+  };
 
+  const alertForJs = (e) => {
+    e.preventDefault();
+    window.alert('alert!!!');
+    e.returnValue = '';
+    return;
+  };
+
+  /*
+  *  Route changes by Browser
+  *　Example: window.location.href, F5
+  */
   useEffect(() => {
-    console.log('componentDidMount: addEventListener beforeunload');
+    window.addEventListener('beforeunload', alertForJs);
     return () => {
-      console.log('componentWillUnmount: removeEventListener beforeunload');
+      window.removeEventListener('beforeunload', alertForJs);
+    };
+  }, []);
+
+
+  /*
+  * Route changes by Next Router
+  * https://nextjs.org/docs/api-reference/next/router
+  */
+  useEffect(() => {
+    router.events.on('routeChangeStart', alertForNextRouter)
+    return () => {
+      router.events.off('routeChangeStart', alertForNextRouter)
     };
   }, []);
 

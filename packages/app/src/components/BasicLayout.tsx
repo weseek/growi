@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 // import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 // import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
@@ -48,6 +49,13 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
       <ShortcutsModal />
       <SystemVersion />
+
+      <Link href="/629581929e61e2a5fe4c64a5">
+        <a>/629581929e61e2a5fe4c64a5</a>
+      </Link>
+      {/* <a href="/629581929e61e2a5fe4c64a5">/629581929e61e2a5fe4c64a5</a> */}
+      <br />
+      <a href="https://www.google.com/">https://www.google.com/</a>
     </>
   );
 };
