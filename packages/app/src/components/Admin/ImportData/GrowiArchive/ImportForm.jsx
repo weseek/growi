@@ -94,7 +94,7 @@ class ImportForm extends React.Component {
     return Object.keys(this.state.collectionNameToFileNameMap);
   }
 
-  componentWillMount() {
+  UNSAFE_UNSAFE_componentWillMount() {
     this.setupWebsocketEventHandler();
   }
 

@@ -27,7 +27,7 @@ class UserManagement extends React.Component {
     this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handlePage(1);
   }
 

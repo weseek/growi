@@ -47,7 +47,7 @@ class PageTimeline extends React.Component {
     });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { appContainer } = this.props;
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');

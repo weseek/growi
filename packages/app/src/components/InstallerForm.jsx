@@ -22,7 +22,7 @@ class InstallerForm extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const meta = localeMetadatas.find(v => v.id === i18next.language);
     if (meta == null) {
       return this.setState({ selectedLang: localeMetadatas[0] });

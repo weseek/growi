@@ -31,7 +31,7 @@ class RevisionLoader extends React.Component {
     this.onWaypointChange = this.onWaypointChange.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (!this.props.lazy) {
       this.loadData();
     }
