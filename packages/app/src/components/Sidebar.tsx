@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
@@ -13,10 +13,9 @@ import {
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
-
-import SidebarNav from './Sidebar/SidebarNav';
-import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
+import SidebarContents from './Sidebar/SidebarContents';
+import SidebarNav from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
@@ -80,10 +79,7 @@ const SidebarContentsWrapper = () => {
 };
 
 
-type Props = {
-}
-
-const Sidebar: FC<Props> = (props: Props) => {
+const Sidebar = (): JSX.Element => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();

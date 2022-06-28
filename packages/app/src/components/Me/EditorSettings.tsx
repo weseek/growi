@@ -9,8 +9,7 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 
-type EditorSettingsBodyProps = {
-}
+type EditorSettingsBodyProps = Record<string, never>;
 
 type RuleListGroupProps = {
   title: string;

@@ -49,7 +49,7 @@ class PageStatusAlert extends React.Component {
         <i className="icon-fw icon-people"></i>
         {t('hackmd.someone_editing')}
       </>,
-      <a href="#hackmd" className="btn btn-outline-white">
+      <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
@@ -64,7 +64,7 @@ class PageStatusAlert extends React.Component {
         <i className="icon-fw icon-pencil"></i>
         {t('hackmd.this_page_has_draft')}
       </>,
-      <a href="#hackmd" className="btn btn-outline-white">
+      <a href="#hackmd" key="btnOpenHackmdPageHasDraft" className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
