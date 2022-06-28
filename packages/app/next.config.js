@@ -1,5 +1,7 @@
 import { listScopedPackages } from './src/utils/next.config.utils';
 
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+
 import { i18n } from './src/next-i18next.config';
 
 // define transpiled packages for '@growi/*'
@@ -44,11 +46,9 @@ const nextConfig = {
     };
 
     // configure plugins
-    const WebpackAssetsManifest = require('webpack-assets-manifest');
     config.plugins.push(
-      new WebpackAssetsManifest({
-        publicPath: true,
-        output: 'custom-manifest.json',
+      new WebpackManifestPlugin({
+        fileName: 'custom-manifest.json',
       }),
     );
 
