@@ -83,7 +83,7 @@ type Props = CommonProps & {
   // isAllReplyShown: boolean,
   // isContainerFluid: boolean,
   // editorConfig: any,
-  // isEnabledStaleNotification: boolean,
+  isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
@@ -114,10 +114,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
-  // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useLastUpdateUsername(props.lastUpdateUserName);
   useDeletedAt(props.deletedAt);
   useRevisionId(props.revisionId);
+  useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -315,7 +315,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
-  // props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
+  props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   // props.editorConfig = {

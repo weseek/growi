@@ -187,6 +187,11 @@ export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> 
   return useStaticSWR('growiVersion', initialData);
 };
 
+export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isEnabledStaleNotification', initialData);
+};
+
+
 
 /** **********************************************************
  *                     Computed contexts
