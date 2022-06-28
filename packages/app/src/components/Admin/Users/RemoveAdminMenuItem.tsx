@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +20,7 @@ const RemoveAdminAlert = React.memo((): JSX.Element => {
     </div>
   );
 });
+RemoveAdminAlert.displayName = 'RemoveAdminAlert';
 
 
 type Props = {

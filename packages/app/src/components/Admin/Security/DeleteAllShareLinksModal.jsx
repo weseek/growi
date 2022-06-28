@@ -53,6 +53,8 @@ const DeleteAllShareLinksModal = React.memo((props) => {
   );
 
 });
+DeleteAllShareLinksModal.displayName = 'DeleteAllShareLinksModal';
+
 
 DeleteAllShareLinksModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
