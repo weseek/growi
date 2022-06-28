@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  IActivity, SupportedAction, SupportedActionType, AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
 import { IPage } from '~/interfaces/page';
@@ -101,6 +101,19 @@ class ActivityService {
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
     return this.getAvailableActions().includes(action);
   }
+
+  // for GET request
+  createActivity = async function(action: SupportedActionType, parameters): Promise<void> {
+    const shoudCreateActivity = this.crowi.activityService.shoudUpdateActivity(action);
+    if (shoudCreateActivity) {
+      try {
+        await Activity.createByParameters(parameters);
+      }
+      catch (err) {
+        logger.error('Create activity failed', err);
+      }
+    }
+  };
 
   createTtlIndex = async function() {
     const configManager = this.crowi.configManager;
