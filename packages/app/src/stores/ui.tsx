@@ -72,19 +72,19 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
   switch (newEditorMode) {
     case EditorMode.View:
-      [...document.getElementsByTagName('body')].forEach(element => element.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar'));
+      document.getElementsByTagName('body')[0].classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
       break;
     case EditorMode.Editor:
-      [...document.getElementsByTagName('body')].forEach(element => element.classList.add('on-edit', 'builtin-editor'));
-      [...document.getElementsByTagName('body')].forEach(element => element.classList.remove('hackmd'));
+      document.getElementsByTagName('body')[0].classList.add('on-edit', 'builtin-editor');
+      document.getElementsByTagName('body')[0].classList.remove('hackmd');
       // editing /Sidebar
       if (isSidebar) {
-        [...document.getElementsByTagName('body')].forEach(element => element.classList.add('editing-sidebar'));
+        document.getElementsByTagName('body')[0].classList.add('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
-      [...document.getElementsByTagName('body')].forEach(element => element.classList.add('on-edit', 'hackmd'));
-      [...document.getElementsByTagName('body')].forEach(element => element.classList.remove('builtin-editor', 'editing-sidebar'));
+      document.getElementsByTagName('body')[0].classList.add('on-edit', 'hackmd');
+      document.getElementsByTagName('body')[0].classList.remove('builtin-editor', 'editing-sidebar');
       break;
   }
 };
