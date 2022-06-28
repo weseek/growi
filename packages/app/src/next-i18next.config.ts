@@ -1,3 +1,5 @@
+import path from 'path';
+
 import I18nextChainedBackend from 'i18next-chained-backend';
 import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
 import I18NextHttpBackend from 'i18next-http-backend';
@@ -11,6 +13,7 @@ export const
     locales: ['en_US', 'ja_JP', 'zh_CN'],
   };
 export const defaultNS = 'translation';
+export const localePath = path.resolve('./public/static/locales');
 
 export const serializeConfig = false;
 export const use = isServer ? [] : [I18nextChainedBackend];
