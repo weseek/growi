@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 const unsavedAlertMsg = 'Changes you made may not be saved.'
 
-const UnsavedAlertDialog = (): JSX.Element => {
+const UnsavedAlertDialog = (): void => {
   const router = useRouter();
   const { showAlertDialog } = useUnsavedWarning();
 
@@ -39,9 +39,7 @@ const UnsavedAlertDialog = (): JSX.Element => {
   }, []);
 
 
-  return (
-    <>hoge</>
-    )
+  return;
 };
 
 export default UnsavedAlertDialog;
