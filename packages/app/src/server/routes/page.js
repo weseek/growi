@@ -412,24 +412,16 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
-    if (shoudCreateActivity) {
-      const parameter = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_PAGE_VIEW,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      try {
-        await Activity.createByParameters(parameter);
-      }
-      catch (err) {
-        logger.error('Create activity failed', err);
-      }
-    }
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
 
     return res.render(view, renderVars);
   }
@@ -489,24 +481,16 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
-    if (shoudCreateActivity) {
-      const parameter = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_PAGE_VIEW,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      try {
-        await Activity.createByParameters(parameter);
-      }
-      catch (err) {
-        logger.error('Create activity failed', err);
-      }
-    }
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
 
     return res.render(view, renderVars);
   }
@@ -688,25 +672,16 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
-    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
-    if (shoudCreateActivity) {
-      const parameter = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_PAGE_VIEW,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      try {
-        await Activity.createByParameters(parameter);
-      }
-      catch (err) {
-        logger.error('Create activity failed', err);
-      }
-    }
-
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
     return redirector(req, res, next, path);
   };
 
@@ -714,24 +689,16 @@ module.exports = function(crowi, app) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
 
-    const shoudCreateActivity = crowi.activityService.shoudUpdateActivity(SupportedAction.ACTION_PAGE_VIEW);
-    if (shoudCreateActivity) {
-      const parameter = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_PAGE_VIEW,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      try {
-        await Activity.createByParameters(parameter);
-      }
-      catch (err) {
-        logger.error('Create activity failed', err);
-      }
-    }
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
 
     return redirector(req, res, next, path);
   };
