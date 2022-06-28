@@ -16,7 +16,7 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -24,7 +24,7 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -159,7 +159,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: pageId } = useCurrentPageId();
   const { data: emptyPageId } = useEmptyPageId();
   const { data: revisionId } = useRevisionId();
-  const { data: path } = useCurrentPagePath();
+  const { data: currentPageData } = useSWRxCurrentPage();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: currentUser } = useCurrentUser();
@@ -290,7 +290,7 @@ const GrowiContextualSubNavigation = (props) => {
                 pageId={pageIdForSubNavButtons}
                 shareLinkId={shareLinkId}
                 revisionId={revisionId}
-                path={path}
+                path={currentPageData?.path}
                 disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
                 additionalMenuItemRenderer={additionalMenuItemsRenderer}
@@ -309,9 +309,9 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {path != null && currentUser != null && (
+        {currentPageData?.path != null && currentUser != null && (
           <CreateTemplateModal
-            path={path}
+            path={currentPageData?.path}
             isOpen={isPageTemplateModalShown}
             onClose={() => setIsPageTempleteModalShown(false)}
           />
@@ -323,16 +323,16 @@ const GrowiContextualSubNavigation = (props) => {
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown,
+    currentPageData, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (path == null) {
+  if (currentPageData?.path == null) {
     return <></>;
   }
 
   const currentPage: Partial<IPageHasId> = {
     _id: pageId ?? undefined,
-    path,
+    path: currentPageData?.path,
     revision: revisionId ?? undefined,
     creator: creator ?? undefined,
     lastUpdateUser: revisionAuthor,

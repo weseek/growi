@@ -6,9 +6,10 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser,
+  useIsSearchPage, useIsGuestUser, useCurrentPathname,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -23,12 +24,13 @@ import PersonalDropdown from './PersonalDropdown';
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
-
   const { open: openCreateModal } = usePageCreateModal();
+  const { data: currentPathname = '' } = useCurrentPathname();
+  const { data: currentPage } = useSWRxCurrentPage();
 
   const isAuthenticated = isGuestUser === false;
+  const basePath = currentPage?.path ?? currentPathname ?? '';
 
   const authenticatedNavItem = useMemo(() => {
     return (
@@ -42,7 +44,7 @@ const NavbarRight = memo((): JSX.Element => {
             className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
             type="button"
             data-testid="newPageBtn"
-            onClick={() => openCreateModal(currentPagePath || '')}
+            onClick={() => openCreateModal(basePath)}
           >
             <i className="icon-pencil mr-2"></i>
             <span className="d-none d-lg-block">{ t('New') }</span>
@@ -58,7 +60,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [t, currentPagePath, openCreateModal, isAuthenticated]);
+  }, [t, basePath, openCreateModal, isAuthenticated]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (

@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-
-import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useIsSearchPage, useCurrentPathname } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
-import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import GlobalSearch from './GlobalSearch';
 
@@ -13,8 +12,11 @@ const GrowiNavbarBottom = (props) => {
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: currentPathname } = useCurrentPathname();
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  const basePath = currentPage?.path ?? currentPathname ?? '';
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -62,7 +64,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => openCreateModal(currentPagePath || '')}
+              onClick={() => openCreateModal(basePath || '')}
             >
               <i className="icon-pencil"></i>
             </a>

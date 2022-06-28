@@ -18,9 +18,10 @@ import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+  useCurrentPageId, useCurrentUser, useRevisionId,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useIsMobile } from '~/stores/ui';
 
 
@@ -72,13 +73,13 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: currentPageId } = useCurrentPageId();
   const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
 
   const config = appContainer.getConfig();
   const isUploadable = config.upload.image || config.upload.file;
@@ -217,7 +218,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
     if (editorRef.current == null) { return }
 
-    const pagePath = currentPagePath;
+    const pagePath = currentPage?.path;
     const pageId = currentPageId;
     const endpoint = '/attachments.add';
     const formData = new FormData();
@@ -243,7 +244,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [apiErrorHandler, currentPageId, currentPagePath]);
+  }, [apiErrorHandler, currentPageId, currentPage]);
 
   const getCommentHtml = useCallback(() => {
     return (

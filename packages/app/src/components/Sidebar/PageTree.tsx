@@ -1,10 +1,12 @@
 import React, { FC, memo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
@@ -13,7 +15,7 @@ const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
@@ -57,7 +59,7 @@ const PageTree: FC = memo(() => {
     return null;
   }
 
-  const path = currentPath || '/';
+  const path = currentPage?.path || '/';
 
   return (
     <>

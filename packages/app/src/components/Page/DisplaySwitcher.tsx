@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
+  useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -38,7 +38,6 @@ const DisplaySwitcher = (): JSX.Element => {
 
   const { data: isEmptyPage } = useIsEmptyPage();
   const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isUserPage } = useIsUserPage();
@@ -52,7 +51,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
   const isPageExist = currentPageId != null;
   const isViewMode = editorMode === EditorMode.View;
-  const isTopPagePath = isTopPage(currentPagePath ?? '');
+  const isTopPagePath = isTopPage(currentPage?.path ?? '');
 
   return (
     <>
@@ -66,11 +65,11 @@ const DisplaySwitcher = (): JSX.Element => {
 
                   {/* Page list */}
                   <div className="grw-page-accessories-control">
-                    { currentPagePath != null && !isSharedUser && (
+                    { currentPage?.path != null && !isSharedUser && (
                       <button
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-                        onClick={() => openDescendantPageListModal(currentPagePath)}
+                        onClick={() => openDescendantPageListModal(currentPage?.path)}
                       >
                         <div className="grw-page-accessories-control-icon">
                           <PageListIcon />

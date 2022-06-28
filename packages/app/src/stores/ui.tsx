@@ -15,10 +15,11 @@ import { Nullable } from '~/interfaces/common';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
+import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
+  useCurrentPageId, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId, useCurrentPathname,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -134,8 +135,10 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const { data: currentPagePath } = useCurrentPagePath();
-  const isSidebar = currentPagePath === '/Sidebar';
+  const { data: currentPathname = '' } = useCurrentPathname();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const basePath = currentPage?.path ?? currentPathname ?? '';
+  const isSidebar = basePath === '/Sidebar';
 
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
@@ -421,12 +424,12 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, currentPage?.path, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
   const isNotFoundPage = notFoundTargetPathOrId != null;
@@ -434,7 +437,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isSharedPage(currentPage?.path ?? '') && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
 };
 

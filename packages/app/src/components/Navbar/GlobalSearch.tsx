@@ -1,19 +1,21 @@
 import React, {
   FC, useState, useCallback, useRef,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import assert from 'assert';
 
-import AppContainer from '~/client/services/AppContainer';
-import { IFocusable } from '~/client/interfaces/focusable';
-import { useGlobalSearchFormRef } from '~/stores/ui';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { IPageWithMeta } from '~/interfaces/page';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { IFocusable } from '~/client/interfaces/focusable';
+import AppContainer from '~/client/services/AppContainer';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+import { useCurrentPathname } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
-import { useCurrentPagePath } from '~/stores/context';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 type Props = {
@@ -34,7 +36,10 @@ const GlobalSearch: FC<Props> = (props: Props) => {
   const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
   const [isFocused, setFocused] = useState<boolean>(false);
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  const basePath = currentPage?.path ?? currentPathname ?? '';
 
   const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
     assert(data.length > 0);
@@ -54,12 +59,12 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     // construct search query
     let q = text;
     if (isScopeChildren) {
-      q += ` prefix:${currentPagePath ?? window.location.pathname}`;
+      q += ` prefix:${basePath}`;
     }
     url.searchParams.append('q', q);
 
     window.location.href = url.href;
-  }, [currentPagePath, isScopeChildren, text]);
+  }, [basePath, isScopeChildren, text]);
 
   const scopeLabel = isScopeChildren
     ? t('header_search_box.label.This tree')
