@@ -72,25 +72,32 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
   switch (newEditorMode) {
     case EditorMode.View:
-      [...document.getElementsByTagName('body')].forEach(element =>
-        element.classList.remove('on-edit', 'hackmd', 'editing-sidebar'));
+      var elements = document.getElementsByTagName('body');
+      for(var i = 0; i < elements.length; i ++){
+        elements[i].classList.remove('on-edit', 'hackmd', 'editing-sidebar');
+      }
+      // [...document.getElementsByTagName('body')].forEach(element =>
+      //   element.classList.remove('on-edit', 'hackmd', 'editing-sidebar'));
       break;
     case EditorMode.Editor:
-      [...document.getElementsByTagName('body')].forEach(element =>
-        element.classList.add('on-edit', 'builtin-editor'));
-      [...document.getElementsByTagName('body')].forEach(element =>
-        element.classList.remove('hackmd'));
-      // editing /Sidebar
-      if (isSidebar) {
-        [...document.getElementsByTagName('body')].forEach(element =>
-          element.classList.add('editing-sidebar'));
+      var elements = document.getElementsByTagName('body');
+      for(var i = 0; i < elements.length; i ++){
+        elements[i].classList.add('on-edit', 'builtin-editor');
+        elements[i].classList.remove('hackmd');
+        if (isSidebar) elements[i].classList.add('editing-sidebar');
       }
+      // editing /Sidebar
+      // if (isSidebar) {
+      //   [...document.getElementsByTagName('body')].forEach(element =>
+      //     element.classList.add('editing-sidebar'));
+      // }
       break;
     case EditorMode.HackMD:
-      [...document.getElementsByTagName('body')].forEach(element =>
-      element.classList.add('on-edit', 'hackmd'));
-      [...document.getElementsByTagName('body')].forEach(element =>
-      element.classList.remove('builtin-editor', 'editing-sidebar'));
+      var elements = document.getElementsByTagName('body');
+      for(var i = 0; i < elements.length; i ++){
+        elements[i].classList.add('on-edit', 'hackmd');
+        elements[i].classList.remove('builtin-editor', 'editing-sidebar');
+      }
       break;
   }
 };
