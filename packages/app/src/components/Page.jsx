@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';

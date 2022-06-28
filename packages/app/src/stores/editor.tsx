@@ -117,8 +117,6 @@ export const useUnsavedWarning = (): SWRResponse<boolean, Error> & IUnsavedWarni
   const swrResult =  useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, {fallbackData: false});
   const { data: isEnabledUnsavedWarning } = swrResult
 
-  console.log({isEnabledUnsavedWarning});
-
   const showAlertDialog = (msg: string) => {
     if(isEnabledUnsavedWarning || false){
       return window.alert(msg);

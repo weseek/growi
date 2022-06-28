@@ -59,30 +59,6 @@ export default class EditorContainer extends Container {
     }
   }
 
-
-  // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
-  showUnsavedWarning(e) {
-    // Cancel the event
-    e.preventDefault();
-
-    // display browser default message
-    // Chrome requires returnValue to be set. -> https://www.bugbugnow.net/2022/01/beforeunload-dialog.html
-    e.returnValue = '';
-    return '';
-  }
-
-  disableUnsavedWarning() {
-    window.removeEventListener('beforeunload', this.showUnsavedWarning);
-    this.isSetBeforeunloadEventHandler = false;
-  }
-
-  enableUnsavedWarning() {
-    if (!this.isSetBeforeunloadEventHandler) {
-      window.addEventListener('beforeunload', this.showUnsavedWarning);
-      this.isSetBeforeunloadEventHandler = true;
-    }
-  }
-
   clearDraft(path) {
     delete this.drafts[path];
     window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
