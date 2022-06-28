@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -10,58 +10,35 @@ import {
 } from 'reactstrap';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
+type Props = {
+  isOpen: boolean,
+  onClose: () => void,
+}
+
+const AssociateModal = (props: Props) =>  {
+  const { t } = useTranslation();
+  const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
+  const { associateLdapAccount } = usePersonalSettings();
+  const { isOpen, onClose } = props
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
 
-class AssociateModal extends React.Component {
+  const clickAddLdapAccountHandler = () => {
+    associateLdapAccount({ username, password });
+    mutatePersonalExternalAccounts();
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      username: '',
-      password: '',
-    };
-
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-    this.clickAddBtnHandler = this.clickAddBtnHandler.bind(this);
-  }
-
-  /**
-   * Change username
-   */
-  onChangeUsername(username) {
-    this.setState({ username });
-  }
-
-  /**
-   * Change password
-   */
-  onChangePassword(password) {
-    this.setState({ password });
-  }
-
-  async clickAddBtnHandler() {
-    const {
-      onClickAddBtn, onClose,
-    } = this.props;
-    const { username, password } = this.state;
-
-    onClickAddBtn({ username, password });
     onClose();
   }
 
-  render() {
-    const { t } = this.props;
-
     return (
-      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg" data-testid="grw-associate-modal">
-        <ModalHeader className="bg-primary text-light" toggle={this.props.onClose}>
+      <Modal isOpen={isOpen} toggle={onClose} size="lg" data-testid="grw-associate-modal">
+        <ModalHeader className="bg-primary text-light" toggle={onClose}>
           { t('admin:user_management.create_external_account') }
         </ModalHeader>
         <ModalBody>
@@ -95,10 +72,10 @@ class AssociateModal extends React.Component {
           <div className="tab-content">
             <div id="passport-ldap" className="tab-pane active">
               <LdapAuthTest
-                username={this.state.username}
-                password={this.state.password}
-                onChangeUsername={this.onChangeUsername}
-                onChangePassword={this.onChangePassword}
+                username={username}
+                password={password}
+                onChangeUsername={(username) => setUsername(username)}
+                onChangePassword={(password) => setPassword(password)}
               />
             </div>
             <div id="github-tbd" className="tab-pane" role="tabpanel">TBD</div>
@@ -108,42 +85,14 @@ class AssociateModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="border-top-0">
-          <button type="button" className="btn btn-primary mt-3" onClick={this.clickAddBtnHandler}>
+          <button type="button" className="btn btn-primary mt-3" onClick={clickAddLdapAccountHandler}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
           </button>
         </ModalFooter>
       </Modal>
     );
-  }
-
 }
 
-AssociateModal.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onClickAddBtn: PropTypes.func.isRequired,
-};
-
-const AssociateModalWrapperFC = (props) => {
-  const { t } = useTranslation();
-  const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
-  const { associateLdapAccount } = usePersonalSettings();
-
-  const associateLdapAccountHandler = (account) => {
-    associateLdapAccount(account);
-    mutatePersonalExternalAccounts();
-  };
-
-  return <AssociateModal t={t} onClickAddBtn={associateLdapAccountHandler} {...props} />;
-};
-
-/**
- * Wrapper component for using unstated
- */
-const AssociateModalWrapper = withUnstatedContainers(AssociateModalWrapperFC, [AppContainer]);
-
-export default AssociateModalWrapper;
+export default AssociateModal;
