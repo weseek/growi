@@ -2176,7 +2176,7 @@ class PageService {
     });
   }
 
-  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
@@ -2204,6 +2204,7 @@ class PageService {
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
+      contentAge: page.getContentAge(),
     };
 
   }
