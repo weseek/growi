@@ -1,5 +1,6 @@
 import { FixPageGrantAlert } from "./FixPageGrantAlert";
 import { PageGrantAlert } from "./PageGrantAlert";
+import { UnlinkAlert } from "./UnlinkAlert";
 
 
 export const PageAlerts = (): JSX.Element => {
@@ -12,6 +13,8 @@ export const PageAlerts = (): JSX.Element => {
         <FixPageGrantAlert/>
 
         <PageGrantAlert/>
+
+        <UnlinkAlert/>
       </div>
     </div>
   );
