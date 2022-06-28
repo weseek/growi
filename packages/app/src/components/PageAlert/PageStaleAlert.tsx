@@ -1,8 +1,6 @@
-
 import { useIsEnabledStaleNotification } from '../../stores/context'
 import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page'
 import { useTranslation } from 'react-i18next';
-
 
 export const PageStaleAlert = ():JSX.Element => {
   const { t } = useTranslation()
