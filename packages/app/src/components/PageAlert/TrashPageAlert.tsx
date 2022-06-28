@@ -13,7 +13,7 @@ const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
     return;
   }
 
-  // window.location.href = '/';
+  window.location.href = '/';
 };
 
 export const TrashPageAlert = () => {
@@ -28,12 +28,6 @@ export const TrashPageAlert = () => {
   const { data: revisionId } = useRevisionId();
   const pageId  = pageData?._id;
   const pagePath = pageData?.path
-
-  /*
-  * TODO: Do not use useSWRxPageInfo on this component
-  * Ideal: use useSWRxPageInfo on TrashPage after applying Next.js
-  * Reference: https://github.com/weseek/growi/pull/5359#discussion_r808381329
-  */
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
@@ -50,7 +44,7 @@ export const TrashPageAlert = () => {
       return
     }
     const putBackedHandler = (path) => {
-      // window.location.reload();
+      window.location.reload();
     };
     openPutBackPageModal({pageId, path: pagePath}, { onPutBacked: putBackedHandler });
   }
