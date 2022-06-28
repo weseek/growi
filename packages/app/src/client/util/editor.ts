@@ -25,12 +25,3 @@ export const getOptionsToSave = (
   };
 };
 
-export const isEnabledShowUnsavedWarning = (bool = false) => {
-  return bool;
-}
-
-export const showAlertDialog = (msg): void => {
-  if(isEnabledShowUnsavedWarning()){
-    return window.alert(msg);
-  }
-};

@@ -2,8 +2,6 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
-import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
-
 import EventEmitter from 'events';
 
 import { envUtils } from '@growi/core';
@@ -20,6 +18,7 @@ import {
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useUnsavedWarning
 } from '~/stores/editor';
 import {
   EditorMode,
@@ -98,6 +97,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useUnsavedWarning();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
@@ -131,7 +131,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     try {
       // disable unsaved warning
-      isEnabledShowUnsavedWarning(false)
+      mutateIsEnabledUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
@@ -357,7 +357,7 @@ const PageEditor = (props: Props): JSX.Element => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (pageContainer.state.markdown! !== markdown) {
-      isEnabledShowUnsavedWarning(true);
+      mutateIsEnabledUnsavedWarning(true);
     }
   }, [editorContainer, markdown, pageContainer.state.markdown]);
 

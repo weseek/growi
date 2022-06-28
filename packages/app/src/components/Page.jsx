@@ -76,7 +76,7 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -89,7 +89,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      isEnabledShowUnsavedWarning(false)
+      mutateIsEnabledUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
@@ -108,7 +108,7 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer,
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -121,7 +121,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      isEnabledShowUnsavedWarning(false);
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
@@ -194,6 +194,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useUnsavedWarning();
 
   const pageRef = useRef(null);
 
@@ -244,6 +245,7 @@ const PageWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
 };

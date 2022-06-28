@@ -3,14 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors,useUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -178,7 +177,7 @@ class PageEditorByHackmd extends React.Component {
 
     try {
       // disable unsaved warning
-      isEnabledShowUnsavedWarning(false)
+      mutateIsEnabledUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, this.props.editorMode, optionsToSave);
@@ -213,7 +212,7 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // enable unsaved warning
-    isEnabledShowUnsavedWarning(true);
+    mutateIsEnabledUnsavedWarning(true);
 
     const params = {
       pageId: pageContainer.state.pageId,

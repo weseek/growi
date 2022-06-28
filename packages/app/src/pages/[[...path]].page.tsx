@@ -1,13 +1,13 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { isEnabledShowUnsavedWarning, showAlertDialog } from '~/client/util/editor';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 // import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
@@ -85,6 +85,7 @@ type Props = CommonProps & {
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
+  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
   const router = useRouter();
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
@@ -161,37 +162,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // }, []);
 
 
-  const unsavedAlertMsg = 'Changes you made may not be saved.'
-
-  const showAlertDialogForRouteChangesByBrowser = useCallback((e) => {
-    e.preventDefault();
-    showAlertDialog(unsavedAlertMsg);
-    e.returnValue = '';
-    return;
-  },[isEnabledShowUnsavedWarning]);
-
-  /*
-  *  Route changes by Browser
-  *　Example: window.location.href, F5
-  */
-  useEffect(() => {
-    window.addEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
-    return () => {
-      window.removeEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
-    };
-  }, [isEnabledShowUnsavedWarning]);
-
-
-  /*
-  * Route changes by Next Router
-  * https://nextjs.org/docs/api-reference/next/router
-  */
-  useEffect(() => {
-    router.events.on('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
-    return () => {
-      router.events.off('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
-    };
-  }, []);
 
   return (
     <>
@@ -244,6 +214,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           {/* <PageComments /> */}
           PageComments
         </footer>
+
+        <UnsavedAlertDialog />
 
       </BasicLayout>
     </>

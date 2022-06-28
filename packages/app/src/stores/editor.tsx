@@ -109,6 +109,24 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-export const useIsEnabledShowUnsavedWarning = (bool): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledShowUnsavedWarning', undefined, {fallbackData: false});
+export type IUnsavedWarning = {
+  showAlertDialog: (msg: string) => void;
+}
+
+export const useUnsavedWarning = (): SWRResponse<boolean, Error> & IUnsavedWarning => {
+  const swrResult =  useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, {fallbackData: false});
+  const { data: isEnabledUnsavedWarning } = swrResult
+
+  console.log({isEnabledUnsavedWarning});
+
+  const showAlertDialog = (msg: string) => {
+    if(isEnabledUnsavedWarning || false){
+      return window.alert(msg);
+    }
+  }
+
+  return {
+    ...swrResult,
+    showAlertDialog,
+  }
 };
