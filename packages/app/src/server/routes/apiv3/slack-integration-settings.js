@@ -53,7 +53,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
@@ -305,7 +304,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put botType setting.
    */
-  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.botType, apiV3FormValidator, async(req, res) => {
+  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, validator.botType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
     if (currentBotType == null) {
@@ -340,7 +339,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, apiV3FormValidator, async(req, res) => {
     try {
       await handleBotTypeChanging(req, res, null);
     }
@@ -364,7 +363,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
@@ -402,7 +401,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy permissions.
    */
 
-  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithoutProxy, async(req, res) => {
+  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, validator.updatePermissionsWithoutProxy, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
@@ -441,7 +440,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to create slack app integration
    */
-  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, async(req, res) => {
     const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
     if (SlackAppIntegrationRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';
@@ -508,7 +507,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, validator.proxyUri, apiV3FormValidator, async(req, res) => {
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
     const requestParams = { 'slackbot:proxyUri': proxyUri };
@@ -540,7 +539,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to make it primary
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/make-primary', loginRequiredStrictly, adminRequired, csrf, validator.makePrimary, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/make-primary', loginRequiredStrictly, adminRequired, validator.makePrimary, apiV3FormValidator, async(req, res) => {
 
     const { id } = req.params;
 
@@ -585,7 +584,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to regenerate slack app tokens
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
 
     const { id } = req.params;
 
@@ -616,7 +615,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
     // TODO: look here 78975
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions } = req.body;
     const { id } = req.params;
@@ -673,7 +672,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to delete botType setting.
    */
   // eslint-disable-next-line max-len
-  router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.relationTest, apiV3FormValidator, async(req, res) => {
+  router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, validator.relationTest, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not Proxy Type';
@@ -747,7 +746,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
-  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.slackChannel, apiV3FormValidator, async(req, res) => {
+  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, validator.slackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Select Without Proxy Type';

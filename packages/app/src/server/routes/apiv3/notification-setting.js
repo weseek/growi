@@ -90,7 +90,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
@@ -158,7 +157,7 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: user trigger notifications for updated
   */
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -202,7 +201,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: deleted notification
    */
-  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -242,7 +241,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param created
    */
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -305,7 +304,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param updated
    */
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -376,7 +375,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/NotifyForPageGrant'
    */
-  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
@@ -433,7 +432,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification id for updated
    */
-  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
     const { isEnabled } = req.body;
 
@@ -481,7 +480,7 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: deleted notification
   */
-  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {

@@ -412,8 +412,7 @@ const PageEditor = (props: Props): JSX.Element => {
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           markdown={markdown}
-          // eslint-disable-next-line no-return-assign
-          inputRef={previewRef}
+          ref={previewRef}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={false}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}

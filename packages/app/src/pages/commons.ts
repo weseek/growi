@@ -11,6 +11,7 @@ export type CommonProps = {
   siteUrl: string,
   confidential: string,
   customTitleTemplate: string,
+  csrfToken: string,
   growiVersion: string,
 }
 
@@ -33,6 +34,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     siteUrl: appService.getSiteUrl(),
     confidential: appService.getAppConfidential() || '',
     customTitleTemplate: customizeService.customTitleTemplate,
+    csrfToken: req.csrfToken(),
     growiVersion: crowi.version,
   };
 

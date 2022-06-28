@@ -44,7 +44,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const { exportService, socketIoService } = crowi;
 
@@ -118,7 +117,7 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
@@ -161,7 +160,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 

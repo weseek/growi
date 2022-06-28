@@ -37,8 +37,7 @@ class LoginForm extends React.Component {
 
   handleLoginWithExternalAuth(e) {
     const auth = e.currentTarget.id;
-    const { csrfToken } = this.props;
-    window.location.href = `/passport/${auth}?_csrf=${csrfToken}`;
+    window.location.href = `/passport/${auth}`;
   }
 
   renderLocalOrLdapLoginForm() {

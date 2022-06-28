@@ -160,7 +160,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -307,7 +306,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -640,12 +639,12 @@ module.exports = (crowi) => {
     const { fromPath, toPath } = req.query;
 
     try {
-      const fromPage = await Page.findByPath(fromPath);
+      const fromPage = await Page.findByPath(fromPath, true);
       if (fromPage == null) {
         return res.apiv3Err(new ErrorV3('fromPage is Null'), 400);
       }
 
-      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user, {}, true);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
         return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
@@ -707,7 +706,7 @@ module.exports = (crowi) => {
   //  *                schema:
   //  *                  $ref: '#/components/schemas/Page'
   //  */
-  // router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+  // router.post('/archive', accessTokenParser, loginRequired, validator.archive, apiV3FormValidator, async(req, res) => {
   //   const PageArchive = crowi.model('PageArchive');
 
   //   const {
@@ -771,7 +770,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 

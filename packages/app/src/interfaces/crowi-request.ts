@@ -9,4 +9,7 @@ export interface CrowiRequest extends Request {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   crowi: any,
 
+  // provided by csurf
+  csrfToken: () => string,
+
 }

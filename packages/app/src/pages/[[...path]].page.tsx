@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -16,6 +17,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
+import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -37,11 +39,10 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCurrentPathname,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
-import { PageModel } from '~/server/models/page';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -92,7 +93,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
-  useCurrentPathname(props.currentPathname);
+  useCsrfToken(props.csrfToken);
 
   // page
   let pageWithMeta: IPageWithMeta | undefined;
@@ -225,14 +226,18 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   const { currentPathname } = props;
 
-  const pageId = currentPathname.substring(1);
+  // determine pageId
+  let pageId;
+  const pageIdStr = currentPathname.substring(1);
+  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, null, user, true); // includeEmpty = true, isSharedPage = false
+  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
 
   if (page == null) {
+    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
-    props.isForbidden = await Page.count({ _id: pageId }) > 0;
+    props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }

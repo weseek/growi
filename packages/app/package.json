@@ -89,7 +89,7 @@
     "connect-mongo": "^4.6.0",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.5",
-    "csrf": "^3.1.0",
+    "csurf": "^1.11.0",
     "date-fns": "^2.23.0",
     "detect-indent": "^7.0.0",
     "diff": "^5.0.0",

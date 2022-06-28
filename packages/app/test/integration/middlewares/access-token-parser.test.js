@@ -27,7 +27,6 @@ describe('accessTokenParser', () => {
     model: jest.fn().mockReturnValue(User),
   };
   const req = {
-    skipCsrfVerify: false,
     query: {},
     body: {},
     user: {},
@@ -41,7 +40,6 @@ describe('accessTokenParser', () => {
 
     expect(next).toHaveBeenCalled();
     expect(result).toBe('next');
-    expect(req.skipCsrfVerify).toBe(false);
   });
 
   test('with invalid accessToken', async() => {
@@ -51,7 +49,6 @@ describe('accessTokenParser', () => {
 
     expect(next).toHaveBeenCalled();
     expect(result).toBe('next');
-    expect(req.skipCsrfVerify).toBe(false);
   });
 
   test('with accessToken in query', async() => {
@@ -61,7 +58,6 @@ describe('accessTokenParser', () => {
 
     expect(next).toHaveBeenCalled();
     expect(result).toBe('next');
-    expect(req.skipCsrfVerify).toBe(true);
     expect(req.user._id).toStrictEqual(targetUser._id);
   });
 
@@ -72,7 +68,6 @@ describe('accessTokenParser', () => {
 
     expect(next).toHaveBeenCalled();
     expect(result).toBe('next');
-    expect(req.skipCsrfVerify).toBe(true);
     expect(req.user._id).toStrictEqual(targetUser._id);
   });
 

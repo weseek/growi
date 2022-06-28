@@ -22,7 +22,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   /**
    * @swagger
@@ -114,7 +113,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Return 200
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
 
     const { searchService } = crowi;

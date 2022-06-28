@@ -12,14 +12,6 @@ const apiv3Root = '/_api/v3';
 
 const logger = loggerFactory('growi:apiv3');
 
-// get csrf token from body element
-const body = document.querySelector('body');
-const csrfToken = body?.dataset.csrftoken;
-
-
-type ParamWithCsrfKey = {
-  _csrf: string,
-}
 
 const apiv3ErrorHandler = (_err) => {
   // extract api errors from general 400 err
@@ -51,33 +43,21 @@ export async function apiv3Get<T = any>(path: string, params: unknown = {}): Pro
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Post<T = any>(path: string, params: any & ParamWithCsrfKey = {}): Promise<AxiosResponse<T>> {
-  if (params._csrf == null) {
-    params._csrf = csrfToken;
-  }
+export async function apiv3Post<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
   return apiv3Request('post', path, params);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiv3PostForm<T = any>(path: string, formData: FormData): Promise<AxiosResponse<T>> {
-  if (formData.get('_csrf') == null && csrfToken != null) {
-    formData.append('_csrf', csrfToken);
-  }
   return apiv3Post<T>(path, formData);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Put<T = any>(path: string, params: any & ParamWithCsrfKey = {}): Promise<AxiosResponse<T>> {
-  if (params._csrf == null) {
-    params._csrf = csrfToken;
-  }
+export async function apiv3Put<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
   return apiv3Request('put', path, params);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Delete<T = any>(path: string, params: any & ParamWithCsrfKey = {}): Promise<AxiosResponse<T>> {
-  if (params._csrf == null) {
-    params._csrf = csrfToken;
-  }
+export async function apiv3Delete<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
   return apiv3Request('delete', path, { params });
 }
