@@ -286,17 +286,6 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getGrantLabels = function() {
-    const grantLabels = {};
-    grantLabels[GRANT_PUBLIC] = 'Public'; // 公開
-    grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
-    // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
-    grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER] = 'Only me'; // 自分のみ
-
-    return grantLabels;
-  };
-
   pageSchema.statics.getUserPagePath = function(user) {
     return `/user/${user.username}`;
   };
