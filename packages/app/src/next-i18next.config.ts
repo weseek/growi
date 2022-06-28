@@ -22,6 +22,6 @@ export const backend = {
     // options for i18next-localstorage-backend
     { expirationTime: isDev ? 0 : 24 * 60 * 60 * 1000 }, // 1 day in production
     // options for i18next-http-backend
-    { loadPath: '/static/locales/{{lng}}/{{ns}}.json', },
+    { loadPath: '/static/locales/{{lng}}/{{ns}}.json' },
   ],
 };

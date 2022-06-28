@@ -1,9 +1,8 @@
-import { listScopedPackages } from './src/utils/next.config.utils';
-
-import { I18NextHMRPlugin } from "i18next-hmr/plugin";
+import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
 import { i18n, localePath } from './src/next-i18next.config';
+import { listScopedPackages } from './src/utils/next.config.utils';
 
 // define transpiled packages for '@growi/*'
 const scopedPackages = listScopedPackages(['@growi']);
@@ -54,7 +53,7 @@ const nextConfig = {
 
     // setup i18next-hmr
     if (!options.isServer && options.dev) {
-      config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }))
+      config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }));
     }
 
     return config;

@@ -3,7 +3,7 @@ import React from 'react';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 
-import * as nextI18nConfig from '../next-i18next.config'
+import * as nextI18nConfig from '../next-i18next.config';
 
 // import { appWithTranslation } from '~/i18n';
 

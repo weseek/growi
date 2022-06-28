@@ -129,7 +129,7 @@ class CommentService {
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
-  }
+  };
 
 }
 

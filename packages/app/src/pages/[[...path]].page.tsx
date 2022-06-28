@@ -235,7 +235,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const page = result.data;
 
   if (page == null) {
-    const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
+    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
     props.isForbidden = count > 0;
     props.isNotFound = true;
