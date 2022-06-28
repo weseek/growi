@@ -7,7 +7,7 @@ import {
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-// import { PageAlerts } from '~/components/PageAlert/PageAlerts';
+import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -38,6 +38,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
+  useCurrentPageId
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -131,6 +132,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
+  useCurrentPageId(pageWithMeta?.data._id)
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
@@ -188,8 +190,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main grw-container-convertible">
-                {/* <PageAlerts /> */}
-                PageAlerts<br />
+                <PageAlerts />
                 {/* <DisplaySwitcher /> */}
                 DisplaySwitcher<br />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
