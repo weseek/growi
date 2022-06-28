@@ -323,6 +323,7 @@ class PageService {
           isDeletable: false,
           isAbleToDeleteCompletely: false,
           isRevertible: false,
+          isContainerFluid: page.isContainerFluid,
         },
       };
     }
@@ -350,7 +351,7 @@ class PageService {
     const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
-    const isContainerFluid: boolean = page.isContainerFluid !== undefined
+    const isContainerFluid: boolean = page.isContainerFluid != null
       ? page.isContainerFluid
       : this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
@@ -2186,6 +2187,7 @@ class PageService {
         isDeletable: false,
         isAbleToDeleteCompletely: false,
         isRevertible: false,
+        isContainerFluid: false,
       };
     }
 
@@ -2203,6 +2205,7 @@ class PageService {
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
+      isContainerFluid: page.isContainerFluid,
     };
 
   }

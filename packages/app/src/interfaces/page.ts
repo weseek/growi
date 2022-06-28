@@ -54,7 +54,7 @@ export type IPageInfo = {
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
-  isContainerFluid?: boolean,
+  isContainerFluid: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {

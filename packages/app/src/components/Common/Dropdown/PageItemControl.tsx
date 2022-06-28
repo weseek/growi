@@ -22,6 +22,7 @@ export const MenuItemType = {
   DELETE: 'delete',
   REVERT: 'revert',
   PATH_RECOVERY: 'pathRecovery',
+  SWITCH_CONTENT_WIDTH: 'switch_content_width',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -156,16 +157,28 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </DropdownItem>
         ) }
 
-        { isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+        {/* Content width switcher */}
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
           <DropdownItem
             onClick={switchContentWidthHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className={`fa fa-fw ${!pageInfo.isContainerFluid ? 'fa-toggle-off' : 'fa-toggle-on'} grw-page-control-dropdown-icon`}>
-            </i>
-            { t('wide_view') }
+            <div className="custom-control custom-switch ml-1">
+              <input
+                id="switchContentWidth"
+                className="custom-control-input"
+                type="checkbox"
+                checked={pageInfo.isContainerFluid}
+                onChange={() => {}}
+              />
+              <label className="custom-control-label" htmlFor="switchContentWidth">
+                { t('wide_view') }
+              </label>
+            </div>
           </DropdownItem>
         ) }
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && <DropdownItem divider /> }
+
 
         {/* Bookmark */}
         { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
@@ -286,7 +299,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
       setShouldFetch(true);
     }
-    if (presetPageInfo?.isContainerFluid) {
+    if (presetPageInfo?.isContainerFluid && !$('body').hasClass('on-search')) {
       if (!$('body').hasClass('growi-layout-fluid')) {
         $('body').addClass('growi-layout-fluid');
       }

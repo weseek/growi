@@ -158,7 +158,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }
 
   const {
-    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked, isContainerFluid,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];

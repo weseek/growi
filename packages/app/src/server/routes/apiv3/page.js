@@ -224,7 +224,7 @@ module.exports = (crowi) => {
     ],
     contentWidth: [
       body('pageId').isString(),
-      body('bool').isBoolean(),
+      body('isContainerFluid').isBoolean(),
     ],
   };
 
@@ -796,8 +796,9 @@ module.exports = (crowi) => {
     }
   });
 
+
   router.put('/content-width', apiLimiter, accessTokenParser, loginRequiredStrictly, csrf, validator.contentWidth, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool: isContainerFluid } = req.body;
+    const { pageId, isContainerFluid } = req.body;
 
     try {
       const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
