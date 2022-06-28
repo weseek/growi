@@ -18,7 +18,7 @@ export const PageStaleAlert = ():JSX.Element => {
   }
 
   let alertClass;
-  switch (pageInfo.contentAge) {
+  switch (contentAge) {
     case 1:
       alertClass = "alert-info";
       break;
