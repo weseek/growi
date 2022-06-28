@@ -6,7 +6,10 @@ export const PageStaleAlert = ():JSX.Element => {
   const { t } = useTranslation()
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
   const { data: pageData } = useSWRxCurrentPage();
-  const { data: pageInfo } = useSWRxPageInfo(pageData?._id);
+
+  const shouldfetch = isEnabledStaleNotification;
+  const { data: pageInfo } = useSWRxPageInfo(shouldfetch ? pageData?._id : null);
+
   const contentAge = pageInfo?.contentAge;
 
   if (!isEnabledStaleNotification) {
