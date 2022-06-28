@@ -55,14 +55,13 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
   };
 
 
-  const associateLdapAccount = async(account) => {
+  const associateLdapAccount = async(account): Promise<void> => {
     await apiv3Put('/personal-setting/associate-ldap', account);
   };
 
-  const disassociateLdapAccount = async(account) => {
+  const disassociateLdapAccount = async(account): Promise<void> => {
     await apiv3Put('/personal-setting/disassociate-ldap', account);
   };
-
 
   return {
     ...swrResult,
