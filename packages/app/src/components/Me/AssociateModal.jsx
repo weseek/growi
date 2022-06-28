@@ -30,7 +30,7 @@ class AssociateModal extends React.Component {
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
-    this.onClickAddBtn = this.onClickAddBtn.bind(this);
+    this.clickAddBtnHandler = this.clickAddBtnHandler.bind(this);
   }
 
   /**
@@ -47,7 +47,7 @@ class AssociateModal extends React.Component {
     this.setState({ password });
   }
 
-  async onClickAddBtn() {
+  async clickAddBtnHandler() {
     const {
       onAssociate, onClose,
     } = this.props;
@@ -109,7 +109,7 @@ class AssociateModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="border-top-0">
-          <button type="button" className="btn btn-primary mt-3" onClick={this.onClickAddBtn}>
+          <button type="button" className="btn btn-primary mt-3" onClick={this.clickAddBtnHandler}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
           </button>
