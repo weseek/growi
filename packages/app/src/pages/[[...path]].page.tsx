@@ -39,7 +39,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId
+  useCurrentPageId, useCurrentURLSearchParams
 } from '../stores/context';
 
 import { useXss } from '../stores/xss'
@@ -84,6 +84,7 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+  originalUrl: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -92,9 +93,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
+  const url = new URL(props.originalUrl, props.siteUrl)
+  const searchParams = new URLSearchParams(url.search);
+
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
+  useCurrentURLSearchParams(searchParams)
   useXss(new Xss())
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
@@ -272,7 +277,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     appService, searchService, configManager, aclService, slackNotificationService, mailService,
   } = crowi;
 
-  const { user } = req;
+  const { user, originalUrl } = req;
 
   const result = await getServerSideCommonProps(context);
 
@@ -288,6 +293,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user);
   }
+
+  props.originalUrl = originalUrl;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;

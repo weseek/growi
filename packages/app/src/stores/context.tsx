@@ -191,6 +191,10 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useStaticSWR('isEnabledStaleNotification', initialData);
 };
 
+export const useCurrentURLSearchParams = (initialData?: URLSearchParams): SWRResponse<URLSearchParams, any> => {
+  return useStaticSWR('currentURLSearchParams', initialData);
+};
+
 
 
 /** **********************************************************
