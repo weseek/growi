@@ -6,7 +6,7 @@ export const PageStaleAlert = ():JSX.Element => {
   const { t } = useTranslation()
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
 
-  // determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
+  // Todo: determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
   const { data: pageData } = useSWRxCurrentPage();
   const { data: pageInfo } = useSWRxPageInfo(isEnabledStaleNotification ? pageData?._id : null);
 
