@@ -74,6 +74,7 @@ const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = fa
   const bodyElement = document.getElementsByTagName('body')[0];
   if (bodyElement == null) {
     logger.warn('The body tag was not successfully obtained');
+    return
   }
   switch (newEditorMode) {
     case EditorMode.View:
