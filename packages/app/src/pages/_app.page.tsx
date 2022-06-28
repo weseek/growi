@@ -12,15 +12,20 @@ import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import { useGrowiVersion } from '../stores/context';
+import { useI18nextHMR } from '../services/i18next-hmr';
 
 import { CommonProps } from './commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 type GrowiAppProps = AppProps & {
   pageProps: CommonProps;
 };
 
 function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
+  useI18nextHMR(isDev);
+
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
   useGrowiVersion(commonPageProps.growiVersion);
