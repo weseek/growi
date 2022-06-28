@@ -24,3 +24,8 @@ export const getOptionsToSave = (
     grantUserGroupName,
   };
 };
+
+
+export const showAlertDialog = (msg): void => {
+  return window.alert(msg);
+};

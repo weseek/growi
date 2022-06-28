@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { showAlertDialog } from '~/client/util/editor';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -159,14 +160,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const alertForNextRouter = useCallback(() => {
-    window.alert('alert!!!');
-    return;
-  }, []);
 
-  const alertForJs = useCallback((e) => {
+  const unsavedAlertMsg = 'Changes you made may not be saved.'
+
+  const showAlertDialogForRouteChangesByBrowser = useCallback((e) => {
     e.preventDefault();
-    window.alert('alert!!!');
+    showAlertDialog(unsavedAlertMsg);
     e.returnValue = '';
     return;
   },[]);
@@ -176,9 +175,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   *　Example: window.location.href, F5
   */
   useEffect(() => {
-    window.addEventListener('beforeunload', alertForJs);
+    window.addEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
     return () => {
-      window.removeEventListener('beforeunload', alertForJs);
+      window.removeEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
     };
   }, []);
 
@@ -188,9 +187,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   * https://nextjs.org/docs/api-reference/next/router
   */
   useEffect(() => {
-    router.events.on('routeChangeStart', alertForNextRouter)
+    router.events.on('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
     return () => {
-      router.events.off('routeChangeStart', alertForNextRouter)
+      router.events.off('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
     };
   }, []);
 
