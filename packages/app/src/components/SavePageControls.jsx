@@ -12,6 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
+import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useIsEditable, useCurrentPageId } from '~/stores/context';
@@ -54,7 +55,7 @@ class SavePageControls extends React.Component {
       isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    isEnabledShowUnsavedWarning(false)
 
     try {
       // save
@@ -80,7 +81,7 @@ class SavePageControls extends React.Component {
       isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    isEnabledShowUnsavedWarning(false)
     // save
     const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
     const optionsToSave = Object.assign(currentOptionsToSave, {

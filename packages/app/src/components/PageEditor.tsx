@@ -2,6 +2,8 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
+import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
+
 import EventEmitter from 'events';
 
 import { envUtils } from '@growi/core';
@@ -129,7 +131,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      isEnabledShowUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
@@ -355,7 +357,8 @@ const PageEditor = (props: Props): JSX.Element => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (pageContainer.state.markdown! !== markdown) {
-      editorContainer.enableUnsavedWarning();
+      // editorContainer.enableUnsavedWarning();
+      isEnabledShowUnsavedWarning(true);
     }
   }, [editorContainer, markdown, pageContainer.state.markdown]);
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { showAlertDialog } from '~/client/util/editor';
+import { isEnabledShowUnsavedWarning, showAlertDialog } from '~/client/util/editor';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -168,7 +168,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     showAlertDialog(unsavedAlertMsg);
     e.returnValue = '';
     return;
-  },[]);
+  },[isEnabledShowUnsavedWarning]);
 
   /*
   *  Route changes by Browser
@@ -179,7 +179,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     return () => {
       window.removeEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
     };
-  }, []);
+  }, [isEnabledShowUnsavedWarning]);
 
 
   /*

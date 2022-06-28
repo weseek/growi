@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-
+import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -178,7 +178,7 @@ class PageEditorByHackmd extends React.Component {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      isEnabledShowUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, this.props.editorMode, optionsToSave);
@@ -213,7 +213,8 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // enable unsaved warning
-    editorContainer.enableUnsavedWarning();
+    // editorContainer.enableUnsavedWarning();
+    isEnabledShowUnsavedWarning(true);
 
     const params = {
       pageId: pageContainer.state.pageId,

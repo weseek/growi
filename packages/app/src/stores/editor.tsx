@@ -108,3 +108,7 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
     },
   };
 };
+
+export const useIsEnabledShowUnsavedWarning = (bool): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledShowUnsavedWarning', undefined, {fallbackData: false});
+};

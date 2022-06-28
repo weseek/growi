@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-
+import { isEnabledShowUnsavedWarning } from '~/client/util/editor';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -89,7 +89,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      isEnabledShowUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
@@ -121,7 +121,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      isEnabledShowUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
