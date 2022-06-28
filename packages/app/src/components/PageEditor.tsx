@@ -357,7 +357,6 @@ const PageEditor = (props: Props): JSX.Element => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (pageContainer.state.markdown! !== markdown) {
-      // editorContainer.enableUnsavedWarning();
       isEnabledShowUnsavedWarning(true);
     }
   }, [editorContainer, markdown, pageContainer.state.markdown]);

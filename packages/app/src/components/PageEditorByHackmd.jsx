@@ -213,7 +213,6 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // enable unsaved warning
-    // editorContainer.enableUnsavedWarning();
     isEnabledShowUnsavedWarning(true);
 
     const params = {
