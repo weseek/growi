@@ -1,5 +1,7 @@
 import { listScopedPackages } from './src/utils/next.config.utils';
 
+import { i18n } from './src/next-i18next.config';
+
 // define transpiled packages for '@growi/*'
 const scopedPackages = listScopedPackages(['@growi']);
 const withTM = require('next-transpile-modules')(scopedPackages);
@@ -17,6 +19,8 @@ const nextConfig = {
     tsconfigPath: 'tsconfig.build.client.json',
   },
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+
+  i18n,
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
