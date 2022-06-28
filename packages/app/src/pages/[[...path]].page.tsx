@@ -61,6 +61,7 @@ type Props = CommonProps & {
   lastUpdateUserName: string,
   deletedAt: string,
   revisionId: string,
+  currentPagePath: string,
   // pageUser?: any,
   // redirectTo?: string;
   // redirectFrom?: string;
@@ -109,7 +110,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
-  useIsTrashPage(_isTrashPage(props.currentPathname));
   // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
@@ -147,7 +147,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
-  // need to init useIsDeleted
+  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
 
   const classNames: string[] = [];
   // switch (editorMode) {
