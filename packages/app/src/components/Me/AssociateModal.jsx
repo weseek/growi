@@ -48,11 +48,11 @@ class AssociateModal extends React.Component {
 
   async clickAddBtnHandler() {
     const {
-      onAssociate, onClose,
+      onClickAddBtn, onClose,
     } = this.props;
     const { username, password } = this.state;
 
-    onAssociate({ username, password });
+    onClickAddBtn({ username, password });
     onClose();
   }
 
@@ -125,7 +125,7 @@ AssociateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onAssociate: PropTypes.func.isRequired,
+  onClickAddBtn: PropTypes.func.isRequired,
 };
 
 const AssociateModalWrapperFC = (props) => {
@@ -138,7 +138,7 @@ const AssociateModalWrapperFC = (props) => {
     mutatePersonalExternalAccounts();
   };
 
-  return <AssociateModal t={t} onAssociate={associateLdapAccountHandler} {...props} />;
+  return <AssociateModal t={t} onClickAddBtn={associateLdapAccountHandler} {...props} />;
 };
 
 /**
