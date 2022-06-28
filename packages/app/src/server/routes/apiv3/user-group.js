@@ -30,7 +30,6 @@ const { ObjectId } = mongoose.Types;
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const {
     UserGroupRelation,
@@ -222,7 +221,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequiredStrictly, adminRequired, validator.create, apiV3FormValidator, async(req, res) => {
     const { name, description = '', parentId } = req.body;
 
     try {
@@ -420,7 +419,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequiredStrictly, adminRequired, validator.delete, apiV3FormValidator, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
@@ -464,7 +463,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       name, description, parentId, forceUpdateParents = false,

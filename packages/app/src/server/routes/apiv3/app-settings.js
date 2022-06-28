@@ -150,7 +150,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const validator = {
     appSetting: [
@@ -294,7 +293,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -345,7 +344,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
@@ -477,7 +476,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
       'mail:transmissionMethod': req.body.transmissionMethod,
@@ -547,7 +546,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
@@ -596,7 +595,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -677,7 +676,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -697,7 +696,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
@@ -719,7 +718,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
 
     try {

@@ -90,7 +90,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   /**
    * @swagger
@@ -152,7 +151,7 @@ module.exports = (crowi) => {
    *                schema:
   *                   $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, apiV3FormValidator, async(req, res) => {
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
@@ -175,7 +174,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.put('/indent', loginRequiredStrictly, adminRequired, csrf, validator.indent, apiV3FormValidator, async(req, res) => {
+  router.put('/indent', loginRequiredStrictly, adminRequired, validator.indent, apiV3FormValidator, async(req, res) => {
 
     const requestIndentParams = {
       'markdown:adminPreferredIndentSize': req.body.adminPreferredIndentSize,
@@ -221,7 +220,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PresentationParams'
    */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/presentation', loginRequiredStrictly, adminRequired, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
@@ -270,7 +269,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }

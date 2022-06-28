@@ -37,7 +37,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -93,6 +93,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
+  useCsrfToken(props.csrfToken);
 
   // page
   useCurrentPagePath(props.currentPathname);
