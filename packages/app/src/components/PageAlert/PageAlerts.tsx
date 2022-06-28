@@ -1,5 +1,8 @@
+import dynamic from 'next/dynamic'
 import { FixPageGrantAlert } from "./FixPageGrantAlert";
 import { PageGrantAlert } from "./PageGrantAlert";
+
+const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.TrashPageAlert), {ssr: false})
 
 
 export const PageAlerts = (): JSX.Element => {
@@ -12,6 +15,8 @@ export const PageAlerts = (): JSX.Element => {
         <FixPageGrantAlert/>
 
         <PageGrantAlert/>
+
+        <TrashPageAlert/>
       </div>
     </div>
   );

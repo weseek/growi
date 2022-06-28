@@ -17,9 +17,10 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import Xss from '~/services/xss';
+import { format } from 'date-fns';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -39,7 +40,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId
+  useCurrentPageId, useLastUpdateUsername, useDeletedAt, useRevisionId
 } from '../stores/context';
 
 import { useXss } from '../stores/xss'
@@ -57,6 +58,9 @@ type Props = CommonProps & {
   currentUser: string,
 
   pageWithMetaStr: string,
+  lastUpdateUserName: string,
+  deletedAt: string,
+  revisionId: string,
   // pageUser?: any,
   // redirectTo?: string;
   // redirectFrom?: string;
@@ -105,12 +109,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
+  useIsTrashPage(_isTrashPage(props.currentPathname));
   // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
   // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useLastUpdateUsername(props.lastUpdateUserName);
+  useDeletedAt(props.deletedAt);
+  useRevisionId(props.revisionId);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -138,7 +145,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
   useCurrentPageId(pageWithMeta?.data._id)
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  // need to init useIsDeleted
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -239,6 +248,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
 
+
   if (page == null) {
     const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
     // check the page is forbidden or just does not exist.
@@ -247,8 +257,12 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
-  await (page as unknown as PageModel).populateDataToShowRevision();
   props.pageWithMetaStr = JSON.stringify(result);
+
+  const populatedPage = await (page as unknown as PageModel).populateDataToShowRevision();
+  props.lastUpdateUserName = populatedPage.lastUpdateUser.name;
+  props.deletedAt = page.deletedAt ? format(page.deletedAt, 'yyyy/MM/dd HH:mm') : ''
+  props.revisionId = populatedPage.revision._id.toString();
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
