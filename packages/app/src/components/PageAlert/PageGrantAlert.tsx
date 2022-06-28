@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSWRxCurrentPage } from '~/stores/page';
+import { useXss } from '~/stores/xss';
 import { useTranslation } from 'react-i18next';
-import Xss from '~/services/xss';
+
 
 export const PageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: pageData } = useSWRxCurrentPage();
+  const { data: xss } = useXss();
 
-  const xss = new Xss();
-
-  if ( pageData == null || pageData.grant == null || pageData.grant == 1 ) {
+  if ( pageData == null || pageData.grant == null || pageData.grant == 1 || xss == null) {
     return <></>
   }
 
