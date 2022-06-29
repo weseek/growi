@@ -1,11 +1,12 @@
+import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
-} from '~/server/interfaces/page-operation';
+} from '~/server/models/interfaces/page-operation';
+
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 type IObjectId = mongoose.Types.ObjectId;
