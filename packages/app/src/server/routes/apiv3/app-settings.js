@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { allLocales } from '~/next-i18next.config';
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -162,7 +162,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(allLocales),
+      body('globalLang').isIn(i18n.locales),
       body('isEmailPublishedForNewUser').isBoolean(),
       body('fileUpload').isBoolean(),
     ],
@@ -614,7 +614,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  //  eslint-disable-next-line max-len
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -661,7 +662,8 @@ module.exports = (crowi) => {
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
         responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
-
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
     }
     catch (err) {
@@ -695,7 +697,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -705,6 +707,8 @@ module.exports = (crowi) => {
       const pluginSettingParams = {
         isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_PLUGIN_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ pluginSettingParams });
     }
     catch (err) {
@@ -737,15 +741,17 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
-
+    const parameters = {};
     try {
       if (flag) {
         await crowi.appService.startMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
       }
       else {
         await crowi.appService.endMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
       }
     }
     catch (err) {
@@ -756,6 +762,10 @@ module.exports = (crowi) => {
       else {
         res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
       }
+    }
+
+    if ('action' in parameters) {
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
 
     res.apiv3({ flag });
