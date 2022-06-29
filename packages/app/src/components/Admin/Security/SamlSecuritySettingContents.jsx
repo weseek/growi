@@ -1,16 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class SamlSecurityManagementContents extends React.Component {
 
@@ -532,15 +532,18 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
 SamlSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurityManagementContents, [
-  AppContainer,
+const SamlSecurityManagementContentsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <SamlSecurityManagementContents t={t} {...props} />;
+};
+
+const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurityManagementContentsWrapperFC, [
   AdminGeneralSecurityContainer,
   AdminSamlSecurityContainer,
 ]);
 
-export default withTranslation()(SamlSecurityManagementContentsWrapper);
+export default SamlSecurityManagementContentsWrapper;

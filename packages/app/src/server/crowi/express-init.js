@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { i18n, localePath } from '~/next-i18next.config';
+
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   const path = require('path');
@@ -24,7 +26,6 @@ module.exports = function(crowi, app) {
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
-  const { listLocaleIds } = require('~/utils/locale-utils');
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
@@ -41,9 +42,9 @@ module.exports = function(crowi, app) {
     .init({
       // debug: true,
       fallbackLng: ['en_US'],
-      whitelist: listLocaleIds(),
+      whitelist: i18n.locales,
       backend: {
-        loadPath: `${crowi.localeDir}{{lng}}/translation.json`,
+        loadPath: `${localePath}/{{lng}}/translation.json`,
       },
       detection: {
         order: ['userSettingDetector', 'header', 'navigator'],
@@ -78,13 +79,6 @@ module.exports = function(crowi, app) {
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
-    res.locals.consts = {
-      pageGrants: Page.getGrantLabels(),
-      userStatus: User.getUserStatusLabels(),
-      language:   listLocaleIds(),
-      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
-      registrationMode: crowi.aclService.getRegistrationModeLabels(),
-    };
     res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();

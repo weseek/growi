@@ -24,7 +24,7 @@ const TrashPageList = () => {
 
   const emptyTrashButton = useMemo(() => {
     return <EmptyTrashButton />;
-  }, [t]);
+  }, []);
 
   return (
     <div data-testid="trash-page-list" className="mt-5 d-edit-none">
