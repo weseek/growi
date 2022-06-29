@@ -12,7 +12,7 @@ export interface IPage {
   status: string,
   revision: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: Ref<IUser>,
+  creator: any,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
@@ -77,7 +77,7 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && ('isEmpty' in pageInfo) && pageInfo.isEmpty === false;
+  return pageInfo != null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,8 +117,8 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
 
 export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
-export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+export type IPageToDeleteWithMeta<T = IPageInfoForEntity | unknown> = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string | null}), T>;
+export type IPageToRenameWithMeta<T = IPageInfoForEntity | unknown> = IPageToDeleteWithMeta<T>;
 
 export type IPageGrantData = {
   grant: number,
