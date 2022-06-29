@@ -7,38 +7,28 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
+import { useDefaultSocket } from '~/stores/socket-io';
 import loggerFactory from '~/utils/logger';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import InAppNotificationList from './InAppNotificationList';
 
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
-type Props = {
-  socketIoContainer: SocketIoContainer,
-};
 
-const InAppNotificationDropdown: FC<Props> = (props: Props) => {
+export const InAppNotificationDropdown = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
+
+  const { data: socket } = useDefaultSocket();
   const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
   const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
-
-  const initializeSocket = useCallback((props) => {
-    const socket = props.socketIoContainer.getSocket();
-    socket.on('notificationUpdated', () => {
-      mutateInAppNotificationUnreadStatusCount();
-    });
-  }, [mutateInAppNotificationUnreadStatusCount]);
 
   const updateNotificationStatus = async() => {
     try {
@@ -51,8 +41,17 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    initializeSocket(props);
-  }, [initializeSocket, props]);
+    if (socket != null) {
+      socket.on('notificationUpdated', () => {
+        mutateInAppNotificationUnreadStatusCount();
+      });
+
+      // clean up
+      return () => {
+        socket.off('notificationUpdated');
+      };
+    }
+  }, [mutateInAppNotificationUnreadStatusCount, socket]);
 
 
   const toggleDropdownHandler = async() => {
@@ -96,10 +95,3 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     </Dropdown>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
-
-export default InAppNotificationDropdownWrapper;
