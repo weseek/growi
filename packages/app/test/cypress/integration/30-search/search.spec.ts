@@ -133,7 +133,7 @@ context('Search all pages', () => {
   it(`Search all pages by tag is successfully loaded `, () => {
     const tag = 'help';
     const searchText = `tag:${tag}`;
-    cy.visit('/Sandbox');
+    cy.visit('/');
     // Add tag
     cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
     cy.get('#edit-tag-modal').should('be.visible');
@@ -143,6 +143,10 @@ context('Search all pages', () => {
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
       cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
+    });
+
+    cy.get('#edit-tag-modal').within(() => {
+      cy.get('div.modal-footer > button').click();
     });
 
     cy.visit('/');
@@ -163,7 +167,7 @@ context('Search all pages', () => {
   it('Successfully order page search results by tag', () => {
     const tag = 'help';
 
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.get('.grw-taglabels-container > form > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
@@ -222,19 +226,19 @@ context('Search current tree with "prefix":', () => {
     cy.get('.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
     cy.get('.rbt-input').click();
     cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}search-input-focused`);
+      cy.screenshot(`${ssPrefix}1-search-input-focused`);
     })
     cy.get('.rbt-input').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text`, { capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input').type('{enter}');
-    cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
 });
