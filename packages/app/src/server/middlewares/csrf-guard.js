@@ -1,31 +1,22 @@
-// http method: PUT, POST
-// custom header name: x-growi-system
+import loggerFactory from '~/utils/logger';
 
-const { default: next } = require("../routes/next");
-
-// const logger = loggerFactory('growi:middlewares:auto-reconnect-to-search');
+const logger = loggerFactory('growi:middlewares:csrf-guard');
 
 module.exports = () => {
 
   return async(req, res, next) => {
     if (req.method === 'PUT' || req.method === 'POST') {
-      console.log('PUT or POST');
-      console.log(req.rawHeaders);
-      // if (req.rawHeaders.includes(''))
+      if (req.rawHeaders.includes('x-growi-client') === true ) {
+        return next();
+      }
+      else {
+        logger.error('Request authorization failed');
+        return;
+      }
     }
-    if (req.method === 'GET') {
-      console.log('GET');
+    else {
+      return next();
     }
-    console.log('test');
-    // if (req.method === 'PUT' || req.method === 'POST') {
-    //   try () {
-    //     // custom header name: x-growi-system
-    //     return next();
-    //   }
-    //   catch(err) {
-    //     logger.error('Request Authorization failed.', err);
-    //   }
-    return next();
   };
 
 };

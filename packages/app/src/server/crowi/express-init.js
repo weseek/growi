@@ -32,8 +32,6 @@ module.exports = function(crowi, app) {
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   // const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
 
-  const csrfGuard = require('../middlewares/csrf-guard');
-
   const env = crowi.node_env;
 
   // const lngDetector = new i18nMiddleware.LanguageDetector();
@@ -130,7 +128,7 @@ module.exports = function(crowi, app) {
     sessionMiddleware(req, res, next);
   });
 
-  // const csrfGuard = require('../middlewares/csrf-guard')();
+  const csrfGuard = require('../middlewares/csrf-guard');
   app.use(csrfGuard());
 
   // csurf should be initialized after express-session
