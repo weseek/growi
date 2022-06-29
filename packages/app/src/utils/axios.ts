@@ -5,6 +5,6 @@ export default axios.create({
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
-    'X-From': 'x-growi-systems',
+    'X-From': 'x-growi-system-nextjs',
   },
 });
