@@ -114,17 +114,17 @@ export type IUnsavedWarning = {
 }
 
 export const useUnsavedWarning = (): SWRResponse<boolean, Error> & IUnsavedWarning => {
-  const swrResult =  useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, {fallbackData: false});
-  const { data: isEnabledUnsavedWarning } = swrResult
+  const swrResult = useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
+  const { data: isEnabledUnsavedWarning } = swrResult;
 
   const showAlertDialog = (msg: string) => {
-    if(isEnabledUnsavedWarning || false){
+    if (isEnabledUnsavedWarning || false) {
       return window.alert(msg);
     }
-  }
+  };
 
   return {
     ...swrResult,
     showAlertDialog,
-  }
+  };
 };
