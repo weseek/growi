@@ -13,7 +13,6 @@ const additionalWebpackEntries = {
   boot: './src/client/boot',
 };
 
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -23,6 +22,20 @@ const nextConfig = {
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
 
   i18n,
+
+  async headers() {
+    return [
+      {
+        source: '/',
+        headers: [
+          {
+            key: 'X-Requested-With',
+            value: 'XMLHttpRequest',
+          },
+        ],
+      },
+    ]
+  },
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
