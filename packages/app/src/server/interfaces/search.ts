@@ -37,7 +37,7 @@ export type SearchableData<T = Partial<QueryTerms>> = {
 }
 
 export type UpdateOrInsertPagesOpts = {
-  shouldEmitAvailable?: boolean
+  shouldEmitProgress?: boolean
   invokeGarbageCollection?: boolean
 }
 
