@@ -794,7 +794,7 @@ module.exports = (crowi) => {
         isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
         isEmailAuthenticationEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
       };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_IP_PASS_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ localSettingParams });
     }
