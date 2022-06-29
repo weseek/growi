@@ -6,6 +6,7 @@ import { FixPageGrantAlert } from './FixPageGrantAlert';
 import { PageGrantAlert } from './PageGrantAlert';
 import { PageStaleAlert } from './PageStaleAlert';
 
+// dynamic import because TrashPageAlert uses localStorageMiddleware
 const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.TrashPageAlert), { ssr: false });
 
 export const PageAlerts = (): JSX.Element => {
