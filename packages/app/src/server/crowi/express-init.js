@@ -61,8 +61,6 @@ module.exports = function(crowi, app) {
 
   app.use(compression());
 
-  app.use(csrfGuard());
-
   app.use(helmet({
     contentSecurityPolicy: false,
     expectCt: false,
@@ -131,6 +129,9 @@ module.exports = function(crowi, app) {
 
     sessionMiddleware(req, res, next);
   });
+
+  // const csrfGuard = require('../middlewares/csrf-guard')();
+  app.use(csrfGuard());
 
   // csurf should be initialized after express-session
   app.use(csrf({ cookie: false }));

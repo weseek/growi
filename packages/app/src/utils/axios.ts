@@ -5,6 +5,6 @@ export default axios.create({
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
-    'X-From': 'x-growi-system',
+    'X-From': 'x-growi-systems',
   },
 });

@@ -1,6 +1,8 @@
 // http method: PUT, POST
 // custom header name: x-growi-system
 
+const { default: next } = require("../routes/next");
+
 // const logger = loggerFactory('growi:middlewares:auto-reconnect-to-search');
 
 module.exports = () => {
