@@ -17,7 +17,8 @@ export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
 
 export type IPersonalSettingsInfoOption = {
   sync: () => void,
-  updateBasicInfo: () => void,
+  updateBasicInfo: () => Promise<void>,
+  associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
@@ -52,10 +53,16 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     await apiv3Put('/personal-setting/', updateData);
   };
 
+
+  const associateLdapAccount = async(account): Promise<void> => {
+    await apiv3Put('/personal-setting/associate-ldap', account);
+  };
+
   return {
     ...swrResult,
     sync,
     updateBasicInfo,
+    associateLdapAccount,
   };
 };
 
