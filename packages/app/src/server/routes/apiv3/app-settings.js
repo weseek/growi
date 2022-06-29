@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { allLocales } from '~/next-i18next.config';
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -162,7 +162,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(allLocales),
+      body('globalLang').isIn(i18n.locales),
       body('isEmailPublishedForNewUser').isBoolean(),
       body('fileUpload').isBoolean(),
     ],
