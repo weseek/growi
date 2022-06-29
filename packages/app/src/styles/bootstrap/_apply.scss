@@ -1,0 +1,12 @@
+@use 'init' as *;
+
+@import '~bootstrap/scss/utilities';
+@import '~bootstrap/scss/root';
+
+// increase specificity with ':root' for GROWI theming
+:root {
+  // import bootstrap
+  @import '~bootstrap/scss/bootstrap';
+  // override
+  @import './override';
+}

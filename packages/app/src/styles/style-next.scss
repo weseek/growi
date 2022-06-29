@@ -1,14 +1,4 @@
-// import variables
-@import 'variables';
-
-@import 'mixins';
-@import 'override-bootstrap-variables';
-
-// vendor
-@import 'vendor';
-
-// override bootstrap
-@import 'override-bootstrap';
+@import './bootstrap/apply';
 
 // // override codemirror
 // @import 'override-codemirror';
@@ -50,7 +40,7 @@
 // @import 'me';
 // @import 'mirror_mode';
 // @import 'modal';
-@import 'navbar';
+// @import 'navbar';
 // @import 'old-ios';
 // @import 'on-edit';
 // @import 'page-duplicate-modal';
