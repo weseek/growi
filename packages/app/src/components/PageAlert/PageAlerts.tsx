@@ -1,6 +1,13 @@
-import { FixPageGrantAlert } from "./FixPageGrantAlert";
-import { PageGrantAlert } from "./PageGrantAlert";
-import { PageStaleAlert } from "./PageStaleAlert";
+import React from 'react';
+
+import dynamic from 'next/dynamic';
+
+import { FixPageGrantAlert } from './FixPageGrantAlert';
+import { PageGrantAlert } from './PageGrantAlert';
+import { PageStaleAlert } from './PageStaleAlert';
+
+// dynamic import because TrashPageAlert uses localStorageMiddleware
+const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.TrashPageAlert), { ssr: false });
 
 export const PageAlerts = (): JSX.Element => {
 
@@ -9,10 +16,11 @@ export const PageAlerts = (): JSX.Element => {
     <div className="row d-edit-none">
       <div className="col-sm-12">
         {/* alerts */}
-        <FixPageGrantAlert/>
-        <PageGrantAlert/>
-        <PageStaleAlert/>
+        <FixPageGrantAlert />
+        <PageGrantAlert />
+        <TrashPageAlert />
+        <PageStaleAlert />
       </div>
     </div>
   );
-}
+};
