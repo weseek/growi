@@ -38,7 +38,7 @@ const TrashPageAlert = (props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
-  const { data: isTrashPage } = useIsTrashPage()
+  const { data: isTrashPage } = useIsTrashPage();
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
