@@ -665,7 +665,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/ShareLinkSetting'
    */
-  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const updateData = {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
@@ -674,7 +674,9 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         disableLinkSharing: crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
       };
-
+      // eslint-disable-next-line max-len
+      const parameters = { action: updateData['security:disableLinkSharing'] ? SupportedAction.ACTION_ADMIN_REJECT_SHARE_LINK : SupportedAction.ACTION_ADMIN_PERMIT_SHARE_LINK };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
