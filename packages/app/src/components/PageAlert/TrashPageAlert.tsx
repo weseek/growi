@@ -1,10 +1,11 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import {
-  useCurrentUpdatedAt, useIsTrashPage, useShareLinkId, useLastUpdateUsername, useDeletedAt, useRevisionId,
+  useCurrentUpdatedAt, useIsTrashPage, useShareLinkId,
 } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
@@ -25,9 +26,6 @@ export const TrashPageAlert = (): JSX.Element => {
   const { data: shareLinkId } = useShareLinkId();
   const { data: pageData } = useSWRxCurrentPage();
   const { data: isTrashPage } = useIsTrashPage();
-  const { data: lastUpdateUserName } = useLastUpdateUsername();
-  const { data: deletedAt } = useDeletedAt();
-  const { data: revisionId } = useRevisionId();
   const pageId = pageData?._id;
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -36,6 +34,10 @@ export const TrashPageAlert = (): JSX.Element => {
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
+
+  const lastUpdateUserName = pageData?.lastUpdateUser.name;
+  const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
+  const revisionId = pageData?.revision._id;
 
   if (!isTrashPage) {
     return <></>;

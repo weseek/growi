@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { format } from 'date-fns';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -42,7 +41,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId, useLastUpdateUsername, useDeletedAt, useRevisionId,
+  useCurrentPageId,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -59,10 +58,6 @@ type Props = CommonProps & {
   currentUser: string,
 
   pageWithMetaStr: string,
-  lastUpdateUserName: string,
-  deletedAt: string,
-  revisionId: string,
-  currentPagePath: string,
   // pageUser?: any,
   // redirectTo?: string;
   // redirectFrom?: string;
@@ -115,9 +110,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
-  useLastUpdateUsername(props.lastUpdateUserName);
-  useDeletedAt(props.deletedAt);
-  useRevisionId(props.revisionId);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -257,12 +249,8 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
+  await (page as unknown as PageModel).populateDataToShowRevision();
   props.pageWithMetaStr = JSON.stringify(result);
-
-  const populatedPage = await (page as unknown as PageModel).populateDataToShowRevision();
-  props.lastUpdateUserName = populatedPage.lastUpdateUser.name;
-  props.deletedAt = page.deletedAt ? format(page.deletedAt, 'yyyy/MM/dd HH:mm') : '';
-  props.revisionId = populatedPage.revision._id.toString();
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
