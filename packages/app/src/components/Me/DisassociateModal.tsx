@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,18 +8,14 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IExternalAccount } from '~/interfaces/external-account';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 type Props = {
-  appContainer: AppContainer,
   isOpen: boolean,
   onClose: () => void,
   accountForDisassociate: IExternalAccount,
-  mutatePersonalExternalAccounts?: () => void,
-  disassociateLdapAccount?: (account: { providerType: string, accountId: string }) => void,
 }
 
 
@@ -31,7 +27,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
 
   const { providerType, accountId } = props.accountForDisassociate;
 
-  const disassociateAccountHandler = async() => {
+  const disassociateAccountHandler = useCallback(async() => {
 
     try {
       await disassociateLdapAccount({ providerType, accountId });
@@ -45,7 +41,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
     if (mutatePersonalExternalAccounts != null) {
       mutatePersonalExternalAccounts();
     }
-  };
+  }, [accountId, disassociateLdapAccount, mutatePersonalExternalAccounts, props, providerType, t]);
 
   return (
     <Modal isOpen={props.isOpen} toggle={props.onClose}>
