@@ -27,16 +27,24 @@ const AssociateModal = (props: Props): JSX.Element => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const closeModalHandler = useCallback(() => {
+    onClose();
+    setUsername('');
+    setPassword('');
+  }, [onClose]);
+
 
   const clickAddLdapAccountHandler = useCallback(() => {
     associateLdapAccount({ username, password });
     mutatePersonalExternalAccounts();
 
-    onClose();
-  }, [associateLdapAccount, mutatePersonalExternalAccounts, onClose, password, username]);
+    closeModalHandler();
+
+  }, [associateLdapAccount, closeModalHandler, mutatePersonalExternalAccounts, password, username]);
+
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} size="lg" data-testid="grw-associate-modal">
+    <Modal isOpen={isOpen} toggle={closeModalHandler} size="lg" data-testid="grw-associate-modal">
       <ModalHeader className="bg-primary text-light" toggle={onClose}>
         { t('admin:user_management.create_external_account') }
       </ModalHeader>
