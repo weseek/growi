@@ -1,15 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCurrentPageId } from '~/stores/context';
-import { useSWRxPageInfo } from '~/stores/page';
+import { useIsLatestRevision } from '~/stores/context';
 
 export const OldRevisionAlert = (): JSX.Element => {
 
   const { t } = useTranslation()
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: pageInfo } = useSWRxPageInfo(currentPageId);
+  const { data: isLatestRevision } = useIsLatestRevision();
 
-  if (pageInfo == null || pageInfo.isLatestRevision) {
+  if (isLatestRevision == null || isLatestRevision) {
     return <></>
   }
 
