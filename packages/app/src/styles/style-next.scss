@@ -1,10 +1,4 @@
-// @import 'mixins';
-
-// vendor
-@import 'vendor';
-
-// override bootstrap
-@import 'override-bootstrap';
+@import './bootstrap/apply';
 
 // // override codemirror
 // @import 'override-codemirror';
