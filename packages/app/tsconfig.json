@@ -7,7 +7,6 @@
       "^/*": ["./*"],
       "@growi/*": ["../*/src"],
       "debug": ["./src/server/utils/logger/alias-for-debug"],
-      // "jquery-ui":["node_modules/@types/jqueryui/index"]
     }
   }
 }

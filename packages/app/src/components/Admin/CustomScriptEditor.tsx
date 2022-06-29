@@ -61,3 +61,5 @@ const CustomScriptEditor = (props: Props): JSX.Element => {
     />
   );
 };
+
+export default CustomScriptEditor;
