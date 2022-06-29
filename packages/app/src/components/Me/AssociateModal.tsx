@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -28,12 +28,12 @@ const AssociateModal = (props: Props): JSX.Element => {
   const [password, setPassword] = useState('');
 
 
-  const clickAddLdapAccountHandler = () => {
+  const clickAddLdapAccountHandler = useCallback(() => {
     associateLdapAccount({ username, password });
     mutatePersonalExternalAccounts();
 
     onClose();
-  };
+  }, [associateLdapAccount, mutatePersonalExternalAccounts, onClose, password, username]);
 
   return (
     <Modal isOpen={isOpen} toggle={onClose} size="lg" data-testid="grw-associate-modal">
