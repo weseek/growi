@@ -34,8 +34,8 @@ const AssociateModal = (props: Props): JSX.Element => {
   }, [onClose]);
 
 
-  const clickAddLdapAccountHandler = useCallback(() => {
-    associateLdapAccount({ username, password });
+  const clickAddLdapAccountHandler = useCallback(async() => {
+    await associateLdapAccount({ username, password });
     mutatePersonalExternalAccounts();
 
     closeModalHandler();
