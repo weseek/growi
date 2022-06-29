@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { format } from 'date-fns';
+import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -16,11 +18,11 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
+import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
-import Xss from '~/services/xss';
-import { format } from 'date-fns';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -40,14 +42,13 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId, useLastUpdateUsername, useDeletedAt, useRevisionId
+  useCurrentPageId, useLastUpdateUsername, useDeletedAt, useRevisionId,
 } from '../stores/context';
-
-import { useXss } from '../stores/xss'
+import { useXss } from '../stores/xss';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
-import { PageModel } from '~/server/models/page';
-import { isValidObjectId } from 'mongoose';
+
+
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -100,7 +101,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
-  useXss(new Xss())
+  useXss(new Xss());
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
@@ -143,7 +144,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
-  useCurrentPageId(pageWithMeta?.data._id)
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
@@ -241,16 +242,15 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const { currentPathname } = props;
 
   // determine pageId
-  let pageId;
   const pageIdStr = currentPathname.substring(1);
-  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
 
 
   if (page == null) {
-    const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
+    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
     props.isForbidden = count > 0;
     props.isNotFound = true;
@@ -261,7 +261,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   const populatedPage = await (page as unknown as PageModel).populateDataToShowRevision();
   props.lastUpdateUserName = populatedPage.lastUpdateUser.name;
-  props.deletedAt = page.deletedAt ? format(page.deletedAt, 'yyyy/MM/dd HH:mm') : ''
+  props.deletedAt = page.deletedAt ? format(page.deletedAt, 'yyyy/MM/dd HH:mm') : '';
   props.revisionId = populatedPage.revision._id.toString();
 }
 

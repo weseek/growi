@@ -3,12 +3,14 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useCurrentUpdatedAt, useIsTrashPage, useShareLinkId, useLastUpdateUsername, useDeletedAt, useRevisionId } from '~/stores/context';
+import {
+  useCurrentUpdatedAt, useIsTrashPage, useShareLinkId, useLastUpdateUsername, useDeletedAt, useRevisionId,
+} from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
-const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+const onDeletedHandler = (pathOrPathsToDelete) => {
   if (typeof pathOrPathsToDelete !== 'string') {
     return;
   }
@@ -16,7 +18,7 @@ const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
   window.location.href = '/';
 };
 
-export const TrashPageAlert = () => {
+export const TrashPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
@@ -26,8 +28,8 @@ export const TrashPageAlert = () => {
   const { data: lastUpdateUserName } = useLastUpdateUsername();
   const { data: deletedAt } = useDeletedAt();
   const { data: revisionId } = useRevisionId();
-  const pageId  = pageData?._id;
-  const pagePath = pageData?.path
+  const pageId = pageData?._id;
+  const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
@@ -36,22 +38,22 @@ export const TrashPageAlert = () => {
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
   if (!isTrashPage) {
-    return <></>
+    return <></>;
   }
 
   function openPutbackPageModalHandler() {
-    if ( pageId == undefined || pagePath == undefined ) {
-      return
+    if (pageId === undefined || pagePath === undefined) {
+      return;
     }
-    const putBackedHandler = (path) => {
+    const putBackedHandler = () => {
       window.location.reload();
     };
-    openPutBackPageModal({pageId, path: pagePath}, { onPutBacked: putBackedHandler });
+    openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
   }
 
   function openPageDeleteModalHandler() {
-    if ( pageId == undefined || revisionId == undefined || pagePath == undefined ) {
-      return
+    if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
+      return;
     }
     const pageToDelete = {
       data: {
@@ -105,4 +107,3 @@ export const TrashPageAlert = () => {
     </>
   );
 };
-
