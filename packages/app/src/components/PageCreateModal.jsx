@@ -5,7 +5,7 @@ import React, {
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 

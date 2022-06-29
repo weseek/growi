@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
 import { useCurrentUpdatedAt, useIsTrashPage, useShareLinkId } from '~/stores/context';

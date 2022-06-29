@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -172,7 +172,7 @@ class MyDraftList extends React.Component {
 }
 
 MyDraftList.propTypes = {
-  t: PropTypes.func.isRequired, // react-i18next
+  t: PropTypes.func.isRequired, // i18next
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,

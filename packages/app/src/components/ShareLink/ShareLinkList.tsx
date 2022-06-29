@@ -1,7 +1,7 @@
 import React from 'react';
 
 import dateFnsFormat from 'date-fns/format';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import CopyDropdown from '../Page/CopyDropdown';
 

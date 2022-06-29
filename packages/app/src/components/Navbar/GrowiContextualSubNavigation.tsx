@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';

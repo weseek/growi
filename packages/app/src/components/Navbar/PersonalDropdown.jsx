@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';

@@ -2,7 +2,7 @@ import React from 'react';
 
 import i18next from 'i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { localeMetadatas } from '~/client/util/i18n';
 import { useCsrfToken } from '~/stores/context';

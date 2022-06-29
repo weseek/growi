@@ -2,7 +2,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { useCsrfToken } from '~/stores/context';

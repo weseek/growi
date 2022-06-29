@@ -1,7 +1,7 @@
 import React, {
   FC, useState, useCallback, useRef,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import assert from 'assert';
 
 import AppContainer from '~/client/services/AppContainer';

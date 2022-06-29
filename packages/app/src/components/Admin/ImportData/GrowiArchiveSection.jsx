@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import * as toastr from 'toastr';
 
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';

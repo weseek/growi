@@ -2,7 +2,7 @@ import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';

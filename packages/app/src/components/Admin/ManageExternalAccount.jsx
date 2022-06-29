@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import AppContainer from '~/client/services/AppContainer';
