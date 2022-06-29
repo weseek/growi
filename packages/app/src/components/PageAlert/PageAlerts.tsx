@@ -1,6 +1,9 @@
-import { FixPageGrantAlert } from "./FixPageGrantAlert";
-import { PageGrantAlert } from "./PageGrantAlert";
-import { PageStaleAlert } from "./PageStaleAlert";
+import React from 'react';
+
+import { FixPageGrantAlert } from './FixPageGrantAlert';
+import { OldRevisionAlert } from './OldRevisionAlert';
+import { PageGrantAlert } from './PageGrantAlert';
+import { PageStaleAlert } from './PageStaleAlert';
 
 export const PageAlerts = (): JSX.Element => {
 
@@ -9,10 +12,11 @@ export const PageAlerts = (): JSX.Element => {
     <div className="row d-edit-none">
       <div className="col-sm-12">
         {/* alerts */}
-        <FixPageGrantAlert/>
-        <PageGrantAlert/>
-        <PageStaleAlert/>
+        <FixPageGrantAlert />
+        <PageGrantAlert />
+        <PageStaleAlert />
+        <OldRevisionAlert />
       </div>
     </div>
   );
-}
+};
