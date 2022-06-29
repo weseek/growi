@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
@@ -22,6 +22,10 @@ type GrowiAppProps = AppProps & {
 
 function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useI18nextHMR(isDev);
+
+  useEffect(() => {
+    import('bootstrap/dist/js/bootstrap');
+  }, []);
 
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
