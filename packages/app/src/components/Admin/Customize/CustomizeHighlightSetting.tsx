@@ -42,6 +42,7 @@ const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
     </pre>
   );
 });
+HljsDemo.displayName = 'HljsDemo';
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;

@@ -188,6 +188,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     {
                       applicableGroups != null && applicableGroups.map(g => (
                         <button
+                          key={g._id}
                           className="dropdown-item"
                           type="button"
                           onClick={() => setSelectedGroup(g)}

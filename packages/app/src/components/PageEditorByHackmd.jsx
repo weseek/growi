@@ -43,7 +43,7 @@ class PageEditorByHackmd extends React.Component {
     this.penpalErrorOccuredHandler = this.penpalErrorOccuredHandler.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 

@@ -32,7 +32,7 @@ class MyDraftList extends React.Component {
     this.clearAllDrafts = this.clearAllDrafts.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     await this.getDraftsFromLocalStorage();
     this.getCurrentDrafts(1);
   }

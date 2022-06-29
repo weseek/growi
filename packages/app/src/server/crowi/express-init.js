@@ -2,7 +2,7 @@ import csrf from 'csurf';
 import mongoose from 'mongoose';
 
 
-import { allLocales, localePath } from '~/next-i18next.config';
+// import { i18n, localePath } from '~/next-i18next.config';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -19,10 +19,10 @@ module.exports = function(crowi, app) {
   const mongoSanitize = require('express-mongo-sanitize');
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
-  const i18next = require('i18next');
-  const i18nFsBackend = require('i18next-node-fs-backend');
-  const i18nSprintf = require('i18next-sprintf-postprocessor');
-  const i18nMiddleware = require('i18next-express-middleware');
+  // const i18next = require('i18next');
+  // const i18nFsBackend = require('i18next-node-fs-backend');
+  // const i18nSprintf = require('i18next-sprintf-postprocessor');
+  // const i18nMiddleware = require('i18next-express-middleware');
 
   const promster = require('../middlewares/promster')(crowi, app);
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
@@ -30,34 +30,34 @@ module.exports = function(crowi, app) {
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
-  const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
+  // const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
 
   const csrfGuard = require('../middlewares/csrf-guard');
 
   const env = crowi.node_env;
 
-  const lngDetector = new i18nMiddleware.LanguageDetector();
-  lngDetector.addDetector(i18nUserSettingDetector);
+  // const lngDetector = new i18nMiddleware.LanguageDetector();
+  // lngDetector.addDetector(i18nUserSettingDetector);
 
-  i18next
-    .use(lngDetector)
-    .use(i18nFsBackend)
-    .use(i18nSprintf)
-    .init({
-      // debug: true,
-      fallbackLng: ['en_US'],
-      whitelist: allLocales,
-      backend: {
-        loadPath: `${localePath}/{{lng}}/translation.json`,
-      },
-      detection: {
-        order: ['userSettingDetector', 'header', 'navigator'],
-      },
-      overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
+  // i18next
+  //   .use(lngDetector)
+  //   .use(i18nFsBackend)
+  //   .use(i18nSprintf)
+  //   .init({
+  //     // debug: true,
+  //     fallbackLng: ['en_US'],
+  //     whitelist: i18n.locales,
+  //     backend: {
+  //       loadPath: `${localePath}/{{lng}}/translation.json`,
+  //     },
+  //     detection: {
+  //       order: ['userSettingDetector', 'header', 'navigator'],
+  //     },
+  //     overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
 
-      // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
-      nsSeparator: '::',
-    });
+  //     // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
+  //     nsSeparator: '::',
+  //   });
 
   app.use(compression());
 
@@ -85,10 +85,6 @@ module.exports = function(crowi, app) {
     res.locals.now = now;
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
-      userStatus: User.getUserStatusLabels(),
-      language:   allLocales,
-      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
-      registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
     res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
@@ -156,5 +152,5 @@ module.exports = function(crowi, app) {
   app.use(middlewares.swigFilters(swig));
   app.use(middlewares.swigFunctions());
 
-  app.use(i18nMiddleware.handle(i18next));
+  // app.use(i18nMiddleware.handle(i18next));
 };

@@ -39,7 +39,7 @@ class ElasticsearchManagement extends React.Component {
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_UNSAFE_componentWillMount() {
     this.retrieveIndicesStatus();
   }
 

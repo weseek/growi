@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -16,6 +17,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
+import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -41,8 +43,6 @@ import {
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
-import { PageModel } from '~/server/models/page';
-import { isValidObjectId } from 'mongoose';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -227,15 +227,14 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const { currentPathname } = props;
 
   // determine pageId
-  let pageId;
   const pageIdStr = currentPathname.substring(1);
-  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
 
   if (page == null) {
-    const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
+    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
     props.isForbidden = count > 0;
     props.isNotFound = true;
