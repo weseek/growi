@@ -16,6 +16,9 @@ import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 
+import './GrowiNavbar.scss';
+
+
 const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
   return isServer()
     ? <></>

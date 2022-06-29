@@ -1,16 +1,19 @@
+@use '~bootstrap/scss/variables' as *;
+@use '~bootstrap/scss/mixins' as bsMixins;
+
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
 
-  @include media-breakpoint-only(sm) {
+  @include bsMixins.media-breakpoint-only(sm) {
     font-size: #{$basesize * 0.7};
   }
-  @include media-breakpoint-only(md) {
+  @include bsMixins.media-breakpoint-only(md) {
     font-size: #{$basesize * 0.8};
   }
-  @include media-breakpoint-only(lg) {
+  @include bsMixins.media-breakpoint-only(lg) {
     font-size: #{$basesize * 0.9};
   }
-  @include media-breakpoint-up(xl) {
+  @include bsMixins.media-breakpoint-up(xl) {
     font-size: $basesize;
   }
 }
