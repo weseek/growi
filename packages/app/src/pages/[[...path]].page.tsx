@@ -253,17 +253,22 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
-  await (page as unknown as PageModel).populateDataToShowRevision();
-  props.pageWithMetaStr = JSON.stringify(result);
-
   // checks if revision is latest
   const revisionId = searchParams.get('revision');
-  if(revisionId == null ) {
+
+  // Todo: should check if the specified revisionId actually exist in DB.
+  // if true, replacing page.revision with old revision should be done when populating Revision
+  const isSpecifiedRevisionExist = true; // dummy
+  if(revisionId == null || isSpecifiedRevisionExist ) {
     props.isLatestRevision = true;
   }
   else {
     props.isLatestRevision = page.revision == revisionId;
   }
+
+  await (page as unknown as PageModel).populateDataToShowRevision();
+  props.pageWithMetaStr = JSON.stringify(result);
+
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
