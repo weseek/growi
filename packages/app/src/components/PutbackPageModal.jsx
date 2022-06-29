@@ -9,6 +9,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { PathAlreadyExistsError } from '~/server/models/errors';
 import { usePutBackPageModal } from '~/stores/modal';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -24,6 +25,8 @@ const PutBackPageModal = () => {
   const [targetPath, setTargetPath] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
+
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   function changeIsPutbackRecursivelyHandler() {
     setIsPutbackRecursively(!isPutbackRecursively);
@@ -45,6 +48,7 @@ const PutBackPageModal = () => {
       if (onPutBacked != null) {
         onPutBacked(response.page.path);
       }
+      mutatePageInfo();
       closePutBackPageModal();
     }
     catch (err) {
