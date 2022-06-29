@@ -83,51 +83,35 @@ context('Search all pages', () => {
 
   it(`Search all pages by word is successfully loaded`, () => {
     const searchText = 'help';
-    const tag = 'help'
-    cy.visit('/Sandbox');
-    // Add tag
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
-    cy.get('#edit-tag-modal').should('be.visible');
 
-    cy.get('#edit-tag-modal').within(() => {
-      cy.get('.rbt-input-main').type(tag).trigger('change');
-      cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
-      cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
-      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
-    });
-
-    cy.get('#edit-tag-modal').within(() => {
-      cy.get('div.modal-footer > button').click();
-    });
-
-    // Access "/Sandbox" instead of "/", because "/"" can't be renamed (test rename page modal)
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.get('.rbt-input').click();
     cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}search-input-focused`);
+      cy.screenshot(`${ssPrefix}1-search-input-focused`);
     })
 
     cy.get('.rbt-input-main').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text`, { capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
-    cy.screenshot(`${ssPrefix}press-enter`, { capture: 'viewport'});
+
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu`, {capture: 'viewport'});
+    cy.getByTestid('open-page-item-control-btn').eq(1).click();
+    cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
-    cy.getByTestid('add-remove-bookmark-btn').first().click({force: true});
+    cy.getByTestid('add-remove-bookmark-btn').click({force: true});
     cy.get('.btn-bookmark.active').should('be.visible');
-    cy.screenshot(`${ssPrefix}add-bookmark`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}5-add-bookmark`, {capture: 'viewport'});
 
     // Duplicate page
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
     cy.getByTestid('page-duplicate-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}duplicate-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}6-duplicate-page`, {capture: 'viewport'});
 
     // Close Modal
     cy.get('body').type('{esc}');
@@ -135,7 +119,7 @@ context('Search all pages', () => {
     // Move / Rename Page
     cy.getByTestid('open-page-move-rename-modal-btn').first().click({force: true});
     cy.getByTestid('page-rename-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}move-rename-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}7-move-rename-page`, {capture: 'viewport'});
 
     // Close Modal
     cy.get('body').type('{esc}');
@@ -143,27 +127,78 @@ context('Search all pages', () => {
     // Delete page
     cy.getByTestid('open-page-delete-modal-btn').first().click({ force: true});
     cy.getByTestid('page-delete-modal').should('be.visible');
-    cy.screenshot(`${ssPrefix}delete-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}8-delete-page`, {capture: 'viewport'});
   });
 
   it(`Search all pages by tag is successfully loaded `, () => {
     const tag = 'help';
     const searchText = `tag:${tag}`;
+    cy.visit('/Sandbox');
+    // Add tag
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
+    cy.get('#edit-tag-modal').should('be.visible');
+
+    cy.get('#edit-tag-modal').within(() => {
+      cy.get('.rbt-input-main').type(tag);
+      cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
+      cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
+      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
+    });
 
     cy.visit('/');
     cy.get('.rbt-input').click();
     cy.get('.rbt-input-main').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}insert-search-text-with-tag`, { capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}search-with-tag-result`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
     cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.screenshot(`${ssPrefix}click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}3-click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
+  });
+  it('Successfully order page search results by tag', () => {
+    const tag = 'help';
+
+    cy.visit('/Sandbox');
+    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
+
+    cy.get('.grw-search-page-nav').within(() => {
+      cy.get('button.dropdown-toggle').first().click({force: true});
+      cy.get('.dropdown-menu-right').should('be.visible');
+      cy.get('.dropdown-menu-right > button:nth-child(1)').click({force: true});
+    });
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}2-tag-order-by-relevance`);
+
+    cy.get('.grw-search-page-nav').within(() => {
+      cy.get('button.dropdown-toggle').first().click({force: true});
+      cy.get('.dropdown-menu-right').should('be.visible');
+      cy.get('.dropdown-menu-right > button:nth-child(2)').click({force: true});
+    });
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}3-tag-order-by-creation-date`);
+
+    cy.get('.grw-search-page-nav').within(() => {
+      cy.get('button.dropdown-toggle').first().click({force: true});
+      cy.get('.dropdown-menu-right').should('be.visible');
+      cy.get('.dropdown-menu-right > button:nth-child(3)').click({force: true});
+    });
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
 });
