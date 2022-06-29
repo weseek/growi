@@ -1,6 +1,6 @@
+import csrf from 'csurf';
 import mongoose from 'mongoose';
 
-import csrf from 'csurf';
 
 import { allLocales, localePath } from '~/next-i18next.config';
 
@@ -32,6 +32,8 @@ module.exports = function(crowi, app) {
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
 
+  const csrfGuard = require('../middlewares/csrf-guard');
+
   const env = crowi.node_env;
 
   const lngDetector = new i18nMiddleware.LanguageDetector();
@@ -59,6 +61,8 @@ module.exports = function(crowi, app) {
 
   app.use(compression());
 
+  app.use(csrfGuard());
+
   app.use(helmet({
     contentSecurityPolicy: false,
     expectCt: false,
@@ -75,10 +79,6 @@ module.exports = function(crowi, app) {
     const Config = mongoose.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-
     res.locals.req = req;
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
@@ -93,10 +93,6 @@ module.exports = function(crowi, app) {
     res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();
-  });
-
-  app.options('*', (req, res) => {
-    res.sendStatus(200);
   });
 
   app.set('port', crowi.port);
