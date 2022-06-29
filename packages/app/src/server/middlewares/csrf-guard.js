@@ -8,6 +8,8 @@ module.exports = () => {
   return async(req, res, next) => {
     if (req.method === 'PUT' || req.method === 'POST') {
       console.log('PUT or POST');
+      console.log(req.rawHeaders);
+      // if (req.rawHeaders.includes(''))
     }
     if (req.method === 'GET') {
       console.log('GET');
