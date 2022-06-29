@@ -259,6 +259,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   // Todo: should check if the specified revisionId actually exist in DB.
   // if true, replacing page.revision with old revision should be done when populating Revision
   const isSpecifiedRevisionExist = true; // dummy
+
   if(revisionId == null || isSpecifiedRevisionExist ) {
     props.isLatestRevision = true;
   }
