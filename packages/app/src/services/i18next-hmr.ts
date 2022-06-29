@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
+import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-
-const isServer = typeof window === 'undefined';
 
 export const useI18nextHMR = (isDev: boolean): void => {
   const { i18n } = useTranslation();
@@ -19,7 +18,7 @@ export const useI18nextHMR = (isDev: boolean): void => {
     return;
   }
 
-  if (isServer) {
+  if ((isServer())) {
     import('i18next-hmr/server').then(({ applyServerHMR }) => {
       applyServerHMR(i18n);
     });
