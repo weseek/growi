@@ -34,7 +34,7 @@ import { BasicLayout } from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage,
+  useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
@@ -62,6 +62,7 @@ type Props = CommonProps & {
   // redirectFrom?: string;
 
   // shareLinkId?: string;
+  isLatestRevision: boolean
 
   isForbidden: boolean,
   isNotFound: boolean,
@@ -102,6 +103,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useCurrentPagePath(props.currentPathname);
+  useIsLatestRevision(props.isLatestRevision)
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
@@ -227,9 +229,13 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const Page = crowi.model('Page');
   const { pageService } = crowi;
 
-  const { user } = req;
+  const { user, originalUrl } = req;
 
   const { currentPathname } = props;
+
+  // retrieve query params
+  const url = new URL(originalUrl, props.siteUrl)
+  const searchParams = new URLSearchParams(url.search);
 
   // determine pageId
   let pageId;
@@ -249,6 +255,15 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   await (page as unknown as PageModel).populateDataToShowRevision();
   props.pageWithMetaStr = JSON.stringify(result);
+
+  // checks if revision is latest
+  const revisionId = searchParams.get('revision');
+  if(revisionId == null ) {
+    props.isLatestRevision = true;
+  }
+  else {
+    props.isLatestRevision = page.revision == revisionId;
+  }
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
