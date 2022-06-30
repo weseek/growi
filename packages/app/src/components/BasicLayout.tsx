@@ -49,14 +49,6 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
       <ShortcutsModal />
       <SystemVersion />
-
-
-      {/* Link test */}
-      <Link href="/629581929e61e2a5fe4c64a5">
-        <a>/629581929e61e2a5fe4c64a5</a>
-      </Link>
-      <br />
-      <a href="https://www.google.com/">https://www.google.com/</a>
     </>
   );
 };
