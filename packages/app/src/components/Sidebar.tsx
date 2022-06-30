@@ -24,7 +24,8 @@ const sidebarFixedWidthInDrawerMode = 320;
 
 
 const GlobalNavigation = () => {
-  const { data: isDrawerMode } = useDrawerMode();
+  // const { data: isDrawerMode } = useDrawerMode();
+  const isDrawerMode = false;
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
