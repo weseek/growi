@@ -11,7 +11,6 @@
       data-path="{{ encodeURI(path) }}"
       data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
       data-page-is-not-creatable="true"
-      data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
       data-identical-path="true"
     >
       <div class="flex-grow-1 flex-basis-0 mw-0">
