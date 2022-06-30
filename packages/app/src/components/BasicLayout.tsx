@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { GrowiNavbar } from './Navbar/GrowiNavbar';
 // import GrowiNavbarBottom from './Navbar/GrowiNavbarBottom';
 import { RawLayout } from './RawLayout';
+import Sidebar from './Sidebar';
 
 
 type Props = {
@@ -15,7 +16,6 @@ type Props = {
 
 export const BasicLayout = ({ children, title, className }: Props): JSX.Element => {
 
-  // const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
   // const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
   const ShortcutsModal = dynamic(() => import('./ShortcutsModal'), { ssr: false });
@@ -28,8 +28,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
         <div className="page-wrapper d-flex d-print-block">
           <div className="grw-sidebar-wrapper">
-            {/* <Sidebar /> */}
-            Sidebar
+            <Sidebar />
           </div>
 
           <div className="flex-fill mw-0">
