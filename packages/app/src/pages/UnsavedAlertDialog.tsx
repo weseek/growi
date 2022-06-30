@@ -1,8 +1,10 @@
-import React, {useCallback, useEffect} from 'react';
-import {useUnsavedWarning } from '~/stores/editor'
+import { useCallback, useEffect } from 'react';
+
 import { useRouter } from 'next/router';
 
-const unsavedAlertMsg = 'Changes you made may not be saved.'
+import { useUnsavedWarning } from '~/stores/editor';
+
+const unsavedAlertMsg = 'Changes you made may not be saved.';
 
 const UnsavedAlertDialog = (): void => {
   const router = useRouter();
@@ -13,18 +15,18 @@ const UnsavedAlertDialog = (): void => {
     showAlertDialog(unsavedAlertMsg);
     e.returnValue = '';
     return;
-  },[]);
+  }, [showAlertDialog]);
 
   /*
-  *  Route changes by Browser
-  *　Example: window.location.href, F5
+  * Route changes by Browser
+  * Example: window.location.href, F5
   */
   useEffect(() => {
     window.addEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
     return () => {
       window.removeEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
     };
-  }, []);
+  }, [showAlertDialogForRouteChangesByBrowser]);
 
 
   /*
@@ -32,11 +34,11 @@ const UnsavedAlertDialog = (): void => {
   * https://nextjs.org/docs/api-reference/next/router
   */
   useEffect(() => {
-    router.events.on('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
+    router.events.on('routeChangeStart', () => showAlertDialog(unsavedAlertMsg));
     return () => {
-      router.events.off('routeChangeStart', () => showAlertDialog(unsavedAlertMsg))
+      router.events.off('routeChangeStart', () => showAlertDialog(unsavedAlertMsg));
     };
-  }, []);
+  }, [router.events, showAlertDialog]);
 
 
   return;
