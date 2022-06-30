@@ -984,7 +984,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/OidcAuthSetting'
    */
-  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
@@ -1029,6 +1029,8 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_OIDC_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
