@@ -216,6 +216,7 @@
     "markdown-it-task-checkbox": "^1.0.6",
     "markdown-it-toc-and-anchor-with-slugid": "^1.1.4",
     "markdown-table": "^1.1.1",
+    "material-icons": "^1.11.3",
     "mini-css-extract-plugin": "^2.6.1",
     "morgan": "^1.10.0",
     "node-dev": "^4.0.0",
