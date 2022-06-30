@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { EditorConfiguration } from 'codemirror';
+import { IUnControlledCodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
 
 require('codemirror/addon/lint/javascript-lint');
 require('codemirror/addon/hint/javascript-hint');
@@ -12,9 +13,24 @@ require('~/client/util/codemirror/autorefresh.ext');
 
 require('jquery-ui/ui/widgets/resizable');
 
-type MyUnControlled = typeof React.Component;
+// type MyUnControlled = typeof React.Component;
 
-const UnControlled2 = CodeMirror as MyUnControlled;
+// const UnControlled2 = CodeMirror as MyUnControlled;
+
+interface IMyUnControlledCodeMirror extends IUnControlledCodeMirror {
+  options?: EditorConfiguration & {
+    autoRefresh: { force: boolean }
+    matchBrackets?: boolean
+    autoCloseBrackets?: boolean
+  }
+  autoFocus?: boolean
+}
+declare class CodeMirrorAlpha extends React.Component<IMyUnControlledCodeMirror, any> {
+}
+
+type MyUnControled = typeof CodeMirrorAlpha
+
+const CodeMirror2 = CodeMirror as unknown as MyUnControled;
 
 type Props = {
   value: string,
@@ -26,7 +42,7 @@ const CustomScriptEditor = (props: Props): JSX.Element => {
   const { value, onChange } = props;
 
   return (
-    <UnControlled2
+    <CodeMirror2
       value={value}
       detach
       autoFocus
