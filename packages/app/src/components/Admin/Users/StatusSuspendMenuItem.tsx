@@ -20,6 +20,7 @@ const SuspendAlert = React.memo((): JSX.Element => {
   );
 });
 
+SuspendAlert.displayName = 'SuspendAlert';
 
 type Props = {
   adminUsersContainer: AdminUsersContainer,
