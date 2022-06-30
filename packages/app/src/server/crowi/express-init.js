@@ -1,6 +1,7 @@
 import csrf from 'csurf';
 import mongoose from 'mongoose';
 
+import csrfGuard from '../middlewares/csrf-guard';
 
 // import { i18n, localePath } from '~/next-i18next.config';
 
@@ -128,7 +129,6 @@ module.exports = function(crowi, app) {
     sessionMiddleware(req, res, next);
   });
 
-  const csrfGuard = require('../middlewares/csrf-guard');
   app.use(csrfGuard());
 
   // csurf should be initialized after express-session
