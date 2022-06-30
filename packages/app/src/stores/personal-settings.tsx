@@ -1,4 +1,4 @@
-import useSWR, { mutate, SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
@@ -19,6 +19,7 @@ export type IPersonalSettingsInfoOption = {
   sync: () => void,
   updateBasicInfo: () => Promise<void>,
   associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
+  disassociateLdapAccount: (account: { providerType: string, accountId: string }) => Promise<void>,
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
@@ -58,11 +59,16 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     await apiv3Put('/personal-setting/associate-ldap', account);
   };
 
+  const disassociateLdapAccount = async(account): Promise<void> => {
+    await apiv3Put('/personal-setting/disassociate-ldap', account);
+  };
+
   return {
     ...swrResult,
     sync,
     updateBasicInfo,
     associateLdapAccount,
+    disassociateLdapAccount,
   };
 };
 
