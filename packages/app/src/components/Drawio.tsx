@@ -7,13 +7,10 @@ import EventEmitter from 'events';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
+import { CustomWindow } from '~/interfaces/global';
+import { IGraphViewer } from '~/interfaces/graph-viewer';
+
 import NotAvailableForGuest from './NotAvailableForGuest';
-
-
-declare const globalEmitter: EventEmitter;
-declare const GraphViewer: {
-  createViewerForElement: (Element) => void,
-};
 
 type Props = {
   drawioContent: string,
@@ -31,10 +28,13 @@ const Drawio = (props: Props): JSX.Element => {
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
+  const globalEmitter: EventEmitter = useMemo(() => (window as CustomWindow).globalEmitter, []);
+  const GraphViewer: IGraphViewer = useMemo(() => (window as CustomWindow).GraphViewer, []);
+
   const editButtonClickHandler = useCallback(() => {
     const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
     globalEmitter.emit('launchDrawioModal', beginLineNumber, endLineNumber);
-  }, [rangeLineNumberOfMarkdown]);
+  }, [rangeLineNumberOfMarkdown, globalEmitter]);
 
   const renderDrawio = useCallback(() => {
     if (drawioContainerRef.current == null) {
@@ -51,7 +51,7 @@ const Drawio = (props: Props): JSX.Element => {
         GraphViewer.createViewerForElement(div);
       }
     }
-  }, []);
+  }, [GraphViewer]);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
@@ -61,7 +61,7 @@ const Drawio = (props: Props): JSX.Element => {
     }
 
     renderDrawioWithDebounce();
-  }, [renderDrawioWithDebounce]);
+  }, [renderDrawioWithDebounce, GraphViewer]);
 
   return (
     <div className="editable-with-drawio position-relative">

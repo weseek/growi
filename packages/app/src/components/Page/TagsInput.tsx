@@ -38,11 +38,10 @@ const TagsInput: FC<Props> = (props: Props) => {
   const searchHandler = useCallback(async(query: string) => {
     const tagsSearchData = tagsSearch?.tags || [];
     setSearchQuery(query);
-
-    tagsSearchData.unshift(searchQuery);
+    tagsSearchData.unshift(query);
     setResultTags(Array.from(new Set(tagsSearchData)));
 
-  }, [searchQuery, tagsSearch?.tags]);
+  }, [tagsSearch?.tags]);
 
   const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
     if (event.key === ' ') {
