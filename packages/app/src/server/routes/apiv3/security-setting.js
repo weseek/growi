@@ -826,7 +826,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LdapAuthSetting'
    */
-  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
@@ -859,6 +859,8 @@ module.exports = (crowi) => {
         ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
         ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_LDAP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
