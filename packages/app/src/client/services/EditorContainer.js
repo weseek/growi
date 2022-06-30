@@ -21,8 +21,6 @@ export default class EditorContainer extends Container {
       tags: null,
     };
 
-    this.isSetBeforeunloadEventHandler = false;
-
     this.initDrafts();
 
   }
