@@ -23,60 +23,60 @@ const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
 
-const GlobalNavigation = () => {
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: currentContents } = useCurrentSidebarContents();
-  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
+// const GlobalNavigation = () => {
+//   const { data: isDrawerMode } = useDrawerMode();
+//   const { data: currentContents } = useCurrentSidebarContents();
+//   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
-  const { scheduleToPut } = useUserUISettings();
+//   const { scheduleToPut } = useUserUISettings();
 
-  const itemSelectedHandler = useCallback((selectedContents) => {
-    if (isDrawerMode) {
-      return;
-    }
+//   const itemSelectedHandler = useCallback((selectedContents) => {
+//     if (isDrawerMode) {
+//       return;
+//     }
 
-    let newValue = false;
+//     let newValue = false;
 
-    // already selected
-    if (currentContents === selectedContents) {
-      // toggle collapsed
-      newValue = !isCollapsed;
-    }
+//     // already selected
+//     if (currentContents === selectedContents) {
+//       // toggle collapsed
+//       newValue = !isCollapsed;
+//     }
 
-    mutateSidebarCollapsed(newValue, false);
-    scheduleToPut({ isSidebarCollapsed: newValue });
+//     mutateSidebarCollapsed(newValue, false);
+//     scheduleToPut({ isSidebarCollapsed: newValue });
 
-  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
+//   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
-  return <SidebarNav onItemSelected={itemSelectedHandler} />;
-};
+//   return <SidebarNav onItemSelected={itemSelectedHandler} />;
+// };
 
-const SidebarContentsWrapper = () => {
-  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+// const SidebarContentsWrapper = () => {
+//   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
-  const calcViewHeight = useCallback(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    return elem != null
-      ? window.innerHeight - elem?.getBoundingClientRect().top
-      : window.innerHeight;
-  }, []);
+//   const calcViewHeight = useCallback(() => {
+//     const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+//     return elem != null
+//       ? window.innerHeight - elem?.getBoundingClientRect().top
+//       : window.innerHeight;
+//   }, []);
 
-  return (
-    <>
-      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-        <StickyStretchableScroller
-          simplebarRef={mutateSidebarScroller}
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeight={calcViewHeight}
-        >
-          <SidebarContents />
-        </StickyStretchableScroller>
-      </div>
+//   return (
+//     <>
+//       <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+//         <StickyStretchableScroller
+//           simplebarRef={mutateSidebarScroller}
+//           stickyElemSelector=".grw-sidebar"
+//           calcViewHeight={calcViewHeight}
+//         >
+//           <SidebarContents />
+//         </StickyStretchableScroller>
+//       </div>
 
-      <DrawerToggler iconClass="icon-arrow-left" />
-    </>
-  );
-};
+//       <DrawerToggler iconClass="icon-arrow-left" />
+//     </>
+//   );
+// };
 
 
 const Sidebar = (): JSX.Element => {
@@ -297,7 +297,7 @@ const Sidebar = (): JSX.Element => {
           >
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
-                <GlobalNavigation></GlobalNavigation>
+                {/* <GlobalNavigation></GlobalNavigation> */}
               </div>
               <div
                 ref={resizableContainer}
@@ -308,7 +308,7 @@ const Sidebar = (): JSX.Element => {
               >
                 <div className="grw-contextual-navigation-child">
                   <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                    <SidebarContentsWrapper></SidebarContentsWrapper>
+                    {/* <SidebarContentsWrapper></SidebarContentsWrapper> */}
                   </div>
                 </div>
               </div>
@@ -332,7 +332,7 @@ const Sidebar = (): JSX.Element => {
                 onClick={toggleNavigationBtnClickHandler}
               >
                 <span className="hexagon-container" role="presentation">
-                  <NavigationResizeHexagon />
+                  {/* <NavigationResizeHexagon /> */}
                 </span>
                 <span className="hitarea" role="presentation"></span>
               </button>
