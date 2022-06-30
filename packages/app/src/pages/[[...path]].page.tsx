@@ -260,11 +260,11 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   // if true, replacing page.revision with old revision should be done when populating Revision
   const isSpecifiedRevisionExist = true; // dummy
 
-  if(revisionId == null || isSpecifiedRevisionExist ) {
+  if (revisionId == null || !isSpecifiedRevisionExist) {
     props.isLatestRevision = true;
   }
   else {
-    props.isLatestRevision = page.revision == revisionId;
+    props.isLatestRevision = page.revision.toString() === revisionId;
   }
 
   await (page as unknown as PageModel).populateDataToShowRevision();
