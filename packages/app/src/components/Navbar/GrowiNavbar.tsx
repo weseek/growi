@@ -129,6 +129,8 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
+  const GlobalSearch = dynamic(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
@@ -157,7 +159,7 @@ export const GrowiNavbar = (): JSX.Element => {
 
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
-          {/* <GlobalSearch /> */}
+          <GlobalSearch />
         </div>
       ) }
     </nav>

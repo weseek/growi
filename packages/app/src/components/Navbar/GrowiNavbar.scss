@@ -88,6 +88,42 @@
   }
 }
 
+// layout for GlobalSearch
+.grw-global-search-top {
+  // centering on navbar
+  top: var.$grw-navbar-height / 2;
+  left: 50vw;
+  z-index: bs.$zindex-fixed + 1;
+  transform: translate(-50%, -50%);
+
+  .rbt-input.form-control {
+    width: 200px;
+    transition: 0.3s ease-out;
+
+    // focus
+    &.focus {
+      width: 300px;
+    }
+
+    @include bs.media-breakpoint-up(md) {
+      width: 300px;
+    }
+    @include bs.media-breakpoint-up(lg) {
+      // focus
+      &.focus {
+        width: 400px;
+      }
+    }
+    @include bs.media-breakpoint-up(xl) {
+      width: 350px;
+      // focus
+      &.focus {
+        width: 450px;
+      }
+    }
+  }
+}
+
 .grw-notification-badge {
   position: absolute;
   top: 6px;

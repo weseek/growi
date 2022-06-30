@@ -3,15 +3,17 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
-
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { IPageSearchMeta } from '~/interfaces/search';
 import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
+
+
+import './SearchTypeahead.scss';
 
 
 type ResetFormButtonProps = {

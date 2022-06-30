@@ -1,6 +1,4 @@
-import React, {
-  FC, useState, useCallback, useRef,
-} from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 import assert from 'assert';
 
@@ -15,6 +13,9 @@ import {
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
+
+
+import './GlobalSearch.scss';
 
 
 type Props = {
