@@ -1510,7 +1510,7 @@ class PageService {
       }
     }
 
-    this.pageEvent.emit('delete', page, null, user);
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
