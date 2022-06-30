@@ -203,9 +203,11 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
+    this.pageEvent.on('deleteCompletely', async(page, user, descendantPages?) => {
+      const isRecursively = descendantPages != null;
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY;
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, user, action, descendantPages);
       }
       catch (err) {
         logger.error(err);
@@ -835,6 +837,7 @@ class PageService {
 
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
+    let descendantPages: PageDocument[] = [];
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -844,7 +847,9 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
-          pageEvent.emit('rename', targetPage, user, batch);
+          descendantPages = descendantPages.concat(batch);
+          // pageEvent.emit('rename', targetPage, user, batch);
+          // console.log('What is the type of batch\n', batch);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -869,6 +874,7 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+    this.pageEvent.emit('rename', targetPage, user, descendantPages);
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
@@ -1723,10 +1729,6 @@ class PageService {
     // delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
-    if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
-    }
-
     if (isRecursively) {
       let pageOp;
       try {
@@ -1747,6 +1749,9 @@ class PageService {
        * Main Operation
        */
       this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+    }
+    else if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1800,6 +1805,8 @@ class PageService {
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
+    let descendantPages: PageDocument[] = [];
+
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
@@ -1809,6 +1816,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
+          descendantPages = descendantPages.concat(batch);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1829,6 +1837,7 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+    this.pageEvent.emit('deleteCompletely', targetPage, user, descendantPages);
 
     return nDeletedNonEmptyPages;
   }
