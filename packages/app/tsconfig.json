@@ -6,7 +6,7 @@
       "~/*": ["./src/*"],
       "^/*": ["./*"],
       "@growi/*": ["../*/src"],
-      "debug": ["./src/server/utils/logger/alias-for-debug"],
+      "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   }
 }
