@@ -252,7 +252,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
-  // Todo: should check if the specified revisionId actually exist in DB.
+  // Todo: should check if revision document with the specified revisionId actually exist in DB.
   // if true, replacing page.revision with old revision should be done when populating Revision
   const revisionId = searchParams.get('revision');
   const isSpecifiedRevisionExist = true; // dummy
