@@ -1,8 +1,11 @@
-import React, { FC, memo, useMemo } from 'react';
+import React, {
+  FC, memo, useMemo, useRef,
+} from 'react';
 
 import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { HasChildren } from '~/interfaces/common';
@@ -36,6 +39,10 @@ const NavbarRight = memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
 
+  // ripple
+  const newButtonRef = useRef(null);
+  useRipple(newButtonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
+
   const { open: openCreateModal } = usePageCreateModal();
 
   const isAuthenticated = isGuestUser === false;
@@ -51,6 +58,7 @@ const NavbarRight = memo((): JSX.Element => {
           <button
             className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
             type="button"
+            ref={newButtonRef}
             data-testid="newPageBtn"
             onClick={() => openCreateModal(currentPagePath || '')}
           >
@@ -80,7 +88,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
       </>
     );
-  }, []);
+  }, [AppearanceModeDropdown, isAuthenticated]);
 
   return (
     <>

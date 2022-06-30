@@ -1,11 +1,11 @@
-import React, {
-  useState, useEffect, FC, useCallback,
-} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRipple } from 'react-use-ripple';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
+
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -29,6 +29,9 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
   const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
+  // ripple
+  const buttonRef = useRef(null);
+  useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   const updateNotificationStatus = async() => {
     try {
@@ -77,7 +80,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
 
   return (
     <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
-      <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparent waves-effect waves-light">
+      <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparentt" innerRef={buttonRef}>
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
       <DropdownMenu right>

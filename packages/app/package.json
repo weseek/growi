@@ -233,6 +233,7 @@
     "react-dropzone": "^11.2.4",
     "react-frame-component": "^4.0.0",
     "react-hotkeys": "^2.0.0",
+    "react-use-ripple": "^1.5.2",
     "react-waypoint": "^10.1.0",
     "reactstrap": "^8.9.0",
     "replacestream": "^4.0.3",

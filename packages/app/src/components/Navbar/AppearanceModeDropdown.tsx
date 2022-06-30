@@ -1,6 +1,9 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback, useRef,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
@@ -34,6 +37,10 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   const { data: isPreferDrawerMode, update: updatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
+
+  // ripple
+  const buttonRef = useRef(null);
+  useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   const preferDrawerModeSwitchModifiedHandler = useCallback((preferDrawerMode: boolean, isEditMode: boolean) => {
     if (isEditMode) {
@@ -110,7 +117,9 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   return (
     <>
       {/* setting button */}
-      <button className="bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" aria-haspopup="true">
+      {/* remove .dropdown-toggle for hide caret */}
+      {/* See https://stackoverflow.com/a/44577512/13183572 */}
+      <button className="bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" ref={buttonRef} aria-haspopup="true">
         <i className="icon-settings"></i>
       </button>
 
