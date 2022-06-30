@@ -644,7 +644,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, null, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
     });
 
 

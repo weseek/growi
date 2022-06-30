@@ -1774,7 +1774,7 @@ class PageService {
     }
 
     if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, null, user);
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1812,7 +1812,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
-          pageEvent.emit('deleteCompletely', targetPage, batch, user);
+          pageEvent.emit('deleteCompletely', targetPage, user, batch);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
