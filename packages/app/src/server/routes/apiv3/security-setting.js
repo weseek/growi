@@ -1061,7 +1061,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BasicAuthSetting'
    */
-  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.basicAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
@@ -1072,6 +1072,8 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_BASIC_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
