@@ -18,7 +18,7 @@ import {
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
-  useUnsavedWarning
+  useIsEnabledUnsavedWarning
 } from '~/stores/editor';
 import {
   EditorMode,
@@ -97,7 +97,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useUnsavedWarning();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);

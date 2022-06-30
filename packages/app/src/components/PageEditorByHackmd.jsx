@@ -9,7 +9,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors,useUnsavedWarning } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors,useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';

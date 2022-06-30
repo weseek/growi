@@ -114,6 +114,6 @@ export type IUnsavedWarning = {
 }
 
 
-export const useUnsavedWarning = (): SWRResponse<boolean, Error> => {
+export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
 };

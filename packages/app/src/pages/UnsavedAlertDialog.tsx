@@ -2,13 +2,13 @@ import { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { useUnsavedWarning } from '~/stores/editor';
+import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 
 const alertMsg = 'Changes you made may not be saved.';
 
 const UnsavedAlertDialog = (): void => {
   const router = useRouter();
-  const { data: isEnabledUnsavedWarning } = useUnsavedWarning();
+  const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
     if(isEnabledUnsavedWarning){
