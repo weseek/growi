@@ -118,7 +118,9 @@ export const useUnsavedWarning = (): SWRResponse<boolean, Error> & IUnsavedWarni
   const { data: isEnabledUnsavedWarning } = swrResult;
 
   const showAlertDialog = (msg: string) => {
-    if (isEnabledUnsavedWarning || false) {
+    const isEnabled = isEnabledUnsavedWarning || false;
+    if (isEnabled) {
+      // eslint-disable-next-line no-alert
       return window.alert(msg);
     }
   };
