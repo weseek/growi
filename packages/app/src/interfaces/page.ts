@@ -54,7 +54,6 @@ export type IPageInfo = {
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
   contentAge?: number,
-  isLatestRevision?: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {
