@@ -203,9 +203,8 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, descendantPages, user) => {
+    this.pageEvent.on('deleteCompletely', async(page, user, descendantPages?) => {
       const isRecursively = descendantPages != null;
-      console.log('isRecursively?\n', isRecursively);
       const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY;
       try {
         await this.createAndSendNotifications(page, user, action, descendantPages);
