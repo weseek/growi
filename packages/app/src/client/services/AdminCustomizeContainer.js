@@ -3,8 +3,10 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
-import { apiPost, apiPostForm } from '../util/apiv1-client';
-import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+import {
+  apiv3Delete,
+  apiv3Get, apiv3PostForm, apiv3Put,
+} from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminCustomizeContainer');
@@ -58,10 +60,9 @@ export default class AdminCustomizeContainer extends Container {
         'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
-      uploadedLogoSrc: null,
+      customizedLogoSrc: null,
       defaultLogoSrc: DEFAULT_LOGO,
       isDefaultLogo: true,
-      brandLogoAttachmentId: '',
       /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
@@ -106,9 +107,8 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
-        brandLogoAttachmentId: customizeParams.brandLogoAttachmentId,
         isDefaultLogo: customizeParams.isDefaultLogo,
-        uploadedLogoSrc: customizeParams.uploadedLogoSrc,
+        customizedLogoSrc: customizeParams.customizedLogoSrc,
       });
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
@@ -443,13 +443,9 @@ export default class AdminCustomizeContainer extends Container {
 
   async deleteLogo() {
     try {
-      const formData = {
-        brandLogoAttachmentId: this.state.brandLogoAttachmentId,
-      };
-      await apiPost('/attachments.removeBrandLogo', formData);
+      await apiv3Delete('/customize-setting/delete-brand-logo');
       this.setState({
-        uploadedLogoSrc: null,
-        brandLogoAttachmentId: null,
+        customizedLogoSrc: null,
       });
 
     }
@@ -464,12 +460,9 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('brandLogoAttachmentId', this.state.brandLogoAttachmentId);
-      const response = await apiPostForm('/attachments.uploadBrandLogo', formData);
-
+      const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
       this.setState({
-        uploadedLogoSrc: response.attachment.filePathProxied,
-        brandLogoAttachmentId: response.attachment.id,
+        customizedLogoSrc: data.attachment.filePathProxied,
       });
     }
     catch (err) {
@@ -487,14 +480,12 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo: this.state.isDefaultLogo,
-        brandLogoAttachmentId: this.state.brandLogoAttachmentId,
-        uploadedLogoSrc: this.state.uploadedLogoSrc,
+        customizedLogoSrc: this.state.customizedLogoSrc,
       });
       const { customizedParams } = response.data;
       this.setState({
         isDefaultLogo: customizedParams.isDefaultLogo,
-        brandLogoAttachmentId:  customizedParams.brandLogoAttachmentId,
-        uploadedLogoSrc: customizedParams.uploadedLogoSrc,
+        customizedLogoSrc: customizedParams.customizedLogoSrc,
       });
     }
     catch (err) {

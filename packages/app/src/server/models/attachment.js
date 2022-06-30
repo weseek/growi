@@ -75,7 +75,6 @@ module.exports = function(crowi) {
     attachment.fileName = fileName;
     attachment.fileFormat = fileFormat;
     attachment.fileSize = fileSize;
-    attachment.createdAt = Date.now();
     attachment.attachmentType = attachmentType;
     return attachment;
   };

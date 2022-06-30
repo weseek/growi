@@ -189,8 +189,6 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
   apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
-  apiV1Router.post('/attachments.uploadBrandLogo'   , apiLimiter, uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadBrandLogo);
-  apiV1Router.post('/attachments.removeBrandLogo'      , apiLimiter, accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeBrandLogo);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);

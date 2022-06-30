@@ -246,7 +246,7 @@ schema.statics.getLocalconfig = function(crowi) {
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
     isDefaultLogo:  crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
-    uploadedLogoSrc: crowi.configManager.getConfig('crowi', 'customize:uploadedLogoSrc'),
+    customizedLogoSrc: crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     isSidebarDrawerMode: crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };

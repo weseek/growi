@@ -25,7 +25,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [src, setSrc] = useState<ArrayBuffer | string | null>(null);
   const {
-    uploadedLogoSrc, isDefaultLogo, defaultLogoSrc,
+    customizedLogoSrc, isDefaultLogo, defaultLogoSrc,
   } = adminCustomizeContainer.state;
 
   const hideModal = () => {
@@ -129,8 +129,8 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                     { t('admin:customize_setting.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    <p><img src={uploadedLogoSrc || defaultLogoSrc} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
-                    {(uploadedLogoSrc != null) && (
+                    <p><img src={customizedLogoSrc || defaultLogoSrc} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
+                    {(customizedLogoSrc != null) && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                         { t('admin:customize_setting.delete_logo') }
                       </button>
