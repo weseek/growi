@@ -1,6 +1,7 @@
 import { RefObject } from 'react';
 
-import { isClient, pagePathUtils } from '@growi/core';
+import { constants } from 'zlib';
+import { isClient, isServer, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -23,7 +24,6 @@ import {
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-import { constants } from 'zlib';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -112,6 +112,7 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  if (isServer()) return EditorMode.View;
   const { hash } = window.location;
 
   switch (hash) {
