@@ -161,8 +161,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-
-
   return (
     <>
       <Head>
