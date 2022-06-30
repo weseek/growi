@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -16,10 +17,11 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
+import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
-import Xss from '~/services/xss';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -39,14 +41,11 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId
+  useCurrentPageId,
 } from '../stores/context';
-
-import { useXss } from '../stores/xss'
+import { useXss } from '../stores/xss';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
-import { PageModel } from '~/server/models/page';
-import { isValidObjectId } from 'mongoose';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -96,14 +95,14 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
-  useXss(new Xss())
+  useXss(new Xss());
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
   // page
   useCurrentPagePath(props.currentPathname);
-  useIsLatestRevision(props.isLatestRevision)
+  useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
@@ -138,7 +137,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
-  useCurrentPageId(pageWithMeta?.data._id)
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
@@ -234,7 +233,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const { currentPathname } = props;
 
   // retrieve query params
-  const url = new URL(originalUrl, props.siteUrl)
+  const url = new URL(originalUrl, props.siteUrl);
   const searchParams = new URLSearchParams(url.search);
 
   // determine pageId
@@ -246,20 +245,19 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const page = result.data;
 
   if (page == null) {
-    const count = pageId != null ?  await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname }) ;
+    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
     props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
-  // checks if revision is latest
-  const revisionId = searchParams.get('revision');
-
   // Todo: should check if the specified revisionId actually exist in DB.
   // if true, replacing page.revision with old revision should be done when populating Revision
+  const revisionId = searchParams.get('revision');
   const isSpecifiedRevisionExist = true; // dummy
 
+  // check if revision is latest
   if (revisionId == null || !isSpecifiedRevisionExist) {
     props.isLatestRevision = true;
   }
