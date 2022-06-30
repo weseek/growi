@@ -23,20 +23,6 @@ const nextConfig = {
 
   i18n,
 
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'X-Requested-With',
-            value: 'XMLHttpRequest',
-          },
-        ],
-      },
-    ]
-  },
-
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
 
