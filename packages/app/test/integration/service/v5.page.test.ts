@@ -619,27 +619,6 @@ describe('Test page service methods', () => {
       expect(page1.descendantCount).toBe(1);
       expect(page2.descendantCount).toBe(0);
     });
-
-    test('it should fail and throw error if PageOperation is not found', async() => {
-      const dummyPage = {
-        _id: new mongoose.Types.ObjectId(),
-        parent: rootPage._id,
-        descendantCount: 2,
-        isEmpty: false,
-        path: '/NOT_EXIST_PAGE',
-        revision: new mongoose.Types.ObjectId(),
-        status: 'published',
-        grant: 1,
-        grantedUsers: [],
-        grantedGroup: null,
-        creator: dummyUser1._id,
-        lastUpdateUser: dummyUser1._id,
-      };
-
-      await expect(resumeRenameSubOperation(dummyPage, null))
-        .rejects.toThrow(new Error('There is nothing to be processed right now'));
-    });
-
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
       // path before renaming
       const _path0 = '/resume_rename_4'; // out of renaming scope
@@ -671,7 +650,6 @@ describe('Test page service methods', () => {
       // cleanup
       await PageOperation.findByIdAndDelete(pageOperation._id);
     });
-
     test('Missing property(toPath) for PageOperation should throw error', async() => {
       // page
       const _path1 = '/resume_rename_7';
