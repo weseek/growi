@@ -4,6 +4,7 @@ function getAxios(team, token) {
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
+      'X-From': 'x-growi-client',
       authorization: `Bearer ${token}`,
     },
     responseType: 'json',
