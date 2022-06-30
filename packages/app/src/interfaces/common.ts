@@ -2,6 +2,8 @@
  * Common types and interfaces
  */
 
+import { ReactNode } from 'react';
+
 import { HasObjectId } from './has-object-id';
 
 
@@ -19,3 +21,8 @@ export const getIdForRef = <T>(ref: Ref<T>): string => {
     ? ref._id
     : ref;
 };
+
+
+export type HasChildren<T = ReactNode> = {
+  children?: T
+}

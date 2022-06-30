@@ -1,10 +1,12 @@
+@use '../variables';
+
 //
 // Variables
 // --------------------------------------------------
 
 //== Colors
 //
-$primary: $growi-blue !default;
+$primary: variables.$growi-blue !default;
 $secondary: #6c757d !default;
 $info: #009fbb !default;
 $success: #00bb83 !default;

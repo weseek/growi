@@ -5,7 +5,7 @@ import React, {
 import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import * as toastr from 'toastr';
 
 
@@ -44,7 +44,7 @@ class ExportArchiveDataPage extends React.Component {
     this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_UNSAFE_componentWillMount() {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
     const [{ collections }, { status }] = await Promise.all([

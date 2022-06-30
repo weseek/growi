@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
+import { useCurrentUpdatedAt, useIsTrashPage, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
@@ -24,7 +24,7 @@ const TrashPageAlert = (props) => {
   const { t } = useTranslation();
   const { pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
+    pageId, revisionId, path, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
@@ -38,6 +38,7 @@ const TrashPageAlert = (props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
+  const { data: isTrashPage } = useIsTrashPage();
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
@@ -89,7 +90,7 @@ const TrashPageAlert = (props) => {
       <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-          {isDeleted && (
+          {isTrashPage && (
             <>
               <br />
               <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />

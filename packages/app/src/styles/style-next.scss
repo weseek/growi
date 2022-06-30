@@ -1,14 +1,4 @@
-// import variables
-@import 'variables';
-
-@import 'mixins';
-@import 'override-bootstrap-variables';
-
-// vendor
-@import 'vendor';
-
-// override bootstrap
-@import 'override-bootstrap';
+@import './bootstrap/apply';
 
 // // override codemirror
 // @import 'override-codemirror';
@@ -45,7 +35,7 @@
 // @import 'editor-navbar';
 // @import 'page-content-footer';
 // @import 'handsontable';
-// @import 'layout';
+@import 'layout';
 // @import 'login';
 // @import 'me';
 // @import 'mirror_mode';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -27,7 +27,7 @@ class UserManagement extends React.Component {
     this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handlePage(1);
   }
 
@@ -75,7 +75,7 @@ class UserManagement extends React.Component {
     try {
       adminUsersContainer.resetAllChanges();
       this.searchUserElement.value = '';
-      this.state.isNotifyCommentShow = false;
+      this.setState({ isNotifyCommentShow: false });
     }
     catch (err) {
       toastError(err);

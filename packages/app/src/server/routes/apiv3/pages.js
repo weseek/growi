@@ -593,7 +593,7 @@ module.exports = (crowi) => {
   router.delete('/empty-trash', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+    const pagesInTrash = await crowi.pageService.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
     const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 

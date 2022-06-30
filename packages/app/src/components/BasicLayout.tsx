@@ -2,9 +2,8 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
-// import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
-// import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
-
+import { GrowiNavbar } from './Navbar/GrowiNavbar';
+// import GrowiNavbarBottom from './Navbar/GrowiNavbarBottom';
 import { RawLayout } from './RawLayout';
 
 
@@ -25,8 +24,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
   return (
     <>
       <RawLayout title={title} className={className}>
-        {/* <GrowiNavbar /> */}
-        GrowiNavbar
+        <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">
           <div className="grw-sidebar-wrapper">

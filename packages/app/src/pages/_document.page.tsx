@@ -22,7 +22,7 @@ async function importCustomManifest(): Promise<any> {
 
 class GrowiDocument extends Document<GrowiDocumentProps> {
 
-  static async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
+  static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
 
     const customManifest: any = await importCustomManifest();
@@ -31,13 +31,14 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     return { ...initialProps, bootJsPath };
   }
 
-  render(): JSX.Element {
+  override render(): JSX.Element {
 
     const { bootJsPath } = this.props;
 
     return (
       <Html>
         <Head>
+          {/* eslint-disable-next-line @next/next/no-sync-scripts */}
           <script src={bootJsPath}></script>
           {/*
           {renderScriptTagsByGroup('basis')}

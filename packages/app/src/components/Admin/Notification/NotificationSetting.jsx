@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import {
   TabContent, TabPane,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { SlackbotType } from '@growi/slack';
 

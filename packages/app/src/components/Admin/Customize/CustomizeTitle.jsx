@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';

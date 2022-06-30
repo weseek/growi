@@ -2,7 +2,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';

@@ -4,8 +4,8 @@ import React from 'react';
 
 import { createPatch } from 'diff';
 import { html } from 'diff2html';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import UserDate from '../User/UserDate';
 
