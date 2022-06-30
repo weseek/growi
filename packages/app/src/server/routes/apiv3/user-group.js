@@ -429,12 +429,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, apiV3FormValidator, addActivity, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
       const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroups });
     }
@@ -473,7 +476,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, addActivity, async(req, res) => {
     const { id } = req.params;
     const {
       name, description, parentId, forceUpdateParents = false,
@@ -481,6 +484,9 @@ module.exports = (crowi) => {
 
     try {
       const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup });
     }
@@ -639,7 +645,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the associative entity between user and userGroup
    */
-  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, async(req, res) => {
+  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, addActivity, async(req, res) => {
     const { id, username } = req.params;
 
     try {
@@ -660,6 +666,8 @@ module.exports = (crowi) => {
       const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
 
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_ADD_USER };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
     }
     catch (err) {
