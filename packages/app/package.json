@@ -19,7 +19,7 @@
     "preserver": "yarn cross-env NODE_ENV=production yarn migrate",
     "migrate": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo up",
     "//// for development": "",
-    "dev": "yarn cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only src/server/app.ts NODE_OPTIONS='--inspect' next dev",
+    "dev": "yarn cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only src/server/app.ts",
     "predev": "yarn cross-env NODE_ENV=development run-p resources:* dev:migrate:up",
     "dev:migrate-mongo": "yarn cross-env NODE_ENV=development yarn ts-node node_modules/.bin/migrate-mongo",
     "dev:migrate": "yarn dev:migrate:up",
