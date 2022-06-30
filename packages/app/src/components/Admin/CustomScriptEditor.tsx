@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { UnControlled as CodeMirror, IUnControlledCodeMirror } from 'react-codemirror2';
-import { EditorConfiguration } from 'codemirror';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 
 require('codemirror/addon/lint/javascript-lint');
 require('codemirror/addon/hint/javascript-hint');
@@ -13,14 +12,9 @@ require('~/client/util/codemirror/autorefresh.ext');
 
 require('jquery-ui/ui/widgets/resizable');
 
-interface IMyUnControlledCodeMirror extends IUnControlledCodeMirror {
-  options?: EditorConfiguration & {
-    autoRefresh: { force: boolean }
-  }
-  autoFocus?: boolean
-}
-export declare class UnControlled2 extends React.Component<IMyUnControlledCodeMirror, any> {
-}
+type MyUnControlled = typeof React.Component;
+
+const UnControlled2 = CodeMirror as MyUnControlled;
 
 type Props = {
   value: string,
