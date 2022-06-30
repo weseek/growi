@@ -59,7 +59,7 @@ const NavbarRight = memo((): JSX.Element => {
           </button>
         </li>
 
-        <li className="grw-personal-dropdown nav-item dropdown">
+        <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
         </li>
 
@@ -73,7 +73,7 @@ const NavbarRight = memo((): JSX.Element => {
   const notAuthenticatedNavItem = useMemo(() => {
     return (
       <>
-        <li className="grw-personal-dropdown nav-item dropdown">
+        <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
         </li>
 
