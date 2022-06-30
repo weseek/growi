@@ -4,9 +4,12 @@ import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
-import GlobalSearch from './GlobalSearch';
+import { GlobalSearch } from './GlobalSearch';
 
-export const GrowiNavbarBottom = (props) => {
+import './GrowiNavbarBottom.scss';
+
+
+export const GrowiNavbarBottom = (): JSX.Element => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
