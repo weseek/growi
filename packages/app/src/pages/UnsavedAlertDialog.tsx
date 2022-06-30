@@ -4,29 +4,38 @@ import { useRouter } from 'next/router';
 
 import { useUnsavedWarning } from '~/stores/editor';
 
-const unsavedAlertMsg = 'Changes you made may not be saved.';
+const alertMsg = 'Changes you made may not be saved.';
 
 const UnsavedAlertDialog = (): void => {
   const router = useRouter();
-  const { showAlertDialog } = useUnsavedWarning();
+  const { data: isEnabledUnsavedWarning } = useUnsavedWarning();
 
-  const showAlertDialogForRouteChangesByBrowser = useCallback((e) => {
-    e.preventDefault();
-    showAlertDialog(unsavedAlertMsg);
-    e.returnValue = '';
+  const alertUnsavedWarningByBrowser = useCallback((e) => {
+    if(isEnabledUnsavedWarning){
+      e.preventDefault();
+      // returnValue should be set to show alert dialog
+      e.returnValue = alertMsg;
+      return;
+    }
+  }, [isEnabledUnsavedWarning]);
+
+  const alertUnsavedWarningByNextRouter = useCallback(() => {
+    if(isEnabledUnsavedWarning){
+      window.alert(alertMsg);
+    }
     return;
-  }, [showAlertDialog]);
+  }, [isEnabledUnsavedWarning]);
 
   /*
   * Route changes by Browser
   * Example: window.location.href, F5
   */
   useEffect(() => {
-    window.addEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
+    window.addEventListener('beforeunload', alertUnsavedWarningByBrowser);
     return () => {
-      window.removeEventListener('beforeunload', showAlertDialogForRouteChangesByBrowser);
+      window.removeEventListener('beforeunload', alertUnsavedWarningByBrowser);
     };
-  }, [showAlertDialogForRouteChangesByBrowser]);
+  }, [alertUnsavedWarningByBrowser]);
 
 
   /*
@@ -34,11 +43,11 @@ const UnsavedAlertDialog = (): void => {
   * https://nextjs.org/docs/api-reference/next/router
   */
   useEffect(() => {
-    router.events.on('routeChangeStart', () => showAlertDialog(unsavedAlertMsg));
+    router.events.on('routeChangeStart', () => alertUnsavedWarningByNextRouter());
     return () => {
-      router.events.off('routeChangeStart', () => showAlertDialog(unsavedAlertMsg));
+      router.events.off('routeChangeStart', () => alertUnsavedWarningByNextRouter());
     };
-  }, [router.events, showAlertDialog]);
+  }, [router.events]);
 
 
   return;

@@ -113,20 +113,7 @@ export type IUnsavedWarning = {
   showAlertDialog: (msg: string) => void;
 }
 
-export const useUnsavedWarning = (): SWRResponse<boolean, Error> & IUnsavedWarning => {
-  const swrResult = useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
-  const { data: isEnabledUnsavedWarning } = swrResult;
 
-  const showAlertDialog = (msg: string) => {
-    const isEnabled = isEnabledUnsavedWarning || false;
-    if (isEnabled) {
-      // eslint-disable-next-line no-alert
-      return window.alert(msg);
-    }
-  };
-
-  return {
-    ...swrResult,
-    showAlertDialog,
-  };
+export const useUnsavedWarning = (): SWRResponse<boolean, Error> => {
+ return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
 };
