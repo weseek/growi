@@ -196,7 +196,6 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
 };
 
 
-
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
