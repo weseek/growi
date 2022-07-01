@@ -3,6 +3,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 
 import { FixPageGrantAlert } from './FixPageGrantAlert';
+import { OldRevisionAlert } from './OldRevisionAlert';
 import { PageGrantAlert } from './PageGrantAlert';
 import { PageStaleAlert } from './PageStaleAlert';
 
@@ -20,6 +21,7 @@ export const PageAlerts = (): JSX.Element => {
         <PageGrantAlert />
         <TrashPageAlert />
         <PageStaleAlert />
+        <OldRevisionAlert />
       </div>
     </div>
   );

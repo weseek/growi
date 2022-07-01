@@ -36,7 +36,7 @@ import { BasicLayout } from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage,
+  useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
@@ -61,6 +61,7 @@ type Props = CommonProps & {
   // redirectFrom?: string;
 
   // shareLinkId?: string;
+  isLatestRevision: boolean
 
   isForbidden: boolean,
   isNotFound: boolean,
@@ -101,6 +102,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useCurrentPagePath(props.currentPathname);
+  useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
@@ -227,9 +229,13 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const Page = crowi.model('Page');
   const { pageService } = crowi;
 
-  const { user } = req;
+  const { user, originalUrl } = req;
 
   const { currentPathname } = props;
+
+  // retrieve query params
+  const url = new URL(originalUrl, props.siteUrl);
+  const searchParams = new URLSearchParams(url.search);
 
   // determine pageId
   const pageIdStr = currentPathname.substring(1);
@@ -247,8 +253,22 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
+  // Todo: should check if revision document with the specified revisionId actually exist in DB.
+  // if true, replacing page.revision with old revision should be done when populating Revision
+  const revisionId = searchParams.get('revision');
+  const isSpecifiedRevisionExist = true; // dummy
+
+  // check if revision is latest
+  if (revisionId == null || !isSpecifiedRevisionExist) {
+    props.isLatestRevision = true;
+  }
+  else {
+    props.isLatestRevision = page.revision.toString() === revisionId;
+  }
+
   await (page as unknown as PageModel).populateDataToShowRevision();
   props.pageWithMetaStr = JSON.stringify(result);
+
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {

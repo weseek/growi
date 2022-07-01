@@ -187,6 +187,9 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useStaticSWR('isEnabledStaleNotification', initialData);
 };
 
+export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isLatestRevision', initialData);
+};
 
 
 /** **********************************************************
