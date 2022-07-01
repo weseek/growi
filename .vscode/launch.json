@@ -8,7 +8,8 @@
         "type": "node",
         "request": "attach",
         "name": "Debug: Attach Debugger to Server",
-        "port": 9229
+        "port": 9229,
+        "cwd": "${workspaceFolder}/packages/app"
       },
       {
         "type": "node",
