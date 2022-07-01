@@ -19,6 +19,7 @@ import { SidebarNav, SidebarNavSekeleton } from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import './Sidebar.scss';
+import { isServer } from '^/../core/src';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -30,6 +31,7 @@ const GlobalNavigation = () => {
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
+  const [isLoaded, setIsLoaded] = useState(false);
   const { scheduleToPut } = useUserUISettings();
 
   const itemSelectedHandler = useCallback((selectedContents) => {
@@ -50,12 +52,15 @@ const GlobalNavigation = () => {
 
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
-  return (
-    <>
-      {/* <SidebarNav onItemSelected={itemSelectedHandler} /> */}
-      <SidebarNavSekeleton/>
-    </>
-  );
+  useEffect(() => {
+    if (isServer()) return;
+    setIsLoaded(true);
+  }, []);
+
+  return isLoaded
+    ? <SidebarNav onItemSelected={itemSelectedHandler} />
+    : <SidebarNavSekeleton/>;
+
 };
 
 // const SidebarContentsWrapper = () => {
