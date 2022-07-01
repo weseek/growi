@@ -144,6 +144,10 @@ export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<str
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
 };
 
+export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotFound', initialData);
+};
+
 export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
   return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
 };

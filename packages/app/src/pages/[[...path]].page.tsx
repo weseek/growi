@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 
+
 import { pagePathUtils } from '@growi/core';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -24,10 +26,11 @@ import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
-// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
-// import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+
+// import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
+// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -40,7 +43,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useIsUserPage,
+  useIsUserPage, useIsNotCreatable, useIsIdenticalPath,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -48,7 +51,7 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage } = pagePathUtils;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -100,8 +103,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPagePath(props.currentPathname);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
-  // useIsForbidden(props.isForbidden);
-  // useNotFound(props.isNotFound);
+  useIsForbidden(props.isForbidden);
+  useIsNotFound(props.isNotFound);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
@@ -138,6 +141,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUsersHomePage(pageWithMeta?.data.path ?? ''));
+  useIsNotCreatable(props.isForbidden || isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include isIdenticalPath
+
+  const GrowiContextualSubNavigation = dynamic(() => import('../components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -184,6 +190,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           {/* <GrowiSubNavigationSwitcher /> */}
           GrowiSubNavigationSwitcher
         </div>
+        {/* isLinkSharingDisabledについて考える必要あり */}
+        {/* <GrowiContextualSubNavigation />, */}
+        {/* <GrowiSubNavigationSwitcher />, */}
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>

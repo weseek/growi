@@ -15,8 +15,7 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -164,20 +163,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  // const { data: createdAt } = useCurrentCreatedAt();
   const createdAt = pageData?.createdAt;
-  // const { data: updatedAt } = useCurrentUpdatedAt();
   const updatedAt = pageData?.updatedAt;
-  // const { data: pageId } = useCurrentPageId();
   const pageId = pageData?._id;
   const { data: emptyPageId } = useEmptyPageId();
-  // const { data: revisionId } = useRevisionId()/;
-  const revisionId = pageData?.revision._id; // need type
-  // const { data: path } = useCurrentPagePath()
+  const revisionId = pageData?.revision._id; // need to use isPopulated
   const path = pageData?.path;
-  // const { data: creator } = useCreator();
   const creator = pageData?.creator;
-  // const { data: revisionAuthor } = useRevisionAuthor();
   const revisionAuthor = pageData?.revision.author; // need to use isPopulated
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
@@ -185,9 +177,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
-  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel(); // これも挙動を考える必要あり
-  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager(); // 同じく挙動を考える必要あり
-  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors(); // これもやね
+  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
