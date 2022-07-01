@@ -619,9 +619,6 @@ class PageService {
   }
 
   async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
-    if (pageOp == null) {
-      throw Error('There is nothing to be processed right now');
-    }
     const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
