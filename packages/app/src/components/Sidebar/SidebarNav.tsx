@@ -71,7 +71,7 @@ type Props = {
   onItemSelected: (contents: SidebarContentsType) => void,
 }
 
-export const SidebarNav: FC<Props> = (props: Props) => {
+const SidebarNav: FC<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser();
 
@@ -103,8 +103,4 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
 };
 
-export const SidebarNavSekeleton: FC = () => {
-  return (
-    <div className="grw-sidebar-nav-skeleton"></div>
-  );
-};
+export default SidebarNav;

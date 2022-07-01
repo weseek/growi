@@ -1,10 +1,5 @@
 @use '~/styles/variables' as var;
 
-.grw-sidebar-nav-skeleton {
-  width: var.$grw-sidebar-nav-width;
-  height: 100vh;
-}
-
 .grw-sidebar-nav {
   $sidebar-nav-button-height: 55px;
 
