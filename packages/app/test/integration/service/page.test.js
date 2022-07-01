@@ -564,7 +564,7 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete1.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, null, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2);
       expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
     });
 
@@ -581,7 +581,7 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete2.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, null, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2);
       expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
     });
 
@@ -644,7 +644,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, null, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
     });
 
 
@@ -654,7 +654,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, null, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
     });
   });
 
