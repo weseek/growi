@@ -7,7 +7,7 @@ import React, {
 import { DevidedPagePath } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
 import urljoin from 'url-join';

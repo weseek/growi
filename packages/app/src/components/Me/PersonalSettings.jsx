@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
@@ -58,10 +58,11 @@ const PersonalSettings = () => {
     };
   }, [t]);
 
+  const onPasswordSettings = window.location.hash === '#password';
 
   return (
     <div data-testid="grw-personal-settings">
-      <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+      <CustomNavAndContents defaultTabIndex={onPasswordSettings && 2} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
     </div>
   );
 

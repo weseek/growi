@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import PageListIcon from './Icons/PageListIcon';
+import { useTranslation } from 'next-i18next';
+
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import PageListIcon from './Icons/PageListIcon';
 
 
 type Props = {

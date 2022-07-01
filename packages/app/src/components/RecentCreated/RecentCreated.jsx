@@ -23,7 +23,7 @@ class RecentCreated extends React.Component {
   }
 
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getRecentCreatedList(1);
   }
 

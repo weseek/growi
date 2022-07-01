@@ -1,12 +1,8 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
-type Props = {
-
-}
-
-const RedirectedAlert: FC<Props> = () => {
+const RedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const urlParams = new URLSearchParams(window.location.search);
   const fromPath = urlParams.get('redirectFrom');
@@ -16,6 +12,7 @@ const RedirectedAlert: FC<Props> = () => {
       <strong>{ t('Redirected') }:</strong> { t('page_page.notice.redirected')} <code>{fromPath}</code> {t('page_page.notice.redirected_period')}
     </>
   );
-};
+});
+RedirectedAlert.displayName = 'RedirectedAlert';
 
 export default RedirectedAlert;

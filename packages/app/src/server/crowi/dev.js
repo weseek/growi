@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { allLocales } from '~/next-i18next.config';
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import nextFactory from '../routes/next';
@@ -43,7 +43,7 @@ class CrowiDev {
    */
   requireForAutoReloadServer() {
     // load all json files for live reloading
-    allLocales
+    i18n.locales
       .forEach((localeId) => {
         require(path.join(this.crowi.publicDir, 'static/locales', localeId, 'translation.json'));
       });

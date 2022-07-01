@@ -1,7 +1,7 @@
 import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { debounce } from 'throttle-debounce';
 

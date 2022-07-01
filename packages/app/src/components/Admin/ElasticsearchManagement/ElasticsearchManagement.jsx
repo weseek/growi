@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -39,7 +39,7 @@ class ElasticsearchManagement extends React.Component {
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_UNSAFE_componentWillMount() {
     this.retrieveIndicesStatus();
   }
 

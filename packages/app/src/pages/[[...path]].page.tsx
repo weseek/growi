@@ -20,7 +20,7 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -106,7 +106,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
@@ -139,7 +138,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -237,12 +238,12 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const searchParams = new URLSearchParams(url.search);
 
   // determine pageId
-  let pageId;
   const pageIdStr = currentPathname.substring(1);
-  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
+
 
   if (page == null) {
     const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });

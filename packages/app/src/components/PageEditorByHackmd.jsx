@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
@@ -43,7 +43,7 @@ class PageEditorByHackmd extends React.Component {
     this.penpalErrorOccuredHandler = this.penpalErrorOccuredHandler.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 

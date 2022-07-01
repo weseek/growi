@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Waypoint } from 'react-waypoint';
 
 import GrowiRenderer from '~/client/util/GrowiRenderer';
@@ -31,7 +31,7 @@ class RevisionLoader extends React.Component {
     this.onWaypointChange = this.onWaypointChange.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (!this.props.lazy) {
       this.loadData();
     }

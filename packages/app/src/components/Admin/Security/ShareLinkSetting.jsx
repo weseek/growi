@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -55,7 +55,7 @@ class ShareLinkSetting extends React.Component {
     this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_UNSAFE_componentWillMount() {
     this.getShareLinkList(1);
   }
 

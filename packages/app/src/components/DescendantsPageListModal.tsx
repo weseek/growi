@@ -1,27 +1,24 @@
 
 import React, { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { useDescendantsPageListModal } from '~/stores/modal';
 import { useIsSharedUser } from '~/stores/context';
+import { useDescendantsPageListModal } from '~/stores/modal';
 
+import { CustomNavTab } from './CustomNavigation/CustomNav';
+import CustomTabContent from './CustomNavigation/CustomTabContent';
 import { DescendantsPageList } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
-import { CustomNavTab } from './CustomNavigation/CustomNav';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import CustomTabContent from './CustomNavigation/CustomTabContent';
 import PageTimeline from './PageTimeline';
 
 
-type Props = {
-}
-
-export const DescendantsPageListModal = (props: Props): JSX.Element => {
+export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('pagelist');

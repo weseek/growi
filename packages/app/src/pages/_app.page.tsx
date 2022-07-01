@@ -1,27 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
-
-// import { appWithTranslation } from '~/i18n';
 
 import '~/styles/style-next.scss';
 import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
+import * as nextI18nConfig from '../next-i18next.config';
+import { useI18nextHMR } from '../services/i18next-hmr';
 import { useGrowiVersion } from '../stores/context';
 
 import { CommonProps } from './commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
-// modified version - allows for custom pageProps type
-// see: https://stackoverflow.com/a/67464299
-type GrowiAppProps<P> = {
-  pageProps: P;
-} & Omit<AppProps<P>, 'pageProps'>;
+const isDev = process.env.NODE_ENV === 'development';
 
-function GrowiApp({ Component, pageProps }: GrowiAppProps<CommonProps>): JSX.Element {
+type GrowiAppProps = AppProps & {
+  pageProps: CommonProps;
+};
+
+function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
+  useI18nextHMR(isDev);
+
+  useEffect(() => {
+    import('bootstrap/dist/js/bootstrap');
+  }, []);
+
+  const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
-  useGrowiVersion(pageProps.growiVersion);
+  useGrowiVersion(commonPageProps.growiVersion);
 
   return (
     <Component {...pageProps} />
@@ -30,4 +38,4 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps<CommonProps>): JSX.Ele
 
 // export default appWithTranslation(GrowiApp);
 
-export default GrowiApp;
+export default appWithTranslation(GrowiApp, nextI18nConfig);

@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import IndentForm from './IndentForm';
@@ -8,12 +8,7 @@ import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
-type Props = {
-
-};
-
-
-const MarkDownSettingContents: FC<Props> = () => {
+const MarkDownSettingContents = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -47,6 +42,7 @@ const MarkDownSettingContents: FC<Props> = () => {
       <XssForm />
     </div>
   );
-};
+});
+MarkDownSettingContents.displayName = 'MarkDownSettingContents';
 
 export default MarkDownSettingContents;

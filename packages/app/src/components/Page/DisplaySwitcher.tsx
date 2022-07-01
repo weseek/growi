@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
 

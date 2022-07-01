@@ -6,7 +6,7 @@ import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';

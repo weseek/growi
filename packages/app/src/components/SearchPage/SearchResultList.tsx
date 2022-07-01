@@ -2,7 +2,7 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction, useCallback, useImperativeHandle, useRef,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
