@@ -1,4 +1,6 @@
 import { body } from 'express-validator';
+
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -6,11 +8,8 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
 const debug = require('debug')('growi:routes:admin');
-
 const express = require('express');
-
 const { pathUtils } = require('@growi/core');
-const { listLocaleIds } = require('~/utils/locale-utils');
 
 const router = express.Router();
 
@@ -157,7 +156,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(listLocaleIds()),
+      body('globalLang').isIn(i18n.locales),
       body('isEmailPublishedForNewUser').isBoolean(),
       body('fileUpload').isBoolean(),
     ],

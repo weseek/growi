@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import GlobalNotificationList from './GlobalNotificationList';
 
 const logger = loggerFactory('growi:GlobalNotification');
@@ -127,8 +128,6 @@ class GlobalNotification extends React.Component {
 
 }
 
-const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AppContainer, AdminNotificationContainer]);
-
 GlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -136,4 +135,12 @@ GlobalNotification.propTypes = {
 
 };
 
-export default withTranslation()(GlobalNotificationWrapper);
+const GlobalNotificationWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <GlobalNotification t={t} {...props} />;
+};
+
+const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AppContainer, AdminNotificationContainer]);
+
+export default GlobalNotificationWrapper;
