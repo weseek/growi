@@ -1201,7 +1201,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
-  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
@@ -1219,6 +1219,8 @@ module.exports = (crowi) => {
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_TWITTER_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
