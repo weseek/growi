@@ -195,7 +195,6 @@ context('Tag Oprations', () =>{
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.get('.dropdown-menu.dropdown-menu-right.show').should('be.visible');
     cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
