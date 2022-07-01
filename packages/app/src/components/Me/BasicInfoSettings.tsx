@@ -91,7 +91,7 @@ const BasicInfoSettings = (props: Props) => {
               id="radioEmailShow"
               className="custom-control-input"
               name="userForm[isEmailPublished]"
-              checked={personalSettingsInfo?.isEmailPublished || true}
+              checked={personalSettingsInfo?.isEmailPublished === true}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: true })}
             />
             <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
@@ -102,7 +102,7 @@ const BasicInfoSettings = (props: Props) => {
               id="radioEmailHide"
               className="custom-control-input"
               name="userForm[isEmailPublished]"
-              checked={!personalSettingsInfo?.isEmailPublished || false}
+              checked={personalSettingsInfo?.isEmailPublished === false}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: false })}
             />
             <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
