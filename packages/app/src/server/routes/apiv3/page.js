@@ -609,6 +609,17 @@ module.exports = (crowi) => {
       'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
     });
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_EXPORT,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_EXPORT, parameters);
+
     return stream.pipe(res);
   });
 
