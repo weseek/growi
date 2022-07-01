@@ -1,6 +1,6 @@
 @use '~/styles/variables' as var;
 
-.grw-sidebar-nav {
+.grw-sidebar-nav :global {
   $sidebar-nav-button-height: 55px;
 
   %fukidashi-for-active {
