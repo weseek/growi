@@ -52,6 +52,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
+      isEmpty: mainContent.getAttribute('data-page-is-empty'),
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -60,7 +61,6 @@ export default class PageContainer extends Container {
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
-      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isPageExist: mainContent.getAttribute('data-page-id') != null,
 

@@ -173,7 +173,7 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
+      body('revisionId').optional({ nullable: true }).isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
@@ -571,7 +571,8 @@ module.exports = (crowi) => {
     }
 
     try {
-      await crowi.pageService.resumeRenameSubOperation(page);
+      const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
+      await crowi.pageService.resumeRenameSubOperation(page, pageOp);
     }
     catch (err) {
       logger.error(err);
@@ -594,7 +595,7 @@ module.exports = (crowi) => {
   router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+    const pagesInTrash = await crowi.pageService.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
     const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
