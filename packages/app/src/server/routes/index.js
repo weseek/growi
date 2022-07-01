@@ -192,7 +192,7 @@ module.exports = function(crowi, app) {
 
   apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, addActivity ,attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, addActivity ,attachment.api.remove);
   apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 

@@ -647,6 +647,8 @@ module.exports = function(crowi, app) {
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
     }
 
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_REMOVE });
+
     return res.json(ApiResponse.success({}));
   };
 
