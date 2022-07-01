@@ -55,4 +55,6 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
   );
 });
 
+ForbiddenPage.displayName = 'ForbiddenPage';
+
 export default ForbiddenPage;
