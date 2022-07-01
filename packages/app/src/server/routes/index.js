@@ -184,7 +184,7 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
+  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, addActivity, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.add);
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.update);
