@@ -1,30 +1,29 @@
 import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
-import loggerFactory from '~/utils/logger';
 
-import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-
-import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useDescendantsPageListForCurrentPathTermManager, useSWRxPageInfo } from '~/stores/page';
+import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
-import { useGlobalSocket } from '~/stores/websocket';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
+import loggerFactory from '~/utils/logger';
 
-import { ItemNode } from './ItemNode';
 import Item from './Item';
+import { ItemNode } from './ItemNode';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -98,8 +97,11 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { t } = useTranslation();
 
+  const [pageId, setPageId] = useState();
+
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -160,6 +162,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
+    setPageId(pageToDelete.data._id);
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -173,7 +176,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       else {
         toastSuccess(t('deleted_pages', { path }));
       }
-
+      mutatePageInfo();
       advancePt();
       advanceFts();
       advanceDpl();
@@ -254,6 +257,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   else if (targetAndAncestorsData != null) {
     initialItemNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
   }
+
 
   if (initialItemNode != null) {
     return (
