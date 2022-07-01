@@ -1,5 +1,7 @@
 import { RefObject } from 'react';
 
+import { constants } from 'zlib';
+
 import { isClient, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -23,7 +25,6 @@ import {
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-import { constants } from 'zlib';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -404,13 +405,11 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
   const { data: isTrashPage } = useIsTrashPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: isSharedUser } = useIsSharedUser(); // need dynamic import
 
-  const pageId = currentPageId ?? emptyPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
-  const isPageExist = pageId != null;
+  const includesUndefined = [currentPageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,

@@ -40,6 +40,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
+  useIsUserPage,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -135,6 +136,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
+  useIsUserPage(isUsersHomePage(pageWithMeta?.data.path ?? ''));
 
   const classNames: string[] = [];
   // switch (editorMode) {
