@@ -1,84 +1,97 @@
-import React, { FC, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AppContainer from '~/client/services/AppContainer';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  toastError, toastSuccess,
-} from '~/client/util/apiNotification';
+  apiv3Delete, apiv3Get, apiv3PostForm, apiv3Put,
+} from '~/client/util/apiv3-client';
 import ImageCropModal from '~/components/Common/ImageCropModal';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
+const DEFAULT_LOGO = '/images/logo.svg';
 
-type Props = {
-  adminCustomizeContainer : AdminCustomizeContainer
-}
-
-const CustomizeLogoSetting: FC<Props> = (props: Props) => {
+const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { adminCustomizeContainer } = props;
-  const [isShow, setIsShow] = useState<boolean>(false);
-  const [src, setSrc] = useState<ArrayBuffer | string | null>(null);
-  const {
-    customizedLogoSrc, isDefaultLogo, defaultLogoSrc,
-  } = adminCustomizeContainer.state;
 
-  const hideModal = () => {
-    setIsShow(false);
-  };
+  const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
+  const [customizedLogoSrc, setCustomizedLogoSrc] = useState<string | null>(null);
+  const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
+  const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
+  const [retrieveError, setRetrieveError] = useState<string | null>(null);
 
-  const cancelModal = () => {
-    hideModal();
-  };
+  useEffect(() => {
+    (async() => {
+      try {
+        const response = await apiv3Get('/customize-setting/customize-logo');
+        const { isDefaultLogo, customizedLogoSrc } = response.data;
+        setIsDefaultLogo(isDefaultLogo);
+        setCustomizedLogoSrc(customizedLogoSrc);
+      }
+      catch (err) {
+        setRetrieveError(err);
+        throw new Error('Failed to fetch data');
+      }
+    })();
+  }, []);
 
-  const showModal = () => {
-    setIsShow(true);
-  };
-
-  const onSelectFile = (e) => {
+  const onSelectFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null && e.target.files.length > 0) {
       const reader = new FileReader();
-      reader.addEventListener('load', () => setSrc(reader.result));
+      reader.addEventListener('load', () => setUploadLogoSrc(reader.result));
       reader.readAsDataURL(e.target.files[0]);
-      showModal();
+      setIsImageCropModalShow(true);
     }
-  };
+  }, []);
 
-  const onClickSubmit = async() => {
+  const onClickSubmit = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeLogo();
+      const response = await apiv3Put('/customize-setting/customize-logo', {
+        isDefaultLogo,
+        customizedLogoSrc,
+        currentBrandLogo: (!isDefaultLogo && customizedLogoSrc != null) ? customizedLogoSrc : null,
+      });
+      const { customizedParams } = response.data;
+      setIsDefaultLogo(customizedParams.isDefaultLogo);
+      setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, isDefaultLogo, customizedLogoSrc]);
 
-  const onClickDeleteBtn = async() => {
+
+  const onClickDeleteBtn = useCallback(async() => {
     try {
-      await adminCustomizeContainer.deleteLogo();
+      await apiv3Delete('/customize-setting/delete-brand-logo');
+      setCustomizedLogoSrc(null);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
       toastError(err);
+      setRetrieveError(err);
+      throw new Error('Failed to delete logo');
     }
-  };
+  }, [t]);
 
-  const onCropCompleted = async(croppedImage) => {
+  const onCropCompleted = useCallback(async(croppedImage) => {
     try {
-      await adminCustomizeContainer.uploadBrandLogo(croppedImage);
+      const formData = new FormData();
+      formData.append('file', croppedImage);
+      const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
+      setCustomizedLogoSrc(data.attachment.filePathProxied);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
       toastError(err);
+      setRetrieveError(err);
+      throw new Error('Failed to upload brand logo');
     }
-    hideModal();
-  };
+    setIsImageCropModalShow(false);
+  }, [t]);
 
 
   return (
@@ -98,14 +111,14 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
+                      onChange={() => { setIsDefaultLogo(true) }}
                     />
                     <label className="custom-control-label" htmlFor="radioDefaultLogo">
                       {t('admin:customize_setting.default_logo')}
                     </label>
                   </div>
                 </h4>
-                <img src={defaultLogoSrc} width="64" />
+                <img src={DEFAULT_LOGO} width="64" />
               </div>
               <div className="col-md-6 col-12">
                 <h4>
@@ -117,7 +130,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogo}
-                      onChange={() => { adminCustomizeContainer.switchDefaultLogo() }}
+                      onChange={() => { setIsDefaultLogo(false) }}
                     />
                     <label className="custom-control-label" htmlFor="radioUploadLogo">
                       { t('admin:customize_setting.upload_logo') }
@@ -129,7 +142,7 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                     { t('admin:customize_setting.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    <p><img src={customizedLogoSrc || defaultLogoSrc} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
+                    <p><img src={customizedLogoSrc || DEFAULT_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
                     {(customizedLogoSrc != null) && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                         { t('admin:customize_setting.delete_logo') }
@@ -147,15 +160,15 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
                 </div>
               </div>
             </div>
-            <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+            <AdminUpdateButtonRow onClick={onClickSubmit} disabled={retrieveError != null} />
           </div>
         </div>
       </div>
 
       <ImageCropModal
-        isShow={isShow}
-        src={src}
-        onModalClose={cancelModal}
+        isShow={isImageCropModalShow}
+        src={uploadLogoSrc}
+        onModalClose={() => setIsImageCropModalShow(false)}
         onCropCompleted={onCropCompleted}
         isCircular={false}
       />
@@ -165,6 +178,5 @@ const CustomizeLogoSetting: FC<Props> = (props: Props) => {
 
 };
 
-const CustomizeLogoSettingWrapper = withUnstatedContainers(CustomizeLogoSetting, [AppContainer, AdminCustomizeContainer]);
 
-export default CustomizeLogoSettingWrapper;
+export default CustomizeLogoSetting;

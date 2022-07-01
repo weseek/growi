@@ -156,6 +156,7 @@ module.exports = (crowi) => {
     logo: [
       body('isDefaultLogo').isBoolean().optional({ nullable: true }),
       body('customizedLogoSrc').isString().optional({ nullable: true }),
+      body('currentBrandLogo').isString().optional({ nullable: true }),
     ],
   };
 
@@ -180,8 +181,6 @@ module.exports = (crowi) => {
    *                      description: customize params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const defaultLogoConfig = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
-    const isDefaultLogo = defaultLogoConfig === undefined || defaultLogoConfig;
     const customizeParams = {
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
@@ -200,8 +199,6 @@ module.exports = (crowi) => {
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
-      isDefaultLogo,
-      customizedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     };
 
     return res.apiv3({ customizeParams });
@@ -670,15 +667,23 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/customize-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const defaultLogoConfig = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+    const isDefaultLogo = defaultLogoConfig === undefined || defaultLogoConfig;
+    const customizedLogoSrc = await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc');
+    return res.apiv3({ isDefaultLogo, customizedLogoSrc });
+  });
+
   router.put('/customize-logo', apiLimiter, loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
-      isDefaultLogo, customizedLogoSrc,
+      isDefaultLogo, customizedLogoSrc, currentBrandLogo,
     } = req.body;
 
     const requestParams = {
       'customize:isDefaultLogo': isDefaultLogo,
       'customize:customizedLogoSrc': customizedLogoSrc,
+      'customize:currentBrandLogo': currentBrandLogo,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
@@ -723,9 +728,13 @@ module.exports = (crowi) => {
       let attachment;
       try {
         attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
+        const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
         const attachmentConfigParams = {
           'customize:customizedLogoSrc': attachment.filePathProxied,
         };
+        if (!isDefaultLogo) {
+          attachmentConfigParams['customize:currentBrandLogo'] = attachment.filePathProxied;
+        }
         await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
       }
       catch (err) {
@@ -746,11 +755,15 @@ module.exports = (crowi) => {
       }
 
       try {
+        const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
         await attachmentService.removeAllAttachments(attachments);
         // update attachmentId immediately
         const attachmentConfigParams = {
           'customize:customizedLogoSrc': null,
         };
+        if (!isDefaultLogo) {
+          attachmentConfigParams['customize:currentBrandLogo'] = null;
+        }
         await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
       }
       catch (err) {

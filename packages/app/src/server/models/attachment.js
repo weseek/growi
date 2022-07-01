@@ -39,7 +39,7 @@ module.exports = function(crowi) {
     attachmentType: {
       type: String,
       enum: AttachmentType,
-      default: undefined,
+      default: AttachmentType.WIKI_PAGE,
     },
   }, {
     timestamps: { createdAt: true, updatedAt: false },
@@ -59,7 +59,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType = undefined) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
