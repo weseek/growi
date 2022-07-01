@@ -19,7 +19,7 @@ import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 
-import './GrowiNavbar.scss';
+import styles from './GrowiNavbar.module.scss';
 
 
 const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
@@ -138,7 +138,7 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchPage } = useIsSearchPage();
 
   return (
-    <nav id="grw-navbar" className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
+    <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
         <a className="grw-logo d-block" href="/">
@@ -158,7 +158,7 @@ export const GrowiNavbar = (): JSX.Element => {
       </ul>
 
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
-        <div className="grw-global-search grw-global-search-top position-absolute">
+        <div className="grw-global-search-container position-absolute">
           <GlobalSearch />
         </div>
       ) }

@@ -13,7 +13,7 @@ import { IPageSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
 
 
-import './SearchTypeahead.scss';
+import styles from './SearchTypeahead.module.scss';
 
 
 type ResetFormButtonProps = {
@@ -212,7 +212,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const isOpenAlways = helpElement != null;
 
   return (
-    <div className="search-typeahead">
+    <div className={`search-typeahead ${styles['search-typeahead']}`}>
       <AsyncTypeahead
         {...props}
         id="search-typeahead-asynctypeahead"
