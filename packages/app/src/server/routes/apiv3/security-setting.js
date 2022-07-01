@@ -1104,7 +1104,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GoogleOAuthSetting'
    */
-  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
@@ -1120,6 +1120,8 @@ module.exports = (crowi) => {
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
