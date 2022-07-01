@@ -1,14 +1,14 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
-
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomScriptEditor from '../CustomScriptEditor';
 

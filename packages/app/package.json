@@ -176,6 +176,7 @@
     "@types/jquery": "^3.5.8",
     "@types/multer": "^1.4.5",
     "@types/react-dom": "^17.0.9",
+    "@types/jqueryui": "^1.12.16",
     "autoprefixer": "^9.0.0",
     "bootstrap": "^4.5.0",
     "browser-sync": "^2.27.7",
