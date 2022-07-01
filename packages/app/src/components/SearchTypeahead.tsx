@@ -208,7 +208,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     );
   }, [disableIncrementalSearch, helpElement, input, isForcused]);
 
-  const isLoading = searchResult == null && searchError == null;
+  const isLoading = searchResult !== undefined && searchError == null;
   const isOpenAlways = helpElement != null;
 
   return (
