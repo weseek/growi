@@ -13,7 +13,7 @@ import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websoc
 import {
   useSiteUrl,
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
-  useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
@@ -75,7 +75,6 @@ const ContextExtractorOnce: FC = () => {
   const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
-  const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
   const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull) ?? false;
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
@@ -136,7 +135,6 @@ const ContextExtractorOnce: FC = () => {
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
-  useIsDeleted(isDeleted);
   useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
   useIsTrashPage(isTrashPage);
