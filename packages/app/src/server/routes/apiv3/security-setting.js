@@ -511,10 +511,13 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: updated param
    */
-  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
     const { isEnabled, authId } = req.body;
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
+
+    const parameters = {};
 
     // Reflect request param
     setupStrategies = setupStrategies.filter(strategy => strategy !== authId);
@@ -531,7 +534,65 @@ module.exports = (crowi) => {
       const responseParams = {
         [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
       };
-
+      switch (authId) {
+        case 'local':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_DISABLED;
+          break;
+        case 'ldap':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_DISABLED;
+          break;
+        case 'saml':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_DISABLED;
+          break;
+        case 'oidc':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
+          break;
+        case 'basic':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_DISABLED;
+          break;
+        case 'google':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_DISABLED;
+          break;
+        case 'github':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
+          break;
+        case 'twitter':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_DISABLED;
+          break;
+      }
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
     }
     catch (err) {
