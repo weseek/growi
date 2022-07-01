@@ -9,10 +9,6 @@ module.exports = () => {
   return async(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<any> => {
 
     // TODO: update after impl login, installer
-    if (req.session.csrfSecret) {
-      return next();
-    }
-
     try {
       const targetMethods = ['POST', 'PUT', 'DELETE'];
       if (targetMethods.includes(req.method.toUpperCase())) {
