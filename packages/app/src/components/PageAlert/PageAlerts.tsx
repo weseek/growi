@@ -19,9 +19,9 @@ export const PageAlerts = (): JSX.Element => {
         {/* alerts */}
         <FixPageGrantAlert />
         <PageGrantAlert />
+        <TrashPageAlert />
         <PageStaleAlert />
         <OldRevisionAlert />
-        <TrashPageAlert />
       </div>
     </div>
   );
