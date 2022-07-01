@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-import { allLocales } from '~/next-i18next.config';
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 
@@ -83,7 +83,7 @@ module.exports = (crowi) => {
           if (!User.isEmailValid(email)) throw new Error('email is not included in whitelist');
           return true;
         }),
-      body('lang').isString().isIn(allLocales),
+      body('lang').isString().isIn(i18n.locales),
       body('isEmailPublished').isBoolean(),
       body('slackMemberId').optional().isString(),
     ],
