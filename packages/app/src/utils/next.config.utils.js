@@ -6,8 +6,10 @@ const path = require('path');
 const nodeModulesPath = path.resolve(__dirname, '../../../../node_modules');
 
 
+const defaultOpts = { ignorePackageNames: [] };
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const listScopedPackages = (scopes) => {
+export const listScopedPackages = (scopes, opts = defaultOpts) => {
   const scopedPackages = [];
 
   fs.readdirSync(nodeModulesPath)
@@ -22,7 +24,7 @@ export const listScopedPackages = (scopes) => {
             folderName,
             'package.json',
           ));
-          if (!ignoreTranspileModules) {
+          if (!ignoreTranspileModules && !opts.ignorePackageNames.includes(name)) {
             scopedPackages.push(name);
           }
         });
