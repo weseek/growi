@@ -218,6 +218,17 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(e.message));
     }
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(SupportedAction.ACTION_ATTACHMENT_DOWNLOAD, parameters);
+
     return fileStream.pipe(res);
   }
 
