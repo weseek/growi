@@ -230,7 +230,7 @@ ul.pagination {
     }
   }
 
-  .grw-sidebar-nav {
+  .grw-sidebar-nav, .grw-sidebar-nav-skeleton {
     .btn {
       @include button-variant(
         $bgcolor-sidebar,

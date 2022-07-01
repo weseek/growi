@@ -62,7 +62,8 @@ const GlobalNavigation = () => {
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
   return isLoaded
-    ? <SidebarNav onItemSelected={itemSelectedHandler} />
+    // ? <SidebarNav onItemSelected={itemSelectedHandler} />
+    ? <SidebarNavSkeleton/>
     : <SidebarNavSkeleton/>;
 };
 

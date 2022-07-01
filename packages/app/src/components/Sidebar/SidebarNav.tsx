@@ -49,6 +49,17 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   );
 };
 
+const PrimaryItemSkeleton: FC = () => {
+  return (
+    <button
+      type="button"
+      className="d-block btn btn-primary"
+    >
+      <i className="material-icons">format_list_bulleted</i>
+    </button>
+  );
+};
+
 type SecondaryItemProps = {
   label: string,
   href: string,
@@ -62,6 +73,15 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
   return (
     <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
       <i className="material-icons">{iconName}</i>
+    </a>
+  );
+});
+
+// eslint-disable-next-line react/display-name
+const SecondaryItemSkeleton: FC = memo(() => {
+  return (
+    <a href='/' className="d-block btn btn-primary">
+      <i className="material-icons">format_list_bulleted</i>
     </a>
   );
 });
@@ -105,7 +125,20 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
 export const SidebarNavSkeleton: FC = () => {
   return (
-    <div className="grw-sidebar-nav-skeleton"></div>
+    <div className="grw-sidebar-nav-skeleton">
+      <div className="grw-sidebar-nav-primary-container">
+        <PrimaryItemSkeleton />
+        <PrimaryItemSkeleton />
+        <PrimaryItemSkeleton />
+        <PrimaryItemSkeleton />
+      </div>
+      <div className="grw-sidebar-nav-secondary-container">
+        <SecondaryItemSkeleton />
+        <SecondaryItemSkeleton />
+        <SecondaryItemSkeleton />
+        <SecondaryItemSkeleton />
+      </div>
+    </div>
   );
 };
 
