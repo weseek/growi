@@ -18,6 +18,8 @@ import SidebarContents from './Sidebar/SidebarContents';
 import SidebarNav from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
+import './Sidebar.scss';
+
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
