@@ -81,7 +81,7 @@ module.exports = function(crowi, app) {
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
-  app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
+  app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
   app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
