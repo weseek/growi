@@ -1152,7 +1152,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GitHubOAuthSetting'
    */
-  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
@@ -1167,6 +1167,8 @@ module.exports = (crowi) => {
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
