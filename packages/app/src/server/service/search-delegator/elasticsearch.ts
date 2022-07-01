@@ -14,10 +14,11 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey, UpdateOrInsertPagesOpts,
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
 } from '../../interfaces/search';
 import { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
+import { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
 import ElasticsearchClient from './elasticsearch-client';
