@@ -1,40 +1,44 @@
-import React, {
-  FC, useState, useCallback, useRef,
-} from 'react';
-import { useTranslation } from 'next-i18next';
+import React, { useState, useCallback, useRef } from 'react';
+
 import assert from 'assert';
 
-import AppContainer from '~/client/services/AppContainer';
-import { IFocusable } from '~/client/interfaces/focusable';
-import { useGlobalSearchFormRef } from '~/stores/ui';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { IPageWithMeta } from '~/interfaces/page';
+import { useTranslation } from 'next-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { IFocusable } from '~/client/interfaces/focusable';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+import {
+  useCurrentPagePath, useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
+} from '~/stores/context';
+import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
-import { useCurrentPagePath } from '~/stores/context';
+
+
+import './GlobalSearch.scss';
 
 
 type Props = {
-  appContainer: AppContainer,
-
   dropup?: boolean,
 }
 
-const GlobalSearch: FC<Props> = (props: Props) => {
-  const { appContainer, dropup } = props;
+export const GlobalSearch = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+
+  const { dropup } = props;
 
   const globalSearchFormRef = useRef<IFocusable>(null);
 
   useGlobalSearchFormRef(globalSearchFormRef);
 
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const { data: isSearchScopeChildrenAsDefault } = useIsSearchScopeChildrenAsDefault();
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
   const [isFocused, setFocused] = useState<boolean>(false);
 
-  const { data: currentPagePath } = useCurrentPagePath();
 
   const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
     assert(data.length > 0);
@@ -65,9 +69,11 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     ? t('header_search_box.label.This tree')
     : t('header_search_box.label.All pages');
 
-  const isSearchServiceReachable = appContainer.getConfig().isSearchServiceReachable;
-
   const isIndicatorShown = !isFocused && (text.length === 0);
+
+  if (isScopeChildren == null || isSearchServiceReachable == null) {
+    return <></>;
+  }
 
   return (
     <div className={`form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
@@ -118,10 +124,3 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer]);
-
-export default GlobalSearchWrapper;

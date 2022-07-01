@@ -1,15 +1,3 @@
-.grw-navbar-bottom {
-  height: $grw-navbar-bottom-height;
-
-  // apply transition
-  transition-property: bottom;
-  @include apply-navigation-transition();
-
-  &.grw-navbar-bottom-drawer-opened {
-    bottom: -$grw-navbar-bottom-height;
-  }
-}
-
 .grw-custom-nav-tab,
 .grw-custom-nav-dropdown {
   svg {

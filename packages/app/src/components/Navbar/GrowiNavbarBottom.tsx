@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-
-import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
-import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
-import GlobalSearch from './GlobalSearch';
+import { GlobalSearch } from './GlobalSearch';
 
-const GrowiNavbarBottom = (props) => {
+import './GrowiNavbarBottom.scss';
+
+
+export const GrowiNavbarBottom = (): JSX.Element => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
@@ -73,6 +74,3 @@ const GrowiNavbarBottom = (props) => {
     </div>
   );
 };
-
-
-export default GrowiNavbarBottom;

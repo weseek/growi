@@ -2,8 +2,10 @@ import React, { FC, memo, useCallback } from 'react';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
+
+import './SidebarNav.scss';
 
 
 type PrimaryItemProps = {
