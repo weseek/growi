@@ -1,5 +1,6 @@
 import { Ref, Nullable } from './common';
 import { HasObjectId } from './has-object-id';
+import { IPageOperationProcessData } from './page-operation';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
 import { ITag } from './tag';
@@ -11,7 +12,7 @@ export interface IPage {
   status: string,
   revision: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: Ref<IUser>,
+  creator: any,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
@@ -35,7 +36,7 @@ export interface IPage {
 export const PageGrant = {
   GRANT_PUBLIC: 1,
   GRANT_RESTRICTED: 2,
-  GRANT_SPECIFIED: 3,
+  GRANT_SPECIFIED: 3, // DEPRECATED
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
 };
@@ -43,7 +44,7 @@ export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
 export type IPageHasId = IPage & HasObjectId;
 
-export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
+export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
 export type IPageInfo = {
   isV5Compatible: boolean,
@@ -74,7 +75,7 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && ('isEmpty' in pageInfo) && pageInfo.isEmpty === false;
+  return pageInfo != null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,8 +115,8 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
 
 export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
-export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+export type IPageToDeleteWithMeta<T = IPageInfoForEntity | unknown> = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string | null}), T>;
+export type IPageToRenameWithMeta<T = IPageInfoForEntity | unknown> = IPageToDeleteWithMeta<T>;
 
 export type IPageGrantData = {
   grant: number,

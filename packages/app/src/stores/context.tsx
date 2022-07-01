@@ -12,6 +12,10 @@ import { useStaticSWR } from './use-static-swr';
 type Nullable<T> = T | null;
 
 
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
+
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
@@ -30,6 +34,10 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+};
+
+export const useEmptyPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('emptyPageId', initialData);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -58,10 +66,6 @@ export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error
 
 export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
-};
-
-export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
 };
 
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -152,6 +156,9 @@ export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRRespon
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
+export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
+};
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('hasParent', initialData);
 };
@@ -162,6 +169,10 @@ export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boole
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+};
+
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
 };
 
 

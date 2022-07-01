@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
+import { useCurrentUpdatedAt, useIsTrashPage, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
+import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
-import EmptyTrashModal from '../EmptyTrashModal';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -22,10 +21,13 @@ const onDeletedHandler = (pathOrPathsToDelete, isRecursively, isCompletely) => {
 };
 
 const TrashPageAlert = (props) => {
-  const { t, pageContainer } = props;
+  const { t } = useTranslation();
+  const { pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
+    pageId, revisionId, path, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
+
+  const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
   const { data: shareLinkId } = useShareLinkId();
 
   /*
@@ -36,18 +38,10 @@ const TrashPageAlert = (props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   const { data: updatedAt } = useCurrentUpdatedAt();
-  const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
+  const { data: isTrashPage } = useIsTrashPage();
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
-
-  function openEmptyTrashModalHandler() {
-    setIsEmptyTrashModalShown(true);
-  }
-
-  function closeEmptyTrashModalHandler() {
-    setIsEmptyTrashModalShown(false);
-  }
 
   function openPutbackPageModalHandler() {
     const putBackedHandler = (path) => {
@@ -66,20 +60,6 @@ const TrashPageAlert = (props) => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }
-
-  function renderEmptyButton() {
-    return (
-      <button
-        href="#"
-        type="button"
-        className="btn btn-danger rounded-pill btn-sm ml-auto"
-        data-target="#emptyTrash"
-        onClick={openEmptyTrashModalHandler}
-      >
-        <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
-      </button>
-    );
   }
 
   function renderTrashPageManagementButtons() {
@@ -105,23 +85,12 @@ const TrashPageAlert = (props) => {
     );
   }
 
-  function renderModals() {
-    return (
-      <>
-        <EmptyTrashModal
-          isOpen={isEmptyTrashModalShown}
-          onClose={closeEmptyTrashModalHandler}
-        />
-      </>
-    );
-  }
-
   return (
     <>
       <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-          {isDeleted && (
+          {isTrashPage && (
             <>
               <br />
               <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
@@ -132,13 +101,15 @@ const TrashPageAlert = (props) => {
           )}
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
-          <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
-          { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+          { isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
       </div>
-      {renderModals()}
     </>
   );
+};
+
+TrashPageAlert.propTypes = {
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 /**
@@ -146,10 +117,4 @@ const TrashPageAlert = (props) => {
  */
 const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [PageContainer]);
 
-
-TrashPageAlert.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-};
-
-export default withTranslation()(TrashPageAlertWrapper);
+export default TrashPageAlertWrapper;

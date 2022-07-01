@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import Revision from './Revision';
 
@@ -162,4 +162,9 @@ PageRevisionTable.propTypes = {
   onChangeTargetInvoked: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(PageRevisionTable);
+const PageRevisionTableWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PageRevisionTable t={t} {...props} />;
+};
+
+export default PageRevisionTableWrapperFC;

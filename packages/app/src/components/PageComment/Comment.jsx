@@ -69,7 +69,7 @@ class Comment extends React.PureComponent {
       return;
     }
 
-    const { interceptorManager } = this.props.appContainer;
+    const { interceptorManager } = window;
 
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
@@ -133,7 +133,7 @@ class Comment extends React.PureComponent {
   async renderHtml() {
 
     const { growiRenderer, appContainer } = this.props;
-    const { interceptorManager } = appContainer;
+    const { interceptorManager } = window;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);

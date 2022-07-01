@@ -1,10 +1,13 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+
 import UserInviteModal from './UserInviteModal';
 
 class InviteUserControl extends React.Component {
@@ -24,12 +27,20 @@ class InviteUserControl extends React.Component {
 
 }
 
-const InviteUserControlWrapper = withUnstatedContainers(InviteUserControl, [AppContainer, AdminUsersContainer]);
-
 InviteUserControl.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
-export default withTranslation()(InviteUserControlWrapper);
+const InviteUserControlWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <InviteUserControl t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const InviteUserControlWrapper = withUnstatedContainers(InviteUserControlWrapperFC, [AppContainer, AdminUsersContainer]);
+
+export default InviteUserControlWrapper;

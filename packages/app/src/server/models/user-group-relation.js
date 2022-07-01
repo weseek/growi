@@ -12,7 +12,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema({
   relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
   relatedUser: { type: ObjectId, ref: 'User', required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);

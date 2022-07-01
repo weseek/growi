@@ -1,5 +1,6 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
+import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 
 const debug = require('debug')('growi:models:external-account');
 const mongoose = require('mongoose');
@@ -15,7 +16,8 @@ const schema = new mongoose.Schema({
   providerType: { type: String, required: true },
   accountId: { type: String, required: true },
   user: { type: ObjectId, ref: 'User', required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 // compound index
 schema.index({ providerType: 1, accountId: 1 }, { unique: true });
@@ -101,6 +103,10 @@ class ExternalAccount {
         if (account != null) {
           debug(`ExternalAccount '${accountId}' is found `, account);
           return account;
+        }
+
+        if (usernameToBeRegistered == null) {
+          throw new NullUsernameToBeRegisteredError('username_should_not_be_null');
         }
 
         const User = ExternalAccount.crowi.model('User');

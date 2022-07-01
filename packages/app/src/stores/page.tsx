@@ -12,7 +12,8 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { apiGet } from '../client/util/apiv1-client';
-import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
+import { Nullable } from '../interfaces/common';
+import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId, useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
@@ -92,7 +93,7 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
   return useSWRxPageList(path, pageNumber, termNumber);
 };
 
-export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
+export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo, Error> => {
   const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
   return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {

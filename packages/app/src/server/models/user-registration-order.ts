@@ -1,11 +1,12 @@
+import crypto from 'crypto';
+
+import { getOrCreateModel } from '@growi/core';
+import { addHours } from 'date-fns';
 import {
   Schema, Model, Document,
 } from 'mongoose';
-
-import { addHours } from 'date-fns';
 import uniqueValidator from 'mongoose-unique-validator';
-import crypto from 'crypto';
-import { getOrCreateModel } from '@growi/core';
+
 
 export interface IUserRegistrationOrder {
   token: string,
@@ -35,10 +36,7 @@ const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderMo
   isRevoked: { type: Boolean, default: false, required: true },
   expiredAt: { type: Date, default: expiredAt, required: true },
 }, {
-  timestamps: {
-    createdAt: true,
-    updatedAt: false,
-  },
+  timestamps: true,
 });
 schema.plugin(uniqueValidator);
 

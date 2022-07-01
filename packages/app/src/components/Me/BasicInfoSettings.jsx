@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -163,11 +163,19 @@ class BasicInfoSettings extends React.Component {
 
 }
 
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [PersonalContainer]);
-
 BasicInfoSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
-export default withTranslation()(BasicInfoSettingsWrapper);
+const BasicInfoSettingsWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <BasicInfoSettings t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettingsWrapperFC, [PersonalContainer]);
+
+export default BasicInfoSettingsWrapper;

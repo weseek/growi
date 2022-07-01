@@ -58,7 +58,9 @@ export default class RevisionBody extends React.PureComponent {
     const additionalClassName = this.props.additionalClassName || '';
     return (
       <div
-        ref={this.props.inputRef}
+        ref={(elem) => {
+          this.element = elem;
+        }}
         id="wiki"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
@@ -71,7 +73,6 @@ export default class RevisionBody extends React.PureComponent {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,

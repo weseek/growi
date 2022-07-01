@@ -1,23 +1,22 @@
 import React, { useCallback } from 'react';
 
+import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-
-import { useSWRxPageInfo } from '../../stores/page';
-import { useSWRBookmarkInfo } from '../../stores/bookmark';
-import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
-import SubscribeButton from '../SubscribeButton';
-import LikeButtons from '../LikeButtons';
+import { useSWRBookmarkInfo } from '../../stores/bookmark';
+import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
-import SeenUserInfo from '../User/SeenUserInfo';
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
+import LikeButtons from '../LikeButtons';
+import SubscribeButton from '../SubscribeButton';
+import SeenUserInfo from '../User/SeenUserInfo';
 
 
 type CommonProps = {
@@ -34,7 +33,7 @@ type CommonProps = {
 type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId: string,
+  revisionId: string | null,
   path?: string | null,
   pageInfo: IPageInfoAll,
 }
@@ -155,27 +154,33 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      <span>
-        <SubscribeButton
-          status={pageInfo.subscriptionStatus}
-          onClick={subscribeClickhandler}
+      {revisionId != null && (
+        <span>
+          <SubscribeButton
+            status={pageInfo.subscriptionStatus}
+            onClick={subscribeClickhandler}
+          />
+        </span>
+      )}
+      {revisionId != null && (
+        <LikeButtons
+          hideTotalNumber={isCompactMode}
+          onLikeClicked={likeClickhandler}
+          sumOfLikers={sumOfLikers}
+          isLiked={isLiked}
+          likers={likers}
         />
-      </span>
-      <LikeButtons
-        hideTotalNumber={isCompactMode}
-        onLikeClicked={likeClickhandler}
-        sumOfLikers={sumOfLikers}
-        isLiked={isLiked}
-        likers={likers}
-      />
-      <BookmarkButtons
-        hideTotalNumber={isCompactMode}
-        bookmarkCount={bookmarkCount}
-        isBookmarked={isBookmarked}
-        bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-        onBookMarkClicked={bookmarkClickHandler}
-      />
-      { !isCompactMode && (
+      )}
+      {revisionId != null && (
+        <BookmarkButtons
+          hideTotalNumber={isCompactMode}
+          bookmarkCount={bookmarkCount}
+          isBookmarked={isBookmarked}
+          bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
+          onBookMarkClicked={bookmarkClickHandler}
+        />
+      )}
+      {revisionId != null && !isCompactMode && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
@@ -184,6 +189,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
+          alignRight
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
@@ -212,7 +218,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  if (revisionId == null || error != null) {
+  if (error != null) {
     return <></>;
   }
 
@@ -220,13 +226,12 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-
   return (
     <SubNavButtonsSubstance
       {...props}
       pageInfo={pageInfo}
       pageId={pageId}
-      revisionId={revisionId}
+      revisionId={revisionId ?? null}
       path={path}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}

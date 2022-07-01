@@ -181,6 +181,12 @@ body.on-edit {
     }
   }
 
+  .grw-copy-dropdown {
+    .btn-copy {
+      padding: 3px !important; // overwrite padding
+    }
+  }
+
   &.builtin-editor {
     /*****************
     * Editor styles

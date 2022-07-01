@@ -38,7 +38,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
           href={`/_search?q=tag:${encodeURIComponent(tag.name)}`}
           className={tagListClasses}
         >
-          <div className="text-truncate">{tag.name}</div>
+          <div className="text-truncate list-tag-name">{tag.name}</div>
           <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
         </a>
       );
@@ -51,7 +51,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
 
   return (
     <>
-      <ul className="list-group text-left mb-4">
+      <ul className="list-group text-left mb-5">
         {generateTagList(tagData)}
       </ul>
       {isPaginationShown

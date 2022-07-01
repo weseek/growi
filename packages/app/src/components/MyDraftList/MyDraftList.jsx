@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -171,12 +171,6 @@ class MyDraftList extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const MyDraftListWrapper = withUnstatedContainers(MyDraftList, [PageContainer, EditorContainer]);
-
-
 MyDraftList.propTypes = {
   t: PropTypes.func.isRequired, // react-i18next
 
@@ -184,4 +178,14 @@ MyDraftList.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default withTranslation()(MyDraftListWrapper);
+const MyDraftListWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <MyDraftList t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
+
+export default MyDraftListWrapper;

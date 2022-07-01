@@ -1,16 +1,19 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import UserGroupUserFormByInput from './UserGroupUserFormByInput';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
+import AppContainer from '~/client/services/AppContainer';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
+import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
+import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 
 class UserGroupUserModal extends React.Component {
 
@@ -82,9 +85,13 @@ UserGroupUserModal.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupUserModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupUserModal t={t} {...props} />;
+};
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModal, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModalWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupUserModalWrapper);
+export default UserGroupUserModalWrapper;

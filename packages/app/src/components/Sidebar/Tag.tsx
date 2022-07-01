@@ -10,6 +10,7 @@ import TagList from '../TagList';
 
 
 const PAGING_LIMIT = 10;
+const TAG_CLOUD_LIMIT = 20;
 
 const Tag: FC = () => {
   const [activePage, setActivePage] = useState<number>(1);
@@ -19,6 +20,9 @@ const Tag: FC = () => {
   const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
+
+  const { data: tagDataCloud } = useSWRxTagsList(TAG_CLOUD_LIMIT, 0);
+  const tagCloudData: IDataTagCount[] = tagDataCloud?.data || [];
 
   const { t } = useTranslation('');
 
@@ -44,21 +48,8 @@ const Tag: FC = () => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      <h2 className="my-3">{t('popular_tags')}</h2>
 
-      <div className="px-3 text-center">
-        <TagCloudBox tags={tagData} />
-      </div>
-
-      <div className="d-flex justify-content-center my-5">
-        <button
-          className="btn btn-primary rounded px-5"
-          type="button"
-          onClick={() => { window.location.href = '/tags' }}
-        >
-          {t('Check All tags')}
-        </button>
-      </div>
+      <h3 className="my-3">{t('tag_list')}</h3>
 
       { isLoading
         ? (
@@ -76,6 +67,22 @@ const Tag: FC = () => {
           />
         )
       }
+
+      <div className="d-flex justify-content-center my-5">
+        <button
+          className="btn btn-primary rounded px-4"
+          type="button"
+          onClick={() => { window.location.href = '/tags' }}
+        >
+          {t('Check All tags')}
+        </button>
+      </div>
+
+      <h3 className="my-3">{t('popular_tags')}</h3>
+
+      <div className="text-center">
+        <TagCloudBox tags={tagCloudData} />
+      </div>
     </div>
   );
 

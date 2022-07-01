@@ -3,7 +3,7 @@ import React from 'react';
 import { isInteger } from 'core-js/fn/number';
 import { format, parse } from 'date-fns';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -258,15 +258,20 @@ class ShareLinkForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [PageContainer]);
-
 ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onCloseForm: PropTypes.func,
 };
 
-export default withTranslation()(ShareLinkFormWrapper);
+const ShareLinkFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ShareLinkForm t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkFormWrapperFC, [PageContainer]);
+
+export default ShareLinkFormWrapper;

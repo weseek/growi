@@ -11,11 +11,13 @@ import { throttle, debounce } from 'throttle-debounce';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { apiGet, apiPost } from '~/client/util/apiv1-client';
+import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useIsIndentSizeForced, useCurrentPagePath } from '~/stores/context';
 import {
-  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled,
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+} from '~/stores/context';
+import {
+  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
 } from '~/stores/editor';
 import {
   EditorMode,
@@ -36,9 +38,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 const logger = loggerFactory('growi:PageEditor');
 
 
-declare let window: {
-  globalEmitter: EventEmitter,
-};
+declare const globalEmitter: EventEmitter;
+
 
 type EditorRef = {
   setValue: (markdown: string) => void,
@@ -85,6 +86,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
@@ -122,7 +125,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
 
     try {
       // disable unsaved warning
@@ -141,7 +144,7 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer]);
+  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer, pageTags]);
 
 
   /**
@@ -165,8 +168,6 @@ const PageEditor = (props: Props): JSX.Element => {
 
       const formData = new FormData();
       const { pageId, path } = pageContainer.state;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      formData.append('_csrf', appContainer.csrfToken!);
       formData.append('file', file);
       if (path != null) {
         formData.append('path', path);
@@ -175,7 +176,7 @@ const PageEditor = (props: Props): JSX.Element => {
         formData.append('page_id', pageId);
       }
 
-      res = await apiPost('/attachments.add', formData);
+      res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
@@ -201,7 +202,7 @@ const PageEditor = (props: Props): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [appContainer.csrfToken, editorMode, mutateGrant, pageContainer]);
+  }, [editorMode, mutateGrant, pageContainer]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -322,10 +323,10 @@ const PageEditor = (props: Props): JSX.Element => {
         scrollSyncHelper.scrollPreview(previewRef.current, line);
       }
     };
-    window.globalEmitter.on('setCaretLine', handler);
+    globalEmitter.on('setCaretLine', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('setCaretLine', handler);
+      globalEmitter.removeListener('setCaretLine', handler);
     };
   }, []);
 
@@ -343,10 +344,10 @@ const PageEditor = (props: Props): JSX.Element => {
         editorRef.current.setValue(markdown);
       }
     };
-    window.globalEmitter.on('updateEditorValue', handler);
+    globalEmitter.on('updateEditorValue', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('updateEditorValue', handler);
+      globalEmitter.removeListener('updateEditorValue', handler);
     };
   }, []);
 
@@ -410,8 +411,7 @@ const PageEditor = (props: Props): JSX.Element => {
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           markdown={markdown}
-          // eslint-disable-next-line no-return-assign
-          inputRef={previewRef}
+          ref={previewRef}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={false}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}

@@ -5,7 +5,7 @@ import React, {
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
@@ -24,7 +24,8 @@ const {
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
 
   const { data: currentUser } = useCurrentUser();
 
@@ -310,16 +311,13 @@ const PageCreateModal = (props) => {
   );
 };
 
+PageCreateModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
 
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
+const PageCreateModalWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
-
-PageCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(ModalControlWrapper);
+export default PageCreateModalWrapper;

@@ -468,6 +468,16 @@ ul.pagination {
 }
 
 /*
+ * GROWI popular tags
+ */
+.grw-popular-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
+  }
+}
+
+/*
  * admin settings
  */
 .admin-setting-header {

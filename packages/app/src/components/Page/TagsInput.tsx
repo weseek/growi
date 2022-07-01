@@ -1,11 +1,10 @@
 import React, {
   FC, useRef, useState, useCallback,
 } from 'react';
+
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import { apiGet } from '~/client/util/apiv1-client';
-import { toastError } from '~/client/util/apiNotification';
-import { IResTagsSearchApiv1 } from '~/interfaces/tag';
+import { useSWRxTagsSearch } from '~/stores/tag';
 
 type TypeaheadInstance = {
   _handleMenuItemSelect: (activeItem: string, event: React.KeyboardEvent) => void,
@@ -24,7 +23,11 @@ const TagsInput: FC<Props> = (props: Props) => {
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
   const [resultTags, setResultTags] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const { data: tagsSearch, error } = useSWRxTagsSearch(searchQuery);
+
+  const isLoading = error == null && tagsSearch === undefined;
 
   const changeHandler = useCallback((selected: string[]) => {
     if (props.onTagsUpdated != null) {
@@ -33,20 +36,12 @@ const TagsInput: FC<Props> = (props: Props) => {
   }, [props]);
 
   const searchHandler = useCallback(async(query: string) => {
-    setLoading(true);
-    try {
-      // TODO: 91698 SWRize
-      const res = await apiGet('/tags.search', { q: query }) as IResTagsSearchApiv1;
-      res.tags.unshift(query);
-      setResultTags(Array.from(new Set(res.tags)));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setLoading(false);
-    }
-  }, []);
+    const tagsSearchData = tagsSearch?.tags || [];
+    setSearchQuery(query);
+    tagsSearchData.unshift(query);
+    setResultTags(Array.from(new Set(tagsSearchData)));
+
+  }, [tagsSearch?.tags]);
 
   const keyDownHandler = useCallback((event: React.KeyboardEvent) => {
     if (event.key === ' ') {

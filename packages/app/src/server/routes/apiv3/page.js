@@ -246,7 +246,8 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { pageId, path, user } = req.query;
+    const { user } = req;
+    const { pageId, path } = req.query;
 
     if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
@@ -639,12 +640,12 @@ module.exports = (crowi) => {
     const { fromPath, toPath } = req.query;
 
     try {
-      const fromPage = await Page.findByPath(fromPath);
+      const fromPage = await Page.findByPath(fromPath, true);
       if (fromPage == null) {
         return res.apiv3Err(new ErrorV3('fromPage is Null'), 400);
       }
 
-      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user, {}, true);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
         return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
