@@ -215,9 +215,11 @@ class PageService {
     });
 
     // revert
-    this.pageEvent.on('revert', async(page, user) => {
+    this.pageEvent.on('revert', async(page, user, descendantPages?) => {
+      const isRecursively = descendantPages != null;
+      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_REVERT : SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT;
       try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
+        await this.createAndSendNotifications(page, user, action, descendantPages);
       }
       catch (err) {
         logger.error(err);
@@ -848,8 +850,6 @@ class PageService {
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
           descendantPages = descendantPages.concat(batch);
-          // pageEvent.emit('rename', targetPage, user, batch);
-          // console.log('What is the type of batch\n', batch);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1426,6 +1426,7 @@ class PageService {
       this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
     else {
+
       this.pageEvent.emit('delete', page, user);
     }
 
@@ -1604,7 +1605,7 @@ class PageService {
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
-    const pageEvent = this.pageEvent;
+    let descendantPages: PageDocument[] = [];
 
     const writeStream = new Writable({
       objectMode: true,
@@ -1614,7 +1615,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
-          pageEvent.emit('delete', targetPage, user, batch);
+          descendantPages = descendantPages.concat(batch);
           logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1635,6 +1636,8 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+
+    this.pageEvent.emit('delete', targetPage, user, descendantPages);
 
     return nDeletedNonEmptyPages;
   }
@@ -1805,6 +1808,7 @@ class PageService {
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
+
     let descendantPages: PageDocument[] = [];
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
@@ -1938,10 +1942,9 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
-    this.pageEvent.emit('revert', page, user);
-
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      this.pageEvent.emit('revert', page, user);
     }
     else {
       let pageOp;
@@ -2056,12 +2059,14 @@ class PageService {
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
+    let descendantPages: PageDocument[] = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
+          descendantPages = descendantPages.concat(batch);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -2082,6 +2087,7 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+    this.pageEvent.emit('revert', targetPage, user, descendantPages);
 
     return count;
   }
