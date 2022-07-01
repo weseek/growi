@@ -2,6 +2,9 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
+import { isServer } from '@growi/core';
+import dynamic from 'next/dynamic';
+
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
@@ -15,43 +18,53 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import SidebarContents from './Sidebar/SidebarContents';
-import SidebarNav from './Sidebar/SidebarNav';
+import { SidebarNavSkeleton } from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import './Sidebar.scss';
+
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
 
-// const GlobalNavigation = () => {
-//   const { data: isDrawerMode } = useDrawerMode();
-//   const { data: currentContents } = useCurrentSidebarContents();
-//   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
+const GlobalNavigation = () => {
+  const SidebarNav = dynamic(() => import('./Sidebar/SidebarNav').then(mod => mod.SidebarNav), { ssr: false });
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: currentContents } = useCurrentSidebarContents();
+  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
-//   const { scheduleToPut } = useUserUISettings();
+  const { scheduleToPut } = useUserUISettings();
 
-//   const itemSelectedHandler = useCallback((selectedContents) => {
-//     if (isDrawerMode) {
-//       return;
-//     }
+  const [isLoaded, setIsLoaded] = useState(false);
 
-//     let newValue = false;
+  useEffect(() => {
+    if (isServer()) return;
+    setIsLoaded(true);
+  });
+  const itemSelectedHandler = useCallback((selectedContents) => {
+    if (isDrawerMode) {
+      return;
+    }
 
-//     // already selected
-//     if (currentContents === selectedContents) {
-//       // toggle collapsed
-//       newValue = !isCollapsed;
-//     }
+    let newValue = false;
 
-//     mutateSidebarCollapsed(newValue, false);
-//     scheduleToPut({ isSidebarCollapsed: newValue });
+    // already selected
+    if (currentContents === selectedContents) {
+      // toggle collapsed
+      newValue = !isCollapsed;
+    }
 
-//   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
+    mutateSidebarCollapsed(newValue, false);
+    scheduleToPut({ isSidebarCollapsed: newValue });
 
-//   return <SidebarNav onItemSelected={itemSelectedHandler} />;
-// };
+  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
+
+  return isLoaded
+    ? <SidebarNav onItemSelected={itemSelectedHandler} />
+    : <SidebarNavSkeleton/>;
+};
 
 // const SidebarContentsWrapper = () => {
 //   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
@@ -300,7 +313,7 @@ const Sidebar = (): JSX.Element => {
           >
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
-                {/* <GlobalNavigation></GlobalNavigation> */}
+                <GlobalNavigation></GlobalNavigation>
               </div>
               <div
                 ref={resizableContainer}
