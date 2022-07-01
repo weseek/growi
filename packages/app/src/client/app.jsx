@@ -59,9 +59,7 @@ const pageContainer = new PageContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer,
-  editorContainer, personalContainer,
-  editorContainer, personalContainer,
+  appContainer, socketIoContainer, pageContainer, editorContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
