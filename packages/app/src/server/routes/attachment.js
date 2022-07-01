@@ -1,4 +1,6 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
+
 
 /* eslint-disable no-use-before-define */
 
@@ -134,6 +136,8 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
+
+  const activityEvent = crowi.event('activity');
 
   /**
    * Check the user is accessible to the related page
@@ -471,6 +475,8 @@ module.exports = function(crowi, app) {
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated,
     };
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
 
     res.json(ApiResponse.success(result));
 
