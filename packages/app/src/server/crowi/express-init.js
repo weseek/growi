@@ -129,10 +129,10 @@ module.exports = function(crowi, app) {
     sessionMiddleware(req, res, next);
   });
 
-  app.use(csrfGuard());
-
   // csurf should be initialized after express-session
   app.use(csrf({ cookie: false }));
+
+  app.use(csrfGuard());
 
   // passport
   debug('initialize Passport');

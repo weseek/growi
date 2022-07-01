@@ -6,7 +6,12 @@ const logger = loggerFactory('growi:middlewares:csrf-guard');
 
 module.exports = () => {
 
-  return async(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<void> => {
+  return async(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<any> => {
+
+    // // If request have csrfSecret, we can check csrf on the next csrf middleware.
+    // if (req.session.csrfSecret) {
+    //   return next();
+    // }
 
     try {
       const targetMethods = ['POST', 'PUT', 'DELETE'];
@@ -19,8 +24,8 @@ module.exports = () => {
       return next();
     }
     catch (err) {
-      logger.error(err.message);
-      return;
+      logger.error('Detected csrf attack');
+      return res.status(403).json({ err: err.message });
     }
   };
 
