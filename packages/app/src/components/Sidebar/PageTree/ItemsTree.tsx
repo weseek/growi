@@ -4,6 +4,7 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
+import { string } from 'yargs';
 
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -97,7 +98,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [pageId, setPageId] = useState();
+  const [pageId, setPageId] = useState('');
 
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
