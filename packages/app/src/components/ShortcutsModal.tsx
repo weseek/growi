@@ -6,6 +6,9 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import KeyboardReturnEnterIcon from '~/components/Icons/KeyboardReturnEnterIcon';
 import { useShortcutsModal } from '~/stores/modal';
 
+import './ShortcutsModal.scss';
+
+
 const ShortcutsModal = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -63,33 +66,33 @@ const ShortcutsModal = (): JSX.Element => {
                           {/* eslint-disable-next-line react/no-danger */}
                           <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Show Contributors') }} />:
                         </th>
-                        <td>
+                        <td className='text-nowrap'>
                           <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
                             {t('modal_shortcuts.global.Konami Code')}
                           </a>
                           <br />
                           <span className="key key-small">&uarr;</span>&nbsp;<span className="key key-small">&uarr;</span>
                           <span className="key key-small">&darr;</span>&nbsp;<span className="key key-small">&darr;</span>
-                          <span className="key key-small">&larr;</span>
                           <br />
-                          <span className="key key-small">&rarr;</span>
                           <span className="key key-small">&larr;</span>&nbsp;<span className="key key-small">&rarr;</span>
+                          <span className="key key-small">&larr;</span>&nbsp;<span className="key key-small">&rarr;</span>
+                          <br />
                           <span className="key key-small">B</span>&nbsp;<span className="key key-small">A</span>
                         </td>
                       </tr>
                       <tr>
                         <th>{t('modal_shortcuts.global.MirrorMode')}:</th>
-                        <td>
+                        <td className='text-nowrap'>
                           <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
                             {t('modal_shortcuts.global.Konami Code')}
                           </a>
                           <br />
                           <span className="key key-small">X</span>&nbsp;<span className="key key-small">X</span>
                           <span className="key key-small">B</span>&nbsp;<span className="key key-small">B</span>
-                          <span className="key key-small">A</span>
                           <br />
-                          <span className="key key-small">Y</span>
                           <span className="key key-small">A</span>&nbsp;<span className="key key-small">Y</span>
+                          <span className="key key-small">A</span>&nbsp;<span className="key key-small">Y</span>
+                          <br />
                           <span className="key key-small">&darr;</span>&nbsp;<span className="key key-small">&larr;</span>
                         </td>
                       </tr>

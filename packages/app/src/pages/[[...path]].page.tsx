@@ -39,7 +39,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -64,6 +64,7 @@ type Props = CommonProps & {
   // isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isSearchScopeChildrenAsDefault: boolean,
   // isMailerSetup: boolean,
   // isAclEnabled: boolean,
   // hasSlackConfig: boolean,
@@ -109,6 +110,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   // useIsMailerSetup(props.isMailerSetup);
   // useAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
@@ -285,6 +287,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
   // props.isMailerSetup = mailService.isMailerSetup;
   // props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();

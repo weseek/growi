@@ -3,6 +3,8 @@ import React from 'react';
 import { useGrowiVersion } from '~/stores/context';
 import { useShortcutsModal } from '~/stores/modal';
 
+import './SystemVersion.scss';
+
 const SystemVersion = (): JSX.Element => {
 
   const { open: openShortcutsModal } = useShortcutsModal();

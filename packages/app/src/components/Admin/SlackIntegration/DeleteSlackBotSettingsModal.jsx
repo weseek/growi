@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -90,5 +90,7 @@ DeleteSlackBotSettingsModal.propTypes = {
   onClose: PropTypes.func,
   onClickDeleteButton: PropTypes.func,
 };
+
+DeleteSlackBotSettingsModal.displayName = 'DeleteSlackBotSettingsModal';
 
 export default DeleteSlackBotSettingsModal;
