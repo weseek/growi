@@ -1,5 +1,9 @@
-@use './variables';
+@use './variables' as var;
 @use './bootstrap/init' as bs;
+
+:root {
+  font-size: var.$font-size-root;
+}
 
 body {
   overflow-y: scroll !important;
@@ -30,7 +34,7 @@ body.growi-layout-fluid .grw-container-convertible {
 
 // padding settings for GrowiNavbarBottom
 .page-wrapper {
-  padding-bottom: variables.$grw-navbar-bottom-height;
+  padding-bottom: var.$grw-navbar-bottom-height;
 
   @include bs.media-breakpoint-up(md) {
     padding-bottom: unset;
