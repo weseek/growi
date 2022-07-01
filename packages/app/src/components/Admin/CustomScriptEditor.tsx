@@ -16,12 +16,12 @@ require('jquery-ui/ui/widgets/resizable');
 interface IMyUnControlledCodeMirror extends IUnControlledCodeMirror {
   options?: EditorConfiguration & {
     autoRefresh: { force: boolean }
-    matchBrackets?: boolean
-    autoCloseBrackets?: boolean
+    // matchBrackets?: boolean
+    // autoCloseBrackets?: boolean
   }
   autoFocus?: boolean
 }
-declare class CodeMirrorAlpha extends React.Component<IMyUnControlledCodeMirror, any> {
+class CodeMirrorAlpha extends React.Component<IMyUnControlledCodeMirror, any> {
 }
 
 type MyUnControled = typeof CodeMirrorAlpha
@@ -41,7 +41,6 @@ const CustomScriptEditor = (props: Props): JSX.Element => {
     <CodeMirror2
       value={value}
       detach
-      autoFocus
       options={{
         mode: 'javascript',
         lineNumbers: true,
