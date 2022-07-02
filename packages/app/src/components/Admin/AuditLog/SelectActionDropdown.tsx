@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC,  useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -17,24 +17,28 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
     actionMap, availableActions, onChangeAction, onChangeMultipleAction,
   } = props;
 
-  const dropdownItems: Array<{actionCategory: SupportedActionCategoryType, actions: SupportedActionType[]}> = [
-    {
-      actionCategory: SupportedActionCategory.PAGE,
-      actions: PageActions.filter(action => availableActions.includes(action)),
-    },
-    {
-      actionCategory: SupportedActionCategory.COMMENT,
-      actions: CommentActions.filter(action => availableActions.includes(action)),
-    },
-    {
-      actionCategory: SupportedActionCategory.USER,
-      actions: UserActions.filter(action => availableActions.includes(action)),
-    },
-    {
-      actionCategory: SupportedActionCategory.ADMIN,
-      actions: AdminActions.filter(action => availableActions.includes(action)),
-    }
-  ];
+  const dropdownItems = useMemo<Array<{actionCategory: SupportedActionCategoryType, actions: SupportedActionType[]}>>(() => {
+    return (
+      [
+        {
+          actionCategory: SupportedActionCategory.PAGE,
+          actions: PageActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.COMMENT,
+          actions: CommentActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.USER,
+          actions: UserActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.ADMIN,
+          actions: AdminActions.filter(action => availableActions.includes(action)),
+        }
+      ]
+    )
+  }, [availableActions])
 
   const actionCheckboxChangedHandler = useCallback((action) => {
     if (onChangeAction != null) {
