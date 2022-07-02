@@ -49,11 +49,11 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onChangeMultipleAction]);
 
   return (
-    <div className="btn-group mr-2">
+    <div className="btn-group mr-2 admin-audit-log">
       <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
         <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
       </button>
-      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">
         {dropdownItems.map(item => (
           <div key={item.actionCategory}>
             <div className="dropdown-item">

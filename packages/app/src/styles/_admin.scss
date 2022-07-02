@@ -228,6 +228,13 @@ $slack-work-space-name-card-border: #efc1f6;
   //   }
   // }
 
+  .admin-audit-log {
+    .select-action-dropdown {
+      max-height: 500px;
+      overflow-y: scroll;
+    }
+  }
+
   #layoutOptions {
     .customize-layout-card {
       border: 4px solid $border-color;
