@@ -14,6 +14,21 @@
       {
         "type": "pwa-node",
         "request": "launch",
+        "name": "Debug: Current File",
+        "skipFiles": [
+          "<node_internals>/**"
+        ],
+        "console": "integratedTerminal",
+        "cwd": "${fileDirname}",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "ts-node",
+          "${file}"
+        ]
+      },
+      {
+        "type": "pwa-node",
+        "request": "launch",
         "name": "Debug: Server",
         "cwd": "${workspaceFolder}/packages/app",
         "runtimeExecutable": "yarn",
