@@ -59,7 +59,7 @@ module.exports = function(crowi) {
 
       req.flash('successMessage', req.t('message.complete_to_install2'));
 
-      const parameters = { action: SupportedAction.ACTION_REGISTRATION_SUCCESS };
+      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.redirect('/');
