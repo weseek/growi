@@ -1,8 +1,10 @@
-import React, { FC,  useMemo, useCallback } from 'react';
+import React, { FC, useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { SupportedActionType, SupportedActionCategoryType, SupportedActionCategory, PageActions, CommentActions, UserActions, AdminActions } from '~/interfaces/activity';
+import {
+  SupportedActionType, SupportedActionCategoryType, SupportedActionCategory, PageActions, CommentActions, UserActions, AdminActions,
+} from '~/interfaces/activity';
 
 type Props = {
   actionMap: Map<SupportedActionType, boolean>
@@ -35,10 +37,10 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         {
           actionCategory: SupportedActionCategory.ADMIN,
           actions: AdminActions.filter(action => availableActions.includes(action)),
-        }
+        },
       ]
-    )
-  }, [availableActions])
+    );
+  }, [availableActions]).filter(item => item.actions.length !== 0);
 
   const actionCheckboxChangedHandler = useCallback((action) => {
     if (onChangeAction != null) {
