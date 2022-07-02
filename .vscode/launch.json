@@ -24,6 +24,7 @@
           "<node_internals>/**"
         ],
         "restart": true,
+        "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "sourceMapPathOverrides": {
           "webpack://@growi/app/*": "${workspaceFolder}/packages/app/*"
