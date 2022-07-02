@@ -3,11 +3,9 @@ import React, { FC, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import {
-  SupportedActionType, AllSupportedActions, PageActions, CommentActions,
-} from '~/interfaces/activity';
+import { SupportedActionType, AllSupportedActions } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
-import { useAuditLogEnabled } from '~/stores/context';
+import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -55,6 +53,9 @@ export const AuditLogManagement: FC = () => {
   const activityList = activityData?.docs != null ? activityData.docs : [];
   const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
   const isLoading = activityData === undefined && error == null;
+
+  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
+  const  auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
 
   const { data: auditLogEnabled } = useAuditLogEnabled();
 
@@ -132,11 +133,8 @@ export const AuditLogManagement: FC = () => {
             />
 
             <SelectActionDropdown
-              dropdownItems={[
-                { actionCategory: 'Page', actionNames: PageActions },
-                { actionCategory: 'Comment', actionNames: CommentActions },
-              ]}
               actionMap={actionMap}
+              availableActions={auditLogAvailableActions}
               onChangeAction={actionCheckboxChangedHandler}
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
