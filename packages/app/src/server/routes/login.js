@@ -40,7 +40,7 @@ module.exports = function(crowi, app) {
       // remove session.redirectTo
       delete req.session.redirectTo;
 
-      const parameters = { action: SupportedAction.ACTION_REGISTRATION_SUCCESS };
+      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.safeRedirect(redirectTo);
