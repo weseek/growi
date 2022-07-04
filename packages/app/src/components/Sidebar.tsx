@@ -2,7 +2,6 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
-import { isServer } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
