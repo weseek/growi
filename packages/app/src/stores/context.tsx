@@ -179,6 +179,11 @@ export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRRespon
 export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
 };
+
+export const useIsShared = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedPage', initialData);
+};
+
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('hasParent', initialData);
 };
@@ -224,14 +229,12 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 
 export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-
-  // const pathname = window.location.pathname;
-  const { data: pathname } = useCurrentPagePath(); // TODO: need to create useCurrentPathname
+  const { data: isSharedPage } = useIsShared();
 
   return useSWRImmutable(
-    ['isSharedUser', isGuestUser, pathname],
-    (key: Key, isGuestUser: boolean, pathname: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(pathname);
+    ['isSharedUser', isGuestUser],
+    (key: Key, isGuestUser: boolean) => {
+      return isGuestUser && (isSharedPage ?? false);
     },
   );
 };

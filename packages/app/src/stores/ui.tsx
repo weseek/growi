@@ -20,7 +20,7 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId, useIsShared,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -409,14 +409,14 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isTrashPage } = useIsTrashPage();
-  // const { data: isSharedUser } = useIsSharedUser(); // TODO:  need to implement if share.page.tsx is created
+  const { data: isShared } = useIsShared();
 
-  const includesUndefined = [currentPageId, isTrashPage].some(v => v === undefined);
+  const includesUndefined = [currentPageId, isTrashPage, isShared].some(v => v === undefined);
   const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => isPageExist && !isTrashPage,
+    () => isPageExist && !isTrashPage && !isShared,
   );
 };
 
@@ -444,16 +444,14 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
-  // const { data: isSharedUser } = useIsSharedUser();
+  const { data: isSharedUser } = useIsSharedUser();
   const { data: isNotFound } = useIsNotFound();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isNotFound].some(v => v === undefined);
-  // const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isNotFound,
-    // () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFound,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFound,
   );
 };
 

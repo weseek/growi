@@ -38,7 +38,7 @@ import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSu
 import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useIsForbidden, useIsNotFound, useIsTrashPage, useIsShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
@@ -105,10 +105,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound ?? false);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
-  // useShared(isSharedPage(props.currentPagePath));
+  useIsShared(false);
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
   // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
