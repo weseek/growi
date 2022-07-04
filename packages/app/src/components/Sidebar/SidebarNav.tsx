@@ -146,5 +146,3 @@ export const SidebarNavSkeleton: FC = memo(() => {
   );
 });
 SidebarNavSkeleton.displayName = 'SidebarNavSkeleton';
-
-export default SidebarNav;
