@@ -161,6 +161,7 @@ export const SmallActionGroup = {
 // SmallActionGroup + Action by all General Users - PAGE_VIEW
 export const MediumActionGroup = {
   ...SmallActionGroup,
+  ACTION_USER_REGISTRATION_SUCCESS,
   ACTION_USER_PERSONAL_SETTINGS_UPDATE,
   ACTION_USER_IMAGE_TYPE_UPDATE,
   ACTION_USER_LDAP_ACCOUNT_ASSOCIATE,
