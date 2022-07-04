@@ -6,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
+
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 
 const express = require('express');
@@ -189,7 +190,6 @@ module.exports = (crowi) => {
   */
   router.delete('/', loginRequired, csrf, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
-
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
 
     if (page == null) {
