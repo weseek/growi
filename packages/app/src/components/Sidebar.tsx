@@ -58,7 +58,7 @@ const GlobalNavigation = () => {
 
 
   useEffect(() => {
-    // Change content in sideEffect to avoid error thrown by having different content between the server and the client.
+    // Change content in side effect to avoid error thrown by having different rendered content between the server and the client.
     // https://en.reactjs.org/docs/react-dom.html#hydrate
     // > ReactDOM.hydrate expects that the rendered content is identical between the server and the client.
     setIsClient(true);
