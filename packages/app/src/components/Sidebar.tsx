@@ -37,12 +37,7 @@ const GlobalNavigation = () => {
 
   const { scheduleToPut } = useUserUISettings();
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (isServer()) return;
-    setIsLoaded(true);
-  }, []);
+  const [isClient, setIsClient] = useState(false);
 
   const itemSelectedHandler = useCallback((selectedContents) => {
     if (isDrawerMode) {
@@ -62,9 +57,23 @@ const GlobalNavigation = () => {
 
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
-  return isLoaded
-    ? <SidebarNav onItemSelected={itemSelectedHandler} />
-    : <SidebarNavSkeleton/>;
+
+  useEffect(() => {
+    // Change content in sideEffect to avoid error thrown by having different content between the server and the client.
+    // https://en.reactjs.org/docs/react-dom.html#hydrate
+    // > ReactDOM.hydrate expects that the rendered content is identical between the server and the client.
+    setIsClient(true);
+  }, []);
+
+  const SidebarNavElem = () => {
+    if (isClient) {
+      return <SidebarNav onItemSelected={itemSelectedHandler} />;
+    }
+    return <SidebarNavSkeleton/>;
+  };
+
+  return SidebarNavElem();
+
 };
 
 // const SidebarContentsWrapper = () => {
