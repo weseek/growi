@@ -107,6 +107,7 @@
     "express-validator": "^6.14.0",
     "express-webpack-assets": "^0.1.0",
     "extensible-custom-error": "^0.0.7",
+    "font-awesome": "^4.7.0",
     "graceful-fs": "^4.1.11",
     "helmet": "^4.6.0",
     "http-errors": "^2.0.0",
