@@ -105,7 +105,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 };
 
 // Skeleton Component
-export const SidebarNavSkeleton: FC = () => {
+export const SidebarNavSkeleton: FC = memo(() => {
 
   const PrimaryItemSkeleton: FC = memo(() => {
     return (
@@ -144,6 +144,7 @@ export const SidebarNavSkeleton: FC = () => {
       </div>
     </div>
   );
-};
+});
+SidebarNavSkeleton.displayName = 'SidebarNavSkeleton';
 
 export default SidebarNav;
