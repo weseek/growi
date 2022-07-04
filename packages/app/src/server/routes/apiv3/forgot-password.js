@@ -43,7 +43,7 @@ module.exports = (crowi) => {
 
   const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 30, // limit each IP to 60 requests per windowMs
+    max: 30, // limit each IP to 30 requests per windowMs
     message:
     'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
