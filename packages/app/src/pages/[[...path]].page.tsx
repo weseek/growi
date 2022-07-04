@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { isClient, pagePathUtils } from '@growi/core';
 import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 // import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
+import { isPopulated } from '~/interfaces/common';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -136,6 +137,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
+  // sync pathname
+  useEffect(() => {
+    if (isClient() && window.location.pathname !== props.currentPathname) {
+      router.replace(props.currentPathname, undefined, { shallow: true });
+    }
+  }, [props.currentPathname, router]);
+
   const classNames: string[] = [];
   // switch (editorMode) {
   //   case EditorMode.Editor:
@@ -211,6 +219,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
+          <p>
+            { pageWithMeta != null && isPopulated(pageWithMeta.data.revision) && pageWithMeta.data.revision.body }
+          </p>
         </footer>
 
       </BasicLayout>
@@ -241,6 +252,14 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
     props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
+  }
+  else {
+    // set shouldRedirectToParmalink
+    const isToppage = pagePathUtils.isTopPage(props.currentPathname);
+    const shouldRedirectToParmalink = !isToppage && !isValidObjectId(pageIdStr);
+    if (shouldRedirectToParmalink) {
+      props.currentPathname = `/${page._id}`;
+    }
   }
 
   await (page as unknown as PageModel).populateDataToShowRevision();
