@@ -35,6 +35,18 @@ module.exports = {
             group: 'parent',
             position: 'before',
           },
+          {
+            pattern: '*.css',
+            group: 'type',
+            patternOptions: { matchBase: true },
+            position: 'after',
+          },
+          {
+            pattern: '*.scss',
+            group: 'type',
+            patternOptions: { matchBase: true },
+            position: 'after',
+          },
         ],
         alphabetize: {
           order: 'asc',

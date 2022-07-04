@@ -1,6 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
 
-#shortcuts-modal {
+.shortcuts-modal :global {
   h3 {
     margin-bottom: 1em;
   }

@@ -88,10 +88,6 @@ module.exports = function(crowi, app) {
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
   app.engine('html', swig.renderFile);
-  app.use(webpackAssets(
-    path.join(crowi.publicDir, 'manifest.json'),
-    { devMode: (crowi.node_env === 'development') },
-  ));
   // app.set('view cache', false);  // Default: true in production, otherwise undefined. -- 2017.07.04 Yuki Takei
   app.set('view engine', 'html');
   app.set('views', crowi.viewsDir);
