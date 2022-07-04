@@ -126,7 +126,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
 export const SidebarNavSkeleton: FC = () => {
   return (
-    <div className="grw-sidebar-nav-skeleton">
+    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
       <div className="grw-sidebar-nav-primary-container">
         <PrimaryItemSkeleton />
         <PrimaryItemSkeleton />
