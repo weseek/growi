@@ -1,30 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { getIdForRef } from '~/interfaces/common';
+import { getIdForRef, isPopulated } from '~/interfaces/common';
 import {
   IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
-} from '~/stores/context';
+import { useCurrentUser, useIsGuestUser, useIsSharedUser } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -36,7 +30,6 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
@@ -149,23 +142,31 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   );
 };
 
+type GrowiContextualSubNavigationProps = {
+  isCompactMode: boolean,
+  isLinkSharingDisabled: boolean,
+};
 
-const GrowiContextualSubNavigation = (props) => {
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+
+  const { data: pageData } = useSWRxCurrentPage();
+  const createdAt = pageData?.createdAt;
+  const updatedAt = pageData?.updatedAt;
+  const pageId = pageData?._id;
+  const path = pageData?.path;
+  const creator = pageData?.creator;
+
+  const revision = pageData?.revision;
+  const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
+  const revisionAuthor = (revision != null && isPopulated(revision)) ? revision.author : undefined;
+
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: createdAt } = useCurrentCreatedAt();
-  const { data: updatedAt } = useCurrentUpdatedAt();
-  const { data: pageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
-  const { data: revisionId } = useRevisionId();
-  const { data: path } = useCurrentPagePath();
-  const { data: creator } = useCreator();
-  const { data: revisionAuthor } = useRevisionAuthor();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: shareLinkId } = useShareLinkId();
+  // const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -187,9 +188,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
-  const {
-    isCompactMode, isLinkSharingDisabled, pageContainer,
-  } = props;
+  const { isCompactMode, isLinkSharingDisabled } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
@@ -198,7 +197,8 @@ const GrowiContextualSubNavigation = (props) => {
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
-      await pageContainer.setState({ revisionId: updatedRevisionId });
+      // await pageContainer.setState({ revisionId: updatedRevisionId });
+      // need to set setState
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -210,7 +210,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -262,7 +262,7 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const ControlComponents = useCallback(() => {
-    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+    const pageIdForSubNavButtons = pageId; // for SubNavButtons
 
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -288,7 +288,6 @@ const GrowiContextualSubNavigation = (props) => {
               <SubNavButtons
                 isCompactMode={isCompactMode}
                 pageId={pageIdForSubNavButtons}
-                shareLinkId={shareLinkId}
                 revisionId={revisionId}
                 path={path}
                 disableSeenUserInfoPopover={isSharedUser}
@@ -319,7 +318,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    pageId, revisionId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
@@ -327,7 +326,7 @@ const GrowiContextualSubNavigation = (props) => {
   ]);
 
   if (path == null) {
-    return <></>;
+    return <>aaa</>;
   }
 
   const currentPage: Partial<IPageHasId> = {
@@ -357,18 +356,5 @@ const GrowiContextualSubNavigation = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
-
-GrowiContextualSubNavigation.propTypes = {
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isCompactMode: PropTypes.bool,
-  isLinkSharingDisabled: PropTypes.bool,
-};
-
-export default GrowiContextualSubNavigationWrapper;
+export default GrowiContextualSubNavigation;

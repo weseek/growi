@@ -1,5 +1,7 @@
 import { RefObject } from 'react';
 
+import { constants } from 'zlib';
+
 import { isClient, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -23,7 +25,6 @@ import {
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-import { constants } from 'zlib';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -112,6 +113,7 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  if (!isClient()) { return EditorMode.View }
   const { hash } = window.location;
 
   switch (hash) {
@@ -404,11 +406,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const pageId = currentPageId ?? emptyPageId;
+  const pageId = currentPageId;
   const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
   const isPageExist = pageId != null;
 
@@ -422,19 +423,18 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: isIdenticalPath } = useIsIdenticalPath(); // TODO: need to initialize at [[...page]].page.tsx
+  const { data: isNotFound } = useIsNotFoundPermalink();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
-  const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 

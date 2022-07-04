@@ -96,6 +96,10 @@ export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nul
   return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
 };
 
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
+};
+
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
@@ -106,6 +110,10 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -210,19 +218,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
     (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
       return (!isNotCreatable && !isTrashPage && !isGuestUser);
-    },
-  );
-};
-
-export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-
-  const pathname = window.location.pathname;
-
-  return useSWRImmutable(
-    ['isSharedUser', isGuestUser, pathname],
-    (key: Key, isGuestUser: boolean, pathname: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };
