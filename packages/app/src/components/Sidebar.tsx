@@ -324,7 +324,7 @@ const Sidebar = (): JSX.Element => {
             >
               <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
-                  <GlobalNavigation></GlobalNavigation>
+                  {/* <GlobalNavigation></GlobalNavigation> */}
                 </div>
                 <div
                   ref={resizableContainer}
