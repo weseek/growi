@@ -17,7 +17,7 @@ module.exports = (crowi) => {
     req.session.destroy();
 
     const activityId = res.locals.activity._id;
-    const parameters = { action: SupportedAction.ACTION_LOGOUT };
+    const parameters = { action: SupportedAction.ACTION_USER_LOGOUT };
     activityEvent.emit('update', activityId, parameters);
 
     return res.send();

@@ -1,12 +1,14 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { SupportedActionType } from '~/interfaces/activity';
+import {
+  SupportedActionType, SupportedActionCategoryType, SupportedActionCategory, PageActions, CommentActions, UserActions, AdminActions,
+} from '~/interfaces/activity';
 
 type Props = {
-  dropdownItems: Array<{actionCategory: string, actionNames: SupportedActionType[]}>
   actionMap: Map<SupportedActionType, boolean>
+  availableActions: SupportedActionType[]
   onChangeAction: (action: SupportedActionType) => void
   onChangeMultipleAction: (actions: SupportedActionType[], isChecked: boolean) => void
 }
@@ -14,8 +16,31 @@ type Props = {
 export const SelectActionDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const {
-    dropdownItems, actionMap, onChangeAction, onChangeMultipleAction,
+    actionMap, availableActions, onChangeAction, onChangeMultipleAction,
   } = props;
+
+  const dropdownItems = useMemo<Array<{actionCategory: SupportedActionCategoryType, actions: SupportedActionType[]}>>(() => {
+    return (
+      [
+        {
+          actionCategory: SupportedActionCategory.PAGE,
+          actions: PageActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.COMMENT,
+          actions: CommentActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.USER,
+          actions: UserActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.ADMIN,
+          actions: AdminActions.filter(action => availableActions.includes(action)),
+        },
+      ]
+    );
+  }, [availableActions]).filter(item => item.actions.length !== 0);
 
   const actionCheckboxChangedHandler = useCallback((action) => {
     if (onChangeAction != null) {
@@ -30,11 +55,11 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onChangeMultipleAction]);
 
   return (
-    <div className="btn-group mr-2">
+    <div className="btn-group mr-2 admin-audit-log">
       <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
         <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
       </button>
-      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">
         {dropdownItems.map(item => (
           <div key={item.actionCategory}>
             <div className="dropdown-item">
@@ -43,13 +68,13 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                   type="checkbox"
                   className="form-check-input"
                   defaultChecked
-                  onChange={(e) => { multipleActionCheckboxChangedHandler(item.actionNames, e.target.checked) }}
+                  onChange={(e) => { multipleActionCheckboxChangedHandler(item.actions, e.target.checked) }}
                 />
                 <label className="form-check-label">{item.actionCategory}</label>
               </div>
             </div>
             {
-              item.actionNames.map(action => (
+              item.actions.map(action => (
                 <div className="dropdown-item" key={action}>
                   <div className="form-group px-4 m-0">
                     <input

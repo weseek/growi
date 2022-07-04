@@ -8,10 +8,10 @@ const MODEL_COMMENT = 'Comment';
 
 // Action
 const ACTION_UNSETTLED = 'UNSETTLED';
-const ACTION_REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS';
-const ACTION_LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const ACTION_LOGIN_FAILURE = 'LOGIN_FAILURE';
-const ACTION_LOGOUT = 'LOGOUT';
+const ACTION_USER_REGISTRATION_SUCCESS = 'USER_REGISTRATION_SUCCESS';
+const ACTION_USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS';
+const ACTION_USER_LOGIN_FAILURE = 'USER_LOGIN_FAILURE';
+const ACTION_USER_LOGOUT = 'USER_LOGOUT';
 const ACTION_USER_PERSONAL_SETTINGS_UPDATE = 'USER_PERSONAL_SETTINGS_UPDATE';
 const ACTION_USER_IMAGE_TYPE_UPDATE = 'USER_IMAGE_TYPE_UPDATE';
 const ACTION_USER_LDAP_ACCOUNT_ASSOCIATE = 'USER_LDAP_ACCOUNT_ASSOCIATE';
@@ -108,12 +108,19 @@ export const SupportedEventModel = {
   MODEL_COMMENT,
 } as const;
 
+export const SupportedActionCategory = {
+  PAGE: 'Page',
+  COMMENT: 'Comment',
+  USER: 'User',
+  ADMIN: 'Admin',
+} as const;
+
 export const SupportedAction = {
   ACTION_UNSETTLED,
-  ACTION_REGISTRATION_SUCCESS,
-  ACTION_LOGIN_SUCCESS,
-  ACTION_LOGIN_FAILURE,
-  ACTION_LOGOUT,
+  ACTION_USER_REGISTRATION_SUCCESS,
+  ACTION_USER_LOGIN_SUCCESS,
+  ACTION_USER_LOGIN_FAILURE,
+  ACTION_USER_LOGOUT,
   ACTION_USER_PERSONAL_SETTINGS_UPDATE,
   ACTION_USER_IMAGE_TYPE_UPDATE,
   ACTION_USER_LDAP_ACCOUNT_ASSOCIATE,
@@ -222,9 +229,9 @@ export const ActionGroupSize = {
 } as const;
 
 export const SmallActionGroup = {
-  ACTION_LOGIN_SUCCESS,
-  ACTION_LOGIN_FAILURE,
-  ACTION_LOGOUT,
+  ACTION_USER_LOGIN_SUCCESS,
+  ACTION_USER_LOGIN_FAILURE,
+  ACTION_USER_LOGOUT,
   ACTION_PAGE_CREATE,
   ACTION_PAGE_DELETE,
 } as const;
@@ -232,6 +239,7 @@ export const SmallActionGroup = {
 // SmallActionGroup + Action by all General Users - PAGE_VIEW
 export const MediumActionGroup = {
   ...SmallActionGroup,
+  ACTION_USER_REGISTRATION_SUCCESS,
   ACTION_USER_PERSONAL_SETTINGS_UPDATE,
   ACTION_USER_IMAGE_TYPE_UPDATE,
   ACTION_USER_LDAP_ACCOUNT_ASSOCIATE,
@@ -324,25 +332,6 @@ export const LargeActionGroup = {
   ACTION_ADMIN_SEARCH_INDICES_REBUILD,
 } as const;
 
-/*
- * For AuditLogManagement.tsx
- */
-export const PageActions = Object.values({
-  ACTION_PAGE_LIKE,
-  ACTION_PAGE_BOOKMARK,
-  ACTION_PAGE_CREATE,
-  ACTION_PAGE_UPDATE,
-  ACTION_PAGE_RENAME,
-  ACTION_PAGE_DUPLICATE,
-  ACTION_PAGE_DELETE,
-  ACTION_PAGE_DELETE_COMPLETELY,
-  ACTION_PAGE_REVERT,
-} as const);
-
-export const CommentActions = Object.values({
-  ACTION_COMMENT_CREATE,
-  ACTION_COMMENT_UPDATE,
-} as const);
 
 /*
  * Array
@@ -355,12 +344,24 @@ export const AllSmallGroupActions = Object.values(SmallActionGroup);
 export const AllMediumGroupActions = Object.values(MediumActionGroup);
 export const AllLargeGroupActions = Object.values(LargeActionGroup);
 
+// Action categories（for SelectActionDropdown.tsx）
+const pageRegExp = new RegExp(`^${SupportedActionCategory.PAGE.toUpperCase()}_`);
+const commentRegExp = new RegExp(`^${SupportedActionCategory.COMMENT.toUpperCase()}_`);
+const userRegExp = new RegExp(`^${SupportedActionCategory.USER.toUpperCase()}_`);
+const adminRegExp = new RegExp(`^${SupportedActionCategory.ADMIN.toUpperCase()}_`);
+
+export const PageActions = AllSupportedActions.filter(action => action.match(pageRegExp));
+export const CommentActions = AllSupportedActions.filter(action => action.match(commentRegExp));
+export const UserActions = AllSupportedActions.filter(action => action.match(userRegExp));
+export const AdminActions = AllSupportedActions.filter(action => action.match(adminRegExp));
+
 /*
  * Type
  */
 export type SupportedTargetModelType = typeof SupportedTargetModel[keyof typeof SupportedTargetModel];
 export type SupportedEventModelType = typeof SupportedEventModel[keyof typeof SupportedEventModel];
 export type SupportedActionType = typeof SupportedAction[keyof typeof SupportedAction];
+export type SupportedActionCategoryType = typeof SupportedActionCategory[keyof typeof SupportedActionCategory]
 
 export type ISnapshot = Partial<Pick<IUser, 'username'>>
 

@@ -3,11 +3,9 @@ import React, { FC, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import {
-  SupportedActionType, AllSupportedActions, PageActions, CommentActions,
-} from '~/interfaces/activity';
+import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
-import { useAuditLogEnabled } from '~/stores/context';
+import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -31,6 +29,9 @@ const PAGING_LIMIT = 10;
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
 
+  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
+  const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
+
   /*
    * State
    */
@@ -41,7 +42,7 @@ export const AuditLogManagement: FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(AllSupportedActions.map(action => [action, true])),
+    new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])),
   );
 
   /*
@@ -132,11 +133,8 @@ export const AuditLogManagement: FC = () => {
             />
 
             <SelectActionDropdown
-              dropdownItems={[
-                { actionCategory: 'Page', actionNames: PageActions },
-                { actionCategory: 'Comment', actionNames: CommentActions },
-              ]}
               actionMap={actionMap}
+              availableActions={auditLogAvailableActions}
               onChangeAction={actionCheckboxChangedHandler}
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
