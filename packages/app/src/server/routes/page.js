@@ -319,6 +319,7 @@ module.exports = function(crowi, app) {
       // retrieve templates
       if (req.user != null) {
         const template = await Page.findTemplate(path);
+
         if (template.templateBody) {
           const body = replacePlaceholdersOfTemplate(template.templateBody, req);
           const tags = template.templateTags;

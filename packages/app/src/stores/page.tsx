@@ -97,7 +97,7 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
-  const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
+  const key = pageId == null ? 'tmpPage' : `/pages.getPageTag?pageId=${pageId}`;
 
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();
@@ -113,7 +113,7 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
       const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
       tags = res?.tags;
     }
-    // when the page does not exist
+    // when templates applicable to the new page
     else if (templateTagData != null) {
       tags = templateTagData.split(',').filter((str: string) => {
         return str !== ''; // filter empty values
