@@ -2,7 +2,7 @@
 @use '~/styles/mixins';
 @use '~/styles/bootstrap/init' as bs;
 
-.grw-sidebar {
+.grw-sidebar :global {
   // sticky
   position: sticky;
   top: var.$grw-navbar-border-width;
@@ -53,7 +53,8 @@
           animation-duration: 0.22s;
           animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
           animation-fill-mode: forwards;
-          .grw-contextual-navigation-sub {
+
+          :global .grw-contextual-navigation-sub {
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -239,20 +240,26 @@
   }
 }
 
-.grw-sidebar {
-  @include bs.media-breakpoint-down(sm) {
+// '&' could not be set after :global
+// workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
+.grw-sidebar :global {
+  .grw-sidebar-drawer {
     @include drawer();
   }
-  @include bs.media-breakpoint-up(md) {
-    &.grw-sidebar-drawer {
+  .grw-sidebar-dock {
+    @include bs.media-breakpoint-down(sm) {
       @include drawer();
     }
-    &:not(.grw-sidebar-drawer) {
+    @include bs.media-breakpoint-up(md) {
       @include dock();
     }
   }
 }
 
-.grw-sidebar-backdrop.modal-backdrop {
-  z-index: bs.$zindex-fixed + 1;
+// '&' could not be set after :global
+// workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
+.grw-sidebar-backdrop {
+  &:global(.modal-backdrop) {
+    z-index: bs.$zindex-fixed + 1;
+  }
 }

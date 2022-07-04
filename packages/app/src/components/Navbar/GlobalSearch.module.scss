@@ -1,7 +1,7 @@
 @use '~/styles/bootstrap/init' as bs;
 
 // input styles
-.grw-global-search {
+.grw-global-search :global {
   .dropdown-toggle {
     min-width: 95px;
     padding-left: 1.5rem;

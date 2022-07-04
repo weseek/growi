@@ -118,6 +118,7 @@ const KeymapSelector = memo((): JSX.Element => {
 
 });
 
+KeymapSelector.displayName = 'KeymapSelector';
 
 type IndentSizeSelectorProps = {
   isIndentSizeForced: boolean,
@@ -159,6 +160,8 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
   );
 
 });
+
+IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
 type ConfigurationDropdownProps = {
@@ -340,6 +343,8 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
   );
 
 });
+
+ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
 
 type Props = {

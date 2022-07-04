@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import KeyboardReturnEnterIcon from '~/components/Icons/KeyboardReturnEnterIcon';
 import { useShortcutsModal } from '~/stores/modal';
 
-import './ShortcutsModal.scss';
+import styles from './ShortcutsModal.module.scss';
 
 
 const ShortcutsModal = (): JSX.Element => {
@@ -22,7 +22,7 @@ const ShortcutsModal = (): JSX.Element => {
   return (
     <>
       { status != null && (
-        <Modal id="shortcuts-modal" size="lg" isOpen={status.isOpened} toggle={close} className="grw-create-page">
+        <Modal id="shortcuts-modal" size="lg" isOpen={status.isOpened} toggle={close} className={`shortcuts-modal ${styles['shortcuts-modal']}`}>
           <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
             {t('Shortcuts')}
           </ModalHeader>

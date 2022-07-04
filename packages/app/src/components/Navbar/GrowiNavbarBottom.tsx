@@ -6,7 +6,7 @@ import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import { GlobalSearch } from './GlobalSearch';
 
-import './GrowiNavbarBottom.scss';
+import styles from './GrowiNavbarBottom.module.scss';
 
 
 export const GrowiNavbarBottom = (): JSX.Element => {
@@ -17,7 +17,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
 
-  const additionalClasses = ['grw-navbar-bottom'];
+  const additionalClasses = ['grw-navbar-bottom', styles['grw-navbar-bottom']];
   if (isDrawerOpened) {
     additionalClasses.push('grw-navbar-bottom-drawer-opened');
   }

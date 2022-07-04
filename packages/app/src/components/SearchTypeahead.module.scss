@@ -1,6 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
 
-.search-typeahead {
+.search-typeahead :global {
   position: relative;
   width: 100%;
   // corner radius
