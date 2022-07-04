@@ -42,7 +42,8 @@ const GlobalNavigation = () => {
   useEffect(() => {
     if (isServer()) return;
     setIsLoaded(true);
-  });
+  }, []);
+
   const itemSelectedHandler = useCallback((selectedContents) => {
     if (isDrawerMode) {
       return;
@@ -62,8 +63,7 @@ const GlobalNavigation = () => {
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
   return isLoaded
-    // ? <SidebarNav onItemSelected={itemSelectedHandler} />
-    ? <SidebarNavSkeleton/>
+    ? <SidebarNav onItemSelected={itemSelectedHandler} />
     : <SidebarNavSkeleton/>;
 };
 
