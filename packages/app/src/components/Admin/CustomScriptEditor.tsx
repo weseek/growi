@@ -16,17 +16,14 @@ require('jquery-ui/ui/widgets/resizable');
 interface IMyUnControlledCodeMirror extends IUnControlledCodeMirror {
   options?: EditorConfiguration & {
     autoRefresh: { force: boolean }
-    // matchBrackets?: boolean
-    // autoCloseBrackets?: boolean
   }
-  autoFocus?: boolean
 }
 class CodeMirrorAlpha extends React.Component<IMyUnControlledCodeMirror, any> {
 }
 
 type MyUnControled = typeof CodeMirrorAlpha
 
-const CodeMirror2 = CodeMirror as unknown as MyUnControled;
+const CodeMirror2 = CodeMirror as MyUnControled;
 
 type Props = {
   value: string,
