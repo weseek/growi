@@ -98,7 +98,7 @@ export const getPageSchema = (crowi) => {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
+    return isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
