@@ -226,7 +226,7 @@ export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
   // const pathname = window.location.pathname;
-  const { data: pathname } = useCurrentPagePath();
+  const { data: pathname } = useCurrentPagePath(); // TODO: need to create useCurrentPathname
 
   return useSWRImmutable(
     ['isSharedUser', isGuestUser, pathname],

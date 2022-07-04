@@ -103,7 +103,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(props.currentPathname);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
-  useIsNotFound(props.isNotFound);
+  useIsNotFound(props.isNotFound ?? false);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
@@ -141,7 +141,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUsersHomePage(pageWithMeta?.data.path ?? ''));
-  useIsNotCreatable(props.isForbidden || isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include isIdenticalPath
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include isIdenticalPath
 
   const classNames: string[] = [];
   // switch (editorMode) {

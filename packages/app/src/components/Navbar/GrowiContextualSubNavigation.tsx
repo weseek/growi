@@ -13,7 +13,7 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
+  useCurrentUser, useIsGuestUser,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -22,7 +22,7 @@ import {
 } from '~/stores/modal';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
@@ -32,7 +32,6 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
@@ -60,7 +59,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   };
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isSharedUser } = useIsSharedUser();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
@@ -98,7 +96,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       */}
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
-        disabled={isGuestUser || isSharedUser}
+        disabled={isGuestUser}
         data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
@@ -121,7 +119,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
-        disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        disabled={isGuestUser || isLinkSharingDisabled}
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -154,23 +152,21 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) => {
 
-  const { data: pageData } = useSWRxCurrentPage(); // current page data
-
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: pageData, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const pageId = pageData?._id;
   const createdAt = pageData?.createdAt;
   const updatedAt = pageData?.updatedAt;
-  const pageId = pageData?._id;
-  const { data: emptyPageId } = useEmptyPageId();
-  const revisionId = pageData?.revision._id; // need to use isPopulated
   const path = pageData?.path;
   const creator = pageData?.creator;
-  const revisionAuthor = pageData?.revision.author; // need to use isPopulated
+
+  const revision = pageData?.revision;
+  const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
+  const revisionAuthor = (revision != null && isPopulated(revision)) ? revision.author : undefined;
+
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isSharedUser } = useIsSharedUser(); // need dynamic import
-  const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -203,10 +199,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
       // await pageContainer.setState({ revisionId: updatedRevisionId });
       // need to set revisionID
+      mutateCurrentPage();
 
-      // revalidate SWRTagsInfo
-      mutateSWRTagsInfo();
-      mutatePageTagsForEditors(newTags);
+      // // revalidate SWRTagsInfo
+      // mutateSWRTagsInfo();
+      // mutatePageTagsForEditors(newTags);
 
       toastSuccess('updated tags successfully');
     }
@@ -266,7 +263,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
 
 
   const ControlComponents = useCallback(() => {
-    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+    const pageIdForSubNavButtons = pageId; // for SubNavButtons
 
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -292,10 +289,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
               <SubNavButtons
                 isCompactMode={isCompactMode}
                 pageId={pageIdForSubNavButtons}
-                shareLinkId={shareLinkId}
                 revisionId={revisionId}
                 path={path}
-                disableSeenUserInfoPopover={isSharedUser}
+                disableSeenUserInfoPopover={false}
                 showPageControlDropdown={isAbleToShowPageManagement}
                 additionalMenuItemRenderer={additionalMenuItemsRenderer}
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
@@ -309,7 +305,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
               isBtnDisabled={isGuestUser}
               editorMode={editorMode}
-              isDeviceSmallerThanMd={isDeviceSmallerThanMd}
             />
           )}
         </div>
@@ -323,8 +318,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
       </>
     );
   }, [
-    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
-    isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
+    pageId, revisionId, editorMode, mutateEditorMode, isCompactMode,
+    isLinkSharingDisabled, isGuestUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
     path, templateMenuItemClickHandler, isPageTemplateModalShown,
