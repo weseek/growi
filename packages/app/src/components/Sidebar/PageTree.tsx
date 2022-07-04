@@ -1,10 +1,11 @@
 import React, { FC, memo } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
@@ -82,5 +83,7 @@ const PageTree: FC = memo(() => {
     </>
   );
 });
+
+PageTree.displayName = 'PageTree';
 
 export default PageTree;
