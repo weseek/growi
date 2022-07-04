@@ -28,7 +28,7 @@ import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
-import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
+// import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 // import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -42,7 +42,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useIsUserPage, useIsNotCreatable, useIsIdenticalPath,
+  useIsUserPage, useIsNotCreatable, useIsIdenticalPath, useCurrentPageId,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -136,6 +136,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
@@ -188,7 +189,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           GrowiSubNavigationSwitcher
         </div>
         {/* isLinkSharingDisabledについて考える必要あり */}
-        <GrowiContextualSubNavigation />,
+        <GrowiContextualSubNavigation isCompactMode={false} isLinkSharingDisabled={false} />
         {/* <GrowiSubNavigationSwitcher />, */}
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>

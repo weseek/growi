@@ -225,7 +225,8 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
-  const pathname = window.location.pathname;
+  // const pathname = window.location.pathname;
+  const { data: pathname } = useCurrentPagePath();
 
   return useSWRImmutable(
     ['isSharedUser', isGuestUser, pathname],

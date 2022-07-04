@@ -113,6 +113,9 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  // for SSR
+  if (!isClient()) { return EditorMode.View }
+
   const { hash } = window.location;
 
   switch (hash) {
