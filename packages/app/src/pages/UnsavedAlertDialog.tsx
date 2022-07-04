@@ -11,7 +11,7 @@ const UnsavedAlertDialog = (): void => {
   const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
-    if(isEnabledUnsavedWarning){
+    if (isEnabledUnsavedWarning) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
       e.returnValue = alertMsg;
@@ -20,7 +20,8 @@ const UnsavedAlertDialog = (): void => {
   }, [isEnabledUnsavedWarning]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    if(isEnabledUnsavedWarning){
+    if (isEnabledUnsavedWarning) {
+      // eslint-disable-next-line no-alert
       window.alert(alertMsg);
     }
     return;
