@@ -19,7 +19,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -396,9 +396,9 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
-  const { data: isDeleted } = useIsDeleted();
+  const { data: isTrashPage } = useIsTrashPage();
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
+  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null);
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {

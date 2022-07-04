@@ -29,7 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -618,30 +618,31 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(renamedPage: PageDocument): Promise<void> {
-
-    // findOne PageOperation
-    const filter = { actionType: PageActionType.Rename, actionStage: PageActionStage.Sub, 'page._id': renamedPage._id };
-    const pageOp = await PageOperation.findOne(filter);
-    if (pageOp == null) {
-      throw Error('There is nothing to be processed right now');
-    }
+  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
     const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
     }
-
-    const {
-      page, toPath, options, user,
-    } = pageOp;
-
-    // check property
-    if (toPath == null) {
-      throw Error(`Property toPath is missing which is needed to resume page operation(${pageOp._id})`);
+    if (pageOp.toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume rename operation(${pageOp._id})`);
     }
 
-    this.renameSubOperation(page, toPath, user, options, renamedPage, pageOp._id);
+    const {
+      page, fromPath, toPath, options, user,
+    } = pageOp;
 
+    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+  }
+
+  /**
+   * Renaming paths and fixing descendantCount of ancestors. It shoud be run synchronously.
+   * `renameSubOperation` to restart rename operation
+   * `updateDescendantCountOfPagesWithPaths` to fix descendantCount of ancestors
+   */
+  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath): Promise<void> {
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
+    const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
+    await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -3075,8 +3076,30 @@ class PageService {
     builder.addConditionToSortPagesByDescPath();
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
+  }
 
+  /**
+   * update descendantCount of the pages sequentially from longer path to shorter path
+   */
+  async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
 
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionToListByPathsArray(paths); // find by paths
+    builder.addConditionToSortPagesByDescPath(); // sort in DESC
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
+  }
+
+  /**
+   * Recount descendantCount of pages one by one
+   */
+  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
+    const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
@@ -3090,8 +3113,8 @@ class PageService {
         callback();
       },
     });
-    aggregatedPages
-      .pipe(createBatchStream(BATCH_SIZE))
+    pageCursor
+      .pipe(createBatchStream(batchSize))
       .pipe(recountWriteStream);
 
     await streamToPromise(recountWriteStream);
