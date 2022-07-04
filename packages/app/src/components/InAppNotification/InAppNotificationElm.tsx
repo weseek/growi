@@ -123,6 +123,18 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'renamed under';
       actionIcon = 'icon-action-redo';
       break;
+    case 'PAGE_RECURSIVELY_DELETE':
+      actionMsg = 'deleted under';
+      actionIcon = 'icon-trash';
+      break;
+    case 'PAGE_RECURSIVELY_DELETE_COMPLETELY':
+      actionMsg = 'deleted completely under';
+      actionIcon = 'icon-fire';
+      break;
+    case 'PAGE_RECURSIVELY_REVERT':
+      actionMsg = 'reverted under';
+      actionIcon = 'icon-action-undo';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
