@@ -15,7 +15,7 @@ import { useGlobalSearchFormRef } from '~/stores/ui';
 import SearchForm from '../SearchForm';
 
 
-import './GlobalSearch.scss';
+import styles from './GlobalSearch.module.scss';
 
 
 type Props = {
@@ -76,7 +76,7 @@ export const GlobalSearch = (props: Props): JSX.Element => {
   }
 
   return (
-    <div className={`form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
+    <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
         <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
           <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
