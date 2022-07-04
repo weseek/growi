@@ -3,11 +3,8 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-
 import { IUser } from '../interfaces/user';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 import UserPictureList from './User/UserPictureList';
 
 type LikeButtonsProps = {
@@ -80,14 +77,4 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
-};
-
-export default LikeButtonsWrapper;
+export default LikeButtons;

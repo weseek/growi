@@ -1,8 +1,10 @@
+import dynamic from 'next/dynamic';
 import { Container } from 'unstated';
 
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import { i18nFactory } from '../util/i18n';
+// import { i18nFactory } from '../util/i18n';
+const i18nFactory = dynamic(() => import('../util/i18n').then(mod => mod.i18nFactory), { ssr: false });
 
 /**
  * Service container related to options for Application

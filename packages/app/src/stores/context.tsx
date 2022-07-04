@@ -120,6 +120,10 @@ export const usePageIdOnHackmd = (initialData?: Nullable<any>): SWRResponse<Null
   return useStaticSWR<Nullable<any>, Error>('pageIdOnHackmd', initialData);
 };
 
+export const useHackmdUri = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('hackmdUri', initialData);
+};
+
 export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
 };

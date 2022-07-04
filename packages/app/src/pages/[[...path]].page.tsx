@@ -27,8 +27,7 @@ import loggerFactory from '~/utils/logger';
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 import { BasicLayout } from '../components/BasicLayout';
-
-// import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 // import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
@@ -73,7 +72,7 @@ type Props = CommonProps & {
   // isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
-  // hackmdUri: string,
+  hackmdUri: string,
   // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
@@ -119,7 +118,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
-  // useHackmdUri(props.hackmdUri);
+  useHackmdUri(props.hackmdUri);
   // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
@@ -142,8 +141,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUsersHomePage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include isIdenticalPath
-
-  const GrowiContextualSubNavigation = dynamic(() => import('../components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -191,7 +188,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           GrowiSubNavigationSwitcher
         </div>
         {/* isLinkSharingDisabledについて考える必要あり */}
-        {/* <GrowiContextualSubNavigation />, */}
+        <GrowiContextualSubNavigation />,
         {/* <GrowiSubNavigationSwitcher />, */}
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
@@ -304,7 +301,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');

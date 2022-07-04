@@ -3,8 +3,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
@@ -148,8 +146,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 type GrowiContextualSubNavigationProps = {
-  editorContainer: EditorContainer,
-  pageContainer: PageContainer,
 
   isCompactMode: boolean,
   isLinkSharingDisabled: boolean
@@ -196,9 +192,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
-  const {
-    isCompactMode, isLinkSharingDisabled, pageContainer,
-  } = props;
+  const { isCompactMode, isLinkSharingDisabled } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
@@ -207,7 +201,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
-      await pageContainer.setState({ revisionId: updatedRevisionId });
+      // await pageContainer.setState({ revisionId: updatedRevisionId });
+      // need to set revisionID
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -219,7 +214,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -366,10 +361,5 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps) 
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
-
-export default GrowiContextualSubNavigationWrapper;
+export default GrowiContextualSubNavigation;
