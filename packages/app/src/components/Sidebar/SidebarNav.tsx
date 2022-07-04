@@ -5,7 +5,7 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
-import './SidebarNav.scss';
+import styles from './SidebarNav.module.scss';
 
 
 type PrimaryItemProps = {
@@ -76,6 +76,7 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
     </a>
   );
 });
+SecondaryItem.displayName = 'SecondaryItem';
 
 // eslint-disable-next-line react/display-name
 const SecondaryItemSkeleton: FC = memo(() => {
@@ -100,7 +101,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
   const { onItemSelected } = props;
 
   return (
-    <div className="grw-sidebar-nav">
+    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
       <div className="grw-sidebar-nav-primary-container">
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />

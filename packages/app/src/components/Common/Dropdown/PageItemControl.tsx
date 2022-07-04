@@ -239,6 +239,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   );
 });
 
+PageItemControlDropdownMenu.displayName = 'PageItemControl';
+
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
