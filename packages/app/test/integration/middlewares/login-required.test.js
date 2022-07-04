@@ -34,7 +34,7 @@ describe('loginRequired', () => {
         req = {
           originalUrl: 'original url 1',
           session: {},
-        }
+        };
         // reset session object
         req.session = {};
         // prepare spy for AclService.isGuestAllowedToRead
@@ -109,7 +109,7 @@ describe('loginRequired', () => {
         req = {
           originalUrl: 'original url 1',
           session: {},
-        }
+        };
         // reset session object
         req.session = {};
         // prepare spy for AclService.isGuestAllowedToRead
