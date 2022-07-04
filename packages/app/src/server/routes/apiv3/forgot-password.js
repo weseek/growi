@@ -42,10 +42,10 @@ module.exports = (crowi) => {
   };
 
   const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // limit each IP to 10 requests per windowMs
+    windowMs: 1 * 60 * 1000, // 1 minutes
+    max: 30, // limit each IP to 30 requests per windowMs
     message:
-      'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+    'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
