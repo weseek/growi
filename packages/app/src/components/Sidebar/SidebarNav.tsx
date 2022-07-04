@@ -55,7 +55,7 @@ const PrimaryItemSkeleton: FC = () => {
       type="button"
       className="d-block btn btn-primary"
     >
-      <i className="material-icons">format_list_bulleted</i>
+      <i className="fa fa-square" aria-hidden="true"></i>
     </button>
   );
 };
@@ -82,7 +82,7 @@ SecondaryItem.displayName = 'SecondaryItem';
 const SecondaryItemSkeleton: FC = memo(() => {
   return (
     <a href='/' className="d-block btn btn-primary">
-      <i className="material-icons">format_list_bulleted</i>
+      <i className="fa fa-square" aria-hidden="true"></i>
     </a>
   );
 });
