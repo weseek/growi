@@ -22,12 +22,6 @@ export interface TargetAndAncestors {
   rootPage: Partial<IPageForItem>,
 }
 
-
-export interface IsNotFoundPermalink {
-  isNotFoundPermalink: boolean
-}
-
-
 export interface V5MigrationStatus {
   isV5Compatible : boolean,
   migratablePagesCount: number

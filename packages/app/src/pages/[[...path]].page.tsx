@@ -106,7 +106,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useNotFound(props.isNotFound);
   // useShareLinkId(props.shareLinkId);
   useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
-  useIsNotFoundPermalink({ isNotFoundPermalink: props.isNotFound });
+  useIsNotFoundPermalink(props.isNotFound ?? false);
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
