@@ -60,9 +60,6 @@ export default class RevisionBody extends React.PureComponent {
       <div
         ref={(elem) => {
           this.element = elem;
-          if (this.props.inputRef != null) {
-            this.props.inputRef.current = elem;
-          }
         }}
         id="wiki"
         className={`wiki ${additionalClassName}`}
@@ -76,7 +73,6 @@ export default class RevisionBody extends React.PureComponent {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
