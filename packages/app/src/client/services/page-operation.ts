@@ -39,7 +39,7 @@ export const toggleBookmark = async(pageId: string, currentValue?: boolean): Pro
 
 export const toggleContentWidth = async(pageId: string, currentValue: boolean): Promise<void> => {
   try {
-    await apiv3Put('/page/content-width', { pageId, isContainerFluid: !currentValue });
+    await apiv3Put(`/page/${pageId}/content-width`, { isContainerFluid: !currentValue });
   }
   catch (err) {
     toastError(err);

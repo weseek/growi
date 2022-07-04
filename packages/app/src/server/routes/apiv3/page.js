@@ -223,7 +223,6 @@ module.exports = (crowi) => {
       query('pageId').isString(),
     ],
     contentWidth: [
-      body('pageId').isString(),
       body('isContainerFluid').isBoolean(),
     ],
   };
@@ -797,18 +796,20 @@ module.exports = (crowi) => {
   });
 
 
-  router.put('/content-width', apiLimiter, accessTokenParser, loginRequiredStrictly, csrf, validator.contentWidth, apiV3FormValidator, async(req, res) => {
-    const { pageId, isContainerFluid } = req.body;
+  router.put('/:pageId/content-width', apiLimiter, accessTokenParser, loginRequiredStrictly, csrf,
+    validator.contentWidth, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.params;
+      const { isContainerFluid } = req.body;
 
-    try {
-      const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
-      return res.apiv3({ page });
-    }
-    catch (err) {
-      logger.error('update-content-width-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+      try {
+        const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
+        return res.apiv3({ page });
+      }
+      catch (err) {
+        logger.error('update-content-width-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };
