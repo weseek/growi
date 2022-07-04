@@ -3,7 +3,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { SupportedActionType, AllSupportedActions } from '~/interfaces/activity';
+import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
@@ -29,6 +29,9 @@ const PAGING_LIMIT = 10;
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
 
+  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
+  const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
+
   /*
    * State
    */
@@ -39,7 +42,7 @@ export const AuditLogManagement: FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(AllSupportedActions.map(action => [action, true])),
+    new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])),
   );
 
   /*
@@ -53,9 +56,6 @@ export const AuditLogManagement: FC = () => {
   const activityList = activityData?.docs != null ? activityData.docs : [];
   const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
   const isLoading = activityData === undefined && error == null;
-
-  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
-  const  auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
 
   const { data: auditLogEnabled } = useAuditLogEnabled();
 
