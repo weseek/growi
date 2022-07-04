@@ -49,17 +49,6 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   );
 };
 
-const PrimaryItemSkeleton: FC = () => {
-  return (
-    <button
-      type="button"
-      className="d-block btn btn-primary"
-    >
-      <i className="fa fa-square" aria-hidden="true"></i>
-    </button>
-  );
-};
-
 type SecondaryItemProps = {
   label: string,
   href: string,
@@ -77,15 +66,6 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
   );
 });
 SecondaryItem.displayName = 'SecondaryItem';
-
-// eslint-disable-next-line react/display-name
-const SecondaryItemSkeleton: FC = memo(() => {
-  return (
-    <a href='/' className="d-block btn btn-primary">
-      <i className="fa fa-square" aria-hidden="true"></i>
-    </a>
-  );
-});
 
 
 type Props = {
@@ -124,7 +104,30 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
 };
 
+// Skeleton Component
 export const SidebarNavSkeleton: FC = () => {
+
+  const PrimaryItemSkeleton: FC = memo(() => {
+    return (
+      <button
+        type="button"
+        className="d-block btn btn-primary"
+      >
+        <i className="fa fa-square" aria-hidden="true"></i>
+      </button>
+    );
+  });
+  PrimaryItemSkeleton.displayName = 'PrimaryItemSkeleton';
+
+  const SecondaryItemSkeleton: FC = memo(() => {
+    return (
+      <a href='/' className="d-block btn btn-primary">
+        <i className="fa fa-square" aria-hidden="true"></i>
+      </a>
+    );
+  });
+  SecondaryItemSkeleton.displayName = 'SecondaryItemSkeleton';
+
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
       <div className="grw-sidebar-nav-primary-container">
