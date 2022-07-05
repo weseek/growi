@@ -2713,7 +2713,7 @@ class PageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], null);
+      await this.normalizeParentRecursively(['/'], null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2760,7 +2760,7 @@ class PageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmit = false): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmitProgress = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -2779,7 +2779,7 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmit);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmitProgress);
   }
 
   private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
@@ -2829,7 +2829,7 @@ class PageService {
       publicPathsToNormalize: string[],
       grantFiltersByUser: { $or: any[] },
       user,
-      shouldEmit = false,
+      shouldEmitProgress = false,
       count = 0,
       skiped = 0,
       isFirst = true,
@@ -2837,7 +2837,7 @@ class PageService {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
-    const socket = shouldEmit ? this.crowi.socketIoService.getAdminSocket() : null;
+    const socket = shouldEmitProgress ? this.crowi.socketIoService.getAdminSocket() : null;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -3002,7 +3002,16 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(matchFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, shouldEmit, nextCount, nextSkiped, false);
+      return this._normalizeParentRecursively(
+        pathOrRegExps,
+        publicPathsToNormalize,
+        grantFiltersByUser,
+        user,
+        shouldEmitProgress,
+        nextCount,
+        nextSkiped,
+        false,
+      );
     }
 
     // End
