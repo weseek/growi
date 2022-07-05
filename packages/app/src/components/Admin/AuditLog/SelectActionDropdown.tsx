@@ -3,7 +3,8 @@ import React, { FC, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  SupportedActionType, SupportedActionCategoryType, SupportedActionCategory, PageActions, CommentActions, UserActions, AdminActions,
+  SupportedActionType, SupportedActionCategoryType, SupportedActionCategory,
+  PageActions, CommentActions, TagActions, ShareLinkActions, AttachmentActions, InAppNotificationActions, SearchActions, UserActions, AdminActions,
 } from '~/interfaces/activity';
 
 type Props = {
@@ -29,6 +30,26 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         {
           actionCategory: SupportedActionCategory.COMMENT,
           actions: CommentActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.TAG,
+          actions: TagActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.ATTACHMENT,
+          actions: AttachmentActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.SHARE_LINK,
+          actions: ShareLinkActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.IN_APP_NOTIFICATION,
+          actions: InAppNotificationActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.SEARCH,
+          actions: SearchActions.filter(action => availableActions.includes(action)),
         },
         {
           actionCategory: SupportedActionCategory.USER,

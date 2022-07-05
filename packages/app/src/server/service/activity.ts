@@ -103,8 +103,8 @@ class ActivityService {
   }
 
   // for GET request
-  createActivity = async function(action: SupportedActionType, parameters): Promise<void> {
-    const shoudCreateActivity = this.crowi.activityService.shoudUpdateActivity(action);
+  createActivity = async function(parameters): Promise<void> {
+    const shoudCreateActivity = this.crowi.activityService.shoudUpdateActivity(parameters.action);
     if (shoudCreateActivity) {
       try {
         await Activity.createByParameters(parameters);
