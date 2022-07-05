@@ -4,8 +4,6 @@ import { useRouter } from 'next/router';
 
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 
-const alertMsg = 'Changes you made may not be saved.';
-
 const UnsavedAlertDialog = (): void => {
   const router = useRouter();
   const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -14,7 +12,8 @@ const UnsavedAlertDialog = (): void => {
     if (isEnabledUnsavedWarning) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
-      e.returnValue = alertMsg;
+      // default alert message cannot be changed.
+      e.returnValue = '';
       return;
     }
   }, [isEnabledUnsavedWarning]);
@@ -22,7 +21,7 @@ const UnsavedAlertDialog = (): void => {
   const alertUnsavedWarningByNextRouter = useCallback(() => {
     if (isEnabledUnsavedWarning) {
     // eslint-disable-next-line no-alert
-      window.alert(alertMsg);
+      window.alert('Changes you made may not be saved.');
     }
     return;
   }, [isEnabledUnsavedWarning]);
