@@ -88,6 +88,10 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
+export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+};
+
 export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
 };
@@ -148,10 +152,6 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
   return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
 };
 
-export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
@@ -168,13 +168,14 @@ export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRRe
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
 
+export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSlackConfigured', initialData);
+};
+
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
-export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
-};
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('hasParent', initialData);
 };

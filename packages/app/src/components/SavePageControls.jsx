@@ -7,12 +7,9 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
-import { useIsEditable, useCurrentPageId } from '~/stores/context';
+import { useIsEditable, useCurrentPageId, useIsAclEnabled } from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -28,9 +25,6 @@ class SavePageControls extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const config = this.props.appContainer.getConfig();
-    this.isAclEnabled = config.isAclEnabled;
 
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
@@ -90,7 +84,7 @@ class SavePageControls extends React.Component {
   render() {
 
     const {
-      t, pageContainer, grant, grantGroupId, grantGroupName,
+      t, pageContainer, isAclEnabled, grant, grantGroupId, grantGroupName,
     } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
@@ -100,7 +94,7 @@ class SavePageControls extends React.Component {
     return (
       <div className="d-flex align-items-center form-inline flex-nowrap">
 
-        {this.isAclEnabled
+        {isAclEnabled
           && (
             <div className="mr-2">
               <GrantSelector
@@ -133,12 +127,13 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer]);
+const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [PageContainer]);
 
 const SavePageControlsWrapper = (props) => {
   const { t } = useTranslation();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
@@ -147,7 +142,7 @@ const SavePageControlsWrapper = (props) => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || editorMode == null) {
+  if (isEditable == null || editorMode == null || isAclEnabled == null) {
     return null;
   }
 
@@ -160,6 +155,7 @@ const SavePageControlsWrapper = (props) => {
       t={t}
       {...props}
       editorMode={editorMode}
+      isAclEnabled={isAclEnabled}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
@@ -175,7 +171,6 @@ const SavePageControlsWrapper = (props) => {
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
@@ -183,6 +178,7 @@ SavePageControls.propTypes = {
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   pageTags: PropTypes.arrayOf(PropTypes.string),
+  isAclEnabled: PropTypes.bool.isRequired,
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
