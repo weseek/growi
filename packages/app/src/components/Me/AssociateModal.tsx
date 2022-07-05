@@ -8,7 +8,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
@@ -35,11 +35,16 @@ const AssociateModal = (props: Props): JSX.Element => {
 
 
   const clickAddLdapAccountHandler = useCallback(async() => {
-    await associateLdapAccount({ username, password });
-    mutatePersonalExternalAccounts();
+    try {
+      await associateLdapAccount({ username, password });
+      mutatePersonalExternalAccounts();
 
-    closeModalHandler();
-    toastSuccess(t('security_setting.updated_general_security_setting'));
+      closeModalHandler();
+      toastSuccess(t('security_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
 
   }, [associateLdapAccount, closeModalHandler, mutatePersonalExternalAccounts, password, t, username]);
 
