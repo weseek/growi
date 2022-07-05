@@ -259,13 +259,13 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   const { currentPathname } = props;
   const pageId = getPageIdFromPathname(currentPathname);
-  const isParmalink = pageId != null;
+  const isPermalink = pageId != null;
 
   const page = pageWithMeta?.data;
 
   if (page == null) {
     // check the page is forbidden or just does not exist.
-    const count = isParmalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
+    const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
@@ -273,12 +273,12 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   if (page != null) {
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
-    if (isParmalink && page.isEmpty) {
+    if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
     }
 
     // /path/to/page ==> /62a88db47fed8b2d94f30000
-    if (!isParmalink && !page.isEmpty) {
+    if (!isPermalink && !page.isEmpty) {
       const isToppage = pagePathUtils.isTopPage(props.currentPathname);
       if (!isToppage) {
         props.currentPathname = `/${page._id}`;
