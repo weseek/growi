@@ -13,6 +13,7 @@ const UnsavedAlertDialog = (): void => {
       e.preventDefault();
       // returnValue should be set to show alert dialog
       // default alert message cannot be changed.
+      // See -> https://developer.mozilla.org/ja/docs/Web/API/Window/beforeunload_event
       e.returnValue = '';
       return;
     }
