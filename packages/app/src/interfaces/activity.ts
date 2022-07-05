@@ -118,6 +118,10 @@ export const SupportedEventModel = {
 export const SupportedActionCategory = {
   PAGE: 'Page',
   COMMENT: 'Comment',
+  TAG: 'Tag',
+  ATTACHMENT: 'Attachment',
+  SHARE_LINK: 'ShareLink',
+  IN_APP_NOTIFICATION: 'InAppNotification',
   USER: 'User',
   ADMIN: 'Admin',
 } as const;
@@ -368,11 +372,19 @@ export const AllLargeGroupActions = Object.values(LargeActionGroup);
 // Action categories（for SelectActionDropdown.tsx）
 const pageRegExp = new RegExp(`^${SupportedActionCategory.PAGE.toUpperCase()}_`);
 const commentRegExp = new RegExp(`^${SupportedActionCategory.COMMENT.toUpperCase()}_`);
+const tagRegExp = new RegExp(`^${SupportedActionCategory.TAG.toUpperCase()}_`);
+const attachmentRegExp = RegExp(`^${SupportedActionCategory.ATTACHMENT.toUpperCase()}_`);
+const shareLinkRegExp = RegExp(`^${SupportedActionCategory.SHARE_LINK.toUpperCase()}_`);
+const inAppNotificationRegExp = RegExp(`^${SupportedActionCategory.IN_APP_NOTIFICATION.toUpperCase()}_`);
 const userRegExp = new RegExp(`^${SupportedActionCategory.USER.toUpperCase()}_`);
 const adminRegExp = new RegExp(`^${SupportedActionCategory.ADMIN.toUpperCase()}_`);
 
 export const PageActions = AllSupportedActions.filter(action => action.match(pageRegExp));
 export const CommentActions = AllSupportedActions.filter(action => action.match(commentRegExp));
+export const TagActions = AllSupportedActions.filter(action => action.match(tagRegExp));
+export const AttachmentActions = AllSupportedActions.filter(action => action.match(attachmentRegExp));
+export const ShareLinkActions = AllSupportedActions.filter(action => action.match(shareLinkRegExp));
+export const InAppNotificationActions = AllSupportedActions.filter(action => action.match(inAppNotificationRegExp));
 export const UserActions = AllSupportedActions.filter(action => action.match(userRegExp));
 export const AdminActions = AllSupportedActions.filter(action => action.match(adminRegExp));
 
