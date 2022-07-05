@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -445,13 +445,12 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isNotFoundPermalink } = useIsNotFoundPermalink();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFoundPermalink].some(v => v === undefined);
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFoundPermalink,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
   );
 };
 

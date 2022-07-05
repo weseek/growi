@@ -6,7 +6,7 @@ import mongoose, {
 
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
-} from '~/server/interfaces/page-operation';
+} from '~/server/models/interfaces/page-operation';
 
 import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
