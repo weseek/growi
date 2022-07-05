@@ -17,7 +17,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import SidebarContents from './Sidebar/SidebarContents';
-import { SidebarNavSkeleton } from './Sidebar/SidebarNav';
+import { SidebarNav } from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
@@ -28,7 +28,6 @@ const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
 const GlobalNavigation = () => {
-  const SidebarNav = dynamic(() => import('./Sidebar/SidebarNav').then(mod => mod.SidebarNav), { ssr: false });
   const { data: isDrawerMode } = useDrawerMode();
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
