@@ -2,6 +2,7 @@ import React, {
   FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle,
   useRef, useState,
 } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
@@ -74,6 +75,8 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
     </table>
   );
 });
+
+SearchFormHelp.displayName = 'SearchFormHelp';
 
 
 type Props = TypeaheadProps & {

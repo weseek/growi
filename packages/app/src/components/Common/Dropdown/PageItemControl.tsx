@@ -153,6 +153,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem
             onClick={bookmarkItemClickedHandler}
             className="grw-page-control-dropdown-item"
+            data-testid="add-remove-bookmark-btn"
           >
             <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }

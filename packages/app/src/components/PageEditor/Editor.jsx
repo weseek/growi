@@ -401,4 +401,6 @@ const EditorWrapper = React.forwardRef((props, ref) => {
   );
 });
 
+EditorWrapper.displayName = 'EditorWrapper';
+
 export default EditorWrapper;

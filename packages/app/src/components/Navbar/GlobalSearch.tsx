@@ -79,7 +79,13 @@ export const GlobalSearch = (props: Props): JSX.Element => {
     <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
         <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
-          <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
+          <button
+            className="btn btn-secondary dropdown-toggle py-0"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            data-testid="select-search-scope"
+          >
             {scopeLabel}
           </button>
           <div className="dropdown-menu">
@@ -94,6 +100,7 @@ export const GlobalSearch = (props: Props): JSX.Element => {
               { t('header_search_box.item_label.All pages') }
             </button>
             <button
+              data-tesid="search-current-tree"
               className="dropdown-item"
               type="button"
               onClick={() => {

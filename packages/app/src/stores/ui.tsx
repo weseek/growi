@@ -1,6 +1,7 @@
 import { RefObject } from 'react';
 
 import { constants } from 'zlib';
+
 import { isClient, isServer, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -422,12 +423,12 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isSharedUser } = useIsSharedUser();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, isSharedUser, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
   const isNotFoundPage = notFoundTargetPathOrId != null;
@@ -435,7 +436,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isSharedUser && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
 };
 

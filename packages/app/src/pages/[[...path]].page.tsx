@@ -43,7 +43,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -119,10 +119,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
-  // useShared(isSharedPage(props.currentPagePath));
+  // useShared();
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+  useIsSharedUser(false); // this page cann't be routed for '/share'
   // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -150,8 +150,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useCurrentPagePath(pageWithMeta?.data.path);
+  useCurrentPathname(props.currentPathname);
 
   const classNames: string[] = [];
   // switch (editorMode) {
