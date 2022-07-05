@@ -62,6 +62,8 @@ const ACTION_SHARE_LINK_NOT_FOUND = 'SHARE_LINK_NOT_FOUND';
 const ACTION_ATTACHMENT_ADD = 'ATTACHMENT_ADD';
 const ACTION_ATTACHMENT_REMOVE = 'ATTACHMENT_REMOVE';
 const ACTION_ATTACHMENT_DOWNLOAD = 'ACTION_ATTACHMENT_DOWNLOAD';
+const ACTION_SEARCH_PAGE = 'SEARCH_PAGE';
+const ACTION_SEARCH_PAGE_VIEW = 'SEARCH_PAGE_VIEW';
 const ACTION_ADMIN_APP_SETTINGS_UPDATE = 'ADMIN_APP_SETTING_UPDATE';
 const ACTION_ADMIN_SITE_URL_UPDATE = 'ADMIN_SITE_URL_UPDATE';
 const ACTION_ADMIN_MAIL_SMTP_UPDATE = 'ADMIN_MAIL_SMTP_UPDATE';
@@ -139,6 +141,7 @@ export const SupportedActionCategory = {
   ATTACHMENT: 'Attachment',
   SHARE_LINK: 'ShareLink',
   IN_APP_NOTIFICATION: 'InAppNotification',
+  SEARCH: 'Search',
   USER: 'User',
   ADMIN: 'Admin',
 } as const;
@@ -199,6 +202,8 @@ export const SupportedAction = {
   ACTION_ATTACHMENT_ADD,
   ACTION_ATTACHMENT_REMOVE,
   ACTION_ATTACHMENT_DOWNLOAD,
+  ACTION_SEARCH_PAGE,
+  ACTION_SEARCH_PAGE_VIEW,
   ACTION_ADMIN_APP_SETTINGS_UPDATE,
   ACTION_ADMIN_SITE_URL_UPDATE,
   ACTION_ADMIN_MAIL_SMTP_UPDATE,
@@ -333,6 +338,8 @@ export const MediumActionGroup = {
   ACTION_ATTACHMENT_ADD,
   ACTION_ATTACHMENT_REMOVE,
   ACTION_ATTACHMENT_DOWNLOAD,
+  ACTION_SEARCH_PAGE,
+  ACTION_SEARCH_PAGE_VIEW,
 } as const;
 
 // MediumActionGroup + All Actions by Admin Users - PAGE_VIEW
@@ -420,6 +427,7 @@ const tagRegExp = new RegExp(`^${SupportedActionCategory.TAG.toUpperCase()}_`);
 const attachmentRegExp = RegExp(`^${SupportedActionCategory.ATTACHMENT.toUpperCase()}_`);
 const shareLinkRegExp = RegExp(`^${SupportedActionCategory.SHARE_LINK.toUpperCase()}_`);
 const inAppNotificationRegExp = RegExp(`^${SupportedActionCategory.IN_APP_NOTIFICATION.toUpperCase()}_`);
+const searchRegExp = RegExp(`^${SupportedActionCategory.SEARCH.toUpperCase()}_`);
 const userRegExp = new RegExp(`^${SupportedActionCategory.USER.toUpperCase()}_`);
 const adminRegExp = new RegExp(`^${SupportedActionCategory.ADMIN.toUpperCase()}_`);
 
@@ -429,6 +437,7 @@ export const TagActions = AllSupportedActions.filter(action => action.match(tagR
 export const AttachmentActions = AllSupportedActions.filter(action => action.match(attachmentRegExp));
 export const ShareLinkActions = AllSupportedActions.filter(action => action.match(shareLinkRegExp));
 export const InAppNotificationActions = AllSupportedActions.filter(action => action.match(inAppNotificationRegExp));
+export const SearchActions = AllSupportedActions.filter(action => action.match(searchRegExp));
 export const UserActions = AllSupportedActions.filter(action => action.match(userRegExp));
 export const AdminActions = AllSupportedActions.filter(action => action.match(adminRegExp));
 
