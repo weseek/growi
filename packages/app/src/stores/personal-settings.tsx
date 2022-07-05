@@ -1,11 +1,15 @@
 import useSWR, { SWRResponse } from 'swr';
 
+
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
+import loggerFactory from '~/utils/logger';
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:personal-settings');
 
 
 export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
@@ -51,16 +55,34 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     };
 
     // invoke API
-    await apiv3Put('/personal-setting/', updateData);
+    try {
+      await apiv3Put('/personal-setting/', updateData);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update personal data');
+    }
   };
 
 
   const associateLdapAccount = async(account): Promise<void> => {
-    await apiv3Put('/personal-setting/associate-ldap', account);
+    try {
+      await apiv3Put('/personal-setting/associate-ldap', account);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to associate ldap account');
+    }
   };
 
   const disassociateLdapAccount = async(account): Promise<void> => {
-    await apiv3Put('/personal-setting/disassociate-ldap', account);
+    try {
+      await apiv3Put('/personal-setting/disassociate-ldap', account);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to disassociate ldap account');
+    }
   };
 
   return {
