@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 
 // import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
@@ -90,8 +90,9 @@ type Props = CommonProps & {
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
-  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
   const router = useRouter();
+
+  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 

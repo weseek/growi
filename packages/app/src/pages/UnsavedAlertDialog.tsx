@@ -1,11 +1,11 @@
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 
-const UnsavedAlertDialog = (): void => {
+const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -53,7 +53,7 @@ const UnsavedAlertDialog = (): void => {
   }, [alertUnsavedWarningByNextRouter, router.events]);
 
 
-  return;
+  return <></>;
 };
 
 export default UnsavedAlertDialog;
