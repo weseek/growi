@@ -2,7 +2,7 @@ import { RefObject } from 'react';
 
 import { constants } from 'zlib';
 
-import { isClient, pagePathUtils } from '@growi/core';
+import { isClient, isServer, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -113,6 +113,10 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  if (isServer()) {
+    return EditorMode.View;
+  }
+
   const { hash } = window.location;
 
   switch (hash) {
@@ -424,18 +428,16 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, isSharedUser, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, isSharedUser, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
-  const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedUser && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isSharedUser && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 

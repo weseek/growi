@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { isClient, pagePathUtils } from '@growi/core';
-import { isValidObjectId } from 'mongoose';
+import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -27,8 +26,8 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -40,7 +39,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -48,7 +47,8 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { removeHeadingSlash } = pathUtils;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -63,11 +63,14 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   // isAbleToDeleteCompletely: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  isSlackConfigured: boolean,
   // isMailerSetup: boolean,
-  // isAclEnabled: boolean,
+  isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
   // hackmdUri: string,
@@ -100,8 +103,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPagePath(props.currentPathname);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
-  // useIsForbidden(props.isForbidden);
-  // useNotFound(props.isNotFound);
+  useIsForbidden(props.isForbidden);
+  useIsNotFound(props.isNotFound);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -112,8 +115,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+
+  useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
-  // useAclEnabled(props.isAclEnabled);
+  useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
   // useHackmdUri(props.hackmdUri);
@@ -194,8 +199,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               <div id="content-main" className="content-main grw-container-convertible">
                 {/* <PageAlerts /> */}
                 PageAlerts<br />
-                {/* <DisplaySwitcher /> */}
-                DisplaySwitcher<br />
+                <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
                 PageStatusAlert
@@ -213,9 +217,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
-          <p>
-            { pageWithMeta != null && isPopulated(pageWithMeta.data.revision) && pageWithMeta.data.revision.body }
-          </p>
         </footer>
 
       </BasicLayout>
@@ -225,8 +226,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
 
 function getPageIdFromPathname(currentPathname: string): string | null {
-  const pageIdStr = currentPathname.substring(1);
-  return isValidObjectId(pageIdStr) ? pageIdStr : null;
+  return _isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
 }
 
 async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
@@ -259,16 +259,16 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   const { currentPathname } = props;
   const pageId = getPageIdFromPathname(currentPathname);
-  const isPermalink = pageId != null;
+  const isPermalink = _isPermalink(currentPathname);
 
   const page = pageWithMeta?.data;
 
   if (page == null) {
+    props.isNotFound = true;
+
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
-    props.isNotFound = true;
-    logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
 
   if (page != null) {
@@ -332,8 +332,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
-  // props.isAclEnabled = aclService.isAclEnabled();
+  props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
