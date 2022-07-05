@@ -21,7 +21,7 @@ const UnsavedAlertDialog = (): void => {
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
     if (isEnabledUnsavedWarning) {
-      // eslint-disable-next-line no-alert
+    // eslint-disable-next-line no-alert
       window.alert(alertMsg);
     }
     return;
@@ -36,7 +36,8 @@ const UnsavedAlertDialog = (): void => {
     return () => {
       window.removeEventListener('beforeunload', alertUnsavedWarningByBrowser);
     };
-  }, [alertUnsavedWarningByBrowser]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   /*
@@ -44,11 +45,12 @@ const UnsavedAlertDialog = (): void => {
   * https://nextjs.org/docs/api-reference/next/router
   */
   useEffect(() => {
-    router.events.on('routeChangeStart', () => alertUnsavedWarningByNextRouter());
+    router.events.on('routeChangeStart', alertUnsavedWarningByNextRouter);
     return () => {
-      router.events.off('routeChangeStart', () => alertUnsavedWarningByNextRouter());
+      router.events.off('routeChangeStart', alertUnsavedWarningByNextRouter);
     };
-  }, [router.events]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   return;
