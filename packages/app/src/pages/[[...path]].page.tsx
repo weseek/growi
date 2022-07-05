@@ -291,7 +291,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id });
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
@@ -331,8 +331,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
-  // ui
-  props.userUISettings = userUISettings;
+  // UI
+  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
   props.isSidebarDrawerMode = configManager.getConfig('crowi', 'customize:isSidebarDrawerMode');
   props.isSidebarClosedAtDockMode = configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
   return {
