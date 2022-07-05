@@ -18,7 +18,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
-import { PageModel } from '~/server/models/page';
+import { PageDocument } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -137,7 +137,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
 
-  // sync pathname
+  // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
     if (isClient() && window.location.pathname !== props.currentPathname) {
       router.replace(props.currentPathname, undefined, { shallow: true });
@@ -159,15 +159,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
-
-
-  // // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
-  // useEffect(() => {
-  //   if (props.redirectTo != null) {
-  //     router.push('/[[...path]]', props.redirectTo, { shallow: true });
-  //   }
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   return (
     <>
@@ -229,41 +220,68 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-async function injectPageInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
+
+function getPageIdFromPathname(currentPathname: string): string | null {
+  const pageIdStr = currentPathname.substring(1);
+  return isValidObjectId(pageIdStr) ? pageIdStr : null;
+}
+
+async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const Page = crowi.model('Page');
+  const { revisionId } = req.query;
   const { pageService } = crowi;
 
   const { user } = req;
 
   const { currentPathname } = props;
-
-  // determine pageId
-  const pageIdStr = currentPathname.substring(1);
-  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = getPageIdFromPathname(currentPathname);
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
-  const page = result.data;
+  const page = result?.data as unknown as PageDocument;
+
+  // populate
+  if (page != null) {
+    page.initLatestRevisionField(revisionId);
+    await page.populateDataToShowRevision();
+  }
+
+  return result;
+}
+
+async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageWithMeta|null): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const Page = crowi.model('Page');
+
+  const { currentPathname } = props;
+  const pageId = getPageIdFromPathname(currentPathname);
+  const isParmalink = pageId != null;
+
+  const page = pageWithMeta?.data;
 
   if (page == null) {
-    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     // check the page is forbidden or just does not exist.
+    const count = isParmalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
     props.isNotFound = true;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
   }
-  else {
-    // set shouldRedirectToParmalink
-    const isToppage = pagePathUtils.isTopPage(props.currentPathname);
-    const shouldRedirectToParmalink = !isToppage && !isValidObjectId(pageIdStr);
-    if (shouldRedirectToParmalink) {
-      props.currentPathname = `/${page._id}`;
+
+  if (page != null) {
+    // /62a88db47fed8b2d94f30000 ==> /path/to/page
+    if (isParmalink && page.isEmpty) {
+      props.currentPathname = page.path;
+    }
+
+    // /path/to/page ==> /62a88db47fed8b2d94f30000
+    if (!isParmalink && !page.isEmpty) {
+      const isToppage = pagePathUtils.isTopPage(props.currentPathname);
+      if (!isToppage) {
+        props.currentPathname = `/${page._id}`;
+      }
     }
   }
-
-  await (page as unknown as PageModel).populateDataToShowRevision();
-  props.pageWithMetaStr = JSON.stringify(result);
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -298,7 +316,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
-  await injectPageInformation(context, props);
+  const pageWithMeta = await getPageData(context, props);
+
+  props.pageWithMetaStr = JSON.stringify(pageWithMeta);
+
+  injectRoutingInformation(context, props, pageWithMeta);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user);
