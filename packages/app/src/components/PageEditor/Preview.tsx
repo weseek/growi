@@ -104,6 +104,8 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
 
 });
 
+Preview.displayName = 'Preview';
+
 /**
  * Wrapper component for using unstated
  */
@@ -113,5 +115,7 @@ const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 const PreviewWrapper2 = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
   return <PreviewWrapper ref={ref} {...props} />;
 });
+
+PreviewWrapper2.displayName = 'PreviewWrapper2';
 
 export default PreviewWrapper2;

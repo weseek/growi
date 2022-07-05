@@ -1,20 +1,21 @@
 import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
-import { useTranslation } from 'next-i18next';
 
 import { parse as parseQuerystring } from 'querystring';
 
+import { useTranslation } from 'next-i18next';
+
+
+import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
-import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-
 import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
@@ -83,6 +84,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
     </div>
   );
 });
+
+SearchResultListHead.displayName = 'SearchResultListHead';
 
 
 /**
