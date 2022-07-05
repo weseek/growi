@@ -146,7 +146,19 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer, pageTags]);
+  }, [
+    editorContainer,
+    editorMode,
+    grant,
+    grantGroupId,
+    grantGroupName,
+    isSlackEnabled,
+    slackChannelsData,
+    markdown,
+    pageContainer,
+    pageTags,
+    mutateIsEnabledUnsavedWarning,
+  ]);
 
 
   /**
@@ -359,7 +371,7 @@ const PageEditor = (props: Props): JSX.Element => {
     if (pageContainer.state.markdown! !== markdown) {
       mutateIsEnabledUnsavedWarning(true);
     }
-  }, [editorContainer, markdown, pageContainer.state.markdown]);
+  }, [editorContainer, markdown, mutateIsEnabledUnsavedWarning, pageContainer.state.markdown]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {

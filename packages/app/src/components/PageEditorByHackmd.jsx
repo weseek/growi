@@ -173,7 +173,7 @@ class PageEditorByHackmd extends React.Component {
    */
   async onSaveWithShortcut(markdown) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -201,7 +201,7 @@ class PageEditorByHackmd extends React.Component {
    */
   async hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer, editorContainer } = this.props;
+    const { pageContainer, mutateIsEnabledUnsavedWarning } = this.props;
 
     if (hackmdUri == null) {
       // do nothing
@@ -440,6 +440,7 @@ PageEditorByHackmd.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  mutateIsEnabledUnsavedWarning: PropTypes.func,
 };
 
 /**
@@ -458,6 +459,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   if (editorMode == null) {
     return null;
@@ -474,6 +476,7 @@ const PageEditorByHackmdWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
 };
