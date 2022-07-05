@@ -36,8 +36,7 @@ const UnsavedAlertDialog = (): void => {
     return () => {
       window.removeEventListener('beforeunload', alertUnsavedWarningByBrowser);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [alertUnsavedWarningByBrowser]);
 
 
   /*
@@ -49,8 +48,7 @@ const UnsavedAlertDialog = (): void => {
     return () => {
       router.events.off('routeChangeStart', alertUnsavedWarningByNextRouter);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [alertUnsavedWarningByNextRouter, router.events]);
 
 
   return;
