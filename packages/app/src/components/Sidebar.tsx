@@ -27,16 +27,22 @@ const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
+const isSwrDataLoading = (swrData: any, swrError: Error | undefined) => {
+  return swrError == null && swrData === undefined;
+};
 
 const GlobalNavigation = () => {
   const SidebarNav = dynamic(() => import('./Sidebar/SidebarNav').then(mod => mod.SidebarNav), { ssr: false });
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: currentContents } = useCurrentSidebarContents();
-  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
+  const { data: isDrawerMode, error: errorIsDrawerMode } = useDrawerMode();
+  const { data: currentContents, error: errorCurrentContents } = useCurrentSidebarContents();
+  const { data: isCollapsed, error: errorIsCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
   const { scheduleToPut } = useUserUISettings();
 
-  const [isClient, setIsClient] = useState(false);
+  const isLoadingIsDrawerMode = isSwrDataLoading(isDrawerMode, errorIsDrawerMode);
+  const isLoadingCurrentContents = isSwrDataLoading(currentContents, errorCurrentContents);
+  const isLoadingIsCollapsed = isSwrDataLoading(isCollapsed, errorIsCollapsed);
+  const isLoading = isLoadingIsDrawerMode || isLoadingCurrentContents || isLoadingIsCollapsed;
 
   const itemSelectedHandler = useCallback((selectedContents) => {
     if (isDrawerMode) {
@@ -57,21 +63,9 @@ const GlobalNavigation = () => {
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
 
-  useEffect(() => {
-    // Change content in side effect to avoid error thrown by having different rendered content between the server and the client.
-    // https://en.reactjs.org/docs/react-dom.html#hydrate
-    // > ReactDOM.hydrate expects that the rendered content is identical between the server and the client.
-    setIsClient(true);
-  }, []);
-
-  const SidebarNavElem = () => {
-    if (isClient) {
-      return <SidebarNav onItemSelected={itemSelectedHandler} />;
-    }
-    return <SidebarNavSkeleton/>;
-  };
-
-  return SidebarNavElem();
+  return isLoading
+    ? <SidebarNavSkeleton/>
+    : <SidebarNav onItemSelected={itemSelectedHandler} />;
 
 };
 
