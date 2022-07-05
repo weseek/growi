@@ -274,9 +274,6 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
-
-    const isPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
