@@ -107,7 +107,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 // Skeleton Component
 export const SidebarNavSkeleton: FC = memo(() => {
 
-  const PrimaryItemSkeleton: FC = memo(() => {
+  const PrimaryItemSkeleton = () => {
     return (
       <button
         type="button"
@@ -116,17 +116,15 @@ export const SidebarNavSkeleton: FC = memo(() => {
         <i className="fa fa-square" aria-hidden="true"></i>
       </button>
     );
-  });
-  PrimaryItemSkeleton.displayName = 'PrimaryItemSkeleton';
+  };
 
-  const SecondaryItemSkeleton: FC = memo(() => {
+  const SecondaryItemSkeleton = () => {
     return (
       <a href='/' className="d-block btn btn-primary">
         <i className="fa fa-square" aria-hidden="true"></i>
       </a>
     );
-  });
-  SecondaryItemSkeleton.displayName = 'SecondaryItemSkeleton';
+  };
 
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
