@@ -33,8 +33,8 @@ const { isTopPage } = pagePathUtils;
 const DisplaySwitcher = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const EditorNavbarBottom = dynamic(import('../PageEditor/EditorNavbarBottom'), { ssr: false });
-  const HashChanged = dynamic(import('../EventListeneres/HashChanged'), { ssr: false });
+  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+  const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
 
   // get element for smoothScroll
   // const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);

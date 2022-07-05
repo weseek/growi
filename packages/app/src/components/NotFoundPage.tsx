@@ -11,7 +11,7 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const CustomNavAndContents = dynamic(import('./CustomNavigation/CustomNavAndContents'), { ssr: false });
+  const CustomNavAndContents = dynamic(() => import('./CustomNavigation/CustomNavAndContents'), { ssr: false });
 
   const navTabMapping = useMemo(() => {
     return {
