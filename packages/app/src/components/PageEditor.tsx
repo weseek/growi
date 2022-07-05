@@ -18,6 +18,7 @@ import {
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useIsEnabledUnsavedWarning
 } from '~/stores/editor';
 import {
   EditorMode,
@@ -96,6 +97,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
@@ -129,7 +131,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      mutateIsEnabledUnsavedWarning(false)
 
       // eslint-disable-next-line no-unused-vars
       const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
@@ -355,7 +357,7 @@ const PageEditor = (props: Props): JSX.Element => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (pageContainer.state.markdown! !== markdown) {
-      editorContainer.enableUnsavedWarning();
+      mutateIsEnabledUnsavedWarning(true);
     }
   }, [editorContainer, markdown, pageContainer.state.markdown]);
 

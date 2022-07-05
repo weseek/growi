@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 import { GrowiNavbar } from './Navbar/GrowiNavbar';
 import { RawLayout } from './RawLayout';

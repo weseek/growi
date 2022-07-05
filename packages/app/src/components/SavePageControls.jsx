@@ -7,13 +7,10 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
 import { useIsEditable, useCurrentPageId, useIsAclEnabled } from '~/stores/context';
-import { usePageTagsForEditors } from '~/stores/editor';
+import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -46,10 +43,10 @@ class SavePageControls extends React.Component {
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    mutateIsEnabledUnsavedWarning(false);
 
     try {
       // save
@@ -72,10 +69,10 @@ class SavePageControls extends React.Component {
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    mutateIsEnabledUnsavedWarning(false);
     // save
     const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
     const optionsToSave = Object.assign(currentOptionsToSave, {
@@ -130,7 +127,7 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [PageContainer, EditorContainer]);
+const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [PageContainer]);
 
 const SavePageControlsWrapper = (props) => {
   const { t } = useTranslation();
@@ -142,6 +139,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
   if (isEditable == null || editorMode == null || isAclEnabled == null) {
@@ -164,6 +162,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
       pageTags={pageTags}
     />
   );
@@ -173,7 +172,6 @@ SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
@@ -187,6 +185,7 @@ SavePageControls.propTypes = {
   mutateGrant: PropTypes.func,
   mutateGrantGroupId: PropTypes.func,
   mutateGrantGroupName: PropTypes.func,
+  mutateIsEnabledUnsavedWarning: PropTypes.func,
 };
 
 export default SavePageControlsWrapper;
