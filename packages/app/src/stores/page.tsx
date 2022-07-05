@@ -15,7 +15,7 @@ import { apiGet } from '../client/util/apiv1-client';
 import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPagePath } from './context';
+import { useCurrentPageId, useCurrentPagePath, useCurrentPathname } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
@@ -203,4 +203,19 @@ export const useSWRxApplicableGrant = (
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
+};
+
+export const useSWRxCurrentPagePath = (): SWRResponse<Nullable<string>, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPathname } = useCurrentPathname();
+
+  const fetcher = () => {
+    if (currentPage != null) {
+      return currentPage.path;
+    }
+    return currentPathname;
+  };
+
+  return useSWRImmutable('useSWRxCurrentPagePath', fetcher);
+
 };
