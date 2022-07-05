@@ -2,8 +2,6 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
-import dynamic from 'next/dynamic';
-
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
