@@ -618,7 +618,7 @@ module.exports = (crowi) => {
         username: req.user?.username,
       },
     };
-    await crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_EXPORT, parameters);
+    await crowi.activityService.createActivity(parameters);
 
     return stream.pipe(res);
   });

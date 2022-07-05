@@ -227,7 +227,7 @@ module.exports = function(crowi, app) {
         username: req.user?.username,
       },
     };
-    await crowi.activityService.createActivity(SupportedAction.ACTION_ATTACHMENT_DOWNLOAD, parameters);
+    await crowi.activityService.createActivity(parameters);
 
     return fileStream.pipe(res);
   }
