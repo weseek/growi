@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { isValidObjectId } from 'mongoose';
@@ -7,6 +7,7 @@ import {
 } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 // import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
@@ -85,6 +86,7 @@ type Props = CommonProps & {
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
+  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
   const router = useRouter();
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
@@ -215,6 +217,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           {/* <PageComments /> */}
           PageComments
         </footer>
+
+        <UnsavedAlertDialog />
 
       </BasicLayout>
     </>

@@ -15,7 +15,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useIsEditable, useCurrentPageId } from '~/stores/context';
-import { usePageTagsForEditors } from '~/stores/editor';
+import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -54,7 +54,7 @@ class SavePageControls extends React.Component {
       isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    mutateIsEnabledUnsavedWarning(false)
 
     try {
       // save
@@ -80,7 +80,7 @@ class SavePageControls extends React.Component {
       isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
+    mutateIsEnabledUnsavedWarning(false)
     // save
     const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
     const optionsToSave = Object.assign(currentOptionsToSave, {
@@ -146,6 +146,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { mutate: mutateIsEnabledUnsavedWarning} = useIsEnabledUnsavedWarning();
 
 
   if (isEditable == null || editorMode == null) {
@@ -167,6 +168,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
       pageTags={pageTags}
     />
   );
@@ -190,6 +192,7 @@ SavePageControls.propTypes = {
   mutateGrant: PropTypes.func,
   mutateGrantGroupId: PropTypes.func,
   mutateGrantGroupName: PropTypes.func,
+  mutateIsEnabledUnsavedWarning: PropTypes.func,
 };
 
 export default SavePageControlsWrapper;
