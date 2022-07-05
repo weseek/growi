@@ -88,7 +88,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      mutateIsEnabledUnsavedWarning(false)
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);

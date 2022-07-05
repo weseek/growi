@@ -18,7 +18,7 @@ import {
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
-  useIsEnabledUnsavedWarning
+  useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
   EditorMode,
@@ -131,7 +131,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     try {
       // disable unsaved warning
-      mutateIsEnabledUnsavedWarning(false)
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
