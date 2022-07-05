@@ -29,7 +29,7 @@
     "dev:migrate:down": "yarn dev:migrate-mongo down",
     "cy:run": "cypress run --browser chrome",
     "//// for CI": "",
-    "dev:ci": "yarn dev:client:nowatch && yarn dev:server --ci",
+    "dev:ci": "yarn dev --ci",
     "predev:ci": "run-p resources:*",
     "lint:typecheck": "npx -y tsc",
     "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
