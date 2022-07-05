@@ -1,10 +1,12 @@
 import { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 
 const UnsavedAlertDialog = (): void => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
@@ -22,10 +24,10 @@ const UnsavedAlertDialog = (): void => {
   const alertUnsavedWarningByNextRouter = useCallback(() => {
     if (isEnabledUnsavedWarning) {
     // eslint-disable-next-line no-alert
-      window.alert('Changes you made may not be saved.');
+      window.alert(t('page_edit.changes_not_saved'));
     }
     return;
-  }, [isEnabledUnsavedWarning]);
+  }, [isEnabledUnsavedWarning, t]);
 
   /*
   * Route changes by Browser
