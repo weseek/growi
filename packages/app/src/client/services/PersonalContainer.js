@@ -1,15 +1,11 @@
 import { Container } from 'unstated';
 
-import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { apiPost } from '../util/apiv1-client';
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
-
-const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 /**
  * Service container for personal settings page (PersonalSettings.jsx)
@@ -30,8 +26,6 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en_US',
       isGravatarEnabled: false,
-      isUploadedPicture: false,
-      uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       apiToken: '',
       slackMemberId: '',
@@ -68,25 +62,6 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to fetch personal data');
     }
-  }
-
-  /**
-   * define a function for uploaded picture
-   */
-  getUploadedPictureSrc(user) {
-    if (user == null) {
-      return DEFAULT_IMAGE;
-    }
-    if (user.image) {
-      this.setState({ isUploadedPicture: true });
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      this.setState({ isUploadedPicture: true });
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
   }
 
   /**

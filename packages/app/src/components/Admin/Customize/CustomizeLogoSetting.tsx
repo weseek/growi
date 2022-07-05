@@ -51,7 +51,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
       const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo,
         customizedLogoSrc,
-        currentBrandLogo: (!isDefaultLogo && customizedLogoSrc != null) ? customizedLogoSrc : null,
       });
       const { customizedParams } = response.data;
       setIsDefaultLogo(customizedParams.isDefaultLogo);

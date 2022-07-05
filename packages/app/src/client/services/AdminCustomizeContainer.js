@@ -14,10 +14,9 @@ const logger = loggerFactory('growi:services:AdminCustomizeContainer');
  */
 export default class AdminCustomizeContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
-    this.appContainer = appContainer;
     this.dummyCurrentTheme = 0;
     this.dummyCurrentThemeForError = 1;
 
