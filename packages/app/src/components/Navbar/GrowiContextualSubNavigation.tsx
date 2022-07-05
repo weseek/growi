@@ -166,7 +166,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
@@ -191,13 +191,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       mutateCurrentPage();
 
+      // revalidate SWRTagsInfo
+      mutateSWRTagsInfo();
+      mutatePageTagsForEditors(newTags);
+
       toastSuccess('updated tags successfully');
     }
     catch (err) {
       toastError(err, 'fail to update tags');
     }
 
-  }, [mutateCurrentPage, pageId, revisionId]);
+  }, [mutateSWRTagsInfo, mutatePageTagsForEditors, mutateCurrentPage, pageId, revisionId]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
