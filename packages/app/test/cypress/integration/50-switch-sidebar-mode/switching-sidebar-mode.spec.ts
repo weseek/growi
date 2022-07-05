@@ -21,7 +21,7 @@ context('Switch sidebar mode', () => {
 
   it('Switching sidebar mode', () => {
     cy.visit('/');
-    cy.get('.grw-personal-dropdown').click();
+    cy.get('.grw-apperance-mode-dropdown').click();
 
     cy.get('[for="swSidebarModeOnEditor"]').click();
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, { capture: 'viewport' });

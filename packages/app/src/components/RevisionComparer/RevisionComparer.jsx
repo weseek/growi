@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
+import { useCurrentPagePath } from '~/stores/context';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 const { encodeSpaces } = pagePathUtils;
@@ -29,12 +27,13 @@ const DropdownItemContents = ({ title, contents }) => (
 
 const RevisionComparer = (props) => {
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const { t } = useTranslation();
-  const { revisionComparerContainer } = props;
-
-  const { path, pageId } = revisionComparerContainer.pageContainer.state;
+  const { data: currentPagePath } = useCurrentPagePath();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const {
+    sourceRevision, targetRevision,
+    currentPageId,
+  } = props;
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
@@ -42,7 +41,6 @@ const RevisionComparer = (props) => {
 
   const generateURL = (pathName) => {
     const { origin } = window.location;
-    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
     const url = new URL(pathName, origin);
 
@@ -55,13 +53,17 @@ const RevisionComparer = (props) => {
 
   };
 
-  const { sourceRevision, targetRevision } = revisionComparerContainer.state;
-
+  let isNodiff;
   if (sourceRevision == null || targetRevision == null) {
-    return null;
+    isNodiff = true;
+  }
+  else {
+    isNodiff = sourceRevision._id === targetRevision._id;
   }
 
-  const isNodiff = sourceRevision._id === targetRevision._id;
+  if (currentPageId == null || currentPagePath == null) {
+    return <>{ t('not_found_page.page_not_exist')}</>;
+  }
 
   return (
     <div className="revision-compare">
@@ -80,15 +82,15 @@ const RevisionComparer = (props) => {
           </DropdownToggle>
           <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
             {/* Page path URL */}
-            <CopyToClipboard text={generateURL(path)}>
+            <CopyToClipboard text={generateURL(currentPagePath)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={generateURL(path)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={generateURL(currentPagePath)} />
               </DropdownItem>
             </CopyToClipboard>
             {/* Permanent Link URL */}
-            <CopyToClipboard text={generateURL(pageId)}>
+            <CopyToClipboard text={generateURL(currentPageId)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={generateURL(pageId)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={generateURL(currentPageId)} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
@@ -115,13 +117,9 @@ const RevisionComparer = (props) => {
 };
 
 RevisionComparer.propTypes = {
-  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
-  revisions: PropTypes.array,
+  sourceRevision: PropTypes.instanceOf(Object),
+  targetRevision: PropTypes.instanceOf(Object),
+  currentPageId: PropTypes.string,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionComparerContainer]);
-
-export default RevisionComparerWrapper;
+export default RevisionComparer;

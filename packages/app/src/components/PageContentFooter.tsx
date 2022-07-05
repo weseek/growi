@@ -29,5 +29,6 @@ const PageContentFooter:FC<Props> = memo((props:Props):JSX.Element => {
   );
 });
 
+PageContentFooter.displayName = 'PageContentFooter';
 
 export default PageContentFooter;

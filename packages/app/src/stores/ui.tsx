@@ -1,5 +1,7 @@
 import { RefObject } from 'react';
 
+import { constants } from 'zlib';
+
 import { isClient, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -19,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser, useIsDeleted,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -70,27 +72,26 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
 };
 
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
+  const bodyElement = document.getElementsByTagName('body')[0];
+  if (bodyElement == null) {
+    logger.warn('The body tag was not successfully obtained');
+    return;
+  }
   switch (newEditorMode) {
     case EditorMode.View:
-      $('body').removeClass('on-edit');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      $('body').removeClass('editing-sidebar');
+      bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
       break;
     case EditorMode.Editor:
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
-      $('body').removeClass('hackmd');
+      bodyElement.classList.add('on-edit', 'builtin-editor');
+      bodyElement.classList.remove('hackmd');
       // editing /Sidebar
       if (isSidebar) {
-        $('body').addClass('editing-sidebar');
+        bodyElement.classList.add('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('editing-sidebar');
+      bodyElement.classList.add('on-edit', 'hackmd');
+      bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
       break;
   }
 };
@@ -396,9 +397,9 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
-  const { data: isDeleted } = useIsDeleted();
+  const { data: isTrashPage } = useIsTrashPage();
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
+  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null);
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
@@ -421,12 +422,12 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isSharedUser } = useIsSharedUser();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, isSharedUser, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
   const isNotFoundPage = notFoundTargetPathOrId != null;
@@ -434,7 +435,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isSharedUser && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { FootstampIcon } from '@growi/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { IUser } from '~/interfaces/user';

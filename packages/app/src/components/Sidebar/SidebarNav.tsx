@@ -2,8 +2,10 @@ import React, { FC, memo, useCallback } from 'react';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
+
+import styles from './SidebarNav.module.scss';
 
 
 type PrimaryItemProps = {
@@ -63,6 +65,7 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
     </a>
   );
 });
+SecondaryItem.displayName = 'SecondaryItem';
 
 
 type Props = {
@@ -78,7 +81,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
   const { onItemSelected } = props;
 
   return (
-    <div className="grw-sidebar-nav">
+    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
       <div className="grw-sidebar-nav-primary-container">
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />

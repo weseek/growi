@@ -1,32 +1,17 @@
-.grw-sidebar {
-  $sidebar-nav-button-height: 55px;
+@use '~/styles/variables' as var;
+@use '~/styles/mixins';
+@use '~/styles/bootstrap/init' as bs;
 
-  %fukidashi-for-active {
-    position: relative;
-
-    // speech balloon
-    &:after {
-      position: absolute;
-      right: -0.1em;
-      display: block;
-      width: 0;
-      content: '';
-      border: 9px solid transparent;
-      border-right-color: white;
-      border-left-width: 0;
-      transform: translateY(-#{$sidebar-nav-button-height / 2});
-    }
-  }
-
+.grw-sidebar :global {
   // sticky
   position: sticky;
-  top: $grw-navbar-border-width;
+  top: var.$grw-navbar-border-width;
 
   // set the max value that should be taken when sticky
-  height: calc(100vh - $grw-navbar-border-width);
+  height: calc(100vh - var.$grw-navbar-border-width);
 
   // override @atlaskit/navigation-next styles
-  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  $navbar-total-height: var.$grw-navbar-height + var.$grw-navbar-border-width;
   .data-layout-container {
     display: flex;
     flex-direction: row;
@@ -68,7 +53,8 @@
           animation-duration: 0.22s;
           animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
           animation-fill-mode: forwards;
-          .grw-contextual-navigation-sub {
+
+          :global .grw-contextual-navigation-sub {
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -141,9 +127,9 @@
           }
         }
         .hitarea {
-          @extend .rounded-pill;
-
           position: absolute;
+          border-radius: bs.$rounded-pill;
+
           @include hitarea(30px);
         }
 
@@ -169,55 +155,6 @@
     }
   }
 
-  .grw-sidebar-nav {
-    height: 100vh;
-
-    .btn {
-      width: $grw-sidebar-nav-width;
-      line-height: 1em;
-      border-radius: 0;
-      box-shadow: none !important;
-
-      // icon opacity
-      &:not(.active) {
-        i {
-          opacity: 0.4;
-        }
-        &:hover,
-        &:focus {
-          i {
-            opacity: 0.7;
-          }
-        }
-      }
-    }
-
-    .grw-sidebar-nav-primary-container {
-      .btn {
-        padding: 1em;
-        i {
-          font-size: 2.3em;
-        }
-
-        &.active {
-          @extend %fukidashi-for-active;
-        }
-      }
-    }
-
-    .grw-sidebar-nav-secondary-container {
-      position: fixed;
-      bottom: 1.5rem;
-
-      .btn {
-        padding: 0.9em;
-        i {
-          font-size: 1.5em;
-        }
-      }
-    }
-  }
-
   .grw-drawer-toggler {
     display: none; // invisible in default
   }
@@ -229,14 +166,15 @@
   }
 }
 
+
 // Dock Mode
 @mixin dock() {
-  z-index: $zindex-sticky;
+  z-index: bs.$zindex-sticky;
 
   // override @atlaskit/navigation-next styles
-  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  $navbar-total-height: var.$grw-navbar-height + var.$grw-navbar-border-width;
   .data-layout-container {
-    max-height: calc(100vh - #{$grw-navbar-border-width});
+    max-height: calc(100vh - #{var.$grw-navbar-border-width});
   }
   .navigation {
     position: unset;
@@ -247,7 +185,7 @@
 
 // Drawer Mode
 @mixin drawer() {
-  z-index: $zindex-fixed + 2;
+  z-index: bs.$zindex-fixed + 2;
 
   .data-layout-container {
     position: fixed;
@@ -259,7 +197,7 @@
 
     // apply transition
     transition-property: transform;
-    @include apply-navigation-transition();
+    @include mixins.apply-navigation-transition();
   }
 
   &:not(.open) {
@@ -285,13 +223,13 @@
     position: fixed;
     right: -15px;
 
-    @include media-breakpoint-down(sm) {
+    @include bs.media-breakpoint-down(sm) {
       bottom: 15px;
       width: 42px;
       height: 42px;
       font-size: 18px;
     }
-    @include media-breakpoint-up(md) {
+    @include bs.media-breakpoint-up(md) {
       top: 72px;
       width: 50px;
       height: 50px;
@@ -302,33 +240,26 @@
   }
 }
 
-.grw-sidebar {
-  @include media-breakpoint-down(sm) {
+// '&' could not be set after :global
+// workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
+.grw-sidebar :global {
+  .grw-sidebar-drawer {
     @include drawer();
   }
-  @include media-breakpoint-up(md) {
-    &.grw-sidebar-drawer {
+  .grw-sidebar-dock {
+    @include bs.media-breakpoint-down(sm) {
       @include drawer();
     }
-    &:not(.grw-sidebar-drawer) {
+    @include bs.media-breakpoint-up(md) {
       @include dock();
     }
   }
 }
 
-.grw-sidebar-backdrop.modal-backdrop {
-  z-index: $zindex-fixed + 1;
-}
-
-// style to apply when displaying search page
-.growi.on-search {
-  // set sidebar height shown in search page
-  $search-page-sidebar-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width));
-
-  .grw-sidebar {
-    height: $search-page-sidebar-height;
-    .data-layout-container {
-      height: 100%;
-    }
+// '&' could not be set after :global
+// workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
+.grw-sidebar-backdrop {
+  &:global(.modal-backdrop) {
+    z-index: bs.$zindex-fixed + 1;
   }
 }

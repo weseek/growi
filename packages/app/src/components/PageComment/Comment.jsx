@@ -3,7 +3,7 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';

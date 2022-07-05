@@ -40,6 +40,10 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
 };
 
+export const useCurrentPathname = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('currentPathname', initialData);
+};
+
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
@@ -76,10 +80,6 @@ export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
-};
-
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
@@ -98,6 +98,10 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
 
 export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
+};
+
+export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -164,6 +168,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+};
+
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
@@ -210,19 +218,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
     (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
       return (!isNotCreatable && !isTrashPage && !isGuestUser);
-    },
-  );
-};
-
-export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-
-  const pathname = window.location.pathname;
-
-  return useSWRImmutable(
-    ['isSharedUser', isGuestUser, pathname],
-    (key: Key, isGuestUser: boolean, pathname: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };

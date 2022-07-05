@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -188,6 +188,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     {
                       applicableGroups != null && applicableGroups.map(g => (
                         <button
+                          key={g._id}
                           className="dropdown-item"
                           type="button"
                           onClick={() => setSelectedGroup(g)}

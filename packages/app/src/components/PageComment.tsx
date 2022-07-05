@@ -217,5 +217,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   );
 });
 
+PageComment.displayName = 'PageComment';
 
 export default PageComment;

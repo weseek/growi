@@ -1,30 +1,47 @@
-import React, { FC, memo, useMemo } from 'react';
+import React, {
+  FC, memo, useMemo, useRef,
+} from 'react';
 
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { isServer } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
+import { HasChildren } from '~/interfaces/common';
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser,
+  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import GrowiLogo from '../Icons/GrowiLogo';
-import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { AppearanceModeDropdown } from './AppearanceModeDropdown';
-import GlobalSearch from './GlobalSearch';
 import PersonalDropdown from './PersonalDropdown';
 
+import styles from './GrowiNavbar.module.scss';
+
+
+const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
+  return isServer()
+    ? <></>
+    : <>{children}</>;
+});
+ShowSkeltonInSSR.displayName = 'ShowSkeltonInSSR';
 
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
 
+  const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
+    .then(mod => mod.InAppNotificationDropdown), { ssr: false });
+  const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
+
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
+
+  // ripple
+  const newButtonRef = useRef(null);
+  useRipple(newButtonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   const { open: openCreateModal } = usePageCreateModal();
 
@@ -34,13 +51,14 @@ const NavbarRight = memo((): JSX.Element => {
     return (
       <>
         <li className="nav-item">
-          <InAppNotificationDropdown />
+          <ShowSkeltonInSSR><InAppNotificationDropdown /></ShowSkeltonInSSR>
         </li>
 
         <li className="nav-item d-none d-md-block">
           <button
             className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
             type="button"
+            ref={newButtonRef}
             data-testid="newPageBtn"
             onClick={() => openCreateModal(currentPagePath || '')}
           >
@@ -49,28 +67,28 @@ const NavbarRight = memo((): JSX.Element => {
           </button>
         </li>
 
-        <li className="grw-personal-dropdown nav-item dropdown">
-          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        <li className="grw-apperance-mode-dropdown nav-item dropdown">
+          <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
         </li>
 
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
-          <PersonalDropdown />
+          <ShowSkeltonInSSR><PersonalDropdown /></ShowSkeltonInSSR>
         </li>
       </>
     );
-  }, [t, currentPagePath, openCreateModal, isAuthenticated]);
+  }, [InAppNotificationDropdown, t, AppearanceModeDropdown, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (
       <>
-        <li className="grw-personal-dropdown nav-item dropdown">
-          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        <li className="grw-apperance-mode-dropdown nav-item dropdown">
+          <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
         </li>
 
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
       </>
     );
-  }, []);
+  }, [AppearanceModeDropdown, isAuthenticated]);
 
   return (
     <>
@@ -78,15 +96,16 @@ const NavbarRight = memo((): JSX.Element => {
     </>
   );
 });
+NavbarRight.displayName = 'NavbarRight';
 
 type ConfidentialProps = {
   confidential?: string,
 }
-const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
+const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps): JSX.Element => {
   const { confidential } = props;
 
-  if (confidential == null) {
-    return null;
+  if (confidential == null || confidential.length === 0) {
+    return <></>;
   }
 
   return (
@@ -105,18 +124,21 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
     </li>
   );
 });
+Confidential.displayName = 'Confidential';
 
 
-const GrowiNavbar = (props) => {
+export const GrowiNavbar = (): JSX.Element => {
 
-  const { appContainer } = props;
-  const { crowi, isSearchServiceConfigured } = appContainer.config;
+  const GlobalSearch = dynamic(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
+  const { data: appTitle } = useAppTitle();
+  const { data: confidential } = useConfidential();
+  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
 
   return (
-    <>
+    <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
         <a className="grw-logo d-block" href="/">
@@ -125,34 +147,22 @@ const GrowiNavbar = (props) => {
       </div>
 
       <div className="grw-app-title d-none d-md-block">
-        {crowi.title}
+        {appTitle}
       </div>
 
 
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
-        <NavbarRight></NavbarRight>
-        <Confidential confidential={crowi.confidential}></Confidential>
+        <NavbarRight />
+        <Confidential confidential={confidential} />
       </ul>
 
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
-        <div className="grw-global-search grw-global-search-top position-absolute">
+        <div className="grw-global-search-container position-absolute">
           <GlobalSearch />
         </div>
       ) }
-    </>
+    </nav>
   );
 
 };
-
-/**
- * Wrapper component for using unstated
- */
-const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
-
-
-GrowiNavbar.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default GrowiNavbarWrapper;

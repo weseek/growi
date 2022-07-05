@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
@@ -13,11 +13,13 @@ import {
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
-
-import SidebarNav from './Sidebar/SidebarNav';
-import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
+import SidebarContents from './Sidebar/SidebarContents';
+import SidebarNav from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
+
+import styles from './Sidebar.module.scss';
+
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -80,10 +82,7 @@ const SidebarContentsWrapper = () => {
 };
 
 
-type Props = {
-}
-
-const Sidebar: FC<Props> = (props: Props) => {
+const Sidebar = (): JSX.Element => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
@@ -292,61 +291,63 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
-        <div className="data-layout-container">
-          <div
-            className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
-            onMouseEnter={hoverOnHandler}
-            onMouseLeave={hoverOutHandler}
-          >
-            <div className="grw-navigation-wrap">
-              <div className="grw-global-navigation">
-                <GlobalNavigation></GlobalNavigation>
-              </div>
-              <div
-                ref={resizableContainer}
-                className="grw-contextual-navigation"
-                onMouseEnter={hoverOnResizableContainerHandler}
-                onMouseLeave={hoverOutResizableContainerHandler}
-                style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
-              >
-                <div className="grw-contextual-navigation-child">
-                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                    <SidebarContentsWrapper></SidebarContentsWrapper>
+      <div className={`grw-sidebar ${styles['grw-sidebar']}`}>
+        <div className={`d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'} ${isDrawerOpened ? 'open' : ''}`}>
+          <div className="data-layout-container">
+            <div
+              className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
+              onMouseEnter={hoverOnHandler}
+              onMouseLeave={hoverOutHandler}
+            >
+              <div className="grw-navigation-wrap">
+                <div className="grw-global-navigation">
+                  <GlobalNavigation></GlobalNavigation>
+                </div>
+                <div
+                  ref={resizableContainer}
+                  className="grw-contextual-navigation"
+                  onMouseEnter={hoverOnResizableContainerHandler}
+                  onMouseLeave={hoverOutResizableContainerHandler}
+                  style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
+                >
+                  <div className="grw-contextual-navigation-child">
+                    <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
+                      <SidebarContentsWrapper></SidebarContentsWrapper>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="grw-navigation-draggable">
-              { isResizableByDrag && (
-                <div
-                  className="grw-navigation-draggable-hitarea"
-                  onMouseDown={dragableAreaMouseDownHandler}
+              <div className="grw-navigation-draggable">
+                { isResizableByDrag && (
+                  <div
+                    className="grw-navigation-draggable-hitarea"
+                    onMouseDown={dragableAreaMouseDownHandler}
+                  >
+                    <div className="grw-navigation-draggable-hitarea-child"></div>
+                  </div>
+                ) }
+                <button
+                  data-testid="grw-navigation-resize-button"
+                  className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
+                  type="button"
+                  aria-expanded="true"
+                  aria-label="Toggle navigation"
+                  disabled={isDrawerMode}
+                  onClick={toggleNavigationBtnClickHandler}
                 >
-                  <div className="grw-navigation-draggable-hitarea-child"></div>
-                </div>
-              ) }
-              <button
-                data-testid="grw-navigation-resize-button"
-                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
-                type="button"
-                aria-expanded="true"
-                aria-label="Toggle navigation"
-                disabled={isDrawerMode}
-                onClick={toggleNavigationBtnClickHandler}
-              >
-                <span className="hexagon-container" role="presentation">
-                  <NavigationResizeHexagon />
-                </span>
-                <span className="hitarea" role="presentation"></span>
-              </button>
+                  <span className="hexagon-container" role="presentation">
+                    <NavigationResizeHexagon />
+                  </span>
+                  <span className="hitarea" role="presentation"></span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       { isDrawerOpened && (
-        <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
+        <div className={`${styles['grw-sidebar-backdrop']} modal-backdrop show`} onClick={backdropClickedHandler}></div>
       ) }
     </>
   );

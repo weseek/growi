@@ -40,7 +40,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
 } from '../stores/context';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
@@ -65,6 +65,7 @@ type Props = CommonProps & {
   // isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isSearchScopeChildrenAsDefault: boolean,
   // isMailerSetup: boolean,
   // isAclEnabled: boolean,
   // hasSlackConfig: boolean,
@@ -103,14 +104,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
-  // useShared(isSharedPage(props.currentPagePath));
+  // useShared();
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+  useIsSharedUser(false); // this page cann't be routed for '/share'
   // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   // useIsMailerSetup(props.isMailerSetup);
   // useAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
@@ -133,8 +135,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useCurrentPagePath(pageWithMeta?.data.path);
+  useCurrentPathname(props.currentPathname);
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -231,9 +236,8 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const { currentPathname } = props;
 
   // determine pageId
-  let pageId;
   const pageIdStr = currentPathname.substring(1);
-  pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result.data;
@@ -290,6 +294,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
   // props.isMailerSetup = mailService.isMailerSetup;
   // props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();

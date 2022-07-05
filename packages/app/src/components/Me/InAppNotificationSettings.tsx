@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pullAllBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';

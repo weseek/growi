@@ -1,8 +1,29 @@
+import eazyLogger from 'eazy-logger';
+import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+
+import { i18n, localePath } from './src/next-i18next.config';
 import { listScopedPackages } from './src/utils/next.config.utils';
 
-// define transpiled packages for '@growi/*'
-const scopedPackages = listScopedPackages(['@growi']);
-const withTM = require('next-transpile-modules')(scopedPackages);
+
+// setup logger
+const logger = eazyLogger.Logger({
+  prefix: '[{green:next.config.js}] ',
+  useLevelPrefixes: false,
+});
+
+
+const setupWithTM = () => {
+  // define transpiled packages for '@growi/*'
+  const scopedPackages = listScopedPackages(['@growi'], { ignorePackageNames: '@growi/app' });
+
+  logger.info('{bold:Listing scoped packages for transpiling:}');
+  logger.unprefixed('info', `{grey:${JSON.stringify(scopedPackages, null, 2)}}`);
+
+  return require('next-transpile-modules')(scopedPackages);
+};
+const withTM = setupWithTM();
+
 
 // define additional entries
 const additionalWebpackEntries = {
@@ -17,6 +38,8 @@ const nextConfig = {
     tsconfigPath: 'tsconfig.build.client.json',
   },
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+
+  i18n,
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
@@ -39,14 +62,16 @@ const nextConfig = {
       });
     };
 
-    // configure plugins
-    const WebpackAssetsManifest = require('webpack-assets-manifest');
     config.plugins.push(
-      new WebpackAssetsManifest({
-        publicPath: true,
-        output: 'custom-manifest.json',
+      new WebpackManifestPlugin({
+        fileName: 'custom-manifest.json',
       }),
     );
+
+    // setup i18next-hmr
+    if (!options.isServer && options.dev) {
+      config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }));
+    }
 
     return config;
   },

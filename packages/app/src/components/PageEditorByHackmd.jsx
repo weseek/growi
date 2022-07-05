@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -42,7 +42,7 @@ class PageEditorByHackmd extends React.Component {
     this.penpalErrorOccuredHandler = this.penpalErrorOccuredHandler.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 
@@ -310,7 +310,7 @@ class PageEditorByHackmd extends React.Component {
           { !isHackmdDocumentOutdated && (
             <div className="text-center hackmd-resume-button-container mb-3">
               <button
-                className="btn btn-success btn-lg waves-effect waves-light"
+                className="btn btn-success btn-lg"
                 type="button"
                 disabled={this.state.isInitializing}
                 onClick={() => { return this.resumeToEdit() }}
@@ -323,7 +323,7 @@ class PageEditorByHackmd extends React.Component {
 
           <div className="text-center hackmd-discard-button-container mb-3">
             <button
-              className="btn btn-outline-secondary btn-lg waves-effect waves-light"
+              className="btn btn-outline-secondary btn-lg"
               type="button"
               onClick={() => { return this.discardChanges() }}
             >
@@ -346,7 +346,7 @@ class PageEditorByHackmd extends React.Component {
           <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
             <button
-              className="btn btn-info btn-lg waves-effect waves-light"
+              className="btn btn-info btn-lg"
               type="button"
               disabled={isRevisionOutdated || this.state.isInitializing}
               onClick={() => { return this.startToEdit() }}

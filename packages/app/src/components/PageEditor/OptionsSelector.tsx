@@ -2,7 +2,7 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -118,6 +118,7 @@ const KeymapSelector = memo((): JSX.Element => {
 
 });
 
+KeymapSelector.displayName = 'KeymapSelector';
 
 type IndentSizeSelectorProps = {
   isIndentSizeForced: boolean,
@@ -159,6 +160,8 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
   );
 
 });
+
+IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
 type ConfigurationDropdownProps = {
@@ -340,6 +343,8 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
   );
 
 });
+
+ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
 
 type Props = {

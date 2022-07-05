@@ -32,7 +32,7 @@ export default class AttachmentList extends React.Component {
     this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     const { refsContext } = this.props;
 
     // get state object cache

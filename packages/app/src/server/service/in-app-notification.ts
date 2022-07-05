@@ -50,7 +50,7 @@ export default class InAppNotificationService {
           .emit('notificationUpdated');
       });
     }
-  }
+  };
 
   upsertByActivity = async function(
       users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
@@ -86,7 +86,7 @@ export default class InAppNotificationService {
     await InAppNotification.bulkWrite(operations);
     logger.info('InAppNotification bulkWrite has run');
     return;
-  }
+  };
 
   getLatestNotificationsByUser = async(
       userId: Types.ObjectId,
@@ -121,7 +121,7 @@ export default class InAppNotificationService {
       logger.error('Error', err);
       throw new Error(err);
     }
-  }
+  };
 
   read = async function(user: Types.ObjectId): Promise<void> {
     const query = { user, status: STATUS_UNREAD };
@@ -138,7 +138,7 @@ export default class InAppNotificationService {
 
     await InAppNotification.findOneAndUpdate(query, parameters, options);
     return;
-  }
+  };
 
   updateAllNotificationsAsOpened = async function(user: IUser & HasObjectId): Promise<void> {
     const filter = { user: user._id, status: STATUS_UNOPENED };
@@ -146,7 +146,7 @@ export default class InAppNotificationService {
 
     await InAppNotification.updateMany(filter, options);
     return;
-  }
+  };
 
   getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
     const query = { user, status: STATUS_UNREAD };

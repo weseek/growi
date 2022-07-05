@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -153,6 +153,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem
             onClick={bookmarkItemClickedHandler}
             className="grw-page-control-dropdown-item"
+            data-testid="add-remove-bookmark-btn"
           >
             <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -238,6 +239,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     </DropdownMenu>
   );
 });
+
+PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 
 type PageItemControlSubstanceProps = CommonProps & {

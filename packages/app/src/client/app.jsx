@@ -10,9 +10,7 @@ import { Provider } from 'unstated';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
@@ -58,13 +56,10 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
-const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
-const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const editorContainer = new EditorContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
-  editorContainer, personalContainer,
+  appContainer, socketIoContainer, pageContainer, editorContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');

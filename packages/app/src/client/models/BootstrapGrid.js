@@ -7,7 +7,7 @@ export default class BootstrapGrid {
 
   static ResponsiveSize = {
     XS_SIZE: 'xs', SM_SIZE: 'sm', MD_SIZE: 'md',
-  }
+  };
 
   static validateColsRatios(colsRatios) {
 

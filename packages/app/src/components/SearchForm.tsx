@@ -2,7 +2,8 @@ import React, {
   FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle,
   useRef, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
@@ -74,6 +75,8 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
     </table>
   );
 });
+
+SearchFormHelp.displayName = 'SearchFormHelp';
 
 
 type Props = TypeaheadProps & {

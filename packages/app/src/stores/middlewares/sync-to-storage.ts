@@ -1,3 +1,4 @@
+import { isClient } from '@growi/core';
 import { Middleware } from 'swr';
 
 const generateKeyInStorage = (key: string): string => {
@@ -52,6 +53,14 @@ export const createSyncToStorageMiddlware = (
   };
 };
 
-export const localStorageMiddleware = createSyncToStorageMiddlware(localStorage);
+const passthroughMiddleware: Middleware = (useSWRNext) => {
+  return (key, fetcher, config) => useSWRNext(key, fetcher, config);
+};
 
-export const sessionStorageMiddleware = createSyncToStorageMiddlware(sessionStorage);
+export const localStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(localStorage)
+  : passthroughMiddleware;
+
+export const sessionStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(sessionStorage)
+  : passthroughMiddleware;

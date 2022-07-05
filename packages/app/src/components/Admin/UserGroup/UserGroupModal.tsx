@@ -4,7 +4,7 @@ import React, {
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { TFunctionResult } from 'i18next';
 
 import { Ref } from '~/interfaces/common';

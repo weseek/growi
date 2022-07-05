@@ -1,5 +1,6 @@
 import React, { FC, memo } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 
 export const PrivateLegacyPagesLink: FC = memo(() => {
   const { t } = useTranslation();
@@ -10,3 +11,5 @@ export const PrivateLegacyPagesLink: FC = memo(() => {
     </a>
   );
 });
+
+PrivateLegacyPagesLink.displayName = 'PrivateLegacyPagesLink';
