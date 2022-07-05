@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   SupportedActionType, SupportedActionCategoryType, SupportedActionCategory,
-  PageActions, CommentActions, TagActions, ShareLinkActions, AttachmentActions, InAppNotificationActions, UserActions, AdminActions,
+  PageActions, CommentActions, TagActions, ShareLinkActions, AttachmentActions, InAppNotificationActions, SearchActions, UserActions, AdminActions,
 } from '~/interfaces/activity';
 
 type Props = {
@@ -46,6 +46,10 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         {
           actionCategory: SupportedActionCategory.IN_APP_NOTIFICATION,
           actions: InAppNotificationActions.filter(action => availableActions.includes(action)),
+        },
+        {
+          actionCategory: SupportedActionCategory.SEARCH,
+          actions: SearchActions.filter(action => availableActions.includes(action)),
         },
         {
           actionCategory: SupportedActionCategory.USER,
