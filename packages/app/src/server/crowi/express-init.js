@@ -1,4 +1,6 @@
+import csrf from 'csurf';
 import mongoose from 'mongoose';
+
 
 // import { i18n, localePath } from '~/next-i18next.config';
 
@@ -118,6 +120,9 @@ module.exports = function(crowi, app) {
 
     sessionMiddleware(req, res, next);
   });
+
+  // csurf should be initialized after express-session
+  app.use(csrf({ cookie: false }));
 
   // passport
   debug('initialize Passport');
