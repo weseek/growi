@@ -170,7 +170,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
   }
 
   function generatePager(offset, limit, totalCount) {
