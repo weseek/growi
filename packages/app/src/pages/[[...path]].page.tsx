@@ -19,7 +19,11 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IPageWithMeta } from '~/interfaces/page';
 import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import {
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -81,6 +85,12 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+
+  // UI
+  userUISettings: UserUISettingsDocument | null
+
+  isSidebarDrawerMode: boolean,
+  isSidebarClosedAtDockMode: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -95,6 +105,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
+
+  // UserUISettings
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
   // page
   useCurrentPagePath(props.currentPathname);
@@ -271,6 +288,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id });
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
@@ -310,6 +328,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
+  // ui
+  props.userUISettings = userUISettings;
+  props.isSidebarDrawerMode = configManager.getConfig('crowi', 'customize:isSidebarDrawerMode');
+  props.isSidebarClosedAtDockMode = configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
   return {
     props,
   };
