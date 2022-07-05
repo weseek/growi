@@ -10,7 +10,9 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+} from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -75,7 +77,7 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags, mutateIsEnabledUnsavedWarning,
+      isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -107,7 +109,7 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer, mutateIsEnabledUnsavedWarning,
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
