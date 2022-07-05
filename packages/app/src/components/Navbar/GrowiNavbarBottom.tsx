@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
+import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import { GlobalSearch } from './GlobalSearch';
@@ -14,7 +15,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
 
   const additionalClasses = ['grw-navbar-bottom', styles['grw-navbar-bottom']];

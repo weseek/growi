@@ -9,8 +9,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
+import { useCurrentPageId } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -449,7 +450,7 @@ const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, 
 const PageEditorByHackmdWrapper = (props) => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();

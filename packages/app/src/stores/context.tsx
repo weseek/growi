@@ -36,11 +36,6 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
   return useStaticSWR<Nullable<any>, Error>('revisionId', initialData);
 };
 
-export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
-};
-
-// new
 export const useCurrentPathname = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPathname', initialData);
 };

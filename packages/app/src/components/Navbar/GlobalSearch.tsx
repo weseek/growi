@@ -8,8 +8,9 @@ import { IFocusable } from '~/client/interfaces/focusable';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import {
-  useCurrentPagePath, useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
 } from '~/stores/context';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
@@ -33,7 +34,7 @@ export const GlobalSearch = (props: Props): JSX.Element => {
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
   const { data: isSearchScopeChildrenAsDefault } = useIsSearchScopeChildrenAsDefault();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
 
   const [text, setText] = useState('');
   const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);

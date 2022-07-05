@@ -6,8 +6,9 @@ import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import CreatePageIcon from './Icons/CreatePageIcon';
@@ -19,7 +20,7 @@ const Fab = () => {
   const { data: currentUser } = useCurrentUser();
 
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPath = '' } = useCurrentPagePath();
+  const { data: currentPath = '' } = useSWRxCurrentPagePath();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');

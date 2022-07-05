@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'next-i18next';
 
 import { DevidedPagePath } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+
 
 import { IPageHasId } from '~/interfaces/page';
-import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
+import { useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPageInfoForList, useSWRxCurrentPagePath } from '~/stores/page';
 
 import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';
@@ -63,7 +64,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
   const pageIds = pages.map(page => page._id) as string[];
 
 
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPath } = useSWRxCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
 
   const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);

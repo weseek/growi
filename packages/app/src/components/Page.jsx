@@ -8,10 +8,9 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
-import {
-  useCurrentPagePath, useIsGuestUser,
-} from '~/stores/context';
+import { useIsGuestUser } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -184,7 +183,7 @@ Page.propTypes = {
 };
 
 const PageWrapper = (props) => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();

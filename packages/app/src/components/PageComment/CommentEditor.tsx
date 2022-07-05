@@ -18,9 +18,10 @@ import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+  useCurrentPageId, useCurrentUser, useRevisionId,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import { useIsMobile } from '~/stores/ui';
 
 
@@ -72,7 +73,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
   const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();

@@ -3,8 +3,9 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
@@ -14,7 +15,7 @@ const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPath } = useSWRxCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();

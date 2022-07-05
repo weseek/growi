@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';
@@ -16,7 +16,7 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -24,7 +24,7 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxTagsInfo, useSWRxCurrentPagePath } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -159,7 +159,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: pageId } = useCurrentPageId();
   const { data: emptyPageId } = useEmptyPageId();
   const { data: revisionId } = useRevisionId();
-  const { data: path } = useCurrentPagePath();
+  const { data: path } = useSWRxCurrentPagePath();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: currentUser } = useCurrentUser();

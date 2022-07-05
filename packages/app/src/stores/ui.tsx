@@ -1,5 +1,7 @@
 import { RefObject } from 'react';
 
+import { constants } from 'zlib';
+
 import { isClient, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -18,12 +20,12 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
+  useCurrentPageId, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useSWRxCurrentPagePath } from './page';
 import { useStaticSWR } from './use-static-swr';
-import { constants } from 'zlib';
 
 const { isSharedPage } = pagePathUtils;
 
@@ -134,7 +136,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const isSidebar = currentPagePath === '/Sidebar';
 
   const swrResponse = useSWRImmutable(
@@ -421,7 +423,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();

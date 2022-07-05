@@ -14,11 +14,12 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+  useIsEditable, useIsIndentSizeForced, useCurrentPageId,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
 } from '~/stores/editor';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -88,7 +89,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();

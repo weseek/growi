@@ -7,10 +7,10 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
+  useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
@@ -38,7 +38,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
   const { data: isEmptyPage } = useIsEmptyPage();
   const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isUserPage } = useIsUserPage();

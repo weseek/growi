@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
 
@@ -28,7 +28,7 @@ const DropdownItemContents = ({ title, contents }) => (
 const RevisionComparer = (props) => {
 
   const { t } = useTranslation();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {
     sourceRevision, targetRevision,

@@ -6,8 +6,8 @@ import { Collapse, Button } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-import { useCurrentPagePath } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
@@ -32,7 +32,7 @@ const EditorNavbarBottom = (props) => {
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const additionalClasses = ['grw-editor-navbar-bottom'];
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
 

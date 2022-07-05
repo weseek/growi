@@ -3,7 +3,8 @@ import React, { useMemo, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import urljoin from 'url-join';
 
-import { useCurrentPagePath, useIsEmptyPage, useNotFoundTargetPathOrId } from '~/stores/context';
+import { useIsEmptyPage, useNotFoundTargetPathOrId } from '~/stores/context';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
@@ -22,7 +23,7 @@ const replaceURLHistory = (path: string) => {
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isEmptyPage } = useIsEmptyPage();
-  const { data: path } = useCurrentPagePath();
+  const { data: path } = useSWRxCurrentPagePath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
 
   // replace url in address bar with path when accessing empty page by permalink

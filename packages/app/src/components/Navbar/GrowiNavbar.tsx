@@ -10,9 +10,10 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { HasChildren } from '~/interfaces/common';
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
+  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useSWRxCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -36,7 +37,7 @@ const NavbarRight = memo((): JSX.Element => {
     .then(mod => mod.InAppNotificationDropdown), { ssr: false });
   const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPagePath } = useSWRxCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
 
   // ripple
