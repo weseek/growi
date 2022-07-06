@@ -18,60 +18,157 @@ describe('loginRequired', () => {
   });
 
   describe('not strict mode', () => {
-    // setup req/res/next
-    const req = {
-      originalUrl: 'original url 1',
-      session: {},
-    };
     const res = {
       redirect: jest.fn().mockReturnValue('redirect'),
+      sendStatus: jest.fn().mockReturnValue('sendStatus'),
     };
     const next = jest.fn().mockReturnValue('next');
 
-    test('pass guest user when aclService.isGuestAllowedToRead() returns true', () => {
-      // prepare spy for AclService.isGuestAllowedToRead
-      const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
-        .mockImplementation(() => true);
+    describe('and when aclService.isGuestAllowedToRead() returns false', () => {
+      let req;
 
-      const result = loginRequired(req, res, next);
+      let isGuestAllowedToReadSpy;
 
-      expect(isGuestAllowedToReadSpy).toHaveBeenCalledTimes(1);
-      expect(fallbackMock).not.toHaveBeenCalled();
-      expect(next).toHaveBeenCalled();
-      expect(res.redirect).not.toHaveBeenCalled();
-      expect(result).toBe('next');
+      beforeEach(async() => {
+        // setup req
+        req = {
+          originalUrl: 'original url 1',
+          session: {},
+        };
+        // reset session object
+        req.session = {};
+        // prepare spy for AclService.isGuestAllowedToRead
+        isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
+          .mockImplementation(() => false);
+      });
+
+      /* eslint-disable indent */
+      test.each`
+        userStatus  | expectedPath
+        ${1}        | ${'/login/error/registered'}
+        ${3}        | ${'/login/error/suspended'}
+        ${5}        | ${'/login/invited'}
+      `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
+
+        req.user = {
+          _id: 'user id',
+          status: userStatus,
+        };
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+        expect(next).not.toHaveBeenCalled();
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith(expectedPath);
+        expect(result).toBe('redirect');
+        expect(req.session.redirectTo).toBe(undefined);
+      });
+      /* eslint-disable indent */
+
+      test('redirect to \'/login\' when the user does not loggedin', () => {
+        req.baseUrl = '/path/that/requires/loggedin';
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+        expect(next).not.toHaveBeenCalled();
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith('/login');
+        expect(result).toBe('redirect');
+        expect(req.session.redirectTo).toBe('original url 1');
+      });
+
+      test('pass anyone into sharedPage', () => {
+
+        req.isSharedPage = true;
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+        expect(res.redirect).not.toHaveBeenCalled();
+        expect(result).toBe('next');
+      });
+
     });
 
-    test('redirect to \'/login\' when aclService.isGuestAllowedToRead() returns false', () => {
-      // prepare spy for AclService.isGuestAllowedToRead
-      const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
-        .mockImplementation(() => false);
+    describe('and when aclService.isGuestAllowedToRead() returns true', () => {
+      let req;
 
-      const result = loginRequired(req, res, next);
+      let isGuestAllowedToReadSpy;
 
-      expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
-      expect(fallbackMock).not.toHaveBeenCalled();
-      expect(next).not.toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/login');
-      expect(result).toBe('redirect');
-    });
+      beforeEach(async() => {
+        // setup req
+        req = {
+          originalUrl: 'original url 1',
+          session: {},
+        };
+        // reset session object
+        req.session = {};
+        // prepare spy for AclService.isGuestAllowedToRead
+        isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
+          .mockImplementation(() => true);
+      });
 
-    test('pass anyone into sharedPage when aclService.isGuestAllowedToRead() returns false', () => {
+      /* eslint-disable indent */
+      test.each`
+        userStatus  | expectedPath
+        ${1}        | ${'/login/error/registered'}
+        ${3}        | ${'/login/error/suspended'}
+        ${5}        | ${'/login/invited'}
+      `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
 
-      req.isSharedPage = true;
+        req.user = {
+          _id: 'user id',
+          status: userStatus,
+        };
 
-      // prepare spy for AclService.isGuestAllowedToRead
-      const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
-        .mockImplementation(() => false);
+        const result = loginRequired(req, res, next);
 
-      const result = loginRequired(req, res, next);
+        expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+        expect(next).not.toHaveBeenCalled();
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith(expectedPath);
+        expect(result).toBe('redirect');
+        expect(req.session.redirectTo).toBe(undefined);
+      });
+      /* eslint-disable indent */
 
-      expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
-      expect(fallbackMock).not.toHaveBeenCalled();
-      expect(next).toHaveBeenCalled();
-      expect(res.redirect).not.toHaveBeenCalled();
-      expect(result).toBe('next');
+      test('pass guest user', () => {
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).toHaveBeenCalledTimes(1);
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+        expect(res.redirect).not.toHaveBeenCalled();
+        expect(result).toBe('next');
+      });
+
+      test('pass anyone into sharedPage', () => {
+
+        req.isSharedPage = true;
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+        expect(fallbackMock).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+        expect(res.redirect).not.toHaveBeenCalled();
+        expect(result).toBe('next');
+      });
+
     });
 
   });

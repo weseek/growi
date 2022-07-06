@@ -20,10 +20,10 @@ const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 60, // limit each IP to 60 requests per windowMs
   message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
+    'Too many requests sent from this IP, please try again after 1 minute',
 });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
