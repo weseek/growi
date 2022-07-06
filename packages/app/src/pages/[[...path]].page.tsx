@@ -17,6 +17,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
@@ -88,9 +89,8 @@ type Props = CommonProps & {
 
   // UI
   userUISettings: UserUISettingsDocument | null
-
-  isSidebarDrawerMode: boolean,
-  isSidebarClosedAtDockMode: boolean,
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -107,9 +107,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.isSidebarDrawerMode);
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.isSidebarClosedAtDockMode);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
@@ -333,8 +333,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   // UI
   props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
-  props.isSidebarDrawerMode = configManager.getConfig('crowi', 'customize:isSidebarDrawerMode');
-  props.isSidebarClosedAtDockMode = configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
   return {
     props,
   };
