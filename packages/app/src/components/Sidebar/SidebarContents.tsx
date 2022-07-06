@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
+
+// import CustomSidebar from './CustomSidebar';
+// import PageTree from './PageTree';
 import RecentChanges from './RecentChanges';
-import CustomSidebar from './CustomSidebar';
-import PageTree from './PageTree';
 import Tag from './Tag';
 
-type Props = {
-};
+const DummyComponent = (): JSX.Element => <></>; // Todo: remove this later when it is able to render other Contents.
 
-const SidebarContents: FC<Props> = (props: Props) => {
+const SidebarContents = (): JSX.Element => {
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
   let Contents;
@@ -19,13 +19,15 @@ const SidebarContents: FC<Props> = (props: Props) => {
       Contents = RecentChanges;
       break;
     case SidebarContentsType.CUSTOM:
-      Contents = CustomSidebar;
+      // Contents = CustomSidebar;
+      Contents = DummyComponent;
       break;
     case SidebarContentsType.TAG:
       Contents = Tag;
       break;
     default:
-      Contents = PageTree;
+      // Contents = PageTree;
+      Contents = DummyComponent;
   }
 
   return (

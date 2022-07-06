@@ -2,7 +2,7 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';

@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-
 import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
@@ -11,7 +10,9 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+} from '~/stores/editor';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -76,7 +77,7 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
+      isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -89,7 +90,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
@@ -108,7 +109,7 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer,
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
@@ -121,7 +122,7 @@ class Page extends React.Component {
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
@@ -194,6 +195,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const pageRef = useRef(null);
 
@@ -244,6 +246,7 @@ const PageWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
 };

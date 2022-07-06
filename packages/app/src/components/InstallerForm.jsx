@@ -2,7 +2,7 @@ import React from 'react';
 
 import i18next from 'i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { localeMetadatas } from '~/client/util/i18n';
 import { useCsrfToken } from '~/stores/context';
@@ -22,7 +22,7 @@ class InstallerForm extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const meta = localeMetadatas.find(v => v.id === i18next.language);
     if (meta == null) {
       return this.setState({ selectedLang: localeMetadatas[0] });

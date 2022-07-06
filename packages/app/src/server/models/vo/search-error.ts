@@ -4,9 +4,9 @@ import { AllTermsKey } from '~/server/interfaces/search';
 
 export class SearchError extends ExtensibleCustomError {
 
-  readonly id = 'SearchError'
+  readonly id = 'SearchError';
 
-  unavailableTermsKeys!: AllTermsKey[]
+  unavailableTermsKeys!: AllTermsKey[];
 
   constructor(message = '', unavailableTermsKeys: AllTermsKey[]) {
     super(message);

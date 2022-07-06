@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */

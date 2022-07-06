@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -37,6 +37,8 @@ const PageEditorModeButtonWrapper = React.memo(({
   );
 });
 /* eslint-enable react/prop-types */
+
+PageEditorModeButtonWrapper.displayName = 'PageEditorModeButtonWrapper';
 
 function PageEditorModeManager(props) {
   const {

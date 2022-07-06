@@ -53,3 +53,5 @@ export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, Unc
     />
   );
 });
+
+UncontrolledCodeMirror.displayName = 'UncontrolledCodeMirror';

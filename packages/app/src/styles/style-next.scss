@@ -1,23 +1,17 @@
-// import variables
-@import 'variables';
-
-@import 'mixins';
-@import 'override-bootstrap-variables';
-
-// vendor
-@import 'vendor';
-
-// override bootstrap
-@import 'override-bootstrap';
+@import './bootstrap/apply';
 
 // // override codemirror
 // @import 'override-codemirror';
 
-// // override react-bootstrap-typeahead styles
-// @import 'override-rbt';
+@import '~react-bootstrap-typeahead/css/Typeahead';
+@import 'override-rbt';
 
 // // override simplebar-react styles
 // @import 'override-simplebar';
+
+// icons
+@import '~simple-line-icons';
+@import '~material-icons/iconfont/filled';
 
 // // atoms
 // @import 'atoms/buttons';
@@ -45,7 +39,7 @@
 // @import 'editor-navbar';
 // @import 'page-content-footer';
 // @import 'handsontable';
-// @import 'layout';
+@import 'layout';
 // @import 'login';
 // @import 'me';
 // @import 'mirror_mode';

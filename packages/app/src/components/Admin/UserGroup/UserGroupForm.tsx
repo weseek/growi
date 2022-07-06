@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 

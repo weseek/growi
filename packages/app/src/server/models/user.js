@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { allLocales } from '~/next-i18next.config';
+import { i18n } from '~/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
@@ -59,7 +59,7 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: allLocales,
+      enum: i18n.locales,
       default: 'en_US',
     },
     status: {

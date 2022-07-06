@@ -3,7 +3,7 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';

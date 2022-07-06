@@ -71,17 +71,17 @@ const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
-  crowi!: any
+  crowi!: any;
 
-  configManager!: any
+  configManager!: any;
 
-  isErrorOccuredOnHealthcheck: boolean | null
+  isErrorOccuredOnHealthcheck: boolean | null;
 
-  isErrorOccuredOnSearching: boolean | null
+  isErrorOccuredOnSearching: boolean | null;
 
-  fullTextSearchDelegator: any & ElasticsearchDelegator
+  fullTextSearchDelegator: any & ElasticsearchDelegator;
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator};
 
   constructor(crowi) {
     this.crowi = crowi;

@@ -21,7 +21,7 @@ export class LsxPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const pageNode = this.props.pageNode;
 
     if (pageNode.page !== undefined) {

@@ -37,27 +37,22 @@ export async function apiv3Request<T = any>(method: string, path: string, params
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiv3Get<T = any>(path: string, params: unknown = {}): Promise<AxiosResponse<T>> {
   return apiv3Request('get', path, { params });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Post<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
+export async function apiv3Post<T = any>(path: string, params: unknown = {}): Promise<AxiosResponse<T>> {
   return apiv3Request('post', path, params);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiv3PostForm<T = any>(path: string, formData: FormData): Promise<AxiosResponse<T>> {
   return apiv3Post<T>(path, formData);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Put<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
+export async function apiv3Put<T = any>(path: string, params: unknown = {}): Promise<AxiosResponse<T>> {
   return apiv3Request('put', path, params);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiv3Delete<T = any>(path: string, params: any): Promise<AxiosResponse<T>> {
+export async function apiv3Delete<T = any>(path: string, params: unknown = {}): Promise<AxiosResponse<T>> {
   return apiv3Request('delete', path, { params });
 }

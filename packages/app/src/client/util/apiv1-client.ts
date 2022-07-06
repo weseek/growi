@@ -41,8 +41,7 @@ export async function apiGet<T>(path: string, params: unknown = {}): Promise<T> 
   return apiRequest<T>('get', path, { params });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiPost<T>(path: string, params: any): Promise<T> {
+export async function apiPost<T>(path: string, params: unknown = {}): Promise<T> {
   return apiRequest<T>('post', path, params);
 }
 
@@ -50,7 +49,6 @@ export async function apiPostForm<T>(path: string, formData: FormData): Promise<
   return apiPost<T>(path, formData);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiDelete<T>(path: string, params: any): Promise<T> {
+export async function apiDelete<T>(path: string, params: unknown = {}): Promise<T> {
   return apiRequest<T>('delete', path, { data: params });
 }
