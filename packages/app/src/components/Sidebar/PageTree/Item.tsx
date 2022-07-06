@@ -45,7 +45,7 @@ interface ItemProps {
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
