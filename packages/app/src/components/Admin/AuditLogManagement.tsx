@@ -3,6 +3,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import { toastError } from '~/client/util/apiNotification';
 import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
@@ -56,6 +57,10 @@ export const AuditLogManagement: FC = () => {
   const activityList = activityData?.docs != null ? activityData.docs : [];
   const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
   const isLoading = activityData === undefined && error == null;
+
+  if (error != null) {
+    toastError('Failed to get Audit Log');
+  }
 
   const { data: auditLogEnabled } = useAuditLogEnabled();
 
