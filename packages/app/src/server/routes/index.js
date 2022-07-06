@@ -1,5 +1,5 @@
-import express from 'express';
 import csrf from 'csurf';
+import express from 'express';
 
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
@@ -95,7 +95,7 @@ module.exports = function(crowi, app) {
   // installer
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
-    app.get('/installer'              , applicationNotInstalled , installer.index);
+    app.get('/installer'              , applicationNotInstalled , installer.index, next.delegateToNext);
     app.post('/installer'             , apiLimiter , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, installer.install);
     return;
   }
