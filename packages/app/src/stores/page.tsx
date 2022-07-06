@@ -100,7 +100,8 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>, pagePath: Nullable<str
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();
 
-  const key = [`/pages.getPageTag?pageId=${pageId}`, pageId, shareLinkId, pagePath];
+  const endpoint = `/pages.getPageTag?pageId=${pageId}`;
+  const key = [endpoint, pageId, shareLinkId, pagePath];
 
 
   const fetcher = async(endpoint: string, pageId: Nullable<string>, shareLinkId: Nullable<string>) => {
