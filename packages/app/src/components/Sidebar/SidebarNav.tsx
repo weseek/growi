@@ -72,7 +72,7 @@ type Props = {
   onItemSelected: (contents: SidebarContentsType) => void,
 }
 
-const SidebarNav: FC<Props> = (props: Props) => {
+export const SidebarNav: FC<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser();
 
@@ -103,5 +103,3 @@ const SidebarNav: FC<Props> = (props: Props) => {
   );
 
 };
-
-export default SidebarNav;
