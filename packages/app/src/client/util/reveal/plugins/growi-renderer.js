@@ -28,7 +28,7 @@
       const section = sections[i];
       const markdown = marked.getMarkdownFromSlide(section);
       const context = { markdown };
-      const interceptorManager = appContainer.interceptorManager;
+      const { interceptorManager } = window.parent;
       let dataSeparator = section.getAttribute('data-separator') || DEFAULT_SLIDE_SEPARATOR;
       // replace string '\n' to LF code.
       dataSeparator = dataSeparator.replace(/\\n/g, '\n');
@@ -51,7 +51,7 @@
   function convertSlides() {
     const sections = document.querySelectorAll('[data-markdown]');
     let markdown;
-    const interceptorManager = appContainer.interceptorManager;
+    const { interceptorManager } = window.parent;
 
     for (let i = 0, len = sections.length; i < len; i++) {
       const section = sections[i];

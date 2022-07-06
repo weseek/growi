@@ -20,10 +20,10 @@ const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 60, // limit each IP to 60 requests per windowMs
   message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
+    'Too many requests sent from this IP, please try again after 1 minute',
 });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
@@ -77,7 +77,6 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
-  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);

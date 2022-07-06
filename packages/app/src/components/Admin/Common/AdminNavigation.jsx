@@ -1,18 +1,22 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable react/jsx-props-no-multi-spaces */
 
+
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import urljoin from 'url-join';
 
 import { pathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
+
 
 import AppContainer from '~/client/services/AppContainer';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
   const pathname = window.location.pathname;
 
   const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
@@ -141,8 +145,7 @@ const AdminNavigation = (props) => {
 const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(AdminNavigationWrapper);
+export default AdminNavigationWrapper;

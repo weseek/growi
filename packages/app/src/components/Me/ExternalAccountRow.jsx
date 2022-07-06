@@ -1,12 +1,13 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const ExternalAccountRow = (props) => {
-  const { t, account } = props;
+  const { t } = useTranslation();
+  const { account } = props;
 
   return (
     <tr>
@@ -29,12 +30,9 @@ const ExternalAccountRow = (props) => {
   );
 };
 
-
 ExternalAccountRow.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
   account: PropTypes.object.isRequired,
   openDisassociateModal: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(ExternalAccountRow);
+export default ExternalAccountRow;

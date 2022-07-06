@@ -3,7 +3,7 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
@@ -165,9 +165,14 @@ UserGroupUserFormByInput.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupUserFormByInputWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupUserFormByInput t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupUserFormByInputWrapper);
+export default UserGroupUserFormByInputWrapper;

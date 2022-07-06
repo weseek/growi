@@ -25,6 +25,7 @@ module.exports = (options) => {
       'js/app':                       './src/client/app',
       'js/admin':                     './src/client/admin',
       'js/nologin':                   './src/client/nologin',
+      'js/installer':                   './src/client/installer',
       'js/legacy':                    './src/client/legacy/crowi',
       'js/legacy-presentation':       './src/client/legacy/crowi-presentation',
       'js/plugin':                    './src/client/plugin',

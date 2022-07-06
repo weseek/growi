@@ -1,18 +1,16 @@
 import React, {
   useState, useMemo, useCallback,
 } from 'react';
+
+import { pagePathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Tooltip,
 } from 'reactstrap';
 
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-
-import { pagePathUtils } from '@growi/core';
 
 const { encodeSpaces } = pagePathUtils;
 
@@ -102,8 +100,9 @@ const CopyDropdown = (props) => {
   /*
    * render
    */
+  const { t } = useTranslation();
   const {
-    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
+    dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
   } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
@@ -199,8 +198,6 @@ const CopyDropdown = (props) => {
 };
 
 CopyDropdown.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
   children: PropTypes.node.isRequired,
   dropdownToggleId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
@@ -210,4 +207,4 @@ CopyDropdown.propTypes = {
   isShareLinkMode: PropTypes.bool,
 };
 
-export default withTranslation()(CopyDropdown);
+export default CopyDropdown;

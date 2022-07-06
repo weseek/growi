@@ -52,6 +52,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
+      isEmpty: mainContent.getAttribute('data-page-is-empty'),
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -60,7 +61,6 @@ export default class PageContainer extends Container {
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
-      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isPageExist: mainContent.getAttribute('data-page-id') != null,
 
@@ -99,7 +99,7 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager } = this.appContainer;
+    const { interceptorManager } = window;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(), 10); // process as soon as possible
     interceptorManager.addInterceptor(new DrawioInterceptor(), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(), 900); // process as late as possible
@@ -134,29 +134,6 @@ export default class PageContainer extends Container {
    */
   static getClassName() {
     return 'PageContainer';
-  }
-
-  /**
-   * whether to Empty Trash Page
-   * not displayed when guest user and not on trash page
-   */
-  get isAbleToShowEmptyTrashButton() {
-    const { currentUser } = this.appContainer;
-    const { path, hasChildren } = this.state;
-
-    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
-  }
-
-  /**
-   * whether to display trash management buttons
-   * ex.) undo, delete completly
-   * not displayed when guest user
-   */
-  get isAbleToShowTrashPageManagementButtons() {
-    const { currentUser } = this.appContainer;
-    const { isDeleted } = this.state;
-
-    return (isDeleted && currentUser != null);
   }
 
   /**
@@ -219,7 +196,8 @@ export default class PageContainer extends Container {
 
     // Update PageEditor component
     if (editorMode !== EditorMode.Editor) {
-      window.globalEmitter.emit('updateEditorValue', newState.markdown);
+      // eslint-disable-next-line no-undef
+      globalEmitter.emit('updateEditorValue', newState.markdown);
     }
 
     // PageEditorByHackmd component
@@ -459,7 +437,8 @@ export default class PageContainer extends Container {
 
     // Update PageEditor component
     if (editorMode !== EditorMode.Editor) {
-      window.globalEmitter.emit('updateEditorValue', markdown);
+      // eslint-disable-next-line no-undef
+      globalEmitter.emit('updateEditorValue', markdown);
     }
 
     editorContainer.setState({ tags: res.tags });

@@ -173,12 +173,15 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
+      body('revisionId').optional({ nullable: true }).isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
       body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
+    ],
+    resumeRenamePage: [
+      body('pageId').isMongoId().withMessage('pageId is required'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -552,6 +555,30 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
+  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, csrf, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
+
+    const { pageId } = req.body;
+    const { user } = req;
+
+    // The user has permission to resume rename operation if page is returned.
+    const page = await Page.findByIdAndViewer(pageId, user, null, true);
+    if (page == null) {
+      const msg = 'The operation is forbidden for this user';
+      const code = 'forbidden-user';
+      return res.apiv3Err(new ErrorV3(msg, code), 403);
+    }
+
+    try {
+      const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
+      await crowi.pageService.resumeRenameSubOperation(page, pageOp);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+    return res.apiv3();
+  });
+
   /**
    * @swagger
    *
@@ -566,7 +593,7 @@ module.exports = (crowi) => {
   router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+    const pagesInTrash = await crowi.pageService.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
     const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 

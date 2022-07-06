@@ -153,7 +153,6 @@ module.exports = function(crowi, app) {
   const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
-  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
@@ -171,7 +170,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -275,9 +274,12 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
+  }
 
-    const isPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
+  async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
+    if (!isEmpty) return;
+    renderVars.pageId = pageId;
+    renderVars.isEmpty = isEmpty;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -334,9 +336,8 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
-
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
-
+    await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
     return res.render(view, renderVars);
   }
 
@@ -404,7 +405,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -422,13 +422,10 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      req.pageId = page._id;
+      req.pagePath = page.path;
+      req.isEmpty = page.isEmpty;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
@@ -466,7 +463,6 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
@@ -536,7 +532,6 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('layout-growi/shared_page', renderVars);
   };
 
@@ -600,40 +595,42 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    const builder = new PageQueryBuilder(Page.find({ path }));
+    const includeEmpty = true;
+    const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
+
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+
     await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
-
     const pages = await builder.query.lean().clone().exec('find');
+    const nonEmptyPages = pages.filter(p => !p.isEmpty);
 
-    if (pages.length >= 2) {
-
-      // populate to list
-      builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-      const identicalPathPages = await builder.query.lean().exec('find');
-
+    if (nonEmptyPages.length >= 2) {
       return res.render('layout-growi/identical-path-page', {
-        identicalPathPages,
+        identicalPathPages: nonEmptyPages,
         redirectFrom,
         path,
       });
     }
 
-    if (pages.length === 1) {
+    if (nonEmptyPages.length === 1) {
+      const nonEmptyPage = nonEmptyPages[0];
       const url = new URL('https://dummy.origin');
-      url.pathname = `/${pages[0]._id}`;
+
+      url.pathname = `/${nonEmptyPage._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
         url.searchParams.append(key, value);
       });
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    // Exclude isEmpty page to handle _notFound or forbidden
-    const isForbidden = await Page.exists({ path, isEmpty: false });
-    if (isForbidden) {
-      req.isForbidden = true;
+    // Processing of nonEmptyPage is finished by the time this code is read
+    // If any pages exist then they should be empty
+    const emptyPage = pages[0];
+    if (emptyPage != null) {
+      req.pageId = emptyPage._id;
+      req.isEmpty = emptyPage.isEmpty;
       return _notFound(req, res);
     }
-
     // redirect by PageRedirect
     const pageRedirect = await PageRedirect.findOne({ fromPath: path });
     if (pageRedirect != null) {
@@ -1185,11 +1182,21 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
+    let creator;
+    if (page.isEmpty) {
+      // If empty, the creator is inherited from the closest non-empty ancestor page.
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      creator = notEmptyClosestAncestor.creator;
+    }
+    else {
+      creator = page.creator;
+    }
+
     debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
@@ -1205,7 +1212,7 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!crowi.pageService.canDelete(page.creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 

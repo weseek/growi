@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -14,7 +14,8 @@ import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useCurrentPageId } from '~/stores/context';
+import { usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -50,14 +51,14 @@ class SavePageControls extends React.Component {
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
@@ -76,12 +77,12 @@ class SavePageControls extends React.Component {
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
@@ -137,11 +138,14 @@ class SavePageControls extends React.Component {
 const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
 
 const SavePageControlsWrapper = (props) => {
+  const { t } = useTranslation();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
 
 
   if (isEditable == null || editorMode == null) {
@@ -154,6 +158,7 @@ const SavePageControlsWrapper = (props) => {
 
   return (
     <SavePageControlsHOCWrapper
+      t={t}
       {...props}
       editorMode={editorMode}
       grant={grant}
@@ -162,6 +167,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
+      pageTags={pageTags}
     />
   );
 };
@@ -177,6 +183,7 @@ SavePageControls.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
@@ -185,4 +192,4 @@ SavePageControls.propTypes = {
   mutateGrantGroupName: PropTypes.func,
 };
 
-export default withTranslation()(SavePageControlsWrapper);
+export default SavePageControlsWrapper;

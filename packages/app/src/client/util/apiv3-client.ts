@@ -1,11 +1,12 @@
+// eslint-disable-next-line no-restricted-imports
+import { AxiosResponse } from 'axios';
 import * as urljoin from 'url-join';
 
 // eslint-disable-next-line no-restricted-imports
-import { AxiosResponse } from 'axios';
 
-import loggerFactory from '~/utils/logger';
-import axios from '~/utils/axios';
 import { toArrayIfNot } from '~/utils/array-utils';
+import axios from '~/utils/axios';
+import loggerFactory from '~/utils/logger';
 
 const apiv3Root = '/_api/v3';
 
@@ -55,6 +56,14 @@ export async function apiv3Post<T = any>(path: string, params: any & ParamWithCs
     params._csrf = csrfToken;
   }
   return apiv3Request('post', path, params);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function apiv3PostForm<T = any>(path: string, formData: FormData): Promise<AxiosResponse<T>> {
+  if (formData.get('_csrf') == null && csrfToken != null) {
+    formData.append('_csrf', csrfToken);
+  }
+  return apiv3Post<T>(path, formData);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

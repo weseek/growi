@@ -17473,7 +17473,7 @@ randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-randomcolor@>=0.5.4, randomcolor@^0.5.4:
+randomcolor@>=0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/randomcolor/-/randomcolor-0.5.4.tgz#df615b13f25b89ea58c5f8f72647f0a6f07adcc3"
   integrity sha512-nYd4nmTuuwMFzHL6W+UWR5fNERGZeVauho8mrJDUSXdNDbao4rbrUwhuLgKC/j8VCS5+34Ria8CsTDuBjrIrQA==
@@ -17754,15 +17754,6 @@ react-scrolllock@^1.0.9:
   dependencies:
     create-react-class "^15.5.2"
     prop-types "^15.5.10"
-
-react-tagcloud@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-tagcloud/-/react-tagcloud-2.1.1.tgz#b8883634f76b5681c91a178689070efa0d442657"
-  integrity sha512-cM96jzUOKQqu2qlzwcO91r239MSDbFiAslFNk4Hja3MaZ4Y89goIzbTyXZwonkeJck1zY5wkNhJYeJ8YSdOwXg==
-  dependencies:
-    prop-types "^15.6.2"
-    randomcolor "^0.5.4"
-    shuffle-array "^1.0.1"
 
 react-transition-group@^2.2.1, react-transition-group@^2.3.1:
   version "2.9.0"
@@ -19245,11 +19236,6 @@ should@^13.2.1:
     should-type "^1.4.0"
     should-type-adaptors "^1.0.1"
     should-util "^1.0.0"
-
-shuffle-array@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/shuffle-array/-/shuffle-array-1.0.1.tgz#c4ff3cfe74d16f93730592301b25e6577b12898b"
-  integrity sha1-xP88/nTRb5NzBZIwGyXmV3sSiYs=
 
 side-channel@^1.0.4:
   version "1.0.4"
@@ -21459,10 +21445,10 @@ typeorm@^0.2.31:
     yargs "^16.2.0"
     zen-observable-ts "^1.0.0"
 
-typescript@^4.2.3:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+typescript@~4.6:
+  version "4.6.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.4.tgz#caa78bbc3a59e6a5c510d35703f6a09877ce45e9"
+  integrity sha512-9ia/jWHIEbo49HfjrLGfKbZSuWo9iTMwXO+Ca3pRsSpbsMbc7/IU8NKdCZVRRBafVPGnoJeFL76ZOAA84I9fEg==
 
 typpy@2.3.11:
   version "2.3.11"

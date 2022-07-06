@@ -1,10 +1,12 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
+
 
 import { createPatch } from 'diff';
 import { html } from 'diff2html';
-import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 import UserDate from '../User/UserDate';
 
 class RevisionDiff extends React.Component {
@@ -77,4 +79,9 @@ RevisionDiff.propTypes = {
   revisionDiffOpened: PropTypes.bool.isRequired,
 };
 
-export default withTranslation()(RevisionDiff);
+const RevisionDiffWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <RevisionDiff t={t} {...props} />;
+};
+
+export default RevisionDiffWrapperFC;

@@ -1,14 +1,16 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
+
 import ExternalAccountTable from './Users/ExternalAccountTable';
-import { toastError } from '~/client/util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {
@@ -82,7 +84,11 @@ ManageExternalAccount.propTypes = {
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
-const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccount, [AppContainer, AdminExternalAccountsContainer]);
+const ManageExternalAccountWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ManageExternalAccount t={t} {...props} />;
+};
 
+const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccountWrapperFC, [AppContainer, AdminExternalAccountsContainer]);
 
-export default withTranslation()(ManageExternalAccountWrapper);
+export default ManageExternalAccountWrapper;

@@ -1,33 +1,31 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
-
 import { DropdownItem } from 'reactstrap';
-
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { usePageTreeTermManager } from '~/stores/page-listing';
-import { useFullTextSearchTermManager } from '~/stores/search';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
-
-import PageContentFooter from '../PageContentFooter';
-import PageComment from '../PageComment';
-
-import RevisionLoader from '../Page/RevisionLoader';
-import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
+
+
+import AppContainer from '../../client/services/AppContainer';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtons } from '../Navbar/SubNavButtons';
+import RevisionLoader from '../Page/RevisionLoader';
+import PageComment from '../PageComment';
+import PageContentFooter from '../PageContentFooter';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -179,24 +177,20 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       : page.revision._id;
 
     return (
-      <>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          <SubNavButtons
-            pageId={page._id}
-            revisionId={revisionId}
-            path={page.path}
-            showPageControlDropdown={showPageControlDropdown}
-            forceHideMenuItems={forceHideMenuItems}
-            additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-            isCompactMode
-            onClickDuplicateMenuItem={duplicateItemClickedHandler}
-            onClickRenameMenuItem={renameItemClickedHandler}
-            onClickDeleteMenuItem={deleteItemClickedHandler}
-          />
-        </div>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-        </div>
-      </>
+      <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
+        <SubNavButtons
+          pageId={page._id}
+          revisionId={revisionId}
+          path={page.path}
+          showPageControlDropdown={showPageControlDropdown}
+          forceHideMenuItems={forceHideMenuItems}
+          additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+          isCompactMode
+          onClickDuplicateMenuItem={duplicateItemClickedHandler}
+          onClickRenameMenuItem={renameItemClickedHandler}
+          onClickDeleteMenuItem={deleteItemClickedHandler}
+        />
+      </div>
     );
   }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 

@@ -1,14 +1,16 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 function AwsSetting(props) {
-  const { t, adminAppContainer } = props;
+  const { t } = useTranslation();
+  const { adminAppContainer } = props;
   const { s3ReferenceFileWithRelayMode } = adminAppContainer.state;
 
   return (
@@ -150,12 +152,10 @@ function AwsSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AppContainer, AdminAppContainer]);
+const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AdminAppContainer]);
 
 AwsSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-export default withTranslation()(AwsSettingWrapper);
+export default AwsSettingWrapper;

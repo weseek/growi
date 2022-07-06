@@ -13,7 +13,8 @@ if (!window) {
 window.Crowi = Crowi;
 
 Crowi.setCaretLine = function(line) {
-  window.globalEmitter.emit('setCaretLine', line);
+  // eslint-disable-next-line no-undef
+  globalEmitter.emit('setCaretLine', line);
 };
 
 // original: middleware.swigFilter

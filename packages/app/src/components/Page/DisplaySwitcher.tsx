@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -36,7 +36,7 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-
+  const { data: isEmptyPage } = useIsEmptyPage();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
@@ -60,7 +60,7 @@ const DisplaySwitcher = (): JSX.Element => {
         <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
-            { isPageExist && (
+            { isPageExist && !isEmptyPage && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
@@ -76,7 +76,7 @@ const DisplaySwitcher = (): JSX.Element => {
                           <PageListIcon />
                         </div>
                         {t('page_list')}
-                        {currentPage?.descendantCount != null && <CountBadge count={currentPage.descendantCount + 1} />}
+                        <CountBadge count={currentPage?.descendantCount} offset={1} />
                       </button>
                     ) }
                   </div>
@@ -91,7 +91,7 @@ const DisplaySwitcher = (): JSX.Element => {
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
-                        {currentPage?.commentCount != null && <CountBadge count={currentPage.commentCount} />}
+                        <CountBadge count={currentPage?.commentCount} />
                       </button>
                     </div>
                   ) }

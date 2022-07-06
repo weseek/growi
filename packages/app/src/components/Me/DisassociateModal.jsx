@@ -1,19 +1,21 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 class DisassociateModal extends React.Component {
 
@@ -71,8 +73,6 @@ class DisassociateModal extends React.Component {
 
 }
 
-const DisassociateModalWrapper = withUnstatedContainers(DisassociateModal, [AppContainer, PersonalContainer]);
-
 DisassociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -84,5 +84,15 @@ DisassociateModal.propTypes = {
 
 };
 
+const DisassociateModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <DisassociateModal t={t} {...props} />;
+};
 
-export default withTranslation()(DisassociateModalWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const DisassociateModalWrapper = withUnstatedContainers(DisassociateModalWrapperFC, [AppContainer, PersonalContainer]);
+
+
+export default DisassociateModalWrapper;

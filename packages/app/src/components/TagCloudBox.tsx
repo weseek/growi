@@ -1,7 +1,5 @@
 import React, { FC, memo } from 'react';
 
-import { TagCloud } from 'react-tagcloud';
-
 import { IDataTagCount } from '~/interfaces/tag';
 
 type Props = {
@@ -16,34 +14,25 @@ const defaultProps = {
   isDisableRandomColor: true,
 };
 
-const MIN_FONT_SIZE = 10;
-const MAX_FONT_SIZE = 24;
 const MAX_TAG_TEXT_LENGTH = 8;
 
 const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
-  const {
-    tags, minSize, maxSize, isDisableRandomColor,
-  } = props;
+  const { tags } = props;
   const maxTagTextLength: number = props.maxTagTextLength ?? MAX_TAG_TEXT_LENGTH;
 
+  const tagElements = tags.map((tag:IDataTagCount) => {
+    const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
+    return (
+      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
+        {tagNameFormat}
+      </a>
+    );
+  });
+
   return (
-    <>
-      <TagCloud
-        minSize={minSize ?? MIN_FONT_SIZE}
-        maxSize={maxSize ?? MAX_FONT_SIZE}
-        tags={tags.map((tag:IDataTagCount) => {
-          return {
-            // text truncation
-            value: (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name,
-            count: tag.count,
-          };
-        })}
-        disableRandomColor={isDisableRandomColor}
-        style={{ cursor: 'pointer' }}
-        className="simple-cloud text-secondary"
-        onClick={(target) => { window.location.href = `/_search?q=tag:${encodeURIComponent(target.value)}` }}
-      />
-    </>
+    <div className="grw-popular-tag-labels">
+      {tagElements}
+    </div>
   );
 
 });

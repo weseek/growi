@@ -31,7 +31,7 @@
 
   {{ cdnStyleTagsByGroup('basis') }}
 
-  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/installer.js') }}" defer></script>
 
 </head>
 {% endblock %}
@@ -42,6 +42,8 @@
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
  >
+
+<div id="growi-context-extractor"></div>
 
 <div id="wrapper">
 
@@ -72,8 +74,7 @@
           <div id="installer-form-container"
             data-user-name="{{ req.body.registerForm.username }}"
             data-name="{{ req.body.registerForm.name }}"
-            data-email="{{ req.body.registerForm.email }}"
-            data-csrf="{{ csrf() }}">
+            data-email="{{ req.body.registerForm.email }}">
           </div>
         </div>
       </div>{# /.row #}
