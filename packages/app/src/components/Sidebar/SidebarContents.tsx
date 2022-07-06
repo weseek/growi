@@ -4,7 +4,7 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 // import CustomSidebar from './CustomSidebar';
-// import PageTree from './PageTree';
+import PageTree from './PageTree';
 import RecentChanges from './RecentChanges';
 import Tag from './Tag';
 
@@ -26,8 +26,8 @@ const SidebarContents = (): JSX.Element => {
       Contents = Tag;
       break;
     default:
-      // Contents = PageTree;
-      Contents = DummyComponent;
+      Contents = PageTree;
+      // Contents = DummyComponent;
   }
 
   return (

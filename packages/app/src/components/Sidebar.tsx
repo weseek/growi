@@ -54,32 +54,32 @@ const GlobalNavigation = () => {
 
 };
 
-// const SidebarContentsWrapper = () => {
-//   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+const SidebarContentsWrapper = () => {
+  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
-//   const calcViewHeight = useCallback(() => {
-//     const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-//     return elem != null
-//       ? window.innerHeight - elem?.getBoundingClientRect().top
-//       : window.innerHeight;
-//   }, []);
+  const calcViewHeight = useCallback(() => {
+    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+    return elem != null
+      ? window.innerHeight - elem?.getBoundingClientRect().top
+      : window.innerHeight;
+  }, []);
 
-//   return (
-//     <>
-//       <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-//         <StickyStretchableScroller
-//           simplebarRef={mutateSidebarScroller}
-//           stickyElemSelector=".grw-sidebar"
-//           calcViewHeight={calcViewHeight}
-//         >
-//           <SidebarContents />
-//         </StickyStretchableScroller>
-//       </div>
+  return (
+    <>
+      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+        <StickyStretchableScroller
+          simplebarRef={mutateSidebarScroller}
+          stickyElemSelector=".grw-sidebar"
+          calcViewHeight={calcViewHeight}
+        >
+          <SidebarContents />
+        </StickyStretchableScroller>
+      </div>
 
-//       <DrawerToggler iconClass="icon-arrow-left" />
-//     </>
-//   );
-// };
+      <DrawerToggler iconClass="icon-arrow-left" />
+    </>
+  );
+};
 
 
 const Sidebar = (): JSX.Element => {
@@ -313,7 +313,7 @@ const Sidebar = (): JSX.Element => {
                 >
                   <div className="grw-contextual-navigation-child">
                     <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                      {/* <SidebarContentsWrapper></SidebarContentsWrapper> */}
+                      <SidebarContentsWrapper></SidebarContentsWrapper>
                     </div>
                   </div>
                 </div>
