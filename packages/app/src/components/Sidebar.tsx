@@ -15,7 +15,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import SidebarContents from './Sidebar/SidebarContents';
-import SidebarNav from './Sidebar/SidebarNav';
+import { SidebarNav } from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
@@ -24,7 +24,6 @@ import styles from './Sidebar.module.scss';
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
-
 
 const GlobalNavigation = () => {
   const { data: isDrawerMode } = useDrawerMode();
@@ -52,38 +51,40 @@ const GlobalNavigation = () => {
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
+
 };
 
-const SidebarContentsWrapper = () => {
-  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+// const SidebarContentsWrapper = () => {
+//   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
-  const calcViewHeight = useCallback(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    return elem != null
-      ? window.innerHeight - elem?.getBoundingClientRect().top
-      : window.innerHeight;
-  }, []);
+//   const calcViewHeight = useCallback(() => {
+//     const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+//     return elem != null
+//       ? window.innerHeight - elem?.getBoundingClientRect().top
+//       : window.innerHeight;
+//   }, []);
 
-  return (
-    <>
-      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-        <StickyStretchableScroller
-          simplebarRef={mutateSidebarScroller}
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeight={calcViewHeight}
-        >
-          <SidebarContents />
-        </StickyStretchableScroller>
-      </div>
+//   return (
+//     <>
+//       <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+//         <StickyStretchableScroller
+//           simplebarRef={mutateSidebarScroller}
+//           stickyElemSelector=".grw-sidebar"
+//           calcViewHeight={calcViewHeight}
+//         >
+//           <SidebarContents />
+//         </StickyStretchableScroller>
+//       </div>
 
-      <DrawerToggler iconClass="icon-arrow-left" />
-    </>
-  );
-};
+//       <DrawerToggler iconClass="icon-arrow-left" />
+//     </>
+//   );
+// };
 
 
 const Sidebar = (): JSX.Element => {
-  const { data: isDrawerMode } = useDrawerMode();
+  // const { data: isDrawerMode } = useDrawerMode(); Todo Universalize
+  const isDrawerMode = false; // dummy
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
@@ -312,7 +313,7 @@ const Sidebar = (): JSX.Element => {
                 >
                   <div className="grw-contextual-navigation-child">
                     <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                      <SidebarContentsWrapper></SidebarContentsWrapper>
+                      {/* <SidebarContentsWrapper></SidebarContentsWrapper> */}
                     </div>
                   </div>
                 </div>
@@ -336,7 +337,7 @@ const Sidebar = (): JSX.Element => {
                   onClick={toggleNavigationBtnClickHandler}
                 >
                   <span className="hexagon-container" role="presentation">
-                    <NavigationResizeHexagon />
+                    {/* <NavigationResizeHexagon /> */}
                   </span>
                   <span className="hitarea" role="presentation"></span>
                 </button>
