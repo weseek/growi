@@ -19,7 +19,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
 
   const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
+  const iconClass = isSubscribing === false ? 'fa fa-bell-slash-o' : 'fa fa-bell-o';
 
   const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
@@ -38,7 +38,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={props.onClick}
-        className={`btn btn-subscribe border-0 ${buttonClass}`}
+        className={`btn btn-subscribe border-0 center ${buttonClass}`}
       >
         <i className={iconClass}></i>
       </button>
