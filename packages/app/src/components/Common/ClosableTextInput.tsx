@@ -126,4 +126,6 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   );
 });
 
+ClosableTextInput.displayName = 'ClosableTextInput';
+
 export default ClosableTextInput;

@@ -3,6 +3,8 @@ import React from 'react';
 import { useGrowiVersion } from '~/stores/context';
 import { useShortcutsModal } from '~/stores/modal';
 
+import styles from './SystemVersion.module.scss';
+
 const SystemVersion = (): JSX.Element => {
 
   const { open: openShortcutsModal } = useShortcutsModal();
@@ -15,7 +17,7 @@ const SystemVersion = (): JSX.Element => {
 
   return (
     <>
-      <div className="system-version d-none d-md-flex d-edit-none d-print-none align-items-center">
+      <div className={`${styles['system-version']} d-none d-md-flex d-edit-none d-print-none align-items-center`}>
         <span>
           <a href="https://growi.org">GROWI</a> {growiVersion}
         </span>

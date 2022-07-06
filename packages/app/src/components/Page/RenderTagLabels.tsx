@@ -52,5 +52,6 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
 
 });
 
+RenderTagLabels.displayName = 'RenderTagLabels';
 
 export default RenderTagLabels;

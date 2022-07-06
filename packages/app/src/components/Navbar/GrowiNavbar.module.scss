@@ -2,19 +2,23 @@
 @use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
-.grw-logo {
-  svg {
-    width: var.$grw-logo-width;
-    height: var.$grw-navbar-height;
-    padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
+.grw-navbar :global {
+
+  .grw-logo {
+    svg {
+      width: var.$grw-logo-width;
+      height: var.$grw-navbar-height;
+      padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
+    }
   }
+
+  .confidential {
+    font-weight: bold;
+  }
+
 }
 
-.confidential {
-  font-weight: bold;
-}
-
-.grw-navbar {
+.grw-navbar :global {
   top: #{-1 * var.$grw-navbar-height} !important;
 
   z-index: var.$grw-navbar-z-index !important;
@@ -66,23 +70,62 @@
     background: rgba(0, 0, 0, 0.2);
   }
 
+  .grw-apperance-mode-dropdown,
   .grw-personal-dropdown {
     .dropdown-menu {
       min-width: 15rem;
 
-      .grw-email-sm {
-        font-size: 0.75em;
-      }
       .grw-icon-container svg {
         width: 18px;
         height: 18px;
       }
     }
   }
+  .grw-email-sm {
+    font-size: 0.75em;
+  }
 
   .grw-notification-dropdown {
     .dropdown-menu {
       max-width: 70vw;
+    }
+  }
+}
+
+// layout for GlobalSearch
+.grw-navbar :global {
+  .grw-global-search-container {
+    // centering on navbar
+    top: var.$grw-navbar-height / 2;
+    left: 50vw;
+    z-index: bs.$zindex-fixed + 1;
+    transform: translate(-50%, -50%);
+
+    .rbt-input.form-control {
+      width: 200px;
+      transition: 0.3s ease-out;
+
+      // focus
+      &.focus {
+        width: 300px;
+      }
+
+      @include bs.media-breakpoint-up(md) {
+        width: 300px;
+      }
+      @include bs.media-breakpoint-up(lg) {
+        // focus
+        &.focus {
+          width: 400px;
+        }
+      }
+      @include bs.media-breakpoint-up(xl) {
+        width: 350px;
+        // focus
+        &.focus {
+          width: 450px;
+        }
+      }
     }
   }
 }

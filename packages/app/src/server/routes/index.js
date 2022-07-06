@@ -1,5 +1,5 @@
-import express from 'express';
 import csrf from 'csurf';
+import express from 'express';
 
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
@@ -24,10 +24,10 @@ const autoReap = require('multer-autoreap');
 const csrfProtection = csrf({ cookie: false });
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 60, // limit each IP to 60 requests per windowMs
   message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
+    'Too many requests sent from this IP, please try again after 1 minute',
 });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
@@ -54,7 +54,8 @@ module.exports = function(crowi, app) {
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
-  const hackmd = require('./hackmd')(crowi, app);
+  // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
+  // const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
   const next = nextFactory(crowi);
@@ -223,11 +224,12 @@ module.exports = function(crowi, app) {
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
-  app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
-  app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
-  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
-  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
+  // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
+  // app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
+  // app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
+  // app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
+  // app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
+  // app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))

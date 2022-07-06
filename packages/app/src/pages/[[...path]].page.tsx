@@ -1,34 +1,40 @@
 import React, { useEffect } from 'react';
 
-import { pagePathUtils } from '@growi/core';
-import { isValidObjectId } from 'mongoose';
+import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
+import { isPopulated } from '~/interfaces/common';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
-import { PageModel } from '~/server/models/page';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { PageModel, PageDocument } from '~/server/models/page';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import {
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -40,8 +46,8 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
-  useCurrentPageId,
+  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
+  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -50,7 +56,8 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { removeHeadingSlash } = pathUtils;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -66,10 +73,14 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   // isAbleToDeleteCompletely: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isSearchScopeChildrenAsDefault: boolean,
+
+  isSlackConfigured: boolean,
   // isMailerSetup: boolean,
-  // isAclEnabled: boolean,
+  isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
   // hackmdUri: string,
@@ -84,11 +95,18 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+
+  // UI
+  userUISettings: UserUISettingsDocument | null
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
+
+  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -100,22 +118,33 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
+  // UserUISettings
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
   // page
   useCurrentPagePath(props.currentPathname);
   useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
-  // useIsForbidden(props.isForbidden);
-  // useNotFound(props.isNotFound);
-  // useShared(isSharedPage(props.currentPagePath));
+  useIsForbidden(props.isForbidden);
+  useIsNotFound(props.isNotFound);
+  // useIsTrashPage(_isTrashPage(props.currentPagePath));
+  // useShared();
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+  useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+
+  useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
-  // useAclEnabled(props.isAclEnabled);
+  useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
   // useHackmdUri(props.hackmdUri);
@@ -141,6 +170,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
+  useCurrentPagePath(pageWithMeta?.data.path);
+  useCurrentPathname(props.currentPathname);
+
+  // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
+  useEffect(() => {
+    if (isClient() && window.location.pathname !== props.currentPathname) {
+      router.replace(props.currentPathname, undefined, { shallow: true });
+    }
+  }, [props.currentPathname, router]);
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -157,15 +195,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
-
-
-  // // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
-  // useEffect(() => {
-  //   if (props.redirectTo != null) {
-  //     router.push('/[[...path]]', props.redirectTo, { shallow: true });
-  //   }
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   return (
     <>
@@ -197,8 +226,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main grw-container-convertible">
                 <PageAlerts />
-                {/* <DisplaySwitcher /> */}
-                DisplaySwitcher<br />
+                <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
                 PageStatusAlert
@@ -218,57 +246,76 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           PageComments
         </footer>
 
+        <UnsavedAlertDialog />
+
       </BasicLayout>
     </>
   );
 };
 
-async function injectPageInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
+
+function getPageIdFromPathname(currentPathname: string): string | null {
+  return _isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
+}
+
+async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const Page = crowi.model('Page');
+  const { revisionId } = req.query;
   const { pageService } = crowi;
 
-  const { user, originalUrl } = req;
+  const { user } = req;
 
   const { currentPathname } = props;
 
-  // retrieve query params
-  const url = new URL(originalUrl, props.siteUrl);
-  const searchParams = new URLSearchParams(url.search);
-
-  // determine pageId
-  const pageIdStr = currentPathname.substring(1);
-  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
+  const pageId = getPageIdFromPathname(currentPathname);
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
-  const page = result.data;
+  const page = result?.data as unknown as PageDocument;
+
+  // populate
+  if (page != null) {
+    page.initLatestRevisionField(revisionId);
+    await page.populateDataToShowRevision();
+  }
+
+  return result;
+}
+
+async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageWithMeta|null): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const Page = crowi.model('Page');
+
+  const { currentPathname } = props;
+  const pageId = getPageIdFromPathname(currentPathname);
+  const isPermalink = _isPermalink(currentPathname);
+
+  const page = pageWithMeta?.data;
 
 
   if (page == null) {
-    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
-    // check the page is forbidden or just does not exist.
-    props.isForbidden = count > 0;
     props.isNotFound = true;
-    logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
+
+    // check the page is forbidden or just does not exist.
+    const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
+    props.isForbidden = count > 0;
   }
 
-  // Todo: should check if revision document with the specified revisionId actually exist in DB.
-  // if true, replacing page.revision with old revision should be done when populating Revision
-  const revisionId = searchParams.get('revision');
-  const isSpecifiedRevisionExist = true; // dummy
+  if (page != null) {
+    // /62a88db47fed8b2d94f30000 ==> /path/to/page
+    if (isPermalink && page.isEmpty) {
+      props.currentPathname = page.path;
+    }
 
-  // check if revision is latest
-  if (revisionId == null || !isSpecifiedRevisionExist) {
-    props.isLatestRevision = true;
+    // /path/to/page ==> /62a88db47fed8b2d94f30000
+    if (!isPermalink && !page.isEmpty) {
+      const isToppage = pagePathUtils.isTopPage(props.currentPathname);
+      if (!isToppage) {
+        props.currentPathname = `/${page._id}`;
+      }
+    }
   }
-  else {
-    props.isLatestRevision = page.revision.toString() === revisionId;
-  }
-
-  await (page as unknown as PageModel).populateDataToShowRevision();
-  props.pageWithMetaStr = JSON.stringify(result);
-
 }
 
 // async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -293,8 +340,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   } = crowi;
 
   const { user } = req;
+  const { revisionId } = req.query;
 
   const result = await getServerSideCommonProps(context);
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
@@ -303,16 +352,33 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
-  await injectPageInformation(context, props);
+  const pageWithMeta = await getPageData(context, props);
+
+  // check isLatestRevision
+  const page = pageWithMeta?.data;
+  if (page == null || page.latestRevision == null || revisionId == null) {
+    props.isLatestRevision = true;
+  }
+  else {
+    props.isLatestRevision = page.latestRevision.toString() === revisionId;
+  }
+
+  props.pageWithMetaStr = JSON.stringify(pageWithMeta);
+
+  injectRoutingInformation(context, props, pageWithMeta);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user);
   }
 
+
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
-  // props.isAclEnabled = aclService.isAclEnabled();
+  props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
@@ -333,6 +399,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
+  // UI
+  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
   return {
     props,
   };

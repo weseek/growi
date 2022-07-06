@@ -11,3 +11,5 @@ export const PrivateLegacyPagesLink: FC = memo(() => {
     </a>
   );
 });
+
+PrivateLegacyPagesLink.displayName = 'PrivateLegacyPagesLink';

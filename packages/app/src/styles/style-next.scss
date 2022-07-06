@@ -3,11 +3,15 @@
 // // override codemirror
 // @import 'override-codemirror';
 
-// // override react-bootstrap-typeahead styles
-// @import 'override-rbt';
+@import '~react-bootstrap-typeahead/css/Typeahead';
+@import 'override-rbt';
 
 // // override simplebar-react styles
 // @import 'override-simplebar';
+
+// icons
+@import '~simple-line-icons';
+@import '~material-icons/iconfont/filled';
 
 // // atoms
 // @import 'atoms/buttons';
