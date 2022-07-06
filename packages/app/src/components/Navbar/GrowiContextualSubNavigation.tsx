@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';
@@ -270,15 +270,15 @@ const GrowiContextualSubNavigation = (props) => {
 
     let additionalMenuItemsRenderer;
     if (revisionId != null) {
-      additionalMenuItemsRenderer = props => (
-        <AdditionalMenuItems
+      additionalMenuItemsRenderer = props => function additionalMenuItemsRenderer() {
+        return (<AdditionalMenuItems
           {...props}
           pageId={pageId}
           revisionId={revisionId}
           isLinkSharingDisabled={isLinkSharingDisabled}
           onClickTemplateMenuItem={templateMenuItemClickHandler}
-        />
-      );
+        />);
+      };
     }
     return (
       <>
