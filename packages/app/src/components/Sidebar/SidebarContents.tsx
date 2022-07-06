@@ -10,7 +10,7 @@ import Tag from './Tag';
 
 const DummyComponent = (): JSX.Element => <></>; // Todo: remove this later when it is able to render other Contents.
 
-const SidebarContents = (): JSX.Element => {
+export const SidebarContents = (): JSX.Element => {
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
   let Contents;
@@ -35,5 +35,3 @@ const SidebarContents = (): JSX.Element => {
   );
 
 };
-
-export default SidebarContents;

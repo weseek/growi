@@ -2,6 +2,8 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
@@ -14,7 +16,6 @@ import {
 
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
-import SidebarContents from './Sidebar/SidebarContents';
 import { SidebarNav } from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
@@ -55,6 +56,7 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
+  const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
