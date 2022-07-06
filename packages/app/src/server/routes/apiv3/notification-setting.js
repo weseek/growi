@@ -468,18 +468,20 @@ module.exports = (crowi) => {
   router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
     const { isEnabled } = req.body;
-    const parameters = {};
 
     try {
       if (isEnabled) {
         await GlobalNotificationSetting.enable(id);
-        parameters.action = SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_ENABLED;
       }
       else {
         await GlobalNotificationSetting.disable(id);
-        parameters.action = SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_DISABLED;
       }
 
+      const parameters = {
+        action: isEnabled
+          ? SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_ENABLED
+          : SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_DISABLED,
+      };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ id });
