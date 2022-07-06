@@ -5,14 +5,15 @@ import React, {
 import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
-import { useDrag, useDrop } from 'react-dnd';
 import { useTranslation } from 'next-i18next';
+import { useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { Nullable } from '~/interfaces/common';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
@@ -35,7 +36,7 @@ const logger = loggerFactory('growi:cli:Item');
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onRenamed?(): void
