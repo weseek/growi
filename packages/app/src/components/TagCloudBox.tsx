@@ -37,6 +37,8 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
 
 });
 
+TagCloudBox.displayName = 'withLoadingSppiner';
+
 TagCloudBox.defaultProps = defaultProps;
 
 export default TagCloudBox;
