@@ -17,7 +17,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
-import { StickyStretchableScroller } from './StickyStretchableScroller';
+import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
 
@@ -56,6 +56,8 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
+  const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
+    .then(mod => mod.StickyStretchableScroller), { ssr: false });
   const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
