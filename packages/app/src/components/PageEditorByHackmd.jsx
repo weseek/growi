@@ -3,14 +3,15 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+} from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -172,13 +173,13 @@ class PageEditorByHackmd extends React.Component {
    */
   async onSaveWithShortcut(markdown) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, this.props.editorMode, optionsToSave);
@@ -200,7 +201,7 @@ class PageEditorByHackmd extends React.Component {
    */
   async hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer, editorContainer } = this.props;
+    const { pageContainer, mutateIsEnabledUnsavedWarning } = this.props;
 
     if (hackmdUri == null) {
       // do nothing
@@ -213,7 +214,7 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // enable unsaved warning
-    editorContainer.enableUnsavedWarning();
+    mutateIsEnabledUnsavedWarning(true);
 
     const params = {
       pageId: pageContainer.state.pageId,
@@ -439,6 +440,7 @@ PageEditorByHackmd.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  mutateIsEnabledUnsavedWarning: PropTypes.func,
 };
 
 /**
@@ -457,6 +459,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   if (editorMode == null) {
     return null;
@@ -473,6 +476,7 @@ const PageEditorByHackmdWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
 };

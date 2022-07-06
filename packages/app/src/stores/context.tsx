@@ -3,7 +3,7 @@ import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
@@ -38,6 +38,10 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
 
 export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
+};
+
+export const useCurrentPathname = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('currentPathname', initialData);
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -84,6 +88,10 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
+export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+};
+
 export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
 };
@@ -94,6 +102,10 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
 
 export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
+};
+
+export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -140,14 +152,6 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
   return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
 };
 
-export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
-};
-
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
@@ -164,13 +168,14 @@ export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRRe
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
 
+export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSlackConfigured', initialData);
+};
+
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
-export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
-};
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('hasParent', initialData);
 };
@@ -210,19 +215,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
     (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
       return (!isNotCreatable && !isTrashPage && !isGuestUser);
-    },
-  );
-};
-
-export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-
-  const pathname = window.location.pathname;
-
-  return useSWRImmutable(
-    ['isSharedUser', isGuestUser, pathname],
-    (key: Key, isGuestUser: boolean, pathname: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };

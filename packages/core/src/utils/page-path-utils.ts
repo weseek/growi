@@ -1,6 +1,8 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+import { isValidObjectId } from 'mongoose';
+
 
 import { addTrailingSlash } from './path-utils';
 
@@ -18,6 +20,15 @@ export const isTopPage = (path: string): boolean => {
  */
 export const isUsersTopPage = (path: string): boolean => {
   return path === '/user';
+};
+
+/**
+ * Whether the path is permalink
+ * @param path
+ */
+export const isPermalink = (path: string): boolean => {
+  const pageIdStr = path.substring(1);
+  return isValidObjectId(pageIdStr);
 };
 
 /**
