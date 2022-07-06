@@ -1,3 +1,4 @@
+import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
 
@@ -26,6 +27,8 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   const { check, param } = require('express-validator');
+
+  const activityEvent = crowi.event('activity');
 
   const api = {};
 
@@ -381,6 +384,8 @@ module.exports = function(crowi, app) {
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
+    const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_UPDATED };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.json(ApiResponse.success());
   };
 
@@ -401,7 +406,8 @@ module.exports = function(crowi, app) {
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
-
+    const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_UPDATED };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.json(ApiResponse.success());
   };
 
@@ -460,6 +466,8 @@ module.exports = function(crowi, app) {
   actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_ESA_DATA };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
     }
     catch (err) {
@@ -476,6 +484,8 @@ module.exports = function(crowi, app) {
   actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_QIITA_DATA };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
     }
     catch (err) {
