@@ -38,7 +38,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={props.onClick}
-        className={`btn btn-subscribe border-0 center ${buttonClass}`}
+        className={`btn btn-subscribe border-0 ${buttonClass}`}
       >
         <i className={iconClass}></i>
       </button>
