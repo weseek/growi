@@ -96,13 +96,14 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
 };
 
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
-  const key = pageId == null ? 'tmpPage' : `/pages.getPageTag?pageId=${pageId}`;
-
+export const useSWRxTagsInfo = (pageId: Nullable<string>, pagePath: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();
 
-  const fetcher = async(endpoint: string) => {
+  const key = [`/pages.getPageTag?pageId=${pageId}`, pageId, shareLinkId, pagePath];
+
+
+  const fetcher = async(endpoint: string, pageId: Nullable<string>, shareLinkId: Nullable<string>) => {
     if (shareLinkId != null) {
       return;
     }
