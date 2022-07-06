@@ -24,7 +24,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   return (
     <div className="grw-seen-user-info">
-      <button type="button" id="btn-seen-user" className="btn btn-seen-user border-0">
+      <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0">
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
