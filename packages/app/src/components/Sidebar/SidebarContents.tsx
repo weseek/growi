@@ -27,7 +27,6 @@ export const SidebarContents = (): JSX.Element => {
       break;
     default:
       Contents = PageTree;
-      // Contents = DummyComponent;
   }
 
   return (
