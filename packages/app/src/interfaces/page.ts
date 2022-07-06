@@ -42,7 +42,7 @@ export const PageGrant = {
 };
 export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
-export type IPageHasId = IPage & HasObjectId;
+export type IPageHasId = IPage & HasObjectId & {latestRevision?: Ref<IRevision>};
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
