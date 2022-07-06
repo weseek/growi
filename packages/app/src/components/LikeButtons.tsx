@@ -63,7 +63,12 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
       { !hideTotalNumber && (
         <>
-          <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
+          <button
+            type="button"
+            id="po-total-likes"
+            className={`shadow-none btn btn-like border-0
+              total-likes ${isLiked ? 'active' : ''}`}
+          >
             {sumOfLikers}
           </button>
           <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
