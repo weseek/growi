@@ -1,11 +1,15 @@
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body, query, param } = require('express-validator');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
@@ -71,6 +75,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const { Page, Bookmark, User } = crowi.models;
 
@@ -257,7 +264,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
     const userId = req.user?._id;
 
@@ -265,9 +272,10 @@ module.exports = (crowi) => {
       return res.apiv3Err('A logged in user is required.');
     }
 
+    let page;
     let bookmark;
     try {
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
@@ -277,10 +285,6 @@ module.exports = (crowi) => {
       if (bookmark == null) {
         if (bool) {
           bookmark = await Bookmark.add(page, req.user);
-
-          const pageEvent = crowi.event('page');
-          // in-app notification
-          pageEvent.emit('bookmark', page, req.user);
         }
         else {
           logger.warn(`Removing the bookmark for ${page._id} by ${req.user._id} failed because the bookmark does not exist.`);
@@ -305,6 +309,13 @@ module.exports = (crowi) => {
       bookmark.depopulate('page');
       bookmark.depopulate('user');
     }
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: bool ? SupportedAction.ACTION_PAGE_BOOKMARK : SupportedAction.ACTION_PAGE_UNBOOKMARK,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     return res.apiv3({ bookmark });
   });
