@@ -4,6 +4,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { GrowiRendererConfig } from '~/interfaces/services/renderer';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
@@ -183,6 +184,10 @@ export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionT
 
 export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('growiVersion', initialData);
+};
+
+export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRResponse<GrowiRendererConfig, any> => {
+  return useStaticSWR('growiRendererConfig', initialData);
 };
 
 

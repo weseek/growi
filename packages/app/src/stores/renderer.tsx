@@ -4,6 +4,8 @@ import { RendererSettings } from '~/interfaces/services/renderer';
 import GrowiRenderer, { generateCommentPreviewRenderer, generatePreviewRenderer, generateViewRenderer } from '~/services/renderer/growi-renderer';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
+import { useCurrentPagePath, useGrowiRendererConfig } from './context';
+
 export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, any> => {
   return useStaticSWR('rendererSettings', initialData);
 };
@@ -13,13 +15,15 @@ export const useViewRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -31,13 +35,15 @@ export const usePreviewRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generatePreviewRenderer();
+    const generated = generatePreviewRenderer(growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -49,13 +55,15 @@ export const useCommentPreviewRenderer = (): SWRResponse<GrowiRenderer, any> => 
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateCommentPreviewRenderer(rendererSettings);
+    const generated = generateCommentPreviewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -67,13 +75,15 @@ export const useSearchResultRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -85,13 +95,15 @@ export const useTimelineRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -103,13 +115,15 @@ export const useDraftRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
@@ -121,13 +135,15 @@ export const useCustomSidebarRenderer = (): SWRResponse<GrowiRenderer, any> => {
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null) {
+  if (rendererSettings == null || growiRendererConfig == null) {
     key = null;
   }
   // Initialize renderer
   else if (renderer == null) {
-    const generated = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, growiRendererConfig, currentPath);
     mutateRenderer(generated);
   }
 
