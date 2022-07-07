@@ -13,12 +13,13 @@ import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websoc
 import {
   useSiteUrl,
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
-  useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
-  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion, useAuditLogEnabled,
+  useActivityExpirationSeconds, useAuditLogAvailableActions,
 } from '../../stores/context';
 import { useRendererSettings } from '~/stores/renderer';
 
@@ -75,7 +76,6 @@ const ContextExtractorOnce: FC = () => {
   const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
-  const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
   const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull) ?? false;
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
@@ -93,7 +93,6 @@ const ContextExtractorOnce: FC = () => {
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
-  const isNotFoundPermalink = JSON.parse(notFoundContext?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
   const isEmptyPage = JSON.parse(mainContent?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
 
@@ -124,6 +123,9 @@ const ContextExtractorOnce: FC = () => {
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
   useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
   useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
+  useAuditLogEnabled(configByContextHydrate.auditLogEnabled);
+  useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
+  useAuditLogAvailableActions(configByContextHydrate.auditLogAvailableActions);
   useGrowiVersion(configByContextHydrate.crowi.version);
   useRendererSettings({
     isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
@@ -139,7 +141,6 @@ const ContextExtractorOnce: FC = () => {
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
-  useIsDeleted(isDeleted);
   useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
   useIsTrashPage(isTrashPage);
@@ -161,7 +162,6 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
-  useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
   useIsEmptyPage(isEmptyPage);
   useHasParent(hasParent);

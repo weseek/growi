@@ -12,7 +12,6 @@
   data-page-grant="{{ grant }}"
   data-page-grant-group="{{ grantedGroupId }}"
   data-page-grant-group-name="{{ grantedGroupName }}"
-  data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-not-creatable="false"
   data-page-created-at="{{ page.createdAt|datetz('Y/m/d H:i:s') }}"
   data-page-creator="{% if page && page.creator %}{{ page.creator|json }}{% endif %}"
@@ -30,7 +29,6 @@
 <div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   >
 {% endif %}
