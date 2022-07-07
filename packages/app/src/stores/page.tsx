@@ -109,8 +109,8 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
     }
 
     let tags: string[] = [];
-    // when the page exists or is a shared page
-    if (pageId != null && shareLinkId == null) {
+    // when the page exists
+    if (pageId != null) {
       const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
       tags = res?.tags;
     }
