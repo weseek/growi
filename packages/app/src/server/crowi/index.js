@@ -27,7 +27,6 @@ import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
-import RevisionService from '../service/revision';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -68,7 +67,6 @@ function Crowi() {
   this.exportService = null;
   this.importService = null;
   this.searchService = null;
-  this.revisionService = null;
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
@@ -133,7 +131,6 @@ Crowi.prototype.init = async function() {
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
-    this.setupRevisionService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
     this.setupCommentService(),
@@ -695,12 +692,6 @@ Crowi.prototype.setupPageService = async function() {
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
     await this.pageOperationService.init();
-  }
-};
-
-Crowi.prototype.setupRevisionService = async function() {
-  if (this.revisionService == null) {
-    this.revisionService = new RevisionService(this);
   }
 };
 
