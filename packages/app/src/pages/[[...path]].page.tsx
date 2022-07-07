@@ -26,8 +26,9 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -35,10 +36,10 @@ import { BasicLayout } from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
+  useOwnerOfCurrentPage, useIsUserPage, useCurrentPageId,
+  useIsForbidden, useIsNotFoundPermalink, useIsTrashPage, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsGuestUser, useIsNotCreatable,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useIsIdenticalPath,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
 
@@ -47,7 +48,9 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const {
+  isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+} = pagePathUtils;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -69,7 +72,7 @@ type Props = CommonProps & {
   // isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
-  // hackmdUri: string,
+  hackmdUri: string,
   // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
@@ -99,11 +102,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPagePath(props.currentPathname);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
-  // useIsForbidden(props.isForbidden);
+  useIsForbidden(props.isForbidden);
   // useNotFound(props.isNotFound);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
-  // useShared(isSharedPage(props.currentPagePath));
   // useShareLinkId(props.shareLinkId);
+  useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
+  useIsNotFoundPermalink(props.isNotFound ?? false);
+  useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   // useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
   // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
@@ -115,7 +119,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
-  // useHackmdUri(props.hackmdUri);
+  useHackmdUri(props.hackmdUri);
   // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
@@ -133,8 +137,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
   }
+  useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
+  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
 
   const classNames: string[] = [];
   // switch (editorMode) {
@@ -176,6 +184,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <header className="py-0">
           {/* <GrowiSubNavigation /> */}
           GrowiSubNavigation
+          <GrowiContextualSubNavigation />
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
@@ -292,7 +301,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');

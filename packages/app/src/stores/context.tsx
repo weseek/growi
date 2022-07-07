@@ -3,7 +3,7 @@ import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
@@ -96,6 +96,10 @@ export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nul
   return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
 };
 
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
+};
+
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
@@ -106,6 +110,10 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -144,8 +152,8 @@ export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<str
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
 };
 
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
+export const useIsNotFoundPermalink = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('isNotFoundPermalink', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -210,19 +218,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
     (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
       return (!isNotCreatable && !isTrashPage && !isGuestUser);
-    },
-  );
-};
-
-export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-
-  const pathname = window.location.pathname;
-
-  return useSWRImmutable(
-    ['isSharedUser', isGuestUser, pathname],
-    (key: Key, isGuestUser: boolean, pathname: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };
