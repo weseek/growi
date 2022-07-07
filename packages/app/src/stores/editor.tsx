@@ -96,8 +96,8 @@ export type IPageTagsForEditorsOption = {
   sync: (tags?: string[]) => void;
 }
 
-export const usePageTagsForEditors = (pageId: Nullable<string>, pagePath: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId, pagePath);
+export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
 
   return {

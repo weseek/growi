@@ -84,10 +84,6 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
 
-export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
-};
-
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
