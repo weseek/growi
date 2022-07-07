@@ -188,6 +188,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     {
                       applicableGroups != null && applicableGroups.map(g => (
                         <button
+                          key={g._id}
                           className="dropdown-item"
                           type="button"
                           onClick={() => setSelectedGroup(g)}
@@ -233,8 +234,8 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   const { data: currentUser } = useCurrentUser();
   const { data: pageData } = useSWRxCurrentPage();
-  const hasParent = pageData != null ? pageData.parent != null : false
-  const pageId  = pageData?._id;
+  const hasParent = pageData != null ? pageData.parent != null : false;
+  const pageId = pageData?._id;
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
@@ -243,7 +244,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   // Dependencies
   if (pageData == null) {
-    return <></>
+    return <></>;
   }
 
   if (!hasParent) {
