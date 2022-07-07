@@ -28,7 +28,6 @@ import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationS
 import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
 import PageComment from '../components/PageComment';
@@ -113,11 +112,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
-  if (!pageContainer.state.isEmpty) {
-    Object.assign(componentMappings, {
-      'fix-page-grant-alert': <FixPageGrantAlert />,
-    });
-  }
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
