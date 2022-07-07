@@ -9,7 +9,7 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useDraftRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';

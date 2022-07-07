@@ -1,7 +1,7 @@
 import { Key, SWRResponse } from 'swr';
 
-import GrowiRenderer, { generateCommentPreviewRenderer, generatePreviewRenderer, generateViewRenderer } from '~/client/util/GrowiRenderer';
 import { RendererSettings } from '~/interfaces/services/renderer';
+import GrowiRenderer, { generateCommentPreviewRenderer, generatePreviewRenderer, generateViewRenderer } from '~/services/renderer/growi-renderer';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
 export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, any> => {

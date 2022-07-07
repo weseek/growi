@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useTimelineRenderer } from '~/stores/renderer';
 
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
-import { useTimelineRenderer } from '~/stores/renderer';
 
 
 class PageTimeline extends React.Component {

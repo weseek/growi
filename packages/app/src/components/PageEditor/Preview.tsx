@@ -4,10 +4,9 @@ import React, {
 
 
 import AppContainer from '~/client/services/AppContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import InterceptorManager from '~/services/interceptor-manager';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
-import { usePreviewRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -62,7 +61,7 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
     }
 
     setHtml(context.parsedHTML ?? '');
-  }, [interceptorManager, context, growiRenderer]);
+  }, [context, growiRenderer]);
 
   useEffect(() => {
     if (markdown == null) {
@@ -83,7 +82,7 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
         parsedHTML: html,
       });
     }
-  }, [context, html, interceptorManager]);
+  }, [context, html]);
 
   return (
     <div

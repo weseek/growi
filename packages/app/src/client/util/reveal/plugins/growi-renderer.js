@@ -2,19 +2,16 @@
  * reveal.js growi-renderer plugin.
  */
 (function(root, factory) {
-  // get AppContainer instance from parent window
-  const appContainer = window.parent.appContainer;
-
-  const growiRendererPlugin = factory(appContainer);
+  const growiRendererPlugin = factory();
   growiRendererPlugin.initialize();
-}(this, (appContainer) => {
+}(this, () => {
   /* eslint-disable no-useless-escape */
   const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
   const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$';
   const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   /* eslint-enable no-useless-escape */
 
-  const growiRenderer = appContainer.getRenderer('editor');
+  const growiRenderer = window.previewRenderer;
 
   let marked;
 

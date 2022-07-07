@@ -7,8 +7,8 @@ import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { getOptionsToSave } from '~/client/util/editor';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';

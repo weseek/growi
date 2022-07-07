@@ -1,7 +1,8 @@
 import { Container } from 'unstated';
 
 
-import GrowiRenderer from '../util/GrowiRenderer';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+
 import { i18nFactory } from '../util/i18n';
 
 /**

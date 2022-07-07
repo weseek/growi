@@ -1,3 +1,5 @@
+
+
 import MarkdownIt from 'markdown-it';
 
 import { RendererSettings } from '~/interfaces/services/renderer';
@@ -25,7 +27,6 @@ import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
 const logger = loggerFactory('growi:util:GrowiRenderer');
 
-// hljs is configured via webpack?
 declare const hljs;
 
 type MarkdownSettings = {
@@ -187,6 +188,7 @@ export default class GrowiRenderer {
   }
 
 }
+
 
 export const generateViewRenderer = (rendererSettings: RendererSettings): GrowiRenderer => {
   const renderer = new GrowiRenderer();
