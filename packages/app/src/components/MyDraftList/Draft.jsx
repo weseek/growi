@@ -12,6 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 class Draft extends React.Component {
 
@@ -25,7 +26,7 @@ class Draft extends React.Component {
       showCopiedMessage: false,
     };
 
-    this.growiRenderer = this.props.appContainer.getRenderer('draft');
+    this.growiRenderer = this.props.growiRenderer;
 
     this.changeToolTipLabel = this.changeToolTipLabel.bind(this);
     this.expandPanelHandler = this.expandPanelHandler.bind(this);
@@ -194,6 +195,7 @@ class Draft extends React.Component {
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
@@ -204,7 +206,9 @@ Draft.propTypes = {
 
 const DraftWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <Draft t={t} {...props} />;
+  const { data: growiRenderer } = useDraftRenderer();
+
+  return <Draft t={t} growiRenderer={growiRenderer} {...props} />;
 };
 
 /**

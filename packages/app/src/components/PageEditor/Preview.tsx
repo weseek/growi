@@ -4,8 +4,10 @@ import React, {
 
 
 import AppContainer from '~/client/services/AppContainer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
 import InterceptorManager from '~/services/interceptor-manager';
 import { useEditorSettings } from '~/stores/editor';
+import { usePreviewRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -16,7 +18,7 @@ declare const interceptorManager: InterceptorManager;
 
 type Props = {
   appContainer: AppContainer,
-
+  growiRenderer: GrowiRenderer,
   markdown?: string,
   pagePath?: string,
   inputRef?: React.RefObject<HTMLDivElement>,
@@ -29,7 +31,7 @@ type Props = {
 const Preview = (props: Props): JSX.Element => {
 
   const {
-    appContainer,
+    appContainer, growiRenderer,
     markdown, pagePath,
     inputRef,
   } = props;
@@ -37,8 +39,6 @@ const Preview = (props: Props): JSX.Element => {
   const [html, setHtml] = useState('');
 
   const { data: editorSettings } = useEditorSettings();
-
-  const growiRenderer = appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
     return {
@@ -114,7 +114,12 @@ const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PreviewWrapper2 = (props): JSX.Element => {
-  return <PreviewWrapper {...props} />;
+  const { data: growiRenderer } = usePreviewRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
+  return <PreviewWrapper growiRenderer={growiRenderer} {...props} />;
 };
 
 export default PreviewWrapper2;
