@@ -13,6 +13,7 @@ import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useViewRenderer } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';

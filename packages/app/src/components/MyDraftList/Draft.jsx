@@ -9,10 +9,11 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { useDraftRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 class Draft extends React.Component {
 
