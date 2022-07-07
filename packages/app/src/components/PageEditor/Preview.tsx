@@ -112,12 +112,7 @@ const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PreviewWrapper2 = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
-  const { data: growiRenderer } = usePreviewRenderer();
-  if (growiRenderer == null) {
-    return <></>;
-  }
-
-  return <PreviewWrapper ref={ref} growiRenderer={growiRenderer} {...props} />;
+  return <PreviewWrapper ref={ref} {...props} />;
 });
 
 export default PreviewWrapper2;
