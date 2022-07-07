@@ -145,7 +145,7 @@
     "react-datepicker": "^4.7.0",
     "react-dnd": "^14.0.5",
     "react-dnd-html5-backend": "^14.1.0",
-    "react-image-crop": "^8.3.0",
+    "react-image-crop": "^10.0.4",
     "react-multiline-clamp": "^2.0.0",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
