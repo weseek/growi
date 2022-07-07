@@ -40,7 +40,7 @@ context('Access to sidebar', () => {
     })
     cy.screenshot(`${ssPrefix}2-open-first-recent-changes-page`);
 
-    cy.visit('/');
+    cy.visit('/Sandbox');
     // Add tag
     cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
     cy.get('#edit-tag-modal').should('be.visible');
@@ -55,7 +55,7 @@ context('Access to sidebar', () => {
     cy.get('#edit-tag-modal').within(() => {
       cy.get('div.modal-footer > button').click();
     });
-    cy.visit('/');
+    cy.visit('/Sandbox');
     cy.get('.grw-taglabels-container > form > a').contains('test').click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
@@ -148,6 +148,29 @@ context('Access to sidebar', () => {
     cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
 
     cy.screenshot(`${ssPrefix}2-check-all-tags`);
+    cy.getByTestid('grw-tags-list').within(() => {
+      cy.get('ul').find('a').contains('test').click();
+    });
 
+    cy.screenshot(`${ssPrefix}3-page-list-with-tag`);
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('li').eq(0).within(() => {
+        cy.getByTestid('open-page-item-control-btn').click();
+      });
+    });
+    cy.screenshot(`${ssPrefix}4-tags-click-three-dots-menu`);
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('li').eq(0).within(() => {
+        cy.getByTestid('open-page-duplicate-modal-btn').click();
+      });
+    });
+
+    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.get('.rbt-input-main').type('screen');
+    });
+    cy.screenshot(`${ssPrefix}5-duplicate-page-from-tags`);
+    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.get('.modal-footer > button').click();
+    });
   });
 });
