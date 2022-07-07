@@ -14,8 +14,7 @@ import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/in
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 

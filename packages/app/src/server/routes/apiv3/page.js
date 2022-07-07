@@ -169,8 +169,9 @@ module.exports = (crowi) => {
 
   const validator = {
     getPage: [
-      query('id').if(value => value != null).isMongoId(),
-      query('path').if(value => value != null).isString(),
+      query('pageId').optional().isString(),
+      query('path').optional().isString(),
+      query('findAll').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -246,19 +247,23 @@ module.exports = (crowi) => {
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user } = req;
-    const { pageId, path } = req.query;
+    const { pageId, path, findAll } = req.query;
 
     if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
+      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
     }
 
     let page;
+    let pages;
     try {
       if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
+      else if (!findAll) {
+        page = await Page.findByPathAndViewer(path, user, null, true);
+      }
       else {
-        page = await Page.findByPathAndViewer(path, user);
+        pages = await Page.findByPathAndViewer(path, user, null, false);
       }
     }
     catch (err) {
@@ -266,22 +271,24 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    if (page == null) {
+    if (page == null && (pages == null || pages.length === 0)) {
       return res.apiv3Err('Page is not found', 404);
     }
 
-    try {
-      page.initLatestRevisionField();
+    if (page != null) {
+      try {
+        page.initLatestRevisionField();
 
-      // populate
-      page = await page.populateDataToShowRevision();
-    }
-    catch (err) {
-      logger.error('populate-page-failed', err);
-      return res.apiv3Err(err, 500);
+        // populate
+        page = await page.populateDataToShowRevision();
+      }
+      catch (err) {
+        logger.error('populate-page-failed', err);
+        return res.apiv3Err(err, 500);
+      }
     }
 
-    return res.apiv3({ page });
+    return res.apiv3({ page, pages });
   });
 
   /**
