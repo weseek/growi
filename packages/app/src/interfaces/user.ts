@@ -3,15 +3,19 @@ import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
 
 export type IUser = {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
+  name: string,
+  username: string,
+  email: string,
+  password: string,
   image?: string, // for backward conpatibility
   imageAttachment?: Ref<IAttachment>,
-  imageUrlCached: string;
+  imageUrlCached: string,
   isGravatarEnabled: boolean,
-  admin: boolean;
+  admin: boolean,
+  apiToken?: string,
+  isEmailPublished: boolean,
+  lang: string,
+  slackMemberId?: string,
 }
 
 export type IUserGroupRelation = {
