@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import Xss from '~/services/xss';
 
 import { IGraphViewer } from './graph-viewer';
@@ -10,4 +11,5 @@ export type CustomWindow = Window
                          & { xss: Xss }
                          & { interceptorManager: IInterceptorManager }
                          & { globalEmitter: EventEmitter }
-                         & { GraphViewer: IGraphViewer };
+                         & { GraphViewer: IGraphViewer }
+                         & { growiRenderer: GrowiRenderer };
