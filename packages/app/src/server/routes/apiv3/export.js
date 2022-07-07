@@ -169,7 +169,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, addActivity, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, addActivity, (req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 
