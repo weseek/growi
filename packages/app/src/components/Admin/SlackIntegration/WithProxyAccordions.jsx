@@ -9,7 +9,7 @@ import { Tooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -234,7 +234,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 }, [AppContainer]);
 
 const TestProcess = ({
-  apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
+  slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
 }) => {
 
   const { t } = useTranslation();
@@ -353,7 +353,6 @@ const WithProxyAccordions = (props) => {
     '④': {
       title: 'test_connection',
       content: <TestProcess
-        apiv3Post={props.apiv3Post}
         slackAppIntegrationId={props.slackAppIntegrationId}
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
@@ -397,7 +396,6 @@ const WithProxyAccordions = (props) => {
     '⑥': {
       title: 'test_connection',
       content: <TestProcess
-        apiv3Post={props.apiv3Post}
         slackAppIntegrationId={props.slackAppIntegrationId}
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}

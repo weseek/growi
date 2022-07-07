@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
+import ExtensibleCustomError from 'extensible-custom-error';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -57,6 +58,13 @@ const logger = loggerFactory('growi:pages:all');
 const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
+
+const IdenticalPathPage = (): JSX.Element => {
+  const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+  return <IdenticalPathPage />;
+};
+
+
 type Props = CommonProps & {
   currentUser: string,
 
@@ -67,6 +75,7 @@ type Props = CommonProps & {
 
   // shareLinkId?: string;
 
+  isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
   // isAbleToDeleteCompletely: boolean,
@@ -216,14 +225,24 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
 
           <div className="row">
-            <div className="col grw-page-content-container">
+            <div className="col">
               <div id="content-main" className="content-main grw-container-convertible">
-                {/* <PageAlerts /> */}
-                PageAlerts<br />
-                <DisplaySwitcher />
-                <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
-                {/* <PageStatusAlert /> */}
-                PageStatusAlert
+                { props.isIdenticalPathPage && <IdenticalPathPage /> }
+
+                { !props.isIdenticalPathPage && (
+                  <>
+                    {/* <PageAlerts /> */}
+                    PageAlerts<br />
+                    { props.isForbidden
+                      ? <>ForbiddenPage</>
+                      : <DisplaySwitcher />
+                    }
+                    <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
+                    {/* <PageStatusAlert /> */}
+                    PageStatusAlert
+                  </>
+                ) }
+
               </div>
             </div>
 
@@ -252,16 +271,38 @@ function getPageIdFromPathname(currentPathname: string): string | null {
   return _isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
 }
 
+class MultiplePagesHitsError extends ExtensibleCustomError {
+
+  pagePath: string;
+
+  constructor(pagePath: string) {
+    super(`MultiplePagesHitsError occured by '${pagePath}'`);
+    this.pagePath = pagePath;
+  }
+
+}
+
 async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
-  const { pageService } = crowi;
 
-  const { user } = req;
+  const Page = crowi.model('Page') as PageModel;
+  const { pageService } = crowi;
 
   const { currentPathname } = props;
   const pageId = getPageIdFromPathname(currentPathname);
+  const isPermalink = _isPermalink(currentPathname);
+
+  const { user } = req;
+
+  // check whether the specified page path hits to multiple pages
+  if (!isPermalink) {
+    const count = await Page.countByPathAndViewer(currentPathname, user, null, true);
+    if (count > 1) {
+      throw new MultiplePagesHitsError(currentPathname);
+    }
+  }
 
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
@@ -278,7 +319,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageWithMeta|null): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const Page = crowi.model('Page');
+  const Page = crowi.model('Page') as PageModel;
 
   const { currentPathname } = props;
   const pageId = getPageIdFromPathname(currentPathname);
@@ -286,15 +327,17 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   const page = pageWithMeta?.data;
 
-  if (page == null) {
+  if (props.isIdenticalPathPage) {
+    // TBD
+  }
+  else if (page == null) {
     props.isNotFound = true;
 
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
   }
-
-  if (page != null) {
+  else {
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
@@ -324,34 +367,12 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 //   }
 // }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
     appService, searchService, configManager, aclService, slackNotificationService, mailService,
   } = crowi;
-
-  const { user } = req;
-
-  const result = await getServerSideCommonProps(context);
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-  const pageWithMeta = await getPageData(context, props);
-
-  props.pageWithMetaStr = JSON.stringify(pageWithMeta);
-
-  injectRoutingInformation(context, props, pageWithMeta);
-
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -380,12 +401,51 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
-  // UI
-  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+}
+
+export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  const { user } = req;
+
+  const result = await getServerSideCommonProps(context);
+
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  if (!('props' in result)) {
+    throw new Error('invalid getSSP result');
+  }
+
+  const props: Props = result.props as Props;
+  let pageWithMeta;
+  try {
+    pageWithMeta = await getPageData(context, props);
+    props.pageWithMetaStr = JSON.stringify(pageWithMeta);
+  }
+  catch (err) {
+    if (err instanceof MultiplePagesHitsError) {
+      props.isIdenticalPathPage = true;
+    }
+    else {
+      throw err;
+    }
+  }
+
+  injectRoutingInformation(context, props, pageWithMeta);
+  injectServerConfigurations(context, props);
+
+  if (user != null) {
+    props.currentUser = JSON.stringify(user);
+  }
+
+  // UI
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
+
   return {
     props,
   };

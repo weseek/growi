@@ -15,8 +15,9 @@ import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
-import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
+import {
+  usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
+} from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
@@ -24,7 +25,6 @@ import loggerFactory from '~/utils/logger';
 
 import Item from './Item';
 import { ItemNode } from './ItemNode';
-
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 

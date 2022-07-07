@@ -2,21 +2,22 @@ import React, {
   FC,
   useCallback, useEffect, useState,
 } from 'react';
+
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, FootstampIcon } from '@growi/ui';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'next-i18next';
-
-import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
+import LinkedPagePath from '~/models/linked-page-path';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
-import LinkedPagePath from '~/models/linked-page-path';
+import FormattedDistanceDate from '../FormattedDistanceDate';
+
 import InfiniteScroll from './InfiniteScroll';
 
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
 

@@ -10,7 +10,6 @@ import { Provider } from 'unstated';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
@@ -57,9 +56,8 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
-const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, editorContainer, personalContainer,
+  appContainer, socketIoContainer, pageContainer, editorContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -95,8 +93,7 @@ Object.assign(componentMappings, {
 
   'page-timeline': <PageTimeline />,
 
-  'personal-setting': <PersonalSettings crowi={personalContainer} />,
-
+  'personal-setting': <PersonalSettings />,
   'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
