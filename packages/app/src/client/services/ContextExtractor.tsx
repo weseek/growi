@@ -20,6 +20,7 @@ import {
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion,
 } from '../../stores/context';
+import { useRendererSettings } from '~/stores/renderer';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -124,6 +125,12 @@ const ContextExtractorOnce: FC = () => {
   useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
   useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
   useGrowiVersion(configByContextHydrate.crowi.version);
+  useRendererSettings({
+    isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
+    isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
+    adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
+    isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
+  });
 
   // Page
   useCurrentCreatedAt(createdAt);
