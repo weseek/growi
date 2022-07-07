@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import md5 from 'md5';
 import mongoose from 'mongoose';
-import { RateLimiterMongo } from 'rate-limiter-flexible';
+import { IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
 
+import {
+  DEFAULT_DURATION_SEC, DEFAULT_MAX_REQUESTS, DEFAULT_USERS_PER_IP_PROSPECTION, IApiRateLimitConfig,
+} from '^/config/api-rate-limiter';
+
+import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
-import { generateApiRateLimitConfig } from '../util/api-rate-limit-config/generateApiRateLimitConfig';
+import { generateApiRateLimitConfig } from '../util/api-rate-limiter';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
@@ -15,13 +20,12 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
 // API_RATE_LIMIT_010_FOO_MAX_REQUESTS=10
 
-const defaultMaxPoints = 100;
-const defaultMaxRequests = 10;
-const defaultDuration = 1;
-const opts = {
+const POINTS_THRESHOLD = 100;
+
+const opts: IRateLimiterMongoOptions = {
   storeClient: mongoose.connection,
-  points: defaultMaxPoints, // set default value
-  duration: defaultDuration, // set default value
+  points: POINTS_THRESHOLD, // set default value
+  duration: DEFAULT_DURATION_SEC, // set default value
 };
 const rateLimiter = new RateLimiterMongo(opts);
 
@@ -33,19 +37,68 @@ const allRegExp = new RegExp(Object.keys(configWithRegExp).join('|'));
 const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(key));
 const valuesWithRegExp = Object.values(configWithRegExp);
 
-const consumePoints = async(rateLimiter: RateLimiterMongo, key: string, maxRequests: number) => {
-  const consumePoints = Math.floor(defaultMaxPoints / maxRequests);
+
+const _consumePoints = async(
+    method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
+) => {
+  if (key == null) {
+    return;
+  }
+
+  let maxRequests = DEFAULT_MAX_REQUESTS;
+
+  // use customizedConfig
+  if (customizedConfig != null && (customizedConfig.method.includes(method) || customizedConfig.method === 'ALL')) {
+    maxRequests = customizedConfig.maxRequests;
+  }
+
+  // multiply
+  if (maxRequestsMultiplier != null) {
+    maxRequests *= maxRequestsMultiplier;
+  }
+
+  const consumePoints = Math.floor(POINTS_THRESHOLD / maxRequests);
   await rateLimiter.consume(key, consumePoints);
 };
 
+/**
+ * consume per user per endpoint
+ * @param method
+ * @param key
+ * @param customizedConfig
+ * @returns
+ */
+const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+  return _consumePoints(method, key, customizedConfig);
+};
+
+/**
+ * consume per ip per endpoint
+ * @param method
+ * @param key
+ * @param customizedConfig
+ * @returns
+ */
+const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+  const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
+  return _consumePoints(method, key, customizedConfig, maxRequestsMultiplier);
+};
+
+
 module.exports = () => {
 
-  return async(req: Request, res: Response, next: NextFunction) => {
+  return async(req: Request & { user?: IUserHasId }, res: Response, next: NextFunction) => {
 
     const endpoint = req.path;
-    const key = md5(`${req.ip}_${endpoint}_${req.method}`);
 
-    let customizedConfig;
+    // determine keys
+    const keyForUser: string | null = req.user != null
+      ? md5(`${req.user._id}_${endpoint}_${req.method}`)
+      : null;
+    const keyForIp: string = md5(`${req.ip}_${endpoint}_${req.method}`);
+
+    // determine customized config
+    let customizedConfig: IApiRateLimitConfig | undefined;
     const configForEndpoint = configWithoutRegExp[endpoint];
     if (configForEndpoint) {
       customizedConfig = configForEndpoint;
@@ -58,23 +111,26 @@ module.exports = () => {
       });
     }
 
+    // check for the current user
+    if (req.user != null) {
+      try {
+        await consumePointsByUser(req.method, keyForUser, customizedConfig);
+      }
+      catch {
+        logger.error(`${req.user._id}: too many request at ${endpoint}`);
+        return res.sendStatus(429);
+      }
+    }
+
+    // check for ip
     try {
-      if (customizedConfig === undefined) {
-        await consumePoints(rateLimiter, key, defaultMaxRequests);
-        return next();
-      }
-
-      if (customizedConfig.method.includes(req.method) || customizedConfig.method === 'ALL') {
-        await consumePoints(rateLimiter, key, customizedConfig.maxRequests);
-        return next();
-      }
-
-      await consumePoints(rateLimiter, key, defaultMaxRequests);
-      return next();
+      await consumePointsByIp(req.method, keyForIp, customizedConfig);
     }
     catch {
       logger.error(`${req.ip}: too many request at ${endpoint}`);
       return res.sendStatus(429);
     }
+
+    return next();
   };
 };
