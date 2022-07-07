@@ -12,7 +12,6 @@ type Props = {
 
 const TagLabels:FC<Props> = (props: Props) => {
   const { tags, isGuestUser, tagsUpdateInvoked } = props;
-  console.log('TagLabels', tags);
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
