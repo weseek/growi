@@ -1,6 +1,7 @@
 import { IAttachment } from './attachment';
 import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
+import { Lang } from './lang';
 
 export type IUser = {
   name: string,
@@ -14,7 +15,7 @@ export type IUser = {
   admin: boolean,
   apiToken?: string,
   isEmailPublished: boolean,
-  lang: string,
+  lang: Lang,
   slackMemberId?: string,
 }
 
