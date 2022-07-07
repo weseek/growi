@@ -155,12 +155,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
       {revisionId != null && (
-        <div>
-          <SubscribeButton
-            status={pageInfo.subscriptionStatus}
-            onClick={subscribeClickhandler}
-          />
-        </div>
+        <SubscribeButton
+          status={pageInfo.subscriptionStatus}
+          onClick={subscribeClickhandler}
+        />
       )}
       {revisionId != null && (
         <LikeButtons
