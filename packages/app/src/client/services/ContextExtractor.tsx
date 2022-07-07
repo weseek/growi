@@ -17,7 +17,7 @@ import {
   useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
+  useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion,
 } from '../../stores/context';
@@ -151,7 +151,6 @@ const ContextExtractorOnce: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
-  useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsSearchPage(isSearchPage);
   useIsEmptyPage(isEmptyPage);
   useHasParent(hasParent);

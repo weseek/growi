@@ -5,8 +5,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { Nullable } from '~/interfaces/common';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
@@ -84,7 +84,7 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   targetPath: string
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
 }
 
