@@ -346,16 +346,19 @@ module.exports = function(crowi, app) {
     return validator;
   };
 
-  actions.export.download = (req, res) => {
+  actions.export.download = async(req, res) => {
     const { fileName } = req.params;
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
+    const { fileUploadService } = crowi;
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: `${fileName} is invalid. Do not use path like '../'.` });
     }
 
     try {
       const zipFile = exportService.getFile(fileName);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DOWNLOAD };
+      await crowi.activityService.createActivity(parameters);
       return res.download(zipFile);
     }
     catch (err) {
