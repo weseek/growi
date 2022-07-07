@@ -14,7 +14,7 @@ export default class XssOption {
 
   constructor(config: XssOptionConfig) {
     const recommendedWhitelist = require('~/services/xss/recommended-whitelist');
-    const initializedConfig = (config != null) ? config : {};
+    const initializedConfig: Partial<XssOptionConfig> = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
     this.tagWhiteList = initializedConfig.tagWhiteList || recommendedWhitelist.tags;
