@@ -314,10 +314,11 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
 
-  // populate
+  // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
+    props.isLatestRevision = page.isLatestRevision();
   }
 
   return result;
@@ -440,16 +441,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     else {
       throw err;
     }
-  }
-
-  // check revision
-  const isSpecifiedRevisionExist = await crowi.revisionService.isSpecifiedRevisionExist(revisionId);
-  const page = pageWithMeta?.data;
-  if (page == null || page.latestRevision == null || revisionId == null || !isSpecifiedRevisionExist) {
-    props.isLatestRevision = true;
-  }
-  else {
-    props.isLatestRevision = page.latestRevision.toString() === revisionId;
   }
 
   injectRoutingInformation(context, props, pageWithMeta);
