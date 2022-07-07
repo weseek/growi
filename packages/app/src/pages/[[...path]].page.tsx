@@ -76,7 +76,7 @@ type Props = CommonProps & {
   // redirectFrom?: string;
 
   // shareLinkId?: string;
-  isLatestRevision: boolean
+  isLatestRevision?: boolean
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
