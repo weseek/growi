@@ -126,6 +126,8 @@
   "UserGroup": "グループ",
   "ChildUserGroup": "子グループ",
   "UserGroup Management": "グループ管理",
+  "AuditLog": "監査ログ",
+  "AuditLog Settings": "監査ログ設定",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
   "Export Archive Data": "データアーカイブ",

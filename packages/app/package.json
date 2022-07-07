@@ -142,6 +142,7 @@
     "passport-twitter": "^1.0.4",
     "prom-client": "^13.0.0",
     "react-card-flip": "^1.0.10",
+    "react-datepicker": "^4.7.0",
     "react-dnd": "^14.0.5",
     "react-dnd-html5-backend": "^14.1.0",
     "react-image-crop": "^8.3.0",

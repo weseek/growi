@@ -35,6 +35,7 @@ module.exports = (crowi) => {
   routerForAdmin.use('/mongo', require('./mongo')(crowi));
   routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
   routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
+  routerForAdmin.use('/activity', require('./activity')(crowi));
 
   // auth
   routerForAuth.use('/logout', require('./logout')(crowi));

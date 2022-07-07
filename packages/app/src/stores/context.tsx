@@ -3,7 +3,9 @@ import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
+import { SupportedActionType } from '~/interfaces/activity';
+
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
@@ -136,10 +138,6 @@ export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<str
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
 };
 
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
@@ -169,6 +167,18 @@ export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boole
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+};
+
+export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+};
+
+export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+};
+
+export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
+  return useStaticSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
 };
 
 export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {

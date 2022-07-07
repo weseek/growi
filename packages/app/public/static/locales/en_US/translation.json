@@ -126,6 +126,8 @@
   "UserGroup": "UserGroup",
   "ChildUserGroup": "ChildUserGroup",
   "UserGroup Management": "UserGroup Management",
+  "AuditLog": "Audit Log",
+  "AuditLog Settings": "Audit Log Settings",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
   "Export Archive Data": "Export Archive Data",
