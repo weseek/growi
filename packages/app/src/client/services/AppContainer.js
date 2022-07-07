@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
 
-import GrowiRenderer from '~/services/renderer/growi-renderer';
+import GrowiRenderer, { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
 
 import { i18nFactory } from '../util/i18n';
 
@@ -27,7 +27,6 @@ export default class AppContainer extends Container {
 
     this.containerInstances = {};
     this.componentInstances = {};
-    this.rendererInstances = {};
   }
 
   /**
@@ -46,8 +45,6 @@ export default class AppContainer extends Container {
 
     this.isDocSaved = true;
 
-    this.originRenderer = new GrowiRenderer(this);
-
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
@@ -58,18 +55,21 @@ export default class AppContainer extends Container {
 
   initPlugins() {
     const growiPlugin = window.growiPlugin;
-    growiPlugin.installAll(this, this.originRenderer);
+    growiPlugin.installAll(this);
   }
 
   injectToWindow() {
     window.appContainer = this;
 
-    const originRenderer = this.getOriginRenderer();
-    window.growiRenderer = originRenderer;
+    window.growiRenderer = new GrowiRenderer(this.getConfig());
+
+    // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223
+    // Do not access this property from other than reveal.js plugins.
+    window.previewRenderer = generatePreviewRenderer();
 
     // backward compatibility
     window.crowi = this;
-    window.crowiRenderer = originRenderer;
+    window.crowiRenderer = window.growiRenderer;
     window.crowiPlugin = window.growiPlugin;
   }
 
@@ -125,28 +125,6 @@ export default class AppContainer extends Container {
    */
   getComponentInstance(id) {
     return this.componentInstances[id];
-  }
-
-  getOriginRenderer() {
-    return this.originRenderer;
-  }
-
-  /**
-   * factory method
-   */
-  getRenderer(mode) {
-    if (this.rendererInstances[mode] != null) {
-      return this.rendererInstances[mode];
-    }
-
-    const renderer = new GrowiRenderer(this, this.originRenderer);
-    // setup
-    renderer.initMarkdownItConfigurers(mode);
-    renderer.setup(mode);
-    // register
-    this.rendererInstances[mode] = renderer;
-
-    return renderer;
   }
 
 }
