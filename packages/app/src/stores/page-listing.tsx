@@ -1,10 +1,10 @@
 import useSWR, { SWRResponse } from 'swr';
-import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
+
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
