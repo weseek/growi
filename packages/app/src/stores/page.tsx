@@ -16,7 +16,7 @@ import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useShareLinkId,
+  useCurrentPageId, useCurrentPagePath,
 } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
@@ -97,11 +97,9 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
-  const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = shareLinkId == null ? [endpoint, pageId] : null;
-
+  const key = [endpoint, pageId];
 
   const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
     let tags: string[] = [];
