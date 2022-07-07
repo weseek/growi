@@ -168,7 +168,7 @@ module.exports = function(crowi, app) {
 
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
 
-  apiV1Router.get('/check_username'           , user.api.checkUsername);
+  // apiV1Router.get('/check-username'           , user.api.checkUsername);
   apiV1Router.get('/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
