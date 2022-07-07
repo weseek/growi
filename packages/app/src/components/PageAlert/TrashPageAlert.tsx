@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import {
-  useCurrentUpdatedAt, useIsTrashPage, useShareLinkId,
+  useIsTrashPage, useShareLinkId,
 } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
@@ -30,7 +30,6 @@ export const TrashPageAlert = (): JSX.Element => {
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  const { data: updatedAt } = useCurrentUpdatedAt();
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
@@ -99,7 +98,7 @@ export const TrashPageAlert = (): JSX.Element => {
           <br />
           <UserPicture user={{ username: lastUpdateUserName }} />
           <span className="ml-2">
-            Deleted by { lastUpdateUserName } at {deletedAt || updatedAt}
+            Deleted by { lastUpdateUserName } at {deletedAt || pageData?.updatedAt}
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">

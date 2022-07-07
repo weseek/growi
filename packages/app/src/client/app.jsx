@@ -31,7 +31,6 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
-import TrashPageAlert from '../components/Page/TrashPageAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
@@ -82,8 +81,6 @@ Object.assign(componentMappings, {
   'grw-page-status-alert-container': <PageStatusAlert />,
 
   'maintenance-mode-content': <MaintenanceModeContent />,
-
-  'trash-page-alert': <TrashPageAlert />,
 
   'trash-page-list-container': <TrashPageList />,
 
