@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { useRendererSettings } from '~/stores/renderer';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -19,9 +20,8 @@ import {
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useGrowiRendererConfig,
 } from '../../stores/context';
-import { useRendererSettings } from '~/stores/renderer';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -132,6 +132,17 @@ const ContextExtractorOnce: FC = () => {
     isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
     adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
     isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
+  });
+  useGrowiRendererConfig({
+    isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+    attrWhiteList: configByContextHydrate.attrWhiteList,
+    tagWhiteList: configByContextHydrate.tagWhiteList,
+    highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+    env: {
+      MATHJAX: configByContextHydrate.env.MATHJAX,
+      PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
+      BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
+    },
   });
 
   // Page
