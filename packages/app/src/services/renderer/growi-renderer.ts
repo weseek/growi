@@ -1,8 +1,8 @@
-
-
 import MarkdownIt from 'markdown-it';
 
-import { RendererSettings } from '~/interfaces/services/renderer';
+import { Nullable } from '~/interfaces/common'; // TODO: Remove this asap when the ContextExtractor is removed
+import { CustomWindow } from '~/interfaces/global';
+import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
 import CsvToTable from './PreProcessor/CsvToTable';
@@ -35,8 +35,6 @@ type MarkdownSettings = {
 
 export default class GrowiRenderer {
 
-  appContainer: any
-
   preProcessors: any[]
 
   postProcessors: any[]
@@ -47,25 +45,32 @@ export default class GrowiRenderer {
 
   markdownItConfigurers: any[]
 
+  growiRendererConfig: GrowiRendererConfig
+
+  pagePath?: Nullable<string>
+
   /**
    *
-   * @param {AppContainer} appContainer
-   * @param {GrowiRenderer} originRenderer
    * @param {string} mode
    */
-  constructor(appContainer?, originRenderer?) {
-    this.appContainer = appContainer;
+  constructor(growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>) {
+    this.growiRendererConfig = growiRendererConfig;
+    this.pagePath = pagePath;
 
-    if (originRenderer != null) {
-      this.preProcessors = originRenderer.preProcessors;
-      this.postProcessors = originRenderer.postProcessors;
+    if ((window as CustomWindow).growiRenderer != null) {
+      this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
+      this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
     }
     else {
       this.preProcessors = [
         new EasyGrid(),
         new Linker(),
         new CsvToTable(),
-        new XssFilter(appContainer),
+        new XssFilter({
+          isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
+          tagWhiteList: this.growiRendererConfig.tagWhiteList,
+          attrWhiteList: this.growiRendererConfig.attrWhiteList,
+        }),
       ];
       this.postProcessors = [
       ];
@@ -80,8 +85,6 @@ export default class GrowiRenderer {
   }
 
   init() {
-    const appContainer = this.appContainer;
-
     // init markdown-it
     this.md = new MarkdownIt({
       html: true,
@@ -92,15 +95,20 @@ export default class GrowiRenderer {
     this.isMarkdownItConfigured = false;
 
     this.markdownItConfigurers = [
-      new LinkerByRelativePathConfigurer(appContainer),
-      new TaskListsConfigurer(appContainer),
+      new TaskListsConfigurer(),
       new HeaderConfigurer(),
       new EmojiConfigurer(),
-      new MathJaxConfigurer(appContainer),
+      new MathJaxConfigurer(this.growiRendererConfig),
       new DrawioViewerConfigurer(),
-      new PlantUMLConfigurer(appContainer),
-      new BlockdiagConfigurer(appContainer),
+      new PlantUMLConfigurer(this.growiRendererConfig),
+      new BlockdiagConfigurer(this.growiRendererConfig),
     ];
+
+    if (this.pagePath != null) {
+      this.markdownItConfigurers.push(
+        new LinkerByRelativePathConfigurer(this.pagePath),
+      );
+    }
   }
 
   addConfigurers(configurers: any[]): void {
@@ -148,8 +156,7 @@ export default class GrowiRenderer {
   }
 
   codeRenderer(code, langExt) {
-    const config = this.appContainer.getConfig();
-    const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
+    const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
     let citeTag = '';
     let hljsLang = 'plaintext';
@@ -190,8 +197,9 @@ export default class GrowiRenderer {
 }
 
 
-export const generateViewRenderer = (rendererSettings: RendererSettings): GrowiRenderer => {
-  const renderer = new GrowiRenderer();
+// eslint-disable-next-line max-len
+export const generateViewRenderer = (rendererSettings: RendererSettings, growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
   // Add configurers for viewer
@@ -209,8 +217,8 @@ export const generateViewRenderer = (rendererSettings: RendererSettings): GrowiR
   return renderer;
 };
 
-export const generatePreviewRenderer = (): GrowiRenderer => {
-  const renderer = new GrowiRenderer();
+export const generatePreviewRenderer = (growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
   // Add configurers for preview
@@ -225,8 +233,8 @@ export const generatePreviewRenderer = (): GrowiRenderer => {
   return renderer;
 };
 
-const generateRendererWithTableConfigurer = (): GrowiRenderer => {
-  const renderer = new GrowiRenderer();
+const generateRendererWithTableConfigurer = (growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
   renderer.addConfigurers([
@@ -238,8 +246,9 @@ const generateRendererWithTableConfigurer = (): GrowiRenderer => {
   return renderer;
 };
 
-export const generateCommentPreviewRenderer = (rendererSettings: RendererSettings): GrowiRenderer => {
-  const renderer = generateRendererWithTableConfigurer();
+// eslint-disable-next-line max-len
+export const generateCommentPreviewRenderer = (rendererSettings: RendererSettings, growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+  const renderer = generateRendererWithTableConfigurer(growiRendererConfig, pagePath);
 
   renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
   renderer.configure();
