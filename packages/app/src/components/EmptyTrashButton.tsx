@@ -9,7 +9,7 @@ import {
   IPageInfo,
 } from '~/interfaces/page';
 import { useEmptyTrashModal } from '~/stores/modal';
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
 
 
 const EmptyTrashButton = () => {

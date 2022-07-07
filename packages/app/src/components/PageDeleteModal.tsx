@@ -2,6 +2,7 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -14,13 +15,11 @@ import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-
-import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 const logger = loggerFactory('growi:cli:PageDeleteModal');

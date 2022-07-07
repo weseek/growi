@@ -5,8 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
-import { useSWRxPagesByPath } from '~/stores/page-listing';
+import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
 import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';

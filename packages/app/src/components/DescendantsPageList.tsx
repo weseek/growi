@@ -12,9 +12,9 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
 import {
-  useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList, useDescendantsPageListForCurrentPathTermManager,
-} from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+  usePageTreeTermManager, useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
+  useSWRxPageInfoForList, useSWRxPageList,
+} from '~/stores/page-listing';
 
 import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';

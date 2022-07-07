@@ -13,8 +13,7 @@ import {
 import { IPageSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
-import { useSWRxPageInfoForList } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useSWRxPageInfoForList, usePageTreeTermManager } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
