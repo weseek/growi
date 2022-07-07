@@ -12,6 +12,8 @@ import PagePathNav from '../PagePathNav';
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
+import styles from './GrowiSubNavigation.module.scss';
+
 
 type Props = {
   page: Partial<IPageHasId>,
@@ -57,7 +59,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   return (
     <div className={
-      'grw-subnav d-flex align-items-center justify-content-between'
+      `grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between`
       + ` ${additionalClasses.join(' ')}`
       + ` ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}
     >

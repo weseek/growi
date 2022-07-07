@@ -7,6 +7,8 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { useCurrentUser, useHackmdUri } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
+import styles from './PageEditorModeManager.module.scss';
+
 /* eslint-disable react/prop-types */
 const PageEditorModeButtonWrapper = React.memo(({
   editorMode, isBtnDisabled, onClick, targetMode, icon, label, id,
@@ -63,7 +65,7 @@ function PageEditorModeManager(props) {
   return (
     <>
       <div
-        className="btn-group grw-page-editor-mode-manager"
+        className={`btn-group grw-page-editor-mode-manager ${styles['grw-subnav']}`}
         role="group"
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
