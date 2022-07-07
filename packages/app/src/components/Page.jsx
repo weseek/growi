@@ -148,7 +148,7 @@ class Page extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
+          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
         { !isGuestUser && (

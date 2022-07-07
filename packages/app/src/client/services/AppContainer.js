@@ -63,10 +63,6 @@ export default class AppContainer extends Container {
 
     window.growiRenderer = new GrowiRenderer(this.getConfig());
 
-    // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223
-    // Do not access this property from other than reveal.js plugins.
-    window.previewRenderer = generatePreviewRenderer();
-
     // backward compatibility
     window.crowi = this;
     window.crowiRenderer = window.growiRenderer;

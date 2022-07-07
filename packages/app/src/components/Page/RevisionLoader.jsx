@@ -6,6 +6,7 @@ import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useViewRenderer } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -134,7 +135,12 @@ RevisionLoader.propTypes = {
 
 const RevisionLoaderWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <RevisionLoader t={t} {...props} />;
+  const { data: growiRenderer } = useViewRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
+  return <RevisionLoader t={t} growiRenderer={growiRenderer} {...props} />;
 };
 
 export default RevisionLoaderWrapperFC;

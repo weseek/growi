@@ -12,4 +12,5 @@ export type CustomWindow = Window
                          & { interceptorManager: IInterceptorManager }
                          & { globalEmitter: EventEmitter }
                          & { GraphViewer: IGraphViewer }
-                         & { growiRenderer: GrowiRenderer };
+                         & { growiRenderer: GrowiRenderer }
+                         & { previewRenderer: GrowiRenderer }; // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223

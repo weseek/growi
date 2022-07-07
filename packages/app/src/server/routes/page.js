@@ -5,6 +5,7 @@ import urljoin from 'url-join';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -160,7 +161,6 @@ module.exports = function(crowi, app) {
 
   const activityEvent = crowi.event('activity');
 
-  const XssOption = require('~/services/xss/xssOption');
   const Xss = require('~/services/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
