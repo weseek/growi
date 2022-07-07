@@ -167,9 +167,71 @@ context('Access to sidebar', () => {
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type('screen');
-    });
-    cy.screenshot(`${ssPrefix}5-duplicate-page-from-tags`);
+    }).screenshot(`${ssPrefix}5-duplicate-page-from-tags`);
+
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.get('.modal-footer > button').click();
+    });
+    cy.reload();
+
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('.list-group-item').each(($row) => {
+        if($row.find('a').text() === '/screen'){
+          cy.wrap($row).within(() => {
+            cy.getByTestid('open-page-item-control-btn').click();
+          });
+        }
+      });
+    });
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('.list-group-item').each(($row) => {
+        if($row.find('a').text() === '/screen'){
+          cy.wrap($row).within(() => {
+            cy.getByTestid('open-page-move-rename-modal-btn').click();
+          });
+        }
+      });
+    });
+
+    cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
+      cy.get('.rbt-input-main').clear().type('/vrt', {force: true});
+    }).screenshot(`${ssPrefix}6-rename-page-from-tag`);
+
+    cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
+      cy.get('.modal-footer > button').click();
+    });
+
+    cy.reload();
+
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('.list-group-item').each(($row) => {
+        if($row.find('a').text() === '/vrt'){
+          cy.wrap($row).within(() => {
+            cy.getByTestid('open-page-item-control-btn').click();
+          });
+        }
+      });
+    });
+    cy.getByTestid('search-result-list').within(() => {
+      cy.get('.list-group-item').each(($row) => {
+        if($row.find('a').text() === '/vrt'){
+          cy.wrap($row).within(() => {
+            cy.getByTestid('open-page-delete-modal-btn').click();
+          });
+        }
+      });
+    });
+    cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}7-delete-page-from-tag`);
+
+    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.get('.modal-footer > button').click();
     });
   });
