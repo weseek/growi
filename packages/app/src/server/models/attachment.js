@@ -39,7 +39,7 @@ module.exports = function(crowi) {
     attachmentType: {
       type: String,
       enum: AttachmentType,
-      default: AttachmentType.WIKI_PAGE,
+      required: true,
     },
   }, {
     timestamps: { createdAt: true, updatedAt: false },

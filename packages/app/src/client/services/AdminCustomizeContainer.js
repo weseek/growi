@@ -61,6 +61,7 @@ export default class AdminCustomizeContainer extends Container {
     this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
     this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
     this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
+
   }
 
   /**
@@ -97,6 +98,7 @@ export default class AdminCustomizeContainer extends Container {
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
       });
+
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }

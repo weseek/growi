@@ -1,7 +1,5 @@
 import loggerFactory from '~/utils/logger';
 
-import { AttachmentType } from '../interfaces/attachment';
-
 const fs = require('fs');
 
 const mongoose = require('mongoose');
@@ -18,7 +16,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType = AttachmentType.WIKI_PAGE) {
+  async createAttachment(file, user, pageId = null, attachmentType) {
     const { fileUploadService } = this.crowi;
 
     // check limit
