@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it';
 
+import { RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
 import CsvToTable from './PreProcessor/CsvToTable';
@@ -21,9 +22,29 @@ import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-hand
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
+
 const logger = loggerFactory('growi:util:GrowiRenderer');
 
+// hljs is configured via webpack?
+declare const hljs;
+
+type MarkdownSettings = {
+  breaks?: boolean,
+};
+
 export default class GrowiRenderer {
+
+  appContainer: any
+
+  preProcessors: any[]
+
+  postProcessors: any[]
+
+  md: any
+
+  isMarkdownItConfigured: boolean
+
+  markdownItConfigurers: any[]
 
   /**
    *
@@ -31,7 +52,7 @@ export default class GrowiRenderer {
    * @param {GrowiRenderer} originRenderer
    * @param {string} mode
    */
-  constructor(appContainer, originRenderer) {
+  constructor(appContainer?, originRenderer?) {
     this.appContainer = appContainer;
 
     if (originRenderer != null) {
@@ -49,13 +70,15 @@ export default class GrowiRenderer {
       ];
     }
 
-    this.initMarkdownItConfigurers = this.initMarkdownItConfigurers.bind(this);
-    this.setup = this.setup.bind(this);
+    this.init = this.init.bind(this);
+    this.addConfigurers = this.addConfigurers.bind(this);
+    this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
+    this.configure = this.configure.bind(this);
     this.process = this.process.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
   }
 
-  initMarkdownItConfigurers(mode) {
+  init() {
     const appContainer = this.appContainer;
 
     // init markdown-it
@@ -77,56 +100,17 @@ export default class GrowiRenderer {
       new PlantUMLConfigurer(appContainer),
       new BlockdiagConfigurer(appContainer),
     ];
-
-    // add configurers according to mode
-    switch (mode) {
-      case 'page': {
-        this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(),
-          new TocAndAnchorConfigurer(),
-          new HeaderLineNumberConfigurer(),
-          new HeaderWithEditLinkConfigurer(),
-          new TableWithHandsontableButtonConfigurer(),
-        ]);
-        break;
-      }
-      case 'editor':
-        this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(),
-          new HeaderLineNumberConfigurer(),
-          new TableConfigurer(),
-        ]);
-        break;
-      // case 'comment':
-      //   break;
-      default:
-        this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(),
-        ]);
-        break;
-    }
   }
 
-  /**
-   * setup with crowi config
-   */
-  setup(mode) {
-    const crowiConfig = this.appContainer.config;
+  addConfigurers(configurers: any[]): void {
+    this.markdownItConfigurers.push(...configurers);
+  }
 
-    let isEnabledLinebreaks;
-    switch (mode) {
-      case 'comment':
-        isEnabledLinebreaks = crowiConfig.isEnabledLinebreaksInComments;
-        break;
-      default:
-        isEnabledLinebreaks = crowiConfig.isEnabledLinebreaks;
-        break;
-    }
+  setMarkdownSettings(settings: MarkdownSettings): void {
+    this.md.set(settings);
+  }
 
-    this.md.set({
-      breaks: isEnabledLinebreaks,
-    });
-
+  configure(): void {
     if (!this.isMarkdownItConfigured) {
       this.markdownItConfigurers.forEach((configurer) => {
         configurer.configure(this.md);
@@ -202,7 +186,61 @@ export default class GrowiRenderer {
     return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
   }
 
-  highlightCode(code, lang) {
-  }
-
 }
+
+export const generateViewRenderer = (rendererSettings: RendererSettings): GrowiRenderer => {
+  const renderer = new GrowiRenderer();
+  renderer.init();
+
+  // Add configurers for viewer
+  renderer.addConfigurers([
+    new FooternoteConfigurer(),
+    new TocAndAnchorConfigurer(),
+    new HeaderLineNumberConfigurer(),
+    new HeaderWithEditLinkConfigurer(),
+    new TableWithHandsontableButtonConfigurer(),
+  ]);
+
+  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
+  renderer.configure();
+
+  return renderer;
+};
+
+export const generatePreviewRenderer = (): GrowiRenderer => {
+  const renderer = new GrowiRenderer();
+  renderer.init();
+
+  // Add configurers for preview
+  renderer.addConfigurers([
+    new FooternoteConfigurer(),
+    new HeaderLineNumberConfigurer(),
+    new TableConfigurer(),
+  ]);
+
+  renderer.configure();
+
+  return renderer;
+};
+
+const generateRendererWithTableConfigurer = (): GrowiRenderer => {
+  const renderer = new GrowiRenderer();
+  renderer.init();
+
+  renderer.addConfigurers([
+    new TableConfigurer(),
+  ]);
+
+  renderer.configure();
+
+  return renderer;
+};
+
+export const generateCommentPreviewRenderer = (rendererSettings: RendererSettings): GrowiRenderer => {
+  const renderer = generateRendererWithTableConfigurer();
+
+  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
+  renderer.configure();
+
+  return renderer;
+};
