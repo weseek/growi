@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -420,8 +419,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { crowi, user } = req;
   const { revisionId } = req.query;
 
-  const Revision = crowi.model('Revision');
-
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -446,7 +443,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   // check revision
-  const isSpecifiedRevisionExist = isValidObjectId(revisionId) ? await Revision.exists({ _id: revisionId }) : false;
+  const isSpecifiedRevisionExist = await crowi.revisionService.isSpecifiedRevisionExist(revisionId);
   const page = pageWithMeta?.data;
   if (page == null || page.latestRevision == null || revisionId == null || !isSpecifiedRevisionExist) {
     props.isLatestRevision = true;
