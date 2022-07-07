@@ -7,7 +7,6 @@ on:
       - rc/**
       - chore/**
       - support/prepare-v**
-      - support/apply-nextjs-2
     paths:
       - .github/workflows/ci-app.yml
       - .eslint*

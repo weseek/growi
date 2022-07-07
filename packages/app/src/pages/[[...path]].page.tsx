@@ -5,6 +5,7 @@ import ExtensibleCustomError from 'extensible-custom-error';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,7 +13,6 @@ import { useRouter } from 'next/router';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
-import { isPopulated } from '~/interfaces/common';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -21,7 +21,6 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IPageWithMeta } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
-import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
@@ -29,6 +28,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -52,7 +52,9 @@ import {
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
+import {
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+} from './commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -415,12 +417,24 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   };
 }
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi, user } = req;
   const { revisionId } = req.query;
 
   const result = await getServerSideCommonProps(context);
+
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
@@ -445,6 +459,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   injectRoutingInformation(context, props, pageWithMeta);
   injectServerConfigurations(context, props);
+  injectNextI18NextConfigurations(context, props, ['translation']);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user);

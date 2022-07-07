@@ -1,8 +1,11 @@
 import { DevidedPagePath } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
+import { SSRConfig, UserConfig } from 'next-i18next';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { Lang } from '~/interfaces/lang';
+
+import * as nextI18NextConfig from '../next-i18next.config';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -13,7 +16,7 @@ export type CommonProps = {
   customTitleTemplate: string,
   csrfToken: string,
   growiVersion: string,
-}
+} & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
@@ -39,6 +42,25 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   };
 
   return { props };
+};
+
+export const getNextI18NextConfig = async(
+    // 'serverSideTranslations' method should be given from Next.js Page
+    //  because importing it in this file causes https://github.com/isaachinman/next-i18next/issues/1545
+    serverSideTranslations: (initialLocale: string, namespacesRequired?: string[] | undefined, configOverride?: UserConfig | null) => Promise<SSRConfig>,
+    context: GetServerSidePropsContext, namespacesRequired?: string[] | undefined,
+): Promise<SSRConfig> => {
+
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi, user } = req;
+  const { configManager } = crowi;
+
+  // determine language
+  const locale = user?.lang
+    ?? configManager.getConfig('crowi', 'app:globalLang') as Lang
+    ?? Lang.en_US;
+
+  return serverSideTranslations(locale, namespacesRequired ?? ['translation'], nextI18NextConfig);
 };
 
 /**
