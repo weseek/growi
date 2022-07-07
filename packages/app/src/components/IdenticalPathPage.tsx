@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'next-i18next';
 
 import { DevidedPagePath } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
-import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPagesByPath } from '~/stores/page-listing';
 
 import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';
@@ -47,28 +47,20 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 };
 
 
-type IdenticalPathPageProps= {
-  // add props and types here
-}
-
-
-const jsonNull = 'null';
-
-const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
+export const IdenticalPathPage = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const identicalPageDocument = document.getElementById('identical-path-page');
-  const pages = JSON.parse(identicalPageDocument?.getAttribute('data-identical-path-pages') || jsonNull) as IPageHasId[];
-
-  const pageIds = pages.map(page => page._id) as string[];
-
 
   const { data: currentPath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
+  const { data: pages } = useSWRxPagesByPath(currentPath);
+  const { injectTo } = useSWRxPageInfoForList(null, currentPath, true, true);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+
+  if (pages == null) {
+    return <></>;
+  }
 
   const injectedPages = injectTo(pages);
 
@@ -118,5 +110,3 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
     </div>
   );
 };
-
-export default IdenticalPathPage;

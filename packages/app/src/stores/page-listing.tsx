@@ -1,5 +1,8 @@
 import useSWR, { SWRResponse } from 'swr';
 
+import { Nullable } from '~/interfaces/common';
+import { IPageHasId } from '~/interfaces/page';
+
 import { apiv3Get } from '../client/util/apiv3-client';
 import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
@@ -7,6 +10,13 @@ import {
 
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
+export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
+  const findAll = true;
+  return useSWR<IPageHasId[], Error>(
+    path != null ? ['/page', path, findAll] : null,
+    (endpoint, path, findAll) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
+  );
+};
 
 export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
   return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');

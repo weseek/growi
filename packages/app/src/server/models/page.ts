@@ -60,6 +60,7 @@ export interface PageModel extends Model<PageDocument> {
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<PageDocument[]>
+  countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
@@ -566,6 +567,19 @@ schema.statics.findByPathAndViewer = async function(
   }
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await queryBuilder.addViewerCondition(user, userGroups);
+
+  return queryBuilder.query.exec();
+};
+
+schema.statics.countByPathAndViewer = async function(path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const baseQuery = this.count({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
   await queryBuilder.addViewerCondition(user, userGroups);
