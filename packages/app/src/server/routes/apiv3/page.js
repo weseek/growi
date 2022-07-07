@@ -169,8 +169,8 @@ module.exports = (crowi) => {
 
   const validator = {
     getPage: [
-      query('id').if(value => value != null).isMongoId(),
-      query('path').if(value => value != null).isString(),
+      query('pageId').optional().isString(),
+      query('path').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
