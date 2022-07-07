@@ -324,34 +324,12 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 //   }
 // }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
     appService, searchService, configManager, aclService, slackNotificationService, mailService,
   } = crowi;
-
-  const { user } = req;
-
-  const result = await getServerSideCommonProps(context);
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-  const pageWithMeta = await getPageData(context, props);
-
-  props.pageWithMetaStr = JSON.stringify(pageWithMeta);
-
-  injectRoutingInformation(context, props, pageWithMeta);
-
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -380,12 +358,39 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
-  // UI
-  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+}
+
+export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  const { user } = req;
+
+  const result = await getServerSideCommonProps(context);
+
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  if (!('props' in result)) {
+    throw new Error('invalid getSSP result');
+  }
+
+  const props: Props = result.props as Props;
+  const pageWithMeta = await getPageData(context, props);
+
+  injectRoutingInformation(context, props, pageWithMeta);
+  injectServerConfigurations(context, props);
+
+  if (user != null) {
+    props.currentUser = JSON.stringify(user);
+  }
+
+  // UI
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
+
   return {
     props,
   };
