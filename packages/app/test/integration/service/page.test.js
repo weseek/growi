@@ -442,7 +442,7 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
 
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename1, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
@@ -455,7 +455,7 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
 
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename2, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.updatedAt).toEqual(dateToUse);
@@ -467,7 +467,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename3, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
@@ -480,7 +480,7 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename4, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed4');
         expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);

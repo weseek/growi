@@ -1,6 +1,10 @@
+import { SupportedAction } from '~/interfaces/activity';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+
 import { IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
@@ -10,8 +14,13 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
   const inAppNotificationService = crowi.inAppNotificationService;
+
   const User = crowi.model('User');
+
+  const activityEvent = crowi.event('activity');
 
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
@@ -101,11 +110,14 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, addActivity, async(req, res) => {
     const user = req.user;
 
     try {
       await inAppNotificationService.updateAllNotificationsAsOpened(user);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_IN_APP_NOTIFICATION_ALL_STATUSES_OPEN });
+
       return res.apiv3();
     }
     catch (err) {

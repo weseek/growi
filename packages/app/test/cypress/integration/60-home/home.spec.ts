@@ -33,14 +33,12 @@ context('Access User settings', () => {
     });
     // collapse sidebar
     cy.collapseSidebar(true);
-  });
-
-  it('Update settings', () => {
     cy.visit('/me');
-
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+  });
 
+  it('Access User information', () => {
     // User information
     cy.getByTestid('grw-user-settings').should('be.visible');
     cy.screenshot(`${ssPrefix}-user-information-1`);
@@ -50,8 +48,9 @@ context('Access User settings', () => {
 
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
     cy.get('.toast').should('not.exist');
+  });
 
-    // Access External account
+  it('Access External account', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(1) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-external-account-1`);
@@ -67,8 +66,9 @@ context('Access User settings', () => {
     cy.screenshot(`${ssPrefix}-external-account-4`);
 
     cy.get('.toast').should('not.exist');
+  });
 
-    // Access Password setting
+  it('Access Password setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(2) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-password-settings-1`);
@@ -78,8 +78,9 @@ context('Access User settings', () => {
 
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
     cy.get('.toast').should('not.exist');
+  });
 
-    // Access API setting
+  it('Access API setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(3) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-api-setting-1`);
@@ -90,8 +91,9 @@ context('Access User settings', () => {
 
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
     cy.get('.toast').should('not.exist');
+  });
 
-    // Access Editor setting
+  it('Access Editor setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(4) a').click();
     cy.scrollTo('top');
     cy.getByTestid('grw-editor-settings').should('be.visible');
@@ -102,8 +104,9 @@ context('Access User settings', () => {
 
     cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
     cy.get('.toast').should('not.exist');
+  });
 
-    // Access In-app notification setting
+  it('Access In-app notification setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(5) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-1`);
@@ -111,5 +114,4 @@ context('Access User settings', () => {
     cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-2`);
   });
-
 });
