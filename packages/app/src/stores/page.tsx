@@ -100,14 +100,10 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
   const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = [endpoint, pageId, shareLinkId];
+  const key = shareLinkId == null ? [endpoint, pageId] : null;
 
 
-  const fetcher = async(endpoint: string, pageId: Nullable<string>, shareLinkId: Nullable<string>) => {
-    if (shareLinkId != null) {
-      return;
-    }
-
+  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
     let tags: string[] = [];
     // when the page exists
     if (pageId != null) {
