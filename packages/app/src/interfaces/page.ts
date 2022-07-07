@@ -31,6 +31,7 @@ export interface IPage {
   hasDraftOnHackmd: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
+  latestRevision?: Ref<IRevision>,
 }
 
 export const PageGrant = {
@@ -42,7 +43,7 @@ export const PageGrant = {
 };
 export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
-export type IPageHasId = IPage & HasObjectId & {latestRevision?: Ref<IRevision>};
+export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
