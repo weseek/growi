@@ -1,4 +1,4 @@
-import { ObjectIdLike } from './mongoose-utils';
+import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 
 export type IPageForResuming = {
   _id: ObjectIdLike,
