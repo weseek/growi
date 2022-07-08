@@ -65,7 +65,7 @@ function PageEditorModeManager(props) {
   return (
     <>
       <div
-        className={`btn-group grw-page-editor-mode-manager ${styles['grw-subnav']}`}
+        className={`btn-group grw-page-editor-mode-manager ${styles['grw-page-editor-mode-manager']}`}
         role="group"
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
