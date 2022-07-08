@@ -146,9 +146,9 @@ module.exports = function(crowi, app) {
   app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
   app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
-  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , admin.api.importDataFromEsa);
+  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , addActivity, admin.api.importDataFromEsa);
   app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.api.testEsaAPI);
-  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , admin.api.importDataFromQiita);
+  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.api.testQiitaAPI);
 
   // export management for admin
