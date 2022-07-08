@@ -58,7 +58,9 @@ const _consumePoints = async(
   }
 
   // for edge case
-  maxRequests += 1;
+  if (maxRequests % 2 === 0) {
+    maxRequests += 1;
+  }
 
   const consumePoints = POINTS_THRESHOLD / maxRequests;
   await rateLimiter.consume(key, consumePoints);
