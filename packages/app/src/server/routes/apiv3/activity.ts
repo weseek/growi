@@ -1,6 +1,5 @@
 import { parseISO, addMinutes, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
-import rateLimit from 'express-rate-limit';
 import { query } from 'express-validator';
 
 import { ISearchFilter } from '~/interfaces/activity';
@@ -24,13 +23,6 @@ const validator = {
   ],
 };
 
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // limit each IP to 30 requests per windowMs
-  message:
-    'Too many requests sent from this IP, please try again after 15 minutes.',
-});
-
 module.exports = (crowi: Crowi): Router => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -39,7 +31,7 @@ module.exports = (crowi: Crowi): Router => {
   const router = express.Router();
 
   // eslint-disable-next-line max-len
-  router.get('/', apiLimiter, accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const auditLogEnabled = crowi.configManager?.getConfig('crowi', 'app:auditLogEnabled') || false;
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';
