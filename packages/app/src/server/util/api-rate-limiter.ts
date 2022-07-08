@@ -1,14 +1,14 @@
-import { IApiRateLimitConfig } from '../../interfaces/api-rate-limit-config';
-
-import { defaultConfig, defaultConfigWithRegExp } from './defaultApiRateLimitConfig';
+import {
+  defaultConfig, defaultConfigWithRegExp, IApiRateLimitEndpointMap,
+} from '^/config/api-rate-limiter';
 
 const envVar = process.env;
 
 // https://regex101.com/r/aNDjmI/1
 const regExp = /^API_RATE_LIMIT_(\w+)_ENDPOINT(_WITH_REGEXP)?$/;
 
-const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targets: string[], withRegExp: boolean): IApiRateLimitConfig => {
-  const apiRateLimitConfig: IApiRateLimitConfig = {};
+const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targets: string[], withRegExp: boolean): IApiRateLimitEndpointMap => {
+  const apiRateLimitConfig: IApiRateLimitEndpointMap = {};
   targets.forEach((target) => {
 
     const endpointKey = withRegExp ? `API_RATE_LIMIT_${target}_ENDPOINT_WITH_REGEXP` : `API_RATE_LIMIT_${target}_ENDPOINT`;
@@ -39,8 +39,8 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targe
 };
 
 type ApiRateLimitConfigResult = {
-  'withoutRegExp': IApiRateLimitConfig,
-  'withRegExp': IApiRateLimitConfig
+  'withoutRegExp': IApiRateLimitEndpointMap,
+  'withRegExp': IApiRateLimitEndpointMap
 }
 
 export const generateApiRateLimitConfig = (): ApiRateLimitConfigResult => {

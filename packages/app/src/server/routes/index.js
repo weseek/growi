@@ -57,14 +57,14 @@ module.exports = function(crowi, app) {
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
+  // API rate limiter
+  app.use(apiRateLimiter);
+
   // API v3 for admin
   app.use('/_api/v3', apiV3AdminRouter);
 
   // API v3 for auth
   app.use('/_api/v3', apiV3AuthRouter);
-
-  // API rate limiter
-  app.use(apiRateLimiter);
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
