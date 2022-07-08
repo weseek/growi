@@ -111,9 +111,7 @@ module.exports = () => {
     else if (allRegExp.test(endpoint)) {
       keysWithRegExp.forEach((key, index) => {
         if (key.test(endpoint)) {
-          logger.info(`endpoint: ${endpoint}`);
           customizedConfig = valuesWithRegExp[index];
-          logger.info(`customizedConfig max: ${customizedConfig.maxRequests}`);
         }
       });
     }
