@@ -34,7 +34,7 @@ const apiRateLimitConfig = generateApiRateLimitConfig();
 const configWithoutRegExp = apiRateLimitConfig.withoutRegExp;
 const configWithRegExp = apiRateLimitConfig.withRegExp;
 const allRegExp = new RegExp(Object.keys(configWithRegExp).join('|'));
-const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(key));
+const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(`^${key}`));
 const valuesWithRegExp = Object.values(configWithRegExp);
 
 
@@ -111,7 +111,9 @@ module.exports = () => {
     else if (allRegExp.test(endpoint)) {
       keysWithRegExp.forEach((key, index) => {
         if (key.test(endpoint)) {
+          logger.info(`endpoint: ${endpoint}`);
           customizedConfig = valuesWithRegExp[index];
+          logger.info(`customizedConfig max: ${customizedConfig.maxRequests}`);
         }
       });
     }
