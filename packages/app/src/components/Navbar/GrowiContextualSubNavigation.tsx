@@ -17,7 +17,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -178,9 +178,9 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: templateTagData } = useTemplateTagData();
 
-  // const mainContent = document.querySelector('#content-main');
-  const templateTagData = document.querySelector('#content-main')?.getAttribute('data-template-tags') || null;
+  // const templateTagData = document.querySelector('#content-main')?.getAttribute('data-template-tags') || null;
 
 
   useEffect(() => {

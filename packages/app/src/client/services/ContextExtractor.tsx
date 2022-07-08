@@ -15,7 +15,7 @@ import {
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
   useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion, useAuditLogEnabled,
@@ -80,7 +80,7 @@ const ContextExtractorOnce: FC = () => {
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
   const hasParent = JSON.parse(mainContent?.getAttribute('data-has-parent') || jsonNull);
-  // const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
+  const templateTagData = mainContent?.getAttribute('data-template-tags') || null;
   const shareLinksNumber = mainContent?.getAttribute('data-share-links-number');
   const shareLinkId = JSON.parse(mainContent?.getAttribute('data-share-link-id') || jsonNull);
   const revisionIdHackmdSynced = mainContent?.getAttribute('data-page-revision-id-hackmd-synced') || null;
@@ -149,7 +149,7 @@ const ContextExtractorOnce: FC = () => {
   useRevisionIdHackmdSynced(revisionIdHackmdSynced);
   useShareLinkId(shareLinkId);
   useShareLinksNumber(shareLinksNumber);
-  // useTemplateTagData(templateTagData);
+  useTemplateTagData(templateTagData);
   useCurrentUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
