@@ -26,6 +26,8 @@ import loggerFactory from '~/utils/logger';
 import Item from './Item';
 import { ItemNode } from './ItemNode';
 
+import styles from './ItemsTree.module.scss';
+
 const logger = loggerFactory('growi:cli:ItemsTree');
 
 /*
@@ -257,7 +259,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className="grw-pagetree list-group p-3" ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group p-3`} ref={rootElemRef}>
         <Item
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
