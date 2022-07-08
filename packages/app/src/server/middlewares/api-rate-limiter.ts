@@ -57,7 +57,7 @@ const _consumePoints = async(
     maxRequests *= maxRequestsMultiplier;
   }
 
-  const consumePoints = Math.floor(POINTS_THRESHOLD / maxRequests);
+  const consumePoints = Math.floor(maxRequests / POINTS_THRESHOLD);
   await rateLimiter.consume(key, consumePoints);
 };
 
