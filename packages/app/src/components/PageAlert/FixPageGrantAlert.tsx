@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -9,8 +9,8 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { PageGrant, IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
-import { useCurrentPageId, useCurrentUser, useHasParent } from '~/stores/context';
-import { useSWRxApplicableGrant, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
@@ -229,12 +229,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   );
 };
 
-const FixPageGrantAlert = (): JSX.Element => {
+export const FixPageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
-  const { data: pageId } = useCurrentPageId();
-  const { data: hasParent } = useHasParent();
+  const { data: pageData } = useSWRxCurrentPage();
+  const hasParent = pageData != null ? pageData.parent != null : false;
+  const pageId = pageData?._id;
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
@@ -242,6 +243,10 @@ const FixPageGrantAlert = (): JSX.Element => {
   const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null ? pageId : null);
 
   // Dependencies
+  if (pageData == null) {
+    return <></>;
+  }
+
   if (!hasParent) {
     return <></>;
   }
@@ -277,5 +282,3 @@ const FixPageGrantAlert = (): JSX.Element => {
     </>
   );
 };
-
-export default FixPageGrantAlert;

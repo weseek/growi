@@ -48,16 +48,8 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
-export const useEmptyPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('emptyPageId', initialData);
-};
-
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData);
-};
-
-export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
-  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData);
 };
 
 export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
@@ -136,14 +128,6 @@ export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nu
   return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
 };
 
-export const useCreator = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('creator', initialData);
-};
-
-export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
-};
-
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
@@ -190,6 +174,14 @@ export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number,
 
 export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('growiVersion', initialData);
+};
+
+export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isEnabledStaleNotification', initialData);
+};
+
+export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isLatestRevision', initialData);
 };
 
 

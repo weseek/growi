@@ -31,6 +31,7 @@ export interface IPage {
   hasDraftOnHackmd: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
+  latestRevision?: Ref<IRevision>,
 }
 
 export const PageGrant = {
@@ -53,6 +54,7 @@ export type IPageInfo = {
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
+  contentAge?: number,
 }
 
 export type IPageInfoForEntity = IPageInfo & {

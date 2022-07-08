@@ -10,8 +10,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-
-// import { PageAlerts } from '~/components/PageAlert/PageAlerts';
+import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -23,7 +22,8 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import Xss from '~/services/xss';
+import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -43,13 +43,14 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage,
+  useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
+  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
 } from '../stores/context';
+import { useXss } from '../stores/xss';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
@@ -77,6 +78,7 @@ type Props = CommonProps & {
   // redirectFrom?: string;
 
   // shareLinkId?: string;
+  isLatestRevision?: boolean
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -99,7 +101,7 @@ type Props = CommonProps & {
   // isAllReplyShown: boolean,
   // isContainerFluid: boolean,
   // editorConfig: any,
-  // isEnabledStaleNotification: boolean,
+  isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
@@ -122,6 +124,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
+  useXss(new Xss());
   // useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
@@ -135,6 +138,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useCurrentPagePath(props.currentPathname);
+  useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
@@ -143,7 +147,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
-  // useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -174,7 +178,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
 
@@ -234,8 +240,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
                 { !props.isIdenticalPathPage && (
                   <>
-                    {/* <PageAlerts /> */}
-                    PageAlerts<br />
+                    <PageAlerts />
                     { props.isForbidden
                       ? <>ForbiddenPage</>
                       : <DisplaySwitcher />
@@ -294,6 +299,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
   const { pageService } = crowi;
 
   const { currentPathname } = props;
+
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
 
@@ -310,10 +316,11 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
   const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
 
-  // populate
+  // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
+    props.isLatestRevision = page.isLatestRevision();
   }
 
   return result;
@@ -392,7 +399,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
-  // props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
+  props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   // props.editorConfig = {
@@ -423,7 +430,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
-
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);

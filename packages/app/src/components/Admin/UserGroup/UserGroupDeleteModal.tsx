@@ -1,6 +1,7 @@
 import React, {
   FC, useCallback, useState, useMemo,
 } from 'react';
+
 import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 import {
@@ -8,9 +9,7 @@ import {
 } from 'reactstrap';
 
 import { IUserGroupHasId } from '~/interfaces/user';
-import { CustomWindow } from '~/interfaces/global';
-import Xss from '~/services/xss';
-
+import { useXss } from '~/stores/xss';
 /**
  * Delete User Group Select component
  *
@@ -42,7 +41,7 @@ const actionForPages = {
 };
 
 const UserGroupDeleteModal: FC<Props> = (props: Props) => {
-  const xss: Xss = (window as CustomWindow).xss;
+  const { data: xss } = useXss();
 
   const { t } = useTranslation();
 
