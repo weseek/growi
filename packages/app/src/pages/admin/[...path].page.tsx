@@ -13,13 +13,13 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-import AdminHome from '~/components/Admin/AdminHome/AdminHome';
-import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
-import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
-import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
-import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
-import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
+// import AdminHome from '~/components/Admin/AdminHome/AdminHome';
+// import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+// import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
+// import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
+// import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
+// import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
+// import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 
@@ -48,59 +48,68 @@ type Props = CommonProps & {
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
+  console.log('AdminMarkdownSettingsPage_props', props)
+
   const { t } = useTranslation();
   const router = useRouter();
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
 
-  const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
+  // const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
-      component: <AdminHome
-        nodeVersion={props.nodeVersion}
-        npmVersion={props.npmVersion}
-        yarnVersion={props.yarnVersion}
-        installedPlugins={props.installedPlugins}
-      />,
+      // component: <AdminHome
+      //   nodeVersion={props.nodeVersion}
+      //   npmVersion={props.npmVersion}
+      //   yarnVersion={props.yarnVersion}
+      //   installedPlugins={props.installedPlugins}
+      // />,
+      component: <>AdminHome</>,
     },
     app: {
       title: useCustomTitle(props, t('App Settings')),
-      component: <AppSettingsPageContents />,
+      // component: <AppSettingsPageContents />,
+      component: <>AppSettingsPageContents</>,
     },
     security: {
       title: useCustomTitle(props, t('security_settings')),
-
-      component: <SecurityManagementContents />,
+      // component: <SecurityManagementContents />,
+      component: <>SecurityManagementContents</>,
     },
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
-      component: <MarkDownSettingContents />,
+      // component: <MarkDownSettingContents />,
+      component: <>MarkDownSettingContents</>,
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
-      component: <CustomizeSettingContents />,
+      // component: <CustomizeSettingContents />,
+      component: <>CustomizeSettingContents</>,
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
-      component: <DataImportPageContents />,
+      // component: <DataImportPageContents />,
+      component: <>DataImportPageContents</>,
     },
     export: {
       title: useCustomTitle(props, t('Export Archive Data')),
-      component: <ExportArchiveDataPage />,
+      // component: <ExportArchiveDataPage />,
+      component: <>ExportArchiveDataPage</>,
     },
     notification: {
       title: useCustomTitle(props, t('Notification Settings')),
-      component: <></>,
+      component: <>notification</>,
     },
     'global-notification': {
       title: '',
-      component: <></>,
+      component: <>global-notification</>,
     },
     users: {
       title: useCustomTitle(props, t('User_Management')),
-      component: <UserManagement />,
+      // component: <UserManagement />,
+      component: <>UserManagement</>,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
@@ -108,7 +117,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
-      component: <ElasticsearchManagement />,
+      // component: <ElasticsearchManagement />,
+      component: <></>,
     },
   };
 
@@ -125,9 +135,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // useEnvVars(props.envVars);
 
   return (
-    <AdminLayout title={title} selectedNavOpt={name}>
-      {content.component}
-    </AdminLayout>
+    // <AdminLayout title={title} selectedNavOpt={name}>
+    //   {content.component}
+    // </AdminLayout>
+    <h1>Admin Page</h1>
   );
 };
 
