@@ -21,10 +21,10 @@ const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 60, // limit each IP to 60 requests per windowMs
   message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
+    'Too many requests sent from this IP, please try again after 1 minute',
 });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
@@ -106,7 +106,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailure);
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailure);
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
-  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
+  app.post('/passport/saml/callback'              , addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailure);
 
   app.post('/_api/login/testLdap'    , apiLimiter , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
@@ -144,12 +144,12 @@ module.exports = function(crowi, app) {
 
   // importer management for admin
   app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
-  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
-  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf , admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
+  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
   app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , addActivity, admin.api.importDataFromEsa);
-  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrf, admin.api.testEsaAPI);
+  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.api.testEsaAPI);
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , addActivity, admin.api.importDataFromQiita);
-  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, admin.api.testQiitaAPI);
+  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, addActivity, admin.api.testQiitaAPI);
 
   // export management for admin
   app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
@@ -184,15 +184,15 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
+  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, addActivity, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.add);
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
+  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, addActivity ,attachment.api.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, addActivity ,attachment.api.remove);
   apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 

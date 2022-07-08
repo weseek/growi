@@ -97,6 +97,7 @@ class LdapAuthTest extends React.Component {
               name="username"
               value={this.props.username}
               onChange={(e) => { this.props.onChangeUsername(e.target.value) }}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -109,6 +110,7 @@ class LdapAuthTest extends React.Component {
               name="password"
               value={this.props.password}
               onChange={(e) => { this.props.onChangePassword(e.target.value) }}
+              autoComplete="off"
             />
           </div>
         </div>

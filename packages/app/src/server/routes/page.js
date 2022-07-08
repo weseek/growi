@@ -174,7 +174,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -278,9 +278,6 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
-
-    const isPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
@@ -309,16 +306,20 @@ module.exports = function(crowi, app) {
     const pathOrId = req.params.id || path;
 
     let view;
+    let action;
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
       view = 'layout-growi/not_creatable';
+      action = SupportedAction.ACTION_PAGE_NOT_CREATABLE;
     }
     else if (req.isForbidden) {
       view = 'layout-growi/forbidden';
+      action = SupportedAction.ACTION_PAGE_FORBIDDEN;
     }
     else {
       view = 'layout-growi/not_found';
+      action = SupportedAction.ACTION_PAGE_NOT_FOUND;
 
       // retrieve templates
       if (req.user != null) {
@@ -345,6 +346,18 @@ module.exports = function(crowi, app) {
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
     await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -421,7 +434,7 @@ module.exports = function(crowi, app) {
         username: req.user?.username,
       },
     };
-    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
+    crowi.activityService.createActivity(parameters);
 
     return res.render(view, renderVars);
   }
@@ -484,13 +497,13 @@ module.exports = function(crowi, app) {
     const parameters = {
       ip:  req.ip,
       endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_PAGE_VIEW,
+      action: isUsersHomePage(path) ? SupportedAction.ACTION_PAGE_USER_HOME_VIEW : SupportedAction.ACTION_PAGE_VIEW,
       user: req.user?._id,
       snapshot: {
         username: req.user?.username,
       },
     };
-    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
+    crowi.activityService.createActivity(parameters);
 
     return res.render(view, renderVars);
   }
@@ -525,13 +538,30 @@ module.exports = function(crowi, app) {
     const revisionId = req.query.revision;
     const renderVars = {};
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
     if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       return res.render('layout-growi/forbidden');
     }
 
@@ -539,6 +569,9 @@ module.exports = function(crowi, app) {
 
     // check if share link is expired
     if (shareLink.isExpired()) {
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW });
+      crowi.activityService.createActivity(parameters);
+
       // page is not found
       return res.render('layout-growi/expired_shared_page', renderVars);
     }
@@ -560,6 +593,9 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
+
+    Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW });
+    crowi.activityService.createActivity(parameters);
 
     return res.render('layout-growi/shared_page', renderVars);
   };
@@ -681,7 +717,7 @@ module.exports = function(crowi, app) {
         username: req.user?.username,
       },
     };
-    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
+    crowi.activityService.createActivity(parameters);
     return redirector(req, res, next, path);
   };
 
@@ -698,7 +734,7 @@ module.exports = function(crowi, app) {
         username: req.user?.username,
       },
     };
-    crowi.activityService.createActivity(SupportedAction.ACTION_PAGE_VIEW, parameters);
+    crowi.activityService.createActivity(parameters);
 
     return redirector(req, res, next, path);
   };

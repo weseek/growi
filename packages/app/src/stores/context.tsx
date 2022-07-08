@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
@@ -136,10 +136,6 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
 
 export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
-};
-
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
