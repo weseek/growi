@@ -31,7 +31,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
-  const apiRateLimiter = require('../middlewares/api-rate-limiter')();
+  const rateLimiter = require('../middlewares/rate-limiter')();
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -59,8 +59,8 @@ module.exports = function(crowi, app) {
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
-  // API rate limiter
-  app.use(apiRateLimiter);
+  // Rate limiter
+  app.use(rateLimiter);
 
   // API v3 for admin
   app.use('/_api/v3', apiV3AdminRouter);

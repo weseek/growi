@@ -5,12 +5,12 @@ import { IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexibl
 
 import {
   DEFAULT_DURATION_SEC, DEFAULT_MAX_REQUESTS, DEFAULT_USERS_PER_IP_PROSPECTION, IApiRateLimitConfig,
-} from '^/config/api-rate-limiter';
+} from '^/config/rate-limiter';
 
 import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
-import { generateApiRateLimitConfig } from '../util/api-rate-limiter';
+import { generateApiRateLimitConfig } from '../util/rate-limiter';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');

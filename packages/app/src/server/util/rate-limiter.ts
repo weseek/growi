@@ -1,6 +1,6 @@
 import {
   defaultConfig, defaultConfigWithRegExp, IApiRateLimitEndpointMap,
-} from '^/config/api-rate-limiter';
+} from '^/config/rate-limiter';
 
 const envVar = process.env;
 
