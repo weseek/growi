@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -109,10 +109,15 @@ class PasswordResetModal extends React.Component {
 
 }
 
+const PasswordResetModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <PasswordResetModal t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const PasswordResetModalWrapper = withUnstatedContainers(PasswordResetModal, [AppContainer]);
+const PasswordResetModalWrapper = withUnstatedContainers(PasswordResetModalWrapperFC, [AppContainer]);
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -124,4 +129,4 @@ PasswordResetModal.propTypes = {
 
 };
 
-export default withTranslation()(PasswordResetModalWrapper);
+export default PasswordResetModalWrapper;

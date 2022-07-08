@@ -59,7 +59,7 @@ class Draft extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
+    const { interceptorManager } = window;
     await interceptorManager.process('prePreProcess', context)
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown, context);

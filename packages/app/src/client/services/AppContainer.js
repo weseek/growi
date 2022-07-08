@@ -1,6 +1,5 @@
 import { Container } from 'unstated';
 
-import InterceptorManager from '~/services/interceptor-manager';
 
 import GrowiRenderer from '../util/GrowiRenderer';
 import { i18nFactory } from '../util/i18n';
@@ -14,19 +13,15 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
-    // get csrf token from body element
-    // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
-    const body = document.querySelector('body');
-    this.csrfToken = body.dataset.csrftoken;
-
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
+    // init i18n
     const currentUserElem = document.getElementById('growi-current-user');
+    let userLocaleId;
     if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
+      const currentUser = JSON.parse(currentUserElem.textContent);
+      userLocaleId = currentUser?.lang;
     }
-
-    const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
@@ -52,8 +47,6 @@ export default class AppContainer extends Container {
 
     this.originRenderer = new GrowiRenderer(this);
 
-    this.interceptorManager = new InterceptorManager();
-
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
@@ -77,27 +70,6 @@ export default class AppContainer extends Container {
     window.crowi = this;
     window.crowiRenderer = originRenderer;
     window.crowiPlugin = window.growiPlugin;
-  }
-
-  get currentUserId() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser._id;
-  }
-
-  get currentUsername() {
-    if (this.currentUser == null) {
-      return null;
-    }
-    return this.currentUser.username;
-  }
-
-  /**
-   * @return {Object} window.Crowi (js/legacy/crowi.js)
-   */
-  getCrowiForJquery() {
-    return window.Crowi;
   }
 
   getConfig() {

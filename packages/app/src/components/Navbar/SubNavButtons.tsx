@@ -33,7 +33,7 @@ type CommonProps = {
 type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId: string,
+  revisionId: string | null,
   path?: string | null,
   pageInfo: IPageInfoAll,
 }
@@ -154,27 +154,31 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      <span>
+      {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
-      </span>
-      <LikeButtons
-        hideTotalNumber={isCompactMode}
-        onLikeClicked={likeClickhandler}
-        sumOfLikers={sumOfLikers}
-        isLiked={isLiked}
-        likers={likers}
-      />
-      <BookmarkButtons
-        hideTotalNumber={isCompactMode}
-        bookmarkCount={bookmarkCount}
-        isBookmarked={isBookmarked}
-        bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-        onBookMarkClicked={bookmarkClickHandler}
-      />
-      { !isCompactMode && (
+      )}
+      {revisionId != null && (
+        <LikeButtons
+          hideTotalNumber={isCompactMode}
+          onLikeClicked={likeClickhandler}
+          sumOfLikers={sumOfLikers}
+          isLiked={isLiked}
+          likers={likers}
+        />
+      )}
+      {revisionId != null && (
+        <BookmarkButtons
+          hideTotalNumber={isCompactMode}
+          bookmarkCount={bookmarkCount}
+          isBookmarked={isBookmarked}
+          bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
+          onBookMarkClicked={bookmarkClickHandler}
+        />
+      )}
+      {revisionId != null && !isCompactMode && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
@@ -212,7 +216,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  if (revisionId == null || error != null) {
+  if (error != null) {
     return <></>;
   }
 
@@ -220,13 +224,12 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-
   return (
     <SubNavButtonsSubstance
       {...props}
       pageInfo={pageInfo}
       pageId={pageId}
-      revisionId={revisionId}
+      revisionId={revisionId ?? null}
       path={path}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}

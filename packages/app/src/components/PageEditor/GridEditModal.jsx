@@ -1,11 +1,14 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
-import geu from './GridEditorUtil';
+
 import BootstrapGrid from '~/client/models/BootstrapGrid';
+
+import geu from './GridEditorUtil';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {
@@ -246,8 +249,13 @@ class GridEditModal extends React.Component {
 
 }
 
+const GridEditModalFc = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
+  return <GridEditModal t={t} ref={ref} {...props} />;
+});
+
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
-export default withTranslation('translation', { withRef: true })(GridEditModal);
+export default GridEditModalFc;

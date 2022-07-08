@@ -6,7 +6,6 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -16,11 +15,11 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision,
+  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -28,7 +27,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -39,7 +38,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath,
+  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -152,92 +151,11 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
-
-    // update
-    this.pageEvent.on('update', async(page, user) => {
-
-      this.pageEvent.onUpdate();
-
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // rename
-    this.pageEvent.on('rename', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // duplicate
-    this.pageEvent.on('duplicate', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete
-    this.pageEvent.on('delete', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // revert
-    this.pageEvent.on('revert', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // likes
-    this.pageEvent.on('like', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // bookmark
-    this.pageEvent.on('bookmark', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
   }
 
-  canDeleteCompletely(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) return false;
+
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
@@ -246,7 +164,9 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(creatorId: ObjectIdLike, operator, isRecursively: boolean): boolean {
+  canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) return false;
+
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
@@ -288,11 +208,11 @@ class PageService {
   }
 
   filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user, isRecursively));
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
   }
 
   filterPagesByCanDelete(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDelete(p.creator, user, isRecursively));
+    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -346,14 +266,24 @@ class PageService {
 
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
-    const isAbleToDeleteCompletely: boolean = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user, false); // use normal delete config
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+
+    let creatorId = page.creator;
+    if (page.isEmpty) {
+      // Need non-empty ancestor page to get its creatorId because empty page does NOT have it.
+      // Use creatorId of ancestor page to determine whether the empty page is deletable
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      creatorId = notEmptyClosestAncestor.creator;
+    }
+    const isDeletable = this.canDelete(page.path, creatorId, user, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
       meta: {
         ...metadataForGuest,
+        isDeletable,
         isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,
@@ -538,12 +468,17 @@ class PageService {
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
+    // 5.increase parent's descendantCount.
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToIncreaseForOperationInterruption = 1;
+    await Page.incrementDescendantCountOfPageIds([newParent._id], nToIncreaseForOperationInterruption);
+
     // create page redirect
     if (options.createRedirectPage) {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename');
 
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
@@ -564,10 +499,24 @@ class PageService {
 
     const exParentId = page.parent;
 
+    const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
+    try {
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+    }
+    catch (err) {
+      logger.warn(err);
+      throw Error(err);
+    }
+    finally {
+      this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
+    }
 
-    // reduce ancestore's descendantCount
+    // reduce parent's descendantCount
+    // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
+    const nToReduceForOperationInterruption = -1;
+    await Page.incrementDescendantCountOfPageIds([renamedPage.parent], nToReduceForOperationInterruption);
+
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
     await this.updateDescendantCountOfAncestors(exParentId, nToReduce, true);
 
@@ -577,11 +526,38 @@ class PageService {
 
     // Remove leaf empty pages if not moving to under the ex-target position
     if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
-      // remove empty pages at leaf position
+    // remove empty pages at leaf position
       await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
+  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
+    const isProcessable = pageOp.isProcessable();
+    if (!isProcessable) {
+      throw Error('This page operation is currently being processed');
+    }
+    if (pageOp.toPath == null) {
+      throw Error(`Property toPath is missing which is needed to resume rename operation(${pageOp._id})`);
+    }
+
+    const {
+      page, fromPath, toPath, options, user,
+    } = pageOp;
+
+    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+  }
+
+  /**
+   * Renaming paths and fixing descendantCount of ancestors. It shoud be run synchronously.
+   * `renameSubOperation` to restart rename operation
+   * `updateDescendantCountOfPagesWithPaths` to fix descendantCount of ancestors
+   */
+  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath): Promise<void> {
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
+    const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
+    await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
 
   private isRenamingToUnderTarget(fromPath: string, toPath: string): boolean {
@@ -682,7 +658,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename');
 
     return renamedPage;
   }
@@ -1368,14 +1344,14 @@ class PageService {
       await Page.replaceTargetWithPage(page, null, true);
     }
 
-    // Delete target
+    // Delete target (only updating an existing document's properties )
     let deletedPage;
     if (!page.isEmpty) {
       deletedPage = await this.deleteNonEmptyTarget(page, user);
     }
     else { // always recursive
       deletedPage = page;
-      await this.deleteEmptyTarget(page);
+      await Page.deleteOne({ _id: page._id, isEmpty: true });
     }
 
     // 1. Update descendantCount
@@ -1440,15 +1416,6 @@ class PageService {
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
-  }
-
-  private async deleteEmptyTarget(page): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    await Page.deleteOne({ _id: page._id, isEmpty: true });
-
-    // update descendantCount of ancestors' before removeLeafEmptyPages
-    await this.updateDescendantCountOfAncestors(page._id, -page.descendantCount, false);
   }
 
   async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
@@ -2230,28 +2197,6 @@ class PageService {
     return shortBodiesMap;
   }
 
-  private async createAndSendNotifications(page, user, action) {
-    const { activityService, inAppNotificationService } = this.crowi;
-
-    const snapshot = stringifySnapshot(page);
-
-    // Create activity
-    const parameters = {
-      user: user._id,
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: page,
-      action,
-    };
-    const activity = await activityService.createByParameters(parameters);
-
-    // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
-
-    // Create and send notifications
-    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
-    await inAppNotificationService.emitSocketIo(targetUsers);
-  }
-
   async normalizeParentByPath(path: string, user): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2638,10 +2583,7 @@ class PageService {
     return isUnique;
   }
 
-  // TODO: use socket to send status to the client
   async normalizeAllPublicPages() {
-    // const socket = this.crowi.socketIoService.getAdminSocket();
-
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();
@@ -2658,18 +2600,16 @@ class PageService {
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
         throw err;
       }
     }
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], null);
+      await this.normalizeParentRecursively(['/'], null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message });
 
       throw err;
     }
@@ -2713,7 +2653,7 @@ class PageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmitProgress = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -2732,7 +2672,7 @@ class PageService {
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmitProgress);
   }
 
   private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
@@ -2778,12 +2718,19 @@ class PageService {
   }
 
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }, user, count = 0, skiped = 0, isFirst = true,
+      pathOrRegExps: (RegExp | string)[],
+      publicPathsToNormalize: string[],
+      grantFiltersByUser: { $or: any[] },
+      user,
+      shouldEmitProgress = false,
+      count = 0,
+      skiped = 0,
+      isFirst = true,
   ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
 
-    const socket = this.crowi.socketIoService.getAdminSocket();
+    const socket = shouldEmitProgress ? this.crowi.socketIoService.getAdminSocket() : null;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -2805,7 +2752,7 @@ class PageService {
     // Limit pages to get
     const total = await Page.countDocuments(matchFilter);
     if (isFirst) {
-      socket.emit(SocketEventName.PMStarted, { total });
+      socket?.emit(SocketEventName.PMStarted, { total });
     }
     if (total > PAGES_LIMIT) {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
@@ -2912,13 +2859,13 @@ class PageService {
           nextSkiped += res.result.writeErrors.length;
           logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
 
-          socket.emit(SocketEventName.PMMigrating, { count: nextCount });
-          socket.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
+          socket?.emit(SocketEventName.PMMigrating, { count: nextCount });
+          socket?.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
@@ -2926,7 +2873,7 @@ class PageService {
           if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
-            socket.emit(SocketEventName.PMEnded, { isSucceeded: false });
+            socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
           }
         }
         catch (err) {
@@ -2948,11 +2895,20 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(matchFilter) && shouldContinue) {
-      return this._normalizeParentRecursively(pathOrRegExps, publicPathsToNormalize, grantFiltersByUser, user, nextCount, nextSkiped, false);
+      return this._normalizeParentRecursively(
+        pathOrRegExps,
+        publicPathsToNormalize,
+        grantFiltersByUser,
+        user,
+        shouldEmitProgress,
+        nextCount,
+        nextSkiped,
+        false,
+      );
     }
 
     // End
-    socket.emit(SocketEventName.PMEnded, { isSucceeded: true });
+    socket?.emit(SocketEventName.PMEnded, { isSucceeded: true });
 
     return nextCount;
   }
@@ -3013,8 +2969,30 @@ class PageService {
     builder.addConditionToSortPagesByDescPath();
 
     const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
+  }
 
+  /**
+   * update descendantCount of the pages sequentially from longer path to shorter path
+   */
+  async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
 
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionToListByPathsArray(paths); // find by paths
+    builder.addConditionToSortPagesByDescPath(); // sort in DESC
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+    await this.recountAndUpdateDescendantCountOfPages(aggregatedPages, BATCH_SIZE);
+  }
+
+  /**
+   * Recount descendantCount of pages one by one
+   */
+  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
+    const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
@@ -3028,8 +3006,8 @@ class PageService {
         callback();
       },
     });
-    aggregatedPages
-      .pipe(createBatchStream(BATCH_SIZE))
+    pageCursor
+      .pipe(createBatchStream(batchSize))
       .pipe(recountWriteStream);
 
     await streamToPromise(recountWriteStream);
@@ -3460,6 +3438,107 @@ class PageService {
     this.pageEvent.emit('create', savedPage, dummyUser);
 
     return savedPage;
+  }
+
+  /*
+   * Find all children by parent's path or id. Using id should be prioritized
+   */
+  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    let queryBuilder: PageQueryBuilder;
+    if (hasSlash(parentPathOrId)) {
+      const path = parentPathOrId;
+      const regexp = generateChildrenRegExp(path);
+      queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+    }
+    else {
+      const parentId = parentPathOrId;
+      // Use $eq for user-controlled sources. see: https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/#recommendation
+      queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
+    }
+    await queryBuilder.addViewerCondition(user, userGroups);
+
+    const pages = await queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    return pages;
+  }
+
+  async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
+    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+
+    // get pages at once
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
+    await queryBuilder.addViewerCondition(user, userGroups);
+    const pages = await queryBuilder
+      .addConditionAsOnTree()
+      .addConditionToMinimizeDataForRendering()
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    this.injectIsTargetIntoPages(pages, path);
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    /*
+     * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+     */
+    const pathToChildren: Record<string, PageDocument[]> = {};
+    const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+    sortedPaths.every((path) => {
+      const children = pages.filter(page => pathlib.dirname(page.path) === path);
+      if (children.length === 0) {
+        return false; // break when children do not exist
+      }
+      pathToChildren[path] = children;
+      return true;
+    });
+
+    return pathToChildren;
+  }
+
+  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
+    pages.forEach((page) => {
+      if (page.path === path) {
+        page.isTarget = true;
+      }
+    });
+  }
+
+  /**
+   * Inject processData into page docuements
+   * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
+   */
+  private async injectProcessDataIntoPagesByActionTypes(
+      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+      actionTypes: PageActionType[],
+  ): Promise<void> {
+
+    const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
+    if (pageOperations == null || pageOperations.length === 0) {
+      return;
+    }
+
+    const processInfo: IPageOperationProcessInfo = this.crowi.pageOperationService.generateProcessInfo(pageOperations);
+    const operatingPageIds: string[] = Object.keys(processInfo);
+
+    // inject processData into pages
+    pages.forEach((page) => {
+      const pageId = page._id.toString();
+      if (operatingPageIds.includes(pageId)) {
+        const processData: IPageOperationProcessData = processInfo[pageId];
+        page.processData = processData;
+      }
+    });
   }
 
 }

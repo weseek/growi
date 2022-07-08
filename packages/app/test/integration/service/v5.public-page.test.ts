@@ -2,6 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
+import { PageActionType, PageActionStage } from '../../../src/server/models/page-operation';
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
@@ -19,9 +20,13 @@ describe('PageService page operations with only public pages', () => {
   let Comment;
   let ShareLink;
   let PageRedirect;
+  let PageOperation;
   let xssSpy;
 
   let rootPage;
+
+  // page operation ids
+  let pageOpId1;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -35,6 +40,7 @@ describe('PageService page operations with only public pages', () => {
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
+    PageOperation = mongoose.model('PageOperation');
 
     /*
      * Common
@@ -50,6 +56,56 @@ describe('PageService page operations with only public pages', () => {
       const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
       rootPage = pages[0];
     }
+
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreate1 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreate1,
+        path: '/v5_empty_create_4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_4/v5_create_5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreate1,
+        isEmpty: false,
+      },
+    ]);
+
+    /**
+     * create by system
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreateBySystem1,
+        path: '/v5_empty_create_by_system4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_by_system4/v5_create_by_system5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreateBySystem1,
+        isEmpty: false,
+      },
+    ]);
 
     /*
      * Rename
@@ -78,6 +134,17 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename21 = new mongoose.Types.ObjectId();
     const pageIdForRename22 = new mongoose.Types.ObjectId();
     const pageIdForRename23 = new mongoose.Types.ObjectId();
+    const pageIdForRename24 = new mongoose.Types.ObjectId();
+    const pageIdForRename25 = new mongoose.Types.ObjectId();
+    const pageIdForRename26 = new mongoose.Types.ObjectId();
+    const pageIdForRename27 = new mongoose.Types.ObjectId();
+    const pageIdForRename28 = new mongoose.Types.ObjectId();
+
+    const pageIdForRename29 = new mongoose.Types.ObjectId();
+    const pageIdForRename30 = new mongoose.Types.ObjectId();
+
+    pageOpId1 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId1 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -268,6 +335,101 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename22,
+      },
+      {
+        _id: pageIdForRename24,
+        path: '/v5_pageForRename24',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename25,
+        path: '/v5_pageForRename25',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename26,
+        path: '/v5_pageForRename26',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename27,
+        path: '/v5_pageForRename27',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdForRename28,
+        path: '/v5_pageForRename27/v5_pageForRename28',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename27,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename29,
+        path: '/v5_pageForRename29',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdForRename30,
+        path: '/v5_pageForRename29/v5_pageForRename30',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename29,
+        descendantCount: 0,
+      },
+    ]);
+
+    await PageOperation.insertMany([
+      {
+        _id: pageOpId1,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/v5_pageForRename30',
+        toPath: '/v5_pageForRename29/v5_pageForRename30',
+        page: {
+          _id: pageIdForRename30,
+          parent: rootPage._id,
+          descendantCount: 0,
+          isEmpty: false,
+          path: '/v5_pageForRename30',
+          revision: pageOpRevisionId1,
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+        unprocessableExpiryDate: null,
       },
     ]);
 
@@ -885,12 +1047,101 @@ describe('PageService page operations with only public pages', () => {
 
   });
 
+  describe('create', () => {
+
+    test('Should create single page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+    test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+  });
+
+  describe('create by system', () => {
+
+    test('Should create single page by system', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+    test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system4', 'body', {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+  });
+
   describe('Rename', () => {
 
     const renamePage = async(page, newPagePath, user, options) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
@@ -898,10 +1149,34 @@ describe('PageService page operations with only public pages', () => {
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+
+      return renamedPage;
+    };
+
+    /**
+     * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
+     */
+    const renameMainOperation = async(page, newPagePath, user, options) => {
+      // create page operation from target page
+      const pageOp = await PageOperation.create({
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: newPagePath,
+        options,
+      });
+
+      // mock return value
+      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
+      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+
+      // restores the original implementation
+      mockedRenameSubOperation.mockRestore();
 
       return renamedPage;
     };
@@ -1175,13 +1450,142 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPageChild.isEmpty).toBeTruthy();
       expect(renamedPageGrandchild.isEmpty).toBe(false);
     });
+
+    test('should add 1 descendantCount to parent page in MainOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename24'; // out of renaming scope
+      const _path1 = '/v5_pageForRename25'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename24';
+      const path1 = '/v5_pageForRename24/v5_pageForRename25';
+
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename24/v5_pageForRename25';
+
+      // pages
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page0.descendantCount).toBe(0);
+      expect(_page1.descendantCount).toBe(0);
+
+      await renameMainOperation(_page1, newPath, dummyUser1, {});
+
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed one
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1); // renamed
+      expect(page0.descendantCount).toBe(1); // originally 0, +1 in Main.
+      expect(page1.descendantCount).toBe(0);
+
+      // cleanup
+      await PageOperation.findOneAndDelete({ fromPath: _path1 });
+    });
+
+    test('should subtract 1 descendantCount from a new parent page in renameSubOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename29'; // out of renaming scope
+      const _path1 = '/v5_pageForRename29/v5_pageForRename30'; // already renamed
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename29';
+      const path1 = '/v5_pageForRename29/v5_pageForRename30';
+
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename29/v5_pageForRename30';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+
+      // page operation
+      const fromPath = '/v5_pageForRename30';
+      const toPath = newPath;
+      const pageOperation = await PageOperation.findOne({
+        _id: pageOpId1, fromPath, toPath, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
+      expect(pageOperation).toBeTruthy();
+
+      // descendantCount
+      expect(_page0.descendantCount).toBe(1);
+      expect(_page1.descendantCount).toBe(0);
+
+      // renameSubOperation only
+      await crowi.pageService.renameSubOperation(_page1, newPath, dummyUser1, {}, _page1, pageOperation._id);
+
+      // page
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed one
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1); // renamed
+
+      // descendantCount
+      expect(page0.descendantCount).toBe(0); // originally 1, -1 in Sub.
+      expect(page1.descendantCount).toBe(0);
+    });
+
+    test(`should add 1 descendantCount to the a parent page in rename(Main)Operation
+    and subtract 1 descendantCount from the the parent page in rename(Sub)Operation`, async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename26'; // out of renaming scope
+      const _path1 = '/v5_pageForRename27'; // not renamed yet
+      const _path2 = '/v5_pageForRename27/v5_pageForRename28'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename26';
+      const path1 = '/v5_pageForRename26/v5_pageForRename27';
+      const path2 = '/v5_pageForRename26/v5_pageForRename27/v5_pageForRename28';
+
+      // new path: same as path1
+      const newPath = '/v5_pageForRename26/v5_pageForRename27';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      const _page2 = await Page.findOne({ path: _path2 });
+
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page0.descendantCount).toBe(0);
+      expect(_page1.descendantCount).toBe(1);
+      expect(_page2.descendantCount).toBe(0);
+
+      await renamePage(_page1, newPath, dummyUser1, {});
+
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed
+      const page2 = await Page.findById(_page2._id); // renamed
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1);
+      expect(page2.path).toBe(path2);
+      expect(page0.descendantCount).toBe(2); // originally 0, +1 in Main, -1 in Sub, +2 for descendants.
+      expect(page1.descendantCount).toBe(1);
+      expect(page2.descendantCount).toBe(0);
+
+      // cleanup
+      await PageOperation.findOneAndDelete({ fromPath: _path1 });
+    });
   });
   describe('Duplicate', () => {
 
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
@@ -1189,7 +1593,6 @@ describe('PageService page operations with only public pages', () => {
 
       // restores the original implementation
       mockedDuplicateRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
       if (isRecursively) {
@@ -1367,14 +1770,12 @@ describe('PageService page operations with only public pages', () => {
   describe('Delete', () => {
     const deletePage = async(page, user, options, isRecursively) => {
       const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
       const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
 
       const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
@@ -1482,14 +1883,12 @@ describe('PageService page operations with only public pages', () => {
   describe('Delete completely', () => {
     const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
       const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
       await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
 
       const argsForDeleteCompletelyRecursivelyMainOperation = mockedDeleteCompletelyRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteCompletelyRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteCompletelyRecursivelyMainOperation(...argsForDeleteCompletelyRecursivelyMainOperation);

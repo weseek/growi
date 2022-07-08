@@ -2,42 +2,32 @@ import React from 'react';
 
 import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
+import { SWRConfig } from 'swr';
 import { Provider } from 'unstated';
 
 
 import AppContainer from '~/client/services/AppContainer';
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 
+import ContextExtractor from './services/ContextExtractor';
 import { i18nFactory } from './util/i18n';
 
 const i18n = i18nFactory();
 
-// render InstallerForm
-const installerFormContainerElem = document.getElementById('installer-form-container');
-if (installerFormContainerElem) {
-  const userName = installerFormContainerElem.dataset.userName;
-  const name = installerFormContainerElem.dataset.name;
-  const email = installerFormContainerElem.dataset.email;
-  const csrf = installerFormContainerElem.dataset.csrf;
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
-    </I18nextProvider>,
-    installerFormContainerElem,
-  );
-}
+
+const componentMappings = {};
+
+const appContainer = new AppContainer();
+appContainer.initApp();
 
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
-  const appContainer = new AppContainer();
-  appContainer.initApp();
-
   const username = loginFormElem.dataset.username;
   const name = loginFormElem.dataset.name;
   const email = loginFormElem.dataset.email;
@@ -65,78 +55,90 @@ if (loginFormElem) {
     basic: loginFormElem.dataset.isBasicAuthEnabled === 'true',
   };
 
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <LoginForm
-          username={username}
-          name={name}
-          email={email}
-          isRegistrationEnabled={isRegistrationEnabled}
-          isEmailAuthenticationEnabled={isEmailAuthenticationEnabled}
-          registrationMode={registrationMode}
-          registrationWhiteList={registrationWhiteList}
-          isPasswordResetEnabled={isPasswordResetEnabled}
-          isLocalStrategySetup={isLocalStrategySetup}
-          isLdapStrategySetup={isLdapStrategySetup}
-          objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
-        />
-      </Provider>
-    </I18nextProvider>,
-    loginFormElem,
-  );
+  Object.assign(componentMappings, {
+    [loginFormElem.id]: (
+      <LoginForm
+        username={username}
+        name={name}
+        email={email}
+        isRegistrationEnabled={isRegistrationEnabled}
+        isEmailAuthenticationEnabled={isEmailAuthenticationEnabled}
+        registrationMode={registrationMode}
+        registrationWhiteList={registrationWhiteList}
+        isPasswordResetEnabled={isPasswordResetEnabled}
+        isLocalStrategySetup={isLocalStrategySetup}
+        isLdapStrategySetup={isLdapStrategySetup}
+        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
+      />
+    ),
+  });
 }
-
-const appContainer = new AppContainer();
-appContainer.initApp();
-
 
 // render PasswordResetRequestForm
 const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
 if (passwordResetRequestFormElem) {
-
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <PasswordResetRequestForm />
-      </Provider>
-    </I18nextProvider>,
-    passwordResetRequestFormElem,
-  );
+  Object.assign(componentMappings, {
+    [passwordResetRequestFormElem.id]: <PasswordResetRequestForm />,
+  });
 }
 
 // render PasswordResetExecutionForm
 const passwordResetExecutionFormElem = document.getElementById('password-reset-execution-form');
 if (passwordResetExecutionFormElem) {
-
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <PasswordResetExecutionForm />
-      </Provider>
-    </I18nextProvider>,
-    passwordResetExecutionFormElem,
-  );
+  Object.assign(componentMappings, {
+    [passwordResetExecutionFormElem.id]: <PasswordResetExecutionForm />,
+  });
 }
 
 // render UserActivationForm
 const UserActivationForm = document.getElementById('user-activation-form');
 if (UserActivationForm) {
-
   const messageErrors = UserActivationForm.dataset.messageErrors;
   const inputs = UserActivationForm.dataset.inputs;
   const email = UserActivationForm.dataset.email;
   const token = UserActivationForm.dataset.token;
 
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
+  Object.assign(componentMappings, {
+    [UserActivationForm.id]: (
       <CompleteUserRegistrationForm
         messageErrors={messageErrors}
         inputs={inputs}
         email={email}
         token={token}
       />
-    </I18nextProvider>,
-    UserActivationForm,
+    ),
+  });
+}
+
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <SWRConfig value={swrGlobalConfiguration}>
+            <Provider inject={[appContainer]}>
+              {componentMappings[key]}
+            </Provider>
+          </SWRConfig>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
   );
+}
+else {
+  renderMainComponents();
 }

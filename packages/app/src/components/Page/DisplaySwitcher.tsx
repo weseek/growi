@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -36,7 +36,7 @@ const DisplaySwitcher = (): JSX.Element => {
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
-
+  const { data: isEmptyPage } = useIsEmptyPage();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
@@ -60,7 +60,7 @@ const DisplaySwitcher = (): JSX.Element => {
         <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
-            { isPageExist && (
+            { isPageExist && !isEmptyPage && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
@@ -71,6 +71,7 @@ const DisplaySwitcher = (): JSX.Element => {
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPagePath)}
+                        data-testid="pageListButton"
                       >
                         <div className="grw-page-accessories-control-icon">
                           <PageListIcon />

@@ -7,14 +7,9 @@ import { I18nextProvider } from 'react-i18next';
 import { SWRConfig } from 'swr';
 import { Provider } from 'unstated';
 
-import CommentContainer from '~/client/services/CommentContainer';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PageHistoryContainer from '~/client/services/PageHistoryContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
-import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
-import TagContainer from '~/client/services/TagContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
@@ -50,8 +45,6 @@ import TagPage from '../components/TagPage';
 import TrashPageList from '../components/TrashPageList';
 
 import { appContainer, componentMappings } from './base';
-import { toastError } from './util/apiNotification';
-
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -62,15 +55,9 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
-const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
-const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
-const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
-const tagContainer = new TagContainer(appContainer);
-const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
-  commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, pageContainer, editorContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -98,8 +85,6 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'fix-page-grant-alert': <FixPageGrantAlert />,
-
   'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
@@ -108,8 +93,7 @@ Object.assign(componentMappings, {
 
   'page-timeline': <PageTimeline />,
 
-  'personal-setting': <PersonalSettings crowi={personalContainer} />,
-
+  'personal-setting': <PersonalSettings />,
   'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
@@ -132,11 +116,10 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
-
-  // show the Page accessory modal when query of "compare" is requested
-  if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
-    toastError('Sorry, opening PageAccessoriesModal is not implemented yet in v5.');
-  //   pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
+  if (!pageContainer.state.isEmpty) {
+    Object.assign(componentMappings, {
+      'fix-page-grant-alert': <FixPageGrantAlert />,
+    });
   }
 }
 if (pageContainer.state.creator != null) {

@@ -1,8 +1,8 @@
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
-
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
@@ -151,12 +151,16 @@ module.exports = (crowi) => {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
+  const activityEvent = crowi.event('activity');
+
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
   const { serializePageSecurely } = require('../../models/serializers/page-serializer');
   const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
   const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const validator = {
     createPage: [
@@ -173,12 +177,15 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
+      body('revisionId').optional({ nullable: true }).isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
       body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
+    ],
+    resumeRenamePage: [
+      body('pageId').isMongoId().withMessage('pageId is required'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -282,7 +289,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
@@ -322,6 +329,13 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: createdPage,
+      action: SupportedAction.ACTION_PAGE_CREATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     res.apiv3(result, 201);
 
     try {
@@ -345,20 +359,6 @@ module.exports = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
-    }
-
-    // create activity
-    try {
-      const parameters = {
-        user: req.user._id,
-        targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-        target: createdPage,
-        action: SUPPORTED_ACTION_TYPE.ACTION_PAGE_CREATE,
-      };
-      await crowi.activityService.createByParameters(parameters);
-    }
-    catch (err) {
-      logger.error('Failed to create activity', err);
     }
 
     // create subscription
@@ -489,7 +489,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -551,7 +551,39 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
+    const activityId = res.locals.activity._id;
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_RENAME,
+    };
+    activityEvent.emit('update', activityId, parameters, page);
+
     return res.apiv3(result);
+  });
+
+  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, csrf, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
+
+    const { pageId } = req.body;
+    const { user } = req;
+
+    // The user has permission to resume rename operation if page is returned.
+    const page = await Page.findByIdAndViewer(pageId, user, null, true);
+    if (page == null) {
+      const msg = 'The operation is forbidden for this user';
+      const code = 'forbidden-user';
+      return res.apiv3Err(new ErrorV3(msg, code), 403);
+    }
+
+    try {
+      const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
+      await crowi.pageService.resumeRenameSubOperation(page, pageOp);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+    return res.apiv3();
   });
 
   /**
@@ -565,10 +597,10 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, addActivity, apiV3FormValidator, async(req, res) => {
     const options = {};
 
-    const pagesInTrash = await Page.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
+    const pagesInTrash = await crowi.pageService.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
 
     const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
@@ -577,14 +609,20 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg), 500);
     }
 
+    const parameters = { action: SupportedAction.ACTION_PAGE_EMPTY_TRASH };
+
     // when some pages are not deletable
     if (deletablePages.length < pagesInTrash.length) {
       try {
         const options = { isCompletely: true, isRecursively: true };
         await crowi.pageService.deleteMultiplePages(deletablePages, req.user, options);
+
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
         return res.apiv3({ deletablePages });
       }
       catch (err) {
+        logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
       }
     }
@@ -592,9 +630,13 @@ module.exports = (crowi) => {
     else {
       try {
         const pages = await crowi.pageService.emptyTrashPage(req.user, options);
+
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
         return res.apiv3({ pages });
       }
       catch (err) {
+        logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
       }
     }
@@ -681,7 +723,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
@@ -726,6 +768,13 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to create subscription document', err);
     }
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_DUPLICATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     return res.apiv3(result);
   });

@@ -1,55 +1,53 @@
 import React from 'react';
+
 import ReactDOM from 'react-dom';
-import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
-
 import { SWRConfig } from 'swr';
+import { Provider } from 'unstated';
 
+import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AdminImportContainer from '~/client/services/AdminImportContainer';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import ErrorBoundary from '../components/ErrorBoudary';
-
 import AdminHome from '../components/Admin/AdminHome/AdminHome';
-import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
-import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
-import LegacySlackIntegration from '../components/Admin/LegacySlackIntegration/LegacySlackIntegration';
-import SlackIntegration from '../components/Admin/SlackIntegration/SlackIntegration';
-import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
-import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
-import UserManagement from '../components/Admin/UserManagement';
 import AppSettingsPage from '../components/Admin/App/AppSettingsPage';
-import SecurityManagement from '../components/Admin/Security/SecurityManagement';
-import ManageExternalAccount from '../components/Admin/ManageExternalAccount';
-import UserGroupPage from '../components/Admin/UserGroup/UserGroupPage';
+import { AuditLogManagement } from '../components/Admin/AuditLogManagement';
+import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 import Customize from '../components/Admin/Customize/Customize';
-import ImportDataPage from '../components/Admin/ImportDataPage';
 import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
-import AdminNavigation from '../components/Admin/Common/AdminNavigation';
-
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AdminImportContainer from '~/client/services/AdminImportContainer';
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
-import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
-import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
-import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
-import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
-import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
-import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
-import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-
-import ContextExtractor from '~/client/services/ContextExtractor';
+import ImportDataPage from '../components/Admin/ImportDataPage';
+import LegacySlackIntegration from '../components/Admin/LegacySlackIntegration/LegacySlackIntegration';
+import ManageExternalAccount from '../components/Admin/ManageExternalAccount';
+import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
+import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
+import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
+import SecurityManagement from '../components/Admin/Security/SecurityManagement';
+import SlackIntegration from '../components/Admin/SlackIntegration/SlackIntegration';
+import UserGroupPage from '../components/Admin/UserGroup/UserGroupPage';
+import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
+import UserManagement from '../components/Admin/UserManagement';
+import ErrorBoundary from '../components/ErrorBoudary';
 
 import { appContainer, componentMappings } from './base';
 
@@ -58,7 +56,6 @@ const logger = loggerFactory('growi:admin');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-
 // create unstated container instance
 const adminAppContainer = new AdminAppContainer(appContainer);
 const adminImportContainer = new AdminImportContainer(appContainer);
@@ -111,6 +108,7 @@ Object.assign(componentMappings, {
   'admin-user-group-detail': <UserGroupDetailPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-user-group-page': <UserGroupPage />,
+  'admin-audit-log': <AuditLogManagement />,
   'admin-navigation': <AdminNavigation />,
 });
 

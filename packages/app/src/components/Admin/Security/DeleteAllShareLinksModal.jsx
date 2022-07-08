@@ -1,8 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
+import { useTranslation } from 'react-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -63,4 +62,11 @@ DeleteAllShareLinksModal.propTypes = {
   onClickDeleteButton: PropTypes.func,
 };
 
-export default withTranslation()(DeleteAllShareLinksModal);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const DeleteAllShareLinksModalWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <DeleteAllShareLinksModal t={t} {...props} />;
+};
+
+export default DeleteAllShareLinksModalWrapperFC;

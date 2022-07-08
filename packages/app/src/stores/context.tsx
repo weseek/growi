@@ -3,7 +3,9 @@ import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
+import { SupportedActionType } from '~/interfaces/activity';
+
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
@@ -11,6 +13,10 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
+
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
 
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
@@ -30,6 +36,10 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+};
+
+export const useEmptyPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('emptyPageId', initialData);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -60,10 +70,6 @@ export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
-};
-
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
@@ -80,8 +86,8 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
 
-export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -132,10 +138,6 @@ export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<str
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
 };
 
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
@@ -152,6 +154,9 @@ export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRRespon
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
+export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
+};
 export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('hasParent', initialData);
 };
@@ -162,6 +167,22 @@ export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boole
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+};
+
+export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+};
+
+export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+};
+
+export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
+  return useStaticSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
+};
+
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
 };
 
 
