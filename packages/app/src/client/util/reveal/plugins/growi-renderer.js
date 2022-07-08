@@ -11,7 +11,7 @@
   const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   /* eslint-enable no-useless-escape */
 
-  const growiRenderer = window.previewRenderer;
+  const growiRenderer = window.parent.growiRenderer;
 
   let marked;
 
@@ -58,7 +58,7 @@
         section.setAttribute('data-markdown-parsed', 'true');
         const notes = section.querySelector('aside.notes');
         markdown = marked.getMarkdownFromSlide(section);
-        const context = { markdown };
+        const context = { markdown, currentPathname: decodeURIComponent(window.parent.location.pathname) };
 
         interceptorManager.process('preRender', context)
           .then(() => { return interceptorManager.process('prePreProcess', context) })

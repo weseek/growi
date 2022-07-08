@@ -61,7 +61,10 @@ export default class AppContainer extends Container {
   injectToWindow() {
     window.appContainer = this;
 
-    window.growiRenderer = new GrowiRenderer(this.getConfig());
+    const growiRenderer = new GrowiRenderer(this.getConfig());
+    growiRenderer.init();
+
+    window.growiRenderer = growiRenderer;
 
     // backward compatibility
     window.crowi = this;
