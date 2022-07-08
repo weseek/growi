@@ -11,20 +11,19 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getIdForRef } from '~/interfaces/common';
 import {
-  IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
@@ -154,14 +153,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: createdAt } = useCurrentCreatedAt();
-  const { data: updatedAt } = useCurrentUpdatedAt();
-  const { data: pageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
-  const { data: revisionId } = useRevisionId();
-  const { data: path } = useCurrentPagePath();
-  const { data: creator } = useCreator();
-  const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -172,8 +164,8 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(currentPage?._id);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -195,6 +187,11 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
+    if (currentPage == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId } = currentPage;
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
@@ -210,7 +207,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+  }, [currentPage, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -262,19 +259,23 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const ControlComponents = useCallback(() => {
-    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+    if (currentPage == null) {
+      return <></>;
+    }
 
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
     }
 
+    const { _id: pageId, revision, path } = currentPage;
+
     let additionalMenuItemsRenderer;
-    if (revisionId != null) {
+    if (revision != null) {
       additionalMenuItemsRenderer = props => function additionalMenuItemsRenderer() {
         return (<AdditionalMenuItems
           {...props}
           pageId={pageId}
-          revisionId={revisionId}
+          revisionId={revision}
           isLinkSharingDisabled={isLinkSharingDisabled}
           onClickTemplateMenuItem={templateMenuItemClickHandler}
         />);
@@ -283,13 +284,14 @@ const GrowiContextualSubNavigation = (props) => {
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageIdForSubNavButtons != null && isViewMode && (
+
+          { isViewMode && (
             <div className="h-50">
               <SubNavButtons
                 isCompactMode={isCompactMode}
-                pageId={pageIdForSubNavButtons}
+                pageId={pageId}
                 shareLinkId={shareLinkId}
-                revisionId={revisionId}
+                revisionId={revision.toString()}
                 path={path}
                 disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
@@ -319,26 +321,16 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    currentPage, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown,
+    templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (path == null) {
+  if (currentPage == null) {
     return <></>;
   }
-
-  const currentPage: Partial<IPageHasId> = {
-    _id: pageId ?? undefined,
-    path,
-    revision: revisionId ?? undefined,
-    creator: creator ?? undefined,
-    lastUpdateUser: revisionAuthor,
-    createdAt: createdAt ?? undefined,
-    updatedAt: updatedAt ?? undefined,
-  };
 
   return (
     <GrowiSubNavigation
