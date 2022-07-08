@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
 import LinkedPagePath from '../models/linked-page-path';
