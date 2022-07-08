@@ -113,12 +113,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <></>,
+      component: <>user-groups</>,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
       // component: <ElasticsearchManagement />,
-      component: <></>,
+      component: <>ElasticsearchManagement</>,
     },
   };
 
@@ -135,10 +135,9 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // useEnvVars(props.envVars);
 
   return (
-    // <AdminLayout title={title} selectedNavOpt={name}>
-    //   {content.component}
-    // </AdminLayout>
-    <h1>Admin Page</h1>
+    <AdminLayout title={title} selectedNavOpt={name}>
+      {content.component}
+    </AdminLayout>
   );
 };
 

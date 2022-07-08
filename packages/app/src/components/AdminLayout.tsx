@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
 import { Provider } from 'unstated';
+import dynamic from 'next/dynamic';
 
 import { BasicLayout } from './BasicLayout';
-import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
+// import { injectableContainers } from '~/client/admin';
+// import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
 
 type Props = {
   title: string
@@ -18,6 +20,8 @@ type Props = {
 const AdminLayout = ({
   children, title, selectedNavOpt,
 }: Props): JSX.Element => {
+
+  const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   return (
     <BasicLayout title={title}>
