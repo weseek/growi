@@ -180,8 +180,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
 
-  // const templateTagData = document.querySelector('#content-main')?.getAttribute('data-template-tags') || null;
-
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
