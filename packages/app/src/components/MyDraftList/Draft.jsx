@@ -208,6 +208,9 @@ Draft.propTypes = {
 const DraftWrapperFC = (props) => {
   const { t } = useTranslation();
   const { data: growiRenderer } = useDraftRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
 
   return <Draft t={t} growiRenderer={growiRenderer} {...props} />;
 };
