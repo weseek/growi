@@ -245,7 +245,6 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-    isDefaultLogo: crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
     customizedLogoSrc: crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
     activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
