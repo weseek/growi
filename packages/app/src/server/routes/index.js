@@ -90,8 +90,9 @@ module.exports = function(crowi, app) {
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
-  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
-  app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
+  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
   if (!isInstalled) {
@@ -117,36 +118,36 @@ module.exports = function(crowi, app) {
   app.post('/_api/login/testLdap'    , apiLimiter , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // security admin
-  app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
+  // app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // markdown admin
-  app.get('/admin/markdown'          , loginRequiredStrictly , adminRequired , admin.markdown.index);
+  // app.get('/admin/markdown'          , loginRequiredStrictly , adminRequired , admin.markdown.index);
 
   // customize admin
-  app.get('/admin/customize'         , loginRequiredStrictly , adminRequired , admin.customize.index);
+  // app.get('/admin/customize'         , loginRequiredStrictly , adminRequired , admin.customize.index);
 
   // search admin
-  app.get('/admin/search'            , loginRequiredStrictly , adminRequired , admin.search.index);
+  // app.get('/admin/search'            , loginRequiredStrictly , adminRequired , admin.search.index);
 
   // notification admin
-  app.get('/admin/notification'                         , loginRequiredStrictly , adminRequired , admin.notification.index);
-  app.get('/admin/notification/slackAuth'               , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
-  app.get('/admin/notification/slackSetting/disconnect' , loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/admin/global-notification/new'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  app.get('/admin/global-notification/:id'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  app.get('/admin/slack-integration-legacy'             , loginRequiredStrictly , adminRequired,  admin.slackIntegrationLegacy);
-  app.get('/admin/slack-integration'                    , loginRequiredStrictly , adminRequired,  admin.slackIntegration);
+  // app.get('/admin/notification'                         , loginRequiredStrictly , adminRequired , admin.notification.index);
+  // app.get('/admin/notification/slackAuth'               , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
+  // app.get('/admin/notification/slackSetting/disconnect' , loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
+  // app.get('/admin/global-notification/new'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  // app.get('/admin/global-notification/:id'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  // app.get('/admin/slack-integration-legacy'             , loginRequiredStrictly , adminRequired,  admin.slackIntegrationLegacy);
+  // app.get('/admin/slack-integration'                    , loginRequiredStrictly , adminRequired,  admin.slackIntegration);
 
-  app.get('/admin/users'                                , loginRequiredStrictly , adminRequired , admin.user.index);
+  // app.get('/admin/users'                                , loginRequiredStrictly , adminRequired , admin.user.index);
 
-  app.get('/admin/users/external-accounts'              , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
+  // app.get('/admin/users/external-accounts'              , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
 
   // user-groups admin
-  app.get('/admin/user-groups'                          , loginRequiredStrictly, adminRequired, admin.userGroup.index);
-  app.get('/admin/user-group-detail/:id'                , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
+  // app.get('/admin/user-groups'                          , loginRequiredStrictly, adminRequired, admin.userGroup.index);
+  // app.get('/admin/user-group-detail/:id'                , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
   // importer management for admin
-  app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
+  // app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrfProtection, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
   app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrfProtection, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
   app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.importDataFromEsa);
@@ -155,10 +156,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.testQiitaAPI);
 
   // export management for admin
-  app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
+  // app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
+  // app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
-  app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
+  // app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
   /*
    * Routes below are unavailable when maintenance mode
