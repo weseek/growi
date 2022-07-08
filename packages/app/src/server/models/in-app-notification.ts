@@ -4,7 +4,7 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { AllSupportedTargetModelType, AllSupportedActionType } from '~/interfaces/activity';
+import { AllSupportedTargetModels, AllSupportedActions } from '~/interfaces/activity';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 import { ActivityDocument } from './activity';
@@ -41,22 +41,22 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
-    require: true,
+    required: true,
   },
   targetModel: {
     type: String,
-    require: true,
-    enum: AllSupportedTargetModelType,
+    required: true,
+    enum: AllSupportedTargetModels,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    require: true,
+    required: true,
   },
   action: {
     type: String,
-    require: true,
-    enum: AllSupportedActionType,
+    required: true,
+    enum: AllSupportedActions,
   },
   activities: [
     {
@@ -69,11 +69,11 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     default: STATUS_UNREAD,
     enum: InAppNotificationStatuses,
     index: true,
-    require: true,
+    required: true,
   },
   snapshot: {
     type: String,
-    require: true,
+    required: true,
   },
 }, {
   timestamps: { createdAt: true, updatedAt: false },

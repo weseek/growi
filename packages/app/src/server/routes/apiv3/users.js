@@ -1,6 +1,10 @@
+import { SupportedAction } from '~/interfaces/activity';
+import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:user-group');
 
@@ -75,6 +79,9 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const {
     User,
@@ -398,7 +405,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that failed to create or send email
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
@@ -417,6 +424,9 @@ module.exports = (crowi) => {
         failedEmailList = failedEmailList.concat(sendEmail.failedToSendEmailList);
       }
     }
+
+    const parameters = { action: SupportedAction.ACTION_ADMIN_USERS_INVITE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.apiv3({
       createdUserList: createUser.createdUserList,
@@ -948,14 +958,21 @@ module.exports = (crowi) => {
       }
 
       if (options.isIncludeInactiveUser) {
-        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_DELETED, User.STATUS_INVITED];
+        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_INVITED];
         const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
         const inactiveUsernames = inactiveUserData.users.map(user => user.username);
         Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
       }
 
-      if (options.isIncludeMixedUsername) {
-        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || []];
+      if (options.isIncludeActivitySnapshotUser && req.user.admin) {
+        const activitySnapshotUserData = await Activity.findSnapshotUsernamesByUsernameRegexWithTotalCount(q, { offset, limit });
+        Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
+      }
+
+      // eslint-disable-next-line max-len
+      const canIncludeMixedUsernames = (options.isIncludeMixedUsernames && req.user.admin) || (options.isIncludeMixedUsernames && !options.isIncludeActivitySnapshotUser);
+      if (canIncludeMixedUsernames) {
+        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || [], ...data?.activitySnapshotUser?.usernames || []];
         const distinctUsernames = Array.from(new Set(allUsernames));
         Object.assign(data, { mixedUsernames: distinctUsernames });
       }

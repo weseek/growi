@@ -38,7 +38,7 @@ class InstallerForm extends React.Component {
   //     },
   //     responseType: 'json',
   //   });
-  //   axios.get('/_api/check_username', { params: { username: event.target.value } })
+  //   axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
   //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   // }
 
