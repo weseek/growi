@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
 import { Provider } from 'unstated';
+import { RawLayout } from './RawLayout';
 import dynamic from 'next/dynamic';
+import { GrowiNavbar } from './Navbar/GrowiNavbar';
 
-import { BasicLayout } from './BasicLayout';
+// import { BasicLayout } from './BasicLayout';
 // import { injectableContainers } from '~/client/admin';
 // import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
 
@@ -24,7 +26,9 @@ const AdminLayout = ({
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   return (
-    <BasicLayout title={title}>
+    <RawLayout title={title}>
+      <GrowiNavbar />
+
       <header className="py-0">
         <h1 className="title">{title}</h1>
       </header>
@@ -42,7 +46,7 @@ const AdminLayout = ({
           </div>
         </div>
       </div>
-    </BasicLayout>
+    </RawLayout>
   );
 };
 
