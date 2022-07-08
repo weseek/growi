@@ -7,15 +7,25 @@ import urljoin from 'url-join';
 import LinkedPagePath from '../models/linked-page-path';
 
 
+type PagePathHierarchicalLinkProps = {
+  linkedPagePath: LinkedPagePath,
+  linkedPagePathByHtml?: LinkedPagePath,
+  basePath?: string,
+  isInTrash?: boolean,
+
+  // !!INTERNAL USE ONLY!!
+  isInnerElem?: boolean,
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PagePathHierarchicalLink = memo((props) => {
+const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
   } = props;
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
-      return null;
+      return <></>;
     }
 
     return isInTrash
@@ -87,15 +97,5 @@ const PagePathHierarchicalLink = memo((props) => {
 });
 PagePathHierarchicalLink.displayName = 'PagePathHierarchicalLink';
 
-
-PagePathHierarchicalLink.propTypes = {
-  linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
-  linkedPagePathByHtml: PropTypes.instanceOf(LinkedPagePath), // Not required
-  basePath: PropTypes.string,
-  isInTrash: PropTypes.bool,
-
-  // !!INTERNAL USE ONLY!!
-  isInnerElem: PropTypes.bool,
-};
 
 export default PagePathHierarchicalLink;
