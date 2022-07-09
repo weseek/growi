@@ -216,6 +216,7 @@ const ContextExtractorOnce: FC = () => {
         BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
       },
     },
+    null,
     path,
   );
 

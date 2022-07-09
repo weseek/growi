@@ -196,9 +196,13 @@ export default class GrowiRenderer {
 
 }
 
+export interface RendererGenerator {
+  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>): GrowiRenderer
+}
 
-// eslint-disable-next-line max-len
-export const generateViewRenderer = (rendererSettings: RendererSettings, growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+export const generateViewRenderer: RendererGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
+): GrowiRenderer => {
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
@@ -217,7 +221,9 @@ export const generateViewRenderer = (rendererSettings: RendererSettings, growiRe
   return renderer;
 };
 
-export const generatePreviewRenderer = (growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+export const generatePreviewRenderer: RendererGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>,
+): GrowiRenderer => {
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
@@ -233,7 +239,9 @@ export const generatePreviewRenderer = (growiRendererConfig: GrowiRendererConfig
   return renderer;
 };
 
-const generateRendererWithTableConfigurer = (growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
+const generateRendererWithTableConfigurer: RendererGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>,
+): GrowiRenderer => {
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
@@ -246,9 +254,10 @@ const generateRendererWithTableConfigurer = (growiRendererConfig: GrowiRendererC
   return renderer;
 };
 
-// eslint-disable-next-line max-len
-export const generateCommentPreviewRenderer = (rendererSettings: RendererSettings, growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>): GrowiRenderer => {
-  const renderer = generateRendererWithTableConfigurer(growiRendererConfig, pagePath);
+export const generateCommentPreviewRenderer: RendererGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
+): GrowiRenderer => {
+  const renderer = generateRendererWithTableConfigurer(growiRendererConfig, null, pagePath);
 
   renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
   renderer.configure();
