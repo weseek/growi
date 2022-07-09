@@ -212,7 +212,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, optionsMap } = req.body;
 
@@ -294,6 +294,8 @@ module.exports = (crowi) => {
      */
     try {
       importService.import(collections, importSettingsMap);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       logger.error(err);
