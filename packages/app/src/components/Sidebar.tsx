@@ -97,8 +97,6 @@ const Sidebar = (): JSX.Element => {
 
   const { scheduleToPut } = useUserUISettings();
 
-  const [isTransitionEnabled, setTransitionEnabled] = useState(false);
-
   const [isHover, setHover] = useState(false);
   const [isHoverOnResizableContainer, setHoverOnResizableContainer] = useState(false);
   const [isDragging, setDrag] = useState(false);
@@ -243,12 +241,6 @@ const Sidebar = (): JSX.Element => {
   }, [dragableAreaMouseUpHandler, draggableAreaMoveHandler, isResizableByDrag]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setTransitionEnabled(true);
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
@@ -301,7 +293,7 @@ const Sidebar = (): JSX.Element => {
         <div className={`d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'} ${isDrawerOpened ? 'open' : ''}`}>
           <div className="data-layout-container">
             <div
-              className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
+              className='navigation transition-enabled'
               onMouseEnter={hoverOnHandler}
               onMouseLeave={hoverOutHandler}
             >
