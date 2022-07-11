@@ -36,7 +36,7 @@ import PageEditorModeManager from './PageEditorModeManager';
 import { SubNavButtons } from './SubNavButtons';
 
 
-type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
+type AdditionalMenuItemsProps = {
   pageId: string,
   revisionId: string,
   isLinkSharingDisabled?: boolean,
@@ -142,7 +142,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 type GrowiContextualSubNavigationProps = {
-  isCompactMode: boolean,
+  isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
 
@@ -259,18 +259,19 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateEditorMode(viewType);
     }
 
-    let additionalMenuItemsRenderer;
-    if (revisionId != null) {
-      additionalMenuItemsRenderer = props => (
+    const additionalMenuItemsRenderer = () => {
+      if (revisionId == null || pageId == null) {
+        return <></>;
+      }
+      return (
         <AdditionalMenuItems
-          {...props}
           pageId={pageId}
           revisionId={revisionId}
           isLinkSharingDisabled={isLinkSharingDisabled}
           onClickTemplateMenuItem={templateMenuItemClickHandler}
         />
       );
-    }
+    };
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>

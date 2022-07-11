@@ -39,7 +39,7 @@ import {
   useOwnerOfCurrentPage, useIsUserPage, useCurrentPageId,
   useIsForbidden, useIsNotFoundPermalink, useIsTrashPage, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsGuestUser, useIsNotCreatable,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useIsIdenticalPath,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useIsIdenticalPath, useDisableLinkSharing,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
 
@@ -84,6 +84,7 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+  disableLinkSharing: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -123,6 +124,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
+  useDisableLinkSharing(props.disableLinkSharing);
 
   // useRendererSettings({
   //   isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -182,9 +184,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
         <header className="py-0">
-          {/* <GrowiSubNavigation /> */}
-          GrowiSubNavigation
-          <GrowiContextualSubNavigation />
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
@@ -310,6 +310,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   // props.editorConfig = {
   //   upload: {
   //     image: crowi.fileUploadService.getIsUploadable(),
