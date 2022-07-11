@@ -35,19 +35,19 @@ type MarkdownSettings = {
 
 export default class GrowiRenderer {
 
-  preProcessors: any[]
+  preProcessors: any[];
 
-  postProcessors: any[]
+  postProcessors: any[];
 
-  md: any
+  md: any;
 
-  isMarkdownItConfigured: boolean
+  isMarkdownItConfigured: boolean;
 
-  markdownItConfigurers: any[]
+  markdownItConfigurers: any[];
 
-  growiRendererConfig: GrowiRendererConfig
+  growiRendererConfig: GrowiRendererConfig;
 
-  pagePath?: Nullable<string>
+  pagePath?: Nullable<string>;
 
   /**
    *
