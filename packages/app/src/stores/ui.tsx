@@ -1,8 +1,6 @@
 import { RefObject } from 'react';
 
-import { constants } from 'zlib';
-
-import { isClient, pagePathUtils } from '@growi/core';
+import { isClient } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -19,14 +17,14 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
+import { isTrashTopPage } from '../../../core/src/utils/page-path-utils';
+
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-
-const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -426,6 +424,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();
+  const { data: shareLinkId } = useShareLinkId();
 
   const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
@@ -434,8 +433,9 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
+    // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
 };
 

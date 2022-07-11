@@ -1,5 +1,4 @@
 import { format, subSeconds } from 'date-fns';
-import rateLimit from 'express-rate-limit';
 
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
@@ -40,13 +39,6 @@ module.exports = (crowi) => {
         }),
     ],
   };
-
-  const apiLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 30, // limit each IP to 30 requests per windowMs
-    message:
-    'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
-  });
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
@@ -95,7 +87,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.put('/', apiLimiter, checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
