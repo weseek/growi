@@ -4,6 +4,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { GrowiRendererConfig } from '~/interfaces/services/renderer';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
@@ -196,6 +197,10 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useStaticSWR('isLatestRevision', initialData);
+};
+
+export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRResponse<GrowiRendererConfig, any> => {
+  return useStaticSWR('growiRendererConfig', initialData);
 };
 
 

@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AppContainer from '~/client/services/AppContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import { withUnstatedContainers } from '../UnstatedUtils';

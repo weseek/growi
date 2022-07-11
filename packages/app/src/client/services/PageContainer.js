@@ -13,10 +13,10 @@ import { apiv3Post } from '../util/apiv3-client';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
-} from '../util/interceptor/detach-code-blocks';
+} from '../../services/renderer/interceptor/detach-code-blocks';
 import {
   DrawioInterceptor,
-} from '../util/interceptor/drawio-interceptor';
+} from '../../services/renderer/interceptor/drawio-interceptor';
 
 const { isTrashPage } = pagePathUtils;
 
