@@ -1,146 +1,146 @@
-context('Switch Sidebar content', () => {
-  const ssPrefix = 'switch-sidebar-content';
+// context('Switch Sidebar content', () => {
+//   const ssPrefix = 'switch-sidebar-content';
 
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//   });
 
-  it('PageTree is successfully shown', () => {
-    cy.visit('/page');
-    cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
-  });
+//   it('PageTree is successfully shown', () => {
+//     cy.visit('/page');
+//     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+//     // eslint-disable-next-line cypress/no-unnecessary-waiting
+//     cy.wait(1500);
+//     cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
+//   });
 
-});
-
-
-context('Modal for page operation', () => {
-
-  const ssPrefix = 'modal-for-page-operation-';
-
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
-
-  it("PageCreateModal is shown successfully", () => {
-    cy.visit('/me');
-
-    cy.getByTestid('newPageBtn').click();
-
-    cy.getByTestid('page-create-modal').should('be.visible').screenshot(`${ssPrefix}-open`);
-
-    cy.getByTestid('row-create-page-under-below').find('input.form-control').clear().type('/new-page');
-    cy.getByTestid('btn-create-page-under-below').click();
-
-    cy.getByTestid('page-editor').should('be.visible');
-    cy.screenshot(`${ssPrefix}-create-clicked`, {capture: 'viewport'});
-  });
-
-  it('PageDeleteModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4');
-
-     cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-delete-modal-btn').click();
-    });
-
-     cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}-delete-bootstrap4`);
-  });
-
-  it('PageDuplicateModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4', {  });
-
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click();
-      cy.getByTestid('open-page-duplicate-modal-btn').click();
-    });
-
-    cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
-  });
-
-  it('PageMoveRenameModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4', {  });
-
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click();
-      cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
-    });
-
-    cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap4`);
-  });
-
-});
+// });
 
 
-context('Open presentation modal', () => {
+// context('Modal for page operation', () => {
 
-  const ssPrefix = 'access-to-presentation-modal-';
+//   const ssPrefix = 'modal-for-page-operation-';
 
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//   });
 
-  it('PresentationModal for "/" is shown successfully', () => {
-    cy.visit('/');
+//   it("PageCreateModal is shown successfully", () => {
+//     cy.visit('/me');
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-presentation-modal-btn').click({force: true});
-    });
+//     cy.getByTestid('newPageBtn').click();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-open-top`);
-  });
+//     cy.getByTestid('page-create-modal').should('be.visible').screenshot(`${ssPrefix}-open`);
 
-});
+//     cy.getByTestid('row-create-page-under-below').find('input.form-control').clear().type('/new-page');
+//     cy.getByTestid('btn-create-page-under-below').click();
 
-context('Page Accessories Modal', () => {
+//     cy.getByTestid('page-editor').should('be.visible');
+//     cy.screenshot(`${ssPrefix}-create-clicked`, {capture: 'viewport'});
+//   });
 
-  const ssPrefix = 'access-to-page-accessories-modal';
+//   it('PageDeleteModal is shown successfully', () => {
+//     cy.visit('/Sandbox/Bootstrap4');
 
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
+//      cy.get('#grw-subnav-container').within(() => {
+//        cy.getByTestid('open-page-item-control-btn').click();
+//        cy.getByTestid('open-page-delete-modal-btn').click();
+//     });
 
-  it('Page History is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
-     cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click();
-    });
+//      cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}-delete-bootstrap4`);
+//   });
 
-     cy.getByTestid('page-accessories-modal').should('be.visible')
-     cy.getByTestid('page-history').should('be.visible')
-     cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
-  });
-  it('Page Attachment Data is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
-     cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
-    });
+//   it('PageDuplicateModal is shown successfully', () => {
+//     cy.visit('/Sandbox/Bootstrap4', {  });
 
-     cy.getByTestid('page-accessories-modal').should('be.visible')
-     cy.getByTestid('page-attachment').should('be.visible')
-     cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
-  });
+//     cy.get('#grw-subnav-container').within(() => {
+//       cy.getByTestid('open-page-item-control-btn').click();
+//       cy.getByTestid('open-page-duplicate-modal-btn').click();
+//     });
 
-});
+//     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
+//   });
+
+//   it('PageMoveRenameModal is shown successfully', () => {
+//     cy.visit('/Sandbox/Bootstrap4', {  });
+
+//     cy.get('#grw-subnav-container').within(() => {
+//       cy.getByTestid('open-page-item-control-btn').click();
+//       cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
+//     });
+
+//     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap4`);
+//   });
+
+// });
+
+
+// context('Open presentation modal', () => {
+
+//   const ssPrefix = 'access-to-presentation-modal-';
+
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//   });
+
+//   it('PresentationModal for "/" is shown successfully', () => {
+//     cy.visit('/');
+
+//     cy.get('#grw-subnav-container').within(() => {
+//       cy.getByTestid('open-page-item-control-btn').click({force: true});
+//       cy.getByTestid('open-presentation-modal-btn').click({force: true});
+//     });
+
+//     // eslint-disable-next-line cypress/no-unnecessary-waiting
+//     cy.wait(1500);
+//     cy.screenshot(`${ssPrefix}-open-top`);
+//   });
+
+// });
+
+// context('Page Accessories Modal', () => {
+
+//   const ssPrefix = 'access-to-page-accessories-modal';
+
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//   });
+
+//   it('Page History is shown successfully', () => {
+//      cy.visit('/Sandbox/Bootstrap4', {  });
+//      cy.get('#grw-subnav-container').within(() => {
+//        cy.getByTestid('open-page-item-control-btn').click();
+//        cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click();
+//     });
+
+//      cy.getByTestid('page-accessories-modal').should('be.visible')
+//      cy.getByTestid('page-history').should('be.visible')
+//      cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
+//   });
+//   it('Page Attachment Data is shown successfully', () => {
+//      cy.visit('/Sandbox/Bootstrap4', {  });
+//      cy.get('#grw-subnav-container').within(() => {
+//        cy.getByTestid('open-page-item-control-btn').click();
+//        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
+//     });
+
+//      cy.getByTestid('page-accessories-modal').should('be.visible')
+//      cy.getByTestid('page-attachment').should('be.visible')
+//      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
+//   });
+
+// });
 
 context('Tag Oprations', () =>{
 
@@ -246,13 +246,11 @@ context('Tag Oprations', () =>{
     });
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').clear({force: true})
-      cy.get('.rbt-input-main').click().focused().type(newPageName, {force: true})
-      .should('have.value', newPageName);
+      cy.get('.rbt-input-main').clear().type(newPageName,{force: true});
     }).screenshot(`${ssPrefix}3-insert-new-page-name`);
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.getByTestid('rename-page-button').click();
+      cy.get('.modal-footer > button').click();
     });
 
     cy.visit(`/${newPageName}`);
