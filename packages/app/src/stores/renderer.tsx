@@ -1,4 +1,5 @@
 import { Key, SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { RendererSettings } from '~/interfaces/services/renderer';
 import GrowiRenderer, {
@@ -8,68 +9,61 @@ import { useStaticSWR } from '~/stores/use-static-swr';
 
 import { useCurrentPagePath, useGrowiRendererConfig } from './context';
 
-export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, any> => {
+export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, Error> => {
   return useStaticSWR('rendererSettings', initialData);
 };
 
 // The base hook with common processes
-const _useRendererBase = (key: Key, generator: RendererGenerator): SWRResponse<GrowiRenderer, any> => {
-  let _key = key;
-
-  const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
+const _useRendererBase = (key: string, generator: RendererGenerator): SWRResponse<GrowiRenderer, Error> => {
   const { data: rendererSettings } = useRendererSettings();
   const { data: currentPath } = useCurrentPagePath();
   const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  if (rendererSettings == null || growiRendererConfig == null) {
-    _key = null;
-  }
-  // Initialize renderer
-  else if (renderer == null) {
-    const generated = generator(growiRendererConfig, rendererSettings, currentPath);
-    mutateRenderer(generated);
-  }
-
-  return useStaticSWR(_key);
+  return useSWRImmutable(
+    (rendererSettings == null || growiRendererConfig == null || currentPath == null)
+      ? null
+      : [key, rendererSettings, growiRendererConfig, currentPath],
+    (key, rendererSettings, growiRendererConfig, currentPath) => generator(growiRendererConfig, rendererSettings, currentPath),
+  );
 };
 
-export const useViewRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'viewRenderer';
+export const useViewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'viewRenderer';
 
   return _useRendererBase(key, generateViewRenderer);
 };
 
-export const usePreviewRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'previewRenderer';
+export const usePreviewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'previewRenderer';
 
   return _useRendererBase(key, generatePreviewRenderer);
 };
 
-export const useCommentPreviewRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'commentPreviewRenderer';
+export const useCommentPreviewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'commentPreviewRenderer';
 
   return _useRendererBase(key, generateCommentPreviewRenderer);
 };
 
-export const useSearchResultRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'searchResultRenderer';
+export const useSearchResultRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'searchResultRenderer';
 
   return _useRendererBase(key, generateViewRenderer);
 };
 
-export const useTimelineRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'timelineRenderer';
+export const useTimelineRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'timelineRenderer';
 
   return _useRendererBase(key, generateViewRenderer);
 };
 
-export const useDraftRenderer = (): SWRResponse<GrowiRenderer, any> => {
-  const key: Key = 'draftRenderer';
+export const useDraftRenderer = (): SWRResponse<GrowiRenderer, Error> => {
+  const key = 'draftRenderer';
 
   return _useRendererBase(key, generateViewRenderer);
 };
 
-export const useCustomSidebarRenderer = (): SWRResponse<GrowiRenderer, any> => {
+export const useCustomSidebarRenderer = (): SWRResponse<GrowiRenderer, Error> => {
   const key: Key = 'customSidebarRenderer';
 
   return _useRendererBase(key, generateViewRenderer);
