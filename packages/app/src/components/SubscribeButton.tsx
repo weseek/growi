@@ -5,6 +5,8 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { SubscriptionStatusType } from '~/interfaces/subscription';
 
+import styles from './SubscribeButton.module.scss';
+
 
 type Props = {
   isGuestUser?: boolean,
@@ -38,7 +40,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={props.onClick}
-        className={`btn btn-subscribe border-0 ${buttonClass}`}
+        className={`btn ${styles['btn-subscribe']} border-0 ${buttonClass}`}
       >
         <i className={iconClass}></i>
       </button>
