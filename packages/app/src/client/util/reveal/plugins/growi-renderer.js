@@ -11,7 +11,7 @@
   const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   /* eslint-enable no-useless-escape */
 
-  const growiRenderer = window.parent.growiRenderer;
+  const growiRenderer = window.parent.previewRenderer;
 
   let marked;
 
