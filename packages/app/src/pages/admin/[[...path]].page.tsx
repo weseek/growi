@@ -102,8 +102,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     users: {
       title: useCustomTitle(props, t('User_Management')),
-      // component: <UserManagement />,
-      component: <>UserManagement</>,
+      component: <UserManagement />,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
