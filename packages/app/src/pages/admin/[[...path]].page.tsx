@@ -75,7 +75,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
       component: <MarkDownSettingContents />,
-      // component: <>MarkDownSettingContents</>,
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
