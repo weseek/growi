@@ -70,7 +70,7 @@ module.exports = (crowi) => {
   router.use('/forgot-password', require('./forgot-password')(crowi));
 
   const user = require('../user')(crowi, null);
-  router.get('/check_username', user.api.checkUsername);
+  router.get('/check-username', user.api.checkUsername);
 
   router.post('/complete-registration',
     injectUserRegistrationOrderByTokenMiddleware,

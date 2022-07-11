@@ -1,12 +1,12 @@
 import { isTopPage } from './page-path-utils';
 
-const GRANT_PUBLIC = 1;
+// const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
 const GRANT_SPECIFIED = 3; // DEPRECATED
-const GRANT_OWNER = 4;
-const GRANT_USER_GROUP = 5;
-const PAGE_GRANT_ERROR = 1;
-const STATUS_PUBLISHED = 'published';
+// const GRANT_OWNER = 4;
+// const GRANT_USER_GROUP = 5;
+// const PAGE_GRANT_ERROR = 1;
+// const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
 /**

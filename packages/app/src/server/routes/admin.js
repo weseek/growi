@@ -423,6 +423,8 @@ module.exports = function(crowi, app) {
 
     try {
       errors = await importer.importDataFromEsa(user);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       errors = [err];
@@ -446,6 +448,8 @@ module.exports = function(crowi, app) {
 
     try {
       errors = await importer.importDataFromQiita(user);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       errors = [err];
