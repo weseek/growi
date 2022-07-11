@@ -40,7 +40,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) */}
+              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
               <Provider>
                 {children}
               </Provider>
