@@ -47,7 +47,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
+  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
@@ -95,7 +95,6 @@ type Props = CommonProps & {
   // hasSlackConfig: boolean,
   // drawioUri: string,
   // hackmdUri: string,
-  // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
@@ -159,7 +158,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
   // useHackmdUri(props.hackmdUri);
-  // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
 

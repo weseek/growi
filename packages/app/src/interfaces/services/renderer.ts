@@ -12,7 +12,6 @@ export type GrowiHydratedEnv = {
   BLOCKDIAG_URI: string | null,
   DRAWIO_URI: string | null,
   HACKMD_URI: string | null,
-  MATHJAX: string | null,
   NO_CDN: string | null,
   GROWI_CLOUD_URI: string | null,
   GROWI_APP_ID_FOR_GROWI_CLOUD: string | null,
@@ -20,5 +19,5 @@ export type GrowiHydratedEnv = {
 
 export type GrowiRendererConfig = {
   highlightJsStyleBorder: boolean
-  env: Pick<GrowiHydratedEnv, 'MATHJAX' | 'PLANTUML_URI' | 'BLOCKDIAG_URI'>
+  env: Pick<GrowiHydratedEnv, 'PLANTUML_URI' | 'BLOCKDIAG_URI'>
 } & XssOptionConfig;
