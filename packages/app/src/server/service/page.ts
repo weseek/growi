@@ -6,7 +6,6 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -19,7 +18,6 @@ import {
 import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
@@ -154,98 +152,6 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
-
-    // update
-    this.pageEvent.on('update', async(page, user) => {
-
-      this.pageEvent.onUpdate();
-
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_UPDATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // Change the parameter of the function into the pages
-    // rename
-    this.pageEvent.on('rename', async(page, user, descendantPages?) => {
-      const isRecursively = descendantPages != null;
-      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_RENAME : SUPPORTED_ACTION_TYPE.ACTION_PAGE_RENAME;
-      try {
-        await this.createAndSendNotifications(page, user, action, descendantPages);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // duplicate
-    this.pageEvent.on('duplicate', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_DUPLICATE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete
-    this.pageEvent.on('delete', async(page, user, descendantPages?) => {
-      const isRecursively = descendantPages != null;
-      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE;
-      try {
-        await this.createAndSendNotifications(page, user, action, descendantPages);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user, descendantPages?) => {
-      const isRecursively = descendantPages != null;
-      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SUPPORTED_ACTION_TYPE.ACTION_PAGE_DELETE_COMPLETELY;
-      try {
-        await this.createAndSendNotifications(page, user, action, descendantPages);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // revert
-    this.pageEvent.on('revert', async(page, user, descendantPages?) => {
-      const isRecursively = descendantPages != null;
-      const action = isRecursively ? SUPPORTED_ACTION_TYPE.ACTION_PAGE_RECURSIVELY_REVERT : SUPPORTED_ACTION_TYPE.ACTION_PAGE_REVERT;
-      try {
-        await this.createAndSendNotifications(page, user, action, descendantPages);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // likes
-    this.pageEvent.on('like', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_LIKE);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-
-    // bookmark
-    this.pageEvent.on('bookmark', async(page, user) => {
-      try {
-        await this.createAndSendNotifications(page, user, SUPPORTED_ACTION_TYPE.ACTION_PAGE_BOOKMARK);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
@@ -754,7 +660,7 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename');
 
     return renamedPage;
   }
@@ -2307,35 +2213,6 @@ class PageService {
     });
 
     return shortBodiesMap;
-  }
-
-  private async createAndSendNotifications(page: PageDocument, user: any, action: any, descendantPages?: PageDocument[]) {
-    const { activityService, inAppNotificationService } = this.crowi;
-
-    const snapshot = stringifySnapshot(page);
-
-    // Create activity
-    const parameters = {
-      user: user._id,
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: page,
-      action,
-    };
-    const activity = await activityService.createByParameters(parameters);
-    // Get user to be notified
-    let targetUsers = await activity.getNotificationTargetUsers();
-    if (descendantPages != null && descendantPages.length > 0) {
-      const User = this.crowi.model('User');
-      const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
-      const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== user._id.toString()));
-      targetUsers = targetUsers.concat(await User.find({
-        _id: { $in: descendantsUsers },
-        status: User.STATUS_ACTIVE,
-      }).distinct('_id'));
-    }
-    // Create and send notifications
-    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
-    await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
   async normalizeParentByPath(path: string, user): Promise<void> {

@@ -18,9 +18,6 @@ const SubscribeButton: FC<Props> = (props: Props) => {
 
   const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
 
-  const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
-
   const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
       return 'Not available for guest';
@@ -38,9 +35,10 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={props.onClick}
-        className={`btn btn-subscribe border-0 ${buttonClass}`}
+        className={`shadow-none btn btn-subscribe border-0
+          ${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={iconClass}></i>
+        <i className={`fa ${isSubscribing ? 'fa-bell' : 'fa-bell-slash-o'}`}></i>
       </button>
 
       <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
