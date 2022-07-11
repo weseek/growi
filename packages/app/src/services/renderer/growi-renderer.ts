@@ -197,7 +197,7 @@ export default class GrowiRenderer {
 }
 
 export interface RendererGenerator {
-  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>): GrowiRenderer
+  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>): GrowiRenderer
 }
 
 export const generateViewRenderer: RendererGenerator = (
