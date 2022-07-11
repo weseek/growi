@@ -516,12 +516,20 @@ module.exports = (crowi) => {
 
     let page;
     let renamedPage;
+    let descendantPages;
 
     try {
       page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+      const pages = await Page.findListWithDescendants(page.path, req.user);
+      descendantPages = pages.pages;
+      descendantPages.pop();
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
+      }
+
+      if (descendantPages == null && options.isRecursively) {
+        return res.apiv3Err(new ErrorV3(`Page '${pageId}' has no descendant pages`, 'notfound_or_forbidden'), 401);
       }
 
       // empty page does not require revisionId validation
@@ -553,9 +561,9 @@ module.exports = (crowi) => {
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SupportedAction.ACTION_PAGE_RENAME,
+      action: options.isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
     };
-    activityEvent.emit('update', activityId, parameters, page);
+    activityEvent.emit('update', activityId, parameters, page, descendantPages);
 
     return res.apiv3(result);
   });

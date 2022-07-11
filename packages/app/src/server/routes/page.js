@@ -1287,15 +1287,23 @@ module.exports = function(crowi, app) {
 
     debug('Delete page', page._id, page.path);
 
+    let deleteAction;
+    let descendantPages;
+
     try {
+      const pages = await Page.findListWithDescendants(page.path, req.user);
+      descendantPages = pages.pages;
+      descendantPages.pop();
       if (isCompletely) {
         if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
+        deleteAction = isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE_COMPLETELY;
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
         // behave like not found
+        deleteAction = isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE : SupportedAction.ACTION_PAGE_DELETE;
         const notRecursivelyAndEmpty = page.isEmpty && !isRecursively;
         if (notRecursivelyAndEmpty) {
           return res.json(ApiResponse.error(`Page '${pageId}' is not found.`, 'notfound'));
@@ -1326,9 +1334,10 @@ module.exports = function(crowi, app) {
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: isCompletely ? SupportedAction.ACTION_PAGE_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE,
+      action: deleteAction,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, descendantPages);
 
     res.json(ApiResponse.success(result));
 
@@ -1362,10 +1371,18 @@ module.exports = function(crowi, app) {
     const isRecursively = req.body.recursively;
 
     let page;
+    let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
+      const pages = await Page.findListWithDescendants(page.path, req.user);
+      descendantPages = pages.pages;
+      console.log('What are the descendant pages\n', descendantPages);
+      descendantPages.pop();
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
+      }
+      if (descendantPages == null && isRecursively) {
+        throw new Error(`Page '${pageId}' has no descendant pages`, 'notfound_or_forbidden');
       }
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
@@ -1384,9 +1401,9 @@ module.exports = function(crowi, app) {
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: page,
-      action: SupportedAction.ACTION_PAGE_REVERT,
+      action: isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT : SupportedAction.ACTION_PAGE_REVERT,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, descendantPages);
 
     return res.json(ApiResponse.success(result));
   };

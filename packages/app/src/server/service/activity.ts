@@ -9,6 +9,7 @@ import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
+import { PageDocument } from '../models/page';
 
 
 const logger = loggerFactory('growi:service:ActivityService');
@@ -39,7 +40,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
+    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantPages?: PageDocument[]) => {
       let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
@@ -52,7 +53,7 @@ class ActivityService {
           return;
         }
 
-        this.activityEvent.emit('updated', activity, target);
+        this.activityEvent.emit('updated', activity, target, descendantPages);
       }
     });
   }

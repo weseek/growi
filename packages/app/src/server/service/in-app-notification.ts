@@ -18,6 +18,7 @@ import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../crowi';
+import { PageDocument } from '../models/page';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 
@@ -51,11 +52,11 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage, descendantPages?: PageDocument[]) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
-          await this.createInAppNotification(activity, target);
+          await this.createInAppNotification(activity, target, descendantPages);
         }
       }
       catch (err) {
@@ -199,14 +200,25 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IPage): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantPages?: PageDocument[]): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
         mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
       }
-      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      let notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      console.log('What are the descendant pages and target users\n', descendantPages, notificationTargetUsers);
+      if (descendantPages != null && descendantPages.length > 0) {
+        const User = this.crowi.model('User');
+        const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
+        const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== activity.user._id.toString()));
+        notificationTargetUsers = notificationTargetUsers.concat(await User.find({
+          _id: { $in: descendantsUsers },
+          status: User.STATUS_ACTIVE,
+        }).distinct('_id'));
+      }
+      console.log('Who are the target users?\n', notificationTargetUsers);
       const snapshot = stringifySnapshot(target as IPage);
       await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers], activity, snapshot);
       await this.emitSocketIo(notificationTargetUsers);
