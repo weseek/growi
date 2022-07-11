@@ -90,8 +90,8 @@ module.exports = function(crowi, app) {
   app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
-  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
   // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
