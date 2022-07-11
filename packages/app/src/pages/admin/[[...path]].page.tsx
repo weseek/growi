@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
+import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -13,7 +14,6 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-// import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 // import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 // import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 // import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
@@ -56,13 +56,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
-      // component: <AdminHome
-      //   nodeVersion={props.nodeVersion}
-      //   npmVersion={props.npmVersion}
-      //   yarnVersion={props.yarnVersion}
-      //   installedPlugins={props.installedPlugins}
-      // />,
-      component: <>AdminHome</>,
+      component: <AdminHome
+        nodeVersion={props.nodeVersion}
+        npmVersion={props.npmVersion}
+        yarnVersion={props.yarnVersion}
+        installedPlugins={props.installedPlugins}
+      />,
     },
     app: {
       title: useCustomTitle(props, t('App Settings')),
