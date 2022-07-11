@@ -1,13 +1,13 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-
-import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
-
-import AdminLayout from '~/components/AdminLayout';
-
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+
+import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
+import UserManagement from '~/components/Admin/UserManagement';
+import AdminLayout from '~/components/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -20,12 +20,9 @@ import ConfigLoader from '~/server/service/config-loader';
 // import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 // import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 // import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
-import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
-import UserManagement from '~/components/Admin/UserManagement';
-
 import {
   useCurrentUser,
- /* useSearchServiceConfigured, useSearchServiceReachable,*/ useSiteUrl,
+  /* useSearchServiceConfigured, useSearchServiceReachable, */ useSiteUrl,
 } from '~/stores/context';
 // import { useEnvVars } from '~/stores/admin-context';
 
@@ -48,7 +45,6 @@ type Props = CommonProps & {
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
-  console.log('AdminMarkdownSettingsPage_props', props)
 
   const { t } = useTranslation();
   const router = useRouter();
