@@ -73,6 +73,14 @@ export const isUserPage = (path: string): boolean => {
 };
 
 /**
+ * Whether path is the top page of users
+ * @param path
+ */
+export const isTrashTopPage = (path: string): boolean => {
+  return path === '/trash';
+};
+
+/**
  * Whether path belongs to the trash page
  * @param path
  */

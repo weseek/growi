@@ -6,6 +6,7 @@ import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
@@ -459,9 +460,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-              </a>
+              <Link href={`/${page._id}`}>
+                <a className="grw-pagetree-title-anchor flex-grow-1">
+                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                </a>
+              </Link>
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (

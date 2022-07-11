@@ -35,14 +35,24 @@ export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPageHasI
   return useSWRxPage(currentPageId ?? undefined, shareLinkId, initialData);
 };
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo, Error> => {
-  const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
-    return {
-      tags: response.tags,
-    };
-  }));
+export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+
+  const endpoint = `/pages.getPageTag?pageId=${pageId}`;
+  const key = [endpoint, pageId];
+
+  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
+    let tags: string[] = [];
+    // when the page exists
+    if (pageId != null) {
+      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
+      tags = res?.tags;
+    }
+
+    return { tags };
+  };
+
+  return useSWRImmutable(key, fetcher);
 };
 
 export const useSWRxPageInfo = (

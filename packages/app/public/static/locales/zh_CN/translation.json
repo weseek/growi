@@ -134,6 +134,8 @@
   "UserGroup": "用户组",
   "ChildUserGroup": "儿童用户组",
 	"UserGroup Management": "用户组管理",
+  "AuditLog": "审计日志",
+  "AuditLog Settings": "审计日志设置",
 	"Full Text Search Management": "全文搜索管理",
 	"Import Data": "导入数据",
 	"Export Archive Data": "导出主题数据",
