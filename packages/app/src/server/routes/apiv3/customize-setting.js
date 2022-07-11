@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import rateLimit from 'express-rate-limit';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
@@ -16,14 +15,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body, query } = require('express-validator');
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
-  message:
-    'Too many requests sent from this IP, please try again after 15 minutes',
-});
-
 const multer = require('multer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -696,7 +687,7 @@ module.exports = (crowi) => {
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
 
-  router.put('/customize-logo', apiLimiter, loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
       isDefaultLogo, customizedLogoSrc,
@@ -721,7 +712,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/upload-brand-logo', apiLimiter, uploads.single('file'), loginRequiredStrictly,
+  router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
     adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
@@ -764,7 +755,7 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
-  router.delete('/delete-brand-logo', apiLimiter, loginRequiredStrictly,
+  router.delete('/delete-brand-logo', loginRequiredStrictly,
     adminRequired, csrf, async(req, res) => {
 
       const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
