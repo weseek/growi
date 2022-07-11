@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Provider } from 'unstated';
-import { RawLayout } from './RawLayout';
-import dynamic from 'next/dynamic';
-import { GrowiNavbar } from './Navbar/GrowiNavbar';
 
-// import { BasicLayout } from './BasicLayout';
+import dynamic from 'next/dynamic';
+import { Provider } from 'unstated';
+
+import { GrowiNavbar } from './Navbar/GrowiNavbar';
+import { RawLayout } from './RawLayout';
+
 // import { injectableContainers } from '~/client/admin';
-// import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
 
 type Props = {
   title: string
@@ -18,6 +18,7 @@ type Props = {
   selectedNavOpt: string
   children?: ReactNode
 }
+
 
 const AdminLayout = ({
   children, title, selectedNavOpt,
@@ -39,6 +40,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
+              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) */}
               <Provider>
                 {children}
               </Provider>
