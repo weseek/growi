@@ -55,7 +55,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`btn btn-bookmark border-0
+        className={`shadow-none btn btn-bookmark border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
@@ -67,7 +67,12 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
 
       { !hideTotalNumber && (
         <>
-          <button type="button" id="po-total-bookmarks" className={`btn btn-bookmark border-0 total-bookmarks ${props.isBookmarked ? 'active' : ''}`}>
+          <button
+            type="button"
+            id="po-total-bookmarks"
+            className={`shadow-none btn btn-bookmark border-0
+              total-bookmarks ${props.isBookmarked ? 'active' : ''}`}
+          >
             {bookmarkCount ?? 0}
           </button>
           { bookmarkedUsers != null && (

@@ -1,6 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 
-import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
@@ -161,11 +163,14 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     getPage: [
@@ -313,7 +318,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -337,13 +342,17 @@ module.exports = (crowi) => {
 
     const result = { page };
     result.seenUser = page.seenUsers;
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     res.apiv3({ result });
 
     if (isLiked) {
-      const pageEvent = crowi.event('page');
-      // in-app notification
-      pageEvent.emit('like', page, req.user);
-
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
@@ -606,6 +615,17 @@ module.exports = (crowi) => {
       'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
     });
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_EXPORT,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
+
     return stream.pipe(res);
   });
 
@@ -777,12 +797,24 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+
+      const parameters = {};
+      if (SubscriptionStatusType.SUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_SUBSCRIBE });
+      }
+      else if (SubscriptionStatusType.UNSUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_UNSUBSCRIBE });
+      }
+      if ('action' in parameters) {
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+      }
+
       return res.apiv3({ subscription });
     }
     catch (err) {

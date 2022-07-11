@@ -1,7 +1,5 @@
 import { RefObject } from 'react';
 
-import { constants } from 'zlib';
-
 import { isClient, isServer, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
@@ -21,12 +19,12 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
-  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
-const { isSharedPage } = pagePathUtils;
+const { isTrashTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -425,18 +423,21 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
+  const { data: shareLinkId } = useShareLinkId();
 
-  const includesUndefined = [isUserPage, isSharedUser, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
-    () => !isUserPage && !isSharedUser && !isIdenticalPath && !(isViewMode && isNotFound),
+    // "/trash" page does not exist on page collection and unable to add tags
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 

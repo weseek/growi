@@ -1,27 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 
+import Link from 'next/link';
 import urljoin from 'url-join';
 
 import LinkedPagePath from '../models/linked-page-path';
 
 
+type PagePathHierarchicalLinkProps = {
+  linkedPagePath: LinkedPagePath,
+  linkedPagePathByHtml?: LinkedPagePath,
+  basePath?: string,
+  isInTrash?: boolean,
+
+  // !!INTERNAL USE ONLY!!
+  isInnerElem?: boolean,
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PagePathHierarchicalLink = (props) => {
+const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
   } = props;
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
-      return null;
+      return <></>;
     }
 
     return isInTrash
       ? (
         <>
           <span className="path-segment">
-            <a href="/trash"><i className="icon-trash"></i></a>
+            <Link href="/trash">
+              <a ><i className="icon-trash"></i></a>
+            </Link>
           </span>
           <span className="separator"><a href="/">/</a></span>
         </>
@@ -29,10 +41,12 @@ const PagePathHierarchicalLink = (props) => {
       : (
         <>
           <span className="path-segment">
-            <a href="/">
-              <i className="icon-home"></i>
-              <span className="separator">/</span>
-            </a>
+            <Link href="/">
+              <a >
+                <i className="icon-home"></i>
+                <span className="separator">/</span>
+              </a>
+            </Link>
           </span>
         </>
       );
@@ -68,25 +82,19 @@ const PagePathHierarchicalLink = (props) => {
         <span className="separator">/</span>
       ) }
 
-      {
-        shouldDangerouslySetInnerHTML
-          // eslint-disable-next-line react/no-danger
-          ? <a className="page-segment" href={href} dangerouslySetInnerHTML={{ __html: linkedPagePathByHtml.pathName }}></a>
-          : <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
-      }
+      <Link href={href}>
+        {
+          shouldDangerouslySetInnerHTML
+            // eslint-disable-next-line react/no-danger
+            ? <a className="page-segment" dangerouslySetInnerHTML={{ __html: linkedPagePathByHtml.pathName }}></a>
+            : <a className="page-segment" >{linkedPagePath.pathName}</a>
+        }
+      </Link>
 
     </RootElm>
   );
-};
+});
+PagePathHierarchicalLink.displayName = 'PagePathHierarchicalLink';
 
-PagePathHierarchicalLink.propTypes = {
-  linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
-  linkedPagePathByHtml: PropTypes.instanceOf(LinkedPagePath), // Not required
-  basePath: PropTypes.string,
-  isInTrash: PropTypes.bool,
-
-  // !!INTERNAL USE ONLY!!
-  isInnerElem: PropTypes.bool,
-};
 
 export default PagePathHierarchicalLink;

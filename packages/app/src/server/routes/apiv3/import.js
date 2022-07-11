@@ -1,15 +1,21 @@
 import mongoose from 'mongoose';
 
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
+
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
+
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
 const path = require('path');
-const multer = require('multer');
 
 const express = require('express');
+const multer = require('multer');
+
 
 const GrowiArchiveImportOption = require('~/models/admin/growi-archive-import-option');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -67,8 +73,10 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   this.adminEvent = crowi.event('admin');
+  const activityEvent = crowi.event('activity');
 
   // setup event
   this.adminEvent.on('onProgressForImport', (data) => {
@@ -203,7 +211,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, optionsMap } = req.body;
 
@@ -285,6 +293,8 @@ module.exports = (crowi) => {
      */
     try {
       importService.import(collections, importSettingsMap);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       logger.error(err);
@@ -320,7 +330,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
@@ -336,6 +346,10 @@ module.exports = (crowi) => {
     try {
       // validate with meta.json
       importService.validate(data.meta);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_UPLOAD };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(data);
     }
     catch {
