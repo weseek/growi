@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
 import AdminHome from '~/components/Admin/AdminHome/AdminHome';
+import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -14,7 +15,6 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-// import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 // import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 // import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 // import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
@@ -65,8 +65,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     app: {
       title: useCustomTitle(props, t('App Settings')),
-      // component: <AppSettingsPageContents />,
-      component: <>AppSettingsPageContents</>,
+      component: <AppSettingsPageContents />,
     },
     security: {
       title: useCustomTitle(props, t('security_settings')),
