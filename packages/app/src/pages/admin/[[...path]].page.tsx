@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -16,7 +17,6 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
 // import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-// import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 // import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 // import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 // import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
@@ -74,8 +74,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
-      // component: <MarkDownSettingContents />,
-      component: <>MarkDownSettingContents</>,
+      component: <MarkDownSettingContents />,
+      // component: <>MarkDownSettingContents</>,
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
