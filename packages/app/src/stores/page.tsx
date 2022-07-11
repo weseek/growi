@@ -14,7 +14,7 @@ import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId } from './context';
 
-export const useSWRxPage = (pageId?: string, shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxPage = (pageId?: string|null, shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR<IPageHasId, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
@@ -32,7 +32,7 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error>
 export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  return useSWRxPage(currentPageId ?? undefined, shareLinkId, initialData);
+  return useSWRxPage(currentPageId, shareLinkId, initialData);
 };
 
 

@@ -1,11 +1,15 @@
 import plantumlEncoder from 'plantuml-encoder';
 import urljoin from 'url-join';
 
+import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+
 export default class PlantUMLConfigurer {
 
-  constructor(growiConfig) {
+  serverUrl: string;
+
+  constructor(growiConfig: GrowiRendererConfig) {
     // Do NOT use HTTPS URL because plantuml.com refuse request except from members
-    this.serverUrl = growiConfig.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
+    this.serverUrl = growiConfig.plantumlUri || 'http://plantuml.com/plantuml';
 
     this.generateSource = this.generateSource.bind(this);
   }

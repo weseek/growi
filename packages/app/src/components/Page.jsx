@@ -7,20 +7,21 @@ import MarkdownTable from '~/client/models/MarkdownTable';
 import { getOptionsToSave } from '~/client/util/editor';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
-  useCurrentPagePath, useIsGuestUser,
+  useIsGuestUser,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import { useViewRenderer } from '~/stores/renderer';
 import {
-  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useIsMobile,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 const logger = loggerFactory('growi:Page');
 
@@ -69,74 +70,75 @@ class PageSubstance extends React.Component {
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
-    const {
-      isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
-    } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+    // const {
+    //   isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
+    // } = this.props;
+    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
-      markdownTable,
-      this.props.pageContainer.state.markdown,
-      this.state.currentTargetTableArea.beginLineNumber,
-      this.state.currentTargetTableArea.endLineNumber,
-    );
+    // const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
+    //   markdownTable,
+    //   this.props.pageContainer.state.markdown,
+    //   this.state.currentTargetTableArea.beginLineNumber,
+    //   this.state.currentTargetTableArea.endLineNumber,
+    // );
 
-    try {
-      // disable unsaved warning
-      mutateIsEnabledUnsavedWarning(false);
+    // try {
+    //   // disable unsaved warning
+    //   mutateIsEnabledUnsavedWarning(false);
 
-      // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-      logger.debug('success to save');
+    //   // eslint-disable-next-line no-unused-vars
+    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+    //   logger.debug('success to save');
 
-      pageContainer.showSuccessToastr();
-    }
-    catch (error) {
-      logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
-    }
-    finally {
-      this.setState({ currentTargetTableArea: null });
-    }
+    //   pageContainer.showSuccessToastr();
+    // }
+    // catch (error) {
+    //   logger.error('failed to save', error);
+    //   pageContainer.showErrorToastr(error);
+    // }
+    // finally {
+    //   this.setState({ currentTargetTableArea: null });
+    // }
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    const {
-      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
-    } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+    // const {
+    //   isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
+    // } = this.props;
+    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    const newMarkdown = mdu.replaceDrawioInMarkdown(
-      drawioData,
-      this.props.pageContainer.state.markdown,
-      this.state.currentTargetDrawioArea.beginLineNumber,
-      this.state.currentTargetDrawioArea.endLineNumber,
-    );
+    // const newMarkdown = mdu.replaceDrawioInMarkdown(
+    //   drawioData,
+    //   this.props.pageContainer.state.markdown,
+    //   this.state.currentTargetDrawioArea.beginLineNumber,
+    //   this.state.currentTargetDrawioArea.endLineNumber,
+    // );
 
-    try {
-      // disable unsaved warning
-      mutateIsEnabledUnsavedWarning(false);
+    // try {
+    //   // disable unsaved warning
+    //   mutateIsEnabledUnsavedWarning(false);
 
-      // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-      logger.debug('success to save');
+    //   // eslint-disable-next-line no-unused-vars
+    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+    //   logger.debug('success to save');
 
-      pageContainer.showSuccessToastr();
-    }
-    catch (error) {
-      logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
-    }
-    finally {
-      this.setState({ currentTargetDrawioArea: null });
-    }
+    //   pageContainer.showSuccessToastr();
+    // }
+    // catch (error) {
+    //   logger.error('failed to save', error);
+    //   pageContainer.showErrorToastr(error);
+    // }
+    // finally {
+    //   this.setState({ currentTargetDrawioArea: null });
+    // }
   }
 
   render() {
     const {
-      pageContainer, pagePath, isMobile, isGuestUser,
+      page, isMobile, isGuestUser,
     } = this.props;
-    const { markdown, revisionId } = pageContainer.state;
+    const { path } = page;
+    const { body: markdown, revisionId } = page.revision;
 
     // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
     // const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
@@ -147,7 +149,7 @@ class PageSubstance extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={pagePath} />
+          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={path} />
         )}
 
         { !isGuestUser && (
@@ -167,29 +169,23 @@ class PageSubstance extends React.Component {
 PageSubstance.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
-  pagePath: PropTypes.string.isRequired,
+  page: PropTypes.any.isRequired,
   pageTags:  PropTypes.arrayOf(PropTypes.string),
   editorMode: PropTypes.string.isRequired,
   isGuestUser: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
-  grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
 };
 
 export const Page = (props) => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageTags } = usePageTagsForEditors();
-  const { data: grant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
   const { data: growiRenderer } = useViewRenderer();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
@@ -223,7 +219,7 @@ export const Page = (props) => {
   //   };
   // }, []);
 
-  if (currentPagePath == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
+  if (currentPage == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
     return null;
   }
 
@@ -233,16 +229,13 @@ export const Page = (props) => {
       {...props}
       ref={pageRef}
       growiRenderer={growiRenderer}
-      pagePath={currentPagePath}
+      page={currentPage}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
       pageTags={pageTags}
       slackChannels={slackChannelsData.toString()}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
