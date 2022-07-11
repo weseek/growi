@@ -20,14 +20,14 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
   const [retrieveError, setRetrieveError] = useState<string | null>(null);
-  const [currentBrandLogoSrc, setCurrentBrandLogoSrc] = useState< string | null >(null);
+  const [customizedLogoSrc, setCustomizedBrandLogoSrc] = useState< string | null >(null);
 
   const retrieveData = useCallback(async() => {
     try {
       const response = await apiv3Get('/customize-setting/customize-logo');
-      const { isDefaultLogo, currentBrandLogoSrc } = response.data;
+      const { isDefaultLogo, customizedLogoSrc } = response.data;
       setIsDefaultLogo(isDefaultLogo);
-      setCurrentBrandLogoSrc(currentBrandLogoSrc);
+      setCustomizedBrandLogoSrc(customizedLogoSrc);
     }
     catch (err) {
       setRetrieveError(err);
@@ -52,22 +52,22 @@ const CustomizeLogoSetting = (): JSX.Element => {
     try {
       const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo,
-        currentBrandLogoSrc,
+        customizedLogoSrc,
       });
       const { customizedParams } = response.data;
-      setCurrentBrandLogoSrc(customizedParams.currentBrandLogoSrc);
+      setCustomizedBrandLogoSrc(customizedParams.customizedLogoSrc);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, isDefaultLogo, currentBrandLogoSrc]);
+  }, [t, isDefaultLogo, customizedLogoSrc]);
 
 
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
-      setCurrentBrandLogoSrc(null);
+      setCustomizedBrandLogoSrc(null);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
@@ -82,7 +82,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       const formData = new FormData();
       formData.append('file', croppedImage);
       const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
-      setCurrentBrandLogoSrc(data.attachment.filePathProxied);
+      setCustomizedBrandLogoSrc(data.attachment.filePathProxied);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
@@ -142,8 +142,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     { t('admin:customize_setting.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    <p><img src={currentBrandLogoSrc || DEFAULT_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
-                    {(currentBrandLogoSrc != null) && (
+                    <p><img src={customizedLogoSrc || DEFAULT_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
+                    {(customizedLogoSrc != null) && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                         { t('admin:customize_setting.delete_logo') }
                       </button>
