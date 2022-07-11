@@ -1,18 +1,15 @@
 import React from 'react';
 
+import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 import PropTypes from 'prop-types';
 
-import AppContainer from '~/client/services/AppContainer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import RevisionBody from './RevisionBody';
 
-import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -130,7 +127,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
   async renderHtml() {
     const {
-      appContainer, growiRenderer,
+      growiRenderer,
       highlightKeywords,
     } = this.props;
 
@@ -172,7 +169,6 @@ class LegacyRevisionRenderer extends React.PureComponent {
 }
 
 LegacyRevisionRenderer.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
@@ -181,17 +177,11 @@ LegacyRevisionRenderer.propTypes = {
   editorSettings: PropTypes.any,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer]);
-
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const RevisionRenderer = (props) => {
+const RevisionRenderer = () => {
   const { data: editorSettings } = useEditorSettings();
 
-  return <LegacyRevisionRendererWrapper {...props} editorSettings={editorSettings} />;
+  return <LegacyRevisionRenderer editorSettings={editorSettings} />;
 };
 
 RevisionRenderer.propTypes = {

@@ -1,11 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
@@ -21,17 +19,12 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-import DrawioModal from './PageEditor/DrawioModal';
-import GridEditModal from './PageEditor/GridEditModal';
-import HandsontableModal from './PageEditor/HandsontableModal';
-import LinkEditModal from './PageEditor/LinkEditModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:Page');
 
-class Page extends React.Component {
+class PageSubstance extends React.Component {
 
   constructor(props) {
     super(props);
@@ -56,10 +49,10 @@ class Page extends React.Component {
    * @param endLineNumber
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
-    const markdown = this.props.pageContainer.state.markdown;
-    const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
-    this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
-    this.handsontableModal.current.show(MarkdownTable.fromMarkdownString(tableLines));
+    // const markdown = this.props.pageContainer.state.markdown;
+    // const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
+    // this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
+    // this.handsontableModal.current.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   /**
@@ -68,11 +61,11 @@ class Page extends React.Component {
    * @param endLineNumber
    */
   launchDrawioModal(beginLineNumber, endLineNumber) {
-    const markdown = this.props.pageContainer.state.markdown;
-    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
-    const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
-    this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
-    this.drawioModal.current.show(drawioData);
+    // const markdown = this.props.pageContainer.state.markdown;
+    // const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
+    // const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
+    // this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
+    // this.drawioModal.current.show(drawioData);
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
@@ -145,6 +138,11 @@ class Page extends React.Component {
     } = this.props;
     const { markdown, revisionId } = pageContainer.state;
 
+    // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
+    // const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
+    // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
+    // const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
+
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
@@ -154,10 +152,10 @@ class Page extends React.Component {
 
         { !isGuestUser && (
           <>
-            <GridEditModal ref={this.gridEditModal} />
-            <LinkEditModal ref={this.LinkEditModal} />
-            <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
-            <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+            {/* <GridEditModal ref={this.gridEditModal} /> */}
+            {/* <LinkEditModal ref={this.LinkEditModal} /> */}
+            {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
+            {/* <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} /> */}
           </>
         )}
       </div>
@@ -166,11 +164,7 @@ class Page extends React.Component {
 
 }
 
-Page.propTypes = {
-  // TODO: remove this when omitting unstated is completed
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+PageSubstance.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   pagePath: PropTypes.string.isRequired,
@@ -185,7 +179,7 @@ Page.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-const PageWrapper = (props) => {
+export const Page = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
@@ -201,33 +195,33 @@ const PageWrapper = (props) => {
 
   const pageRef = useRef(null);
 
-  // set handler to open DrawioModal
-  useEffect(() => {
-    const handler = (beginLineNumber, endLineNumber) => {
-      if (pageRef?.current != null) {
-        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
-      }
-    };
-    window.globalEmitter.on('launchDrawioModal', handler);
+  // // set handler to open DrawioModal
+  // useEffect(() => {
+  //   const handler = (beginLineNumber, endLineNumber) => {
+  //     if (pageRef?.current != null) {
+  //       pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+  //     }
+  //   };
+  //   window.globalEmitter.on('launchDrawioModal', handler);
 
-    return function cleanup() {
-      window.globalEmitter.removeListener('launchDrawioModal', handler);
-    };
-  }, []);
+  //   return function cleanup() {
+  //     window.globalEmitter.removeListener('launchDrawioModal', handler);
+  //   };
+  // }, []);
 
-  // set handler to open HandsontableModal
-  useEffect(() => {
-    const handler = (beginLineNumber, endLineNumber) => {
-      if (pageRef?.current != null) {
-        pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
-      }
-    };
-    window.globalEmitter.on('launchHandsontableModal', handler);
+  // // set handler to open HandsontableModal
+  // useEffect(() => {
+  //   const handler = (beginLineNumber, endLineNumber) => {
+  //     if (pageRef?.current != null) {
+  //       pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
+  //     }
+  //   };
+  //   window.globalEmitter.on('launchHandsontableModal', handler);
 
-    return function cleanup() {
-      window.globalEmitter.removeListener('launchHandsontableModal', handler);
-    };
-  }, []);
+  //   return function cleanup() {
+  //     window.globalEmitter.removeListener('launchHandsontableModal', handler);
+  //   };
+  // }, []);
 
   if (currentPagePath == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
     return null;
@@ -235,7 +229,7 @@ const PageWrapper = (props) => {
 
 
   return (
-    <Page
+    <PageSubstance
       {...props}
       ref={pageRef}
       growiRenderer={growiRenderer}
@@ -253,5 +247,3 @@ const PageWrapper = (props) => {
     />
   );
 };
-
-export default withUnstatedContainers(PageWrapper, [AppContainer, PageContainer, EditorContainer]);
