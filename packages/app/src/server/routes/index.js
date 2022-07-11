@@ -153,7 +153,7 @@ module.exports = function(crowi, app) {
 
   // export management for admin
   app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired , addActivity , admin.export.api.validators.export.download(), admin.export.download);
+  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired , admin.export.api.validators.export.download(), admin.export.download);
 
   app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
