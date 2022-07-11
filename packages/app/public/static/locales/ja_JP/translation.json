@@ -1118,5 +1118,10 @@
   "page_operation":{
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed":"パスを修復できませんでした"
+  },
+  "i18n": {
+    "en_US": "英語",
+    "ja_JP": "日本語",
+    "zh_CN": "中国語"
   }
 }

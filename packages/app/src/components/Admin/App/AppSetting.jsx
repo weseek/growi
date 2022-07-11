@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { localeMetadatas } from '~/client/util/i18n';
+import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 
@@ -77,20 +77,20 @@ const AppSetting = (props) => {
         </label>
         <div className="col-md-6 py-2">
           {
-            localeMetadatas.map(meta => (
-              <div key={meta.id} className="custom-control custom-radio custom-control-inline">
+            i18n.locales.map(locale => (
+              <div key={locale} className="custom-control custom-radio custom-control-inline">
                 <input
                   type="radio"
-                  id={`radioLang${meta.id}`}
+                  id={`radioLang${locale}`}
                   className="custom-control-input"
                   name="globalLang"
-                  value={meta.id}
-                  checked={adminAppContainer.state.globalLang === meta.id}
+                  value={locale}
+                  checked={adminAppContainer.state.globalLang === locale}
                   onChange={(e) => {
                     adminAppContainer.changeGlobalLang(e.target.value);
                   }}
                 />
-                <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
+                <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{t(`i18n.${locale}`)}</label>
               </div>
             ))
           }
