@@ -3,6 +3,9 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
+import Activity from '~/server/models/activity';
+import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
@@ -156,7 +159,8 @@ module.exports = function(crowi, app) {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
-  const XssOption = require('~/services/xss/xssOption');
+  const activityEvent = crowi.event('activity');
+
   const Xss = require('~/services/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
@@ -170,7 +174,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -274,9 +278,6 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
-
-    const isPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
   }
 
   async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
@@ -305,20 +306,25 @@ module.exports = function(crowi, app) {
     const pathOrId = req.params.id || path;
 
     let view;
+    let action;
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
       view = 'layout-growi/not_creatable';
+      action = SupportedAction.ACTION_PAGE_NOT_CREATABLE;
     }
     else if (req.isForbidden) {
       view = 'layout-growi/forbidden';
+      action = SupportedAction.ACTION_PAGE_FORBIDDEN;
     }
     else {
       view = 'layout-growi/not_found';
+      action = SupportedAction.ACTION_PAGE_NOT_FOUND;
 
       // retrieve templates
       if (req.user != null) {
         const template = await Page.findTemplate(path);
+
         if (template.templateBody) {
           const body = replacePlaceholdersOfTemplate(template.templateBody, req);
           const tags = template.templateTags;
@@ -341,6 +347,18 @@ module.exports = function(crowi, app) {
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
     await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -408,6 +426,17 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -466,6 +495,17 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: isUsersHomePage(path) ? SupportedAction.ACTION_PAGE_USER_HOME_VIEW : SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -499,13 +539,30 @@ module.exports = function(crowi, app) {
     const revisionId = req.query.revision;
     const renderVars = {};
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
     if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       return res.render('layout-growi/forbidden');
     }
 
@@ -513,6 +570,9 @@ module.exports = function(crowi, app) {
 
     // check if share link is expired
     if (shareLink.isExpired()) {
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW });
+      crowi.activityService.createActivity(parameters);
+
       // page is not found
       return res.render('layout-growi/expired_shared_page', renderVars);
     }
@@ -534,6 +594,9 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
+
+    Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW });
+    crowi.activityService.createActivity(parameters);
 
     return res.render('layout-growi/shared_page', renderVars);
   };
@@ -646,12 +709,33 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
     return redirector(req, res, next, path);
   };
 
   actions.redirectorWithEndOfSlash = async function(req, res, next) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
 
     return redirector(req, res, next, path);
   };
@@ -987,6 +1071,13 @@ module.exports = function(crowi, app) {
         logger.error('Create user notification failed', err);
       }
     }
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_UPDATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
   };
 
   /**
@@ -1233,6 +1324,13 @@ module.exports = function(crowi, app) {
     result.isRecursively = isRecursively;
     result.isCompletely = isCompletely;
 
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: isCompletely ? SupportedAction.ACTION_PAGE_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     res.json(ApiResponse.success(result));
 
     try {
@@ -1283,6 +1381,13 @@ module.exports = function(crowi, app) {
 
     const result = {};
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_REVERT,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     return res.json(ApiResponse.success(result));
   };

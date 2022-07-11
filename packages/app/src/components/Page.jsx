@@ -8,10 +8,12 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
   useCurrentPagePath, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useViewRenderer } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -37,8 +39,6 @@ class Page extends React.Component {
       currentTargetTableArea: null,
       currentTargetDrawioArea: null,
     };
-
-    this.growiRenderer = this.props.appContainer.getRenderer('page');
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
@@ -148,7 +148,7 @@ class Page extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
+          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
         { !isGuestUser && (
@@ -170,6 +170,7 @@ Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   pagePath: PropTypes.string.isRequired,
   pageTags:  PropTypes.arrayOf(PropTypes.string),
@@ -194,6 +195,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: growiRenderer } = useViewRenderer();
 
   const pageRef = useRef(null);
 
@@ -225,7 +227,7 @@ const PageWrapper = (props) => {
     };
   }, []);
 
-  if (currentPagePath == null || editorMode == null || isGuestUser == null) {
+  if (currentPagePath == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
     return null;
   }
 
@@ -234,6 +236,7 @@ const PageWrapper = (props) => {
     <Page
       {...props}
       ref={pageRef}
+      growiRenderer={growiRenderer}
       pagePath={currentPagePath}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
