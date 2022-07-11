@@ -32,7 +32,7 @@ const MarkDownSettingContents = React.memo((): JSX.Element => {
       <Card className="card well my-3">
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
       </Card>
-      {/* TODO: show  */}
+      {/* TODO: show PresentationForm and Xss Form components by https://redmine.weseek.co.jp/issues/100058 */}
       {/* <PresentationForm /> */}
 
       {/* XSS Setting */}
@@ -40,6 +40,7 @@ const MarkDownSettingContents = React.memo((): JSX.Element => {
       <Card className="card well my-3">
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
       </Card>
+      {/* TODO: show PresentationForm and Xss Form components by https://redmine.weseek.co.jp/issues/100058 */}
       {/* <XssForm /> */}
     </div>
   );
