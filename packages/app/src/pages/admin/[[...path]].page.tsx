@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
@@ -17,7 +18,6 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
 // import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-// import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 // import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 // import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import {
@@ -84,8 +84,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
-      // component: <DataImportPageContents />,
-      component: <>DataImportPageContents</>,
+      component: <DataImportPageContents />,
+
     },
     export: {
       title: useCustomTitle(props, t('Export Archive Data')),
