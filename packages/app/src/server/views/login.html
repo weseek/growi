@@ -158,7 +158,7 @@
     $('#input-group-username').removeClass('has-error');
     $('#help-block-username').html("");
 
-    $.getJSON('/_api/check_username', {username: username}, function(json) {
+    $.getJSON('/_api/v3/check-username', {username: username}, function(json) {
       if (!json.valid) {
         $('#help-block-username').html(
           '<i class="icon-fw icon-ban"></i> This User ID is not available.'

@@ -1,3 +1,4 @@
+import { SupportedAction } from '~/interfaces/activity';
 import Tag from '~/server/models/tag';
 
 /**
@@ -32,6 +33,7 @@ import Tag from '~/server/models/tag';
 module.exports = function(crowi, app) {
 
   const PageTagRelation = crowi.model('PageTagRelation');
+  const activityEvent = crowi.event('activity');
   const ApiResponse = require('../util/apiResponse');
   const actions = {};
   const api = {};
@@ -166,6 +168,9 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_TAG_UPDATE });
+
     return res.json(ApiResponse.success(result));
   };
 

@@ -2,6 +2,7 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -20,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-import { isTrashPage } from '^/../core/src/utils/page-path-utils';
+const { isTrashPage } = pagePathUtils;
 
 
 const logger = loggerFactory('growi:cli:PageDeleteModal');

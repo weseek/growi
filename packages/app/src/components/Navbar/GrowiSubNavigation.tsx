@@ -71,8 +71,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
         ) }
 
         <div className="grw-path-nav-container">
-          {/* "/trash" page does not exist on page collection and unable to add tags  */}
-          { showTagLabel && !isCompactMode && path !== '/trash' && (
+          { showTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
               <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
