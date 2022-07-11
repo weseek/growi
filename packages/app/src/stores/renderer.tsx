@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { RendererSettings } from '~/interfaces/services/renderer';
 import GrowiRenderer, {
-  generateCommentPreviewRenderer, generatePreviewRenderer, generateViewRenderer, RendererGenerator,
+  generateViewRenderer, generatePreviewRenderer, generateCommentPreviewRenderer, generateOthersRenderer, RendererGenerator,
 } from '~/services/renderer/growi-renderer';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
@@ -48,23 +48,23 @@ export const useCommentPreviewRenderer = (): SWRResponse<GrowiRenderer, Error> =
 export const useSearchResultRenderer = (): SWRResponse<GrowiRenderer, Error> => {
   const key = 'searchResultRenderer';
 
-  return _useRendererBase(key, generateViewRenderer);
+  return _useRendererBase(key, generateOthersRenderer);
 };
 
 export const useTimelineRenderer = (): SWRResponse<GrowiRenderer, Error> => {
   const key = 'timelineRenderer';
 
-  return _useRendererBase(key, generateViewRenderer);
+  return _useRendererBase(key, generateOthersRenderer);
 };
 
 export const useDraftRenderer = (): SWRResponse<GrowiRenderer, Error> => {
   const key = 'draftRenderer';
 
-  return _useRendererBase(key, generateViewRenderer);
+  return _useRendererBase(key, generateOthersRenderer);
 };
 
 export const useCustomSidebarRenderer = (): SWRResponse<GrowiRenderer, Error> => {
   const key: Key = 'customSidebarRenderer';
 
-  return _useRendererBase(key, generateViewRenderer);
+  return _useRendererBase(key, generateOthersRenderer);
 };

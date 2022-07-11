@@ -197,7 +197,7 @@ export default class GrowiRenderer {
 }
 
 export interface RendererGenerator {
-  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>): GrowiRenderer
+  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>): GrowiRenderer
 }
 
 export const generateViewRenderer: RendererGenerator = (
@@ -234,21 +234,7 @@ export const generatePreviewRenderer: RendererGenerator = (
     new TableConfigurer(),
   ]);
 
-  renderer.configure();
-
-  return renderer;
-};
-
-const generateRendererWithTableConfigurer: RendererGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>,
-): GrowiRenderer => {
-  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
-  renderer.init();
-
-  renderer.addConfigurers([
-    new TableConfigurer(),
-  ]);
-
+  renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
   renderer.configure();
 
   return renderer;
@@ -257,9 +243,30 @@ const generateRendererWithTableConfigurer: RendererGenerator = (
 export const generateCommentPreviewRenderer: RendererGenerator = (
     growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
 ): GrowiRenderer => {
-  const renderer = generateRendererWithTableConfigurer(growiRendererConfig, null, pagePath);
+  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
+  renderer.init();
+
+  renderer.addConfigurers([
+    new TableConfigurer(),
+  ]);
 
   renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
+  renderer.configure();
+
+  return renderer;
+};
+
+export const generateOthersRenderer: RendererGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
+): GrowiRenderer => {
+  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
+  renderer.init();
+
+  renderer.addConfigurers([
+    new TableConfigurer(),
+  ]);
+
+  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   renderer.configure();
 
   return renderer;
