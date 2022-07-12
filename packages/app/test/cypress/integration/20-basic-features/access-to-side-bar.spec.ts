@@ -43,7 +43,13 @@ context('Access to sidebar', () => {
       }
     });
     cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
-    cy.get('.list-group-item').first().find('h5 > span.grw-page-path-hierarchical-link').click();
+    cy.get('.list-group-item').first().within(($el) => {
+      if($el.find('.grw-page-path-text-muted-container').length > 0){
+        cy.get('.grw-page-path-hierarchical-link > a').click();
+      }else{
+        cy.get('.path-segment > a').click();
+      }
+    })
     cy.screenshot(`${ssPrefix}recent-changes-2-open-first-page`);
 
     cy.visit('/Sandbox');
@@ -171,7 +177,6 @@ context('Access to sidebar', () => {
     });
 
     cy.screenshot(`${ssPrefix}tags-3-page-list-with-tag`);
-    cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -179,10 +184,9 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
+
     cy.screenshot(`${ssPrefix}tags-4-tags-click-three-dots-menu`);
 
-    cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -190,7 +194,6 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type('_screen');
@@ -200,7 +203,7 @@ context('Access to sidebar', () => {
       cy.get('.modal-header > button').click();
     });
 
-    cy.getByTestid('search-result-list').within(() => {
+
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -208,8 +211,7 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
-    cy.getByTestid('search-result-list').within(() => {
+
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -217,7 +219,7 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
+
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').clear().type('/vrt', {force: true});
@@ -227,7 +229,6 @@ context('Access to sidebar', () => {
       cy.get('.modal-header > button').click();
     });
 
-    cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -235,8 +236,7 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
-    cy.getByTestid('search-result-list').within(() => {
+
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === '/Sandbox'){
           cy.wrap($row).within(() => {
@@ -244,12 +244,38 @@ context('Access to sidebar', () => {
           });
         }
       });
-    });
+
     cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}tags-7-delete-page-from-tag`);
 
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.get('.modal-header > button').click();
     });
+
+    cy.get('.grw-search-page-nav').within(() => {
+      cy.get('.btn.dropdown-toggle').click();
+      cy.get('.dropdown-menu').should('have.class', 'show');
+    });
+    cy.screenshot(`${ssPrefix}tags-8-page-order`);
+
+    cy.get('.grw-search-page-nav').within(() => {
+      cy.get('.dropdown-menu > .dropdown-item').eq(0).click();
+    });
+   cy.screenshot(`${ssPrefix}tags-9-page-order-by-relevance`);
+
+   cy.get('.grw-search-page-nav').within(() => {
+    cy.get('.btn.dropdown-toggle').click();
+    cy.get('.dropdown-menu').should('have.class', 'show');
+    cy.get('.dropdown-menu > .dropdown-item').eq(1).click();
+  });
+  cy.screenshot(`${ssPrefix}tags-10-page-order-by-creation-date`);
+
+  cy.get('.grw-search-page-nav').within(() => {
+    cy.get('.btn.dropdown-toggle').click();
+    cy.get('.dropdown-menu').should('have.class', 'show');
+    cy.get('.dropdown-menu > .dropdown-item').eq(2).click();
+  });
+  cy.screenshot(`${ssPrefix}tags-11-page-order-by-last-update`);
+
   });
 
   it('Successfully access to My Drafts page', () => {
