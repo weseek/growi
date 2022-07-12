@@ -215,8 +215,7 @@ module.exports = function(crowi, app) {
       }
     }
     else {
-      return res.render('invited', {
-      });
+      return res.render('invited');
     }
   };
 
