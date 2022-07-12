@@ -98,7 +98,7 @@ export default class GrowiRenderer {
       new TaskListsConfigurer(),
       new HeaderConfigurer(),
       new EmojiConfigurer(),
-      new MathJaxConfigurer(this.growiRendererConfig),
+      new MathJaxConfigurer(),
       new DrawioViewerConfigurer(),
       new PlantUMLConfigurer(this.growiRendererConfig),
       new BlockdiagConfigurer(this.growiRendererConfig),

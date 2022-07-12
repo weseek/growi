@@ -19,7 +19,6 @@ type Props = {
   growiRenderer: GrowiRenderer,
   markdown?: string,
   pagePath?: string,
-  isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
   onScroll?: (scrollTop: number) => void,
 }
