@@ -8,7 +8,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { isPopulated } from '~/interfaces/common';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -46,6 +46,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isNotCreatable } = useIsNotCreatable();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -56,6 +57,24 @@ const DisplaySwitcher = (): JSX.Element => {
   const isTopPagePath = isTopPage(currentPagePath ?? '');
 
   const revision = currentPage?.revision;
+
+  const renderNotFoundPage = () => {
+    if (isNotFound && isNotCreatable) {
+      return (
+        <div className="row not-found-message-row">
+          <div className="col-md-12">
+            <h2 className="text-muted">
+              <i className="icon-ban" aria-hidden="true"></i>
+                Couldn&apos;t create path
+            </h2>
+          </div>
+        </div>
+      );
+    }
+    if (isNotFound) {
+      return <NotFoundPage />;
+    }
+  };
 
   return (
     <>
@@ -116,7 +135,7 @@ const DisplaySwitcher = (): JSX.Element => {
               { isUserPage && <UserInfo pageUser={pageUser} />}
               {/* { !isNotFound && <Page /> } */}
               { !isNotFound && revision != null && isPopulated(revision) && revision.body }
-              { isNotFound && <NotFoundPage /> }
+              { renderNotFoundPage() }
             </div>
 
           </div>
