@@ -115,7 +115,6 @@ const DisplaySwitcher = (): JSX.Element => {
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
               { !isNotFound && <Page /> }
-              { !isNotFound && revision != null && isPopulated(revision) && revision.body }
               { isNotFound && <NotFoundPage /> }
             </div>
 
