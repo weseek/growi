@@ -311,7 +311,8 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put botType setting.
    */
-  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.botType, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, addActivity, validator.botType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
     if (currentBotType == null) {
@@ -320,6 +321,8 @@ module.exports = (crowi) => {
 
     try {
       await handleBotTypeChanging(req, res, currentBotType);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_BOT_TYPE_UPDATE });
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
@@ -346,9 +349,11 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, addActivity, apiV3FormValidator, async(req, res) => {
     try {
       await handleBotTypeChanging(req, res, null);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_BOT_TYPE_DELETE });
     }
     catch (error) {
       const msg = 'Error occured in resetting all';
@@ -370,7 +375,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
@@ -385,6 +390,9 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings(requestParams);
       crowi.slackIntegrationService.publishUpdatedMessage();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WITHOUT_PROXY_SETTINGS_UPDATE });
+
       return res.apiv3();
     }
     catch (error) {
@@ -407,8 +415,8 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy permissions.
    */
-
-  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithoutProxy, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.updatePermissionsWithoutProxy, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
@@ -424,6 +432,9 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings(params);
       crowi.slackIntegrationService.publishUpdatedMessage();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WITHOUT_PROXY_PERMISSION_UPDATE });
+
       return res.apiv3();
     }
     catch (error) {
@@ -520,7 +531,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, validator.proxyUri, apiV3FormValidator, async(req, res) => {
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
     const requestParams = { 'slackbot:proxyUri': proxyUri };
@@ -528,6 +539,9 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings(requestParams);
       crowi.slackIntegrationService.publishUpdatedMessage();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_PROXY_URI_UPDATE });
+
       return res.apiv3({});
     }
     catch (error) {
@@ -552,7 +566,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to make it primary
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/make-primary', loginRequiredStrictly, adminRequired, csrf, validator.makePrimary, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/make-primary', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.makePrimary, apiV3FormValidator, async(req, res) => {
 
     const { id } = req.params;
 
@@ -573,6 +587,8 @@ module.exports = (crowi) => {
           },
         },
       ]);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_MAKE_APP_PRIMARY });
 
       return res.apiv3();
     }
@@ -597,13 +613,15 @@ module.exports = (crowi) => {
    *            description: Succeeded to regenerate slack app tokens
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
 
     const { id } = req.params;
 
     try {
       const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
       const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(id, { tokenGtoP, tokenPtoG });
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_ACCESS_TOKEN_REGENERATE });
 
       return res.apiv3(slackAppTokens, 200);
     }
@@ -628,7 +646,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
     // TODO: look here 78975
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions } = req.body;
     const { id } = req.params;
@@ -662,6 +680,8 @@ module.exports = (crowi) => {
         );
       }
 
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_PERMISSION_UPDATE });
+
       return res.apiv3({});
     }
     catch (error) {
@@ -685,7 +705,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to delete botType setting.
    */
   // eslint-disable-next-line max-len
-  router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.relationTest, apiV3FormValidator, async(req, res) => {
+  router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.relationTest, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not Proxy Type';
@@ -735,6 +755,9 @@ module.exports = (crowi) => {
     catch (error) {
       return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
     }
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_RELATION_TEST });
+
     return res.apiv3();
 
   });
@@ -759,7 +782,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
-  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.slackChannel, apiV3FormValidator, async(req, res) => {
+  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.slackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Select Without Proxy Type';
@@ -780,6 +803,8 @@ module.exports = (crowi) => {
     catch (error) {
       return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
     }
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WITHOUT_PROXY_TEST });
 
     return res.apiv3();
   });
