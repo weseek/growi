@@ -321,6 +321,7 @@ function injectRedirectInformation(props: Props, sslProps: ServerSideLocalProps)
   }
 }
 
+async function getPageData(context: GetServerSidePropsContext, props: Props, sslProps: ServerSideLocalProps): Promise<IPageWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -343,7 +344,10 @@ function injectRedirectInformation(props: Props, sslProps: ServerSideLocalProps)
     }
   }
 
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const { pageRedirect } = sslProps;
+  // search with redirectTo if PageRedirect exists
+  const searchingPath = pageRedirect != null ? pageRedirect.toPath : currentPathname;
+  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, searchingPath, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
 
   // populate & check if the revision is latest
@@ -478,7 +482,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   let pageWithMeta;
   try {
-    pageWithMeta = await getPageData(context, props);
+    pageWithMeta = await getPageData(context, props, sslProps);
     props.pageWithMetaStr = JSON.stringify(pageWithMeta);
   }
   catch (err) {
