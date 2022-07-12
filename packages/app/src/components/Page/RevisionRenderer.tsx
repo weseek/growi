@@ -6,7 +6,7 @@ import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { CustomWindow } from '~/interfaces/global';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { useInterceptorManager } from '~/stores/context';
+import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
@@ -102,6 +102,7 @@ const RevisionRenderer = (props: Props): JSX.Element => {
 
   const { data: interceptorManager } = useInterceptorManager();
   const { data: editorSettings } = useEditorSettings();
+  const { data: currentPathname } = useCurrentPathname();
 
   const currentRenderingContext = useMemo(() => {
     return {
@@ -109,7 +110,7 @@ const RevisionRenderer = (props: Props): JSX.Element => {
       parsedHTML: '',
       pagePath,
       renderDrawioInRealtime: editorSettings?.renderDrawioInRealtime,
-      currentPathname: decodeURIComponent(window.location.pathname),
+      currentPathname: decodeURIComponent(currentPathname ?? '/'),
     };
   }, [editorSettings?.renderDrawioInRealtime, markdown, pagePath]);
 
