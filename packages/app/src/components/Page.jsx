@@ -1,13 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-
+import { debounce } from 'throttle-debounce';
 import MarkdownTable from '~/client/models/MarkdownTable';
+import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 import { getOptionsToSave } from '~/client/util/editor';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
-  useIsGuestUser,
+  useIsGuestUser, useIsBlinkedHeaderAtBoot,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -188,8 +191,18 @@ export const Page = (props) => {
   const { data: pageTags } = usePageTagsForEditors();
   const { data: growiRenderer } = useViewRenderer();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
 
   const pageRef = useRef(null);
+
+  useEffect(() => {
+    if (isBlinkedAtBoot) {
+      return;
+    }
+
+    blinkSectionHeaderAtBoot();
+    mutateBlinkedAtBoot(true);
+  }, [mutateBlinkedAtBoot]);
 
   // // set handler to open DrawioModal
   // useEffect(() => {
