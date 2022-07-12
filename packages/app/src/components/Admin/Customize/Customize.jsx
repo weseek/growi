@@ -3,12 +3,12 @@ import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
 
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+// import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import { withLoadingSppiner } from '../../SuspenseUtils';
+// import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
@@ -23,28 +23,28 @@ import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-let retrieveErrors = null;
+const retrieveErrors = null;
 function Customize(props) {
-  const { adminCustomizeContainer } = props;
+  // const { adminCustomizeContainer } = props;
 
-  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
-    throw (async() => {
-      try {
-        await adminCustomizeContainer.retrieveCustomizeData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        logger.error(errs);
-        retrieveErrors = errs;
-        adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
-      }
-    })();
-  }
+  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
+  //   throw (async() => {
+  //     try {
+  //       await adminCustomizeContainer.retrieveCustomizeData();
+  //     }
+  //     catch (err) {
+  //       const errs = toArrayIfNot(err);
+  //       toastError(errs);
+  //       logger.error(errs);
+  //       retrieveErrors = errs;
+  //       adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
+  //     }
+  //   })();
+  // }
 
-  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
+  //   throw new Error(`${retrieveErrors.length} errors occured`);
+  // }
 
   return (
     <div data-testid="admin-customize">
@@ -67,22 +67,23 @@ function Customize(props) {
         <CustomizeTitle />
       </div>
       <div className="mb-5">
-        <CustomizeHeaderSetting />
+        {/* <CustomizeHeaderSetting /> */}
       </div>
       <div className="mb-5">
-        <CustomizeCssSetting />
+        {/* <CustomizeCssSetting /> */}
       </div>
       <div className="mb-5">
-        <CustomizeScriptSetting />
+        {/* <CustomizeScriptSetting /> */}
       </div>
     </div>
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
+// const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
+// const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
 
 Customize.propTypes = {
-  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+  // adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default CustomizePageWithUnstatedContainer;
+export default Customize;
