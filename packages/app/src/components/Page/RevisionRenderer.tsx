@@ -147,11 +147,11 @@ const RevisionRenderer = (props: Props): JSX.Element => {
 
     renderHtml()
       .then(() => {
-        const HeaderLink = document.getElementsByClassName('revision-head-link');
-        const HeaderLinkArray = Array.from(HeaderLink);
-        addSmoothScrollEvent(HeaderLinkArray as HTMLAnchorElement[], blinkElem);
+        // const HeaderLink = document.getElementsByClassName('revision-head-link');
+        // const HeaderLinkArray = Array.from(HeaderLink);
+        // addSmoothScrollEvent(HeaderLinkArray as HTMLAnchorElement[], blinkElem);
 
-        interceptorManager.process('postRenderHtml', currentRenderingContext);
+        // interceptorManager.process('postRenderHtml', currentRenderingContext);
       });
 
   }, [currentRenderingContext, interceptorManager, renderHtml]);
