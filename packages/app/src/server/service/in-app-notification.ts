@@ -2,6 +2,7 @@ import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import { IPage } from '~/interfaces/page';
@@ -52,7 +53,7 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage, descendantPages?: PageDocument[]) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage, descendantPages?: Ref<IPage>[]) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
@@ -200,7 +201,7 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantPages?: PageDocument[]): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantPages?: Ref<IPage>[]): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];

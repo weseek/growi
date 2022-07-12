@@ -4,6 +4,7 @@ import {
   IActivity, SupportedAction, SupportedActionType, AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
 import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
@@ -40,7 +41,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantPages?: PageDocument[]) => {
+    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantPages?: Ref<IPage>[]) => {
       let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 

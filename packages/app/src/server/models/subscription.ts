@@ -1,4 +1,3 @@
-import { Ref } from 'react';
 
 import { getOrCreateModel } from '@growi/core';
 import {
@@ -6,6 +5,7 @@ import {
 } from 'mongoose';
 
 import { AllSupportedTargetModels } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
 import { IPage } from '~/interfaces/page';
 import { SubscriptionStatusType, AllSubscriptionStatusType, ISubscription } from '~/interfaces/subscription';
 import { IUser } from '~/interfaces/user';
@@ -15,7 +15,7 @@ export interface SubscriptionDocument extends ISubscription, Document {}
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
   upsertSubscription(user: Ref<IUser>, targetModel: string, target: Ref<IPage>, status: string): any
-  subscribeByPageId(user: Ref<IUser>, pageId: Types.ObjectId, status: string): any
+  subscribeByPageId(userId: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
   getUnsubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
   getSubscriptions(targets: Ref<IPage>[]): Promise<Ref<IUser>[]>
@@ -35,6 +35,7 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   },
   target: {
     type: Schema.Types.ObjectId,
+    ref: 'Page',
     refPath: 'targetModel',
     required: true,
   },
@@ -68,8 +69,8 @@ subscriptionSchema.statics.upsertSubscription = function(user, targetModel, targ
   return this.findOneAndUpdate(query, doc, options);
 };
 
-subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
-  return this.upsertSubscription(user, 'Page', pageId, status);
+subscriptionSchema.statics.subscribeByPageId = function(userId, pageId, status) {
+  return this.upsertSubscription(userId, 'Page', pageId, status);
 };
 
 subscriptionSchema.statics.getSubscription = async function(target: Ref<IPage>) {

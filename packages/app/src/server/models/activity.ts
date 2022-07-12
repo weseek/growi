@@ -9,6 +9,8 @@ import {
   AllSupportedTargetModels, SupportedTargetModelType,
   AllSupportedEventModels, SupportedEventModelType,
 } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
+import { IPage } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
 
@@ -23,7 +25,7 @@ export interface ActivityDocument extends Document {
   ip: string
   endpoint: string
   targetModel: SupportedTargetModelType
-  target: Types.ObjectId
+  target: Ref<IPage>
   eventModel: SupportedEventModelType
   event: Types.ObjectId
   action: SupportedActionType
@@ -60,6 +62,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   target: {
     type: Schema.Types.ObjectId,
+    ref: 'Page',
     refPath: 'targetModel',
   },
   eventModel: {

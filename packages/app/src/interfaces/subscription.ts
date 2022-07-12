@@ -1,5 +1,4 @@
-import { Ref } from 'react';
-
+import { Ref } from './common';
 import { IPage } from './page';
 import { IUser } from './user';
 
