@@ -1,18 +1,17 @@
 import React from 'react';
 
+import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 import PropTypes from 'prop-types';
 
-import AppContainer from '~/client/services/AppContainer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import InterceptorManager from '~/services/interceptor-manager';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from './RevisionBody';
 
-import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -45,7 +44,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords } = this.props;
+    const { markdown, highlightKeywords, interceptorManager } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -57,8 +56,6 @@ class LegacyRevisionRenderer extends React.PureComponent {
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
     addSmoothScrollEvent(HeaderLinkArray, blinkElem);
-
-    const { interceptorManager } = window;
 
     interceptorManager.process('postRenderHtml', this.currentRenderingContext);
   }
@@ -130,11 +127,15 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
   async renderHtml() {
     const {
-      appContainer, growiRenderer,
+      interceptorManager,
+      growiRenderer,
       highlightKeywords,
     } = this.props;
 
-    const { interceptorManager } = window;
+    if (interceptorManager == null || growiRenderer == null) {
+      return;
+    }
+
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRender', context);
@@ -156,13 +157,9 @@ class LegacyRevisionRenderer extends React.PureComponent {
   }
 
   render() {
-    const config = this.props.appContainer.getConfig();
-    const isMathJaxEnabled = !!config.env.MATHJAX;
-
     return (
       <RevisionBody
         html={this.state.html}
-        isMathJaxEnabled={isMathJaxEnabled}
         additionalClassName={this.props.additionalClassName}
         renderMathJaxOnInit
       />
@@ -172,7 +169,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 }
 
 LegacyRevisionRenderer.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  interceptorManager: PropTypes.instanceOf(InterceptorManager).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
@@ -181,17 +178,12 @@ LegacyRevisionRenderer.propTypes = {
   editorSettings: PropTypes.any,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer]);
-
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const RevisionRenderer = (props) => {
+  const { data: interceptorManager } = useInterceptorManager();
   const { data: editorSettings } = useEditorSettings();
 
-  return <LegacyRevisionRendererWrapper {...props} editorSettings={editorSettings} />;
+  return <LegacyRevisionRenderer {...props} interceptorManager={interceptorManager} editorSettings={editorSettings} />;
 };
 
 RevisionRenderer.propTypes = {

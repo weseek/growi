@@ -73,7 +73,6 @@ export default class RevisionBody extends React.PureComponent {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,

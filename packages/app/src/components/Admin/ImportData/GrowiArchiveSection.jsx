@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
 
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import ImportForm from './GrowiArchive/ImportForm';
+// import ImportForm from './GrowiArchive/ImportForm';
 import UploadForm from './GrowiArchive/UploadForm';
 
 class GrowiArchiveSection extends React.Component {
@@ -129,11 +129,12 @@ class GrowiArchiveSection extends React.Component {
         {isTheSameVersion === false && this.renderDefferentVersionAlert()}
         {this.state.fileName != null && isTheSameVersion === true ? (
           <div className="px-4">
-            <ImportForm
+            {/* show ImportForm by https://redmine.weseek.co.jp/issues/100061 */}
+            {/* <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-            />
+            /> */}
           </div>
         )
           : (

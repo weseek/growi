@@ -1,3 +1,4 @@
+import { isClient } from '@growi/core';
 import MarkdownIt from 'markdown-it';
 
 import { Nullable } from '~/interfaces/common'; // TODO: Remove this asap when the ContextExtractor is removed
@@ -57,7 +58,7 @@ export default class GrowiRenderer {
     this.growiRendererConfig = growiRendererConfig;
     this.pagePath = pagePath;
 
-    if ((window as CustomWindow).growiRenderer != null) {
+    if (isClient() && (window as CustomWindow).growiRenderer != null) {
       this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
       this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
     }
@@ -98,7 +99,7 @@ export default class GrowiRenderer {
       new TaskListsConfigurer(),
       new HeaderConfigurer(),
       new EmojiConfigurer(),
-      new MathJaxConfigurer(this.growiRendererConfig),
+      new MathJaxConfigurer(),
       new DrawioViewerConfigurer(),
       new PlantUMLConfigurer(this.growiRendererConfig),
       new BlockdiagConfigurer(this.growiRendererConfig),

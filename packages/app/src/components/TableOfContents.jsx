@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import PageContainer from '~/client/services/PageContainer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { useGlobalEventEmitter } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
@@ -24,6 +25,8 @@ const TableOfContents = (props) => {
   const { pageContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
+
+  const { data: globalEmitter } = useGlobalEventEmitter();
 
   const [tocHtml, setTocHtml] = useState('');
 
@@ -56,12 +59,12 @@ const TableOfContents = (props) => {
   // set handler to render ToC
   useEffect(() => {
     const handler = html => setTocHtml(html);
-    window.globalEmitter.on('renderTocHtml', handler);
+    globalEmitter.on('renderTocHtml', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('renderTocHtml', handler);
+      globalEmitter.removeListener('renderTocHtml', handler);
     };
-  }, []);
+  }, [globalEmitter]);
 
   return (
     <StickyStretchableScroller

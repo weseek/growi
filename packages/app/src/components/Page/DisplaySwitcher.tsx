@@ -17,7 +17,7 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
 import NotFoundPage from '../NotFoundPage';
-// import Page from '../Page';
+import { Page } from '../Page';
 // import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
@@ -133,8 +133,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
-              {/* { !isNotFound && <Page /> } */}
-              { !isNotFound && revision != null && isPopulated(revision) && revision.body }
+              { !isNotFound && <Page /> }
               { renderNotFoundPage() }
             </div>
 
