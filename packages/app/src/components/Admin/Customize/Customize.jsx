@@ -4,7 +4,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
@@ -26,7 +25,7 @@ const logger = loggerFactory('growi:services:AdminCustomizePage');
 
 let retrieveErrors = null;
 function Customize(props) {
-  const { appContainer, adminCustomizeContainer } = props;
+  const { adminCustomizeContainer } = props;
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
     throw (async() => {
@@ -50,7 +49,7 @@ function Customize(props) {
   return (
     <div data-testid="admin-customize">
       <div className="mb-5">
-        <CustomizeLayoutSetting appContainer={appContainer} />
+        <CustomizeLayoutSetting />
       </div>
       <div className="mb-5">
         <CustomizeThemeSetting />
@@ -80,10 +79,9 @@ function Customize(props) {
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AppContainer, AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
 
 Customize.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
