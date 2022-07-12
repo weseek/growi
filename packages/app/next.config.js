@@ -24,6 +24,7 @@ const setupWithTM = () => {
     'decode-named-character-reference',
     'space-separated-tokens',
     'trim-lines',
+    'emoticon',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
   ];
 

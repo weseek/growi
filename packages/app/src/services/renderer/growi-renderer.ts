@@ -1,19 +1,11 @@
-import React from 'react';
-
-import rehype2react from 'rehype-react';
+import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
-import toc, { HtmlElementNode } from 'rehype-toc';
+// import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
-import parse from 'remark-parse';
-import remark2rehype from 'remark-rehype';
-import {
-  unified, Plugin, PluginTuple, Processor,
-} from 'unified';
 
-import { Nullable } from '~/interfaces/common'; // TODO: Remove this asap when the ContextExtractor is removed
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -39,231 +31,215 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:util:GrowiRenderer');
 
-declare const hljs;
+// declare const hljs;
 
-type MarkdownSettings = {
-  breaks?: boolean,
+// type MarkdownSettings = {
+//   breaks?: boolean,
+// };
+
+// export default class GrowiRenderer {
+
+//   growiRendererConfig: GrowiRendererConfig;
+
+//   constructor(growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>) {
+//     this.growiRendererConfig = growiRendererConfig;
+//     this.pagePath = pagePath;
+
+//     if (isClient() && (window as CustomWindow).growiRenderer != null) {
+//       this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
+//       this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
+//     }
+//     else {
+//       this.preProcessors = [
+//         new EasyGrid(),
+//         new Linker(),
+//         new CsvToTable(),
+//         new XssFilter({
+//           isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
+//           tagWhiteList: this.growiRendererConfig.tagWhiteList,
+//           attrWhiteList: this.growiRendererConfig.attrWhiteList,
+//         }),
+//       ];
+//       this.postProcessors = [
+//       ];
+//     }
+
+//     this.init = this.init.bind(this);
+//     this.addConfigurers = this.addConfigurers.bind(this);
+//     this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
+//     this.configure = this.configure.bind(this);
+//     this.process = this.process.bind(this);
+//     this.codeRenderer = this.codeRenderer.bind(this);
+//   }
+
+//   init() {
+//     let parser: Processor = unified().use(parse);
+//     this.remarkPlugins.forEach((item) => {
+//       parser = applyPlugin(parser, item);
+//     });
+
+//     let rehype: Processor = parser.use(remark2rehype);
+//     this.rehypePlugins.forEach((item) => {
+//       rehype = applyPlugin(rehype, item);
+//     });
+
+//     this.processor = rehype.use(rehype2react, {
+//       createElement: React.createElement,
+//       components: {
+//         // a: NextLink,
+//       },
+//     });
+//   }
+
+//   init() {
+//     // init markdown-it
+//     this.md = new MarkdownIt({
+//       html: true,
+//       linkify: true,
+//       highlight: this.codeRenderer,
+//     });
+
+//     this.isMarkdownItConfigured = false;
+
+//     this.markdownItConfigurers = [
+//       new TaskListsConfigurer(),
+//       new HeaderConfigurer(),
+//       new EmojiConfigurer(),
+//       new MathJaxConfigurer(),
+//       new DrawioViewerConfigurer(),
+//       new PlantUMLConfigurer(this.growiRendererConfig),
+//       new BlockdiagConfigurer(this.growiRendererConfig),
+//     ];
+
+//     if (this.pagePath != null) {
+//       this.markdownItConfigurers.push(
+//         new LinkerByRelativePathConfigurer(this.pagePath),
+//       );
+//     }
+//   }
+
+//   addConfigurers(configurers: any[]): void {
+//     this.markdownItConfigurers.push(...configurers);
+//   }
+
+//   setMarkdownSettings(settings: MarkdownSettings): void {
+//     this.md.set(settings);
+//   }
+
+//   configure(): void {
+//     if (!this.isMarkdownItConfigured) {
+//       this.markdownItConfigurers.forEach((configurer) => {
+//         configurer.configure(this.md);
+//       });
+//     }
+//   }
+
+//   preProcess(markdown, context) {
+//     let processed = markdown;
+//     for (let i = 0; i < this.preProcessors.length; i++) {
+//       if (!this.preProcessors[i].process) {
+//         continue;
+//       }
+//       processed = this.preProcessors[i].process(processed, context);
+//     }
+
+//     return processed;
+//   }
+
+//   process(markdown, context) {
+//     return this.md.render(markdown, context);
+//   }
+
+//   postProcess(html, context) {
+//     let processed = html;
+//     for (let i = 0; i < this.postProcessors.length; i++) {
+//       if (!this.postProcessors[i].process) {
+//         continue;
+//       }
+//       processed = this.postProcessors[i].process(processed, context);
+//     }
+
+//     return processed;
+//   }
+
+//   codeRenderer(code, langExt) {
+//     const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
+
+//     let citeTag = '';
+//     let hljsLang = 'plaintext';
+//     let showLinenumbers = false;
+
+//     if (langExt) {
+//       // https://regex101.com/r/qGs7eZ/3
+//       const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
+
+//       const lang = match[1];
+//       const fileName = match[5] || null;
+//       showLinenumbers = (match[2] != null) || (match[6] != null);
+
+//       if (fileName != null) {
+//         citeTag = `<cite>${fileName}</cite>`;
+//       }
+//       if (hljs.getLanguage(lang)) {
+//         hljsLang = lang;
+//       }
+//     }
+
+//     let highlightCode = code;
+//     try {
+//       highlightCode = hljs.highlight(hljsLang, code, true).value;
+
+//       // add line numbers
+//       if (showLinenumbers) {
+//         highlightCode = hljs.lineNumbersValue((highlightCode));
+//       }
+//     }
+//     catch (err) {
+//       logger.error(err);
+//     }
+
+//     return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
+//   }
+
+// }
+
+export type RendererOptions = Partial<ReactMarkdownOptions>;
+
+export interface ReactMarkdownOptionsGenerator {
+  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings): RendererOptions
+}
+
+const generateCommonOptions: ReactMarkdownOptionsGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
+): RendererOptions => {
+  return {
+    remarkPlugins: [gfm],
+    rehypePlugins: [slug],
+  };
 };
 
-function applyPlugin(processor: Processor, plugin: Plugin | PluginTuple): Processor {
-  if (Array.isArray(plugin)) {
-    return processor.use(...plugin);
-  }
+export const generateViewOptions: ReactMarkdownOptionsGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
+): RendererOptions => {
 
-  return processor.use(plugin);
-}
+  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
 
-export default class GrowiRenderer {
+  const { remarkPlugins, rehypePlugins } = options;
 
-  // preProcessors: any[];
-
-  // postProcessors: any[];
-
-  // md: any;
-
-  // isMarkdownItConfigured: boolean;
-
-  // markdownItConfigurers: any[];
-
-  // pagePath?: Nullable<string>;
-
-  remarkPlugins: (Plugin | PluginTuple)[] = [
-    gfm,
-  ];
-
-  rehypePlugins: (Plugin | PluginTuple)[] = [
-    slug,
-  ];
-
-  processor?: Processor;
-
-  growiRendererConfig: GrowiRendererConfig;
-
-  constructor(growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>) {
-    this.growiRendererConfig = growiRendererConfig;
-    // this.pagePath = pagePath;
-
-    // if (isClient() && (window as CustomWindow).growiRenderer != null) {
-    //   this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
-    //   this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
-    // }
-    // else {
-    //   this.preProcessors = [
-    //     new EasyGrid(),
-    //     new Linker(),
-    //     new CsvToTable(),
-    //     new XssFilter({
-    //       isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
-    //       tagWhiteList: this.growiRendererConfig.tagWhiteList,
-    //       attrWhiteList: this.growiRendererConfig.attrWhiteList,
-    //     }),
-    //   ];
-    //   this.postProcessors = [
-    //   ];
-    // }
-
-    // this.init = this.init.bind(this);
-    // this.addConfigurers = this.addConfigurers.bind(this);
-    // this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
-    // this.configure = this.configure.bind(this);
-    // this.process = this.process.bind(this);
-    // this.codeRenderer = this.codeRenderer.bind(this);
-  }
-
-  init() {
-    let parser: Processor = unified().use(parse);
-    this.remarkPlugins.forEach((item) => {
-      parser = applyPlugin(parser, item);
-    });
-
-    let rehype: Processor = parser.use(remark2rehype);
-    this.rehypePlugins.forEach((item) => {
-      rehype = applyPlugin(rehype, item);
-    });
-
-    this.processor = rehype.use(rehype2react, {
-      createElement: React.createElement,
-      components: {
-        // a: NextLink,
-      },
-    });
-  }
-
-  // init() {
-  //   // init markdown-it
-  //   this.md = new MarkdownIt({
-  //     html: true,
-  //     linkify: true,
-  //     highlight: this.codeRenderer,
-  //   });
-
-  //   this.isMarkdownItConfigured = false;
-
-  //   this.markdownItConfigurers = [
-  //     new TaskListsConfigurer(),
-  //     new HeaderConfigurer(),
-  //     new EmojiConfigurer(),
-  //     new MathJaxConfigurer(),
-  //     new DrawioViewerConfigurer(),
-  //     new PlantUMLConfigurer(this.growiRendererConfig),
-  //     new BlockdiagConfigurer(this.growiRendererConfig),
-  //   ];
-
-  //   if (this.pagePath != null) {
-  //     this.markdownItConfigurers.push(
-  //       new LinkerByRelativePathConfigurer(this.pagePath),
-  //     );
-  //   }
-  // }
-
-  // addConfigurers(configurers: any[]): void {
-  //   this.markdownItConfigurers.push(...configurers);
-  // }
-
-  // setMarkdownSettings(settings: MarkdownSettings): void {
-  //   this.md.set(settings);
-  // }
-
-  // configure(): void {
-  //   if (!this.isMarkdownItConfigured) {
-  //     this.markdownItConfigurers.forEach((configurer) => {
-  //       configurer.configure(this.md);
-  //     });
-  //   }
-  // }
-
-  // preProcess(markdown, context) {
-  //   let processed = markdown;
-  //   for (let i = 0; i < this.preProcessors.length; i++) {
-  //     if (!this.preProcessors[i].process) {
-  //       continue;
-  //     }
-  //     processed = this.preProcessors[i].process(processed, context);
-  //   }
-
-  //   return processed;
-  // }
-
-  // process(markdown, context) {
-  //   return this.md.render(markdown, context);
-  // }
-
-  // postProcess(html, context) {
-  //   let processed = html;
-  //   for (let i = 0; i < this.postProcessors.length; i++) {
-  //     if (!this.postProcessors[i].process) {
-  //       continue;
-  //     }
-  //     processed = this.postProcessors[i].process(processed, context);
-  //   }
-
-  //   return processed;
-  // }
-
-  // codeRenderer(code, langExt) {
-  //   const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
-
-  //   let citeTag = '';
-  //   let hljsLang = 'plaintext';
-  //   let showLinenumbers = false;
-
-  //   if (langExt) {
-  //     // https://regex101.com/r/qGs7eZ/3
-  //     const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
-
-  //     const lang = match[1];
-  //     const fileName = match[5] || null;
-  //     showLinenumbers = (match[2] != null) || (match[6] != null);
-
-  //     if (fileName != null) {
-  //       citeTag = `<cite>${fileName}</cite>`;
-  //     }
-  //     if (hljs.getLanguage(lang)) {
-  //       hljsLang = lang;
-  //     }
-  //   }
-
-  //   let highlightCode = code;
-  //   try {
-  //     highlightCode = hljs.highlight(hljsLang, code, true).value;
-
-  //     // add line numbers
-  //     if (showLinenumbers) {
-  //       highlightCode = hljs.lineNumbersValue((highlightCode));
-  //     }
-  //   }
-  //   catch (err) {
-  //     logger.error(err);
-  //   }
-
-  //   return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
-  // }
-
-}
-
-export interface RendererGenerator {
-  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>): GrowiRenderer
-}
-
-export const generateViewRenderer: RendererGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
-): GrowiRenderer => {
-  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   // add remark plugins
-  renderer.remarkPlugins.push(footnotes);
-  renderer.remarkPlugins.push(emoji);
+  remarkPlugins?.push(footnotes);
+  remarkPlugins?.push(emoji);
   if (rendererSettings.isEnabledLinebreaks) {
-    renderer.remarkPlugins.push(breaks);
+    remarkPlugins?.push(breaks);
   }
   // add rehypePlugins
-  // renderer.rehypePlugins.push([toc, {
+  // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
   //   customizeTOC: storeTocNode,
   // }]);
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
-  renderer.init();
 
   // // Add configurers for viewer
   // renderer.addConfigurers([
@@ -277,14 +253,13 @@ export const generateViewRenderer: RendererGenerator = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  return renderer;
+  return options;
 };
 
-export const generatePreviewRenderer: RendererGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings | null, pagePath?: Nullable<string>,
-): GrowiRenderer => {
-  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
-  renderer.init();
+export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
+): RendererOptions => {
+  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -296,14 +271,13 @@ export const generatePreviewRenderer: RendererGenerator = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
   // renderer.configure();
 
-  return renderer;
+  return options;
 };
 
-export const generateCommentPreviewRenderer: RendererGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
-): GrowiRenderer => {
-  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
-  renderer.init();
+export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
+): RendererOptions => {
+  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),
@@ -312,14 +286,13 @@ export const generateCommentPreviewRenderer: RendererGenerator = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
   // renderer.configure();
 
-  return renderer;
+  return options;
 };
 
-export const generateOthersRenderer: RendererGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
-): GrowiRenderer => {
-  const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
-  renderer.init();
+export const generateOthersOptions: ReactMarkdownOptionsGenerator = (
+    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
+): RendererOptions => {
+  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),
@@ -328,5 +301,5 @@ export const generateOthersRenderer: RendererGenerator = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  return renderer;
+  return options;
 };
