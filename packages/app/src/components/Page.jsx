@@ -5,10 +5,10 @@ import React, {
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { debounce } from 'throttle-debounce';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 import { getOptionsToSave } from '~/client/util/editor';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
   useIsGuestUser, useIsBlinkedHeaderAtBoot,
 } from '~/stores/context';
@@ -16,7 +16,7 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useViewRenderer } from '~/stores/renderer';
+import { useViewOptions } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile,
 } from '~/stores/ui';
@@ -138,7 +138,7 @@ class PageSubstance extends React.Component {
 
   render() {
     const {
-      page, isMobile, isGuestUser,
+      rendererOptions, page, isMobile, isGuestUser,
     } = this.props;
     const { path } = page;
     const { _id: revisionId, body: markdown } = page.revision;
@@ -152,7 +152,7 @@ class PageSubstance extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={path} />
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} pagePath={path} />
         )}
 
         { !isGuestUser && (
@@ -170,7 +170,7 @@ class PageSubstance extends React.Component {
 }
 
 PageSubstance.propTypes = {
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  rendererOptions: PropTypes.object.isRequired,
 
   page: PropTypes.any.isRequired,
   pageTags:  PropTypes.arrayOf(PropTypes.string),
@@ -189,7 +189,7 @@ export const Page = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageTags } = usePageTagsForEditors();
-  const { data: growiRenderer } = useViewRenderer();
+  const { data: rendererOptions } = useViewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
 
@@ -232,7 +232,10 @@ export const Page = (props) => {
   //   };
   // }, []);
 
-  if (currentPage == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
+  if (currentPage == null || editorMode == null || isGuestUser == null || rendererOptions == null) {
+    logger.warn('Some of materials are missing.', {
+      currentPage: currentPage?._id, editorMode, isGuestUser, rendererOptions,
+    });
     return null;
   }
 
@@ -241,7 +244,7 @@ export const Page = (props) => {
     <PageSubstance
       {...props}
       ref={pageRef}
-      growiRenderer={growiRenderer}
+      rendererOptions={rendererOptions}
       page={currentPage}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
