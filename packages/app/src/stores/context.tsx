@@ -225,6 +225,7 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
+    { fallbackData: currentUser == null },
   );
 };
 
