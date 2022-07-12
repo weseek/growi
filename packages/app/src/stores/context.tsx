@@ -86,6 +86,14 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
+export const useRedirectFrom = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('redirectFrom', initialData);
+};
+
+export const useRedirectTo = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('redirectTo', initialData);
+};
+
 export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
 };
