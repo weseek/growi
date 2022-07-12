@@ -673,8 +673,6 @@ module.exports = function(crowi, app) {
     if (nonEmptyPages.length >= 2) {
       return res.render('layout-growi/identical-path-page', {
         identicalPathPages: nonEmptyPages,
-        redirectFrom,
-        path,
       });
     }
 
