@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
+import mongoose from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -21,6 +22,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IPageWithMeta } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
+import { PageRedirectModel, PageRedirectDocument } from '~/server/models/page-redirect';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
@@ -470,8 +472,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
   const sslProps: ServerSideLocalProps = {}; // props only to use inside getServerSideProps.
   sslProps.pageRedirect = await getPageRedirect(req, props);
+
   let pageWithMeta;
   try {
     pageWithMeta = await getPageData(context, props);
