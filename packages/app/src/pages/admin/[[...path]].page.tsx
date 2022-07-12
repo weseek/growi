@@ -5,6 +5,10 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
+import AdminHome from '~/components/Admin/AdminHome/AdminHome';
+import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
+import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -13,11 +17,7 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-// import AdminHome from '~/components/Admin/AdminHome/AdminHome';
-// import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 // import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-// import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
-// import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 // import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 // import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import {
@@ -56,18 +56,16 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
-      // component: <AdminHome
-      //   nodeVersion={props.nodeVersion}
-      //   npmVersion={props.npmVersion}
-      //   yarnVersion={props.yarnVersion}
-      //   installedPlugins={props.installedPlugins}
-      // />,
-      component: <>AdminHome</>,
+      component: <AdminHome
+        nodeVersion={props.nodeVersion}
+        npmVersion={props.npmVersion}
+        yarnVersion={props.yarnVersion}
+        installedPlugins={props.installedPlugins}
+      />,
     },
     app: {
       title: useCustomTitle(props, t('App Settings')),
-      // component: <AppSettingsPageContents />,
-      component: <>AppSettingsPageContents</>,
+      component: <AppSettingsPageContents />,
     },
     security: {
       title: useCustomTitle(props, t('security_settings')),
@@ -76,8 +74,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
-      // component: <MarkDownSettingContents />,
-      component: <>MarkDownSettingContents</>,
+      component: <MarkDownSettingContents />,
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
@@ -86,8 +83,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
-      // component: <DataImportPageContents />,
-      component: <>DataImportPageContents</>,
+      component: <DataImportPageContents />,
+
     },
     export: {
       title: useCustomTitle(props, t('Export Archive Data')),
@@ -104,8 +101,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     users: {
       title: useCustomTitle(props, t('User_Management')),
-      // component: <UserManagement />,
-      component: <>UserManagement</>,
+      component: <UserManagement />,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
