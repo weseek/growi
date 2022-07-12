@@ -208,7 +208,6 @@ export default class InAppNotificationService {
         mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
       }
       let notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      console.log('What are the descendant pages and target users\n', descendantPages, notificationTargetUsers);
       if (descendantPages != null && descendantPages.length > 0) {
         const User = this.crowi.model('User');
         const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
@@ -218,7 +217,6 @@ export default class InAppNotificationService {
           status: User.STATUS_ACTIVE,
         }).distinct('_id'));
       }
-      console.log('Who are the target users?\n', notificationTargetUsers);
       const snapshot = stringifySnapshot(target as IPage);
       await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers], activity, snapshot);
       await this.emitSocketIo(notificationTargetUsers);

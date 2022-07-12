@@ -1374,17 +1374,14 @@ module.exports = function(crowi, app) {
     let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
-      const pages = await Page.findListWithDescendants(page.path, req.user);
-      descendantPages = pages.pages;
-      console.log('What are the descendant pages\n', descendantPages);
-      descendantPages.pop();
+      const bPages = await Page.findListWithDescendants(page.path, req.user);
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-      if (descendantPages == null && isRecursively) {
-        throw new Error(`Page '${pageId}' has no descendant pages`, 'notfound_or_forbidden');
-      }
       page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
+      const pages = await Page.findListWithDescendants(page.path, req.user);
+      descendantPages = pages.pages;
+      descendantPages.pop();
     }
     catch (err) {
       if (err instanceof PathAlreadyExistsError) {
