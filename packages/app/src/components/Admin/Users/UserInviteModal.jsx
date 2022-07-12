@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'next-i18next';
 // import Button from 'react-bootstrap/es/Button';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
