@@ -1,29 +1,40 @@
-import { isClient } from '@growi/core';
-import MarkdownIt from 'markdown-it';
+import React from 'react';
+
+import rehype2react from 'rehype-react';
+import slug from 'rehype-slug';
+import toc, { HtmlElementNode } from 'rehype-toc';
+import breaks from 'remark-breaks';
+import emoji from 'remark-emoji';
+import footnotes from 'remark-footnotes';
+import gfm from 'remark-gfm';
+import parse from 'remark-parse';
+import remark2rehype from 'remark-rehype';
+import {
+  unified, Plugin, PluginTuple, Processor,
+} from 'unified';
 
 import { Nullable } from '~/interfaces/common'; // TODO: Remove this asap when the ContextExtractor is removed
-import { CustomWindow } from '~/interfaces/global';
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
-import CsvToTable from './PreProcessor/CsvToTable';
-import EasyGrid from './PreProcessor/EasyGrid';
-import Linker from './PreProcessor/Linker';
-import XssFilter from './PreProcessor/XssFilter';
-import BlockdiagConfigurer from './markdown-it/blockdiag';
-import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
-import EmojiConfigurer from './markdown-it/emoji';
-import FooternoteConfigurer from './markdown-it/footernote';
-import HeaderConfigurer from './markdown-it/header';
-import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
-import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
-import LinkerByRelativePathConfigurer from './markdown-it/link-by-relative-path';
-import MathJaxConfigurer from './markdown-it/mathjax';
-import PlantUMLConfigurer from './markdown-it/plantuml';
-import TableConfigurer from './markdown-it/table';
-import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
-import TaskListsConfigurer from './markdown-it/task-lists';
-import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
+// import CsvToTable from './PreProcessor/CsvToTable';
+// import EasyGrid from './PreProcessor/EasyGrid';
+// import Linker from './PreProcessor/Linker';
+// import XssFilter from './PreProcessor/XssFilter';
+// import BlockdiagConfigurer from './markdown-it/blockdiag';
+// import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
+// import EmojiConfigurer from './markdown-it/emoji';
+// import FooternoteConfigurer from './markdown-it/footernote';
+// import HeaderConfigurer from './markdown-it/header';
+// import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
+// import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
+// import LinkerByRelativePathConfigurer from './markdown-it/link-by-relative-path';
+// import MathJaxConfigurer from './markdown-it/mathjax';
+// import PlantUMLConfigurer from './markdown-it/plantuml';
+// import TableConfigurer from './markdown-it/table';
+// import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
+// import TaskListsConfigurer from './markdown-it/task-lists';
+// import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
 
 const logger = loggerFactory('growi:util:GrowiRenderer');
@@ -34,166 +45,199 @@ type MarkdownSettings = {
   breaks?: boolean,
 };
 
+function applyPlugin(processor: Processor, plugin: Plugin | PluginTuple): Processor {
+  if (Array.isArray(plugin)) {
+    return processor.use(...plugin);
+  }
+
+  return processor.use(plugin);
+}
+
 export default class GrowiRenderer {
 
-  preProcessors: any[];
+  // preProcessors: any[];
 
-  postProcessors: any[];
+  // postProcessors: any[];
 
-  md: any;
+  // md: any;
 
-  isMarkdownItConfigured: boolean;
+  // isMarkdownItConfigured: boolean;
 
-  markdownItConfigurers: any[];
+  // markdownItConfigurers: any[];
+
+  // pagePath?: Nullable<string>;
+
+  remarkPlugins: (Plugin | PluginTuple)[] = [
+    gfm,
+  ];
+
+  rehypePlugins: (Plugin | PluginTuple)[] = [
+    slug,
+  ];
+
+  processor?: Processor;
 
   growiRendererConfig: GrowiRendererConfig;
 
-  pagePath?: Nullable<string>;
-
-  /**
-   *
-   * @param {string} mode
-   */
   constructor(growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>) {
     this.growiRendererConfig = growiRendererConfig;
-    this.pagePath = pagePath;
+    // this.pagePath = pagePath;
 
-    if (isClient() && (window as CustomWindow).growiRenderer != null) {
-      this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
-      this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
-    }
-    else {
-      this.preProcessors = [
-        new EasyGrid(),
-        new Linker(),
-        new CsvToTable(),
-        new XssFilter({
-          isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
-          tagWhiteList: this.growiRendererConfig.tagWhiteList,
-          attrWhiteList: this.growiRendererConfig.attrWhiteList,
-        }),
-      ];
-      this.postProcessors = [
-      ];
-    }
+    // if (isClient() && (window as CustomWindow).growiRenderer != null) {
+    //   this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
+    //   this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
+    // }
+    // else {
+    //   this.preProcessors = [
+    //     new EasyGrid(),
+    //     new Linker(),
+    //     new CsvToTable(),
+    //     new XssFilter({
+    //       isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
+    //       tagWhiteList: this.growiRendererConfig.tagWhiteList,
+    //       attrWhiteList: this.growiRendererConfig.attrWhiteList,
+    //     }),
+    //   ];
+    //   this.postProcessors = [
+    //   ];
+    // }
 
-    this.init = this.init.bind(this);
-    this.addConfigurers = this.addConfigurers.bind(this);
-    this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
-    this.configure = this.configure.bind(this);
-    this.process = this.process.bind(this);
-    this.codeRenderer = this.codeRenderer.bind(this);
+    // this.init = this.init.bind(this);
+    // this.addConfigurers = this.addConfigurers.bind(this);
+    // this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
+    // this.configure = this.configure.bind(this);
+    // this.process = this.process.bind(this);
+    // this.codeRenderer = this.codeRenderer.bind(this);
   }
 
   init() {
-    // init markdown-it
-    this.md = new MarkdownIt({
-      html: true,
-      linkify: true,
-      highlight: this.codeRenderer,
+    let parser: Processor = unified().use(parse);
+    this.remarkPlugins.forEach((item) => {
+      parser = applyPlugin(parser, item);
     });
 
-    this.isMarkdownItConfigured = false;
+    let rehype: Processor = parser.use(remark2rehype);
+    this.rehypePlugins.forEach((item) => {
+      rehype = applyPlugin(rehype, item);
+    });
 
-    this.markdownItConfigurers = [
-      new TaskListsConfigurer(),
-      new HeaderConfigurer(),
-      new EmojiConfigurer(),
-      new MathJaxConfigurer(),
-      new DrawioViewerConfigurer(),
-      new PlantUMLConfigurer(this.growiRendererConfig),
-      new BlockdiagConfigurer(this.growiRendererConfig),
-    ];
-
-    if (this.pagePath != null) {
-      this.markdownItConfigurers.push(
-        new LinkerByRelativePathConfigurer(this.pagePath),
-      );
-    }
+    this.processor = rehype.use(rehype2react, {
+      createElement: React.createElement,
+      components: {
+        // a: NextLink,
+      },
+    });
   }
 
-  addConfigurers(configurers: any[]): void {
-    this.markdownItConfigurers.push(...configurers);
-  }
+  // init() {
+  //   // init markdown-it
+  //   this.md = new MarkdownIt({
+  //     html: true,
+  //     linkify: true,
+  //     highlight: this.codeRenderer,
+  //   });
 
-  setMarkdownSettings(settings: MarkdownSettings): void {
-    this.md.set(settings);
-  }
+  //   this.isMarkdownItConfigured = false;
 
-  configure(): void {
-    if (!this.isMarkdownItConfigured) {
-      this.markdownItConfigurers.forEach((configurer) => {
-        configurer.configure(this.md);
-      });
-    }
-  }
+  //   this.markdownItConfigurers = [
+  //     new TaskListsConfigurer(),
+  //     new HeaderConfigurer(),
+  //     new EmojiConfigurer(),
+  //     new MathJaxConfigurer(),
+  //     new DrawioViewerConfigurer(),
+  //     new PlantUMLConfigurer(this.growiRendererConfig),
+  //     new BlockdiagConfigurer(this.growiRendererConfig),
+  //   ];
 
-  preProcess(markdown, context) {
-    let processed = markdown;
-    for (let i = 0; i < this.preProcessors.length; i++) {
-      if (!this.preProcessors[i].process) {
-        continue;
-      }
-      processed = this.preProcessors[i].process(processed, context);
-    }
+  //   if (this.pagePath != null) {
+  //     this.markdownItConfigurers.push(
+  //       new LinkerByRelativePathConfigurer(this.pagePath),
+  //     );
+  //   }
+  // }
 
-    return processed;
-  }
+  // addConfigurers(configurers: any[]): void {
+  //   this.markdownItConfigurers.push(...configurers);
+  // }
 
-  process(markdown, context) {
-    return this.md.render(markdown, context);
-  }
+  // setMarkdownSettings(settings: MarkdownSettings): void {
+  //   this.md.set(settings);
+  // }
 
-  postProcess(html, context) {
-    let processed = html;
-    for (let i = 0; i < this.postProcessors.length; i++) {
-      if (!this.postProcessors[i].process) {
-        continue;
-      }
-      processed = this.postProcessors[i].process(processed, context);
-    }
+  // configure(): void {
+  //   if (!this.isMarkdownItConfigured) {
+  //     this.markdownItConfigurers.forEach((configurer) => {
+  //       configurer.configure(this.md);
+  //     });
+  //   }
+  // }
 
-    return processed;
-  }
+  // preProcess(markdown, context) {
+  //   let processed = markdown;
+  //   for (let i = 0; i < this.preProcessors.length; i++) {
+  //     if (!this.preProcessors[i].process) {
+  //       continue;
+  //     }
+  //     processed = this.preProcessors[i].process(processed, context);
+  //   }
 
-  codeRenderer(code, langExt) {
-    const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
+  //   return processed;
+  // }
 
-    let citeTag = '';
-    let hljsLang = 'plaintext';
-    let showLinenumbers = false;
+  // process(markdown, context) {
+  //   return this.md.render(markdown, context);
+  // }
 
-    if (langExt) {
-      // https://regex101.com/r/qGs7eZ/3
-      const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
+  // postProcess(html, context) {
+  //   let processed = html;
+  //   for (let i = 0; i < this.postProcessors.length; i++) {
+  //     if (!this.postProcessors[i].process) {
+  //       continue;
+  //     }
+  //     processed = this.postProcessors[i].process(processed, context);
+  //   }
 
-      const lang = match[1];
-      const fileName = match[5] || null;
-      showLinenumbers = (match[2] != null) || (match[6] != null);
+  //   return processed;
+  // }
 
-      if (fileName != null) {
-        citeTag = `<cite>${fileName}</cite>`;
-      }
-      if (hljs.getLanguage(lang)) {
-        hljsLang = lang;
-      }
-    }
+  // codeRenderer(code, langExt) {
+  //   const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
-    let highlightCode = code;
-    try {
-      highlightCode = hljs.highlight(hljsLang, code, true).value;
+  //   let citeTag = '';
+  //   let hljsLang = 'plaintext';
+  //   let showLinenumbers = false;
 
-      // add line numbers
-      if (showLinenumbers) {
-        highlightCode = hljs.lineNumbersValue((highlightCode));
-      }
-    }
-    catch (err) {
-      logger.error(err);
-    }
+  //   if (langExt) {
+  //     // https://regex101.com/r/qGs7eZ/3
+  //     const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
 
-    return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
-  }
+  //     const lang = match[1];
+  //     const fileName = match[5] || null;
+  //     showLinenumbers = (match[2] != null) || (match[6] != null);
+
+  //     if (fileName != null) {
+  //       citeTag = `<cite>${fileName}</cite>`;
+  //     }
+  //     if (hljs.getLanguage(lang)) {
+  //       hljsLang = lang;
+  //     }
+  //   }
+
+  //   let highlightCode = code;
+  //   try {
+  //     highlightCode = hljs.highlight(hljsLang, code, true).value;
+
+  //     // add line numbers
+  //     if (showLinenumbers) {
+  //       highlightCode = hljs.lineNumbersValue((highlightCode));
+  //     }
+  //   }
+  //   catch (err) {
+  //     logger.error(err);
+  //   }
+
+  //   return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
+  // }
 
 }
 
@@ -205,19 +249,33 @@ export const generateViewRenderer: RendererGenerator = (
     growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings, pagePath?: Nullable<string>,
 ): GrowiRenderer => {
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
+  // add remark plugins
+  renderer.remarkPlugins.push(footnotes);
+  renderer.remarkPlugins.push(emoji);
+  if (rendererSettings.isEnabledLinebreaks) {
+    renderer.remarkPlugins.push(breaks);
+  }
+  // add rehypePlugins
+  // renderer.rehypePlugins.push([toc, {
+  //   headings: ['h1', 'h2', 'h3'],
+  //   customizeTOC: storeTocNode,
+  // }]);
+  // renderer.rehypePlugins.push([autoLinkHeadings, {
+  //   behavior: 'append',
+  // }]);
   renderer.init();
 
-  // Add configurers for viewer
-  renderer.addConfigurers([
-    new FooternoteConfigurer(),
-    new TocAndAnchorConfigurer(),
-    new HeaderLineNumberConfigurer(),
-    new HeaderWithEditLinkConfigurer(),
-    new TableWithHandsontableButtonConfigurer(),
-  ]);
+  // // Add configurers for viewer
+  // renderer.addConfigurers([
+  //   new FooternoteConfigurer(),
+  //   new TocAndAnchorConfigurer(),
+  //   new HeaderLineNumberConfigurer(),
+  //   new HeaderWithEditLinkConfigurer(),
+  //   new TableWithHandsontableButtonConfigurer(),
+  // ]);
 
-  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
-  renderer.configure();
+  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
+  // renderer.configure();
 
   return renderer;
 };
@@ -228,15 +286,15 @@ export const generatePreviewRenderer: RendererGenerator = (
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
-  // Add configurers for preview
-  renderer.addConfigurers([
-    new FooternoteConfigurer(),
-    new HeaderLineNumberConfigurer(),
-    new TableConfigurer(),
-  ]);
+  // // Add configurers for preview
+  // renderer.addConfigurers([
+  //   new FooternoteConfigurer(),
+  //   new HeaderLineNumberConfigurer(),
+  //   new TableConfigurer(),
+  // ]);
 
-  renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
-  renderer.configure();
+  // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
+  // renderer.configure();
 
   return renderer;
 };
@@ -247,12 +305,12 @@ export const generateCommentPreviewRenderer: RendererGenerator = (
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
-  renderer.addConfigurers([
-    new TableConfigurer(),
-  ]);
+  // renderer.addConfigurers([
+  //   new TableConfigurer(),
+  // ]);
 
-  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
-  renderer.configure();
+  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
+  // renderer.configure();
 
   return renderer;
 };
@@ -263,12 +321,12 @@ export const generateOthersRenderer: RendererGenerator = (
   const renderer = new GrowiRenderer(growiRendererConfig, pagePath);
   renderer.init();
 
-  renderer.addConfigurers([
-    new TableConfigurer(),
-  ]);
+  // renderer.addConfigurers([
+  //   new TableConfigurer(),
+  // ]);
 
-  renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
-  renderer.configure();
+  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
+  // renderer.configure();
 
   return renderer;
 };
