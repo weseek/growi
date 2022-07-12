@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import EventEmitter from 'events';
+
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -18,6 +20,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { CustomWindow } from '~/interfaces/global';
 import { IPageWithMeta } from '~/interfaces/page';
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -124,6 +127,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+
+  // register global EventEmitter
+  if (isClient()) {
+    (window as CustomWindow).globalEmitter = new EventEmitter();
+  }
 
   // commons
   useAppTitle(props.appTitle);
