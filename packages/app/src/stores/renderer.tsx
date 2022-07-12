@@ -28,6 +28,7 @@ const _useRendererBase = (rendererId: string, generator: RendererGenerator): SWR
   const swrResult = useSWRImmutable(key);
 
   // use mutate because fallbackData does not work
+  // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
   if (isAllDataValid && swrResult.data == null) {
     swrResult.mutate(generator(growiRendererConfig, rendererSettings, currentPath));
   }
