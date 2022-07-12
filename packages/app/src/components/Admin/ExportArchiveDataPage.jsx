@@ -248,7 +248,7 @@ class ExportArchiveDataPage extends React.Component {
 
 ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  socket: PropTypes.func,
+  socket: PropTypes.object,
 };
 
 const ExportArchiveDataPageWrapperFC = (props) => {
