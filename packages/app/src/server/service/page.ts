@@ -131,11 +131,22 @@ class PageService {
 
   crowi: any;
 
+  pageEvent: any;
+
   tagEvent: any;
 
   constructor(crowi) {
     this.crowi = crowi;
     this.tagEvent = crowi.event('tag');
+
+    this.initPageEvent();
+  }
+
+  private initPageEvent() {
+    this.pageEvent.on('create', this.pageEvent.onCreate);
+
+    this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+    this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
@@ -716,7 +727,6 @@ class PageService {
         throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
-
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
@@ -768,6 +778,7 @@ class PageService {
         throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
+    this.pageEvent.emit('updateMany', pages, user);
   }
 
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
@@ -1381,6 +1392,7 @@ class PageService {
         throw err;
       }
     }
+    this.pageEvent.emit('create', page, user);
     return deletedPage;
   }
 
@@ -1430,6 +1442,7 @@ class PageService {
         throw err;
       }
     }
+    this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
   }
@@ -3278,6 +3291,8 @@ class PageService {
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
+    this.pageEvent.emit('create', savedPage, user);
+
     // Delete PageRedirect if exists
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     try {
@@ -3376,6 +3391,8 @@ class PageService {
 
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
+
+    this.pageEvent.emit('create', savedPage, dummyUser);
 
     return savedPage;
   }
