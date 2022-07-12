@@ -48,7 +48,7 @@ import {
   useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useRedirectFrom, useRedirectTo,
   useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
 } from '../stores/context';
@@ -71,13 +71,17 @@ const IdenticalPathPage = (): JSX.Element => {
 };
 
 
+type ServerSideLocalProps = {
+  pageRedirect?: PageRedirectDocument | null | undefined;
+}
+
 type Props = CommonProps & {
   currentUser: string,
 
   pageWithMetaStr: string,
   // pageUser?: any,
-  // redirectTo?: string;
-  // redirectFrom?: string;
+  redirectFrom?: string;
+  redirectTo?: string;
 
   // shareLinkId?: string;
   isLatestRevision?: boolean
@@ -144,7 +148,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
+  // useIsTrashPage(_isTrashPage(props.currentPagePath));u
+  useRedirectFrom(props.redirectFrom);
+  useRedirectTo(props.redirectTo);
   // useShared();
   // useShareLinkId(props.shareLinkId);
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
@@ -495,6 +501,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectRoutingInformation(context, props, pageWithMeta);
+  injectRedirectInformation(props, sslProps);
   injectServerConfigurations(context, props);
   injectNextI18NextConfigurations(context, props, ['translation']);
 
