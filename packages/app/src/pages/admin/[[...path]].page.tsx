@@ -9,6 +9,7 @@ import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
+import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -17,7 +18,6 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-// import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 // import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 // import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import {
@@ -69,8 +69,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     security: {
       title: useCustomTitle(props, t('security_settings')),
-      // component: <SecurityManagementContents />,
-      component: <>SecurityManagementContents</>,
+      component: <SecurityManagementContents />,
+      // component: <>a</>,
     },
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
