@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { FixPageGrantAlert } from './FixPageGrantAlert';
 import { OldRevisionAlert } from './OldRevisionAlert';
 import { PageGrantAlert } from './PageGrantAlert';
+import { PageRedirectedAlert } from './PageRedirectedAlert';
 import { PageStaleAlert } from './PageStaleAlert';
 
 // dynamic import because TrashPageAlert uses localStorageMiddleware
@@ -22,6 +23,7 @@ export const PageAlerts = (): JSX.Element => {
         <TrashPageAlert />
         <PageStaleAlert />
         <OldRevisionAlert />
+        <PageRedirectedAlert />
       </div>
     </div>
   );
