@@ -174,23 +174,23 @@ export default class GrowiRenderer {
       if (fileName != null) {
         citeTag = `<cite>${fileName}</cite>`;
       }
-      if (hljs.getLanguage(lang)) {
-        hljsLang = lang;
-      }
+      // if (hljs.getLanguage(lang)) {
+      //   hljsLang = lang;
+      // }
     }
 
     let highlightCode = code;
-    try {
-      highlightCode = hljs.highlight(hljsLang, code, true).value;
+    // try {
+    //   highlightCode = hljs.highlight(hljsLang, code, true).value;
 
-      // add line numbers
-      if (showLinenumbers) {
-        highlightCode = hljs.lineNumbersValue((highlightCode));
-      }
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    //   // add line numbers
+    //   if (showLinenumbers) {
+    //     highlightCode = hljs.lineNumbersValue((highlightCode));
+    //   }
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    // }
 
     return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
   }
