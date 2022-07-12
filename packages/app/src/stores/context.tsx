@@ -214,8 +214,8 @@ export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRRe
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
-export const useIsBlinkedHeaderAtBoot = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isBlinkedAtBoot', undefined, { fallbackData: false });
+export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', initialData);
 };
 
 

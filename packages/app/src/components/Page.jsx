@@ -195,38 +195,14 @@ export const Page = (props) => {
 
   const pageRef = useRef(null);
 
-  // *************************** Blink header at boot ***************************
-  const blinkOnInit = useCallback(() => {
-
-    const result = blinkSectionHeaderAtBoot();
-
-    if (result != null) {
-      mutateBlinkedAtBoot(true);
-    }
-  }, [mutateBlinkedAtBoot]);
-
-  const blinkOnInitDebounced = useMemo(() => debounce(500, blinkOnInit), [blinkOnInit]);
-
-  const observerForBlinkingOnInit = useCallback((elem) => {
-    if (isBlinkedAtBoot || elem == null) {
+  useEffect(() => {
+    if (isBlinkedAtBoot) {
       return;
     }
 
-    const observerCallback = (mutationRecords) => {
-      mutationRecords.forEach(() => blinkOnInitDebounced());
-    };
-
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(elem, { childList: true, subtree: true });
-
-    // first call for the situation that all rendering is complete at this point
-    blinkOnInitDebounced();
-
-    return function cleanup() {
-      observer.disconnect();
-    };
-  }, [blinkOnInitDebounced, isBlinkedAtBoot]);
-  // *******************************  end  *******************************
+    blinkSectionHeaderAtBoot();
+    mutateBlinkedAtBoot(true);
+  }, [mutateBlinkedAtBoot]);
 
   // // set handler to open DrawioModal
   // useEffect(() => {

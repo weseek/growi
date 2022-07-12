@@ -53,7 +53,8 @@ import {
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
-  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured, useGrowiRendererConfig,
+  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useIsSlackConfigured, useGrowiRendererConfig, useIsBlinkedHeaderAtBoot,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -160,6 +161,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useIsBlinkedHeaderAtBoot(false);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
