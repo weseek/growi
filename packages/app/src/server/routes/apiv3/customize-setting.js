@@ -19,6 +19,7 @@ const multer = require('multer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+
 /**
  * @swagger
  *  tags:
@@ -687,7 +688,7 @@ module.exports = (crowi) => {
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
 
-  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', csrf, loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
       isDefaultLogo, customizedLogoSrc,
@@ -713,7 +714,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+    adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
@@ -754,34 +755,33 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
-  router.delete('/delete-brand-logo', loginRequiredStrictly,
-    adminRequired, async(req, res) => {
+  router.delete('/delete-brand-logo', csrf, loginRequiredStrictly, adminRequired, async(req, res) => {
 
-      const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
+    const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 
-      if (attachments == null) {
-        return res.apiv3Err(new ErrorV3('attachment not found', 'delete-brand-logo-failed'));
+    if (attachments == null) {
+      return res.apiv3Err(new ErrorV3('attachment not found', 'delete-brand-logo-failed'));
+    }
+
+    try {
+      await attachmentService.removeAllAttachments(attachments);
+      const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+      // update attachmentId immediately
+      const attachmentConfigParams = {
+        'customize:customizedLogoSrc': null,
+      };
+      if (!isDefaultLogo) {
+        attachmentConfigParams['customize:customizedLogoSrc'] = null;
       }
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(500).apiv3Err(new ErrorV3('Error while deleting logo', 'delete-brand-logo-failed'));
+    }
 
-      try {
-        await attachmentService.removeAllAttachments(attachments);
-        const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
-        // update attachmentId immediately
-        const attachmentConfigParams = {
-          'customize:customizedLogoSrc': null,
-        };
-        if (!isDefaultLogo) {
-          attachmentConfigParams['customize:customizedLogoSrc'] = null;
-        }
-        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.status(500).apiv3Err(new ErrorV3('Error while deleting logo', 'delete-brand-logo-failed'));
-      }
-
-      return res.apiv3({ });
-    });
+    return res.apiv3({ });
+  });
 
   return router;
 };

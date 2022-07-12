@@ -20,14 +20,14 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
   const [retrieveError, setRetrieveError] = useState<string | null>(null);
-  const [customizedLogoSrc, setCustomizedBrandLogoSrc] = useState< string | null >(null);
+  const [customizedLogoSrc, setCustomizedLogoSrc] = useState< string | null >(null);
 
   const retrieveData = useCallback(async() => {
     try {
       const response = await apiv3Get('/customize-setting/customize-logo');
       const { isDefaultLogo, customizedLogoSrc } = response.data;
       setIsDefaultLogo(isDefaultLogo);
-      setCustomizedBrandLogoSrc(customizedLogoSrc);
+      setCustomizedLogoSrc(customizedLogoSrc);
     }
     catch (err) {
       setRetrieveError(err);
@@ -55,7 +55,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
         customizedLogoSrc,
       });
       const { customizedParams } = response.data;
-      setCustomizedBrandLogoSrc(customizedParams.customizedLogoSrc);
+      setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
     catch (err) {
@@ -67,7 +67,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
-      setCustomizedBrandLogoSrc(null);
+      setCustomizedLogoSrc(null);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
@@ -82,7 +82,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       const formData = new FormData();
       formData.append('file', croppedImage);
       const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
-      setCustomizedBrandLogoSrc(data.attachment.filePathProxied);
+      setCustomizedLogoSrc(data.attachment.filePathProxied);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
     }
     catch (err) {
