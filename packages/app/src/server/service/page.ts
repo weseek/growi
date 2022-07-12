@@ -25,6 +25,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
+import PageEvent from '../events/page';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
@@ -137,14 +138,18 @@ class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.pageEvent = crowi.event('page');
     this.tagEvent = crowi.event('tag');
 
+    // init
     this.initPageEvent();
   }
 
   private initPageEvent() {
+    // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
+    // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
@@ -463,6 +468,7 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    this.pageEvent.emit('rename', page, user);
 
     // 5.increase parent's descendantCount.
     // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
@@ -654,6 +660,8 @@ class PageService {
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
+    this.pageEvent.emit('rename');
+
     return renamedPage;
   }
 
@@ -727,6 +735,8 @@ class PageService {
         throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
+
+    this.pageEvent.emit('updateMany', pages, user);
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
@@ -778,6 +788,7 @@ class PageService {
         throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
+
     this.pageEvent.emit('updateMany', pages, user);
   }
 
@@ -794,6 +805,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
     const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -816,6 +828,8 @@ class PageService {
 
         // update path
         targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
+
         callback();
       },
     });
@@ -835,6 +849,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
     const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -854,6 +869,7 @@ class PageService {
         logger.debug(`Renaming pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
         callback();
       },
     });
@@ -950,6 +966,7 @@ class PageService {
         newPagePath, page.revision.body, user, options,
       );
     }
+    this.pageEvent.emit('duplicate', page, user);
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
@@ -1043,6 +1060,7 @@ class PageService {
     const createdPage = await this.crowi.pageService.create(
       newPagePath, page.revision.body, user, options,
     );
+    this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
       this.duplicateDescendantsWithStream(page, newPagePath, user);
@@ -1210,6 +1228,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     let nNonEmptyDuplicatedPages = 0;
     const writeStream = new Writable({
@@ -1231,6 +1250,7 @@ class PageService {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', page, user);
         callback();
       },
     });
@@ -1251,6 +1271,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -1270,6 +1291,7 @@ class PageService {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', page, user);
         callback();
       },
     });
@@ -1367,6 +1389,10 @@ class PageService {
        */
       this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
+    else {
+
+      this.pageEvent.emit('delete', page, user);
+    }
 
     return deletedPage;
   }
@@ -1392,7 +1418,8 @@ class PageService {
         throw err;
       }
     }
-    this.pageEvent.emit('create', page, user);
+    this.pageEvent.emit('create', deletedPage, user);
+
     return deletedPage;
   }
 
@@ -1442,6 +1469,8 @@ class PageService {
         throw err;
       }
     }
+
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1499,6 +1528,9 @@ class PageService {
       if (err.code !== 11000) {
         throw new Error(`Failed to delete pages: ${err}`);
       }
+    }
+    finally {
+      this.pageEvent.emit('syncDescendantsDelete', pages, user);
     }
 
     try {
@@ -1596,6 +1628,8 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
+    this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
+
     return;
   }
 
@@ -1670,6 +1704,9 @@ class PageService {
        */
       this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
     }
+    else if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
 
     return;
   }
@@ -1692,6 +1729,10 @@ class PageService {
 
     if (isRecursively) {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
+    }
+
+    if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1849,6 +1890,7 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      this.pageEvent.emit('revert', page, user);
     }
     else {
       let pageOp;
@@ -1945,6 +1987,8 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    this.pageEvent.emit('revert', page, user);
 
     return updatedPage;
   }
@@ -3291,6 +3335,7 @@ class PageService {
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
+    // Emit create event
     this.pageEvent.emit('create', savedPage, user);
 
     // Delete PageRedirect if exists
@@ -3392,6 +3437,7 @@ class PageService {
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
+    // Emit create event
     this.pageEvent.emit('create', savedPage, dummyUser);
 
     return savedPage;
