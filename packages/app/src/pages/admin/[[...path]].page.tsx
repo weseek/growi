@@ -70,7 +70,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     security: {
       title: useCustomTitle(props, t('security_settings')),
       component: <SecurityManagementContents />,
-      // component: <>a</>,
     },
     markdown: {
       title: useCustomTitle(props, t('Markdown Settings')),
