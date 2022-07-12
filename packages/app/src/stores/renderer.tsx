@@ -14,17 +14,25 @@ export const useRendererSettings = (initialData?: RendererSettings): SWRResponse
 };
 
 // The base hook with common processes
-const _useRendererBase = (key: string, generator: RendererGenerator): SWRResponse<GrowiRenderer, Error> => {
+const _useRendererBase = (rendererId: string, generator: RendererGenerator): SWRResponse<GrowiRenderer, Error> => {
   const { data: rendererSettings } = useRendererSettings();
   const { data: currentPath } = useCurrentPagePath();
   const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  return useSWRImmutable(
-    (rendererSettings == null || growiRendererConfig == null || currentPath == null)
-      ? null
-      : [key, rendererSettings, growiRendererConfig, currentPath],
-    (key, rendererSettings, growiRendererConfig, currentPath) => generator(growiRendererConfig, rendererSettings, currentPath),
-  );
+  const isAllDataValid = rendererSettings != null && currentPath != null && growiRendererConfig != null;
+
+  const key = isAllDataValid
+    ? [rendererId, rendererSettings, growiRendererConfig, currentPath]
+    : null;
+
+  const swrResult = useSWRImmutable(key);
+
+  // use mutate because fallbackData does not work
+  if (isAllDataValid && swrResult.data == null) {
+    swrResult.mutate(generator(growiRendererConfig, rendererSettings, currentPath));
+  }
+
+  return swrResult;
 };
 
 export const useViewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
