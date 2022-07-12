@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.23...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.24...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.24](https://github.com/weseek/growi/compare/v4.5.23...v4.5.24) - 2022-07-12
+
+### 🐛 Bug Fix
+
+- fix: User registration page is not redirected after tmp login (#6241) @kaoritokashiki
 
 ## [v4.5.23](https://github.com/weseek/growi/compare/v4.5.22...v4.5.23) - 2022-06-26
 

@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "4.5.23",
+  "version": "4.5.24",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -61,11 +61,11 @@
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/codemirror-textlint": "^4.5.23",
-    "@growi/plugin-attachment-refs": "^4.5.23",
-    "@growi/plugin-lsx": "^4.5.23",
-    "@growi/plugin-pukiwiki-like-linker": "^4.5.23",
-    "@growi/slack": "^4.5.23",
+    "@growi/codemirror-textlint": "^4.5.24",
+    "@growi/plugin-attachment-refs": "^4.5.24",
+    "@growi/plugin-lsx": "^4.5.24",
+    "@growi/plugin-pukiwiki-like-linker": "^4.5.24",
+    "@growi/slack": "^4.5.24",
     "@promster/express": "^5.1.0",
     "@promster/server": "^6.0.3",
     "@slack/events-api": "^3.0.0",
@@ -164,7 +164,7 @@
   },
   "devDependencies": {
     "@alienfast/i18next-loader": "^1.1.4",
-    "@growi/ui": "^4.5.23",
+    "@growi/ui": "^4.5.24",
     "@handsontable/react": "=2.1.0",
     "@types/compression": "^1.7.0",
     "@types/express": "^4.17.11",
