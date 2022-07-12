@@ -290,7 +290,35 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
+async function getPageRedirect(req: CrowiRequest, props: Props): Promise<PageRedirectDocument | null | undefined> {
+  // Page Redirection - retrieve a PageRedirect doc with a fromPath matching the specified path if any
+  const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+  const { crowi } = req;
+  const { currentPathname } = props;
+  const isPermalink = _isPermalink(currentPathname);
+  const withRedirect = req.query.withRedirect === 'true';
+
+  if (!isPermalink) {
+    return PageRedirect.findOne({ fromPath: currentPathname });
+  }
+  if (isPermalink && withRedirect) {
+    const Page = crowi.model('Page') as PageModel;
+    const pageId = getPageIdFromPathname(currentPathname);
+    const page = await Page.findById(pageId);
+    if (page != null) {
+      return PageRedirect.findOne({ toPath: page.path });
+    }
+  }
+}
+
+function injectRedirectInformation(props: Props, sslProps: ServerSideLocalProps): void {
+  const { pageRedirect } = sslProps;
+  if (pageRedirect) {
+    props.redirectFrom = pageRedirect.fromPath;
+    props.redirectTo = pageRedirect.toPath;
+  }
+}
+
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -442,6 +470,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+  const sslProps: ServerSideLocalProps = {}; // props only to use inside getServerSideProps.
+  sslProps.pageRedirect = await getPageRedirect(req, props);
   let pageWithMeta;
   try {
     pageWithMeta = await getPageData(context, props);
