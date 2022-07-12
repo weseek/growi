@@ -497,7 +497,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
+  router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -508,6 +508,8 @@ module.exports = (crowi) => {
       if (countOfPrimary === 0) {
         await SlackAppIntegration.updateOne({}, { isPrimary: true });
       }
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WORKSPACE_DELETE });
 
       return res.apiv3({ response });
     }
