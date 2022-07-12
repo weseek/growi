@@ -12,6 +12,7 @@ import {
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewRenderer } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile,
@@ -21,7 +22,6 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 const logger = loggerFactory('growi:Page');
 
@@ -138,7 +138,7 @@ class PageSubstance extends React.Component {
       page, isMobile, isGuestUser,
     } = this.props;
     const { path } = page;
-    const { body: markdown, revisionId } = page.revision;
+    const { _id: revisionId, body: markdown } = page.revision;
 
     // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
     // const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
