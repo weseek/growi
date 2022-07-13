@@ -49,7 +49,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage, useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useIsForbidden, useIsNotFound, useIsNotCreatable, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
@@ -65,7 +65,9 @@ import {
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const {
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage,
+} = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
 
@@ -89,6 +91,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
+  IsNotCreatable: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -155,6 +158,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
+  useIsNotCreatable(props.IsNotCreatable);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -354,6 +358,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
+
+    props.IsNotCreatable = !isCreatablePage(currentPathname);
 
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
