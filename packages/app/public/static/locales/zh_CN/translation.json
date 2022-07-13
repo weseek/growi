@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
   "Help": "帮助",
   "view": "View",
 	"Edit": "编辑",
@@ -194,6 +197,9 @@
     "Create Page": "创建页面",
     "page_not_exist": "该页面不存在",
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
+  "not_creatable_page": {
+    "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
     "no_page_list": "There are no pages under this page.",

@@ -15,6 +15,7 @@ import {
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
+import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
 import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
@@ -86,7 +87,6 @@ const SidebarContentsWrapper = () => {
 
 
 const Sidebar = (): JSX.Element => {
-  const NavigationResizeHexagon = dynamic(() => import('./Sidebar/NavigationResizeHexagon').then(mod => mod.NavigationResizeHexagon), { ssr: false });
 
   // const { data: isDrawerMode } = useDrawerMode(); Todo Universalize
   const isDrawerMode = false; // dummy

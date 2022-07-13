@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "日本語"
+  },
   "Help": "ヘルプ",
   "view": "View",
   "Edit": "編集",
@@ -196,6 +199,9 @@
     "Create Page": "ページを作成する",
     "page_not_exist": "このページは存在しません。",
     "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
+  },
+  "not_creatable_page": {
+    "could_not_creata_path": "パスを作成できませんでした。"
   },
   "custom_navigation": {
     "no_page_list": "このページの配下にはページが存在しません。",
