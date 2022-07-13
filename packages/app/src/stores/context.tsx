@@ -190,6 +190,10 @@ export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRRe
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
+export const useIsBlinkedHeaderAtBoot = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', undefined, { fallbackData: false });
+};
+
 
 /** **********************************************************
  *                     Computed contexts
