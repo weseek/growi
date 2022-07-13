@@ -499,7 +499,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { user } = req;
+  const { user, crowi } = req;
 
   const result = await getServerSideCommonProps(context);
 
@@ -513,7 +513,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   const sslProps: ServerSideLocalProps = {}; // props only to use inside getServerSideProps and is not passed to the client
-  sslProps.pageRedirect = await getPageRedirect(req, props);
+  const { withRedirect } = req.query;
+  sslProps.pageRedirect = await crowi.pageRedirectService.getPageRedirectByCurrentPathnameAndWithRedirect(props.currentPathname, withRedirect);
 
   let pageWithMeta;
   try {
