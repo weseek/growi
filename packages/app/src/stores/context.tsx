@@ -1,10 +1,13 @@
-import { pagePathUtils } from '@growi/core';
+import EventEmitter from 'events';
+
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { CustomWindow } from '~/interfaces/global';
 import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
@@ -14,6 +17,14 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
+
+export const useGlobalEventEmitter = (): SWRResponse<EventEmitter, Error> => {
+  return useStaticSWR<EventEmitter, Error>('globalEventEmitter', undefined, { fallbackData: (window as CustomWindow).globalEmitter });
+};
+
+export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
+  return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
+};
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('csrfToken', initialData);
@@ -219,6 +230,10 @@ export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRRe
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
+export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
@@ -230,6 +245,7 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
+    { fallbackData: currentUser == null },
   );
 };
 

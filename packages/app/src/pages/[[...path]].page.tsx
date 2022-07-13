@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import EventEmitter from 'events';
+
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -18,12 +20,15 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { CustomWindow } from '~/interfaces/global';
 import { IPageWithMeta } from '~/interfaces/page';
+import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import { useRendererSettings } from '~/stores/renderer';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -46,10 +51,11 @@ import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsNotFoundPermalink, useIsNotCreatable,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useIsIdenticalPath, useIsUserPage,
-  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useDisableLinkSharing,
-  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsNotFoundPermalink, useIsIdenticalPath
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useDisableLinkSharing,
+  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useIsUserPage, useIsNotCreatable,
+  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useIsSlackConfigured, useGrowiRendererConfig, useIsBlinkedHeaderAtBoot,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -111,6 +117,9 @@ type Props = CommonProps & {
   // isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
+  rendererSettings: RendererSettings,
+  growiRendererConfig: GrowiRendererConfig,
+
   // UI
   userUISettings: UserUISettingsDocument | null
   // Sidebar
@@ -124,6 +133,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+
+  // register global EventEmitter
+  if (isClient()) {
+    (window as CustomWindow).globalEmitter = new EventEmitter();
+  }
 
   // commons
   useAppTitle(props.appTitle);
@@ -155,6 +169,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useIsBlinkedHeaderAtBoot(false);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -171,12 +186,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
 
-  // useRendererSettings({
-  //   isEnabledLinebreaks: props.isEnabledLinebreaks,
-  //   isEnabledLinebreaksInComments: props.isEnabledLinebreaksInComments,
-  //   adminPreferredIndentSize: props.adminPreferredIndentSize,
-  //   isIndentSizeForced: props.isIndentSizeForced,
-  // });
+  useRendererSettings(props.rendererSettings);
+  useGrowiRendererConfig(props.growiRendererConfig);
+  // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
+  // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
+
 
   // const { data: editorMode } = useEditorMode();
 
@@ -420,6 +434,21 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   // };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.rendererSettings = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+  };
+  props.growiRendererConfig = {
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+  };
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
