@@ -51,7 +51,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsNotFoundPermalink, useIsIdenticalPath,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useDisableLinkSharing,
   useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useIsUserPage, useIsNotCreatable,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
@@ -164,7 +164,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useShared();
   // useShareLinkId(props.shareLinkId);
   useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
-  useIsNotFoundPermalink(props.isNotFound ?? false);
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
