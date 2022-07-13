@@ -6,6 +6,8 @@ import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
 
+import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -215,6 +217,9 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (
   return {
     remarkPlugins: [gfm],
     rehypePlugins: [slug],
+    components: {
+      a: NextLink,
+    },
   };
 };
 
@@ -224,14 +229,17 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (
 
   const options = generateCommonOptions(growiRendererConfig, rendererSettings);
 
-  const { remarkPlugins, rehypePlugins } = options;
+  const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
-  remarkPlugins?.push(footnotes);
-  remarkPlugins?.push(emoji);
-  if (rendererSettings.isEnabledLinebreaks) {
-    remarkPlugins?.push(breaks);
+  if (remarkPlugins != null) {
+    remarkPlugins.push(footnotes);
+    remarkPlugins.push(emoji);
+    if (rendererSettings.isEnabledLinebreaks) {
+      remarkPlugins.push(breaks);
+    }
   }
+
   // add rehypePlugins
   // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
@@ -240,6 +248,13 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
+
+  // add components
+  if (components != null) {
+    components.h1 = Header;
+    components.h2 = Header;
+    components.h3 = Header;
+  }
 
   // // Add configurers for viewer
   // renderer.addConfigurers([
