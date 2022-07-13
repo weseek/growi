@@ -5,7 +5,7 @@
 // https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
 // workaround to use '&' in global scope
 .grw-subnav {
-  :grobal {
+  :global {
     min-height: var.$grw-subnav-min-height;
     padding-top: 8px;
     padding-bottom: 8px;

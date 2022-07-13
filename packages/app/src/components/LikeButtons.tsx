@@ -7,6 +7,8 @@ import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
 
+import styles from './LikeButtons.module.scss';
+
 type LikeButtonsProps = {
 
   hideTotalNumber?: boolean,
@@ -48,7 +50,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`btn btn-like border-0
+        className={`btn ${styles['btn-like']} border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>

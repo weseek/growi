@@ -9,6 +9,8 @@ import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
 
+import styles from './BookmarkButtons.module.scss';
+
 interface Props {
   bookmarkCount?: number
   isBookmarked?: boolean
@@ -55,7 +57,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`btn btn-bookmark border-0
+        className={`btn ${styles['btn-bookmark']} border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
