@@ -158,10 +158,6 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
   return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
 };
 
-export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
