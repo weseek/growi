@@ -16,6 +16,7 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
+import { NotCreatablePage } from '../NotCreatablePage';
 import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
 // import PageEditor from '../PageEditor';
@@ -57,24 +58,6 @@ const DisplaySwitcher = (): JSX.Element => {
   const isTopPagePath = isTopPage(currentPagePath ?? '');
 
   const revision = currentPage?.revision;
-
-  const renderNotFoundPage = () => {
-    if (isNotFound && isNotCreatable) {
-      return (
-        <div className="row not-found-message-row">
-          <div className="col-md-12">
-            <h2 className="text-muted">
-              <i className="icon-ban" aria-hidden="true"></i>
-                Couldn&apos;t create path
-            </h2>
-          </div>
-        </div>
-      );
-    }
-    if (isNotFound) {
-      return <NotFoundPage />;
-    }
-  };
 
   return (
     <>
@@ -134,7 +117,8 @@ const DisplaySwitcher = (): JSX.Element => {
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
               { !isNotFound && <Page /> }
-              { renderNotFoundPage() }
+              { isNotFound && !isNotCreatable && <NotFoundPage /> }
+              { isNotFound && isNotCreatable && <NotCreatablePage /> }
             </div>
 
           </div>
