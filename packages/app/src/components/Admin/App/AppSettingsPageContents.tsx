@@ -58,8 +58,7 @@ const AppSettingsPageContents = (props: Props) => {
       <div className="row">
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('App Settings')}</h2>
-          {/* TODO: show AppSetting by https://redmine.weseek.co.jp/issues/100056 */}
-          {/* <AppSetting /> */}
+          <AppSetting />
         </div>
       </div>
 
