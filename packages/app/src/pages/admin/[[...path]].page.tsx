@@ -92,7 +92,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     notification: {
       title: useCustomTitle(props, t('Notification Settings')),
-      // component: <>notification</>,
       component: <NotificationSetting />,
     },
     'global-notification': {
