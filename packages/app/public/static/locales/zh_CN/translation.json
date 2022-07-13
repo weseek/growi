@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
   "Help": "帮助",
   "view": "View",
 	"Edit": "编辑",
