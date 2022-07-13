@@ -6,6 +6,7 @@ import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
 
+import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
@@ -218,6 +219,9 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (
     rehypePlugins: [slug],
     components: {
       a: NextLink,
+      h1: Header,
+      h2: Header,
+      h3: Header,
     },
   };
 };
