@@ -203,7 +203,7 @@ export default class InAppNotificationService {
 
   createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantPages?: Ref<IPage>[]): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
-    const snapshot = stringifySnapshot(target as IPage);
+    const snapshot = stringifySnapshot(target);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
@@ -221,8 +221,7 @@ export default class InAppNotificationService {
         }).distinct('_id');
       }
       await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers, ...notificationDescendantsUsers], activity, snapshot);
-      await this.emitSocketIo(notificationTargetUsers);
-      if (notificationDescendantsUsers != null && notificationDescendantsUsers.length > 0) await this.emitSocketIo(notificationDescendantsUsers);
+      await this.emitSocketIo([...notificationTargetUsers, notificationDescendantsUsers]);
     }
     else {
       throw Error('No activity to notify');

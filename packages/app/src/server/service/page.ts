@@ -467,7 +467,6 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-    this.pageEvent.emit('rename', page, user);
 
     // 5.increase parent's descendantCount.
     // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
@@ -479,6 +478,7 @@ class PageService {
       const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
+    this.pageEvent.emit('rename');
 
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
@@ -531,7 +531,6 @@ class PageService {
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
-
   }
 
   async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
@@ -1388,10 +1387,6 @@ class PageService {
        */
       this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
-    else {
-
-      this.pageEvent.emit('delete', page, user);
-    }
 
     return deletedPage;
   }
@@ -1417,6 +1412,7 @@ class PageService {
         throw err;
       }
     }
+    this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -1682,6 +1678,10 @@ class PageService {
     // delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
+    if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
+
     if (isRecursively) {
       let pageOp;
       try {
@@ -1702,9 +1702,6 @@ class PageService {
        * Main Operation
        */
       this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
-    }
-    else if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1887,9 +1884,10 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
+    this.pageEvent.emit('revert', page, user);
+
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
-      this.pageEvent.emit('revert', page, user);
     }
     else {
       let pageOp;
