@@ -31,6 +31,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+import { toastError } from '~/client/util/apiNotification';
 
 type Props = {
   page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
@@ -125,7 +126,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   };
 
   const switchContentWidthMenuItemClickHandler = async(_pageId: string, _isContainerFluid: boolean): Promise<void> => {
-    await toggleContentWidth(_pageId, _isContainerFluid);
+    try {
+      await toggleContentWidth(_pageId, _isContainerFluid);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {

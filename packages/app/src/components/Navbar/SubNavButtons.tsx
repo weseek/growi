@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import {
   toggleBookmark, toggleLike, toggleSubscribe, toggleContentWidth,
 } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
@@ -149,8 +150,13 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (!isIPageInfoForOperation(pageInfo)) {
       return;
     }
-    await toggleContentWidth(pageId, pageInfo.isContainerFluid);
-    mutatePageInfo();
+    try {
+      await toggleContentWidth(pageId, pageInfo.isContainerFluid);
+      mutatePageInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
