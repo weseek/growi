@@ -356,7 +356,15 @@ module.exports = function(crowi, app) {
 
     try {
       const zipFile = exportService.getFile(fileName);
-      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DOWNLOAD };
+      const parameters = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DOWNLOAD,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
       crowi.activityService.createActivity(parameters);
       return res.download(zipFile);
     }
