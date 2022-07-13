@@ -1,5 +1,7 @@
 import React, { FC, memo, useCallback } from 'react';
 
+import Link from 'next/link';
+
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentUser } from '~/stores/context';
@@ -60,9 +62,11 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
   const { iconName, href, isBlank } = props;
 
   return (
-    <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
-      <i className="material-icons">{iconName}</i>
-    </a>
+    <Link href={href}>
+      <a className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
+        <i className="material-icons">{iconName}</i>
+      </a>
+    </Link>
   );
 });
 SecondaryItem.displayName = 'SecondaryItem';

@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
-import { CustomWindow } from '~/interfaces/global';
-import { useIsUserPage } from '~/stores/context';
+import { useGlobalEventEmitter, useIsUserPage } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
@@ -15,6 +14,8 @@ const logger = loggerFactory('growi:TableOfContents');
 const TableOfContents = (): JSX.Element => {
 
   const { data: isUserPage } = useIsUserPage();
+
+  const { data: globalEmitter } = useGlobalEventEmitter();
 
   const [tocHtml, setTocHtml] = useState('');
 
@@ -50,13 +51,14 @@ const TableOfContents = (): JSX.Element => {
 
   // set handler to render ToC
   useEffect(() => {
+    if (globalEmitter == null) { return }
     const handler = html => setTocHtml(html);
-    (window as CustomWindow).globalEmitter.on('renderTocHtml', handler);
+    globalEmitter.on('renderTocHtml', handler);
 
     return function cleanup() {
-      (window as CustomWindow).globalEmitter.removeListener('renderTocHtml', handler);
+      globalEmitter.removeListener('renderTocHtml', handler);
     };
-  }, []);
+  }, [globalEmitter]);
 
   return (
     <StickyStretchableScroller
