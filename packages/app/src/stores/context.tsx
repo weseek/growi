@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
-import { CustomWindow } from '~/interfaces/global';
+// import { CustomWindow } from '~/interfaces/global';
 import { GrowiRendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
@@ -17,10 +17,6 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
-
-export const useGlobalEventEmitter = (): SWRResponse<EventEmitter, Error> => {
-  return useStaticSWR<EventEmitter, Error>('globalEventEmitter', undefined, { fallbackData: (window as CustomWindow).globalEmitter });
-};
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
   return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });

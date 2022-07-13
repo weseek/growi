@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import PageContainer from '~/client/services/PageContainer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
-import { useGlobalEventEmitter } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
@@ -25,8 +24,6 @@ const TableOfContents = (props) => {
   const { pageContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
-
-  const { data: globalEmitter } = useGlobalEventEmitter();
 
   const [tocHtml, setTocHtml] = useState('');
 
@@ -56,15 +53,17 @@ const TableOfContents = (props) => {
     addSmoothScrollEvent(anchorsInToc, blinkElem);
   }, [tocHtml]);
 
+  // == TODO: render ToC without globalEmitter -- Yuki Takei
+  //
   // set handler to render ToC
-  useEffect(() => {
-    const handler = html => setTocHtml(html);
-    globalEmitter.on('renderTocHtml', handler);
+  // useEffect(() => {
+  //   const handler = html => setTocHtml(html);
+  //   globalEmitter.on('renderTocHtml', handler);
 
-    return function cleanup() {
-      globalEmitter.removeListener('renderTocHtml', handler);
-    };
-  }, [globalEmitter]);
+  //   return function cleanup() {
+  //     globalEmitter.removeListener('renderTocHtml', handler);
+  //   };
+  // }, [globalEmitter]);
 
   return (
     <StickyStretchableScroller
