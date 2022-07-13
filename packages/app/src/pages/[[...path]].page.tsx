@@ -483,7 +483,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  const sslProps: ServerSideLocalProps = {}; // props only to use inside getServerSideProps.
+  const sslProps: ServerSideLocalProps = {}; // props only to use inside getServerSideProps and is not passed to the client
   sslProps.pageRedirect = await getPageRedirect(req, props);
 
   let pageWithMeta;
