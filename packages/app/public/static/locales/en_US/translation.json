@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "English"
+  },
   "Help": "Help",
   "view": "View",
   "Edit": "Edit",
@@ -1125,10 +1128,5 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
-  },
-  "i18n": {
-    "en_US": "English",
-    "ja_JP": "Japanese",
-    "zh_CN": "Chinese"
   }
 }

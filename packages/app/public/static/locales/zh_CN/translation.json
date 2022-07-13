@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
   "Help": "帮助",
   "view": "View",
 	"Edit": "编辑",
@@ -1128,10 +1131,5 @@
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径",
     "path_recovery_failed":"路径恢复失败"
-  },
-  "i18n": {
-    "en_US": "英语",
-    "ja_JP": "日文",
-    "zh_CN": "中文"
   }
 }

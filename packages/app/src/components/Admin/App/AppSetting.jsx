@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { i18n } from '~/next-i18next.config';
+import { i18n as i18nConfig } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 
@@ -77,22 +77,27 @@ const AppSetting = (props) => {
         </label>
         <div className="col-md-6 py-2">
           {
-            i18n.locales.map(locale => (
-              <div key={locale} className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`radioLang${locale}`}
-                  className="custom-control-input"
-                  name="globalLang"
-                  value={locale}
-                  checked={adminAppContainer.state.globalLang === locale}
-                  onChange={(e) => {
-                    adminAppContainer.changeGlobalLang(e.target.value);
-                  }}
-                />
-                <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{t(`i18n.${locale}`)}</label>
-              </div>
-            ))
+            i18nConfig.locales.map((locale) => {
+              const fixedT = i18n.getFixedT(locale);
+              i18n.loadLanguages(i18nConfig.locales);
+
+              return (
+                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${locale}`}
+                    className="custom-control-input"
+                    name="globalLang"
+                    value={locale}
+                    checked={adminAppContainer.state.globalLang === locale}
+                    onChange={(e) => {
+                      adminAppContainer.changeGlobalLang(e.target.value);
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                </div>
+              );
+            })
           }
         </div>
       </div>
