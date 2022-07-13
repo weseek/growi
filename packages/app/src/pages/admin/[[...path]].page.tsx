@@ -10,6 +10,7 @@ import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageConte
 import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
+import NotificationSetting from '~/components/Admin/Notification/NotificationSetting';
 import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
@@ -91,7 +92,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     notification: {
       title: useCustomTitle(props, t('Notification Settings')),
-      component: <>notification</>,
+      component: <NotificationSetting />,
     },
     'global-notification': {
       title: '',
