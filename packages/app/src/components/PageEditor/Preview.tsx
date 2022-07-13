@@ -5,6 +5,7 @@ import React, {
 
 import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -15,9 +16,9 @@ declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
+  growiRenderer: GrowiRenderer,
   markdown?: string,
   pagePath?: string,
-  isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
   onScroll?: (scrollTop: number) => void,
 }
@@ -27,15 +28,13 @@ type UnstatedProps = Props & { appContainer: AppContainer };
 const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
-    appContainer,
+    growiRenderer,
     markdown, pagePath,
   } = props;
 
   const [html, setHtml] = useState('');
 
   const { data: editorSettings } = useEditorSettings();
-
-  const growiRenderer = appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
     return {
@@ -61,7 +60,7 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
     }
 
     setHtml(context.parsedHTML ?? '');
-  }, [interceptorManager, context, growiRenderer]);
+  }, [context, growiRenderer]);
 
   useEffect(() => {
     if (markdown == null) {
@@ -82,7 +81,7 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
         parsedHTML: html,
       });
     }
-  }, [context, html, interceptorManager]);
+  }, [context, html]);
 
   return (
     <div

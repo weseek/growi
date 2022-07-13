@@ -12,10 +12,10 @@ import * as toastr from 'toastr';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,

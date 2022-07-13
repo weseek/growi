@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useTimelineRenderer } from '~/stores/renderer';
 
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
@@ -48,9 +50,9 @@ class PageTimeline extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { appContainer } = this.props;
+    const { growiRenderer } = this.props;
     // initialize GrowiRenderer
-    this.growiRenderer = appContainer.getRenderer('timeline');
+    this.growiRenderer = growiRenderer;
   }
 
   async componentDidMount() {
@@ -110,13 +112,20 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 const PageTimelineWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <PageTimeline t={t} {...props} />;
+  const { data: growiRenderer } = useTimelineRenderer();
+
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
+  return <PageTimeline t={t} growiRenderer={growiRenderer} {...props} />;
 };
 
 /**

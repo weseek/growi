@@ -3,7 +3,7 @@ import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
 import { i18n, localePath } from './src/next-i18next.config';
-import { listScopedPackages } from './src/utils/next.config.utils';
+import { listScopedPackages, listPrefixedPackages } from './src/utils/next.config.utils';
 
 
 // setup logger
@@ -15,12 +15,23 @@ const logger = eazyLogger.Logger({
 
 const setupWithTM = () => {
   // define transpiled packages for '@growi/*'
-  const scopedPackages = listScopedPackages(['@growi'], { ignorePackageNames: '@growi/app' });
+  const packages = [
+    ...listScopedPackages(['@growi'], { ignorePackageNames: '@growi/app' }),
+    // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
+    'react-markdown',
+    'unified',
+    'comma-separated-tokens',
+    'decode-named-character-reference',
+    'space-separated-tokens',
+    'trim-lines',
+    'emoticon',
+    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
+  ];
 
   logger.info('{bold:Listing scoped packages for transpiling:}');
-  logger.unprefixed('info', `{grey:${JSON.stringify(scopedPackages, null, 2)}}`);
+  logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
 
-  return require('next-transpile-modules')(scopedPackages);
+  return require('next-transpile-modules')(packages);
 };
 const withTM = setupWithTM();
 
@@ -33,6 +44,10 @@ const additionalWebpackEntries = {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // == DOES NOT WORK
+  // see: https://github.com/vercel/next.js/discussions/27876
+  // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
+
   reactStrictMode: true,
   typescript: {
     tsconfigPath: 'tsconfig.build.client.json',
