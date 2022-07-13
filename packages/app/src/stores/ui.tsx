@@ -1,8 +1,6 @@
 import { RefObject } from 'react';
 
-import { constants } from 'zlib';
-
-import { isClient, pagePathUtils } from '@growi/core';
+import { isClient, isServer, pagePathUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -20,13 +18,13 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useIsNotFoundPermalink, useCurrentUser,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
-const { isSharedPage } = pagePathUtils;
+const { isTrashTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -113,7 +111,10 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
-  if (!isClient()) { return EditorMode.View }
+  if (isServer()) {
+    return EditorMode.View;
+  }
+
   const { hash } = window.location;
 
   switch (hash) {
@@ -423,9 +424,10 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isIdenticalPath } = useIsIdenticalPath(); // TODO: need to initialize at [[...page]].page.tsx
-  const { data: isNotFound } = useIsNotFoundPermalink();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
+  const { data: shareLinkId } = useShareLinkId();
 
   const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
@@ -433,8 +435,9 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
+    // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFound),
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 
@@ -444,13 +447,12 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isNotFoundPermalink } = useIsNotFoundPermalink();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser, isNotFoundPermalink].some(v => v === undefined);
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser && !isNotFoundPermalink,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -11,7 +12,10 @@ import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { useCurrentUser, useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import {
+  useCurrentPageId,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
+} from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
@@ -148,15 +152,15 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const { data: pageData, mutate: mutateCurrentPage } = useSWRxCurrentPage();
-  const pageId = pageData?._id;
-  const path = pageData?.path;
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const path = currentPage?.path;
 
-  const revision = pageData?.revision;
+  const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -166,18 +170,31 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(currentPage?._id);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: templateTagData } = useTemplateTagData();
+
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
-    syncPageTagsForEditors();
+    if (templateTagData == null) {
+      syncPageTagsForEditors();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
+
+  useEffect(() => {
+    if (pageId === null && templateTagData != null) {
+      const tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+      mutatePageTagsForEditors(tags);
+    }
+  }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
@@ -187,6 +204,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
 
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
+    if (currentPage == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId } = currentPage;
     try {
       await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       mutateCurrentPage();
@@ -253,7 +275,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
 
   const ControlComponents = useCallback(() => {
-    const pageIdForSubNavButtons = pageId; // for SubNavButtons
+    if (currentPage == null || pageId == null) {
+      return <></>;
+    }
 
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -275,14 +299,18 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageIdForSubNavButtons != null && isViewMode && (
+
+          { isViewMode && (
             <div className="h-50">
               <SubNavButtons
                 isCompactMode={isCompactMode}
-                pageId={pageIdForSubNavButtons}
+                pageId={pageId}
                 revisionId={revisionId}
+                // pageId={pageId}
+                // shareLinkId={shareLinkId}
+                // revisionId={revision.toString()}
                 path={path}
-                disableSeenUserInfoPopover={isSharedUser}
+                // disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
                 additionalMenuItemRenderer={additionalMenuItemsRenderer}
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
@@ -313,16 +341,16 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     isLinkSharingDisabled, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown,
+    templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (pageData == null) {
+  if (currentPage == null) {
     return <></>;
   }
 
   return (
     <GrowiSubNavigation
-      page={pageData}
+      page={currentPage}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}

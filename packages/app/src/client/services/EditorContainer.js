@@ -21,8 +21,6 @@ export default class EditorContainer extends Container {
       tags: null,
     };
 
-    this.isSetBeforeunloadEventHandler = false;
-
     this.initDrafts();
 
   }
@@ -56,28 +54,6 @@ export default class EditorContainer extends Container {
       if (draft != null) {
         this.state.markdown = draft;
       }
-    }
-  }
-
-
-  // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
-  showUnsavedWarning(e) {
-    // Cancel the event
-    e.preventDefault();
-    // display browser default message
-    e.returnValue = '';
-    return '';
-  }
-
-  disableUnsavedWarning() {
-    window.removeEventListener('beforeunload', this.showUnsavedWarning);
-    this.isSetBeforeunloadEventHandler = false;
-  }
-
-  enableUnsavedWarning() {
-    if (!this.isSetBeforeunloadEventHandler) {
-      window.addEventListener('beforeunload', this.showUnsavedWarning);
-      this.isSetBeforeunloadEventHandler = true;
     }
   }
 

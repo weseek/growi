@@ -1,8 +1,11 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
+import { SupportedAction } from '~/interfaces/activity';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 
@@ -27,8 +30,12 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
   const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
+
+  const activityEvent = crowi.event('activity');
 
   /**
    * middleware to limit link sharing
@@ -128,7 +135,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, linkSharingRequired, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -143,6 +150,9 @@ module.exports = (crowi) => {
 
     try {
       const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_CREATE });
+
       return res.apiv3(postedShareLink, 201);
     }
     catch (err) {
@@ -177,9 +187,8 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
-  router.delete('/', loginRequired, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
+  router.delete('/', loginRequired, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
-
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
 
     if (page == null) {
@@ -190,6 +199,9 @@ module.exports = (crowi) => {
 
     try {
       const deletedShareLink = await ShareLink.remove({ relatedPage });
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE_BY_PAGE });
+
       return res.apiv3(deletedShareLink);
     }
     catch (err) {
@@ -210,11 +222,14 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to remove all share links
   */
-  router.delete('/all', loginRequired, adminRequired, async(req, res) => {
+  router.delete('/all', loginRequired, adminRequired, addActivity, async(req, res) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
       const { deletedCount } = deletedShareLink;
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_ALL_DELETE });
+
       return res.apiv3({ deletedCount });
     }
     catch (err) {
@@ -246,7 +261,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequired, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { user } = req;
 
@@ -266,6 +281,9 @@ module.exports = (crowi) => {
 
       // remove
       await shareLinkToDelete.remove();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE });
+
       return res.apiv3({ deletedShareLink: shareLinkToDelete });
     }
     catch (err) {

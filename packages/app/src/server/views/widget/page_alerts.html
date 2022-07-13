@@ -52,13 +52,6 @@
     </div>
     {% endif %}
 
-    {% if page and not page.isLatestRevision() %}
-    <div class="alert alert-warning">
-      <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
-      <a href="{{ encodeURI(page.path) }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
-    </div>
-    {% endif %}
-
     {% set dmessage = req.flash('dangerMessage') %}
     {% if dmessage.length %}
     <div class="alert alert-danger mb-4">

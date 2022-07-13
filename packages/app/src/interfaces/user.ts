@@ -1,17 +1,22 @@
 import { IAttachment } from './attachment';
 import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
+import { Lang } from './lang';
 
 export type IUser = {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
+  name: string,
+  username: string,
+  email: string,
+  password: string,
   image?: string, // for backward conpatibility
   imageAttachment?: Ref<IAttachment>,
-  imageUrlCached: string;
+  imageUrlCached: string,
   isGravatarEnabled: boolean,
-  admin: boolean;
+  admin: boolean,
+  apiToken?: string,
+  isEmailPublished: boolean,
+  lang: Lang,
+  slackMemberId?: string,
 }
 
 export type IUserGroupRelation = {

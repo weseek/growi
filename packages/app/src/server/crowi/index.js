@@ -89,6 +89,7 @@ function Crowi() {
   this.events = {
     user: new (require('../events/user'))(this),
     page: new (require('../events/page'))(this),
+    activity: new (require('../events/activity'))(this),
     bookmark: new (require('../events/bookmark'))(this),
     comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
@@ -706,6 +707,7 @@ Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
   if (this.activityService == null) {
     this.activityService = new ActivityService(this);
+    await this.activityService.createTtlIndex();
   }
 };
 

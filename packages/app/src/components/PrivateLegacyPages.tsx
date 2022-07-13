@@ -128,6 +128,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+SearchResultListHead.displayName = 'SearchResultListHead';
+
 /*
  * ConvertByPathModal
  */
@@ -181,6 +183,8 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
     </Modal>
   );
 });
+
+ConvertByPathModal.displayName = 'ConvertByPathModal';
 
 /**
  * LegacyPage

@@ -1,8 +1,11 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
-import UpdatePost from '../../models/update-post';
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import UpdatePost from '../../models/update-post';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
@@ -90,6 +93,9 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
@@ -157,7 +163,8 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: user trigger notifications for updated
   */
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -166,6 +173,10 @@ module.exports = (crowi) => {
         createdUser: await UpdatePost.createUpdatePost(pathPattern, channel, req.user),
         userNotifications: await UpdatePost.findAll(),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_NOTIFICATION_SETTINGS_ADD };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ responseParams }, 201);
     }
     catch (err) {
@@ -201,11 +212,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: deleted notification
    */
-  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const deletedNotificaton = await UpdatePost.findOneAndRemove({ _id: id });
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_NOTIFICATION_SETTINGS_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(deletedNotificaton);
     }
     catch (err) {
@@ -241,7 +256,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param created
    */
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -263,6 +279,10 @@ module.exports = (crowi) => {
 
     try {
       const createdNotification = await notification.save();
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_ADD };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ createdNotification }, 201);
     }
     catch (err) {
@@ -304,7 +324,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param updated
    */
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -343,6 +364,10 @@ module.exports = (crowi) => {
       setting.triggerEvents = triggerEvents || [];
 
       const createdNotification = await setting.save();
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ createdNotification });
     }
     catch (err) {
@@ -375,7 +400,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/NotifyForPageGrant'
    */
-  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, addActivity, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
@@ -390,6 +416,10 @@ module.exports = (crowi) => {
         isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
         isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_NOTIFICATION_GRANT_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ responseParams });
     }
     catch (err) {
@@ -397,7 +427,9 @@ module.exports = (crowi) => {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-notify-for-page-grant-failed'));
     }
+
   });
+
   /**
    * @swagger
    *
@@ -432,7 +464,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification id for updated
    */
-  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
     const { isEnabled } = req.body;
 
@@ -443,6 +475,13 @@ module.exports = (crowi) => {
       else {
         await GlobalNotificationSetting.disable(id);
       }
+
+      const parameters = {
+        action: isEnabled
+          ? SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_ENABLED
+          : SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_DISABLED,
+      };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ id });
 
@@ -480,11 +519,15 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: deleted notification
   */
-  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const deletedNotificaton = await GlobalNotificationSetting.findOneAndRemove({ _id: id });
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GLOBAL_NOTIFICATION_SETTINGS_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3(deletedNotificaton);
     }
     catch (err) {
@@ -492,7 +535,6 @@ module.exports = (crowi) => {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'delete-globalNotification-failed'));
     }
-
 
   });
 

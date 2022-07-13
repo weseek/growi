@@ -1,9 +1,12 @@
 import { body } from 'express-validator';
 
+import { SupportedAction } from '~/interfaces/activity';
 import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
@@ -150,6 +153,9 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     appSetting: [
@@ -293,7 +299,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, validator.appSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -311,6 +317,10 @@ module.exports = (crowi) => {
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ appSettingParams });
     }
     catch (err) {
@@ -344,7 +354,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
@@ -355,6 +365,9 @@ module.exports = (crowi) => {
       const siteUrlSettingParams = {
         siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_SITE_URL_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ siteUrlSettingParams });
     }
     catch (err) {
@@ -476,7 +489,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
       'mail:transmissionMethod': req.body.transmissionMethod,
@@ -488,6 +501,8 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SMTP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -510,9 +525,11 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send test mail for smtp
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     try {
       await sendTestEmail(req.user.email);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_TEST_SUBMIT };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({});
     }
     catch (err) {
@@ -546,7 +563,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
@@ -568,7 +585,8 @@ module.exports = (crowi) => {
 
     await mailService.initialize();
     mailService.publishUpdatedMessage();
-
+    const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SES_UPDATE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.apiv3({ mailSettingParams });
   });
 
@@ -595,7 +613,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  //  eslint-disable-next-line max-len
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -642,7 +661,8 @@ module.exports = (crowi) => {
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
         responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
-
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
     }
     catch (err) {
@@ -676,7 +696,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -686,6 +706,8 @@ module.exports = (crowi) => {
       const pluginSettingParams = {
         isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_PLUGIN_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ pluginSettingParams });
     }
     catch (err) {
@@ -718,15 +740,17 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
-
+    const parameters = {};
     try {
       if (flag) {
         await crowi.appService.startMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
       }
       else {
         await crowi.appService.endMaintenanceMode();
+        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
       }
     }
     catch (err) {
@@ -737,6 +761,10 @@ module.exports = (crowi) => {
       else {
         res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
       }
+    }
+
+    if ('action' in parameters) {
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
 
     res.apiv3({ flag });

@@ -10,7 +10,6 @@ import { Provider } from 'unstated';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import loggerFactory from '~/utils/logger';
@@ -29,10 +28,8 @@ import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationS
 import NotFoundPage from '../components/NotFoundPage';
 import Page from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-import FixPageGrantAlert from '../components/Page/FixPageGrantAlert';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
-import TrashPageAlert from '../components/Page/TrashPageAlert';
 import PageComment from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
@@ -57,9 +54,8 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const pageContainer = new PageContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer);
-const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, pageContainer, editorContainer, personalContainer,
+  appContainer, socketIoContainer, pageContainer, editorContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -85,8 +81,6 @@ Object.assign(componentMappings, {
 
   'maintenance-mode-content': <MaintenanceModeContent />,
 
-  'trash-page-alert': <TrashPageAlert />,
-
   'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
@@ -95,8 +89,7 @@ Object.assign(componentMappings, {
 
   'page-timeline': <PageTimeline />,
 
-  'personal-setting': <PersonalSettings crowi={personalContainer} />,
-
+  'personal-setting': <PersonalSettings />,
   'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
@@ -119,11 +112,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
   });
-  if (!pageContainer.state.isEmpty) {
-    Object.assign(componentMappings, {
-      'fix-page-grant-alert': <FixPageGrantAlert />,
-    });
-  }
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {

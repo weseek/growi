@@ -2,6 +2,8 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
@@ -14,9 +16,8 @@ import {
 
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
-import SidebarContents from './Sidebar/SidebarContents';
-import SidebarNav from './Sidebar/SidebarNav';
-import { StickyStretchableScroller } from './StickyStretchableScroller';
+import { SidebarNav } from './Sidebar/SidebarNav';
+import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
 
@@ -24,7 +25,6 @@ import styles from './Sidebar.module.scss';
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
-
 
 const GlobalNavigation = () => {
   const { data: isDrawerMode } = useDrawerMode();
@@ -52,9 +52,13 @@ const GlobalNavigation = () => {
   }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
+
 };
 
 const SidebarContentsWrapper = () => {
+  const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
+    .then(mod => mod.StickyStretchableScroller), { ssr: false });
+  const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
@@ -83,15 +87,15 @@ const SidebarContentsWrapper = () => {
 
 
 const Sidebar = (): JSX.Element => {
-  const { data: isDrawerMode } = useDrawerMode();
+
+  // const { data: isDrawerMode } = useDrawerMode(); Todo Universalize
+  const isDrawerMode = false; // dummy
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
   const { scheduleToPut } = useUserUISettings();
-
-  const [isTransitionEnabled, setTransitionEnabled] = useState(false);
 
   const [isHover, setHover] = useState(false);
   const [isHoverOnResizableContainer, setHoverOnResizableContainer] = useState(false);
@@ -237,12 +241,6 @@ const Sidebar = (): JSX.Element => {
   }, [dragableAreaMouseUpHandler, draggableAreaMoveHandler, isResizableByDrag]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setTransitionEnabled(true);
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
@@ -295,7 +293,7 @@ const Sidebar = (): JSX.Element => {
         <div className={`d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'} ${isDrawerOpened ? 'open' : ''}`}>
           <div className="data-layout-container">
             <div
-              className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
+              className='navigation transition-enabled'
               onMouseEnter={hoverOnHandler}
               onMouseLeave={hoverOutHandler}
             >

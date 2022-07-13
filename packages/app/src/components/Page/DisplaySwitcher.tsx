@@ -2,25 +2,24 @@ import React, { useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { TabContent, TabPane } from 'reactstrap';
 
-
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { isPopulated } from '~/interfaces/common';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
-import ContentLinkButtons from '../ContentLinkButtons';
-import HashChanged from '../EventListeneres/HashChanged';
 import PageListIcon from '../Icons/PageListIcon';
-import Page from '../Page';
-import PageEditor from '../PageEditor';
-import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
-import PageEditorByHackmd from '../PageEditorByHackmd';
+import NotFoundPage from '../NotFoundPage';
+// import Page from '../Page';
+// import PageEditor from '../PageEditor';
+// import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
 
@@ -33,26 +32,30 @@ const { isTopPage } = pagePathUtils;
 const DisplaySwitcher = (): JSX.Element => {
   const { t } = useTranslation();
 
-  // get element for smoothScroll
-  const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
+  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+  const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
+  const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
 
-  const { data: isEmptyPage } = useIsEmptyPage();
-  const { data: currentPageId } = useCurrentPageId();
+  // get element for smoothScroll
+  // const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
+
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
-  const isPageExist = currentPageId != null;
   const isViewMode = editorMode === EditorMode.View;
   const isTopPagePath = isTopPage(currentPagePath ?? '');
+
+  const revision = currentPage?.revision;
 
   return (
     <>
@@ -60,7 +63,7 @@ const DisplaySwitcher = (): JSX.Element => {
         <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
-            { isPageExist && !isEmptyPage && (
+            { !isNotFound && !currentPage?.isEmpty && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
@@ -71,6 +74,7 @@ const DisplaySwitcher = (): JSX.Element => {
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPagePath)}
+                        data-testid="pageListButton"
                       >
                         <div className="grw-page-accessories-control-icon">
                           <PageListIcon />
@@ -82,12 +86,13 @@ const DisplaySwitcher = (): JSX.Element => {
                   </div>
 
                   {/* Comments */}
-                  { getCommentListDom != null && !isTopPagePath && (
+                  {/* { getCommentListDom != null && !isTopPagePath && ( */}
+                  { !isTopPagePath && (
                     <div className="grw-page-accessories-control mt-2">
                       <button
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-                        onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
+                        // onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
                       >
                         <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
                         <span>Comments</span>
@@ -98,7 +103,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
                   <div className="d-none d-lg-block">
                     <div id="revision-toc" className="revision-toc">
-                      <TableOfContents />
+                      {/* <TableOfContents /> */}
                     </div>
                     <ContentLinkButtons />
                   </div>
@@ -109,7 +114,9 @@ const DisplaySwitcher = (): JSX.Element => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
-              <Page />
+              {/* { !isNotFound && <Page /> } */}
+              { !isNotFound && revision != null && isPopulated(revision) && revision.body }
+              { isNotFound && <NotFoundPage /> }
             </div>
 
           </div>
@@ -117,14 +124,14 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
             <div data-testid="page-editor" id="page-editor">
-              <PageEditor />
+              {/* <PageEditor /> */}
             </div>
           </TabPane>
         ) }
         { isEditable && (
           <TabPane tabId={EditorMode.HackMD}>
             <div id="page-editor-with-hackmd">
-              <PageEditorByHackmd />
+              {/* <PageEditorByHackmd /> */}
             </div>
           </TabPane>
         ) }
