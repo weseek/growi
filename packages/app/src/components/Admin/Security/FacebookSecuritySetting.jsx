@@ -1,12 +1,13 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { withTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
+
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 
 class FacebookSecurityManagement extends React.Component {
 
@@ -30,10 +31,9 @@ class FacebookSecurityManagement extends React.Component {
 
 FacebookSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AppContainer, AdminGeneralSecurityContainer]);
+const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AdminGeneralSecurityContainer]);
 
 export default withTranslation()(TwitterSecurityManagementWrapper);
