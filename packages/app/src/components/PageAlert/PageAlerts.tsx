@@ -18,12 +18,12 @@ export const PageAlerts = (): JSX.Element => {
     <div className="row d-edit-none">
       <div className="col-sm-12">
         {/* alerts */}
+        <PageRedirectedAlert />
         <FixPageGrantAlert />
         <PageGrantAlert />
         <TrashPageAlert />
         <PageStaleAlert />
         <OldRevisionAlert />
-        <PageRedirectedAlert />
       </div>
     </div>
   );
