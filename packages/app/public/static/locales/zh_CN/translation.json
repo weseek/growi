@@ -53,7 +53,7 @@
 	"Example": "例如",
 	"Taro Yamada": "John Doe",
 	"List View": "列表",
-	"Timeline View": "时间线",
+	"": "时间线",
   "History": "历史",
   "attachment_data": "Attachment Data",
   "No_attachments_yet": "暂无附件",
@@ -194,6 +194,9 @@
     "Create Page": "创建页面",
     "page_not_exist": "该页面不存在",
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
+  "not_creatable_page": {
+    "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
     "no_page_list": "There are no pages under this page.",
