@@ -1,14 +1,9 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
 
-type Props = {
-  children: React.ReactNode,
-  href?: string,
-}
-
 const isAnchorLink = (href: string): boolean => {
-  return href.length > 0 && href[0] === '#';
+  return href.toString().length > 0 && href[0] === '#';
 };
 
 const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
@@ -18,22 +13,34 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
   return baseUrl.host !== hrefUrl.host;
 };
 
-export const NextLink = ({ href, children }: Props): JSX.Element => {
+type Props = Omit<LinkProps, 'href'> & {
+  children: React.ReactNode,
+  href?: string,
+  className?: string,
+} ;
+
+export const NextLink = ({
+  href, children, className, ...props
+}: Props): JSX.Element => {
 
   const { data: siteUrl } = useSiteUrl();
 
   // when href is an anchor link
   if (href == null || isAnchorLink(href)) {
-    return <a href={href}>{children}</a>;
+    return <a href={href} className={className}>{children}</a>;
   }
 
   if (isExternalLink(href, siteUrl)) {
-    return <a href={href} target="_blank" rel="noreferrer">
-      {children}&nbsp;<i className='icon-share-alt small'></i>
-    </a>;
+    return (
+      <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+        {children}&nbsp;<i className='icon-share-alt small'></i>
+      </a>
+    );
   }
 
   return (
-    <Link href={href}><a>{children}</a></Link>
+    <Link {...props} href={href}>
+      <a className={className}>{children}</a>
+    </Link>
   );
 };
