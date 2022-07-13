@@ -51,7 +51,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage, useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsNotFoundPermalink, useIsIdenticalPath
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsNotFoundPermalink, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useDisableLinkSharing,
   useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useIsUserPage, useIsNotCreatable,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
