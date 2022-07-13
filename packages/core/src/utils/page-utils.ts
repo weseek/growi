@@ -1,4 +1,5 @@
-import { isTopPage } from './page-path-utils';
+import { isTopPage, isPermalink } from './page-path-utils';
+import { removeHeadingSlash } from './path-utils';
 
 // const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
@@ -55,4 +56,8 @@ export const isPageNormalized = (page): boolean => {
   }
 
   return true;
+};
+
+export const getPageIdFromPathname = (currentPathname: string): string | null => {
+  return isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
 };

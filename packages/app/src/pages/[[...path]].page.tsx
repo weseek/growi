@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { isClient, pagePathUtils, pathUtils } from '@growi/core';
+import { isClient, pagePathUtils, pageUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import mongoose from 'mongoose';
 import {
@@ -62,7 +62,7 @@ import {
 
 const logger = loggerFactory('growi:pages:all');
 const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
-const { removeHeadingSlash } = pathUtils;
+const { getPageIdFromPathname } = pageUtils;
 
 
 const IdenticalPathPage = (): JSX.Element => {
@@ -281,11 +281,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     </>
   );
 };
-
-
-function getPageIdFromPathname(currentPathname: string): string | null {
-  return _isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
-}
 
 class MultiplePagesHitsError extends ExtensibleCustomError {
 
