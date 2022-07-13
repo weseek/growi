@@ -17,7 +17,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -178,12 +178,25 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: templateTagData } = useTemplateTagData();
+
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
-    syncPageTagsForEditors();
+    if (templateTagData == null) {
+      syncPageTagsForEditors();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
+
+  useEffect(() => {
+    if (pageId === null && templateTagData != null) {
+      const tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+      mutatePageTagsForEditors(tags);
+    }
+  }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 

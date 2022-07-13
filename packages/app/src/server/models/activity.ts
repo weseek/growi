@@ -2,70 +2,94 @@ import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { AllSupportedTargetModelType, AllSupportedEventModelType, AllSupportedActionType } from '~/interfaces/activity';
+import {
+  IActivity, ISnapshot, AllSupportedActions, SupportedActionType,
+  AllSupportedTargetModels, SupportedTargetModelType,
+  AllSupportedEventModels, SupportedEventModelType,
+} from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
-import activityEvent from '../events/activity';
 
 import Subscription from './subscription';
+
 
 const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
-  user: Types.ObjectId | any
-  targetModel: string
+  user: Types.ObjectId
+  ip: string
+  endpoint: string
+  targetModel: SupportedTargetModelType
   target: Types.ObjectId
-  action: string
+  eventModel: SupportedEventModelType
   event: Types.ObjectId
-  eventModel: string
+  action: SupportedActionType
+  snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
 }
 
 export interface ActivityModel extends Model<ActivityDocument> {
+  [x:string]: any
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
+
+const snapshotSchema = new Schema<ISnapshot>({
+  username: { type: String, index: true },
+});
+
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     index: true,
-    require: true,
+  },
+  ip: {
+    type: String,
+  },
+  endpoint: {
+    type: String,
   },
   targetModel: {
     type: String,
-    require: true,
-    enum: AllSupportedTargetModelType,
+    enum: AllSupportedTargetModels,
   },
   target: {
     type: Schema.Types.ObjectId,
     refPath: 'targetModel',
-    require: true,
-  },
-  action: {
-    type: String,
-    require: true,
-    enum: AllSupportedActionType,
-  },
-  event: {
-    type: Schema.Types.ObjectId,
-    refPath: 'eventModel',
   },
   eventModel: {
     type: String,
-    enum: AllSupportedEventModelType,
+    enum: AllSupportedEventModels,
   },
+  event: {
+    type: Schema.Types.ObjectId,
+  },
+  action: {
+    type: String,
+    enum: AllSupportedActions,
+    required: true,
+  },
+  snapshot: snapshotSchema,
 }, {
-  timestamps: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
+  },
 });
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 }, { unique: true });
+activitySchema.plugin(mongoosePaginate);
 
+activitySchema.post('save', function() {
+  logger.debug('activity has been created', this);
+});
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
@@ -89,16 +113,53 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   return activeNotificationUsers;
 };
 
-activitySchema.post('save', async(savedActivity: ActivityDocument) => {
-  let targetUsers: Types.ObjectId[] = [];
-  try {
-    targetUsers = await savedActivity.getNotificationTargetUsers();
-  }
-  catch (err) {
-    logger.error(err);
-  }
+activitySchema.statics.createByParameters = async function(parameters): Promise<IActivity> {
+  const activity = await this.create(parameters) as unknown as IActivity;
 
-  activityEvent.emit('create', targetUsers, savedActivity);
-});
+  return activity;
+};
+
+// When using this method, ensure that activity updates are allowed using ActivityService.shoudUpdateActivity
+activitySchema.statics.updateByParameters = async function(activityId: string, parameters): Promise<IActivity> {
+  const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
+
+  return activity;
+};
+
+activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
+  const paginateResult = await this.paginate(
+    query,
+    {
+      limit,
+      offset,
+      sort: { createdAt: -1 },
+    },
+  );
+  return paginateResult;
+};
+
+activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(
+    q: string, option: { sortOpt: number | string, offset: number, limit: number},
+): Promise<{usernames: string[], totalCount: number}> {
+  const opt = option || {};
+  const sortOpt = opt.sortOpt || 1;
+  const offset = opt.offset || 0;
+  const limit = opt.limit || 10;
+
+  const conditions = { 'snapshot.username': { $regex: q, $options: 'i' } };
+
+  const usernames = await this.aggregate()
+    .skip(0)
+    .limit(10000) // Narrow down the search target
+    .match(conditions)
+    .group({ _id: '$snapshot.username' })
+    .sort({ _id: sortOpt }) // Sort "snapshot.username" in ascending order
+    .skip(offset)
+    .limit(limit);
+
+  const totalCount = (await this.find(conditions).distinct('snapshot.username')).length;
+
+  return { usernames: usernames.map(r => r._id), totalCount };
+};
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);

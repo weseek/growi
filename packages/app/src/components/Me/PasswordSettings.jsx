@@ -1,14 +1,12 @@
-
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import PersonalContainer from '~/client/services/PersonalContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { usePersonalSettings } from '~/stores/personal-settings';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 class PasswordSettings extends React.Component {
 
@@ -24,7 +22,7 @@ class PasswordSettings extends React.Component {
       minPasswordLength: null,
     };
 
-    this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
 
   }
@@ -42,8 +40,8 @@ class PasswordSettings extends React.Component {
 
   }
 
-  async onClickSubmit() {
-    const { t, personalContainer } = this.props;
+  async submitHandler() {
+    const { t, onSubmit } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
@@ -51,7 +49,9 @@ class PasswordSettings extends React.Component {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
-      await personalContainer.retrievePersonalData();
+      if (onSubmit != null) {
+        onSubmit();
+      }
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
     catch (err) {
@@ -140,7 +140,7 @@ class PasswordSettings extends React.Component {
               data-testid="grw-password-settings-update-button"
               type="button"
               className="btn btn-primary"
-              onClick={this.onClickSubmit}
+              onClick={this.submitHandler}
               disabled={isIncorrectConfirmPassword}
             >
               {t('Update')}
@@ -155,17 +155,19 @@ class PasswordSettings extends React.Component {
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
+  onSubmit: PropTypes.func,
 };
 
 const PasswordSettingsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <PasswordSettings t={t} {...props} />;
+  const { mutate: mutatePersonalSettings } = usePersonalSettings();
+
+  const submitHandler = useCallback(() => {
+    mutatePersonalSettings();
+  }, [mutatePersonalSettings]);
+
+
+  return <PasswordSettings t={t} onSubmit={submitHandler} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettingsWrapperFC, [PersonalContainer]);
-
-export default PasswordSettingsWrapper;
+export default PasswordSettingsWrapperFC;

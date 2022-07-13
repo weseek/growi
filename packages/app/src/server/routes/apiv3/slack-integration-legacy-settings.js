@@ -1,6 +1,9 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:slack-integration-legacy-setting');
@@ -49,6 +52,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   /**
    * @swagger
@@ -100,7 +106,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SlackConfigurationParams'
    */
-  router.put('/', loginRequiredStrictly, adminRequired, csrf, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
+  router.put('/', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
 
     const requestParams = {
       'slack:incomingWebhookUrl': req.body.webhookUrl,
@@ -115,6 +121,10 @@ module.exports = (crowi) => {
         isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
         slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ responseParams });
     }
     catch (err) {

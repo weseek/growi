@@ -1,8 +1,28 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.11...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.11](https://github.com/weseek/growi/compare/v5.0.10...v5.0.11) - 2022-07-05
+
+### 💎 Features
+
+- feat: Integrate recount descendant count after paths fix (#6170) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Redirect when the anchor is #password (#6144) @Kami-jo
+
+### 🐛 Bug Fixes
+
+- fix: User registration page is not redirected after tmp login (#6197) @kaoritokashiki
+- fix: Empty trash doesn't work (#6168) @yukendev
+
+### 🧰 Maintenance
+
+- support: Ease rate limit temporary (#6191) @yuki-takei
+- support: Omit page history container and page revision comparer container (#6185) @yukendev
 
 ## [v5.0.10](https://github.com/weseek/growi/compare/v5.0.9...v5.0.10) - 2022-06-27
 

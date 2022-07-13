@@ -3,12 +3,9 @@ import urljoin from 'url-join';
 
 export default class PlantUMLConfigurer {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-    const config = crowi.getConfig();
-
+  constructor(growiConfig) {
     // Do NOT use HTTPS URL because plantuml.com refuse request except from members
-    this.serverUrl = config.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
+    this.serverUrl = growiConfig.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
 
     this.generateSource = this.generateSource.bind(this);
   }
