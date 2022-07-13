@@ -310,27 +310,6 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-async function getPageRedirect(req: CrowiRequest, props: Props): Promise<PageRedirectDocument | null | undefined> {
-  // Page Redirection - retrieve a PageRedirect doc with a fromPath matching the specified path if any
-  const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-  const { crowi } = req;
-  const { currentPathname } = props;
-  const isPermalink = _isPermalink(currentPathname);
-  const withRedirect = req.query.withRedirect === 'true';
-
-  if (!isPermalink) {
-    return PageRedirect.findOne({ fromPath: currentPathname });
-  }
-  if (isPermalink && withRedirect) {
-    const Page = crowi.model('Page') as PageModel;
-    const pageId = getPageIdFromPathname(currentPathname);
-    const page = await Page.findById(pageId);
-    if (page != null) {
-      return PageRedirect.findOne({ toPath: page.path });
-    }
-  }
-}
-
 function injectRedirectInformation(props: Props, sslProps: ServerSideLocalProps): void {
   const { pageRedirect } = sslProps;
   if (pageRedirect) {
