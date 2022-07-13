@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { PagePathLabel } from '@growi/ui';
 import PropTypes from 'prop-types';
-import React from 'react';
 
 
 export class PagePathWrapper extends React.Component {
