@@ -7,7 +7,7 @@ import * as toastr from 'toastr';
 
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiDelete, apiGet } from '~/client/util/apiv1-client';
-import { useDefaultSocket } from '~/stores/socket-io';
+import { useAdminSocket } from '~/stores/socket-io';
 
 import LabeledProgressBar from './Common/LabeledProgressBar';
 import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
@@ -253,7 +253,7 @@ ExportArchiveDataPage.propTypes = {
 
 const ExportArchiveDataPageWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: socket } = useDefaultSocket();
+  const { data: socket } = useAdminSocket();
 
   return <ExportArchiveDataPage t={t} socket={socket} {...props} />;
 };
