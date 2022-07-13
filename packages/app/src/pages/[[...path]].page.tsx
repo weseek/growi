@@ -40,6 +40,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -49,10 +50,10 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useOwnerOfCurrentPage, useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsNotCreatable, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
+  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useDisableLinkSharing,
+  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useIsUserPage, useIsNotCreatable,
   useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useGrowiRendererConfig, useIsBlinkedHeaderAtBoot,
 } from '../stores/context';
@@ -66,7 +67,7 @@ import {
 
 const logger = loggerFactory('growi:pages:all');
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -103,7 +104,8 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
-  // hackmdUri: string,
+  hackmdUri: string,
+  // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
@@ -114,6 +116,7 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+  disableLinkSharing: boolean,
 
   rendererSettings: RendererSettings,
   growiRendererConfig: GrowiRendererConfig,
@@ -162,6 +165,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
+  useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
+  useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
@@ -176,9 +181,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
-  // useHackmdUri(props.hackmdUri);
+  useHackmdUri(props.hackmdUri);
+  // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
+  useDisableLinkSharing(props.disableLinkSharing);
 
   useRendererSettings(props.rendererSettings);
   useGrowiRendererConfig(props.growiRendererConfig);
@@ -197,6 +204,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
+  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
 
@@ -236,8 +245,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
         <header className="py-0">
-          {/* <GrowiSubNavigation /> */}
-          GrowiSubNavigation
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
@@ -411,7 +419,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
@@ -420,6 +428,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   // props.editorConfig = {
   //   upload: {
   //     image: crowi.fileUploadService.getIsUploadable(),

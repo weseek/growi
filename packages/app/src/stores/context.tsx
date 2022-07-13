@@ -118,8 +118,16 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
   return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
+export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
+};
+
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
