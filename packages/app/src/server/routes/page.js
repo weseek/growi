@@ -1374,7 +1374,6 @@ module.exports = function(crowi, app) {
     let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
-      const bPages = await Page.findListWithDescendants(page.path, req.user);
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }

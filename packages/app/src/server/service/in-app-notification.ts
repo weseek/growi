@@ -203,24 +203,26 @@ export default class InAppNotificationService {
 
   createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantPages?: Ref<IPage>[]): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
+    const snapshot = stringifySnapshot(target as IPage);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
         mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
       }
-      let notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
+      let notificationDescendantsUsers = [];
       if (descendantPages != null && descendantPages.length > 0) {
         const User = this.crowi.model('User');
         const targetDescendantsUsers = await Subscription.getSubscriptions(descendantPages);
         const descendantsUsers = targetDescendantsUsers.filter(item => (item.toString() !== activity.user._id.toString()));
-        notificationTargetUsers = notificationTargetUsers.concat(await User.find({
+        notificationDescendantsUsers = await User.find({
           _id: { $in: descendantsUsers },
           status: User.STATUS_ACTIVE,
-        }).distinct('_id'));
+        }).distinct('_id');
       }
-      const snapshot = stringifySnapshot(target as IPage);
-      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers], activity, snapshot);
+      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers, ...notificationDescendantsUsers], activity, snapshot);
       await this.emitSocketIo(notificationTargetUsers);
+      if (notificationDescendantsUsers != null && notificationDescendantsUsers.length > 0) await this.emitSocketIo(notificationDescendantsUsers);
     }
     else {
       throw Error('No activity to notify');

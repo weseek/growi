@@ -82,7 +82,7 @@ subscriptionSchema.statics.getUnsubscription = async function(target: Ref<IPage>
 };
 
 subscriptionSchema.statics.getSubscriptions = async function(targets: Ref<IPage>[]) {
-  return this.find({ $in: targets, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
+  return this.find({ target: { $in: targets }, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

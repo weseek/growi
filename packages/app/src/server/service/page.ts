@@ -25,7 +25,6 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import PageEvent from '../events/page';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
