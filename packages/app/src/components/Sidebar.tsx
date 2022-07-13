@@ -15,6 +15,7 @@ import {
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
+import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
 import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
@@ -86,7 +87,6 @@ const SidebarContentsWrapper = () => {
 
 
 const Sidebar = (): JSX.Element => {
-  const NavigationResizeHexagon = dynamic(() => import('./Sidebar/NavigationResizeHexagon').then(mod => mod.NavigationResizeHexagon), { ssr: false });
 
   // const { data: isDrawerMode } = useDrawerMode(); Todo Universalize
   const isDrawerMode = false; // dummy
@@ -96,8 +96,6 @@ const Sidebar = (): JSX.Element => {
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
   const { scheduleToPut } = useUserUISettings();
-
-  const [isTransitionEnabled, setTransitionEnabled] = useState(false);
 
   const [isHover, setHover] = useState(false);
   const [isHoverOnResizableContainer, setHoverOnResizableContainer] = useState(false);
@@ -243,12 +241,6 @@ const Sidebar = (): JSX.Element => {
   }, [dragableAreaMouseUpHandler, draggableAreaMoveHandler, isResizableByDrag]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setTransitionEnabled(true);
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
@@ -301,7 +293,7 @@ const Sidebar = (): JSX.Element => {
         <div className={`d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'} ${isDrawerOpened ? 'open' : ''}`}>
           <div className="data-layout-container">
             <div
-              className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
+              className='navigation transition-enabled'
               onMouseEnter={hoverOnHandler}
               onMouseLeave={hoverOutHandler}
             >

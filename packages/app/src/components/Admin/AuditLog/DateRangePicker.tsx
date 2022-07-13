@@ -27,6 +27,7 @@ const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: Cust
   );
 });
 
+CustomInput.displayName = 'CustomInput';
 
 type DateRangePickerProps = {
   startDate: Date | null

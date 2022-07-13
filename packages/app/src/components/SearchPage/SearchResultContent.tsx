@@ -15,6 +15,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager } from '~/stores/page-listing';
+import { useSearchResultRenderer } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 
@@ -119,8 +120,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const growiRenderer = appContainer.getRenderer('searchresult');
-
+  const { data: growiRenderer } = useSearchResultRenderer();
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -193,8 +193,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     );
   }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
-  // return if page is null
-  if (page == null) return <></>;
+  // return if page or growiRenderer is null
+  if (page == null || growiRenderer == null) return <></>;
 
   return (
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">

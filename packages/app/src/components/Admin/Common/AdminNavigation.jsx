@@ -5,22 +5,22 @@
 import React from 'react';
 
 import { pathUtils } from '@growi/core';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
 
-import AppContainer from '~/client/services/AppContainer';
+// import AppContainer from '~/client/services/AppContainer';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+// import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
   const { t } = useTranslation();
-  const { appContainer } = props;
+  // const { appContainer } = props;
   const pathname = window.location.pathname;
 
-  const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
-  const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
+  // const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
+  // const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -89,7 +89,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
-        {growiCloudUri != null && growiAppIdForGrowiCloud != null
+        {/* {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
               href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
@@ -98,7 +98,7 @@ const AdminNavigation = (props) => {
               <MenuLabel menu="cloud" />
             </a>
           )
-        }
+        } */}
       </>
     );
   };
@@ -146,10 +146,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
+// const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default AdminNavigationWrapper;
+// export default AdminNavigationWrapper;
+export default AdminNavigation;

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -10,7 +10,7 @@ import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 
-import InviteUserControl from './Users/InviteUserControl';
+// import InviteUserControl from './Users/InviteUserControl';
 import PasswordResetModal from './Users/PasswordResetModal';
 import UserTable from './Users/UserTable';
 
@@ -150,7 +150,8 @@ class UserManagement extends React.Component {
           />
         )}
         <p>
-          <InviteUserControl />
+          {/* show  */}
+          {/* <InviteUserControl /> */}
           <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}

@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
 } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -121,11 +120,10 @@ const UserMenuWrapperFC = (props) => {
   return <UserMenu t={t} {...props} />;
 };
 
-const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AppContainer, AdminUsersContainer]);
+const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,
