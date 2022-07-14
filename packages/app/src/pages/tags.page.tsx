@@ -1,7 +1,8 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
+import { NextPage } from 'next';
 
 import TagCloudBox from '~/components/TagCloudBox';
 import TagList from '~/components/TagList';
@@ -9,10 +10,11 @@ import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/BasicLayout';
+import { CommonProps } from './commons';
 
 const PAGING_LIMIT = 10;
 
-const TagPage: FC = () => {
+const TagPage: NextPage<CommonProps> = () => {
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
@@ -33,7 +35,7 @@ const TagPage: FC = () => {
     <>
       <Head>
       </Head>
-      <BasicLayout title="tags">
+      <BasicLayout title='tags'>
         <div className="grw-container-convertible mb-5 pb-5">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
