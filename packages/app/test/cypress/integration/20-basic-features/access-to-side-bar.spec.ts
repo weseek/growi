@@ -17,8 +17,7 @@ context('Access to sidebar', () => {
     cy.screenshot(`${ssPrefix}-2-sidebar-collapsed`, {capture: 'viewport'});
 
   });
-
-  it('Successully change side bar size of recent changes', () => {
+  it('Successfully access recent changes side bar ', () => {
     cy.visit('/');
     cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
@@ -26,31 +25,12 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}recent-changes-1-page-list`);
+
     cy.get('#grw-sidebar-contents-wrapper').within(() => {
       cy.get('#recentChangesResize').click({force: true});
-      cy.screenshot(`${ssPrefix}size-1-current-sidebar-size`);
-      cy.get('#recentChangesResize').click({force: true});
-      cy.screenshot(`${ssPrefix}size-2-switch-sidebar-size`);
+      cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
     });
-  });
-
-  it('Successfully access page from sidebar ', () => {
-    cy.visit('/');
-    cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
-    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-      if($el.hasClass('d-none')){
-        cy.getByTestid('grw-navigation-resize-button').click({force: true});
-      }
-    });
-    cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
-    cy.get('.list-group-item').first().within(($el) => {
-      if($el.find('.grw-page-path-text-muted-container').length > 0){
-        cy.get('.grw-page-path-hierarchical-link > a').click();
-      }else{
-        cy.get('.path-segment > a').click();
-      }
-    })
-    cy.screenshot(`${ssPrefix}recent-changes-2-open-first-page`);
 
     cy.visit('/Sandbox');
     // Add tag
@@ -67,12 +47,6 @@ context('Access to sidebar', () => {
     cy.get('#edit-tag-modal').within(() => {
       cy.get('div.modal-footer > button').click();
     });
-    cy.visit('/Sandbox');
-    cy.get('.grw-taglabels-container > form > a').contains('test').click();
-    cy.getByTestid('search-result-base').should('be.visible');
-    cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
-    cy.screenshot(`${ssPrefix}recent-changes-3-click-on-tag-results`, {capture: 'viewport'});
   });
 
   it('Successfully create a custom sidebar page', () => {
@@ -84,7 +58,7 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`)
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
     cy.get('.grw-sidebar-content-header.h5').should('be.visible').find('a').click();
 
     cy.get('.CodeMirror textarea').type(content, {force: true});
@@ -102,9 +76,9 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
-    cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
@@ -142,7 +116,7 @@ context('Access to sidebar', () => {
       cy.get('.flex-fill > input').type('_newname');
     });
 
-    cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-6-rename-page`);
     cy.get('body').click(0,0);
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
@@ -167,7 +141,7 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.screenshot(`${ssPrefix}tags-1-access-to-tags`);
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}tags-1-access-to-tags`);
 
     cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
 
@@ -177,105 +151,6 @@ context('Access to sidebar', () => {
     });
 
     cy.screenshot(`${ssPrefix}tags-3-page-list-with-tag`);
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
-          });
-        }
-      });
-
-    cy.screenshot(`${ssPrefix}tags-4-tags-click-three-dots-menu`);
-
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-duplicate-modal-btn').click();
-          });
-        }
-      });
-
-    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type('_screen');
-    }).screenshot(`${ssPrefix}tags-5-duplicate-page-from-tags`);
-
-    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-      cy.get('.modal-header > button').click();
-    });
-
-
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
-          });
-        }
-      });
-
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-move-rename-modal-btn').click();
-          });
-        }
-      });
-
-
-    cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').clear().type('/vrt', {force: true});
-    }).screenshot(`${ssPrefix}tags-6-rename-page-from-tag`);
-
-    cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.get('.modal-header > button').click();
-    });
-
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
-          });
-        }
-      });
-
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === '/Sandbox'){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-delete-modal-btn').click();
-          });
-        }
-      });
-
-    cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}tags-7-delete-page-from-tag`);
-
-    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-      cy.get('.modal-header > button').click();
-    });
-
-    cy.get('.grw-search-page-nav').within(() => {
-      cy.get('.btn.dropdown-toggle').click();
-      cy.get('.dropdown-menu').should('have.class', 'show');
-    });
-    cy.screenshot(`${ssPrefix}tags-8-page-order`);
-
-    cy.get('.grw-search-page-nav').within(() => {
-      cy.get('.dropdown-menu > .dropdown-item').eq(0).click();
-    });
-   cy.screenshot(`${ssPrefix}tags-9-page-order-by-relevance`);
-
-   cy.get('.grw-search-page-nav').within(() => {
-    cy.get('.btn.dropdown-toggle').click();
-    cy.get('.dropdown-menu').should('have.class', 'show');
-    cy.get('.dropdown-menu > .dropdown-item').eq(1).click();
-  });
-  cy.screenshot(`${ssPrefix}tags-10-page-order-by-creation-date`);
-
-  cy.get('.grw-search-page-nav').within(() => {
-    cy.get('.btn.dropdown-toggle').click();
-    cy.get('.dropdown-menu').should('have.class', 'show');
-    cy.get('.dropdown-menu > .dropdown-item').eq(2).click();
-  });
-  cy.screenshot(`${ssPrefix}tags-11-page-order-by-last-update`);
-
   });
 
   it('Successfully access to My Drafts page', () => {
