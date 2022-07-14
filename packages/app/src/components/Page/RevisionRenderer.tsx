@@ -6,7 +6,7 @@ import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { CustomWindow } from '~/interfaces/global';
 // import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { RendererOptions } from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useViewOptions } from '~/stores/renderer';

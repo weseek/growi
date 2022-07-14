@@ -1,12 +1,12 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { useViewRenderer } from '~/stores/renderer';
+// import GrowiRenderer from '~/services/renderer/growi-renderer';
+// import { useViewRenderer } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -124,7 +124,7 @@ class RevisionLoader extends React.Component {
 RevisionLoader.propTypes = {
   t: PropTypes.func.isRequired,
 
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  // growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
@@ -135,12 +135,13 @@ RevisionLoader.propTypes = {
 
 const RevisionLoaderWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: growiRenderer } = useViewRenderer();
-  if (growiRenderer == null) {
-    return <></>;
-  }
+  // const { data: growiRenderer } = useViewRenderer();
+  // if (growiRenderer == null) {
+  //   return <></>;
+  // }
 
-  return <RevisionLoader t={t} growiRenderer={growiRenderer} {...props} />;
+  // return <RevisionLoader t={t} growiRenderer={growiRenderer} {...props} />;
+  return <RevisionLoader t={t} {...props} />;
 };
 
 export default RevisionLoaderWrapperFC;
