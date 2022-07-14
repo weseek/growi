@@ -36,7 +36,6 @@ class PageRedirectService {
 
   /**
    * When accessed with URL such as '/path_ABC'
-   * This case, it's mandatory to get PageModel doc to find PageRedirectModel doc
    */
   private async getPageRedirectOnAccessedWithPath(path: string): Promise<PageRedirectDocument | null> {
     return this.getPageRedirectByFromPath(path);
@@ -44,7 +43,7 @@ class PageRedirectService {
 
   /**
    * When accessed with URL such as '/1a2b3c4e5f6g7h?withRedirect=true'
-   * This case, it's mandatory to get PageModel doc to find PageRedirectModel doc
+   * For this case, it's mandatory to have a path information first from a Page document to find a PageRedirect document
    */
   private async getPageRedirectOnAccessedByWithRedirectOptiton(pageId: string): Promise<PageRedirectDocument | null | undefined> {
     const Page = this.crowi.model('Page') as PageModel;
