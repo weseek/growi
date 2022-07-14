@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
