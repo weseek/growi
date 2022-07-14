@@ -4,11 +4,11 @@ import React, {
 
 import { Button } from 'reactstrap';
 
-import { Nullable } from '~/interfaces/common';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCommentPreviewRenderer } from '~/stores/renderer';
+import { Nullable } from '~/interfaces/common';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
@@ -35,7 +35,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: growiRenderer } = useCommentPreviewRenderer();
+  const { data: growiRenderer } = useCommentPreviewOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
