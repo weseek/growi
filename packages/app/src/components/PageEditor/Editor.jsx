@@ -1,5 +1,6 @@
 import React from 'react';
 
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import {
@@ -11,7 +12,6 @@ import { useEditorSettings } from '~/stores/editor';
 
 import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
-import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
@@ -275,6 +275,8 @@ class Editor extends AbstractEditor {
 
 
   render() {
+    const CodeMirrorEditor = dynamic(() => import('./CodeMirrorEditor').then(mod => mod.CodeMirrorEditor), { ssr: false });
+
     const flexContainer = {
       height: '100%',
       display: 'flex',
