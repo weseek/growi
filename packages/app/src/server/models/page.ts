@@ -15,7 +15,6 @@ import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 
@@ -957,7 +956,9 @@ export type PageCreateOptions = {
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default (crowi: Crowi): any => {
+// remove type for crowi to prevent 'import/no-cycle'
+// eslint-disable-next-line import/no-anonymous-default-export
+export default (crowi): any => {
   let pageEvent;
   if (crowi != null) {
     pageEvent = crowi.event('page');
