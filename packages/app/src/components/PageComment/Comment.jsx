@@ -237,6 +237,10 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object,
   onComment: PropTypes.func,
+  revisionId: PropTypes.object,
+  revisionCreatedAt: PropTypes.object,
+  config: PropTypes.object,
+  interceptorManager: PropTypes.object,
 };
 
 const CommentWrapperFC = (props) => {
