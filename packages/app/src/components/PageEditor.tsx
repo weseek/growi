@@ -20,7 +20,7 @@ import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { usePreviewRenderer } from '~/stores/renderer';
+import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -100,7 +100,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
-  const { data: growiRenderer } = usePreviewRenderer();
+  const { data: growiRenderer } = usePreviewOptions();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
