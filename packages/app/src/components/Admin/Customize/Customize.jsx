@@ -66,6 +66,7 @@ function Customize(props) {
         <CustomizeTitle />
       </div>
       <div className="mb-5">
+        {/* TODO: show CustomizeHeaderSetting, CustomizeCssSetting and CustomizeScriptSetting by https://redmine.weseek.co.jp/issues/100534  */}
         {/* <CustomizeHeaderSetting /> */}
       </div>
       <div className="mb-5">
