@@ -235,12 +235,12 @@ Comment.propTypes = {
   isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  currentUser: PropTypes.object,
+  currentUser: PropTypes.instanceOf(currentUser).isRequired,
   onComment: PropTypes.func,
-  revisionId: PropTypes.object,
-  revisionCreatedAt: PropTypes.object,
-  config: PropTypes.object,
-  interceptorManager: PropTypes.object,
+  revisionId: PropTypes.instanceOf(revisionId).isRequired,
+  revisionCreatedAt: PropTypes.instanceOf(revisionCreatedAt).isRequired,
+  config: PropTypes.instanceOf(config).isRequired,
+  interceptorManager: PropTypes.instanceOf(interceptorManager).isRequired,
 };
 
 const CommentWrapperFC = (props) => {
