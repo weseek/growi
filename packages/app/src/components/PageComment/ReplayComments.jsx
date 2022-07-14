@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 
 import { Collapse } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+import { useGrowiRendererConfig } from '~/stores/context';
 
 import Comment from './Comment';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 class ReplayComments extends React.PureComponent {
 
@@ -40,8 +37,9 @@ class ReplayComments extends React.PureComponent {
   }
 
   render() {
+    const { config } = this.props
 
-    const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
+    const isAllReplyShown = config.isAllReplyShown || false;
     const replyList = this.props.replyList;
 
     if (isAllReplyShown) {
@@ -98,19 +96,17 @@ class ReplayComments extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ReplayCommentsWrapper = withUnstatedContainers(ReplayComments, [AppContainer, PageContainer]);
-
 ReplayComments.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   replyList: PropTypes.array,
 };
 
-export default ReplayCommentsWrapper;
+const ReplayCommentsWrapperFC = (props) => {
+  const { data: config } = useGrowiRendererConfig();
+
+  return <ReplayComments config={config} {...props} />;
+};
+
+export default ReplayCommentsWrapperFC;
