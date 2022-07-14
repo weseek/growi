@@ -5,13 +5,10 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 
-// import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
-
-// import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
