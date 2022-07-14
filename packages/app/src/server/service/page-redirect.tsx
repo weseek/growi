@@ -24,12 +24,12 @@ class PageRedirectService {
     const withRedirect = _withRedirect === 'true';
 
     if (!isPermalink) {
-      return this.getPageRedirectOnAccessedWithPath(currentPathname);
+      return this.getPageRedirectBeforePageRedirection(currentPathname);
     }
     if (isPermalink && withRedirect) {
       const pageId = getPageIdFromPathname(currentPathname);
       if (pageId != null) {
-        return this.getPageRedirectOnAccessedByWithRedirectOptiton(pageId);
+        return this.getPageRedirectAfterPageredirection(pageId);
       }
     }
   }
@@ -37,7 +37,7 @@ class PageRedirectService {
   /**
    * When accessed with URL such as '/path_ABC'
    */
-  private async getPageRedirectOnAccessedWithPath(path: string): Promise<PageRedirectDocument | null> {
+  private async getPageRedirectBeforePageRedirection(path: string): Promise<PageRedirectDocument | null> {
     return this.getPageRedirectByFromPath(path);
   }
 
@@ -45,7 +45,7 @@ class PageRedirectService {
    * When accessed with URL such as '/1a2b3c4e5f6g7h?withRedirect=true'
    * For this case, it's mandatory to have a path information first from a Page document to find a PageRedirect document
    */
-  private async getPageRedirectOnAccessedByWithRedirectOptiton(pageId: string): Promise<PageRedirectDocument | null | undefined> {
+  private async getPageRedirectAfterPageredirection(pageId: string): Promise<PageRedirectDocument | null | undefined> {
     const Page = this.crowi.model('Page') as PageModel;
 
     const page = await Page.findById(pageId);
