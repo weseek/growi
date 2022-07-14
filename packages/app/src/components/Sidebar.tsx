@@ -88,8 +88,7 @@ const SidebarContentsWrapper = () => {
 
 const Sidebar = (): JSX.Element => {
 
-  // const { data: isDrawerMode } = useDrawerMode(); Todo Universalize
-  const isDrawerMode = false; // dummy
+  const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
