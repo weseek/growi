@@ -5,7 +5,7 @@ import React, {
 
 import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -16,7 +16,7 @@ declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
-  growiRenderer: GrowiRenderer,
+  growiRenderer: RendererOptions,
   markdown?: string,
   pagePath?: string,
   renderMathJaxOnInit?: boolean,
