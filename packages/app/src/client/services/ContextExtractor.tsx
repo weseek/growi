@@ -3,7 +3,9 @@ import React, { FC, useEffect, useState } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 
+import { CustomWindow } from '~/interfaces/global';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+// import { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -20,7 +22,7 @@ import {
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -117,6 +119,20 @@ const ContextExtractorOnce: FC = () => {
   useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
   useAuditLogAvailableActions(configByContextHydrate.auditLogAvailableActions);
   useGrowiVersion(configByContextHydrate.crowi.version);
+  useRendererConfig({
+    isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
+    isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
+    adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
+    isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
+
+    isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+    attrWhiteList: configByContextHydrate.attrWhiteList,
+    tagWhiteList: configByContextHydrate.tagWhiteList,
+    highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+
+    plantumlUri: configByContextHydrate.env.PLANTUML_URI,
+    blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
+  });
 
   // Page
   useDeleteUsername(deleteUsername);
@@ -165,6 +181,24 @@ const ContextExtractorOnce: FC = () => {
   useSetupGlobalSocket();
   const shouldInitAdminSock = !!currentUser?.isAdmin;
   useSetupGlobalAdminSocket(shouldInitAdminSock);
+
+  // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223
+  // Do not access this property from other than reveal.js plugins.
+  // (window as CustomWindow).previewRenderer = generatePreviewRenderer(
+  //   {
+  //     isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+  //     attrWhiteList: configByContextHydrate.attrWhiteList,
+  //     tagWhiteList: configByContextHydrate.tagWhiteList,
+  //     highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+  //     env: {
+  //       MATHJAX: configByContextHydrate.env.MATHJAX,
+  //       PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
+  //       BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
+  //     },
+  //   },
+  //   null,
+  //   path,
+  // );
 
   return null;
 };

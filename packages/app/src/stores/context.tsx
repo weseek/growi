@@ -1,9 +1,13 @@
-import { pagePathUtils } from '@growi/core';
+import EventEmitter from 'events';
+
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+// import { CustomWindow } from '~/interfaces/global';
+import { RendererConfig } from '~/interfaces/services/renderer';
+import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
@@ -13,6 +17,10 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
+
+export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
+  return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
+};
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('csrfToken', initialData);
@@ -110,8 +118,16 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
   return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
+export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
+};
+
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -198,6 +214,14 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isLatestRevision', initialData);
 };
 
+export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
+  return useStaticSWR('growiRendererConfig', initialData);
+};
+
+export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
@@ -209,6 +233,7 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
+    { fallbackData: currentUser == null },
   );
 };
 

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import EventEmitter from 'events';
+
 import { isClient, pagePathUtils, pathUtils } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -18,7 +20,9 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { CustomWindow } from '~/interfaces/global';
 import { IPageWithMeta } from '~/interfaces/page';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
@@ -35,6 +39,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { BasicLayout } from '../components/BasicLayout';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -43,12 +48,14 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage, useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,
-  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname, useIsSlackConfigured,
+  useIsLatestRevision,
+  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
+  useHackmdUri,
+  useIsAclEnabled, useIsUserPage, useIsNotCreatable,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -59,7 +66,9 @@ import {
 
 
 const logger = loggerFactory('growi:pages:all');
-const { isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const {
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+} = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
 
@@ -83,6 +92,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
+  IsNotCreatable: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -94,7 +104,7 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   // drawioUri: string,
-  // hackmdUri: string,
+  hackmdUri: string,
   // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
@@ -106,6 +116,9 @@ type Props = CommonProps & {
   // isEnabledLinebreaksInComments: boolean,
   // adminPreferredIndentSize: number,
   // isIndentSizeForced: boolean,
+  disableLinkSharing: boolean,
+
+  rendererConfig: RendererConfig,
 
   // UI
   userUISettings: UserUISettingsDocument | null
@@ -120,6 +133,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+
+  // register global EventEmitter
+  if (isClient()) {
+    (window as CustomWindow).globalEmitter = new EventEmitter();
+  }
 
   // commons
   useAppTitle(props.appTitle);
@@ -142,12 +160,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
+  useIsNotCreatable(props.IsNotCreatable);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
+  useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
+  useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useIsBlinkedHeaderAtBoot(false);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -158,17 +180,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
-  // useHackmdUri(props.hackmdUri);
+  useHackmdUri(props.hackmdUri);
   // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
+  useDisableLinkSharing(props.disableLinkSharing);
 
-  // useRendererSettings({
-  //   isEnabledLinebreaks: props.isEnabledLinebreaks,
-  //   isEnabledLinebreaksInComments: props.isEnabledLinebreaksInComments,
-  //   adminPreferredIndentSize: props.adminPreferredIndentSize,
-  //   isIndentSizeForced: props.isIndentSizeForced,
-  // });
+  useRendererConfig(props.rendererConfig);
+  // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
+  // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
+
 
   // const { data: editorMode } = useEditorMode();
 
@@ -181,6 +202,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useSWRxPage(pageWithMeta?.data._id);
   useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
+  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
 
@@ -220,8 +243,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
         <header className="py-0">
-          {/* <GrowiSubNavigation /> */}
-          GrowiSubNavigation
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
@@ -343,6 +365,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   else if (page == null) {
     props.isNotFound = true;
 
+    props.IsNotCreatable = !isCreatablePage(currentPathname);
+
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
@@ -393,7 +417,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  // props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
@@ -402,6 +426,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   // props.editorConfig = {
   //   upload: {
   //     image: crowi.fileUploadService.getIsUploadable(),
@@ -410,6 +435,22 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   // };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+  };
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),

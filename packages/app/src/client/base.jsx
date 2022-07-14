@@ -3,7 +3,6 @@ import React from 'react';
 import EventEmitter from 'events';
 
 import AppContainer from '~/client/services/AppContainer';
-import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
 import PutbackPageModal from '~/components/PutbackPageModal';
 import ShortcutsModal from '~/components/ShortcutsModal';
@@ -14,8 +13,8 @@ import loggerFactory from '~/utils/logger';
 
 import EmptyTrashModal from '../components/EmptyTrashModal';
 import HotkeysManager from '../components/Hotkeys/HotkeysManager';
-import GrowiNavbar from '../components/Navbar/GrowiNavbar';
-import GrowiNavbarBottom from '../components/Navbar/GrowiNavbarBottom';
+import { GrowiNavbar } from '../components/Navbar/GrowiNavbar';
+import { GrowiNavbarBottom } from '../components/Navbar/GrowiNavbarBottom';
 import PageAccessoriesModal from '../components/PageAccessoriesModal';
 import PageCreateModal from '../components/PageCreateModal';
 import PageDeleteModal from '../components/PageDeleteModal';
@@ -40,8 +39,6 @@ window.interceptorManager = new InterceptorManager();
 
 // create unstated container instance
 const appContainer = new AppContainer();
-// eslint-disable-next-line no-unused-vars
-const socketIoContainer = new SocketIoContainer(appContainer);
 
 appContainer.initApp();
 

@@ -1,0 +1,34 @@
+// @mixin page-editor-mode-manager($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
+@use '~/styles/bootstrap/init' as bs;
+@use '~/styles/mixins';
+
+.grw-page-editor-mode-manager :global {
+  .btn {
+    width: 70px;
+    white-space: nowrap;
+
+    @include mixins.border-vertical('before', 70%, 1, true);
+
+    &.view-button,
+    &.edit-button {
+      line-height: 1.2rem;
+      .grw-page-editor-mode-manager-icon {
+        @include bs.media-breakpoint-down(sm) {
+          font-size: 1.2rem;
+        }
+      }
+    }
+    &.hackmd-button {
+      line-height: 1.2rem;
+      .grw-page-editor-mode-manager-icon {
+        @include bs.media-breakpoint-down(sm) {
+          font-size: 1.2rem;
+        }
+      }
+      .grw-page-editor-mode-manager-label {
+        font-size: 12px;
+        letter-spacing: -0.6px;
+      }
+    }
+  }
+}

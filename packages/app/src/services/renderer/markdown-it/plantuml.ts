@@ -1,22 +1,23 @@
 import plantumlEncoder from 'plantuml-encoder';
 import urljoin from 'url-join';
 
+import { RendererConfig } from '~/interfaces/services/renderer';
+
 export default class PlantUMLConfigurer {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-    const config = crowi.getConfig();
+  serverUrl: string;
 
+  constructor(config: RendererConfig) {
     // Do NOT use HTTPS URL because plantuml.com refuse request except from members
-    this.serverUrl = config.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
+    this.serverUrl = config.plantumlUri || 'http://plantuml.com/plantuml';
 
     this.generateSource = this.generateSource.bind(this);
   }
 
   configure(md) {
-    md.use(require('markdown-it-plantuml'), {
-      generateSource: this.generateSource,
-    });
+    // md.use(require('markdown-it-plantuml'), {
+    //   generateSource: this.generateSource,
+    // });
   }
 
   generateSource(umlCode) {
