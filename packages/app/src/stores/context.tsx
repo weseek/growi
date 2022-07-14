@@ -6,7 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
 // import { CustomWindow } from '~/interfaces/global';
-import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
@@ -214,7 +214,7 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isLatestRevision', initialData);
 };
 
-export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRResponse<GrowiRendererConfig, any> => {
+export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
