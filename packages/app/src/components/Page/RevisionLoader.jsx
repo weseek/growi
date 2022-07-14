@@ -134,7 +134,6 @@ RevisionLoader.propTypes = {
 
 const RevisionLoaderWrapperFC = (props) => {
   const { t } = useTranslation();
-
   return <RevisionLoader t={t} {...props} />;
 };
 

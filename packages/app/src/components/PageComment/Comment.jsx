@@ -19,6 +19,7 @@ import Username from '../User/Username';
 import CommentControl from './CommentControl';
 import CommentEditor from './CommentEditor';
 
+import { RendererOptions } from '~/services/renderer/renderer';
 
 /**
  *
@@ -132,17 +133,17 @@ class Comment extends React.PureComponent {
 
   async renderHtml() {
 
-    const { growiRenderer, appContainer } = this.props;
+    const { rendererOptions, appContainer } = this.props;
     const { interceptorManager } = window;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = await growiRenderer.preProcess(context.markdown, context);
+    context.markdown = await rendererOptions.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = await growiRenderer.process(context.markdown, context);
+    context.parsedHTML = await rendererOptions.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML, context);
+    context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
     await interceptorManager.process('postPostProcess', context);
     await interceptorManager.process('preRenderCommentHtml', context);
     this.setState({ html: context.parsedHTML });
@@ -173,7 +174,7 @@ class Comment extends React.PureComponent {
       <React.Fragment>
         {(this.state.isReEdit && !isReadOnly) ? (
           <CommentEditor
-            growiRenderer={this.props.growiRenderer}
+            rendererOptions={this.props.rendererOptions}
             currentCommentId={commentId}
             commentBody={comment.comment}
             replyTo={undefined}
@@ -236,7 +237,7 @@ Comment.propTypes = {
 
   comment: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
-  growiRenderer: PropTypes.object.isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object,
   onComment: PropTypes.func,
