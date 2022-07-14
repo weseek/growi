@@ -2,9 +2,11 @@ import React, { FC } from 'react';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
-import RecentChanges from './RecentChanges';
+
+import Bookmarks from './Bookmarks';
 import CustomSidebar from './CustomSidebar';
 import PageTree from './PageTree';
+import RecentChanges from './RecentChanges';
 import Tag from './Tag';
 
 type Props = {
@@ -23,6 +25,9 @@ const SidebarContents: FC<Props> = (props: Props) => {
       break;
     case SidebarContentsType.TAG:
       Contents = Tag;
+      break;
+    case SidebarContentsType.BOOKMARKS:
+      Contents = Bookmarks;
       break;
     default:
       Contents = PageTree;
