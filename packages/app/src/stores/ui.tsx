@@ -16,7 +16,7 @@ import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
-
+import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils'
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
   useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
@@ -221,15 +221,13 @@ type PreferDrawerModeByUserUtils = {
   update: (preferDrawerMode: boolean) => void
 }
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<SWRResponse, PreferDrawerModeByUserUtils> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
   const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
 
-  return {
-    ...swrResponse,
-    data: swrResponse.data,
+  const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
 
@@ -238,6 +236,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
       }
     },
   };
+
+  return withUtils(swrResponse, utils)
+
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
