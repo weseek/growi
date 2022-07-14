@@ -15,9 +15,9 @@ export default class PlantUMLConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-plantuml'), {
-      generateSource: this.generateSource,
-    });
+    // md.use(require('markdown-it-plantuml'), {
+    //   generateSource: this.generateSource,
+    // });
   }
 
   generateSource(umlCode) {

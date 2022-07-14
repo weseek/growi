@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-// import GrowiRenderer from '~/services/renderer/growi-renderer';
-// import { useViewRenderer } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -110,7 +109,7 @@ class RevisionLoader extends React.Component {
 
     return (
       <RevisionRenderer
-        growiRenderer={this.props.growiRenderer}
+        rendererOptions={this.props.rendererOptions}
         markdown={markdown}
         pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
@@ -124,7 +123,7 @@ class RevisionLoader extends React.Component {
 RevisionLoader.propTypes = {
   t: PropTypes.func.isRequired,
 
-  // growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
@@ -135,12 +134,6 @@ RevisionLoader.propTypes = {
 
 const RevisionLoaderWrapperFC = (props) => {
   const { t } = useTranslation();
-  // const { data: growiRenderer } = useViewRenderer();
-  // if (growiRenderer == null) {
-  //   return <></>;
-  // }
-
-  // return <RevisionLoader t={t} growiRenderer={growiRenderer} {...props} />;
   return <RevisionLoader t={t} {...props} />;
 };
 
