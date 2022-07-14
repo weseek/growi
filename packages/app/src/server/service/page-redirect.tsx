@@ -17,7 +17,7 @@ class PageRedirectService {
 
   /**
    * find PageRedirect Model document depends on currentPathname and withRedirect option
-   * withRedirect options is a query string set by user renaming a page with redirect option
+   * withRedirect options is a query string set by renaming a page with redirect option
    */
   async getPageRedirectByCurrentPathnameAndWithRedirect(currentPathname: string, _withRedirect?: string):Promise<PageRedirectDocument | null | undefined> {
     const isPermalink = _isPermalink(currentPathname);
