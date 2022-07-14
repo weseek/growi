@@ -15,7 +15,7 @@ type DraftProps = {
   isExist: boolean,
   index: number,
   markdown: string,
-  clearDraft: () => void,
+  clearDraft: (path: string) => void,
 }
 
 const Draft = (props: DraftProps): JSX.Element => {
@@ -94,7 +94,6 @@ const Draft = (props: DraftProps): JSX.Element => {
   };
 
   const AccordionTitle = () => {
-    // const { t } = this.props;
     const iconClass = isPanelExpanded ? 'fa-rotate-90' : '';
 
     return (
@@ -131,9 +130,7 @@ const Draft = (props: DraftProps): JSX.Element => {
 
         <Collapse isOpen={isPanelExpanded} onEntering={expandPanelHandler} onExiting={collapsePanelHandler}>
           <div className="card-body">
-            {/* contents */}
             { isPanelExpanded && (
-              // <RevisionBody html={this.state.html} />
               <ReactMarkdown {...rendererOptions} className='wiki'>
                 {markdown}
               </ReactMarkdown>
