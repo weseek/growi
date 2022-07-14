@@ -1,6 +1,8 @@
 import { RefObject } from 'react';
 
-import { isClient, isServer, pagePathUtils } from '@growi/core';
+import {
+  isClient, isServer, pagePathUtils, Nullable,
+} from '@growi/core';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -11,7 +13,6 @@ import useSWRImmutable from 'swr/immutable';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { Nullable } from '~/interfaces/common';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';

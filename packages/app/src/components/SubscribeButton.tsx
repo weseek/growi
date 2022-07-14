@@ -1,9 +1,8 @@
 import React, { FC, useCallback } from 'react';
 
+import { SubscriptionStatusType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-
-import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 import styles from './SubscribeButton.module.scss';
 

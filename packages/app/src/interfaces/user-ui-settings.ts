@@ -1,7 +1,7 @@
-import { IUser } from './user';
+import { Ref } from '@growi/core';
 
 import { SidebarContentsType } from './ui';
-import { Ref } from './common';
+import { IUser } from './user';
 
 export interface IUserUISettings {
   user: Ref<IUser> | null;
