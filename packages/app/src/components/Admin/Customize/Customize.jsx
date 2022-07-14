@@ -84,4 +84,4 @@ Customize.propTypes = {
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default Customize;
+export default CustomizePageWithUnstatedContainer;
