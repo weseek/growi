@@ -647,6 +647,7 @@
     "ADMIN_MARKDOWN_XSS_UPDATE": "Update prevent XSS settings",
     "ADMIN_LAYOUT_UPDATE": "Update Layout",
     "ADMIN_THEME_UPDATE": "Update Theme",
+    "ADMIN_SIDEBAR_UPDATE": "Update Default Sidebar mode",
     "ADMIN_FUNCTION_UPDATE": "Update Function",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "Update Code Highlight",
     "ADMIN_CUSTOM_TITLE_UPDATE": "Update Custom Title",

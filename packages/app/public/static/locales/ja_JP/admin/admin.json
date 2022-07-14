@@ -646,6 +646,7 @@
     "ADMIN_MARKDOWN_XSS_UPDATE": "XSS 対策設定の更新",
     "ADMIN_LAYOUT_UPDATE": "レイアウト設定の更新",
     "ADMIN_THEME_UPDATE": "テーマ設定の更新",
+    "ADMIN_SIDEBAR_UPDATE": "デフォルトのサイドバーモードの設定の更新",
     "ADMIN_FUNCTION_UPDATE": "機能設定の更新",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "コードハイライト設定の更新",
     "ADMIN_CUSTOM_TITLE_UPDATE": "カスタムタイトル設定の更新",

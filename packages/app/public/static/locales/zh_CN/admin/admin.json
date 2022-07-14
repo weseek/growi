@@ -656,6 +656,7 @@
     "ADMIN_MARKDOWN_XSS_UPDATE": "更新阻止 XSS 设置",
     "ADMIN_LAYOUT_UPDATE": "更新布局",
     "ADMIN_THEME_UPDATE": "更新主题",
+    "ADMIN_SIDEBAR_UPDATE": "更新默认的侧边栏模式",
     "ADMIN_FUNCTION_UPDATE": "更新函数",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "更新代码高亮",
     "ADMIN_CUSTOM_TITLE_UPDATE": "更新自定义标题",
