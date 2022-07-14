@@ -1,16 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import PropTypes from 'prop-types';
-
+import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 import { getOptionsToSave } from '~/client/util/editor';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
-  useCurrentPagePath, useIsGuestUser,
+  useCurrentPagePath, useIsGuestUser, useIsBlinkedHeaderAtBoot,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import { useViewRenderer } from '~/stores/renderer';
@@ -196,8 +199,42 @@ const PageWrapper = (props) => {
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
   const { data: growiRenderer } = useViewRenderer();
+  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
 
   const pageRef = useRef(null);
+
+  // *************************** Blink header at boot ***************************
+  const blinkOnInit = useCallback(() => {
+
+    const result = blinkSectionHeaderAtBoot();
+
+    if (result != null) {
+      mutateBlinkedAtBoot(true);
+    }
+  }, [mutateBlinkedAtBoot]);
+
+  const blinkOnInitDebounced = useMemo(() => debounce(500, blinkOnInit), [blinkOnInit]);
+
+  const observerForBlinkingOnInit = useCallback((elem) => {
+    if (isBlinkedAtBoot || elem == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords) => {
+      mutationRecords.forEach(() => blinkOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(elem, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    blinkOnInitDebounced();
+
+    return function cleanup() {
+      observer.disconnect();
+    };
+  }, [blinkOnInitDebounced, isBlinkedAtBoot]);
+  // *******************************  end  *******************************
 
   // set handler to open DrawioModal
   useEffect(() => {
@@ -233,21 +270,23 @@ const PageWrapper = (props) => {
 
 
   return (
-    <Page
-      {...props}
-      ref={pageRef}
-      growiRenderer={growiRenderer}
-      pagePath={currentPagePath}
-      editorMode={editorMode}
-      isGuestUser={isGuestUser}
-      isMobile={isMobile}
-      isSlackEnabled={isSlackEnabled}
-      pageTags={pageTags}
-      slackChannels={slackChannelsData.toString()}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
-    />
+    <div ref={observerForBlinkingOnInit}>
+      <Page
+        {...props}
+        ref={pageRef}
+        growiRenderer={growiRenderer}
+        pagePath={currentPagePath}
+        editorMode={editorMode}
+        isGuestUser={isGuestUser}
+        isMobile={isMobile}
+        isSlackEnabled={isSlackEnabled}
+        pageTags={pageTags}
+        slackChannels={slackChannelsData.toString()}
+        grant={grant}
+        grantGroupId={grantGroupId}
+        grantGroupName={grantGroupName}
+      />
+    </div>
   );
 };
 
