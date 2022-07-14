@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
-import { CustomWindow } from '~/interfaces/global';
+// import { CustomWindow } from '~/interfaces/global';
 import { GrowiRendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
@@ -17,10 +17,6 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
-
-export const useGlobalEventEmitter = (): SWRResponse<EventEmitter, Error> => {
-  return useStaticSWR<EventEmitter, Error>('globalEventEmitter', undefined, { fallbackData: (window as CustomWindow).globalEmitter });
-};
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
   return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
@@ -130,8 +126,16 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
   return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
+export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
+};
+
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

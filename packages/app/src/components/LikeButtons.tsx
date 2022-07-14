@@ -3,12 +3,11 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-
 import { IUser } from '../interfaces/user';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 import UserPictureList from './User/UserPictureList';
+
+import styles from './LikeButtons.module.scss';
 
 type LikeButtonsProps = {
 
@@ -51,7 +50,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`shadow-none btn btn-like border-0
+        className={`shadow-none btn ${styles['btn-like']} border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
@@ -85,14 +84,4 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
-};
-
-export default LikeButtonsWrapper;
+export default LikeButtons;
