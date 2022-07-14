@@ -1,5 +1,8 @@
-import React, { Fragment } from 'react';
+import React, {
+  Fragment, useCallback, useEffect, useState,
+} from 'react';
 
+import { set } from 'date-fns/esm';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
@@ -22,95 +25,179 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'activities',
 ];
 
-class ExportArchiveDataPage extends React.Component {
+const ExportArchiveDataPage = (props) => {
+  // ----------state関連----------
+  const [collections, setCollections] = useState([]);
+  const [zipFileStats, setZipFileStats] = useState([]);
+  const [progressList, setProgressList] = useState([]);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
+  const [isExported, setIsExported] = useState(false);
 
-  constructor(props) {
-    super(props);
+  const { t } = props;
 
-    this.state = {
-      collections: [],
-      zipFileStats: [],
-      progressList: [],
-      isExportModalOpen: false,
-      isExporting: false,
-      isZipping: false,
-      isExported: false,
-    };
+  const showExportingData = (isExported || isExporting) && (progressList != null);
 
-    this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
-    this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
-    this.openExportModal = this.openExportModal.bind(this);
-    this.closeExportModal = this.closeExportModal.bind(this);
-    this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
-  }
+  // constructor(props) {
+  //   super(props);
 
-  async componentWillMount() {
-    // TODO:: use apiv3.get
-    // eslint-disable-next-line no-unused-vars
+  //   this.state = {
+  //     collections: [],
+  //     zipFileStats: [],
+  //     progressList: [],
+  //     isExportModalOpen: false,
+  //     isExporting: false,
+  //     isZipping: false,
+  //     isExported: false,
+  //   };
+
+  //   this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
+  //   this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
+  //   this.openExportModal = this.openExportModal.bind(this);
+  //   this.closeExportModal = this.closeExportModal.bind(this);
+  //   this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
+  // }
+
+  // ----------state関連終了----------
+
+  // ----------レンダリング時の処理関連----------
+
+  const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
       apiGet('/v3/mongo/collections', {}),
       apiGet('/v3/export/status', {}),
     ]);
-    // TODO: toastSuccess, toastError
-
-    // filter only not ignored collection names
     const filteredCollections = collections.filter((collectionName) => {
       return !IGNORED_COLLECTION_NAMES.includes(collectionName);
     });
+    const { zipFileStats, isExporting, progressList } = status;
+    setCollections(filteredCollections);
+    setZipFileStats(zipFileStats);
+    setIsExporting(isExporting);
+    setProgressList(progressList);
+    setupWebsocketEventHandler();
+  }, []);
 
-  const cleanupWebsocketEventHandler = useCallback(() => {
+  useEffect(() => {
+    Promise.all([
+      apiGet('/v3/mongo/collections', {}),
+      apiGet('/v3/export/status', {}),
+    ]).then((response) => {
+      const filteredCollections = response[0].collections.filter((collectionName) => {
+        return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+      });
+      const { zipFileStats, isExporting, progressList } = response[1].status;
+      setCollections(filteredCollections);
+      setZipFileStats(zipFileStats);
+      setIsExporting(isExporting);
+      setProgressList(progressList);
+      setupWebsocketEventHandler();
+    });
+    // console.log(fetchData());
+    // const filteredCollections = fetchData()[0].collections.filter((collectionName) => {
+    //   return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+    // });
+    // const { zipFileStats, isExporting, progressList } = fetchData()[1].status;
+    // setCollections(filteredCollections);
+    // setZipFileStats(zipFileStats);
+    // setIsExporting(isExporting);
+    // setProgressList(progressList);
+    // setupWebsocketEventHandler();
+    // fetchData();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(zipFileStats);
+  // }, [zipFileStats]);
+
+
+  // useEffect(() => {
+  //   console.log(progressList);
+  // }, [progressList]);
+  // useEffect(() => {
+  //   // async function sendRequest() {
+  //   //   const response = await Promise.all([
+  //   //     apiGet('/v3/mongo/collections', {}),
+  //   //     apiGet('/v3/export/status', {}),
+  //   //   ]);
+  //   //   return response;
+  //   // }
+  //   // console.log(sendRequest());
+  //   const [{ collections }, { status }] = Promise.all([
+  //     apiGet('/v3/mongo/collections', {}),
+  //     apiGet('/v3/export/status', {}),
+  //   ]);
+  //   const filteredCollections = collections.filter((collectionName) => {
+  //     return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+  //   });
+  //   const { zipFileStats, isExporting, progressList } = status;
+  //   setCollections(filteredCollections);
+  //   setZipFileStats(zipFileStats);
+  //   setIsExporting(isExporting);
+  //   setProgressList(progressList);
+  //   setupWebsocketEventHandler();
+  // }, []);
+
+  // async componentWillMount() {
+  //   // TODO:: use apiv3.get
+  //   // eslint-disable-next-line no-unused-vars
+  //   const [{ collections }, { status }] = await Promise.all([
+  //     apiGet('/v3/mongo/collections', {}),
+  //     apiGet('/v3/export/status', {}),
+  //   ]);
+  //   // TODO: toastSuccess, toastError
+
+  //   // filter only not ignored collection names
+  //   const filteredCollections = collections.filter((collectionName) => {
+  //     return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+  //   });
+
+  //   const { zipFileStats, isExporting, progressList } = status;
+  //   this.setState({
+  //     collections: filteredCollections,
+  //     zipFileStats,
+  //     isExporting,
+  //     progressList,
+  //   });
+
+  //   this.setupWebsocketEventHandler();
+  // }
+
+  // ----------レンダリング時の処理関連終了----------
+
+  // ----------その他の処理関連----------
+
+  function setupWebsocketEventHandler() {
     const socket = props.adminSocketIoContainer.getSocket();
-    if (socket == null) {
-      return;
-    }
-    // websocket event
-    socket.on('admin:onProgressForExport', () => {
-      setIsExporting(false);
-      setProgressList([]);
-    });
 
     // websocket event
-    socket.on('admin:onStartZippingForExport', () => {
-      setIsZipping(false);
-    });
-
-    // websocket event
-    socket.on('admin:onTerminateForExport', () => {
+    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressListOpt }) => {
       setIsExporting(true);
-      setIsZipping(true);
-      setIsExported(false);
-      setZipFileStats([]);
-    });
-  }, [props.adminSocketIoContainer]);
-
-  setupWebsocketEventHandler() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
-
-    // websocket event
-    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
-      this.setState({
-        isExporting: true,
-        progressList,
-      });
+      setProgressList(progressListOpt);
     });
 
     // websocket event
     socket.on('admin:onStartZippingForExport', () => {
-      this.setState({
-        isZipping: true,
-      });
+      setIsZipping(true);
     });
 
     // websocket event
     socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
-      const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
+      // const zipStats = zipFileStats.concat([addedZipFileStat]);
+      // console.log(zipFileStats);
+      setIsExporting(false);
+      setIsZipping(false);
+      setIsExported(true);
+      setZipFileStats([...zipFileStats, addedZipFileStat]);
+      // console.log(zipFileStats);
 
-      this.setState({
-        isExporting: false,
-        isZipping: false,
-        isExported: true,
-        zipFileStats,
-      });
+      // this.setState({
+      //   isExporting: false,
+      //   isZipping: false,
+      //   isExported: true,
+      //   zipFileStats,
+      // });
 
       // TODO: toastSuccess, toastError
       toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
@@ -127,23 +214,27 @@ class ExportArchiveDataPage extends React.Component {
     console.log(isExporting);
   }, [props.adminSocketIoContainer]);
 
-  onZipFileStatAdd(newStat) {
-    this.setState((prevState) => {
-      return {
-        zipFileStats: [...prevState.zipFileStats, newStat],
-      };
-    });
+
+  function onZipFileStatAdd(newStat) {
+    setZipFileStats([...zipFileStats, newStat]);
+    // this.setState((prevState) => {
+    //   return {
+    //     zipFileStats: [...prevState.zipFileStats, newStat],
+    //   };
+    // });
   }
 
-  async onZipFileStatRemove(fileName) {
+  async function onZipFileStatRemove(fileName) {
     try {
       await apiDelete(`/v3/export/${fileName}`, {});
 
-      this.setState((prevState) => {
-        return {
-          zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
-        };
-      });
+      setZipFileStats(zipFileStats.filter(stat => stat.fileName !== fileName));
+
+      // this.setState((prevState) => {
+      //   return {
+      //     zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
+      //   };
+      // });
 
       // TODO: toastSuccess, toastError
       toastr.success(undefined, `Deleted ${fileName}`, {
@@ -169,22 +260,26 @@ class ExportArchiveDataPage extends React.Component {
     }
   }
 
-  openExportModal() {
-    this.setState({ isExportModalOpen: true });
+  function openExportModal() {
+    setIsExportModalOpen(true);
+    // this.setState({ isExportModalOpen: true });
   }
 
-  closeExportModal() {
-    this.setState({ isExportModalOpen: false });
+  function closeExportModal() {
+    setIsExportModalOpen(false);
+    // this.setState({ isExportModalOpen: false });
   }
 
   /**
    * event handler invoked when export process was requested successfully
    */
-  exportingRequestedHandler() {
+  function exportingRequestedHandler() {
   }
 
-  renderProgressBarsForCollections() {
-    const cols = this.state.progressList.map((progressData) => {
+  // ----------その他の処理関連終了----------
+
+  function renderProgressBarsForCollections() {
+    const cols = progressList.map((progressData) => {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
@@ -200,8 +295,7 @@ class ExportArchiveDataPage extends React.Component {
     return <div className="row px-3">{cols}</div>;
   }
 
-  renderProgressBarForZipping() {
-    const { isZipping, isExported } = this.state;
+  function renderProgressBarForZipping() {
     const showZippingBar = isZipping || isExported;
 
     if (!showZippingBar) {
@@ -222,47 +316,80 @@ class ExportArchiveDataPage extends React.Component {
     );
   }
 
-  render() {
-    const { t } = this.props;
-    const { isExporting, isExported, progressList } = this.state;
+  return (
+    <div data-testid="admin-export-archive-data">
+      <h2>{t('Export Archive Data')}</h2>
 
-    const showExportingData = (isExported || isExporting) && (progressList != null);
+      <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={() => openExportModal()}>
+        {t('admin:export_management.create_new_archive_data')}
+      </button>
 
-    return (
-      <div data-testid="admin-export-archive-data">
-        <h2>{t('Export Archive Data')}</h2>
-
-        <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
-          {t('admin:export_management.create_new_archive_data')}
-        </button>
-
-        { showExportingData && (
-          <div className="mt-5">
-            <h3>{t('admin:export_management.exporting_collection_list')}</h3>
-            { this.renderProgressBarsForCollections() }
-            { this.renderProgressBarForZipping() }
-          </div>
-        ) }
-
+      { showExportingData && (
         <div className="mt-5">
-          <h3>{t('admin:export_management.exported_data_list')}</h3>
-          <ArchiveFilesTable
-            zipFileStats={this.state.zipFileStats}
-            onZipFileStatRemove={this.onZipFileStatRemove}
-          />
+          <h3>{t('admin:export_management.exporting_collection_list')}</h3>
+          {renderProgressBarsForCollections() }
+          {renderProgressBarForZipping() }
         </div>
+      ) }
 
-        <SelectCollectionsModal
-          isOpen={this.state.isExportModalOpen}
-          onExportingRequested={this.exportingRequestedHandler}
-          onClose={this.closeExportModal}
-          collections={this.state.collections}
+      <div className="mt-5">
+        <h3>{t('admin:export_management.exported_data_list')}</h3>
+        <ArchiveFilesTable
+          zipFileStats={zipFileStats}
+          onZipFileStatRemove={() => onZipFileStatRemove(zipFileStats[0].fileName)}
         />
       </div>
-    );
-  }
 
-}
+      <SelectCollectionsModal
+        isOpen={isExportModalOpen}
+        onExportingRequested={() => exportingRequestedHandler()}
+        onClose={() => closeExportModal()}
+        collections={collections}
+      />
+    </div>
+  );
+
+  // render() {
+  //   const { t } = props;
+  //   const { isExporting, isExported, progressList } = this.state;
+
+  //   const showExportingData = (isExported || isExporting) && (progressList != null);
+
+  //   return (
+  //     <div data-testid="admin-export-archive-data">
+  //       <h2>{t('Export Archive Data')}</h2>
+
+  //       <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
+  //         {t('admin:export_management.create_new_archive_data')}
+  //       </button>
+
+  //       { showExportingData && (
+  //         <div className="mt-5">
+  //           <h3>{t('admin:export_management.exporting_collection_list')}</h3>
+  //           { this.renderProgressBarsForCollections() }
+  //           { this.renderProgressBarForZipping() }
+  //         </div>
+  //       ) }
+
+  //       <div className="mt-5">
+  //         <h3>{t('admin:export_management.exported_data_list')}</h3>
+  //         <ArchiveFilesTable
+  //           zipFileStats={this.state.zipFileStats}
+  //           onZipFileStatRemove={this.onZipFileStatRemove}
+  //         />
+  //       </div>
+
+  //       <SelectCollectionsModal
+  //         isOpen={this.state.isExportModalOpen}
+  //         onExportingRequested={this.exportingRequestedHandler}
+  //         onClose={this.closeExportModal}
+  //         collections={this.state.collections}
+  //       />
+  //     </div>
+  //   );
+  // }
+
+};
 
 ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
