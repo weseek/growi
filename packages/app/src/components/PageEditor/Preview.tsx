@@ -2,14 +2,11 @@ import React, {
   useCallback, useEffect, useMemo, useState, SyntheticEvent, RefObject,
 } from 'react';
 
-
-import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 declare const interceptorManager: InterceptorManager;
@@ -23,9 +20,7 @@ type Props = {
   onScroll?: (scrollTop: number) => void,
 }
 
-type UnstatedProps = Props & { appContainer: AppContainer };
-
-const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivElement>): JSX.Element => {
+const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
     growiRenderer,
@@ -105,16 +100,11 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
 
 Preview.displayName = 'Preview';
 
-/**
- * Wrapper component for using unstated
- */
-const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PreviewWrapper2 = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
-  return <PreviewWrapper ref={ref} {...props} />;
+const PreviewWrapper = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
+  return <Preview ref={ref} {...props} />;
 });
 
-PreviewWrapper2.displayName = 'PreviewWrapper2';
+PreviewWrapper.displayName = 'PreviewWrapper';
 
-export default PreviewWrapper2;
+export default PreviewWrapper;
