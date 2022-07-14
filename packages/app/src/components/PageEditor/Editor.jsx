@@ -15,7 +15,7 @@ import Cheatsheet from './Cheatsheet';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
-
+const CodeMirrorEditor = dynamic(() => import('./CodeMirrorEditor').then(mod => mod.CodeMirrorEditor), { ssr: false });
 class Editor extends AbstractEditor {
 
   constructor(props) {
@@ -275,7 +275,6 @@ class Editor extends AbstractEditor {
 
 
   render() {
-    const CodeMirrorEditor = dynamic(() => import('./CodeMirrorEditor').then(mod => mod.CodeMirrorEditor), { ssr: false });
 
     const flexContainer = {
       height: '100%',
