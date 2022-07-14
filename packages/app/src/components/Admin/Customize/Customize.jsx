@@ -1,14 +1,13 @@
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 
-// import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-// import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
@@ -25,7 +24,7 @@ const logger = loggerFactory('growi:services:AdminCustomizePage');
 
 const retrieveErrors = null;
 function Customize(props) {
-  // const { adminCustomizeContainer } = props;
+  const { adminCustomizeContainer } = props;
 
   // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
   //   throw (async() => {
@@ -79,11 +78,10 @@ function Customize(props) {
   );
 }
 
-// const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
-// const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
 
 Customize.propTypes = {
-  // adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
 export default Customize;
