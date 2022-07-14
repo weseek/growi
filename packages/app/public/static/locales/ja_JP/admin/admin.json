@@ -537,6 +537,16 @@
     "action_list": "アクション一覧",
     "disable_mode_explain": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。"
   },
+  "audit_log_action_category": {
+    "Page": "ページ",
+    "Comment": "コメント",
+    "Tag": "タグ",
+    "Attachment": "添付ファイル",
+    "ShareLink": "シェアリンク",
+    "Search": "検索",
+    "User": "ユーザー",
+    "Admin": "管理者ユーザー"
+  },
   "audit_log_action": {
     "USER_REGISTRATION_SUCCESS": "ユーザー作成",
     "USER_LOGIN_WITH_LOCAL": "ログイン",

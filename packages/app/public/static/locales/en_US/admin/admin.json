@@ -538,6 +538,16 @@
     "action_list": "Action List",
     "disable_mode_explain": "Audit log is currently disabled. To enable it, set the environment variable <code>AUDIT_LOG_ENABLED</code> to true."
   },
+  "audit_log_action_category": {
+    "Page": "Page",
+    "Comment": "Comment",
+    "Tag": "Tag",
+    "Attachment": "Attachment",
+    "ShareLink": "ShareLink",
+    "Search": "Search",
+    "User": "User",
+    "Admin": "Admin"
+  },
   "audit_log_action": {
     "USER_REGISTRATION_SUCCESS": "User Creation",
     "USER_LOGIN_WITH_LOCAL": "Login",

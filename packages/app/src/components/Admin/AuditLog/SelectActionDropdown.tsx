@@ -91,7 +91,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                   defaultChecked
                   onChange={(e) => { multipleActionCheckboxChangedHandler(item.actions, e.target.checked) }}
                 />
-                <label className="form-check-label">{item.actionCategory}</label>
+                <label className="form-check-label">{t(`admin:audit_log_action_category.${item.actionCategory}`)}</label>
               </div>
             </div>
             {

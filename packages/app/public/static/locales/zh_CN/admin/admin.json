@@ -547,6 +547,16 @@
     "action_list": "行动清单",
     "disable_mode_explain": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。"
   },
+  "audit_log_action_category": {
+    "Page": "页面",
+    "Comment": "评论",
+    "Tag": "标签",
+    "Attachment": "附件",
+    "ShareLink": "分享链接",
+    "Search": "搜索",
+    "User": "用户",
+    "Admin": "管理"
+  },
   "audit_log_action": {
     "USER_REGISTRATION_SUCCESS": "用户创建",
     "USER_LOGIN_WITH_LOCAL": "登录",
