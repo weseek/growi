@@ -45,7 +45,7 @@ export const AuditLogSettings: FC = () => {
       <Collapse isOpen={isExpandActionList}>
         <ul className="list-group">
           { availableActions.map(action => (
-            <li key={action} className="list-group-item">{ action }</li>
+            <li key={action} className="list-group-item">{t(`admin:audit_log_action.${action}`)}</li>
           )) }
         </ul>
       </Collapse>
