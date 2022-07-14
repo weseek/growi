@@ -1,15 +1,16 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import MarkDownSettingContents from './MarkDownSettingContents';
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+
 
 const logger = loggerFactory('growi:MarkDown');
 
@@ -39,7 +40,7 @@ function MarkdownSetting(props) {
   return <MarkDownSettingContents />;
 }
 
-const MarkdownSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(MarkdownSetting), [AdminMarkDownContainer]);
+const MarkdownSettingWithUnstatedContainer = withUnstatedContainers(MarkdownSetting, [AdminMarkDownContainer]);
 
 MarkdownSetting.propTypes = {
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,

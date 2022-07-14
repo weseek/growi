@@ -1,13 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
 let retrieveErrors = null;
@@ -39,7 +40,7 @@ GoogleSecurityManagement.propTypes = {
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(GoogleSecurityManagement), [
+const GoogleSecurityManagementWithUnstatedContainer = withUnstatedContainers(GoogleSecurityManagement, [
   AdminGoogleSecurityContainer,
 ]);
 

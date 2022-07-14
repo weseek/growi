@@ -1,12 +1,12 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
 
@@ -38,7 +38,7 @@ LdapSecuritySetting.propTypes = {
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const LdapSecuritySettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LdapSecuritySetting), [
+const LdapSecuritySettingWithUnstatedContainer = withUnstatedContainers(LdapSecuritySetting, [
   AdminLdapSecurityContainer,
 ]);
 

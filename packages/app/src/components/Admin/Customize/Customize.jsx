@@ -9,7 +9,6 @@ import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
@@ -80,7 +79,7 @@ function Customize(props) {
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AppContainer, AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AppContainer, AdminCustomizeContainer]);
 
 Customize.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

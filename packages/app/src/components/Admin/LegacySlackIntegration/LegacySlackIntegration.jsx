@@ -1,15 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'next-i18next';
 
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
+
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
-
-import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
 import SlackConfiguration from './SlackConfiguration';
 
@@ -62,7 +61,7 @@ function LegacySlackIntegration(props) {
   );
 }
 
-const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LegacySlackIntegration), [AdminSlackIntegrationLegacyContainer]);
+const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(LegacySlackIntegration, [AdminSlackIntegrationLegacyContainer]);
 
 LegacySlackIntegration.propTypes = {
   adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,

@@ -1,13 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
+
+import AdminAppContainer from '~/client/services/AdminAppContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
-
-import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 import AppSettingsPageContents from './AppSettingsPageContents';
 
@@ -46,6 +46,6 @@ AppSettingsPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(AppSettingsPage), [AdminAppContainer]);
+const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
 
 export default AppSettingsPageWithUnstatedContainer;
