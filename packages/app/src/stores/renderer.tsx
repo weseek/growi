@@ -1,3 +1,4 @@
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -8,10 +9,15 @@ import {
 } from '~/services/renderer/growi-renderer';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
-import { useCurrentPagePath, useGrowiRendererConfig } from './context';
+import { useGrowiRendererConfig } from './context';
 
 export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, Error> => {
   return useStaticSWR('rendererSettings', initialData);
+};
+
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  // need to parse hast to html??
+  return useStaticSWR('currentPageTocNode');
 };
 
 // The base hook with common processes

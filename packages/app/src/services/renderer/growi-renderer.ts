@@ -1,6 +1,6 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
-// import toc, { HtmlElementNode } from 'rehype-toc';
+import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
@@ -233,10 +233,10 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (
     remarkPlugins?.push(breaks);
   }
   // add rehypePlugins
-  // rehypePlugins.push([toc, {
-  //   headings: ['h1', 'h2', 'h3'],
-  //   customizeTOC: storeTocNode,
-  // }]);
+  rehypePlugins?.push([toc, {
+    headings: ['h1', 'h2', 'h3'],
+    customizeTOC: rendererSettings.mutatePageTocNode,
+  }]);
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);

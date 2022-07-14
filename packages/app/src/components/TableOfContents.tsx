@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { useGlobalEventEmitter, useIsUserPage } from '~/stores/context';
+import { useCurrentPageTocNode } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 
@@ -15,9 +16,7 @@ const TableOfContents = (): JSX.Element => {
 
   const { data: isUserPage } = useIsUserPage();
 
-  const { data: globalEmitter } = useGlobalEventEmitter();
-
-  const [tocHtml, setTocHtml] = useState('');
+  const { data: tocNode } = useCurrentPageTocNode();
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -47,32 +46,23 @@ const TableOfContents = (): JSX.Element => {
     if (tocDom == null) { return }
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
     addSmoothScrollEvent(anchorsInToc, blinkElem);
-  }, [tocHtml]);
-
-  // set handler to render ToC
-  useEffect(() => {
-    if (globalEmitter == null) { return }
-    const handler = html => setTocHtml(html);
-    globalEmitter.on('renderTocHtml', handler);
-
-    return function cleanup() {
-      globalEmitter.removeListener('renderTocHtml', handler);
-    };
-  }, [globalEmitter]);
+  }, []);
 
   return (
     <StickyStretchableScroller
       stickyElemSelector=".grw-side-contents-sticky-container"
       calcViewHeight={calcViewHeight}
     >
-      { tocHtml !== ''
+      { tocNode !== null
         ? (
           <div
             id="revision-toc-content"
             className="revision-toc-content mb-3"
             // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: tocHtml }}
-          />
+            dangerouslySetInnerHTML={{ __html: tocNode }}
+          >
+            {/* {processor.runSync(tocNode).result} */}
+          </div>
         )
         : (
           <div

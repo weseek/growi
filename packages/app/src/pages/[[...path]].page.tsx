@@ -28,7 +28,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
-import { useRendererSettings } from '~/stores/renderer';
+import { useRendererSettings, useCurrentPageTocNode } from '~/stores/renderer';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -129,6 +129,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
+  const { mutate: mutatePageTocNode } = useCurrentPageTocNode();
+
   // register global EventEmitter
   if (isClient()) {
     (window as CustomWindow).globalEmitter = new EventEmitter();
@@ -176,7 +178,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
 
-  useRendererSettings(props.rendererSettings);
+  const rendererSettings: RendererSettings = {
+    ...props.rendererSettings,
+    mutatePageTocNode,
+  };
+
+  useRendererSettings(rendererSettings);
   useGrowiRendererConfig(props.growiRendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);

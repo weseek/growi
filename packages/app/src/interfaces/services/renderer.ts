@@ -1,3 +1,5 @@
+import { HtmlElementNode } from 'rehype-toc';
+
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
 export type RendererSettings = {
@@ -5,6 +7,7 @@ export type RendererSettings = {
   isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
+  mutatePageTocNode?: (node: HtmlElementNode) => void,
 };
 
 // export type GrowiHydratedEnv = {
