@@ -287,7 +287,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
         </div>
         <footer>
-          <PageComment pageId={useCurrentPageId()} isReadOnly={false} titleAlign="left" />
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
         </footer>
 
         <UnsavedAlertDialog />
