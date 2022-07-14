@@ -49,7 +49,7 @@ const navTabMapping = {
 type PropsType = {
   appContainer: AppContainer,
 
-  growiRenderer: GrowiRenderer,
+  growiRenderer: object,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
