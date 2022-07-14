@@ -18,7 +18,7 @@ type DraftProps = {
   clearDraft: (path: string) => void,
 }
 
-const Draft = (props: DraftProps): JSX.Element => {
+export const Draft = (props: DraftProps): JSX.Element => {
 
   const {
     path, isExist, index, markdown, clearDraft,
@@ -142,5 +142,3 @@ const Draft = (props: DraftProps): JSX.Element => {
     </div>
   );
 };
-
-export default Draft;
