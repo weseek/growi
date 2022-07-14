@@ -1,34 +1,27 @@
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { RendererSettings } from '~/interfaces/services/renderer';
 import {
   ReactMarkdownOptionsGenerator, RendererOptions,
   generateViewOptions, generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
-} from '~/services/renderer/growi-renderer';
-import { useStaticSWR } from '~/stores/use-static-swr';
+} from '~/services/renderer/renderer';
 
-import { useCurrentPagePath, useGrowiRendererConfig } from './context';
-
-export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, Error> => {
-  return useStaticSWR('rendererSettings', initialData);
-};
+import { useRendererConfig } from './context';
 
 // The base hook with common processes
 const _useOptionsBase = (rendererId: string, generator: ReactMarkdownOptionsGenerator): SWRResponse<RendererOptions, Error> => {
-  const { data: rendererSettings } = useRendererSettings();
-  const { data: growiRendererConfig } = useGrowiRendererConfig();
+  const { data: rendererConfig } = useRendererConfig();
 
-  const isAllDataValid = rendererSettings != null && growiRendererConfig != null;
+  const isAllDataValid = rendererConfig != null;
 
   const key = isAllDataValid
-    ? [rendererId, rendererSettings, growiRendererConfig]
+    ? [rendererId, rendererConfig]
     : null;
 
   const swrResult = useSWRImmutable<RendererOptions, Error>(key);
 
   if (isAllDataValid && swrResult.data == null) {
-    swrResult.mutate(generator(growiRendererConfig, rendererSettings));
+    swrResult.mutate(generator(rendererConfig));
   }
 
   // call useSWRImmutable again to foce to update cache
