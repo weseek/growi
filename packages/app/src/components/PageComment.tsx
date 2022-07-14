@@ -20,6 +20,7 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
+  // TODO: Do not use Nullable, create presentaion for if cannot get pageId.
   pageId?: Nullable<string>,
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
