@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { useTimelineRenderer } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
+import { useTimelineOptions } from '~/stores/renderer';
 
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
@@ -112,14 +112,14 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  growiRenderer: PropTypes.RendererOptions.isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 const PageTimelineWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: growiRenderer } = useTimelineRenderer();
+  const { data: growiRenderer } = useTimelineOptions();
 
   if (growiRenderer == null) {
     return <></>;
