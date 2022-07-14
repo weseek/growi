@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
  * If you throw a Promise in the component, it will display a sppiner
  * @param {object} Component A React.Component or functional component
  */
+// TODO: Omit withLoadingSppiner
 export function withLoadingSppiner(Component) {
   return (props => function getWithLoadingSpinner() {
     return (

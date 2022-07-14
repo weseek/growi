@@ -1,8 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Preview from './Preview';
 
+import PropTypes from 'prop-types';
+
+// TODO: Omit withLoadingSppiner
 import { withLoadingSppiner } from '../SuspenseUtils';
+
+import Preview from './Preview';
 
 function PagePreview(props) {
   if (props.markdown == null || props.pagePath == null) {
