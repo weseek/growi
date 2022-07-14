@@ -36,7 +36,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: commentPreviewOptions } = useCommentPreviewOptions();
+  const { data: rendererOptions } = useCommentPreviewOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -112,7 +112,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
-      rendererOptions={commentPreviewOptions}
+      rendererOptions={rendererOptions}
       deleteBtnClicked={onClickDeleteButton}
       comment={comment}
       onComment={mutate}
@@ -124,7 +124,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     <ReplayComments
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={commentPreviewOptions}
+      rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
     />
   );
@@ -144,7 +144,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     return <></>;
   }
 
-  if (commentPreviewOptions == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
@@ -191,7 +191,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={commentPreviewOptions}
+                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

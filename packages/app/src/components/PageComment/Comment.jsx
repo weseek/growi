@@ -237,7 +237,7 @@ Comment.propTypes = {
 
   comment: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
-  rendererOptions: PropTypes.RendererOptions.isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object,
   onComment: PropTypes.func,

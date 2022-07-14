@@ -109,7 +109,7 @@ ReplayComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  rendererOptions: PropTypes.rendererOptions.isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   replyList: PropTypes.array,

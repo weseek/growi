@@ -50,9 +50,9 @@ class PageTimeline extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { timelineOptions } = this.props;
+    const { rendererOptions } = this.props;
     // initialize GrowiRenderer
-    this.timelineOptions = timelineOptions;
+    this.rendererOptions = rendererOptions;
   }
 
   async componentDidMount() {
@@ -112,20 +112,20 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  timelineOptions: PropTypes.RendererOptions.isRequired,
+  timelineOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 const PageTimelineWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: timelineOptions } = useTimelineOptions();
+  const { data: rendererOptions } = useTimelineOptions();
 
-  if (timelineOptions == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
-  return <PageTimeline t={t} timelineOptions={timelineOptions} {...props} />;
+  return <PageTimeline t={t} rendererOptions={rendererOptions} {...props} />;
 };
 
 /**

@@ -100,7 +100,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
-  const { data: previewOptions } = usePreviewOptions();
+  const { data: rendererOptions } = usePreviewOptions();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
@@ -392,7 +392,7 @@ const PageEditor = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  if (previewOptions == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
@@ -432,7 +432,7 @@ const PageEditor = (props: Props): JSX.Element => {
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           markdown={markdown}
-          rendererOptions={previewOptions}
+          rendererOptions={rendererOptions}
           ref={previewRef}
           // isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={false}

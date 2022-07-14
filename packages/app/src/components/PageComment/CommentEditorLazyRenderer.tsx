@@ -16,9 +16,9 @@ const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
 
   const { pageId } = props;
   const { mutate } = useSWRxPageComment(pageId);
-  const { data: commentPreviewOptions } = useCommentPreviewOptions();
+  const { data: rendererOptions } = useCommentPreviewOptions();
 
-  if (commentPreviewOptions == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
@@ -27,7 +27,7 @@ const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
   return (
     <CommentEditor
       appContainer={appContainer}
-      rendererOptions={commentPreviewOptions}
+      rendererOptions={rendererOptions}
       replyTo={undefined}
       onCommentButtonClicked={mutate}
       isForNewComment
