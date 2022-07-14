@@ -85,7 +85,7 @@ class PageTimeline extends React.Component {
                 <div className="card-body">
                   <RevisionLoader
                     lazy
-                    timelineOptions={this.timelineOptions}
+                    rendererOptions={this.rendererOptions}
                     pageId={page._id}
                     pagePath={page.path}
                     revisionId={page.revision}
@@ -112,7 +112,7 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  timelineOptions: PropTypes.instanceOf(RendererOptions).isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
