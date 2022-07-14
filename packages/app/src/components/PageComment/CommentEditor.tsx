@@ -49,7 +49,7 @@ const navTabMapping = {
 type PropsType = {
   appContainer: AppContainer,
 
-  growiRenderer: RendererOptions,
+  rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
@@ -68,7 +68,7 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, growiRenderer, isForNewComment, replyTo,
+    appContainer, rendererOptions, isForNewComment, replyTo,
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -104,16 +104,16 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown, context);
+        context.markdown = rendererOptions.preProcess(context.markdown, context);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown, context);
+        const parsedHTML = rendererOptions.process(context.markdown, context);
         context.parsedHTML = parsedHTML;
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
+        context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
@@ -122,7 +122,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       })
       // process interceptors for post rendering
       .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }, [growiRenderer]);
+  }, [rendererOptions]);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
