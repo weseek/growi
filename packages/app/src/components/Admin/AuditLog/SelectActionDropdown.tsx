@@ -109,7 +109,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                       className="form-check-label"
                       htmlFor={`checkbox${action}`}
                     >
-                      {action}
+                      {t(`admin:audit_log_action.${action}`)}
                     </label>
                   </div>
                 </div>
