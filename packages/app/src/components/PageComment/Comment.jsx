@@ -6,14 +6,13 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUser } from '~/stores/context';
+import {
+  useCurrentUser, useRevisionId, useRevisionCreatedAt, useGrowiRendererConfig, useInterceptorManager,
+} from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionBody from '../Page/RevisionBody';
-import { withUnstatedContainers } from '../UnstatedUtils';
 import Username from '../User/Username';
 
 import CommentControl from './CommentControl';
@@ -69,7 +68,7 @@ class Comment extends React.PureComponent {
       return;
     }
 
-    const { interceptorManager } = window;
+    const { interceptorManager } = this.props;
 
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
@@ -85,13 +84,14 @@ class Comment extends React.PureComponent {
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.pageContainer.state.revisionId;
+    const { revisionId } = this.props;
+    return this.props.comment.revision === revisionId;
   }
 
   getRootClassName(comment) {
     let className = 'page-comment flex-column';
 
-    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+    const { revisionId, revisionCreatedAt } = this.props;
     if (comment.revision === revisionId) {
       className += ' page-comment-current';
     }
@@ -118,7 +118,7 @@ class Comment extends React.PureComponent {
   }
 
   renderRevisionBody() {
-    const config = this.props.appContainer.getConfig();
+    const { config } = this.props;
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
@@ -132,8 +132,7 @@ class Comment extends React.PureComponent {
 
   async renderHtml() {
 
-    const { growiRenderer, appContainer } = this.props;
-    const { interceptorManager } = window;
+    const { growiRenderer, interceptorManager } = this.props;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
@@ -231,8 +230,6 @@ class Comment extends React.PureComponent {
 
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
@@ -246,13 +243,21 @@ const CommentWrapperFC = (props) => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
+  const { data: revisionId } = useRevisionId();
+  const { data: revisionCreatedAt } = useRevisionCreatedAt();
+  const { data: config } = useGrowiRendererConfig();
+  const { data: interceptorManager } = useInterceptorManager();
 
-  return <Comment t={t} currentUser={currentUser} {...props} />;
+  return (
+    <Comment
+      t={t}
+      currentUser={currentUser}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt}
+      config={config}
+      interceptorManager={interceptorManager}
+      {...props}
+    />);
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
-
-export default CommentWrapper;
+export default CommentWrapperFC;
