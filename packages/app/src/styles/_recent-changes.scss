@@ -41,5 +41,13 @@
     .icon-lock {
       font-size: 14px;
     }
+
+    .flex-grow-1 {
+      min-width: 0;
+    }
+
+    .truncate-text {
+      max-width: fit-content;
+    }
   }
 }

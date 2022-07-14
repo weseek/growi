@@ -2,21 +2,22 @@ import React, {
   FC,
   useCallback, useEffect, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, FootstampIcon } from '@growi/ui';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import LinkedPagePath from '~/models/linked-page-path';
+import FormattedDistanceDate from '../FormattedDistanceDate';
+
 import InfiniteScroll from './InfiniteScroll';
 
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
 
@@ -106,7 +107,7 @@ function SmallPageItem({ page }) {
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
           { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className="my-0">
+          <h5 className="my-0 text-truncate">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
