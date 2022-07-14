@@ -1,10 +1,10 @@
-import { Nullable } from '@growi/core';
+import { IPagePopulatedToShowRevision, Nullable } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoAll,
+  IPageInfo, IPageInfoForOperation, IPageInfoAll,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IRevisionsForPagination } from '~/interfaces/revision';
@@ -14,21 +14,21 @@ import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId } from './context';
 
-export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR<IPageHasId, Error>(
+export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useSWR<IPagePopulatedToShowRevision, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
   );
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR<IPageHasId, Error>(
+export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useSWR<IPagePopulatedToShowRevision, Error>(
     path != null ? ['/page', path] : null,
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
+export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
   const swrResult = useSWRxPage(currentPageId, shareLinkId);

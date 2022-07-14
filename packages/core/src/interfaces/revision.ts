@@ -1,3 +1,4 @@
+import { HasObjectId } from './has-object-id';
 import { IUser } from './user';
 
 export type IRevision = {
@@ -7,6 +8,8 @@ export type IRevision = {
   createdAt: Date,
   updatedAt: Date,
 }
+
+export type IRevisionHasId = IRevision & HasObjectId;
 
 export type IRevisionsForPagination = {
   revisions: IRevision[], // revisions in one pagination

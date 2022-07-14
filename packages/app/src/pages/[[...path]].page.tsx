@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isClient, pagePathUtils, pathUtils } from '@growi/core';
+import {
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, pagePathUtils, pathUtils,
+} from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -21,7 +23,6 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { CustomWindow } from '~/interfaces/global';
-import { IPageWithMeta } from '~/interfaces/page';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
@@ -77,6 +78,7 @@ const IdenticalPathPage = (): JSX.Element => {
   return <IdenticalPathPage />;
 };
 
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -193,9 +195,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // const { data: editorMode } = useEditorMode();
 
-  let pageWithMeta: IPageWithMeta | undefined;
+  let pageWithMeta: IPageToShowRevisionWithMeta | undefined;
   if (props.pageWithMetaStr != null) {
-    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
+    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageToShowRevisionWithMeta;
   }
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
@@ -312,7 +314,7 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
+async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageToShowRevisionWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -335,7 +337,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
     }
   }
 
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const result: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
 
   // populate & check if the revision is latest
@@ -348,7 +350,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
   return result;
 }
 
-async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageWithMeta|null): Promise<void> {
+async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageToShowRevisionWithMeta|null): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const Page = crowi.model('Page') as PageModel;

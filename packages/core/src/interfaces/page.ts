@@ -1,12 +1,12 @@
 import { Ref } from './common';
 import { HasObjectId } from './has-object-id';
-import { IRevision, HasRevisionShortbody } from './revision';
+import { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
 import { SubscriptionStatusType } from './subscription';
 import { ITag } from './tag';
-import { IUser } from './user';
+import { IUser, IUserGroupHasId, IUserHasId } from './user';
 
 
-export interface IPage {
+export type IPage = {
   path: string,
   status: string,
   revision: Ref<IRevision>,
@@ -33,13 +33,26 @@ export interface IPage {
   latestRevision?: Ref<IRevision>,
 }
 
+export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
+  lastUpdateUser: IUserHasId,
+}
+
+export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroup'|'revision'|'author'> & {
+  lastUpdateUser: IUserHasId,
+  creator: IUserHasId,
+  deleteUser: IUserHasId,
+  grantedGroup: IUserGroupHasId,
+  revision: IRevisionHasId,
+  author: IUserHasId,
+}
+
 export const PageGrant = {
   GRANT_PUBLIC: 1,
   GRANT_RESTRICTED: 2,
   GRANT_SPECIFIED: 3, // DEPRECATED
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
-};
+} as const;
 export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
 export type IPageHasId = IPage & HasObjectId;
