@@ -1,23 +1,23 @@
-import xss from 'xss';
 import mongoose from 'mongoose';
+import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
-import NamedQuery from '../models/named-query';
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
+import NamedQuery from '../models/named-query';
+import { PageModel } from '../models/page';
+import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import { SearchError } from '../models/vo/search-error';
+
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
-import { PageModel } from '../models/page';
-import { serializeUserSecurely } from '../models/serializers/user-serializer';
-
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { SearchError } from '../models/vo/search-error';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
