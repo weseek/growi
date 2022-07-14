@@ -1,11 +1,10 @@
 import path from 'path';
 
+import { Lang } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
 
-
-import { Lang } from '~/interfaces/lang';
 import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';

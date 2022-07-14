@@ -1,3 +1,4 @@
+import { Nullable } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -9,7 +10,6 @@ import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page
 import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { apiGet } from '../client/util/apiv1-client';
-import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId } from './context';
