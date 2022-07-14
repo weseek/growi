@@ -48,13 +48,14 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 import {
   useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage, useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useIsLatestRevision,
+  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup, useDisableLinkSharing,
-  useAclEnabled, useIsAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useIsUserPage, useIsNotCreatable,
-  useNoCdn, useEditorConfig, useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useGrowiRendererConfig, useIsBlinkedHeaderAtBoot, useRendererConfig,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
+  useHackmdUri,
+  useIsAclEnabled, useIsUserPage, useIsNotCreatable,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
