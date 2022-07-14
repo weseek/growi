@@ -9,10 +9,8 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-
-// for fix lint error
-// import GrowiRenderer from '~/services/renderer/growi-renderer';
-// import { useDraftRenderer } from '~/stores/renderer';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useDraftRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -198,7 +196,7 @@ class Draft extends React.Component {
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
@@ -209,15 +207,12 @@ Draft.propTypes = {
 
 const DraftWrapperFC = (props) => {
   const { t } = useTranslation();
-  // for fix lint error
+  const { data: growiRenderer } = useDraftRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
 
-  // const { data: growiRenderer } = useDraftRenderer();
-  // if (growiRenderer == null) {
-  //   return <></>;
-  // }
-
-  // return <Draft t={t} growiRenderer={growiRenderer} {...props} />;
-  return <Draft t={t} {...props} />;
+  return <Draft t={t} growiRenderer={growiRenderer} {...props} />;
 };
 
 /**
