@@ -550,7 +550,7 @@
   },
   "audit_log_action": {
     "USER_REGISTRATION_SUCCESS": "User Creation",
-    "USER_LOGIN_WITH_LOCAL": "Login",
+    "USER_LOGIN_WITH_LOCAL": "Login with ID/Password",
     "USER_LOGIN_WITH_LDAP": "Login with LDAP",
     "USER_LOGIN_WITH_GOOGLE": "Login with Google",
     "USER_LOGIN_WITH_GITHUB": "Login with GitHub",

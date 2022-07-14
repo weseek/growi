@@ -559,7 +559,7 @@
   },
   "audit_log_action": {
     "USER_REGISTRATION_SUCCESS": "用户创建",
-    "USER_LOGIN_WITH_LOCAL": "登录",
+    "USER_LOGIN_WITH_LOCAL": "用ID/密码登录",
     "USER_LOGIN_WITH_LDAP": "使用 LDAP 登录",
     "USER_LOGIN_WITH_GOOGLE": "用谷歌登录",
     "USER_LOGIN_WITH_GITHUB": "使用 GitHub 登录",
