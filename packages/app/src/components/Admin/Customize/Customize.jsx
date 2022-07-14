@@ -65,16 +65,17 @@ function Customize(props) {
       <div className="mb-5">
         <CustomizeTitle />
       </div>
+      {/* TODO: show CustomizeHeaderSetting, CustomizeCssSetting and CustomizeScriptSetting by https://redmine.weseek.co.jp/issues/100534
       <div className="mb-5">
-        {/* TODO: show CustomizeHeaderSetting, CustomizeCssSetting and CustomizeScriptSetting by https://redmine.weseek.co.jp/issues/100534  */}
-        {/* <CustomizeHeaderSetting /> */}
+        <CustomizeHeaderSetting />
       </div>
       <div className="mb-5">
-        {/* <CustomizeCssSetting /> */}
+        <CustomizeCssSetting />
       </div>
       <div className="mb-5">
-        {/* <CustomizeScriptSetting /> */}
+        <CustomizeScriptSetting />
       </div>
+    */}
     </div>
   );
 }
