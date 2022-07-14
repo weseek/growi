@@ -308,7 +308,10 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    {/* TODO: Omit withLoadingSppiner / refer to https://github.com/weseek/growi/pull/6271 */}
+                    {/*
+                      TODO: Omit withLoadingSppiner
+                      Please refer to https://github.com/weseek/growi/pull/6271
+                    */}
                     <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} pagePath={pagePath} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
