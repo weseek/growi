@@ -15,7 +15,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
@@ -49,7 +49,7 @@ const navTabMapping = {
 type PropsType = {
   appContainer: AppContainer,
 
-  growiRenderer: object,
+  growiRenderer: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
