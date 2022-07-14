@@ -11,9 +11,11 @@ import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
+import LegacySlackIntegration from '~/components/Admin/LegacySlackIntegration/LegacySlackIntegration';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 import NotificationSetting from '~/components/Admin/Notification/NotificationSetting';
 import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
+import SlackIntegration from '~/components/Admin/SlackIntegration/SlackIntegration';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/AdminLayout';
@@ -99,6 +101,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     'global-notification': {
       title: '',
       component: <>global-notification</>,
+    },
+    'slack-integration': {
+      title: useCustomTitle(props, t('slack_integration')),
+      component: <SlackIntegration />,
+    },
+    'slack-integration-legacy': {
+      title: useCustomTitle(props, t('Legacy_Slack_Integration')),
+      component: <LegacySlackIntegration />,
     },
     users: {
       title: useCustomTitle(props, t('User_Management')),
