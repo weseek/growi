@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -104,7 +106,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <>user-groups</>,
+      component: <UserGroupPage />,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
