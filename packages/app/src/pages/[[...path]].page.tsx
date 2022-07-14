@@ -166,10 +166,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
-  useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
+  useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsBlinkedHeaderAtBoot(false);
 

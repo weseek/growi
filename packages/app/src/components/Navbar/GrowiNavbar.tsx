@@ -21,6 +21,7 @@ import GrowiLogo from '../Icons/GrowiLogo';
 import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
+import { GlobalSearchProps } from './GlobalSearch';
 
 
 const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
@@ -130,7 +131,7 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
-  const GlobalSearch = dynamic(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+  const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();

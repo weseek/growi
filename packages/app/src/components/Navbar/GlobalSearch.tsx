@@ -18,11 +18,11 @@ import SearchForm from '../SearchForm';
 import styles from './GlobalSearch.module.scss';
 
 
-type Props = {
+export type GlobalSearchProps = {
   dropup?: boolean,
 }
 
-export const GlobalSearch = (props: Props): JSX.Element => {
+export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { dropup } = props;

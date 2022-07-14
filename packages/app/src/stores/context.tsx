@@ -106,8 +106,8 @@ export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
-export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
