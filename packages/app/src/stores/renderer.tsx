@@ -40,7 +40,6 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const customizer = (options: RendererOptions) => {
     const { rehypePlugins } = options;
-    console.log('カスタマイザーView');
     // store toc node in global state
     if (rehypePlugins != null) {
       rehypePlugins.push([toc, {
@@ -61,7 +60,6 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   const customizer = (options: RendererOptions) => {
     const { rehypePlugins } = options;
     // set toc node
-    console.log('カスタマイザーtoc');
     if (rehypePlugins != null) {
       rehypePlugins.push([toc, {
         headings: ['h1', 'h2', 'h3'],
