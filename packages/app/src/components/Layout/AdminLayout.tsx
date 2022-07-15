@@ -29,32 +29,30 @@ const AdminLayout = ({
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
-    <>
-      <RawLayout title={title}>
-        <GrowiNavbar />
+    <RawLayout title={title}>
+      <GrowiNavbar />
 
-        <header className="py-0">
-          <h1 className="title">{title}</h1>
-        </header>
-        <div id="main" className="main">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-3">
-                <AdminNavigation selected={selectedNavOpt} />
-              </div>
-              <div className="col-lg-9">
-                {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
-                <Provider>
-                  {children}
-                </Provider>
-              </div>
+      <header className="py-0">
+        <h1 className="title">{title}</h1>
+      </header>
+      <div id="main" className="main">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-lg-3">
+              <AdminNavigation selected={selectedNavOpt} />
+            </div>
+            <div className="col-lg-9">
+              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
+              <Provider>
+                {children}
+              </Provider>
             </div>
           </div>
         </div>
-      </RawLayout>
+      </div>
 
       <SystemVersion />
-    </>
+    </RawLayout>
   );
 };
 
