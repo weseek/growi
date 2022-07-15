@@ -28,8 +28,7 @@ type Props = {
   hideIfEmpty?: boolean,
 }
 
-
-const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
@@ -224,5 +223,3 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 });
 
 PageComment.displayName = 'PageComment';
-
-export default PageComment;

@@ -15,7 +15,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-import PageComment from '~/components/PageComment';
+import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
