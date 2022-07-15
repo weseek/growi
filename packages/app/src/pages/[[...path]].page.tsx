@@ -29,7 +29,6 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
-import { useCommentPreviewOptions } from '~/stores/renderer';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
