@@ -7,7 +7,7 @@ import { SupportedActionType } from '~/interfaces/activity';
 import { GrowiRendererConfig } from '~/interfaces/services/renderer';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser } from '../interfaces/user';
+import { IUser, IUserHasId } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -23,8 +23,8 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
 
-export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
-  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
+  return useStaticSWR<Nullable<IUserHasId>, Error>('currentUser', initialData);
 };
 
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
