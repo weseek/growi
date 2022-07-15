@@ -34,6 +34,12 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
   return _useOptionsBase(key, generateViewOptions);
 };
 
+export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
+  const key = 'tocOptions';
+
+  return _useOptionsBase(key, generateViewOptions);
+};
+
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
   const key = 'previewOptions';
 
