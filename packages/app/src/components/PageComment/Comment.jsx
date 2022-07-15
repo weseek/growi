@@ -258,6 +258,7 @@ const CommentWrapperFC = (props) => {
   const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
+  // TODO: Check if imported null values
   // if (currentUser == null || revisionId == null || revisionCreatedAt == null || config == null || interceptorManager == null) {
   //   logger.warn('Some comment materials are missing.', {
   //     currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
