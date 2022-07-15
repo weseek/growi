@@ -201,6 +201,7 @@ module.exports = (crowi) => {
     const { userId } = req.params;
     const page = req.query.page;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const offset = page > 0 ? (page - 1) * limit : page;
 
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
@@ -222,6 +223,7 @@ module.exports = (crowi) => {
               model: 'User',
             },
           },
+          offset,
           page,
           limit,
         },
