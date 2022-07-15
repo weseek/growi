@@ -2,17 +2,18 @@ import toc, { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-
 import {
+  RendererOptionsCustomizer,
   ReactMarkdownOptionsGenerator, RendererOptions,
   generateViewOptions, generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
+
 
 import { useCurrentPageTocNode, useRendererConfig } from './context';
 
 // The base hook with common processes
 const _useOptionsBase = (
-    rendererId: string, generator: ReactMarkdownOptionsGenerator, customizer?: (options: RendererOptions) => void,
+    rendererId: string, generator: ReactMarkdownOptionsGenerator, customizer?: RendererOptionsCustomizer,
 ): SWRResponse<RendererOptions, Error> => {
   const { data: rendererConfig } = useRendererConfig();
 
@@ -39,6 +40,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const customizer = (options: RendererOptions) => {
     const { rehypePlugins } = options;
+    console.log('カスタマイザーView');
     // store toc node in global state
     if (rehypePlugins != null) {
       rehypePlugins.push([toc, {
@@ -59,6 +61,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   const customizer = (options: RendererOptions) => {
     const { rehypePlugins } = options;
     // set toc node
+    console.log('カスタマイザーtoc');
     if (rehypePlugins != null) {
       rehypePlugins.push([toc, {
         headings: ['h1', 'h2', 'h3'],

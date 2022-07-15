@@ -211,7 +211,7 @@ export interface RendererOptionsCustomizer {
 }
 
 export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig, customizer?: (options: RendererOptions) => void): RendererOptions
+  (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions
 }
 
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
