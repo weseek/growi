@@ -34,7 +34,6 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
