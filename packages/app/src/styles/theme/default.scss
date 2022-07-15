@@ -16,7 +16,7 @@
 
 //== Light Mode
 //
-html[light] {
+.theme[data-light='true'] :global {
   $primary: #122c55;
   $accent: #209fd8;
 
@@ -116,7 +116,7 @@ html[light] {
 
 //== Dark Mode
 //
-html[dark] {
+.theme[data-dark='true'] :global {
   $primary: #115cd3;
   $accent: #db00c2;
 

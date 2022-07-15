@@ -6,7 +6,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import '~/styles/style-next.scss';
-import '~/styles/theme/default.scss';
+// import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import * as nextI18nConfig from '../next-i18next.config';
@@ -14,6 +14,7 @@ import { useI18nextHMR } from '../services/i18next-hmr';
 import { useGrowiVersion } from '../stores/context';
 
 import { CommonProps } from './commons';
+import { ThemeProvider } from './ThemeProvider';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -35,7 +36,11 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Component {...pageProps} />
+      <ThemeProvider theme="">
+        <div data-light="true">
+          <Component {...pageProps} />
+        </div>
+      </ThemeProvider>
     </DndProvider>
   );
 }
