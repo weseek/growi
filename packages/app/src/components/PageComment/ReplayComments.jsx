@@ -3,17 +3,12 @@ import PropTypes from 'prop-types';
 
 import { Collapse } from 'reactstrap';
 
-import { useGrowiRendererConfig } from '~/stores/context';
+import { useRendererConfig } from '~/stores/context';
 
 import Comment from './Comment';
 
-<<<<<<< HEAD
-=======
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import { RendererOptions } from '~/services/renderer/renderer';
 
->>>>>>> support/apply-nextjs-to-PageComments
 class ReplayComments extends React.PureComponent {
 
   constructor() {
@@ -111,7 +106,7 @@ ReplayComments.propTypes = {
 };
 
 const ReplayCommentsWrapperFC = (props) => {
-  const { data: config } = useGrowiRendererConfig();
+  const { data: config } = useRendererConfig();
 
   return <ReplayComments config={config} {...props} />;
 };

@@ -15,7 +15,7 @@ import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useGrowiRendererConfig,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -73,7 +73,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: config } = useGrowiRendererConfig();
+  const { data: config } = useRendererConfig();
 
   const isUploadable = config.upload.image || config.upload.file;
   const isUploadableFile = config.upload.file;

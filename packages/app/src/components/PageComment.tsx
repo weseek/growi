@@ -7,10 +7,7 @@ import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-<<<<<<< HEAD
 import { Nullable } from '~/interfaces/common';
-=======
->>>>>>> support/apply-nextjs-to-PageComments
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
