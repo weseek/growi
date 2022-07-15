@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { Provider } from 'unstated';
 
-import { GrowiNavbar } from './Navbar/GrowiNavbar';
+import { GrowiNavbar } from '../Navbar/GrowiNavbar';
+
 import { RawLayout } from './RawLayout';
 
 // import { injectableContainers } from '~/client/admin';

@@ -2,9 +2,10 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { GrowiNavbar } from './Navbar/GrowiNavbar';
+import { GrowiNavbar } from '../Navbar/GrowiNavbar';
+import Sidebar from '../Sidebar';
+
 import { RawLayout } from './RawLayout';
-import Sidebar from './Sidebar';
 
 
 type Props = {
@@ -17,9 +18,9 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
   // const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
-  const GrowiNavbarBottom = dynamic(() => import('./Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-  const ShortcutsModal = dynamic(() => import('./ShortcutsModal'), { ssr: false });
-  const SystemVersion = dynamic(() => import('./SystemVersion'), { ssr: false });
+  const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+  const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
+  const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
     <>
