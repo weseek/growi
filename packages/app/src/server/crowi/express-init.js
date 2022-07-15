@@ -59,7 +59,7 @@ module.exports = function(crowi, app) {
 
   const { configManager } = crowi;
   const trustedProxies = configManager.getConfig('crowi', 'security:trustedProxies');
-  if (trustedProxies !== '') {
+  if (trustedProxies != null) {
     app.set('trust proxy', trustedProxies);
   }
 

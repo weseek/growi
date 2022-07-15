@@ -368,7 +368,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'security:trustedProxies',
     type:    ValueType.STRING,
-    default: '',
+    default: null,
   },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
