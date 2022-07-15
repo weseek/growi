@@ -2,12 +2,12 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { Nullable } from '^/../core/src/interfaces/common';
 import { Button } from 'reactstrap';
 
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { Nullable } from '~/interfaces/common';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';

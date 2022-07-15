@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useCurrentUser, useRevisionId, useRevisionCreatedAt, useGrowiRendererConfig, useInterceptorManager,
+  useCurrentUser, useRevisionId, useRevisionCreatedAt, useRendererConfig, useInterceptorManager,
 } from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -250,7 +250,7 @@ const CommentWrapperFC = (props) => {
   const { data: currentUser } = useCurrentUser();
   const { data: revisionId } = useRevisionId();
   const { data: revisionCreatedAt } = useRevisionCreatedAt();
-  const { data: config } = useGrowiRendererConfig();
+  const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
   return (
