@@ -239,14 +239,14 @@ Comment.propTypes = {
 
   comment: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
-  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
+  // rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object.isRequired,
   onComment: PropTypes.func,
-  revisionId: PropTypes.string.isRequired,
-  revisionCreatedAt: PropTypes.instanceOf(Date).isRequired,
-  config: PropTypes.instanceOf(RendererConfig).isRequired,
-  interceptorManager: PropTypes.instanceOf(InterceptorManager).isRequired,
+  // revisionId: PropTypes.string.isRequired,
+  // revisionCreatedAt: PropTypes.instanceOf(Date).isRequired,
+  // config: PropTypes.instanceOf(RendererConfig),
+  // interceptorManager: PropTypes.instanceOf(InterceptorManager),
 };
 
 const CommentWrapperFC = (props) => {
@@ -258,8 +258,8 @@ const CommentWrapperFC = (props) => {
   const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
-  // TODO: Check if imported null values
-  // if (currentUser == null || revisionId == null || revisionCreatedAt == null || config == null || interceptorManager == null) {
+  // // TODO: Check if imported null values
+  // if (revisionId == null || revisionCreatedAt == null) {
   //   logger.warn('Some comment materials are missing.', {
   //     currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
   //   });
