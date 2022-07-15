@@ -277,7 +277,9 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
-  const useFallbackData = (editorMode === EditorMode.View && preferDrawerModeByUser) || (editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser);
+  const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
+  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
   const fallbackOption = useFallbackData
     ? { fallbackData: true }
     : { fallback: calcDrawerMode };
