@@ -649,7 +649,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -658,6 +658,8 @@ module.exports = (crowi) => {
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       return res.apiv3({ userData });
     }

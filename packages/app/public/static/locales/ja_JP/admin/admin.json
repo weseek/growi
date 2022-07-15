@@ -694,11 +694,12 @@
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
     "ADMIN_USERS_GIVE_ADMIN": "管理者にする",
     "ADMIN_USERS_REMOVE_ADMIN": "管理者から外す",
+    "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
+    "ADMIN_USERS_REMOVE": "ユーザーの削除",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
     "ADMIN_USER_GROUP_UPDATE": "ユーザーグループの更新",
     "ADMIN_USER_GROUP_DELETE": "ユーザーグループの削除",
     "ADMIN_USER_GROUP_ADD_USER": "ユーザーグループにユーザーを追加",
-    "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
