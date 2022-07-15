@@ -255,34 +255,32 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-          <div className="container">
+          <div id="content-main" className="content-main grw-container-convertible">
             <div className="row">
               <div className="col">
-                <div id="content-main" className="content-main grw-container-convertible">
-                  { props.isIdenticalPathPage && <IdenticalPathPage /> }
+                { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
-                  { !props.isIdenticalPathPage && (
-                    <>
-                      <PageAlerts />
-                      { props.isForbidden
-                        ? <>ForbiddenPage</>
-                        : <DisplaySwitcher />
-                      }
-                      <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
-                      {/* <PageStatusAlert /> */}
+                { !props.isIdenticalPathPage && (
+                  <>
+                    <PageAlerts />
+                    { props.isForbidden
+                      ? <>ForbiddenPage</>
+                      : <DisplaySwitcher />
+                    }
+                    <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
+                    {/* <PageStatusAlert /> */}
                     PageStatusAlert
-                    </>
-                  ) }
+                  </>
+                ) }
 
-                </div>
               </div>
+            </div>
 
-              {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+            {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
               <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
                 <div id="revision-toc-content" className="revision-toc-content"></div>
               </div>
             </div> */}
-            </div>
           </div>
         </div>
         <footer>
