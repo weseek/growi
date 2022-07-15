@@ -25,7 +25,7 @@ export interface ActivityDocument extends Document {
   ip: string
   endpoint: string
   targetModel: SupportedTargetModelType
-  target: Ref<IPage>
+  target: Types.ObjectId
   eventModel: SupportedEventModelType
   event: Types.ObjectId
   action: SupportedActionType
@@ -99,8 +99,8 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   const { user: actionUser, target } = this;
 
   const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription(target),
-    Subscription.getUnsubscription(target),
+    Subscription.getSubscription(target as unknown as Ref<IPage>),
+    Subscription.getUnsubscription(target as unknown as Ref<IPage>),
   ]);
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
