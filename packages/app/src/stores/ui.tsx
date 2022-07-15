@@ -276,12 +276,15 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
+  const useFallbackData = (editorMode === EditorMode.View && preferDrawerModeByUser) || (editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser);
+  const fallbackOption = useFallbackData
+    ? { fallbackData: true }
+    : { fallback: calcDrawerMode };
+
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
-    {
-      fallback: calcDrawerMode,
-    },
+    fallbackOption,
   );
 };
 
