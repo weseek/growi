@@ -688,6 +688,7 @@
     "ADMIN_SLACK_WITHOUT_PROXY_TEST": "Test connection to Slack bot without proxy",
     "ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE": "Update Slack Incoming Webhooks configuration",
     "ADMIN_USERS_INVITE": "User Invitation",
+    "ADMIN_USERS_PASSWORD_RESET": "Reset user password",
     "ADMIN_USER_GROUP_CREATE": "Create User Group",
     "ADMIN_USER_GROUP_UPDATE": "Update User Group",
     "ADMIN_USER_GROUP_DELETE": "Delete User Group",

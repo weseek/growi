@@ -814,13 +814,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Target user
    */
-  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
       const [newPassword, user] = await Promise.all([
         await User.resetPasswordByRandomString(id),
         await User.findById(id)]);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
 
       return res.apiv3({ newPassword, user });
     }

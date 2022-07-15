@@ -687,6 +687,7 @@
     "ADMIN_SLACK_WITHOUT_PROXY_TEST": "Slack bot without proxy の接続テスト",
     "ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE": "Slack Incoming Webhooks の設定の更新",
     "ADMIN_USERS_INVITE": "ユーザーの招待",
+    "ADMIN_USERS_PASSWORD_RESET": "ユーザーのパスワードをリセット",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
     "ADMIN_USER_GROUP_UPDATE": "ユーザーグループの更新",
     "ADMIN_USER_GROUP_DELETE": "ユーザーグループの削除",

@@ -697,6 +697,7 @@
     "ADMIN_SLACK_WITHOUT_PROXY_TEST": "在没有代理的情况下测试与 Slack 机器人的连接",
     "ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE": "更新 Slack Incoming Webhooks 配置",
     "ADMIN_USERS_INVITE": "用户邀请",
+    "ADMIN_USERS_PASSWORD_RESET": "重置用户密码",
     "ADMIN_USER_GROUP_CREATE": "创建用户组",
     "ADMIN_USER_GROUP_UPDATE": "更新用户组",
     "ADMIN_USER_GROUP_DELETE": "删除用户组",
