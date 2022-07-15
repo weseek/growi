@@ -691,6 +691,7 @@
     "ADMIN_USERS_ACTIVATE": "ユーザーを承認する",
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
     "ADMIN_USERS_GIVE_ADMIN": "管理者にする",
+    "ADMIN_USERS_REMOVE_ADMIN": "管理者から外す",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
     "ADMIN_USER_GROUP_UPDATE": "ユーザーグループの更新",
     "ADMIN_USER_GROUP_DELETE": "ユーザーグループの削除",

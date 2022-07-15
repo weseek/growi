@@ -509,12 +509,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.removeFromAdmin();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
+
       return res.apiv3({ userData });
     }
     catch (err) {
