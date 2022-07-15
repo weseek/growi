@@ -255,6 +255,13 @@ const CommentWrapperFC = (props) => {
   const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
+  if (currentUser == null || revisionId == null || revisionCreatedAt == null || config == null || interceptorManager == null) {
+    logger.warn('Some of materials are missing.', {
+      currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
+    });
+    return null;
+  }
+
   return (
     <Comment
       t={t}
