@@ -696,6 +696,7 @@
     "ADMIN_USER_GROUP_UPDATE": "ユーザーグループの更新",
     "ADMIN_USER_GROUP_DELETE": "ユーザーグループの削除",
     "ADMIN_USER_GROUP_ADD_USER": "ユーザーグループにユーザーを追加",
+    "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
   }

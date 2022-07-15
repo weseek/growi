@@ -873,7 +873,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for email sending failure
    */
-  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
@@ -886,6 +886,9 @@ module.exports = (crowi) => {
       }];
       const sendEmail = await sendEmailByUserList(userList);
       // return null if absent
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_SEND_INVITATION_EMAIL });
+
       return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
