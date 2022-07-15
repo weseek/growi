@@ -256,6 +256,22 @@
   }
 }
 
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-drawer {
+      @include drawer();
+    }
+    &.grw-sidebar-dock {
+      @include bs.media-breakpoint-down(sm) {
+        @include drawer();
+      }
+      @include bs.media-breakpoint-up(md) {
+        @include dock();
+      }
+    }
+  }
+}
+
 // '&' could not be set after :global
 // workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
 .grw-sidebar-backdrop {

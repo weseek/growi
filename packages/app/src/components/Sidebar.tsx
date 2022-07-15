@@ -286,58 +286,61 @@ const Sidebar = (): JSX.Element => {
 
   const showContents = isDrawerMode || isHover || !isCollapsed;
 
+
+  // css styles
+  const grwSidebarClass = `grw-sidebar ${styles['grw-sidebar']}`;
+  const sidebarModeClass = `${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'}`;
+  const isOpenClass = `${isDrawerOpened ? 'open' : ''}`;
   return (
     <>
-      <div className={`grw-sidebar ${styles['grw-sidebar']}`}>
-        <div className={`d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'} ${isDrawerOpened ? 'open' : ''}`}>
-          <div className="data-layout-container">
-            <div
-              className='navigation transition-enabled'
-              onMouseEnter={hoverOnHandler}
-              onMouseLeave={hoverOutHandler}
-            >
-              <div className="grw-navigation-wrap">
-                <div className="grw-global-navigation">
-                  <GlobalNavigation></GlobalNavigation>
+      <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`}>
+        <div className="data-layout-container">
+          <div
+            className='navigation transition-enabled'
+            onMouseEnter={hoverOnHandler}
+            onMouseLeave={hoverOutHandler}
+          >
+            <div className="grw-navigation-wrap">
+              <div className="grw-global-navigation">
+                <GlobalNavigation></GlobalNavigation>
+              </div>
+              <div
+                ref={resizableContainer}
+                className="grw-contextual-navigation"
+                onMouseEnter={hoverOnResizableContainerHandler}
+                onMouseLeave={hoverOutResizableContainerHandler}
+                style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
+              >
+                <div className="grw-contextual-navigation-child">
+                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
+                    <SidebarContentsWrapper></SidebarContentsWrapper>
+                  </div>
                 </div>
+              </div>
+            </div>
+            <div className="grw-navigation-draggable">
+              { isResizableByDrag && (
                 <div
-                  ref={resizableContainer}
-                  className="grw-contextual-navigation"
-                  onMouseEnter={hoverOnResizableContainerHandler}
-                  onMouseLeave={hoverOutResizableContainerHandler}
-                  style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
+                  className="grw-navigation-draggable-hitarea"
+                  onMouseDown={dragableAreaMouseDownHandler}
                 >
-                  <div className="grw-contextual-navigation-child">
-                    <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                      <SidebarContentsWrapper></SidebarContentsWrapper>
-                    </div>
-                  </div>
+                  <div className="grw-navigation-draggable-hitarea-child"></div>
                 </div>
-              </div>
-              <div className="grw-navigation-draggable">
-                { isResizableByDrag && (
-                  <div
-                    className="grw-navigation-draggable-hitarea"
-                    onMouseDown={dragableAreaMouseDownHandler}
-                  >
-                    <div className="grw-navigation-draggable-hitarea-child"></div>
-                  </div>
-                ) }
-                <button
-                  data-testid="grw-navigation-resize-button"
-                  className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
-                  type="button"
-                  aria-expanded="true"
-                  aria-label="Toggle navigation"
-                  disabled={isDrawerMode}
-                  onClick={toggleNavigationBtnClickHandler}
-                >
-                  <span className="hexagon-container" role="presentation">
-                    <NavigationResizeHexagon />
-                  </span>
-                  <span className="hitarea" role="presentation"></span>
-                </button>
-              </div>
+              ) }
+              <button
+                data-testid="grw-navigation-resize-button"
+                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
+                type="button"
+                aria-expanded="true"
+                aria-label="Toggle navigation"
+                disabled={isDrawerMode}
+                onClick={toggleNavigationBtnClickHandler}
+              >
+                <span className="hexagon-container" role="presentation">
+                  <NavigationResizeHexagon />
+                </span>
+                <span className="hitarea" role="presentation"></span>
+              </button>
             </div>
           </div>
         </div>
