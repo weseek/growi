@@ -700,6 +700,7 @@
     "ADMIN_USERS_PASSWORD_RESET": "重置用户密码",
     "ADMIN_USERS_ACTIVATE": "激活用户",
     "ADMIN_USERS_DEACTIVATE": "停用用户",
+    "ADMIN_USERS_GIVE_ADMIN": "授予管理员访问权限",
     "ADMIN_USER_GROUP_CREATE": "创建用户组",
     "ADMIN_USER_GROUP_UPDATE": "更新用户组",
     "ADMIN_USER_GROUP_DELETE": "删除用户组",

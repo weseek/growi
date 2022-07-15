@@ -464,12 +464,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of admin user
    */
-  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.makeAdmin();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
+
       return res.apiv3({ userData });
     }
     catch (err) {
