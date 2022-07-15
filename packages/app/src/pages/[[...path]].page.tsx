@@ -29,6 +29,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -190,7 +191,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
-
 
   // const { data: editorMode } = useEditorMode();
 

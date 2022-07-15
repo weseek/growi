@@ -21,6 +21,8 @@ import CommentEditor from './CommentEditor';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
+import loggerFactory from '~/utils/logger';
+const logger = loggerFactory('growi:Page');
 
 /**
  *
@@ -122,11 +124,12 @@ class Comment extends React.PureComponent {
 
   renderRevisionBody() {
     const { config } = this.props;
-    const isMathJaxEnabled = !!config.env.MATHJAX;
+    // TODO: Check isMathJaxEnabled when remarked.
+    // const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
         html={this.state.html}
-        isMathJaxEnabled={isMathJaxEnabled}
+        // isMathJaxEnabled={isMathJaxEnabled}
         renderMathJaxOnInit
         additionalClassName="comment"
       />
@@ -134,17 +137,17 @@ class Comment extends React.PureComponent {
   }
 
   async renderHtml() {
-
-    const { rendererOptions, interceptorManager } = this.props;
+    // TODO: Check isMathJaxEnabled when remarked.
+    const { interceptorManager, rendererOptions } = this.props;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = await rendererOptions.preProcess(context.markdown, context);
+    // context.markdown = await rendererOptions.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = await rendererOptions.process(context.markdown, context);
+    // context.parsedHTML = await rendererOptions.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
+    // context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
     await interceptorManager.process('postPostProcess', context);
     await interceptorManager.process('preRenderCommentHtml', context);
     this.setState({ html: context.parsedHTML });
@@ -153,7 +156,7 @@ class Comment extends React.PureComponent {
 
   render() {
     const {
-      t, comment, isReadOnly, onComment,
+      t, comment, isReadOnly, onComment, rendererOptions
     } = this.props;
     const commentId = comment._id;
     const creator = comment.creator;
@@ -175,7 +178,7 @@ class Comment extends React.PureComponent {
       <React.Fragment>
         {(this.state.isReEdit && !isReadOnly) ? (
           <CommentEditor
-            rendererOptions={this.props.rendererOptions}
+            rendererOptions={rendererOptions}
             currentCommentId={commentId}
             commentBody={comment.comment}
             replyTo={undefined}
@@ -255,12 +258,12 @@ const CommentWrapperFC = (props) => {
   const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
-  if (currentUser == null || revisionId == null || revisionCreatedAt == null || config == null || interceptorManager == null) {
-    logger.warn('Some of materials are missing.', {
-      currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
-    });
-    return null;
-  }
+  // if (currentUser == null || revisionId == null || revisionCreatedAt == null || config == null || interceptorManager == null) {
+  //   logger.warn('Some comment materials are missing.', {
+  //     currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
+  //   });
+  //   return null;
+  // }
 
   return (
     <Comment
