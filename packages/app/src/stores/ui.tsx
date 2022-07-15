@@ -3,6 +3,7 @@ import { RefObject } from 'react';
 import {
   isClient, isServer, pagePathUtils, Nullable,
 } from '@growi/core';
+import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -222,15 +223,13 @@ type PreferDrawerModeByUserUtils = {
   update: (preferDrawerMode: boolean) => void
 }
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<SWRResponse, PreferDrawerModeByUserUtils> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
   const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
 
-  return {
-    ...swrResponse,
-    data: swrResponse.data,
+  const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
 
@@ -239,6 +238,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
       }
     },
   };
+
+  return withUtils(swrResponse, utils);
+
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -258,9 +260,9 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<num
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
@@ -275,12 +277,17 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
+  const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
+  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
+  const fallbackOption = useFallbackData
+    ? { fallbackData: true }
+    : { fallback: calcDrawerMode };
+
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
-    {
-      fallback: calcDrawerMode,
-    },
+    fallbackOption,
   );
 };
 

@@ -255,10 +255,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-
-          <div className="row">
-            <div className="col">
-              <div id="content-main" className="content-main grw-container-convertible">
+          <div id="content-main" className="content-main grw-container-convertible">
+            <div className="row">
+              <div className="col">
                 { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
                 { !props.isIdenticalPathPage && (
@@ -283,7 +282,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div> */}
           </div>
-
         </div>
         <footer>
           {/* <PageComments /> */}
