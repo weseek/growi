@@ -2,10 +2,10 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { Nullable } from '^/../core/src/interfaces/common';
 import { Button } from 'reactstrap';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { useCommentPreviewOptions } from '~/stores/renderer';
@@ -20,19 +20,18 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
-  appContainer: AppContainer,
-  pageId: string,
+  // TODO: Do not use Nullable, create presentaion for if cannot get pageId.
+  pageId?: Nullable<string>,
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
   hideIfEmpty?: boolean,
 }
 
-
-const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
-    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -224,5 +223,3 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 });
 
 PageComment.displayName = 'PageComment';
-
-export default PageComment;

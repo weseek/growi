@@ -6,20 +6,23 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUser } from '~/stores/context';
+import {
+  useCurrentUser, useRevisionId, useRevisionCreatedAt, useRendererConfig, useInterceptorManager,
+} from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionBody from '../Page/RevisionBody';
-import { withUnstatedContainers } from '../UnstatedUtils';
 import Username from '../User/Username';
 
 import CommentControl from './CommentControl';
 import CommentEditor from './CommentEditor';
 
 import { RendererOptions } from '~/services/renderer/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
+import InterceptorManager from '~/services/interceptor-manager';
+import loggerFactory from '~/utils/logger';
+const logger = loggerFactory('growi:Page');
 
 /**
  *
@@ -70,7 +73,7 @@ class Comment extends React.PureComponent {
       return;
     }
 
-    const { interceptorManager } = window;
+    const { interceptorManager } = this.props;
 
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
@@ -86,13 +89,14 @@ class Comment extends React.PureComponent {
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.pageContainer.state.revisionId;
+    const { revisionId } = this.props;
+    return this.props.comment.revision === revisionId;
   }
 
   getRootClassName(comment) {
     let className = 'page-comment flex-column';
 
-    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+    const { revisionId, revisionCreatedAt } = this.props;
     if (comment.revision === revisionId) {
       className += ' page-comment-current';
     }
@@ -119,12 +123,13 @@ class Comment extends React.PureComponent {
   }
 
   renderRevisionBody() {
-    const config = this.props.appContainer.getConfig();
-    const isMathJaxEnabled = !!config.env.MATHJAX;
+    const { config } = this.props;
+    // TODO: Check isMathJaxEnabled when remarked.
+    // const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
         html={this.state.html}
-        isMathJaxEnabled={isMathJaxEnabled}
+        // isMathJaxEnabled={isMathJaxEnabled}
         renderMathJaxOnInit
         additionalClassName="comment"
       />
@@ -132,18 +137,17 @@ class Comment extends React.PureComponent {
   }
 
   async renderHtml() {
-
-    const { rendererOptions, appContainer } = this.props;
-    const { interceptorManager } = window;
+    // TODO: Check rendererOptions when remarked.
+    const { interceptorManager, rendererOptions } = this.props;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
     await interceptorManager.process('prePreProcess', context);
-    context.markdown = await rendererOptions.preProcess(context.markdown, context);
+    // context.markdown = await rendererOptions.preProcess(context.markdown, context);
     await interceptorManager.process('postPreProcess', context);
-    context.parsedHTML = await rendererOptions.process(context.markdown, context);
+    // context.parsedHTML = await rendererOptions.process(context.markdown, context);
     await interceptorManager.process('prePostProcess', context);
-    context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
+    // context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
     await interceptorManager.process('postPostProcess', context);
     await interceptorManager.process('preRenderCommentHtml', context);
     this.setState({ html: context.parsedHTML });
@@ -152,7 +156,7 @@ class Comment extends React.PureComponent {
 
   render() {
     const {
-      t, comment, isReadOnly, onComment,
+      t, comment, isReadOnly, onComment, rendererOptions
     } = this.props;
     const commentId = comment._id;
     const creator = comment.creator;
@@ -174,7 +178,7 @@ class Comment extends React.PureComponent {
       <React.Fragment>
         {(this.state.isReEdit && !isReadOnly) ? (
           <CommentEditor
-            rendererOptions={this.props.rendererOptions}
+            rendererOptions={rendererOptions}
             currentCommentId={commentId}
             commentBody={comment.comment}
             replyTo={undefined}
@@ -232,28 +236,46 @@ class Comment extends React.PureComponent {
 
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
-  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
+  // rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  currentUser: PropTypes.object,
+  currentUser: PropTypes.object.isRequired,
   onComment: PropTypes.func,
+  // revisionId: PropTypes.string.isRequired,
+  // revisionCreatedAt: PropTypes.instanceOf(Date).isRequired,
+  // config: PropTypes.instanceOf(RendererConfig),
+  // interceptorManager: PropTypes.instanceOf(InterceptorManager),
 };
 
 const CommentWrapperFC = (props) => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
+  const { data: revisionId } = useRevisionId();
+  const { data: revisionCreatedAt } = useRevisionCreatedAt();
+  const { data: config } = useRendererConfig();
+  const { data: interceptorManager } = useInterceptorManager();
 
-  return <Comment t={t} currentUser={currentUser} {...props} />;
+  // // TODO: Check if imported null values
+  // if (revisionId == null || revisionCreatedAt == null) {
+  //   logger.warn('Some comment materials are missing.', {
+  //     currentUser, revisionId, revisionCreatedAt, config, interceptorManager,
+  //   });
+  //   return null;
+  // }
+
+  return (
+    <Comment
+      t={t}
+      currentUser={currentUser}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt}
+      config={config}
+      interceptorManager={interceptorManager}
+      {...props}
+    />);
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
-
-export default CommentWrapper;
+export default CommentWrapperFC;

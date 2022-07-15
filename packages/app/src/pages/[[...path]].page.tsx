@@ -15,7 +15,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { PageComments } from '~/components/PageComment/PageComments';
+import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -29,6 +29,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -191,7 +192,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
 
-
   // const { data: editorMode } = useEditorMode();
 
   let pageWithMeta: IPageToShowRevisionWithMeta | undefined;
@@ -286,8 +286,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
         </div>
         <footer>
-          {/* <PageComments /> */}
-          PageComments
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
         </footer>
 
         <UnsavedAlertDialog />
