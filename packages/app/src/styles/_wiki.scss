@@ -143,23 +143,6 @@
     }
   }
 
-  .revision-head {
-    a {
-      text-decoration: none;
-    }
-
-    .revision-head-link,
-    .revision-head-edit-button {
-      margin-left: 0.5em;
-      font-size: 0.6em;
-      opacity: 0;
-    }
-    &:hover .revision-head-link,
-    &:hover .revision-head-edit-button {
-      opacity: 1 !important;
-    }
-  }
-
   $ratio: 0.95;
   &.comment {
     font-size: 14px;
