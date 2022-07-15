@@ -6,7 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
 // import { CustomWindow } from '~/interfaces/global';
-import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
@@ -106,8 +106,8 @@ export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
-export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -214,7 +214,7 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isLatestRevision', initialData);
 };
 
-export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRResponse<GrowiRendererConfig, any> => {
+export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useStaticSWR('growiRendererConfig', initialData);
 };
 

@@ -10,7 +10,7 @@ import { apiGet } from '~/client/util/apiv1-client';
 import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import Draft from './Draft';
+import { Draft } from './Draft';
 
 class MyDraftList extends React.Component {
 

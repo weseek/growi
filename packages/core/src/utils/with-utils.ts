@@ -1,4 +1,4 @@
-import { SWRResponse } from '../index';
+import { SWRResponse } from 'swr';
 
 export type SWRResponseWithUtils<R extends SWRResponse, Utils> = R & Utils;
 

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { isPopulated } from '~/interfaces/common';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';

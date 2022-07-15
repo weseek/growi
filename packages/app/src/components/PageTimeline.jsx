@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { useTimelineRenderer } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
+import { useTimelineOptions } from '~/stores/renderer';
 
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
@@ -50,9 +50,9 @@ class PageTimeline extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { growiRenderer } = this.props;
+    const { rendererOptions } = this.props;
     // initialize GrowiRenderer
-    this.growiRenderer = growiRenderer;
+    this.rendererOptions = rendererOptions;
   }
 
   async componentDidMount() {
@@ -85,7 +85,7 @@ class PageTimeline extends React.Component {
                 <div className="card-body">
                   <RevisionLoader
                     lazy
-                    growiRenderer={this.growiRenderer}
+                    rendererOptions={this.rendererOptions}
                     pageId={page._id}
                     pagePath={page.path}
                     revisionId={page.revision}
@@ -112,20 +112,20 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 const PageTimelineWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: growiRenderer } = useTimelineRenderer();
+  const { data: rendererOptions } = useTimelineOptions();
 
-  if (growiRenderer == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
-  return <PageTimeline t={t} growiRenderer={growiRenderer} {...props} />;
+  return <PageTimeline t={t} rendererOptions={rendererOptions} {...props} />;
 };
 
 /**

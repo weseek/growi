@@ -5,7 +5,7 @@ import React, {
 
 import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -16,7 +16,7 @@ declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
-  growiRenderer: GrowiRenderer,
+  rendererOptions: RendererOptions,
   markdown?: string,
   pagePath?: string,
   renderMathJaxOnInit?: boolean,
@@ -28,7 +28,7 @@ type UnstatedProps = Props & { appContainer: AppContainer };
 const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
-    growiRenderer,
+    rendererOptions,
     markdown, pagePath,
   } = props;
 
@@ -47,20 +47,23 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
   }, [markdown, pagePath, editorSettings?.renderDrawioInRealtime]);
 
   const renderPreview = useCallback(async() => {
-    if (interceptorManager != null) {
-      await interceptorManager.process('preRenderPreview', context);
-      await interceptorManager.process('prePreProcess', context);
-      context.markdown = growiRenderer.preProcess(context.markdown, context);
-      await interceptorManager.process('postPreProcess', context);
-      context.parsedHTML = growiRenderer.process(context.markdown, context);
-      await interceptorManager.process('prePostProcess', context);
-      context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
-      await interceptorManager.process('postPostProcess', context);
-      await interceptorManager.process('preRenderPreviewHtml', context);
-    }
 
-    setHtml(context.parsedHTML ?? '');
-  }, [context, growiRenderer]);
+    // TODO: use ReactMarkdown
+
+    // if (interceptorManager != null) {
+    //   await interceptorManager.process('preRenderPreview', context);
+    //   await interceptorManager.process('prePreProcess', context);
+    //   context.markdown = rendererOptions.preProcess(context.markdown, context);
+    //   await interceptorManager.process('postPreProcess', context);
+    //   context.parsedHTML = rendererOptions.process(context.markdown, context);
+    //   await interceptorManager.process('prePostProcess', context);
+    //   context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
+    //   await interceptorManager.process('postPostProcess', context);
+    //   await interceptorManager.process('preRenderPreviewHtml', context);
+    // }
+
+    // setHtml(context.parsedHTML ?? '');
+  }, [context, rendererOptions]);
 
   useEffect(() => {
     if (markdown == null) {

@@ -17,7 +17,6 @@ class ManageExternalAccount extends React.Component {
 
   constructor(props) {
     super(props);
-    this.xss = window.xss;
     this.handleExternalAccountPage = this.handleExternalAccountPage.bind(this);
   }
 

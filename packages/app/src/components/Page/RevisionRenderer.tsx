@@ -5,8 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { CustomWindow } from '~/interfaces/global';
-// import GrowiRenderer from '~/services/renderer/growi-renderer';
-import { RendererOptions } from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useViewOptions } from '~/stores/renderer';
@@ -48,7 +47,7 @@ const logger = loggerFactory('components:Page:RevisionRenderer');
 
 //   // for non-chrome browsers compatibility
 //   try {
-//     // eslint-disable-next-line regex/invalid
+// eslint-disable-next-line regex/invalid, max-len
 //     keywordRegexp2 = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // inferior (this doesn't work well when html tags exist a lot) https://regex101.com/r/Dfi61F/1
 //   }
 //   catch (err) {

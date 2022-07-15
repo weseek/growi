@@ -1,9 +1,10 @@
-import { useIsEnabledStaleNotification } from '../../stores/context'
-import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page'
 import { useTranslation } from 'react-i18next';
 
+import { useIsEnabledStaleNotification } from '../../stores/context';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page';
+
 export const PageStaleAlert = ():JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
 
   // Todo: determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
@@ -13,23 +14,23 @@ export const PageStaleAlert = ():JSX.Element => {
   const contentAge = pageInfo?.contentAge;
 
   if (!isEnabledStaleNotification) {
-    return <></>
+    return <></>;
   }
 
-  if( pageInfo == null || contentAge == null || contentAge === 0) {
-    return <></>
+  if (pageInfo == null || contentAge == null || contentAge === 0) {
+    return <></>;
   }
 
   let alertClass;
   switch (contentAge) {
     case 1:
-      alertClass = "alert-info";
+      alertClass = 'alert-info';
       break;
     case 2:
-      alertClass = "alert-warning";
+      alertClass = 'alert-warning';
       break;
     default:
-      alertClass = "alert-danger";
+      alertClass = 'alert-danger';
   }
 
   return (
@@ -37,5 +38,5 @@ export const PageStaleAlert = ():JSX.Element => {
       <i className="icon-fw icon-hourglass"></i>
       <strong>{ t('page_page.notice.stale', { count: pageInfo.contentAge }) }</strong>
     </div>
-  )
-}
+  );
+};

@@ -6,7 +6,6 @@ import { pagePathUtils } from '@growi/core';
 import { CustomWindow } from '~/interfaces/global';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 // import { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
-import { useRendererSettings } from '~/stores/renderer';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -23,7 +22,7 @@ import {
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions, useGrowiRendererConfig,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -120,22 +119,19 @@ const ContextExtractorOnce: FC = () => {
   useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
   useAuditLogAvailableActions(configByContextHydrate.auditLogAvailableActions);
   useGrowiVersion(configByContextHydrate.crowi.version);
-  useRendererSettings({
+  useRendererConfig({
     isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
     isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
     adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
     isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
-  });
-  useGrowiRendererConfig({
+
     isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
     attrWhiteList: configByContextHydrate.attrWhiteList,
     tagWhiteList: configByContextHydrate.tagWhiteList,
     highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
-    env: {
-      MATHJAX: configByContextHydrate.env.MATHJAX,
-      PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
-      BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
-    },
+
+    plantumlUri: configByContextHydrate.env.PLANTUML_URI,
+    blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
   });
 
   // Page
