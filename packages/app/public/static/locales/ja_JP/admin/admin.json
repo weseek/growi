@@ -688,6 +688,7 @@
     "ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE": "Slack Incoming Webhooks の設定の更新",
     "ADMIN_USERS_INVITE": "ユーザーの招待",
     "ADMIN_USERS_PASSWORD_RESET": "ユーザーのパスワードをリセット",
+    "ADMIN_USERS_ACTIVATE": "ユーザーを承認する",
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
     "ADMIN_USER_GROUP_UPDATE": "ユーザーグループの更新",

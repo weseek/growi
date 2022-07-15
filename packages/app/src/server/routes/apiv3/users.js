@@ -547,7 +547,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of activate user
    */
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
@@ -561,6 +561,9 @@ module.exports = (crowi) => {
     try {
       const userData = await User.findById(id);
       await userData.statusActivate();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_ACTIVATE });
+
       return res.apiv3({ userData });
     }
     catch (err) {

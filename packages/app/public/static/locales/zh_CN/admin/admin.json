@@ -698,6 +698,7 @@
     "ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE": "更新 Slack Incoming Webhooks 配置",
     "ADMIN_USERS_INVITE": "用户邀请",
     "ADMIN_USERS_PASSWORD_RESET": "重置用户密码",
+    "ADMIN_USERS_ACTIVATE": "激活用户",
     "ADMIN_USERS_DEACTIVATE": "停用用户",
     "ADMIN_USER_GROUP_CREATE": "创建用户组",
     "ADMIN_USER_GROUP_UPDATE": "更新用户组",
