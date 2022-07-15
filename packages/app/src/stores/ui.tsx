@@ -1,6 +1,7 @@
 import { RefObject } from 'react';
 
 import { isClient, isServer, pagePathUtils } from '@growi/core';
+import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -16,7 +17,7 @@ import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
-import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils'
+
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
   useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
@@ -237,7 +238,7 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
     },
   };
 
-  return withUtils(swrResponse, utils)
+  return withUtils(swrResponse, utils);
 
 };
 
