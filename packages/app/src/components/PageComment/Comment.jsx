@@ -19,6 +19,8 @@ import CommentControl from './CommentControl';
 import CommentEditor from './CommentEditor';
 
 import { RendererOptions } from '~/services/renderer/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
+import InterceptorManager from '~/services/interceptor-manager';
 
 /**
  *
@@ -238,10 +240,10 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object.isRequired,
   onComment: PropTypes.func,
-  revisionId: PropTypes.instanceOf(revisionId).isRequired,
-  revisionCreatedAt: PropTypes.instanceOf(revisionCreatedAt).isRequired,
-  config: PropTypes.instanceOf(config).isRequired,
-  interceptorManager: PropTypes.instanceOf(interceptorManager).isRequired,
+  revisionId: PropTypes.string.isRequired,
+  revisionCreatedAt: PropTypes.instanceOf(Date).isRequired,
+  config: PropTypes.instanceOf(RendererConfig).isRequired,
+  interceptorManager: PropTypes.instanceOf(InterceptorManager).isRequired,
 };
 
 const CommentWrapperFC = (props) => {
