@@ -560,6 +560,8 @@
     "USER_LOGIN_WITH_BASIC": "Login with BASIC",
     "USER_LOGIN_FAILURE": "Login failure",
     "USER_LOGOUT": "Logout",
+    "USER_FOGOT_PASSWORD": "Request password reset",
+    "USER_RESET_PASSWORD": "Reset password",
     "USER_PERSONAL_SETTINGS_UPDATE": "User personal settings update",
     "USER_IMAGE_TYPE_UPDATE": "User image type update",
     "USER_LDAP_ACCOUNT_ASSOCIATE": "LDAP account associate",

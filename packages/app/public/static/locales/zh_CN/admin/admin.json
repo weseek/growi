@@ -569,6 +569,8 @@
     "USER_LOGIN_WITH_BASIC": "使用 BASIC 登录",
     "USER_LOGIN_FAILURE": "登录失败",
     "USER_LOGOUT": "注销",
+    "USER_FOGOT_PASSWORD": "要求重置密码",
+    "USER_RESET_PASSWORD": "重置密码",
     "USER_PERSONAL_SETTINGS_UPDATE": "用户个人设置更新",
     "USER_IMAGE_TYPE_UPDATE": "用户图片类型更新",
     "USER_LDAP_ACCOUNT_ASSOCIATE": "LDAP 帐户关联",

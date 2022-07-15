@@ -559,6 +559,8 @@
     "USER_LOGIN_WITH_BASIC": "BASIC 認証でログイン",
     "USER_LOGIN_FAILURE": "ログイン失敗",
     "USER_LOGOUT": "ログアウト",
+    "USER_FOGOT_PASSWORD": "パスワードリセットのリクエスト",
+    "USER_RESET_PASSWORD": "パスワードのリセット",
     "USER_PERSONAL_SETTINGS_UPDATE": "ユーザーの基本情報の更新",
     "USER_IMAGE_TYPE_UPDATE": "プロフィール画像の変更",
     "USER_LDAP_ACCOUNT_ASSOCIATE": "LDAP アカウントの追加",
