@@ -39,7 +39,9 @@ const Drawio = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [GraphViewer, setGraphViewer] = useState<IGraphViewer | undefined>(undefined);
+  // Wrap with a function since GraphViewer is a function.
+  // This applies when call setGraphViewer as well.
+  const [GraphViewer, setGraphViewer] = useState<IGraphViewer | undefined>(() => (window as CustomWindow).GraphViewer);
 
   const { drawioContent, rangeLineNumberOfMarkdown, isPreview } = props;
 
@@ -74,15 +76,9 @@ const Drawio = (props: Props): JSX.Element => {
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
   useEffect(() => {
-    setGraphViewer(() => (window as CustomWindow).GraphViewer);
-  }, []);
-
-  useEffect(() => {
-    console.log('USE EFFECT', GraphViewer);
     if (GraphViewer == null) {
       waitForGraphViewer((gv: IGraphViewer) => {
-        console.log('SET', gv);
-        setGraphViewer(gv);
+        setGraphViewer(() => gv);
       });
       return;
     }
