@@ -137,7 +137,7 @@ class Comment extends React.PureComponent {
   }
 
   async renderHtml() {
-    // TODO: Check isMathJaxEnabled when remarked.
+    // TODO: Check rendererOptions when remarked.
     const { interceptorManager, rendererOptions } = this.props;
     const context = this.currentRenderingContext;
 
