@@ -501,6 +501,17 @@ module.exports = (crowi) => {
       isMoveMode: req.body.isMoveMode,
     };
 
+    const nOptions = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+      action: options.isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    const activityId = res.locals.activity._id;
+
     if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
     }
@@ -516,20 +527,13 @@ module.exports = (crowi) => {
 
     let page;
     let renamedPage;
-    let descendantPages;
 
     try {
       page = await Page.findByIdAndViewer(pageId, req.user, null, true);
-      const pages = await Page.findListWithDescendants(page.path, req.user);
-      descendantPages = pages.pages;
-      descendantPages.pop();
+      options.isRecursively = page.descendantCount > 0;
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
-      }
-
-      if (descendantPages == null && options.isRecursively) {
-        return res.apiv3Err(new ErrorV3(`Page '${pageId}' has no descendant pages`, 'notfound_or_forbidden'), 401);
       }
 
       // empty page does not require revisionId validation
@@ -540,7 +544,7 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, nOptions, activityId);
     }
     catch (err) {
       logger.error(err);
@@ -556,14 +560,7 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Move notification failed', err);
     }
-
-    const activityId = res.locals.activity._id;
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: options.isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
-    };
-    activityEvent.emit('update', activityId, parameters, page, descendantPages);
+    // activityEvent.emit('update', activityId, parameters, page, descendantPages);
 
     return res.apiv3(result);
   });

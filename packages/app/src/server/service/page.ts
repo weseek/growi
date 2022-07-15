@@ -6,6 +6,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -135,10 +136,13 @@ class PageService {
 
   tagEvent: any;
 
+  activityEvent: any;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
     this.tagEvent = crowi.event('tag');
+    this.activityEvent = crowi.event('activity');
 
     // init
     this.initPageEvent();
@@ -344,11 +348,18 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  async renamePage(page, newPagePath, user, options) {
+  async renamePage(page: IPage, newPagePath, user, options, nOptions, activityId): Promise<PageDocument | null> {
     /*
      * Common Operation
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
+    this.crowi.activityService.createActivity(nOptions);
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: nOptions.action,
+    };
 
     const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
@@ -399,12 +410,15 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, parameters, activityId);
+    if (!options.isRecursively) {
+      this.activityEvent.emit('update', activityId, parameters, page);
+    }
 
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike) {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, parameters, activityId): Promise<PageDocument | null> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -489,12 +503,12 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, parameters, activityId);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, parameters?, activityId?): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
@@ -502,7 +516,8 @@ class PageService {
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
     try {
     // update descendants first
-      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      const descendantPages = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      this.activityEvent.emit('update', activityId, parameters, page, descendantPages);
     }
     catch (err) {
       logger.warn(err);
@@ -805,6 +820,7 @@ class PageService {
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
+    let descendantPages = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -813,6 +829,7 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
+          descendantPages = descendantPages.concat(batch);
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -837,6 +854,7 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
+    return descendantPages;
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
