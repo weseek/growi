@@ -1,6 +1,6 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
-import toc, { HtmlElementNode } from 'rehype-toc';
+import toc from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
@@ -207,8 +207,12 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
+export interface RendererOptionsCustomizer {
+  (options: RendererOptions): void
+}
+
 export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions
+  (config: RendererConfig, customizer?: (options: RendererOptions) => void): RendererOptions
 }
 
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
@@ -221,11 +225,11 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
-  const { remarkPlugins, rehypePlugins, components } = options;
+  const { remarkPlugins, components } = options;
 
   // add remark plugins
   if (remarkPlugins != null) {
@@ -236,7 +240,16 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
     }
   }
 
-  // add rehypePlugins
+  if (customizer != null) {
+    // use rehype-toc and get toc node
+    customizer(options);
+  }
+  // if (rehypePlugins != null) {
+  //   rehypePlugins.push([toc, {
+  //     headings: ['h1', 'h2', 'h3'],
+  //     customizeTOC: config.storeTocNode,
+  //   }]);
+  // }
   // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
   //   customizeTOC: storeTocNode,
@@ -267,7 +280,7 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
   return options;
 };
 
-export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
@@ -278,14 +291,9 @@ export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: Render
     remarkPlugins.push(emoji);
   }
 
-  // add rehypePlugins
-  if (rehypePlugins != null) {
-    rehypePlugins.push([toc, {
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: () => {
-        return;
-      },
-    }]);
+  if (customizer != null) {
+    // use rehype-toc and set toc node
+    customizer(options);
   }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',

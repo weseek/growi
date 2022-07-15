@@ -1,3 +1,5 @@
+import { HtmlElementNode } from 'rehype-toc';
+
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
 // export type GrowiHydratedEnv = {
