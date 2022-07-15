@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 require('jquery.cookie');
 
-require('./thirdparty-js/waves');
-
 const Crowi = {};
 
 if (!window) {

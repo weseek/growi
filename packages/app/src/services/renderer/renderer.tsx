@@ -6,7 +6,9 @@ import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
 
-import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
+import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -39,10 +41,10 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 // export default class GrowiRenderer {
 
-//   growiRendererConfig: GrowiRendererConfig;
+//   RendererConfig: RendererConfig;
 
-//   constructor(growiRendererConfig: GrowiRendererConfig, pagePath?: Nullable<string>) {
-//     this.growiRendererConfig = growiRendererConfig;
+//   constructor(RendererConfig: RendererConfig, pagePath?: Nullable<string>) {
+//     this.RendererConfig = RendererConfig;
 //     this.pagePath = pagePath;
 
 //     if (isClient() && (window as CustomWindow).growiRenderer != null) {
@@ -55,9 +57,9 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 //         new Linker(),
 //         new CsvToTable(),
 //         new XssFilter({
-//           isEnabledXssPrevention: this.growiRendererConfig.isEnabledXssPrevention,
-//           tagWhiteList: this.growiRendererConfig.tagWhiteList,
-//           attrWhiteList: this.growiRendererConfig.attrWhiteList,
+//           isEnabledXssPrevention: this.RendererConfig.isEnabledXssPrevention,
+//           tagWhiteList: this.RendererConfig.tagWhiteList,
+//           attrWhiteList: this.RendererConfig.attrWhiteList,
 //         }),
 //       ];
 //       this.postProcessors = [
@@ -107,8 +109,8 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 //       new EmojiConfigurer(),
 //       new MathJaxConfigurer(),
 //       new DrawioViewerConfigurer(),
-//       new PlantUMLConfigurer(this.growiRendererConfig),
-//       new BlockdiagConfigurer(this.growiRendererConfig),
+//       new PlantUMLConfigurer(this.RendererConfig),
+//       new BlockdiagConfigurer(this.RendererConfig),
 //     ];
 
 //     if (this.pagePath != null) {
@@ -163,7 +165,7 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 //   }
 
 //   codeRenderer(code, langExt) {
-//     const noborder = (!this.growiRendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
+//     const noborder = (!this.RendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
 //     let citeTag = '';
 //     let hljsLang = 'plaintext';
@@ -206,32 +208,34 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 export interface ReactMarkdownOptionsGenerator {
-  (growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings): RendererOptions
+  (config: RendererConfig): RendererOptions
 }
 
-const generateCommonOptions: ReactMarkdownOptionsGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
-): RendererOptions => {
+const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   return {
     remarkPlugins: [gfm],
     rehypePlugins: [slug],
+    components: {
+      a: NextLink,
+    },
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
-): RendererOptions => {
+export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
 
-  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
+  const options = generateCommonOptions(config);
 
-  const { remarkPlugins, rehypePlugins } = options;
+  const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
-  remarkPlugins?.push(footnotes);
-  remarkPlugins?.push(emoji);
-  if (rendererSettings.isEnabledLinebreaks) {
-    remarkPlugins?.push(breaks);
+  if (remarkPlugins != null) {
+    remarkPlugins.push(footnotes);
+    remarkPlugins.push(emoji);
+    if (config.isEnabledLinebreaks) {
+      remarkPlugins.push(breaks);
+    }
   }
+
   // add rehypePlugins
   // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
@@ -240,6 +244,13 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
+
+  // add components
+  if (components != null) {
+    components.h1 = Header;
+    components.h2 = Header;
+    components.h3 = Header;
+  }
 
   // // Add configurers for viewer
   // renderer.addConfigurers([
@@ -256,10 +267,8 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (
   return options;
 };
 
-export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
-): RendererOptions => {
-  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
+export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(config);
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -274,10 +283,8 @@ export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (
   return options;
 };
 
-export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
-): RendererOptions => {
-  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
+export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(config);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),
@@ -289,10 +296,8 @@ export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (
   return options;
 };
 
-export const generateOthersOptions: ReactMarkdownOptionsGenerator = (
-    growiRendererConfig: GrowiRendererConfig, rendererSettings: RendererSettings,
-): RendererOptions => {
-  const options = generateCommonOptions(growiRendererConfig, rendererSettings);
+export const generateOthersOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(config);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),

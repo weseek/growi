@@ -1,9 +1,8 @@
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, Lang } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { Lang } from '~/interfaces/lang';
 
 import * as nextI18NextConfig from '../next-i18next.config';
 

@@ -1,7 +1,9 @@
 import { getMongoUri, mongoOptions } from '@growi/core';
+
+// eslint-disable-next-line import/no-named-as-default
+import Config from '~/server/models/config';
 import loggerFactory from '~/utils/logger';
 
-import Config from '~/server/models/config';
 
 const logger = loggerFactory('growi:migrate:remove-timeline-type');
 

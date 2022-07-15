@@ -9,18 +9,19 @@ import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { HasChildren } from '~/interfaces/common';
 import {
   useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
+import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
+import { GlobalSearchProps } from './GlobalSearch';
 
 
 const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
@@ -130,7 +131,7 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
-  const GlobalSearch = dynamic(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+  const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();

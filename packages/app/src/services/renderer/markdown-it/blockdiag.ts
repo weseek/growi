@@ -1,18 +1,18 @@
-import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
 
 export default class BlockdiagConfigurer {
 
   generateSourceUrl: string;
 
-  constructor(growiConfig: GrowiRendererConfig) {
-    this.generateSourceUrl = growiConfig.blockdiagUri || 'https://blockdiag-api.com/';
+  constructor(config: RendererConfig) {
+    this.generateSourceUrl = config.blockdiagUri || 'https://blockdiag-api.com/';
   }
 
   configure(md) {
-    md.use(require('markdown-it-blockdiag'), {
-      generateSourceUrl: this.generateSourceUrl,
-      marker: ':::',
-    });
+    // md.use(require('markdown-it-blockdiag'), {
+    //   generateSourceUrl: this.generateSourceUrl,
+    //   marker: ':::',
+    // });
   }
 
 }

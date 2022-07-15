@@ -5,7 +5,7 @@ const PATTERN_RELATIVE_PATH = new RegExp(/^(\.{1,2})(\/.*)?$/);
 
 export default class LinkerByRelativePathConfigurer {
 
-  pagePath: string
+  pagePath: string;
 
   constructor(pagePath: string) {
     this.pagePath = pagePath;
