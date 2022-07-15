@@ -596,12 +596,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.statusSuspend();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_DEACTIVATE });
+
       return res.apiv3({ userData });
     }
     catch (err) {
