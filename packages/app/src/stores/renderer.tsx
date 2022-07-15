@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import {
   ReactMarkdownOptionsGenerator, RendererOptions,
-  generateViewOptions, generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
+  generateViewOptions, generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
 import { useRendererConfig } from './context';
@@ -37,7 +37,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   const key = 'tocOptions';
 
-  return _useOptionsBase(key, generateViewOptions);
+  return _useOptionsBase(key, generateTocOptions);
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
