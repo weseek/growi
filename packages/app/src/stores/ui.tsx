@@ -260,9 +260,9 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<num
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
