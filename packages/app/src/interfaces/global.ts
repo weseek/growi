@@ -8,7 +8,6 @@ import { IInterceptorManager } from './interceptor-manager';
 
 export type CustomWindow = Window
                          & typeof globalThis
-                         & { xss: Xss }
                          & { interceptorManager: IInterceptorManager }
                          & { globalEmitter: EventEmitter }
                          & { GraphViewer: IGraphViewer }
