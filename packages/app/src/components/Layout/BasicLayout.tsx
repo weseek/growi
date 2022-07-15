@@ -44,7 +44,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
       {/* <HotkeysManager /> */}
 
       <ShortcutsModal />
-      <SystemVersion />
+      <SystemVersion showShortcutsButton />
     </>
   );
 };
