@@ -1,6 +1,5 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
-import toc from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
@@ -244,12 +243,6 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
     // use rehype-toc and get toc node
     customizer(options);
   }
-  // if (rehypePlugins != null) {
-  //   rehypePlugins.push([toc, {
-  //     headings: ['h1', 'h2', 'h3'],
-  //     customizeTOC: config.storeTocNode,
-  //   }]);
-  // }
   // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
   //   customizeTOC: storeTocNode,
@@ -284,7 +277,7 @@ export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: Render
 
   const options = generateCommonOptions(config);
 
-  const { remarkPlugins, rehypePlugins, components } = options;
+  const { remarkPlugins } = options;
 
   // add remark plugins
   if (remarkPlugins != null) {

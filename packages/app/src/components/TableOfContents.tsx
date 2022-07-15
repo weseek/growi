@@ -69,29 +69,14 @@ const TableOfContents = (): JSX.Element => {
       stickyElemSelector=".grw-side-contents-sticky-container"
       calcViewHeight={calcViewHeight}
     >
-      <ReactMarkdown {...rendererOptions}>
-        {''}
-      </ReactMarkdown>
-      {/* { tocHtml !== ''
-        ? (
-          // <div
-          //   id="revision-toc-content"
-          //   className="revision-toc-content mb-3"
-          //   // eslint-disable-next-line react/no-danger
-          //   dangerouslySetInnerHTML={{ __html: tocHtml }}
-          // />
-          <ReactMarkdown {...rendererOptions}>
-            {''}
-          </ReactMarkdown>
-        )
-        : (
-          <div
-            id="revision-toc-content"
-            className="revision-toc-content mb-2"
-          >
-          </div>
-        ) } */}
-
+      <div
+        id="revision-toc-content"
+        className="revision-toc-content mb-3"
+      >
+        <ReactMarkdown {...rendererOptions}>
+          {''}
+        </ReactMarkdown>
+      </div>
     </StickyStretchableScroller>
   );
 
