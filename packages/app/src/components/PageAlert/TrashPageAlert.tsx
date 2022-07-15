@@ -36,7 +36,7 @@ export const TrashPageAlert = (): JSX.Element => {
 
   const lastUpdateUserName = pageData?.lastUpdateUser.name;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
-  const revisionId = pageData?.revision._id;
+  const revisionId = pageData?.revision?._id;
 
   if (!isTrashPage) {
     return <></>;

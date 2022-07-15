@@ -1,8 +1,5 @@
 import { Container } from 'unstated';
 
-
-import GrowiRenderer, { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
-
 import { i18nFactory } from '../util/i18n';
 
 /**
@@ -59,17 +56,19 @@ export default class AppContainer extends Container {
   }
 
   injectToWindow() {
-    window.appContainer = this;
+    // for fix lint error
 
-    const growiRenderer = new GrowiRenderer(this.getConfig());
-    growiRenderer.init();
+    // window.appContainer = this;
 
-    window.growiRenderer = growiRenderer;
+    // const growiRenderer = new GrowiRenderer(this.getConfig());
+    // growiRenderer.init();
 
-    // backward compatibility
-    window.crowi = this;
-    window.crowiRenderer = window.growiRenderer;
-    window.crowiPlugin = window.growiPlugin;
+    // window.growiRenderer = growiRenderer;
+
+    // // backward compatibility
+    // window.crowi = this;
+    // window.crowiRenderer = window.growiRenderer;
+    // window.crowiPlugin = window.growiPlugin;
   }
 
   getConfig() {

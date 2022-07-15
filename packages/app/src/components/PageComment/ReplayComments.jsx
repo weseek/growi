@@ -7,6 +7,13 @@ import { useGrowiRendererConfig } from '~/stores/context';
 
 import Comment from './Comment';
 
+<<<<<<< HEAD
+=======
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import { RendererOptions } from '~/services/renderer/renderer';
+
+>>>>>>> support/apply-nextjs-to-PageComments
 class ReplayComments extends React.PureComponent {
 
   constructor() {
@@ -29,7 +36,7 @@ class ReplayComments extends React.PureComponent {
         <Comment
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}
-          growiRenderer={this.props.growiRenderer}
+          rendererOptions={this.props.rendererOptions}
           isReadOnly={this.props.isReadOnly}
         />
       </div>
@@ -97,7 +104,7 @@ class ReplayComments extends React.PureComponent {
 }
 
 ReplayComments.propTypes = {
-  growiRenderer: PropTypes.object.isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   replyList: PropTypes.array,

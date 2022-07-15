@@ -12,10 +12,10 @@ import * as toastr from 'toastr';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
-import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useGrowiRendererConfig
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useGrowiRendererConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -43,7 +43,7 @@ const navTabMapping = {
 };
 
 type PropsType = {
-  growiRenderer: GrowiRenderer,
+  rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
@@ -62,7 +62,7 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    growiRenderer, isForNewComment, replyTo,
+    rendererOptions, isForNewComment, replyTo,
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -94,29 +94,31 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       parsedHTML: '',
     };
 
-    const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-    interceptorManager.process('preRenderCommnetPreview', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown, context);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown, context);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-      .then(() => {
-        setHtml(context.parsedHTML);
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }, [growiRenderer]);
+    // TODO: use ReactMarkdown
+
+    // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
+    // interceptorManager.process('preRenderCommnetPreview', context)
+    //   .then(() => { return interceptorManager.process('prePreProcess', context) })
+    //   .then(() => {
+    //     context.markdown = rendererOptions.preProcess(context.markdown, context);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
+    //   .then(() => {
+    //     const parsedHTML = rendererOptions.process(context.markdown, context);
+    //     context.parsedHTML = parsedHTML;
+    //   })
+    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
+    //   .then(() => {
+    //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
+    //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
+    //   .then(() => {
+    //     setHtml(context.parsedHTML);
+    //   })
+    //   // process interceptors for post rendering
+    //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
+  }, [rendererOptions]);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);

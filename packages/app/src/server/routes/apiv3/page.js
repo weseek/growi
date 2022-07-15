@@ -1,7 +1,6 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, AllSubscriptionStatusType, SubscriptionStatusType } from '@growi/core';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
