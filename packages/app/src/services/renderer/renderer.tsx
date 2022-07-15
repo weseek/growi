@@ -206,12 +206,8 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
-export interface RendererOptionsCustomizer {
-  (options: RendererOptions): void
-}
-
 export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions
+  (config: RendererConfig): RendererOptions
 }
 
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
@@ -224,7 +220,7 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions => {
+export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
@@ -237,11 +233,6 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
-  }
-
-  if (customizer != null) {
-    // use rehype-toc and get toc node
-    customizer(options);
   }
   // rehypePlugins.push([toc, {
   //   headings: ['h1', 'h2', 'h3'],
@@ -273,7 +264,7 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
   return options;
 };
 
-export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig, customizer?: RendererOptionsCustomizer): RendererOptions => {
+export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
@@ -282,11 +273,6 @@ export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: Render
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
-  }
-
-  if (customizer != null) {
-    // use rehype-toc and set toc node
-    customizer(options);
   }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',

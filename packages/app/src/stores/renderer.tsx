@@ -2,8 +2,8 @@ import toc, { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  RendererOptionsCustomizer,
   ReactMarkdownOptionsGenerator, RendererOptions,
   generateViewOptions, generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
@@ -13,7 +13,7 @@ import { useCurrentPageTocNode, useRendererConfig } from './context';
 
 // The base hook with common processes
 const _useOptionsBase = (
-    rendererId: string, generator: ReactMarkdownOptionsGenerator, customizer?: RendererOptionsCustomizer,
+    rendererId: string, generator: ReactMarkdownOptionsGenerator,
 ): SWRResponse<RendererOptions, Error> => {
   const { data: rendererConfig } = useRendererConfig();
 
@@ -26,7 +26,7 @@ const _useOptionsBase = (
   const swrResult = useSWRImmutable<RendererOptions, Error>(key);
 
   if (isAllDataValid && swrResult.data == null) {
-    swrResult.mutate(generator(rendererConfig, customizer));
+    swrResult.mutate(generator(rendererConfig));
   }
 
   // call useSWRImmutable again to foce to update cache
@@ -38,18 +38,21 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const { mutate: storeTocNode } = useCurrentPageTocNode();
 
-  const customizer = (options: RendererOptions) => {
+  // customize wrapper
+  const customizeViewOptions = (config: RendererConfig) => {
+    const options = generateViewOptions(config);
     const { rehypePlugins } = options;
-    // store toc node in global state
+    // store toc node
     if (rehypePlugins != null) {
       rehypePlugins.push([toc, {
         headings: ['h1', 'h2', 'h3'],
         customizeTOC: storeTocNode,
       }]);
     }
+    return options;
   };
 
-  return _useOptionsBase(key, generateViewOptions, customizer);
+  return _useOptionsBase(key, customizeViewOptions);
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
@@ -57,7 +60,9 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const { data: tocNode } = useCurrentPageTocNode();
 
-  const customizer = (options: RendererOptions) => {
+  // customize wrapper
+  const customizeTocOptions = (config: RendererConfig) => {
+    const options = generateTocOptions(config);
     const { rehypePlugins } = options;
     // set toc node
     if (rehypePlugins != null) {
@@ -66,9 +71,10 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
         customizeTOC: () => tocNode,
       }]);
     }
+    return options;
   };
 
-  return _useOptionsBase(key, generateTocOptions, customizer);
+  return _useOptionsBase(key, customizeTocOptions);
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
