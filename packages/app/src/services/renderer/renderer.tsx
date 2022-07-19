@@ -1,5 +1,6 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import raw from 'rehype-raw';
+import sanitize, { defaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
 // import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
@@ -218,7 +219,13 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
     rehypePlugins: [
       slug,
       raw,
-      // sanitize,
+      [sanitize, {
+        ...defaultSchema,
+        attributes: {
+          ...defaultSchema.attributes,
+          '*': ['class'],
+        },
+      }],
     ],
     components: {
       a: NextLink,
