@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import ReactMarkdown from 'react-markdown';
+
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { useIsUserPage } from '~/stores/context';
+import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 
@@ -16,6 +19,8 @@ const TableOfContents = (): JSX.Element => {
   const { data: isUserPage } = useIsUserPage();
 
   const [tocHtml, setTocHtml] = useState('');
+
+  const { data: rendererOptions } = useTocOptions();
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -64,23 +69,14 @@ const TableOfContents = (): JSX.Element => {
       stickyElemSelector=".grw-side-contents-sticky-container"
       calcViewHeight={calcViewHeight}
     >
-      { tocHtml !== ''
-        ? (
-          <div
-            id="revision-toc-content"
-            className="revision-toc-content mb-3"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: tocHtml }}
-          />
-        )
-        : (
-          <div
-            id="revision-toc-content"
-            className="revision-toc-content mb-2"
-          >
-          </div>
-        ) }
-
+      <div
+        id="revision-toc-content"
+        className="revision-toc-content mb-3"
+      >
+        <ReactMarkdown {...rendererOptions}>
+          {''}
+        </ReactMarkdown>
+      </div>
     </StickyStretchableScroller>
   );
 

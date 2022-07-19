@@ -1,6 +1,6 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
-// import toc, { HtmlElementNode } from 'rehype-toc';
+import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
@@ -221,7 +221,10 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateViewOptions = (
+    config: RendererConfig,
+    storeTocNode: (node: HtmlElementNode) => void,
+): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
@@ -236,11 +239,13 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
     }
   }
 
-  // add rehypePlugins
-  // rehypePlugins.push([toc, {
-  //   headings: ['h1', 'h2', 'h3'],
-  //   customizeTOC: storeTocNode,
-  // }]);
+  // store toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: storeTocNode,
+    }]);
+  }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
@@ -263,6 +268,30 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
 
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
+
+  return options;
+};
+
+export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
+
+  const options = generateCommonOptions(config);
+
+  const { remarkPlugins, rehypePlugins } = options;
+
+  // add remark plugins
+  if (remarkPlugins != null) {
+    remarkPlugins.push(emoji);
+  }
+  // set toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: () => tocNode,
+    }]);
+  }
+  // renderer.rehypePlugins.push([autoLinkHeadings, {
+  //   behavior: 'append',
+  // }]);
 
   return options;
 };

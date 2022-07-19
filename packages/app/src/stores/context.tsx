@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -216,6 +217,10 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useStaticSWR('growiRendererConfig', initialData);
+};
+
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  return useStaticSWR('currentPageTocNode');
 };
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {

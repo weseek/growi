@@ -62,7 +62,14 @@ const DisplaySwitcher = (): JSX.Element => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId={EditorMode.View}>
-          <div className="d-flex flex-column flex-lg-row-reverse">
+          <div className="d-flex flex-column flex-lg-row">
+
+            <div className="flex-grow-1 flex-basis-0 mw-0">
+              { isUserPage && <UserInfo pageUser={pageUser} />}
+              { !isNotFound && <Page /> }
+              { isNotFound && !isNotCreatable && <NotFoundPage /> }
+              { isNotFound && isNotCreatable && <NotCreatablePage /> }
+            </div>
 
             { !isNotFound && !currentPage?.isEmpty && (
               <div className="grw-side-contents-container">
@@ -104,7 +111,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
                   <div className="d-none d-lg-block">
                     <div id="revision-toc" className="revision-toc">
-                      {/* <TableOfContents /> */}
+                      <TableOfContents />
                     </div>
                     <ContentLinkButtons />
                   </div>
@@ -112,13 +119,6 @@ const DisplaySwitcher = (): JSX.Element => {
                 </div>
               </div>
             ) }
-
-            <div className="flex-grow-1 flex-basis-0 mw-0">
-              { isUserPage && <UserInfo pageUser={pageUser} />}
-              { !isNotFound && <Page /> }
-              { isNotFound && !isNotCreatable && <NotFoundPage /> }
-              { isNotFound && isNotCreatable && <NotCreatablePage /> }
-            </div>
 
           </div>
         </TabPane>
