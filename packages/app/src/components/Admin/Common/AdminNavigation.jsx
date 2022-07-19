@@ -5,22 +5,22 @@
 import React from 'react';
 
 import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 
-import AppContainer from '~/client/services/AppContainer';
+// import AppContainer from '~/client/services/AppContainer';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+// import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
   const { t } = useTranslation();
-  const { appContainer } = props;
+  // const { appContainer } = props;
   const pathname = window.location.pathname;
 
-  const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
-  const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
+  // const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
+  // const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -37,6 +37,8 @@ const AdminNavigation = (props) => {
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
+      // TODO: Consider where to place the "AuditLog"
+      case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('AuditLog')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
@@ -86,7 +88,8 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        {growiCloudUri != null && growiAppIdForGrowiCloud != null
+        <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
+        {/* {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
               href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
@@ -95,7 +98,7 @@ const AdminNavigation = (props) => {
               <MenuLabel menu="cloud" />
             </a>
           )
-        }
+        } */}
       </>
     );
   };
@@ -131,6 +134,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/users') &&             <MenuLabel menu="users" />}
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
+            {isActiveMenu('/audit-log') &&         <MenuLabel menu="audit-log" />}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
@@ -142,10 +146,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
+// const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default AdminNavigationWrapper;
+// export default AdminNavigationWrapper;
+export default AdminNavigation;

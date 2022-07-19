@@ -1,11 +1,13 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { RendererOptions } from '~/services/renderer/renderer';
+import { useTimelineOptions } from '~/stores/renderer';
 
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
@@ -47,10 +49,10 @@ class PageTimeline extends React.Component {
     });
   }
 
-  componentWillMount() {
-    const { appContainer } = this.props;
+  UNSAFE_componentWillMount() {
+    const { rendererOptions } = this.props;
     // initialize GrowiRenderer
-    this.growiRenderer = appContainer.getRenderer('timeline');
+    this.rendererOptions = rendererOptions;
   }
 
   async componentDidMount() {
@@ -83,7 +85,7 @@ class PageTimeline extends React.Component {
                 <div className="card-body">
                   <RevisionLoader
                     lazy
-                    growiRenderer={this.growiRenderer}
+                    rendererOptions={this.rendererOptions}
                     pageId={page._id}
                     pagePath={page.path}
                     revisionId={page.revision}
@@ -110,13 +112,20 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 const PageTimelineWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <PageTimeline t={t} {...props} />;
+  const { data: rendererOptions } = useTimelineOptions();
+
+  if (rendererOptions == null) {
+    return <></>;
+  }
+
+  return <PageTimeline t={t} rendererOptions={rendererOptions} {...props} />;
 };
 
 /**

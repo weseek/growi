@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 

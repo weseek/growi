@@ -18,6 +18,7 @@ import {
 } from '../../interfaces/search';
 import { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
+import { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
 import ElasticsearchClient from './elasticsearch-client';
@@ -47,25 +48,25 @@ type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
 
-  name!: SearchDelegatorName.DEFAULT
+  name!: SearchDelegatorName.DEFAULT;
 
-  configManager!: any
+  configManager!: any;
 
-  socketIoService!: any
+  socketIoService!: any;
 
-  isElasticsearchV6: boolean
+  isElasticsearchV6: boolean;
 
-  isElasticsearchReindexOnBoot: boolean
+  isElasticsearchReindexOnBoot: boolean;
 
-  elasticsearch: any
+  elasticsearch: any;
 
-  client: any
+  client: any;
 
-  queries: any
+  queries: any;
 
-  indexName: string
+  indexName: string;
 
-  esUri: string
+  esUri: string;
 
   constructor(configManager, socketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
@@ -437,7 +438,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   addAllPages() {
     const Page = mongoose.model('Page');
-    return this.updateOrInsertPages(() => Page.find(), { isEmittingProgressEvent: true, invokeGarbageCollection: true });
+    return this.updateOrInsertPages(() => Page.find(), { shouldEmitProgress: true, invokeGarbageCollection: true });
   }
 
   updateOrInsertPageById(pageId) {
@@ -456,8 +457,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option: any = {}) {
-    const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
+  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}) {
+    const { shouldEmitProgress = false, invokeGarbageCollection = false } = option;
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
@@ -465,7 +466,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
-    const socket = this.socketIoService.getAdminSocket();
+    const socket = shouldEmitProgress ? this.socketIoService.getAdminSocket() : null;
 
     // prepare functions invoked from custom streams
     const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
@@ -583,8 +584,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
           logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
 
-          if (isEmittingProgressEvent) {
-            socket.emit('addPageProgress', { totalCount, count, skipped });
+          if (shouldEmitProgress) {
+            socket?.emit('addPageProgress', { totalCount, count, skipped });
           }
         }
         catch (err) {
@@ -607,8 +608,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       final(callback) {
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
-        if (isEmittingProgressEvent) {
-          socket.emit('finishAddPage', { totalCount, count, skipped });
+        if (shouldEmitProgress) {
+          socket?.emit('finishAddPage', { totalCount, count, skipped });
         }
         callback();
       },
@@ -623,7 +624,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
-
   }
 
   deletePages(pages) {

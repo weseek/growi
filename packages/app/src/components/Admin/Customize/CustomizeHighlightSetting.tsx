@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -42,6 +42,7 @@ const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
     </pre>
   );
 });
+HljsDemo.displayName = 'HljsDemo';
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;

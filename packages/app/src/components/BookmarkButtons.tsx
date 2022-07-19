@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
@@ -8,6 +8,8 @@ import { useIsGuestUser } from '~/stores/context';
 import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
+
+import styles from './BookmarkButtons.module.scss';
 
 interface Props {
   bookmarkCount?: number
@@ -55,7 +57,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`btn btn-bookmark border-0
+        className={`shadow-none btn ${styles['btn-bookmark']} border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
@@ -67,7 +69,12 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
 
       { !hideTotalNumber && (
         <>
-          <button type="button" id="po-total-bookmarks" className={`btn btn-bookmark border-0 total-bookmarks ${props.isBookmarked ? 'active' : ''}`}>
+          <button
+            type="button"
+            id="po-total-bookmarks"
+            className={`shadow-none btn btn-bookmark border-0
+              total-bookmarks ${props.isBookmarked ? 'active' : ''}`}
+          >
             {bookmarkCount ?? 0}
           </button>
           { bookmarkedUsers != null && (

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -97,6 +97,7 @@ class LdapAuthTest extends React.Component {
               name="username"
               value={this.props.username}
               onChange={(e) => { this.props.onChangeUsername(e.target.value) }}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -109,6 +110,7 @@ class LdapAuthTest extends React.Component {
               name="password"
               value={this.props.password}
               onChange={(e) => { this.props.onChangePassword(e.target.value) }}
+              autoComplete="off"
             />
           </div>
         </div>

@@ -1,8 +1,40 @@
-import { listScopedPackages } from './src/utils/next.config.utils';
+import eazyLogger from 'eazy-logger';
+import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
-// define transpiled packages for '@growi/*'
-const scopedPackages = listScopedPackages(['@growi']);
-const withTM = require('next-transpile-modules')(scopedPackages);
+import { i18n, localePath } from './src/next-i18next.config';
+import { listScopedPackages, listPrefixedPackages } from './src/utils/next.config.utils';
+
+
+// setup logger
+const logger = eazyLogger.Logger({
+  prefix: '[{green:next.config.js}] ',
+  useLevelPrefixes: false,
+});
+
+
+const setupWithTM = () => {
+  // define transpiled packages for '@growi/*'
+  const packages = [
+    ...listScopedPackages(['@growi'], { ignorePackageNames: '@growi/app' }),
+    // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
+    'react-markdown',
+    'unified',
+    'comma-separated-tokens',
+    'decode-named-character-reference',
+    'space-separated-tokens',
+    'trim-lines',
+    'emoticon',
+    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
+  ];
+
+  logger.info('{bold:Listing scoped packages for transpiling:}');
+  logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
+
+  return require('next-transpile-modules')(packages);
+};
+const withTM = setupWithTM();
+
 
 // define additional entries
 const additionalWebpackEntries = {
@@ -12,11 +44,17 @@ const additionalWebpackEntries = {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // == DOES NOT WORK
+  // see: https://github.com/vercel/next.js/discussions/27876
+  // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
+
   reactStrictMode: true,
   typescript: {
     tsconfigPath: 'tsconfig.build.client.json',
   },
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+
+  i18n,
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
@@ -39,14 +77,16 @@ const nextConfig = {
       });
     };
 
-    // configure plugins
-    const WebpackAssetsManifest = require('webpack-assets-manifest');
     config.plugins.push(
-      new WebpackAssetsManifest({
-        publicPath: true,
-        output: 'custom-manifest.json',
+      new WebpackManifestPlugin({
+        fileName: 'custom-manifest.json',
       }),
     );
+
+    // setup i18next-hmr
+    if (!options.isServer && options.dev) {
+      config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }));
+    }
 
     return config;
   },

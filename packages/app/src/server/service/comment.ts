@@ -1,9 +1,6 @@
 import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
-import { SUPPORTED_TARGET_MODEL_TYPE, SUPPORTED_EVENT_MODEL_TYPE, SUPPORTED_ACTION_TYPE } from '~/interfaces/activity';
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
@@ -40,15 +37,6 @@ class CommentService {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
-
-        const page = await Page.findById(savedComment.page);
-        if (page == null) {
-          logger.error('Page is not found');
-          return;
-        }
-
-        const activity = await this.createActivity(savedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -57,10 +45,9 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(updatedComment) => {
+    this.commentEvent.on('update', async() => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, SUPPORTED_ACTION_TYPE.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -68,46 +55,18 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('remove', async(comment) => {
-      this.commentEvent.onRemove();
+    this.commentEvent.on('delete', async(removedComment) => {
+      this.commentEvent.onDelete();
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
-        await Page.updateCommentCount(comment.page);
+        await Page.updateCommentCount(removedComment.page);
       }
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
       }
     });
   }
-
-  private createActivity = async function(comment, action) {
-    const parameters = {
-      user: comment.creator,
-      targetModel: SUPPORTED_TARGET_MODEL_TYPE.MODEL_PAGE,
-      target: comment.page,
-      eventModel: SUPPORTED_EVENT_MODEL_TYPE.MODEL_COMMENT,
-      event: comment._id,
-      action,
-    };
-    const activity = await this.activityService.createByParameters(parameters);
-    return activity;
-  };
-
-  private createAndSendNotifications = async function(activity, page) {
-    const snapshot = stringifySnapshot(page);
-
-    // Get user to be notified
-    let targetUsers: Types.ObjectId[] = [];
-    targetUsers = await activity.getNotificationTargetUsers();
-
-    // Add mentioned users to targetUsers
-    const mentionedUsers = await this.getMentionedUsers(activity.event);
-    targetUsers = targetUsers.concat(mentionedUsers);
-
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
-    await this.inAppNotificationService.emitSocketIo(targetUsers);
-  };
 
   getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
     const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
@@ -129,7 +88,7 @@ class CommentService {
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
-  }
+  };
 
 }
 

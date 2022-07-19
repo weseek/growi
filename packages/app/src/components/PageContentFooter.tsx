@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 
-import { Ref } from '../interfaces/common';
+import { Ref } from '@growi/core';
+
 import { IUser } from '../interfaces/user';
 
 import AuthorInfo from './Navbar/AuthorInfo';
@@ -29,5 +30,6 @@ const PageContentFooter:FC<Props> = memo((props:Props):JSX.Element => {
   );
 });
 
+PageContentFooter.displayName = 'PageContentFooter';
 
 export default PageContentFooter;

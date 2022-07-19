@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { RendererOptions } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -31,7 +31,7 @@ class RevisionLoader extends React.Component {
     this.onWaypointChange = this.onWaypointChange.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (!this.props.lazy) {
       this.loadData();
     }
@@ -109,7 +109,7 @@ class RevisionLoader extends React.Component {
 
     return (
       <RevisionRenderer
-        growiRenderer={this.props.growiRenderer}
+        rendererOptions={this.props.rendererOptions}
         markdown={markdown}
         pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
@@ -123,7 +123,7 @@ class RevisionLoader extends React.Component {
 RevisionLoader.propTypes = {
   t: PropTypes.func.isRequired,
 
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,

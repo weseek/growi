@@ -8,12 +8,11 @@ export default class GrowiPlugin {
    * process plugin entry
    *
    * @param {AppContainer} appContainer
-   * @param {GrowiRenderer} originRenderer The origin instance of GrowiRenderer
    *
    * @memberof CrowiPlugin
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  installAll(appContainer, originRenderer) {
+  installAll(appContainer) {
     // import plugin definitions
     let definitions = [];
     try {

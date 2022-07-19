@@ -4,9 +4,9 @@
 
       <p class="alert alert-primary py-3 px-4">
       {% if page.grant == 2 %}
-        <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+        <i class="icon-fw icon-link"></i><strong>{{ t('Anyone with the link') }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 4 %}
-        <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+        <i class="icon-fw icon-lock"></i><strong>{{ t('Only me') }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 5 %}
         <i class="icon-fw icon-organization"></i><strong>'{{ page.grantedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
       {% endif %}
@@ -49,13 +49,6 @@
     {% if req.query.unlinked %}
     <div class="alert alert-info d-edit-none py-3 px-4">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
-    </div>
-    {% endif %}
-
-    {% if page and not page.isLatestRevision() %}
-    <div class="alert alert-warning">
-      <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
-      <a href="{{ encodeURI(page.path) }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
     </div>
     {% endif %}
 

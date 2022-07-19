@@ -10,6 +10,8 @@ import Comment from './Comment';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+import { RendererOptions } from '~/services/renderer/renderer';
+
 class ReplayComments extends React.PureComponent {
 
   constructor() {
@@ -32,7 +34,7 @@ class ReplayComments extends React.PureComponent {
         <Comment
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}
-          growiRenderer={this.props.growiRenderer}
+          rendererOptions={this.props.rendererOptions}
           isReadOnly={this.props.isReadOnly}
         />
       </div>
@@ -107,7 +109,7 @@ ReplayComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  growiRenderer: PropTypes.object.isRequired,
+  rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   replyList: PropTypes.array,

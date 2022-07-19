@@ -1,26 +1,30 @@
 import React, {
-  FC,
-  useCallback, useEffect, useState,
+  memo, useCallback, useEffect, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
-
+import { DevidedPagePath, isPopulated } from '@growi/core';
 import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
-import loggerFactory from '~/utils/logger';
-
+import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
-import InfiniteScroll from './InfiniteScroll';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
+import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
+import InfiniteScroll from './InfiniteScroll';
+
+
 const logger = loggerFactory('growi:History');
 
-function PageItemLower({ page }) {
+type PageItemProps = {
+  page: IPageHasId,
+}
+
+const PageItemLower = memo(({ page }: PageItemProps): JSX.Element => {
   return (
     <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
       <div className="d-flex">
@@ -34,11 +38,11 @@ function PageItemLower({ page }) {
       </div>
     </div>
   );
-}
-PageItemLower.propTypes = {
-  page: PropTypes.any,
-};
-function LargePageItem({ page }) {
+});
+PageItemLower.displayName = 'PageItemLower';
+
+
+const LargePageItem = memo(({ page }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -55,10 +59,15 @@ function LargePageItem({ page }) {
 
   const tags = page.tags;
   const tagElements = tags.map((tag) => {
+    if (!isPopulated(tag)) {
+      return <></>;
+    }
     return (
-      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
-        {tag.name}
-      </a>
+      <Link key={tag.name} href={`/_search?q=tag:${tag.name}`}>
+        <a className="grw-tag-label badge badge-secondary mr-2 small">
+          {tag.name}
+        </a>
+      </Link>
     );
   });
 
@@ -80,12 +89,11 @@ function LargePageItem({ page }) {
       </div>
     </li>
   );
-}
-LargePageItem.propTypes = {
-  page: PropTypes.any,
-};
+});
+LargePageItem.displayName = 'LargePageItem';
 
-function SmallPageItem({ page }) {
+
+const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -115,10 +123,8 @@ function SmallPageItem({ page }) {
       </div>
     </li>
   );
-}
-SmallPageItem.propTypes = {
-  page: PropTypes.any,
-};
+});
+SmallPageItem.displayName = 'SmallPageItem';
 
 const RecentChanges = (): JSX.Element => {
   const PER_PAGE = 20;

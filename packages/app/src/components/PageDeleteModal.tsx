@@ -2,25 +2,25 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { HasObjectId, pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-import { isTrashPage } from '^/../core/src/utils/page-path-utils';
+const { isTrashPage } = pagePathUtils;
 
 
 const logger = loggerFactory('growi:cli:PageDeleteModal');

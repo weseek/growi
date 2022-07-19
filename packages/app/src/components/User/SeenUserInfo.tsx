@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { FootstampIcon } from '@growi/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { IUser } from '~/interfaces/user';
@@ -24,7 +24,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   return (
     <div className="grw-seen-user-info">
-      <button type="button" id="btn-seen-user" className="btn btn-seen-user border-0">
+      <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0">
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>

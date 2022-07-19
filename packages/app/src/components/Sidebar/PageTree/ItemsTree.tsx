@@ -1,30 +1,32 @@
 import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-import loggerFactory from '~/utils/logger';
-
-import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-
-import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import {
+  usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
+} from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
-import { useGlobalSocket } from '~/stores/websocket';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
+import loggerFactory from '~/utils/logger';
 
-import { ItemNode } from './ItemNode';
 import Item from './Item';
+import { ItemNode } from './ItemNode';
+
+import styles from './ItemsTree.module.scss';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -84,7 +86,7 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   targetPath: string
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
 }
 
@@ -257,7 +259,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className="grw-pagetree list-group p-3" ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group p-3`} ref={rootElemRef}>
         <Item
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}

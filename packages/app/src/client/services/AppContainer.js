@@ -1,7 +1,5 @@
 import { Container } from 'unstated';
 
-
-import GrowiRenderer from '../util/GrowiRenderer';
 import { i18nFactory } from '../util/i18n';
 
 /**
@@ -26,7 +24,6 @@ export default class AppContainer extends Container {
 
     this.containerInstances = {};
     this.componentInstances = {};
-    this.rendererInstances = {};
   }
 
   /**
@@ -45,8 +42,6 @@ export default class AppContainer extends Container {
 
     this.isDocSaved = true;
 
-    this.originRenderer = new GrowiRenderer(this);
-
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
@@ -57,19 +52,23 @@ export default class AppContainer extends Container {
 
   initPlugins() {
     const growiPlugin = window.growiPlugin;
-    growiPlugin.installAll(this, this.originRenderer);
+    growiPlugin.installAll(this);
   }
 
   injectToWindow() {
-    window.appContainer = this;
+    // for fix lint error
 
-    const originRenderer = this.getOriginRenderer();
-    window.growiRenderer = originRenderer;
+    // window.appContainer = this;
 
-    // backward compatibility
-    window.crowi = this;
-    window.crowiRenderer = originRenderer;
-    window.crowiPlugin = window.growiPlugin;
+    // const growiRenderer = new GrowiRenderer(this.getConfig());
+    // growiRenderer.init();
+
+    // window.growiRenderer = growiRenderer;
+
+    // // backward compatibility
+    // window.crowi = this;
+    // window.crowiRenderer = window.growiRenderer;
+    // window.crowiPlugin = window.growiPlugin;
   }
 
   getConfig() {
@@ -124,28 +123,6 @@ export default class AppContainer extends Container {
    */
   getComponentInstance(id) {
     return this.componentInstances[id];
-  }
-
-  getOriginRenderer() {
-    return this.originRenderer;
-  }
-
-  /**
-   * factory method
-   */
-  getRenderer(mode) {
-    if (this.rendererInstances[mode] != null) {
-      return this.rendererInstances[mode];
-    }
-
-    const renderer = new GrowiRenderer(this, this.originRenderer);
-    // setup
-    renderer.initMarkdownItConfigurers(mode);
-    renderer.setup(mode);
-    // register
-    this.rendererInstances[mode] = renderer;
-
-    return renderer;
   }
 
 }

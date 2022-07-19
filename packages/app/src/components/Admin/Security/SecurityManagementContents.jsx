@@ -1,21 +1,21 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-import BasicSecuritySetting from './BasicSecuritySetting';
-import FacebookSecuritySetting from './FacebookSecuritySetting';
-import GitHubSecuritySetting from './GitHubSecuritySetting';
-import GoogleSecuritySetting from './GoogleSecuritySetting';
-import LdapSecuritySetting from './LdapSecuritySetting';
-import LocalSecuritySetting from './LocalSecuritySetting';
-import OidcSecuritySetting from './OidcSecuritySetting';
-import SamlSecuritySetting from './SamlSecuritySetting';
+// import BasicSecuritySetting from './BasicSecuritySetting';
+// import FacebookSecuritySetting from './FacebookSecuritySetting';
+// import GitHubSecuritySetting from './GitHubSecuritySetting';
+// import GoogleSecuritySetting from './GoogleSecuritySetting';
+// import LdapSecuritySetting from './LdapSecuritySetting';
+// import LocalSecuritySetting from './LocalSecuritySetting';
+// import OidcSecuritySetting from './OidcSecuritySetting';
+// import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
+// import TwitterSecuritySetting from './TwitterSecuritySetting';
 
 const SecurityManagementContents = () => {
   const { t } = useTranslation();
@@ -82,12 +82,12 @@ const SecurityManagementContents = () => {
   return (
     <div data-testid="admin-security">
       <div className="mb-5">
-        <SecuritySetting />
+        {/* <SecuritySetting /> */}
       </div>
 
       {/* Shared Link List */}
       <div className="mb-5">
-        <ShareLinkSetting />
+        {/* <ShareLinkSetting /> */}
       </div>
 
 
@@ -112,31 +112,31 @@ const SecurityManagementContents = () => {
         />
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
-            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
+            {/* {activeComponents.has('passport_local') && <LocalSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_ldap">
-            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
+            {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_saml">
-            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
+            {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_oidc">
-            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
+            {/* {activeComponents.has('passport_oidc') && <OidcSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_basic">
-            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
+            {/* {activeComponents.has('passport_basic') && <BasicSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_google">
-            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
+            {/* {activeComponents.has('passport_google') && <GoogleSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_github">
-            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+            {/* {activeComponents.has('passport_github') && <GitHubSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_twitter">
-            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
+            {/* {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_facebook">
-            {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
+            {/* {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />} */}
           </TabPane>
         </TabContent>
       </div>

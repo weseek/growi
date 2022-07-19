@@ -1,13 +1,11 @@
-
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -30,15 +28,6 @@ class ExternalAccountLinkedMe extends React.Component {
     this.closeAssociateModal = this.closeAssociateModal.bind(this);
     this.openDisassociateModal = this.openDisassociateModal.bind(this);
     this.closeDisassociateModal = this.closeDisassociateModal.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      await this.props.personalContainer.retrieveExternalAccounts();
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   openAssociateModal() {
@@ -65,8 +54,7 @@ class ExternalAccountLinkedMe extends React.Component {
   }
 
   render() {
-    const { t, personalContainer } = this.props;
-    const { externalAccounts } = personalContainer.state;
+    const { t, personalExternalAccounts } = this.props;
 
     return (
       <Fragment>
@@ -95,7 +83,7 @@ class ExternalAccountLinkedMe extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {externalAccounts !== 0 && externalAccounts.map(account => (
+            {personalExternalAccounts != null && personalExternalAccounts.length > 0 && personalExternalAccounts.map(account => (
               <ExternalAccountRow
                 account={account}
                 key={account._id}
@@ -128,17 +116,19 @@ class ExternalAccountLinkedMe extends React.Component {
 ExternalAccountLinkedMe.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
+  personalExternalAccounts: PropTypes.arrayOf(PropTypes.object),
 };
 
 const ExternalAccountLinkedMeWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <ExternalAccountLinkedMe t={t} {...props} />;
+  const { data: personalExternalAccountsData } = useSWRxPersonalExternalAccounts();
+
+  return <ExternalAccountLinkedMe t={t} personalExternalAccounts={personalExternalAccountsData} {...props} />;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMeWrapperFC, [AppContainer, PersonalContainer]);
+const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMeWrapperFC, [AppContainer]);
 
 export default ExternalAccountLinkedMeWrapper;

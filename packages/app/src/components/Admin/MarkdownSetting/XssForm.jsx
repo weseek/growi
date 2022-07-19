@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { tags, attrs } from '~/services/xss/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
@@ -165,7 +164,6 @@ class XssForm extends React.Component {
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
@@ -175,6 +173,6 @@ const XssFormWrapperFC = (props) => {
   return <XssForm t={t} {...props} />;
 };
 
-const XssFormWrapper = withUnstatedContainers(XssFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+const XssFormWrapper = withUnstatedContainers(XssFormWrapperFC, [AdminMarkDownContainer]);
 
 export default XssFormWrapper;

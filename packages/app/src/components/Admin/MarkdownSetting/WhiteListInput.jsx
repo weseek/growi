@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { tags, attrs } from '~/services/xss/recommended-whitelist';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -79,7 +78,6 @@ class WhiteListInput extends React.Component {
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
@@ -90,6 +88,6 @@ const PresentationFormWrapperFC = (props) => {
   return <WhiteListInput t={t} {...props} />;
 };
 
-const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
 
 export default WhiteListWrapper;

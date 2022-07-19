@@ -7,6 +7,7 @@ import { useSWRxPageByPath } from '~/stores/page';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionRenderer from '../Page/RevisionRenderer';
 import { IRevision } from '~/interfaces/revision';
+import { useCustomSidebarOptions } from '~/stores/renderer';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -27,11 +28,13 @@ type Props = {
 
 const CustomSidebar: FC<Props> = (props: Props) => {
 
-  const { appContainer } = props;
-
-  const renderer = appContainer.getRenderer('sidebar');
+  const { data: rendererOptions } = useCustomSidebarOptions();
 
   const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
+
+  if (rendererOptions == null) {
+    return <></>;
+  }
 
   const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
@@ -60,7 +63,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
         (!isLoading && markdown != null) && (
           <div className="p-3">
             <RevisionRenderer
-              growiRenderer={renderer}
+              rendererOptions={rendererOptions}
               markdown={markdown}
               pagePath="/Sidebar"
               additionalClassName="grw-custom-sidebar-content"
@@ -78,9 +81,4 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
-
-export default CustomSidebarWrapper;
+export default CustomSidebar;
