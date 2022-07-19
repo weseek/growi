@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import LinkedPagePath from '../models/linked-page-path';
 
 import PagePathHierarchicalLink from './PagePathHierarchicalLink';
-// import CopyDropdown from './Page/CopyDropdown';
 
 
 type Props = {
