@@ -208,7 +208,7 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions,
+  (config: RendererConfig): RendererOptions
 }
 
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
