@@ -8,9 +8,9 @@ import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
+// import AppContainer from '~/client/services/AppContainer';
+// import EditorContainer from '~/client/services/EditorContainer';
+// import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
@@ -28,11 +28,11 @@ import {
 import loggerFactory from '~/utils/logger';
 
 
-import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { withUnstatedContainers } from './UnstatedUtils';
+// import { withUnstatedContainers } from './UnstatedUtils';
 
 
 // TODO: remove this when omitting unstated is completed
@@ -52,26 +52,26 @@ type EditorRef = {
 }
 
 type Props = {
-  appContainer: AppContainer,
-  pageContainer: PageContainer,
-  editorContainer: EditorContainer,
+  // appContainer: AppContainer,
+  // pageContainer: PageContainer,
+  // editorContainer: EditorContainer,
 
-  isEditable: boolean,
+  // isEditable: boolean,
 
-  editorMode: string,
-  isSlackEnabled: boolean,
-  slackChannels: string,
-  isMobile?: boolean,
+  // editorMode: string,
+  // isSlackEnabled: boolean,
+  // slackChannels: string,
+  // isMobile?: boolean,
 
-  grant: number,
-  grantGroupId?: string,
-  grantGroupName?: string,
-  mutateGrant: (grant: number) => void,
+  // grant: number,
+  // grantGroupId?: string,
+  // grantGroupName?: string,
+  // mutateGrant: (grant: number) => void,
 
-  isTextlintEnabled?: boolean,
-  isIndentSizeForced?: boolean,
-  indentSize?: number,
-  mutateCurrentIndentSize: (indent: number) => void,
+  // isTextlintEnabled?: boolean,
+  // isIndentSizeForced?: boolean,
+  // indentSize?: number,
+  // mutateCurrentIndentSize: (indent: number) => void,
 };
 
 // for scrolling
@@ -80,9 +80,9 @@ let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
 const PageEditor = (props: Props): JSX.Element => {
-  const {
-    appContainer, pageContainer, editorContainer,
-  } = props;
+  // const {
+  //   appContainer, pageContainer, editorContainer,
+  // } = props;
 
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
@@ -103,24 +103,26 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
+  // const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
+  const [markdown, setMarkdown] = useState<string>('');
 
 
   const editorRef = useRef<EditorRef>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
-  const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
-    editorContainer.saveDraft(pageContainer.state.path, markdown);
-  }), [editorContainer, markdown, pageContainer.state.path]);
+  // const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
+  //   editorContainer.saveDraft(pageContainer.state.path, markdown);
+  // }), [editorContainer, markdown, pageContainer.state.path]);
 
   const markdownChangedHandler = useCallback((value: string): void => {
     setMarkdownWithDebounce(value);
     // only when the first time to edit
-    if (!pageContainer.state.revisionId) {
-      saveDraftWithDebounce();
-    }
-  }, [pageContainer.state.revisionId, saveDraftWithDebounce, setMarkdownWithDebounce]);
+    // if (!pageContainer.state.revisionId) {
+    //   saveDraftWithDebounce();
+    // }
+  // }, [pageContainer.state.revisionId, saveDraftWithDebounce, setMarkdownWithDebounce]);
+  }, []);
 
 
   const saveWithShortcut = useCallback(async() => {
@@ -137,20 +139,20 @@ const PageEditor = (props: Props): JSX.Element => {
       mutateIsEnabledUnsavedWarning(false);
 
       // eslint-disable-next-line no-unused-vars
-      const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
+      // const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
       logger.debug('success to save');
 
-      pageContainer.showSuccessToastr();
+      // pageContainer.showSuccessToastr();
 
       // update state of EditorContainer
-      editorContainer.setState({ tags });
+      // editorContainer.setState({ tags });
     }
     catch (error) {
       logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
+      // pageContainer.showErrorToastr(error);
     }
   }, [
-    editorContainer,
+    // editorContainer,
     editorMode,
     grant,
     grantGroupId,
@@ -158,7 +160,7 @@ const PageEditor = (props: Props): JSX.Element => {
     isSlackEnabled,
     slackChannelsData,
     markdown,
-    pageContainer,
+    // pageContainer,
     pageTags,
     mutateIsEnabledUnsavedWarning,
   ]);
@@ -184,11 +186,11 @@ const PageEditor = (props: Props): JSX.Element => {
       }
 
       const formData = new FormData();
-      const { pageId, path } = pageContainer.state;
+      // const { pageId, path } = pageContainer.state;
       formData.append('file', file);
-      if (path != null) {
-        formData.append('path', path);
-      }
+      // if (path != null) {
+      //   formData.append('path', path);
+      // }
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
@@ -208,24 +210,25 @@ const PageEditor = (props: Props): JSX.Element => {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+        // pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
         mutateGrant(res.page.grant);
       }
     }
     catch (e) {
       logger.error('failed to upload', e);
-      pageContainer.showErrorToastr(e);
+      // pageContainer.showErrorToastr(e);
     }
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [editorMode, mutateGrant, pageContainer]);
+  // }, [editorMode, mutateGrant, pageContainer]);
+  }, [editorMode, mutateGrant]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
-    if (previewRef.current == null) {
-      return;
-    }
+    // if (previewRef.current == null) {
+    //   return;
+    // }
 
     // prevent circular invocation
     if (isOriginOfScrollSyncPreview) {
@@ -235,7 +238,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreview(previewRef.current, line);
+    // scrollSyncHelper.scrollPreview(previewRef.current, line);
   }, []);
   const scrollPreviewByEditorLineWithThrottle = useMemo(() => throttle(20, scrollPreviewByEditorLine), [scrollPreviewByEditorLine]);
 
@@ -262,9 +265,9 @@ const PageEditor = (props: Props): JSX.Element => {
    * @param {number} line
    */
   const scrollPreviewByCursorMoving = useCallback((line: number) => {
-    if (previewRef.current == null) {
-      return;
-    }
+    // if (previewRef.current == null) {
+    //   return;
+    // }
 
     // prevent circular invocation
     if (isOriginOfScrollSyncPreview) {
@@ -274,7 +277,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+    // scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
   }, []);
   const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
 
@@ -314,21 +317,21 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   // register dummy instance to get markdown
-  useEffect(() => {
-    const pageEditorInstance = {
-      getMarkdown: () => {
-        return markdown;
-      },
-    };
-    appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
-  }, [appContainer, markdown]);
+  // useEffect(() => {
+  //   const pageEditorInstance = {
+  //     getMarkdown: () => {
+  //       return markdown;
+  //     },
+  //   };
+  //   appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
+  // }, [appContainer, markdown]);
 
   // initial caret line
-  useEffect(() => {
-    if (editorRef.current != null) {
-      editorRef.current.setCaretLine(0);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (editorRef.current != null) {
+  //     editorRef.current.setCaretLine(0);
+  //   }
+  // }, []);
 
   // set handler to set caret line
   useEffect(() => {
@@ -369,23 +372,23 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
 
   // Displays an alert if there is a difference with pageContainer's markdown
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (pageContainer.state.markdown! !== markdown) {
-      mutateIsEnabledUnsavedWarning(true);
-    }
-  }, [editorContainer, markdown, mutateIsEnabledUnsavedWarning, pageContainer.state.markdown]);
+  // useEffect(() => {
+  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //   if (pageContainer.state.markdown! !== markdown) {
+  //     mutateIsEnabledUnsavedWarning(true);
+  //   }
+  // }, [editorContainer, markdown, mutateIsEnabledUnsavedWarning, pageContainer.state.markdown]);
 
   // Detect indent size from contents (only when users are allowed to change it)
-  useEffect(() => {
-    const currentPageMarkdown = pageContainer.state.markdown;
-    if (!isIndentSizeForced && currentPageMarkdown != null) {
-      const detectedIndent = detectIndent(currentPageMarkdown);
-      if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-        mutateCurrentIndentSize(detectedIndent.amount);
-      }
-    }
-  }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
+  // useEffect(() => {
+  //   const currentPageMarkdown = pageContainer.state.markdown;
+  //   if (!isIndentSizeForced && currentPageMarkdown != null) {
+  //     const detectedIndent = detectIndent(currentPageMarkdown);
+  //     if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
+  //       mutateCurrentIndentSize(detectedIndent.amount);
+  //     }
+  //   }
+  // }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
 
 
   if (!isEditable) {
@@ -396,12 +399,12 @@ const PageEditor = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  const config = props.appContainer.getConfig();
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isMathJaxEnabled = !!config.env.MATHJAX;
+  // const config = props.appContainer.getConfig();
+  // const isUploadable = config.upload.image || config.upload.file;
+  // const isUploadableFile = config.upload.file;
+  // const isMathJaxEnabled = !!config.env.MATHJAX;
 
-  const noCdn = envUtils.toBoolean(config.env.NO_CDN);
+  // const noCdn = envUtils.toBoolean(config.env.NO_CDN);
 
   // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
   // It is impossible to avoid the error
@@ -416,10 +419,10 @@ const PageEditor = (props: Props): JSX.Element => {
         <EditorAny
           ref={editorRef}
           value={markdown}
-          noCdn={noCdn}
+          // noCdn={noCdn}
           isMobile={isMobile}
-          isUploadable={isUploadable}
-          isUploadableFile={isUploadableFile}
+          // isUploadable={isUploadable}
+          // isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
           indentSize={indentSize}
           onScroll={editorScrolledHandler}
@@ -439,12 +442,12 @@ const PageEditor = (props: Props): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
-      <ConflictDiffModal
+      {/* <ConflictDiffModal
         isOpen={pageContainer.state.isConflictDiffModalOpen}
         onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
         pageContainer={pageContainer}
         markdownOnEdit={markdown}
-      />
+      /> */}
     </div>
   );
 };
@@ -452,6 +455,7 @@ const PageEditor = (props: Props): JSX.Element => {
 /**
    * Wrapper component for using unstated
    */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+// const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
 
-export default PageEditorWrapper;
+// export default PageEditorWrapper;
+export default PageEditor;
