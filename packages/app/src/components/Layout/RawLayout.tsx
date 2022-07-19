@@ -1,6 +1,11 @@
 import React, { ReactNode } from 'react';
 
+import { useTheme } from 'next-themes';
 import Head from 'next/head';
+
+import { useGrowiTheme } from '~/stores/context';
+
+import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
 type Props = {
   title: string,
@@ -14,6 +19,10 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   if (className != null) {
     classNames.push(className);
   }
+  const { data: growiTheme } = useGrowiTheme();
+
+  // get color scheme from next-themes
+  const { resolvedTheme: colorScheme } = useTheme();
 
   return (
     <>
@@ -22,9 +31,11 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <div className={classNames.join(' ')}>
-        {children}
-      </div>
+      <ThemeProvider theme={growiTheme}>
+        <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
+          {children}
+        </div>
+      </ThemeProvider>
     </>
   );
 };

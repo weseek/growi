@@ -50,7 +50,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
@@ -141,11 +141,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   // commons
-  useAppTitle(props.appTitle);
-  useSiteUrl(props.siteUrl);
   useXss(new Xss());
   // useEditorConfig(props.editorConfig);
-  useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
