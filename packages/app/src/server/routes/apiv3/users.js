@@ -648,7 +648,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired,  addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
