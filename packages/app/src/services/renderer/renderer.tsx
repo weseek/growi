@@ -1,5 +1,6 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import slug from 'rehype-slug';
+import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import footnotes from 'remark-footnotes';
@@ -264,6 +265,20 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
   return options;
 };
 
+// customize wrapper
+export const customizeViewOptions = (config: RendererConfig, storeTocNode: (noder: HtmlElementNode) => void): RendererOptions => {
+  const options = generateViewOptions(config);
+  const { rehypePlugins } = options;
+  // store toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: storeTocNode,
+    }]);
+  }
+  return options;
+};
+
 export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
 
   const options = generateCommonOptions(config);
@@ -278,6 +293,20 @@ export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: Render
   //   behavior: 'append',
   // }]);
 
+  return options;
+};
+
+// customize wrapper
+export const customizeTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
+  const options = generateTocOptions(config);
+  const { rehypePlugins } = options;
+  // set toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: () => tocNode,
+    }]);
+  }
   return options;
 };
 
