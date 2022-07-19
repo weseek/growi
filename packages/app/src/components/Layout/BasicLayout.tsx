@@ -21,6 +21,11 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
   const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
   const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+  // Page modals
+  const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
+  const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
+  const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
+  const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 
   return (
     <RawLayout title={title} className={className}>
@@ -38,7 +43,10 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
       <GrowiNavbarBottom />
 
-      {/* <PageCreateModal /> */}
+      <PageCreateModal />
+      <PageDuplicateModal />
+      <PageDeleteModal />
+      <PageRenameModal />
       {/* <HotkeysManager /> */}
 
       <ShortcutsModal />
