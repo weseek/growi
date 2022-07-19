@@ -4,6 +4,7 @@ import React from 'react';
 import { DevidedPagePath } from '@growi/core';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
@@ -20,7 +21,7 @@ const BookmarksItem = ({ data }) => {
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
   return (
-    <li className="list-group-item py-3 px-0">
+    <li className="list-group-item py-3 px-0" id={`bookmark-item-${data._id}`}>
       <div className="d-flex w-100">
         <h5 className="my-0">
           <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
@@ -49,17 +50,28 @@ const Bookmarks = () : JSX.Element => {
       </div>
       <div className="grw-bookmarks-list p-3">
         {isEmpty ? t('No bookmarks yet') : (
-          <ul className="list-group list-group-flush">
-            <InfiniteScroll
-              swrInifiniteResponse={swr}
-              isReachingEnd={isReachingEnd}
-            >
-              {paginationResult => paginationResult?.docs.map(data => (
-                <BookmarksItem key={data._id} data={data} />
-              ))
-              }
-            </InfiniteScroll>
-          </ul>
+          <div>
+            <ul className="list-group list-group-flush">
+              <InfiniteScroll
+                swrInifiniteResponse={swr}
+                isReachingEnd={isReachingEnd}
+              >
+                {paginationResult => paginationResult?.docs.map(data => (
+                  <><BookmarksItem key={data._id} data={data} />
+                    <UncontrolledTooltip
+                      modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+                      autohide={false}
+                      placement="left"
+                      target={`bookmark-item-${data._id}`}
+                    >
+                      {data.page.path}
+                    </UncontrolledTooltip>
+                  </>
+                ))
+                }
+              </InfiniteScroll>
+            </ul>
+          </div>
         )}
       </div>
     </>
