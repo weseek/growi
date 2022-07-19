@@ -22,7 +22,7 @@ import {
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig, useNoCdn, useUploadableFile,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -133,6 +133,8 @@ const ContextExtractorOnce: FC = () => {
     plantumlUri: configByContextHydrate.env.PLANTUML_URI,
     blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
   });
+  useNoCdn(configByContextHydrate.env.NO_CDN);
+  useUploadableFile(configByContextHydrate.upload.file);
 
   // Page
   useDeleteUsername(deleteUsername);

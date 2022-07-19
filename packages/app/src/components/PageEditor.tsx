@@ -14,7 +14,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useNoCdn, useUploadableFile,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -99,6 +99,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: noCdn } = useNoCdn();
+  const { data: uploadableFile } = useUploadableFile();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -401,10 +403,9 @@ const PageEditor = (props: Props): JSX.Element => {
 
   // const config = props.appContainer.getConfig();
   // const isUploadable = config.upload.image || config.upload.file;
-  // const isUploadableFile = config.upload.file;
-  // const isMathJaxEnabled = !!config.env.MATHJAX;
+  const isNoCdn = envUtils.toBoolean(noCdn || '');
+  const isUploadableFile = uploadableFile;
 
-  // const noCdn = envUtils.toBoolean(config.env.NO_CDN);
 
   // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
   // It is impossible to avoid the error
@@ -419,10 +420,10 @@ const PageEditor = (props: Props): JSX.Element => {
         <EditorAny
           ref={editorRef}
           value={markdown}
-          // noCdn={noCdn}
+          noCdn={isNoCdn}
           isMobile={isMobile}
           // isUploadable={isUploadable}
-          // isUploadableFile={isUploadableFile}
+          isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
           indentSize={indentSize}
           onScroll={editorScrolledHandler}
@@ -437,7 +438,6 @@ const PageEditor = (props: Props): JSX.Element => {
           markdown={markdown}
           rendererOptions={rendererOptions}
           ref={previewRef}
-          // isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={false}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
