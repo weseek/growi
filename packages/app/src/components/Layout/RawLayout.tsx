@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 
+import { useTheme } from 'next-themes';
 import Head from 'next/head';
 
-import { ThemeProvider } from '~/pages/ThemeProvider';
+import { ThemeProvider } from '../Theme/ThemeProvider';
 
 type Props = {
   title: string,
@@ -17,6 +18,9 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
     classNames.push(className);
   }
 
+  // get color scheme from next-themes
+  const { resolvedTheme: colorScheme } = useTheme();
+
   return (
     <>
       <Head>
@@ -25,7 +29,7 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <ThemeProvider theme="">
-        <div className={classNames.join(' ')} data-light={true}>
+        <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
           {children}
         </div>
       </ThemeProvider>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { appWithTranslation } from 'next-i18next';
+import { ThemeProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -34,9 +35,11 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useGrowiVersion(commonPageProps.growiVersion);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <Component {...pageProps} />
-    </DndProvider>
+    <ThemeProvider>
+      <DndProvider backend={HTML5Backend}>
+        <Component {...pageProps} />
+      </DndProvider>
+    </ThemeProvider>
   );
 }
 

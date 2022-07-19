@@ -1,6 +1,6 @@
-@use '../styles/variables' as *;
-@use '../styles/bootstrap/variables' as *;
-@use '../styles/theme/mixins/page-editor-mode-manager';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -16,7 +16,7 @@
 
 //== Light Mode
 //
-.theme[data-light='true'] :global {
+.theme[data-color-scheme='light'] :global {
   $primary: #122c55;
   $accent: #209fd8;
 
@@ -103,8 +103,8 @@
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import '../styles/theme/apply-colors';
-  @import '../styles/theme/apply-colors-light';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-light';
 
   // Button
   .btn-group.grw-page-editor-mode-manager {
@@ -116,7 +116,7 @@
 
 //== Dark Mode
 //
-.theme[data-dark='true'] :global {
+.theme[data-color-scheme='dark'] :global {
   $primary: #115cd3;
   $accent: #db00c2;
 
@@ -200,8 +200,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../styles/theme/apply-colors';
-  @import '../styles/theme/apply-colors-dark';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
