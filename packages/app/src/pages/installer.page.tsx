@@ -1,27 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import loggerFactory from '~/utils/logger';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
 import InstallerForm from '../components/InstallerForm';
 import {
   useCurrentPagePath, useCsrfToken,
   useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
-import { CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle } from './commons';
+import {
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps,
+} from './commons';
 
 
-const logger = loggerFactory('growi:pages:all');
-const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
+const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);

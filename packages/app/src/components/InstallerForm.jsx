@@ -1,8 +1,8 @@
 import React from 'react';
 
 import i18next from 'i18next';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 // import { localeMetadatas } from '~/client/util/i18n';
 import { useCsrfToken } from '~/stores/context';
@@ -17,7 +17,7 @@ class InstallerForm extends React.Component {
       isSubmittingDisabled: false,
       selectedLang: {},
     };
-    // this.checkUserName = this.checkUserName.bind(this);
+    this.checkUserName = this.checkUserName.bind(this);
 
     this.submitHandler = this.submitHandler.bind(this);
   }
@@ -30,17 +30,17 @@ class InstallerForm extends React.Component {
   //   this.setState({ selectedLang: meta });
   // }
 
-  // checkUserName(event) {
-  //   const axios = require('axios').create({
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Requested-With': 'XMLHttpRequest',
-  //     },
-  //     responseType: 'json',
-  //   });
-  //   axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
-  //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  // }
+  checkUserName(event) {
+    const axios = require('axios').create({
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      responseType: 'json',
+    });
+    axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
+      .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
+  }
 
   changeLanguage(meta) {
     i18next.changeLanguage(meta.id);
