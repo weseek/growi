@@ -22,7 +22,7 @@ import {
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig, useNoCdn, useUploadableFile,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig, useNoCdn, useUploadableImage, useUploadableFile,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -134,6 +134,7 @@ const ContextExtractorOnce: FC = () => {
     blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
   });
   useNoCdn(configByContextHydrate.env.NO_CDN);
+  useUploadableImage(configByContextHydrate.upload.image);
   useUploadableFile(configByContextHydrate.upload.file);
 
   // Page

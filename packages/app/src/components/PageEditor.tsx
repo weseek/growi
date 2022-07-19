@@ -107,7 +107,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   // const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
-  const [markdown, setMarkdown] = useState<string>('');
+  const [markdown, setMarkdown] = useState<string>('dummy');
 
 
   const editorRef = useRef<EditorRef>(null);
@@ -191,9 +191,9 @@ const PageEditor = (props: Props): JSX.Element => {
       const formData = new FormData();
       // const { pageId, path } = pageContainer.state;
       formData.append('file', file);
-      // if (path != null) {
-      //   formData.append('path', path);
-      // }
+      if (currentPagePath != null) {
+        formData.append('path', currentPagePath);
+      }
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
@@ -241,7 +241,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
     // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    // scrollSyncHelper.scrollPreview(previewRef.current, line);
+    scrollSyncHelper.scrollPreview(previewRef.current, line);
   }, []);
   const scrollPreviewByEditorLineWithThrottle = useMemo(() => throttle(20, scrollPreviewByEditorLine), [scrollPreviewByEditorLine]);
 
@@ -280,7 +280,9 @@ const PageEditor = (props: Props): JSX.Element => {
 
     // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    // scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+    if (previewRef.current != null) {
+      scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+    }
   }, []);
   const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
 
@@ -330,11 +332,11 @@ const PageEditor = (props: Props): JSX.Element => {
   // }, [appContainer, markdown]);
 
   // initial caret line
-  // useEffect(() => {
-  //   if (editorRef.current != null) {
-  //     editorRef.current.setCaretLine(0);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (editorRef.current != null) {
+      editorRef.current.setCaretLine(0);
+    }
+  }, []);
 
   // set handler to set caret line
   useEffect(() => {
