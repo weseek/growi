@@ -10,7 +10,7 @@ import streamToPromise from 'stream-to-promise';
 
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
+  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
@@ -216,9 +216,7 @@ class PageService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async findPageAndMetaDataByViewer(
-      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
-  ): Promise<IPageWithMeta<IPageInfoAll>|null> {
+  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false): Promise<IPageWithMeta|null> {
 
     const Page = this.crowi.model('Page');
 

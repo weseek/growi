@@ -5,13 +5,15 @@ import assert from 'assert';
 import { useTranslation } from 'next-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
-import { IPageWithSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 import {
   useCurrentPagePath, useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
 } from '~/stores/context';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
+
 
 import styles from './GlobalSearch.module.scss';
 
@@ -38,7 +40,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const [isFocused, setFocused] = useState<boolean>(false);
 
 
-  const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
+  const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
     assert(data.length > 0);
 
     const page = data[0].data; // should be single page selected

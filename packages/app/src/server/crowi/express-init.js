@@ -59,12 +59,6 @@ module.exports = function(crowi, app) {
 
   app.use(compression());
 
-  const { configManager } = crowi;
-  const trustedProxies = configManager.getConfig('crowi', 'security:trustedProxies');
-  if (trustedProxies != null) {
-    app.set('trust proxy', trustedProxies);
-  }
-
   app.use(helmet({
     contentSecurityPolicy: false,
     expectCt: false,
@@ -128,8 +122,7 @@ module.exports = function(crowi, app) {
   });
 
   // csurf should be initialized after express-session
-  // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
-  app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT'], cookie: false }));
+  app.use(csrf({ cookie: false }));
 
   // passport
   debug('initialize Passport');

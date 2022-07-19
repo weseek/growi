@@ -358,12 +358,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  TRUSTED_PROXIES: {
-    ns:      'crowi',
-    key:     'security:trustedProxies',
-    type:    ValueType.STRING,
-    default: null,
-  },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',

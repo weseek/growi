@@ -1,6 +1,4 @@
-import { useTranslation } from 'next-i18next';
-
-import { isIPageInfoForEntity } from '~/interfaces/page';
+import { useTranslation } from 'react-i18next';
 
 import { useIsEnabledStaleNotification } from '../../stores/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page';
@@ -13,7 +11,7 @@ export const PageStaleAlert = ():JSX.Element => {
   const { data: pageData } = useSWRxCurrentPage();
   const { data: pageInfo } = useSWRxPageInfo(isEnabledStaleNotification ? pageData?._id : null);
 
-  const contentAge = isIPageInfoForEntity(pageInfo) ? pageInfo.contentAge : null;
+  const contentAge = pageInfo?.contentAge;
 
   if (!isEnabledStaleNotification) {
     return <></>;
@@ -38,7 +36,7 @@ export const PageStaleAlert = ():JSX.Element => {
   return (
     <div className={`alert ${alertClass}`}>
       <i className="icon-fw icon-hourglass"></i>
-      <strong>{ t('page_page.notice.stale', { count: contentAge }) }</strong>
+      <strong>{ t('page_page.notice.stale', { count: pageInfo.contentAge }) }</strong>
     </div>
   );
 };

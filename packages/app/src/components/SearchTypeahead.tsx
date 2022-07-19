@@ -8,7 +8,8 @@ import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { IPageWithSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
 
 
@@ -48,7 +49,7 @@ type TypeaheadInstance = {
   clear: () => void,
   focus: () => void,
   toggleMenu: () => void,
-  state: { selected: IPageWithSearchMeta[] }
+  state: { selected: IPageWithMeta<IPageSearchMeta>[] }
 }
 
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
@@ -131,7 +132,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const DELAY_FOR_SUBMISSION = 100;
   const timeoutIdRef = useRef<NodeJS.Timeout>();
 
-  const changeHandler = useCallback((selectedItems: IPageWithSearchMeta[]) => {
+  const changeHandler = useCallback((selectedItems: IPageWithMeta<IPageSearchMeta>[]) => {
     // cancel schedule to submit
     if (timeoutIdRef.current != null) {
       clearTimeout(timeoutIdRef.current);
@@ -164,11 +165,11 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     }
   }, [onSearchError, searchError]);
 
-  const labelKey = useCallback((option?: IPageWithSearchMeta) => {
+  const labelKey = useCallback((option?: IPageWithMeta<IPageSearchMeta>) => {
     return option?.data.path ?? '';
   }, []);
 
-  const renderMenu = useCallback((options: IPageWithSearchMeta[], menuProps) => {
+  const renderMenu = useCallback((options: IPageWithMeta<IPageSearchMeta>[], menuProps) => {
     if (!isForcused) {
       return <></>;
     }

@@ -64,15 +64,15 @@ export type IPageInfo = {
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
+  contentAge?: number,
 }
 
 export type IPageInfoForEntity = IPageInfo & {
-  bookmarkCount: number,
-  sumOfLikers: number,
-  likerIds: string[],
-  sumOfSeenUsers: number,
-  seenUserIds: string[],
-  contentAge: number,
+  bookmarkCount?: number,
+  sumOfLikers?: number,
+  likerIds?: string[],
+  sumOfSeenUsers?: number,
+  seenUserIds?: string[],
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {

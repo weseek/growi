@@ -1,10 +1,11 @@
-@use './variables' as var;
-@use './bootstrap/init' as bs;
+div.body {
+  padding: 10px;
+}
 
 // hljs
-// .wiki {
-//   @import 'hljs';
-// }
+.wiki {
+  @import 'hljs';
+}
 
 .wiki {
   @mixin add-left-border($width) {
@@ -16,12 +17,9 @@
     }
   }
 
-  font-size: 15px;
+  @extend .text-break;
 
-  // @extend .text-break;
-  // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
-  word-break: break-word !important; // Deprecated, but avoids issues with flex containers
-  word-wrap: break-word !important; // Used instead of `overflow-wrap` for IE & Edge Legacy
+  font-size: 15px;
 
   h1,
   h2,
@@ -84,13 +82,20 @@
     padding: 0 20px;
     margin: 0 0 30px 0;
     font-size: 0.9em;
-    color: lighten(bs.$gray-800, 35%);
+    color: lighten($gray-800, 35%);
     border-left: 0.3rem solid #ddd;
   }
 
   img {
     max-width: 100%;
     margin: 5px 0;
+  }
+
+  img.emojione {
+    margin-top: -0.3em !important;
+    margin-bottom: 0 !important;
+    border: none;
+    box-shadow: none;
   }
 
   ul,
@@ -103,7 +108,7 @@
       line-height: 1.8em;
 
       pre {
-        line-height: bs.$line-height-base;
+        line-height: $line-height-base;
       }
     }
 
@@ -140,6 +145,33 @@
           cursor: default;
         }
       }
+    }
+  }
+
+  .page-template-builder {
+    position: relative;
+
+    .template-create-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+  }
+
+  .revision-head {
+    a {
+      text-decoration: none;
+    }
+
+    .revision-head-link,
+    .revision-head-edit-button {
+      margin-left: 0.5em;
+      font-size: 0.6em;
+      opacity: 0;
+    }
+    &:hover .revision-head-link,
+    &:hover .revision-head-edit-button {
+      opacity: 1 !important;
     }
   }
 
@@ -181,15 +213,19 @@
       font-size: 0.9em * $ratio;
     }
 
+    img.emojione {
+      margin-top: -0.3em * $ratio !important;
+    }
+
     ul,
     ol {
       padding-left: 15px;
       margin: 10px 0;
 
       li {
-        line-height: bs.$line-height-base;
+        line-height: $line-height-base;
         pre {
-          line-height: bs.$line-height-base;
+          line-height: $line-height-base;
         }
       }
     }
@@ -226,7 +262,7 @@
   }
 }
 
-@include bs.media-breakpoint-down(sm) {
+@include media-breakpoint-down(sm) {
   .main .wiki {
     img {
       max-width: 100%;

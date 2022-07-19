@@ -7,7 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
-import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
@@ -30,7 +31,7 @@ export interface IReturnSelectedPageIds {
 type Props = {
   appContainer: AppContainer,
 
-  pages?: IPageWithSearchMeta[],
+  pages?: IPageWithMeta<IPageSearchMeta>[],
   searchingKeyword?: string,
 
   forceHideMenuItems?: ForceHideMenuItems,
@@ -60,7 +61,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
-  const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
+  const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
 
   // publish selectAll()
   useImperativeHandle(ref, () => ({
