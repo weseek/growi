@@ -229,9 +229,9 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
-    // if (previewRef.current == null) {
-    //   return;
-    // }
+    if (previewRef.current == null) {
+      return;
+    }
 
     // prevent circular invocation
     if (isOriginOfScrollSyncPreview) {
