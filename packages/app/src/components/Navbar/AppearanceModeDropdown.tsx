@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useRef,
+  FC, useCallback, useRef,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -7,15 +7,8 @@ import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
-import {
-  isUserPreferenceExists,
-  isDarkMode as isDarkModeByUtil,
-  applyColorScheme,
-  removeUserPreference,
-  updateUserPreference,
-  updateUserPreferenceWithOsSettings,
-} from '~/client/util/color-scheme';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
+import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
 import MoonIcon from '../Icons/MoonIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
@@ -31,9 +24,9 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
   const { isAuthenticated } = props;
 
-  const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
-  const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
-
+  const {
+    setTheme, resolvedTheme, useOsSettings, isDarkMode,
+  } = useNextThemes();
   const { data: isPreferDrawerMode, update: updatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
@@ -52,27 +45,18 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     }
   }, [updatePreferDrawerMode, mutatePreferDrawerModeOnEdit, scheduleToPut]);
 
-  const followOsCheckboxModifiedHandler = useCallback((useOsSettings: boolean) => {
-    if (useOsSettings) {
-      removeUserPreference();
+  const followOsCheckboxModifiedHandler = useCallback((isChecked: boolean) => {
+    if (isChecked) {
+      setTheme(Themes.system);
     }
     else {
-      updateUserPreferenceWithOsSettings();
+      setTheme(resolvedTheme ?? Themes.light);
     }
-    applyColorScheme();
-
-    // update states
-    setOsSettings(useOsSettings);
-    setIsDarkMode(isDarkModeByUtil());
-  }, []);
+  }, [resolvedTheme, setTheme]);
 
   const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
-    updateUserPreference(isDarkMode);
-    applyColorScheme();
-
-    // update state
-    setIsDarkMode(isDarkModeByUtil());
-  }, []);
+    setTheme(isDarkMode ? 'dark' : 'light');
+  }, [setTheme]);
 
   /* eslint-disable react/prop-types */
   const IconWithTooltip = ({
