@@ -3,24 +3,7 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-export const GrowiThemes = {
-  DEFAULT: 'default',
-  ANTARCTIC: 'antarctic',
-  BLACKBOARD: 'blackboard',
-  CHRISTMAS: 'christmas',
-  FIRE_RED: 'fire-red',
-  FUTURE: 'future',
-  HALLOWEEN: 'halloween',
-  HUFFLEPUFF: 'hufflepuff',
-  ISLAND: 'island',
-  JADE_GREEN: 'jade-green',
-  KIBELA: 'kibela',
-  MONO_BLUE: 'mono-blue',
-  NATURE: 'nature',
-  SPRING: 'spring',
-  WOOD: 'wood',
-} as const;
-export type GrowiThemes = typeof GrowiThemes[keyof typeof GrowiThemes];
+import { GrowiThemes } from '~/interfaces/theme';
 
 
 const ThemeAntarctic = dynamic(() => import('../ThemeAntarctic'));
@@ -31,7 +14,7 @@ const ThemeDefault = dynamic(() => import('../ThemeDefault'));
 
 type Props = {
   children: JSX.Element,
-  theme: string,
+  theme?: GrowiThemes,
 }
 
 export const ThemeProvider = ({ theme, children }: Props): JSX.Element => {
