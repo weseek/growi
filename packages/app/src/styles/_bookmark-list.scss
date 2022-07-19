@@ -1,0 +1,17 @@
+.grw-bookmarks-list{
+  .list-group-item {
+    .grw-visible-on-hover {
+      display: none;
+    }
+
+    &:hover {
+      .grw-visible-on-hover {
+        display: block;
+      }
+
+      .grw-count-badge {
+        display: none;
+      }
+    }
+  }
+}
