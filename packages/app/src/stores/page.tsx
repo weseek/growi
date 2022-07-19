@@ -1,4 +1,4 @@
-import { IPagePopulatedToShowRevision, Nullable } from '@growi/core';
+import { IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -65,7 +65,7 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
-    initialData?: IPageInfoAll,
+    initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId

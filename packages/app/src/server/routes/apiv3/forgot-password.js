@@ -1,5 +1,7 @@
 import { format, subSeconds } from 'date-fns';
 
+import { SupportedAction } from '~/interfaces/activity';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
@@ -23,6 +25,10 @@ module.exports = (crowi) => {
   const { appService, mailService, configManager } = crowi;
   const User = crowi.model('User');
   const path = require('path');
+
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
 
@@ -55,7 +61,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
     const { email } = req.body;
     const i18n = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
@@ -76,6 +82,9 @@ module.exports = (crowi) => {
       const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
       const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
       await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_USER_FOGOT_PASSWORD });
+
       return res.apiv3();
     }
     catch (err) {
@@ -86,7 +95,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -105,6 +114,9 @@ module.exports = (crowi) => {
       const serializedUserData = serializeUserSecurely(userData);
       passwordResetOrder.revokeOneTimeToken();
       await sendPasswordResetEmail('passwordResetSuccessful', i18n, email);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_USER_RESET_PASSWORD });
+
       return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {

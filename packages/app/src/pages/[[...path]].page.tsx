@@ -34,12 +34,11 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-import { BasicLayout } from '../components/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
@@ -255,10 +254,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-
-          <div className="row">
-            <div className="col">
-              <div id="content-main" className="content-main grw-container-convertible">
+          <div id="content-main" className="content-main grw-container-convertible">
+            <div className="row">
+              <div className="col">
                 { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
                 { !props.isIdenticalPathPage && (
@@ -283,7 +281,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div> */}
           </div>
-
         </div>
         <footer>
           {/* <PageComments /> */}
