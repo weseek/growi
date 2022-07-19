@@ -1,5 +1,4 @@
-
-import { ThemeInjector } from './ThemeInjector';
+import { ThemeInjector } from './utils/ThemeInjector';
 
 import styles from './ThemeDefault.module.scss';
 

@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { useTheme } from 'next-themes';
 import Head from 'next/head';
 
-import { ThemeProvider } from '../Theme/ThemeProvider';
+import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
 type Props = {
   title: string,
@@ -28,7 +28,7 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <ThemeProvider theme="">
+      <ThemeProvider theme="default">
         <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
           {children}
         </div>
