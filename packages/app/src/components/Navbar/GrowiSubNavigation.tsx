@@ -8,8 +8,8 @@ import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-import TagLabels from '../Page/TagLabels';
-// import PagePathNav from '../PagePathNav';
+// import TagLabels from '../Page/TagLabels';
+import PagePathNav from '../PagePathNav';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -37,7 +37,7 @@ type Props = {
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
-  const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
+  // const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
 
   const { data: editorMode } = useEditorMode();
 
@@ -61,6 +61,17 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
   if (path == null) {
     return <></>;
   }
+
+  const TagLabelsSkelton = () => {
+    const style = {
+      height: 21.99,
+      width: 124.5,
+    };
+
+    return <div className="skelton" style={style}></div>;
+  };
+
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <TagLabelsSkelton/> });
 
   return (
     <div className={

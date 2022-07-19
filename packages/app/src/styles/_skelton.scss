@@ -1,0 +1,5 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.skelton {
+  background-color: bs.$gray-200;
+}
