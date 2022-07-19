@@ -2,6 +2,8 @@ import React, {
   useCallback, useEffect, useMemo, useState, SyntheticEvent, RefObject,
 } from 'react';
 
+import ReactMarkdown from 'react-markdown';
+
 
 // import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
@@ -12,7 +14,7 @@ import RevisionBody from '../Page/RevisionBody';
 // import { withUnstatedContainers } from '../UnstatedUtils';
 
 
-declare const interceptorManager: InterceptorManager;
+// declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
@@ -42,7 +44,8 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
       pagePath,
       renderDrawioInRealtime: editorSettings?.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
-      parsedHTML: null,
+      // parsedHTML: null,
+      parsedHTML: 'dummy text',
     };
   }, [markdown, pagePath, editorSettings?.renderDrawioInRealtime]);
 
@@ -62,7 +65,7 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
     //   await interceptorManager.process('preRenderPreviewHtml', context);
     // }
 
-    // setHtml(context.parsedHTML ?? '');
+    setHtml(context.parsedHTML ?? '');
   }, [context, rendererOptions]);
 
   useEffect(() => {
@@ -96,11 +99,12 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
         }
       }}
     >
-      <RevisionBody
+      <ReactMarkdown {...rendererOptions} >{html}</ReactMarkdown>
+      {/* <RevisionBody
         {...props}
         html={html}
         renderMathJaxInRealtime={editorSettings?.renderMathJaxInRealtime}
-      />
+      /> */}
     </div>
   );
 
