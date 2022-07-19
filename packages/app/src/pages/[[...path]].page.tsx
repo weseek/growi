@@ -77,6 +77,12 @@ const IdenticalPathPage = (): JSX.Element => {
   return <IdenticalPathPage />;
 };
 
+const PutbackPageModal = (): JSX.Element => {
+  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
+  return <PutbackPageModal />;
+};
+
+
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
 
 type Props = CommonProps & {
@@ -132,7 +138,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
 
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -198,6 +203,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageToShowRevisionWithMeta;
   }
+
+  let shouldRenderPutbackPageModal = false;
+  if (pageWithMeta != null) {
+    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
+  }
+
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   // useSWRxPage(pageWithMeta?.data._id);
@@ -289,8 +300,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
-        {_isTrashPage(props.currentPathname) && <PutbackPageModal />}
       </BasicLayout>
     </>
   );
