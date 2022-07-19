@@ -2,7 +2,12 @@
 
 import React from 'react';
 
-import { Subscribe } from 'unstated';
+import { Subscribe, Provider } from 'unstated';
+
+import AppContainer from '~/client/services/AppContainer';
+
+const appContainer = new AppContainer();
+appContainer.initApp();
 
 /**
  * generate K/V object by specified instances
@@ -46,12 +51,14 @@ function generateAutoNamedProps(instances) {
 export function withUnstatedContainers<T, P>(Component, containerClasses): React.ForwardRefExoticComponent<React.PropsWithoutRef<P> & React.RefAttributes<T>> {
   const unstatedContainer = React.forwardRef<T, P>((props, ref) => (
     // wrap with <Subscribe></Subscribe>
-    <Subscribe to={containerClasses}>
-      { (...containers) => {
-        const propsForContainers = generateAutoNamedProps(containers);
-        return <Component {...props} {...propsForContainers} ref={ref} />;
-      }}
-    </Subscribe>
+    <Provider inject={[appContainer]}>
+      <Subscribe to={containerClasses}>
+        { (...containers) => {
+          const propsForContainers = generateAutoNamedProps(containers);
+          return <Component {...props} {...propsForContainers} ref={ref} />;
+        }}
+      </Subscribe>
+    </Provider>
   ));
   unstatedContainer.displayName = 'unstatedContainer';
   return unstatedContainer;
