@@ -6,7 +6,7 @@ import {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import { RawLayout } from '~/components/Layout/RawLayout';
 
 import InstallerForm from '../components/InstallerForm';
 import {
@@ -14,8 +14,9 @@ import {
   useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
+
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './commons';
 
 
@@ -29,9 +30,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 type Props = CommonProps & {
 
   pageWithMetaStr: string,
-
-  isForbidden: boolean,
-  isNotFound: boolean,
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
@@ -45,15 +43,32 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPagePath(props.currentPathname);
 
+  const classNames: string[] = [];
+
   return (
     <>
-      <InstallerForm />
+      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+        <div id="page-wrapper">
+          <div className="main container-fluid">
+
+            <div className="row">
+              <div className="col-md-12">
+                <div className="login-header mx-auto">
+                  <h1 className="my-3">GROWI</h1>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <InstallerForm />
+              </div>
+            </div>
+          </div>
+        </div>
+      </RawLayout>
     </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
   const result = await getServerSideCommonProps(context);
 
   // check for presence
