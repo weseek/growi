@@ -18,7 +18,6 @@ import PageListIcon from '../Icons/PageListIcon';
 import { NotCreatablePage } from '../NotCreatablePage';
 import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
-// import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
