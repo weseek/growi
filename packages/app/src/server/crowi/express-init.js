@@ -57,6 +57,12 @@ module.exports = function(crowi, app) {
 
   app.use(compression());
 
+  const { configManager } = crowi;
+  const trustedProxies = configManager.getConfig('crowi', 'security:trustedProxies');
+  if (trustedProxies != null) {
+    app.set('trust proxy', trustedProxies);
+  }
+
   app.use(helmet({
     contentSecurityPolicy: false,
     expectCt: false,

@@ -2,7 +2,7 @@ import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
+import { isIPageInfoForEntity, IPageInfoForListing, IPageInfo } from '~/interfaces/page';
 import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
@@ -127,7 +127,7 @@ export default (crowi: Crowi): Router => {
         bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
       }
 
-      const idToPageInfoMap: Record<string, IPageInfoAll> = {};
+      const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
       const isGuestUser = req.user == null;
       for (const page of pages) {
