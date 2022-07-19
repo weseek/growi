@@ -3,10 +3,10 @@ import React from 'react';
 
 type Props = {
   children: JSX.Element,
-  themeStyles: { readonly [key: string]: string },
+  className: string,
 }
 
-export const ThemeInjector = ({ themeStyles, children }: Props): JSX.Element => {
-  const className = `${children.props.className ?? ''} ${themeStyles['theme']}`;
+export const ThemeInjector = ({ children, className: themeClassName }: Props): JSX.Element => {
+  const className = `${children.props.className ?? ''} ${themeClassName}`;
   return React.cloneElement(children, { className });
-}
+};

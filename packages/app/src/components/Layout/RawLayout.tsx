@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 
 import Head from 'next/head';
 
+import { ThemeProvider } from '~/pages/ThemeProvider';
+
 type Props = {
   title: string,
   className?: string,
@@ -22,9 +24,11 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <div className={classNames.join(' ')}>
-        {children}
-      </div>
+      <ThemeProvider theme="">
+        <div className={classNames.join(' ')} data-light={true}>
+          {children}
+        </div>
+      </ThemeProvider>
     </>
   );
 };

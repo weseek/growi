@@ -1,8 +1,9 @@
 
-import styles from './theme-default.module.scss';
 import { ThemeInjector } from './ThemeInjector';
 
+import styles from './ThemeDefault.module.scss';
+
 const ThemeDefault = ({ children }: { children: JSX.Element }): JSX.Element => {
-  return <ThemeInjector themeStyles={styles}>{children}</ThemeInjector>;
-}
+  return <ThemeInjector className={styles.theme}>{children}</ThemeInjector>;
+};
 export default ThemeDefault;

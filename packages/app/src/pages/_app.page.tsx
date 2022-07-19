@@ -14,7 +14,6 @@ import { useI18nextHMR } from '../services/i18next-hmr';
 import { useGrowiVersion } from '../stores/context';
 
 import { CommonProps } from './commons';
-import { ThemeProvider } from './ThemeProvider';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -36,11 +35,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <ThemeProvider theme="">
-        <div data-light="true">
-          <Component {...pageProps} />
-        </div>
-      </ThemeProvider>
+      <Component {...pageProps} />
     </DndProvider>
   );
 }
