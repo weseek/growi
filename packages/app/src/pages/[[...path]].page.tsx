@@ -82,7 +82,6 @@ const PutbackPageModal = (): JSX.Element => {
   return <PutbackPageModal />;
 };
 
-
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
 
 type Props = CommonProps & {
