@@ -16,14 +16,14 @@ import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
-import DrawioModal from './DrawioModal';
+// import DrawioModal from './DrawioModal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
-import GridEditModal from './GridEditModal';
+// import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
-import HandsontableModal from './HandsontableModal';
-import LinkEditModal from './LinkEditModal';
+// import HandsontableModal from './HandsontableModal';
+// import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import mlu from './MarkdownLinkUtil';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
@@ -790,19 +790,19 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+    // this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+    // this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
-    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   showDrawioHandler() {
-    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
 
@@ -1052,23 +1052,23 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
-        <GridEditModal
+        {/* <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
-        />
-        <LinkEditModal
+        /> */}
+        {/* <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
-        />
-        <HandsontableModal
+        /> */}
+        {/* <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        />
-        <DrawioModal
+        /> */}
+        {/* <DrawioModal
           ref={this.drawioModal}
           onSave={this.onSaveForDrawio}
-        />
+        /> */}
 
       </React.Fragment>
     );
