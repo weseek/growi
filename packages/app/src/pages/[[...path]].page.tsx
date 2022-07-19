@@ -132,6 +132,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
 
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -289,6 +290,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
         <UnsavedAlertDialog />
 
+        {_isTrashPage(props.currentPathname) && <PutbackPageModal />}
       </BasicLayout>
     </>
   );
