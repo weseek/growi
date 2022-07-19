@@ -4,7 +4,7 @@ import useSWRImmutable from 'swr/immutable';
 import {
   ReactMarkdownOptionsGenerator, RendererOptions,
   generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
-  customizeViewOptions, customizeTocOptions,
+  generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
 
@@ -37,7 +37,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const { mutate: storeTocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => customizeViewOptions(config, storeTocNode));
+  return _useOptionsBase(key, config => generateViewOptions(config, storeTocNode));
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
@@ -45,7 +45,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const { data: tocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => customizeTocOptions(config, tocNode));
+  return _useOptionsBase(key, config => generateTocOptions(config, tocNode));
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {

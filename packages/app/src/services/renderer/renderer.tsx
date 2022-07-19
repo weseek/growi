@@ -208,7 +208,7 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions
+  (config: RendererConfig): RendererOptions,
 }
 
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
@@ -221,11 +221,14 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateViewOptions = (
+    config: RendererConfig,
+    storeTocNode: (node: HtmlElementNode) => void,
+): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
-  const { remarkPlugins, components } = options;
+  const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
   if (remarkPlugins != null) {
@@ -235,10 +238,14 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
       remarkPlugins.push(breaks);
     }
   }
-  // rehypePlugins.push([toc, {
-  //   headings: ['h1', 'h2', 'h3'],
-  //   customizeTOC: storeTocNode,
-  // }]);
+
+  // store toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: storeTocNode,
+    }]);
+  }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
@@ -265,41 +272,16 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
   return options;
 };
 
-// customize wrapper
-export const customizeViewOptions = (config: RendererConfig, storeTocNode: (noder: HtmlElementNode) => void): RendererOptions => {
-  const options = generateViewOptions(config);
-  const { rehypePlugins } = options;
-  // store toc node
-  if (rehypePlugins != null) {
-    rehypePlugins.push([toc, {
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: storeTocNode,
-    }]);
-  }
-  return options;
-};
-
-export const generateTocOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
-  const { remarkPlugins } = options;
+  const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
   }
-  // renderer.rehypePlugins.push([autoLinkHeadings, {
-  //   behavior: 'append',
-  // }]);
-
-  return options;
-};
-
-// customize wrapper
-export const customizeTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
-  const options = generateTocOptions(config);
-  const { rehypePlugins } = options;
   // set toc node
   if (rehypePlugins != null) {
     rehypePlugins.push([toc, {
@@ -307,6 +289,10 @@ export const customizeTocOptions = (config: RendererConfig, tocNode: HtmlElement
       customizeTOC: () => tocNode,
     }]);
   }
+  // renderer.rehypePlugins.push([autoLinkHeadings, {
+  //   behavior: 'append',
+  // }]);
+
   return options;
 };
 
