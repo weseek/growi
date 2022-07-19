@@ -1,54 +1,42 @@
 import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { isValidObjectId } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IPageWithMeta } from '~/interfaces/page';
-import { PageModel } from '~/server/models/page';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { BasicLayout } from '../components/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import InstallerForm from '../components/InstallerForm';
 import {
-  useCurrentUser, useCurrentPagePath,
-  useOwnerOfCurrentPage,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig, useCsrfToken,
+  useCurrentPagePath, useCsrfToken,
+  useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
+import { CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle } from './commons';
 
 
 const logger = loggerFactory('growi:pages:all');
 const { isUsersHomePage, isTrashPage: _isTrashPage } = pagePathUtils;
 
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 type Props = CommonProps & {
-  currentUser: string,
-  userName: string | undefined,
-  name: string | undefined,
-  email: string | undefined,
 
   pageWithMetaStr: string,
 
   isForbidden: boolean,
   isNotFound: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
-  const router = useRouter();
-
-  const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
   // commons
   useAppTitle(props.appTitle);
@@ -59,41 +47,15 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPagePath(props.currentPathname);
 
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-
-  let pageWithMeta: IPageWithMeta | undefined;
-  if (props.pageWithMetaStr != null) {
-    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
-  }
-  useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
-
-  const classNames: string[] = [];
-
   return (
     <>
-      <Head>
-      </Head>
-      {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div id="content-main" className="content-main grw-container-convertible">
-          <InstallerForm userName={props.userName} name={props.name} email={props.email} />
-        </div>
-      </BasicLayout>
+      <InstallerForm />
     </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
-  } = crowi;
-
-  const { user } = req;
-
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -103,17 +65,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
-  // await injectPageInformation(context, props);
 
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
-  props.userName = user?.username;
-  props.name = user?.name;
-  props.email = user?.email;
-
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
+  injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

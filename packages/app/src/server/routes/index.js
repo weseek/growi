@@ -94,13 +94,8 @@ module.exports = function(crowi, app) {
   // installer
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
-<<<<<<< HEAD
-    app.get('/installer'              , applicationNotInstalled , installer.index, next.delegateToNext);
-    app.post('/installer'             , apiLimiter , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, installer.install);
-=======
-    app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, installer.install);
->>>>>>> 99aa3be6c2333701cb163c903b6fc89c0528c3f6
+    app.get('/installer'              , applicationNotInstalled, next.delegateToNext, installer.index);
+    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, installer.install);
     return;
   }
 
