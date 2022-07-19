@@ -8,6 +8,7 @@ import { Button } from 'reactstrap';
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
@@ -35,6 +36,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
+  const { data: rendererOptions } = useCommentPreviewOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -110,7 +112,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
-      growiRenderer={appContainer.getRenderer('comment')}
+      rendererOptions={rendererOptions}
       deleteBtnClicked={onClickDeleteButton}
       comment={comment}
       onComment={mutate}
@@ -122,7 +124,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     <ReplayComments
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
-      growiRenderer={appContainer.getRenderer('comment')}
+      rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
     />
   );
@@ -139,6 +141,10 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
   if (hideIfEmpty && comments?.length === 0) {
+    return <></>;
+  }
+
+  if (rendererOptions == null) {
     return <></>;
   }
 
@@ -185,7 +191,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        growiRenderer={appContainer.getRenderer('comment')}
+                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

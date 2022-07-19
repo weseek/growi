@@ -53,15 +53,17 @@ const TableOfContents = (props) => {
     addSmoothScrollEvent(anchorsInToc, blinkElem);
   }, [tocHtml]);
 
+  // == TODO: render ToC without globalEmitter -- Yuki Takei
+  //
   // set handler to render ToC
-  useEffect(() => {
-    const handler = html => setTocHtml(html);
-    window.globalEmitter.on('renderTocHtml', handler);
+  // useEffect(() => {
+  //   const handler = html => setTocHtml(html);
+  //   globalEmitter.on('renderTocHtml', handler);
 
-    return function cleanup() {
-      window.globalEmitter.removeListener('renderTocHtml', handler);
-    };
-  }, []);
+  //   return function cleanup() {
+  //     globalEmitter.removeListener('renderTocHtml', handler);
+  //   };
+  // }, [globalEmitter]);
 
   return (
     <StickyStretchableScroller

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { isServer } from '@growi/core';
+import { isServer, AllLang, Lang } from '@growi/core';
 import I18nextChainedBackend from 'i18next-chained-backend';
 import I18NextHttpBackend from 'i18next-http-backend';
 import I18NextLocalStorageBackend from 'i18next-localstorage-backend';
@@ -8,8 +8,8 @@ import I18NextLocalStorageBackend from 'i18next-localstorage-backend';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const i18n = {
-  defaultLocale: 'en_US',
-  locales: ['en_US', 'ja_JP', 'zh_CN'],
+  defaultLocale: Lang.en_US,
+  locales: AllLang,
 };
 export const defaultNS = 'translation';
 export const localePath = path.resolve('./public/static/locales');

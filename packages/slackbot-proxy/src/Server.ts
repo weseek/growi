@@ -1,6 +1,6 @@
 import '@tsed/platform-express'; // !! DO NOT MODIFY !!
-import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
 import '@tsed/swagger';
+import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
 
 import { createTerminus } from '@godaddy/terminus';
 import { HttpServer, PlatformApplication } from '@tsed/common';

@@ -1,20 +1,17 @@
-import { EventEmitter } from 'events';
-import loggerFactory from '../../utils/logger';
+import loggerFactory from '~/utils/logger';
+
+import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:events:activity');
 
+const events = require('events');
+const util = require('util');
 
-class ActivityEvent extends EventEmitter {
+function ActivityEvent(crowi: Crowi) {
+  this.crowi = crowi;
 
-  onRemove(action: string, activity: any): void {
-    logger.info('onRemove activity event fired');
-  }
-
-  onCreate(action: string, activity: any): void {
-    logger.info('onCreate activity event fired');
-  }
-
+  events.EventEmitter.call(this);
 }
+util.inherits(ActivityEvent, events.EventEmitter);
 
-const instance = new ActivityEvent();
-export default instance;
+module.exports = ActivityEvent;

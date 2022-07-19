@@ -1,6 +1,9 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
 
@@ -22,6 +25,9 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   /**
    * @swagger
@@ -69,7 +75,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -78,6 +84,9 @@ module.exports = (crowi) => {
 
     try {
       await searchService.reconnectClient();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
+
       return res.status(200).send();
     }
     catch (err) {
@@ -113,7 +122,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Return 200
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
 
     const { searchService } = crowi;
@@ -130,10 +139,16 @@ module.exports = (crowi) => {
         case 'normalize':
           // wait the processing is terminated
           await searchService.normalizeIndices();
+
+          activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_INDICES_NORMALIZE });
+
           return res.status(200).send({ message: 'Operation is successfully processed.' });
         case 'rebuild':
           // NOT wait the processing is terminated
           searchService.rebuildIndex();
+
+          activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_INDICES_REBUILD });
+
           return res.status(200).send({ message: 'Operation is successfully requested.' });
         default:
           throw new Error(`Unimplemented operation: ${operation}`);

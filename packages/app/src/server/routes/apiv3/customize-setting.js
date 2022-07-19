@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
@@ -92,6 +95,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const { customizeService } = crowi;
 
@@ -239,7 +245,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.put('/layout', loginRequiredStrictly, adminRequired, validator.layout, apiV3FormValidator, async(req, res) => {
+  router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isContainerFluid': req.body.isContainerFluid,
     };
@@ -249,6 +255,10 @@ module.exports = (crowi) => {
       const customizedParams = {
         isContainerFluid: await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid'),
       };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_LAYOUT_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -292,7 +302,6 @@ module.exports = (crowi) => {
     if (assetPath == null) {
       return res.apiv3Err(new ErrorV3(`The asset for '${webpackAssetKey}' is undefined.`, 'invalid-asset'));
     }
-
     return res.apiv3({ assetPath });
   });
 
@@ -319,7 +328,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:theme': req.body.themeType,
     };
@@ -329,6 +338,8 @@ module.exports = (crowi) => {
       const customizedParams = {
         themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -353,7 +364,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
@@ -365,6 +376,9 @@ module.exports = (crowi) => {
         isSidebarDrawerMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
         isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
       };
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
+
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -397,7 +411,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeFunction'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, validator.function, apiV3FormValidator, async(req, res) => {
+  router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
@@ -425,6 +439,8 @@ module.exports = (crowi) => {
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
         isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -457,7 +473,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHighlight'
    */
-  router.put('/highlight', loginRequiredStrictly, adminRequired, validator.highlight, apiV3FormValidator, async(req, res) => {
+  router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
       'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
@@ -469,6 +485,8 @@ module.exports = (crowi) => {
         styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
         styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CODE_HIGHLIGHT_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -501,7 +519,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTitle'
    */
-  router.put('/customize-title', loginRequiredStrictly, adminRequired, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:title': req.body.customizeTitle,
     };
@@ -514,6 +532,8 @@ module.exports = (crowi) => {
         customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       };
       customizeService.initCustomTitle();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_TITLE_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -546,7 +566,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHeader'
    */
-  router.put('/customize-header', loginRequiredStrictly, adminRequired, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-header', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:header': req.body.customizeHeader,
     };
@@ -555,6 +575,8 @@ module.exports = (crowi) => {
       const customizedParams = {
         customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_HTML_HEADER_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -587,7 +609,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeCss'
    */
-  router.put('/customize-css', loginRequiredStrictly, adminRequired, validator.customizeCss, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
     };
@@ -599,6 +621,8 @@ module.exports = (crowi) => {
         customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       };
       customizeService.initCustomCss();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_CSS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -631,7 +655,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeScript'
    */
-  router.put('/customize-script', loginRequiredStrictly, adminRequired, validator.customizeScript, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:script': req.body.customizeScript,
     };
@@ -640,6 +664,8 @@ module.exports = (crowi) => {
       const customizedParams = {
         customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_SCRIPT_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {

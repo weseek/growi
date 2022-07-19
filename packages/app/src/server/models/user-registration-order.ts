@@ -17,7 +17,7 @@ export interface IUserRegistrationOrder {
 }
 
 export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, Document {
-  isExpired(): Promise<boolean>
+  isExpired(): boolean
   revokeOneTimeToken(): Promise<void>
 }
 

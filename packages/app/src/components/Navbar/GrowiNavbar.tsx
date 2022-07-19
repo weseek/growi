@@ -5,21 +5,23 @@ import React, {
 import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { HasChildren } from '~/interfaces/common';
 import {
   useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
+import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
+import { GlobalSearchProps } from './GlobalSearch';
 
 
 const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
@@ -129,7 +131,7 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
-  const GlobalSearch = dynamic(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+  const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
@@ -141,9 +143,11 @@ export const GrowiNavbar = (): JSX.Element => {
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
-        <a className="grw-logo d-block" href="/">
-          <GrowiLogo />
-        </a>
+        <Link href="/">
+          <a className="grw-logo d-block">
+            <GrowiLogo />
+          </a>
+        </Link>
       </div>
 
       <div className="grw-app-title d-none d-md-block">

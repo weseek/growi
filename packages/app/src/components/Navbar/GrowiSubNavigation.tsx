@@ -1,5 +1,7 @@
 import React from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import {
@@ -7,10 +9,12 @@ import {
 } from '~/stores/ui';
 
 import TagLabels from '../Page/TagLabels';
-import PagePathNav from '../PagePathNav';
+// import PagePathNav from '../PagePathNav';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
+
+import styles from './GrowiSubNavigation.module.scss';
 
 
 type Props = {
@@ -32,6 +36,9 @@ type Props = {
 }
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
+
+  const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
+
   const { data: editorMode } = useEditorMode();
 
   const {
@@ -57,7 +64,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   return (
     <div className={
-      'grw-subnav d-flex align-items-center justify-content-between'
+      `grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between`
       + ` ${additionalClasses.join(' ')}`
       + ` ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}
     >
@@ -71,8 +78,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
         ) }
 
         <div className="grw-path-nav-container">
-          {/* "/trash" page does not exist on page collection and unable to add tags  */}
-          { showTagLabel && !isCompactMode && path !== '/trash' && (
+          { showTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
               <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
