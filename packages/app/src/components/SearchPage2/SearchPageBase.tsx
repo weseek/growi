@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
@@ -44,9 +43,6 @@ type Props = {
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
-
-  const PutbackPageModal = dynamic(() => import('../PutbackPageModal'), { ssr: false });
-
   const {
     appContainer,
     pages,
@@ -217,7 +213,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         </div>
 
       </div>
-      <PutbackPageModal />
     </div>
   );
 };
