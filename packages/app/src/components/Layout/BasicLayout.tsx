@@ -26,6 +26,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
   const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
   const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
   const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
+  const PutbackPageModal = dynamic(() => import('../PutbackPageModal'), { ssr: false });
 
   return (
     <RawLayout title={title} className={className}>
@@ -47,6 +48,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
       <PageDuplicateModal />
       <PageDeleteModal />
       <PageRenameModal />
+      <PutbackPageModal />
       {/* <HotkeysManager /> */}
 
       <ShortcutsModal />
