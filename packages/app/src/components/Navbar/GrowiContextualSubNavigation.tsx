@@ -28,16 +28,14 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-
+import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PageEditorModeManager from './PageEditorModeManager';
 import { SubNavButtons } from './SubNavButtons';
 
 
@@ -151,17 +149,9 @@ type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled: boolean,
 };
 
-const PageEditorModeManagerSkelton = () => {
-  const style = {
-    width: 208,
-    height: 32.49,
-  };
-  return <div className="skelton" style={style}></div>;
-};
-
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <PageEditorModeManagerSkelton/> });
+  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <Skelton width={208} height={32.49} /> });
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;

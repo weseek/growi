@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -8,11 +8,12 @@ import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-// import TagLabels from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
+import { Skelton } from '../Skelton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
+
 
 import styles from './GrowiSubNavigation.module.scss';
 
@@ -34,16 +35,6 @@ type Props = {
   controls?: React.FunctionComponent,
   additionalClasses?: string[],
 }
-
-const TagLabelsSkelton = memo(() => {
-  const style = {
-    height: 21.99,
-    width: 124.5,
-  };
-
-  return <div className="skelton" style={style}></div>;
-});
-TagLabelsSkelton.displayName = 'TagLabelsSkelton';
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
@@ -70,7 +61,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <TagLabelsSkelton/> });
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={124.5} height={21.99} /> });
 
   return (
     <div className={
