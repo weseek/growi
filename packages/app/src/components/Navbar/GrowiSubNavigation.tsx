@@ -47,8 +47,6 @@ TagLabelsSkelton.displayName = 'TagLabelsSkelton';
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
-  // const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
-
   const { data: editorMode } = useEditorMode();
 
   const {

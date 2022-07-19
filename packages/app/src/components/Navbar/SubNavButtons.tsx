@@ -1,4 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
+
+import dynamic from 'next/dynamic';
 
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
@@ -12,7 +14,7 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl, PageItemControlProps,
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
@@ -38,6 +40,22 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   pageInfo: IPageInfoAll,
 }
 
+type SubNavButtonSkeltonProps = {
+  width: number,
+  height: number,
+}
+
+const SubNavButtonSkelton = memo((props: SubNavButtonSkeltonProps): JSX.Element => {
+  const { width, height } = props;
+  const style = {
+    width,
+    height,
+  };
+
+  return <div className="skelton" style={style}></div>;
+});
+SubNavButtonSkelton.displayName = 'SubNavButtonSkelton';
+
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
     pageInfo,
@@ -51,6 +69,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+
+  // dynamic import for show skelton
+  const SubscribeButton = dynamic(() => import('../SubscribeButton'), { ssr: false, loading: () => <SubNavButtonSkelton width={37} height={40}/> });
+  const LikeButtons = dynamic(() => import('../LikeButtons'), { ssr: false, loading: () => <SubNavButtonSkelton width={57.48} height={40}/> });
+  const BookmarkButtons = dynamic(() => import('../BookmarkButtons'), { ssr: false, loading: () => <SubNavButtonSkelton width={53.48} height={40}/> });
+  const SeenUserInfo = dynamic(() => import('../User/SeenUserInfo'), { ssr: false, loading: () => <SubNavButtonSkelton width={58.98} height={40}/> });
+  const PageItemControl = dynamic<PageItemControlProps>(() => import('../Common/Dropdown/PageItemControl').then(mod => mod.PageItemControl), {
+    ssr: false,
+    loading: () => <SubNavButtonSkelton width={37} height={40}/>,
+  });
+
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
