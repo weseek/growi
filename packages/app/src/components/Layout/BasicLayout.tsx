@@ -22,7 +22,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
   const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
   // Page modals
-  // const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
+  const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
   const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
   const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
   const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
@@ -43,7 +43,7 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
 
       <GrowiNavbarBottom />
 
-      {/* <PageCreateModal /> */} {/* Todo: render w/o depending on appContainer */}
+      <PageCreateModal />
       <PageDuplicateModal />
       <PageDeleteModal />
       <PageRenameModal />
