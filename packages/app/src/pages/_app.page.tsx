@@ -12,7 +12,9 @@ import '~/styles/style-next.scss';
 
 import * as nextI18nConfig from '../next-i18next.config';
 import { useI18nextHMR } from '../services/i18next-hmr';
-import { useGrowiVersion } from '../stores/context';
+import {
+  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
+} from '../stores/context';
 
 import { CommonProps } from './commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
@@ -32,6 +34,10 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
+  useAppTitle(commonPageProps.appTitle);
+  useSiteUrl(commonPageProps.siteUrl);
+  useConfidential(commonPageProps.confidential);
+  useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
 
   return (
