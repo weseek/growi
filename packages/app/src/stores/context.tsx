@@ -222,6 +222,10 @@ export const useNoCdn = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('noCdn', initialData);
 };
 
+export const useUploadableImage = (initialData?: any): SWRResponse<any, any> => {
+  return useStaticSWR('uploadableImage', initialData);
+};
+
 export const useUploadableFile = (initialData?: any): SWRResponse<any, any> => {
   return useStaticSWR('uploadableFile', initialData);
 };

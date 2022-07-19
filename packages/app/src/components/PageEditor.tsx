@@ -14,7 +14,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useNoCdn, useUploadableFile,
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useNoCdn, useUploadableFile, useUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -101,6 +101,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: noCdn } = useNoCdn();
   const { data: uploadableFile } = useUploadableFile();
+  const { data: uploadableImage } = useUploadableImage();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -124,7 +125,7 @@ const PageEditor = (props: Props): JSX.Element => {
     //   saveDraftWithDebounce();
     // }
   // }, [pageContainer.state.revisionId, saveDraftWithDebounce, setMarkdownWithDebounce]);
-  }, []);
+  }, [setMarkdownWithDebounce]);
 
 
   const saveWithShortcut = useCallback(async() => {
@@ -403,6 +404,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
   // const config = props.appContainer.getConfig();
   // const isUploadable = config.upload.image || config.upload.file;
+  const isUploadable = uploadableImage || uploadableFile;
   const isNoCdn = envUtils.toBoolean(noCdn || '');
   const isUploadableFile = uploadableFile;
 
@@ -422,7 +424,7 @@ const PageEditor = (props: Props): JSX.Element => {
           value={markdown}
           noCdn={isNoCdn}
           isMobile={isMobile}
-          // isUploadable={isUploadable}
+          isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
           indentSize={indentSize}
