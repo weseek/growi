@@ -1,4 +1,5 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import raw from 'rehype-raw';
 import slug from 'rehype-slug';
 // import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
@@ -214,7 +215,11 @@ export interface ReactMarkdownOptionsGenerator {
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   return {
     remarkPlugins: [gfm],
-    rehypePlugins: [slug],
+    rehypePlugins: [
+      slug,
+      raw,
+      // sanitize,
+    ],
     components: {
       a: NextLink,
     },
