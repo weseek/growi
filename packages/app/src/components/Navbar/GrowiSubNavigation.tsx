@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -35,6 +35,16 @@ type Props = {
   additionalClasses?: string[],
 }
 
+const TagLabelsSkelton = memo(() => {
+  const style = {
+    height: 21.99,
+    width: 124.5,
+  };
+
+  return <div className="skelton" style={style}></div>;
+});
+TagLabelsSkelton.displayName = 'TagLabelsSkelton';
+
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   // const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
@@ -61,15 +71,6 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
   if (path == null) {
     return <></>;
   }
-
-  const TagLabelsSkelton = () => {
-    const style = {
-      height: 21.99,
-      width: 124.5,
-    };
-
-    return <div className="skelton" style={style}></div>;
-  };
 
   const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <TagLabelsSkelton/> });
 
