@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 
-import AppContainer from '~/client/services/AppContainer';
 import loggerFactory from '~/utils/logger';
 import { useSWRxPageByPath } from '~/stores/page';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionRenderer from '../Page/RevisionRenderer';
 import { IRevision } from '~/interfaces/revision';
 import { useCustomSidebarOptions } from '~/stores/renderer';
+import { useTranslation } from 'next-i18next';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -22,12 +21,8 @@ const SidebarNotFound = () => {
   );
 };
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const CustomSidebar: FC<Props> = (props: Props) => {
-
+const CustomSidebar: FC = () => {
+  const { t } = useTranslation();
   const { data: rendererOptions } = useCustomSidebarOptions();
 
   const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
@@ -43,7 +38,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">
-          Custom Sidebar
+          {t('CustomSidebar')}
           <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
         </h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
