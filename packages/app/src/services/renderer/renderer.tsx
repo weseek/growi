@@ -242,8 +242,23 @@ export const generateViewOptions = (
   // store toc node
   if (rehypePlugins != null) {
     rehypePlugins.push([toc, {
+      nav: false,
       headings: ['h1', 'h2', 'h3'],
-      customizeTOC: storeTocNode,
+      customizeTOC: (toc: HtmlElementNode) => {
+        // method for replace <ol> to <ul>
+        const replacer = (children) => {
+          children.forEach((child) => {
+            if (child.type === 'element' && child.tagName === 'ol') {
+              child.tagName = 'ul';
+            }
+            if (child.children) {
+              replacer(child.children);
+            }
+          });
+        };
+        replacer([toc]); // replace <ol> to <ul>
+        storeTocNode(toc); // store tocNode to global state with swr
+      },
     }]);
   }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
