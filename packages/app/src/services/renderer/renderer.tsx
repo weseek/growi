@@ -258,6 +258,7 @@ export const generateViewOptions = (
         };
         replacer([toc]); // replace <ol> to <ul>
         storeTocNode(toc); // store tocNode to global state with swr
+        return false; // not show toc in body
       },
     }]);
   }
