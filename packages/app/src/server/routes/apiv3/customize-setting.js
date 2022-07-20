@@ -373,7 +373,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
@@ -385,6 +385,9 @@ module.exports = (crowi) => {
         isSidebarDrawerMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
         isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
       };
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
+
       return res.apiv3({ customizedParams });
     }
     catch (err) {
