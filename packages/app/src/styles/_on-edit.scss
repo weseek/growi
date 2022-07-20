@@ -1,4 +1,9 @@
+@import './bootstrap/init' ;
+@import './variables' ;
+@import './mixins' ;
+@import 'sidebar-wiki';
 @import 'editor-overlay';
+
 
 body:not(.on-edit) {
   // hide .page-editor-footer

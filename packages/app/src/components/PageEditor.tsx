@@ -429,7 +429,6 @@ const PageEditor = (props: Props): JSX.Element => {
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-      EditorAny
         <EditorAny
           ref={editorRef}
           value={markdown}
@@ -447,7 +446,6 @@ const PageEditor = (props: Props): JSX.Element => {
         />
       </div>
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
-      Preview
         <Preview
           markdown={markdown}
           rendererOptions={rendererOptions}
