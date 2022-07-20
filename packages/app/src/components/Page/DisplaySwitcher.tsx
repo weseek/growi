@@ -112,7 +112,7 @@ const DisplaySwitcher = (): JSX.Element => {
                   ) }
 
                   <div className="d-none d-lg-block">
-                    <div id="revision-toc" className={`${styles['revision-toc']}`}>
+                    <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
                       <TableOfContents />
                     </div>
                     <ContentLinkButtons />

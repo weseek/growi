@@ -52,18 +52,6 @@ const TableOfContents = (): JSX.Element => {
     addSmoothScrollEvent(anchorsInToc, blinkElem);
   }, [tocHtml]);
 
-  // == TODO: render ToC without globalEmitter -- Yuki Takei
-  //
-  // set handler to render ToC
-  // useEffect(() => {
-  //   const handler = html => setTocHtml(html);
-  //   globalEmitter.on('renderTocHtml', handler);
-
-  //   return function cleanup() {
-  //     globalEmitter.removeListener('renderTocHtml', handler);
-  //   };
-  // }, [globalEmitter]);
-
   return (
     <StickyStretchableScroller
       stickyElemSelector=".grw-side-contents-sticky-container"
@@ -73,6 +61,7 @@ const TableOfContents = (): JSX.Element => {
         id="revision-toc-content"
         className="revision-toc-content mb-3"
       >
+        {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
         <ReactMarkdown {...rendererOptions}>
           {''}
         </ReactMarkdown>
