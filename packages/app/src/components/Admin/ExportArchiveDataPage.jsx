@@ -108,8 +108,6 @@ const ExportArchiveDataPage = (props) => {
         extendedTimeOut: '150',
       });
     });
-    console.log(zipFileStats);
-    console.log(isExporting);
   }, [props.adminSocketIoContainer]);
 
   const onZipFileStatRemove = useCallback(async(fileName) => {
