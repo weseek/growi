@@ -6,8 +6,11 @@
 @import '~react-bootstrap-typeahead/css/Typeahead';
 @import 'override-rbt';
 
-// // override simplebar-react styles
-// @import 'override-simplebar';
+// vendor
+@import 'vendor';
+
+// override simplebar-react styles
+@import 'override-simplebar';
 
 // icons
 @import '~simple-line-icons';
