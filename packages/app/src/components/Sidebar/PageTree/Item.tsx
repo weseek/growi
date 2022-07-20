@@ -4,7 +4,7 @@ import React, {
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -14,7 +14,6 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-import { Nullable } from '~/interfaces/common';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';

@@ -2,11 +2,11 @@ import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
 
+import { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { Nullable } from '~/interfaces/common';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';

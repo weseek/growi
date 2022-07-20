@@ -6,12 +6,15 @@
 @import '~react-bootstrap-typeahead/css/Typeahead';
 @import 'override-rbt';
 
-// // override simplebar-react styles
-// @import 'override-simplebar';
+// import SimpleBar styles
+@import '~simplebar/dist/simplebar.min.css';
+// override simplebar-react styles
+@import 'override-simplebar';
 
 // icons
 @import '~simple-line-icons';
 @import '~material-icons/iconfont/filled';
+@import '~font-awesome';
 
 // // atoms
 @import 'atoms/buttons';
@@ -67,7 +70,7 @@
 // @import 'user';
 // @import 'staff_credit';
 // @import 'waves';
-// @import 'wiki';
+@import 'wiki';
 // @import 'sharelink';
 // @import 'linkedit-preview';
 

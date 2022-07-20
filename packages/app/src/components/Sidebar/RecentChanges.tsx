@@ -2,15 +2,12 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, isPopulated } from '@growi/core';
 import { UserPicture, FootstampIcon } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
-
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { isPopulated } from '~/interfaces/common';
 import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';

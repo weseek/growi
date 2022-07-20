@@ -1,23 +1,19 @@
 import React, {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useMemo,
 } from 'react';
 
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
-import { withUnstatedContainers } from './UnstatedUtils';
-
 
 const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
@@ -25,15 +21,13 @@ const {
 
 const PageCreateModal = (props) => {
   const { t } = useTranslation();
-  const { appContainer } = props;
 
   const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
 
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
+  const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
   const userPageRootPath = userPageRoot(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
@@ -311,13 +305,5 @@ const PageCreateModal = (props) => {
   );
 };
 
-PageCreateModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
 
-/**
- * Wrapper component for using unstated
- */
-const PageCreateModalWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
-
-export default PageCreateModalWrapper;
+export default PageCreateModal;

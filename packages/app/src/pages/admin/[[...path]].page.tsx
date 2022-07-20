@@ -18,7 +18,7 @@ import SecurityManagementContents from '~/components/Admin/Security/SecurityMana
 import SlackIntegration from '~/components/Admin/SlackIntegration/SlackIntegration';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
-import AdminLayout from '~/components/AdminLayout';
+import AdminLayout from '~/components/Layout/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
