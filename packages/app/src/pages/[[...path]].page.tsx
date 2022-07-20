@@ -276,7 +276,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     }
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
-                    PageStatusAlert
                   </>
                 ) }
 
@@ -292,7 +291,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           {/* <PageComments /> */}
-          PageComments
         </footer>
 
         <UnsavedAlertDialog />

@@ -988,6 +988,9 @@ class CodeMirrorEditor extends AbstractEditor {
       gutters.push('CodeMirror-lint-markers');
     }
 
+    console.log(' this.state.value', this.state.value);
+    console.log(' this.props.value', this.props.value);
+
     return (
       <React.Fragment>
 
@@ -1000,7 +1003,9 @@ class CodeMirrorEditor extends AbstractEditor {
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
-          value={this.state.value}
+          // temporary set props.value
+          // value={this.state.value}
+          value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
             theme: this.props.editorSettings.theme ?? 'elegant',
