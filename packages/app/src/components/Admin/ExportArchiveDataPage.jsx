@@ -58,16 +58,30 @@ class ExportArchiveDataPage extends React.Component {
       return !IGNORED_COLLECTION_NAMES.includes(collectionName);
     });
 
-    const { zipFileStats, isExporting, progressList } = status;
-    this.setState({
-      collections: filteredCollections,
-      zipFileStats,
-      isExporting,
-      progressList,
+  const cleanupWebsocketEventHandler = useCallback(() => {
+    const socket = props.adminSocketIoContainer.getSocket();
+    if (socket == null) {
+      return;
+    }
+    // websocket event
+    socket.on('admin:onProgressForExport', () => {
+      setIsExporting(false);
+      setProgressList([]);
     });
 
-    this.setupWebsocketEventHandler();
-  }
+    // websocket event
+    socket.on('admin:onStartZippingForExport', () => {
+      setIsZipping(false);
+    });
+
+    // websocket event
+    socket.on('admin:onTerminateForExport', () => {
+      setIsExporting(true);
+      setIsZipping(true);
+      setIsExported(false);
+      setZipFileStats([]);
+    });
+  }, [props.adminSocketIoContainer]);
 
   setupWebsocketEventHandler() {
     const socket = this.props.adminSocketIoContainer.getSocket();
@@ -109,7 +123,9 @@ class ExportArchiveDataPage extends React.Component {
         extendedTimeOut: '150',
       });
     });
-  }
+    console.log(zipFileStats);
+    console.log(isExporting);
+  }, [props.adminSocketIoContainer]);
 
   onZipFileStatAdd(newStat) {
     this.setState((prevState) => {
