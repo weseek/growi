@@ -1,6 +1,6 @@
+import csrf from 'csurf';
 import mongoose from 'mongoose';
 
-import csrf from 'csurf';
 
 // import { i18n, localePath } from '~/next-i18next.config';
 
@@ -129,7 +129,7 @@ module.exports = function(crowi, app) {
 
   // csurf should be initialized after express-session
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
-  app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT'], cookie: false }));
+  app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST'], cookie: false }));
 
   // passport
   debug('initialize Passport');
