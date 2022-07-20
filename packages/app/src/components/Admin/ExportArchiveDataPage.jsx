@@ -48,8 +48,29 @@ const ExportArchiveDataPage = (props) => {
   }, []);
 
   const cleanupWebsocketEventHandler = useCallback(() => {
+    const socket = props.adminSocketIoContainer.getSocket();
+    if (socket == null) {
+      return;
+    }
+    // websocket event
+    socket.on('admin:onProgressForExport', () => {
+      setIsExporting(false);
+      setProgressList([]);
+    });
 
-  }, []);
+    // websocket event
+    socket.on('admin:onStartZippingForExport', () => {
+      setIsZipping(false);
+    });
+
+    // websocket event
+    socket.on('admin:onTerminateForExport', () => {
+      setIsExporting(true);
+      setIsZipping(true);
+      setIsExported(false);
+      setZipFileStats([]);
+    });
+  }, [props.adminSocketIoContainer]);
 
   const setupWebsocketEventHandler = useCallback(() => {
 
@@ -87,6 +108,8 @@ const ExportArchiveDataPage = (props) => {
         extendedTimeOut: '150',
       });
     });
+    console.log(zipFileStats);
+    console.log(isExporting);
   }, [props.adminSocketIoContainer]);
 
   const onZipFileStatRemove = useCallback(async(fileName) => {
