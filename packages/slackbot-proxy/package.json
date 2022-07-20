@@ -1,6 +1,10 @@
 {
   "name": "@growi/slackbot-proxy",
+<<<<<<< HEAD
   "version": "5.1.0-RC.3",
+=======
+  "version": "5.1.0-RC.2",
+>>>>>>> 0589bcbba1364881c7d8a0f307136a92a42f4646
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
