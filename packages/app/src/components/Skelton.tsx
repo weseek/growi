@@ -3,8 +3,8 @@ import React from 'react';
 import styles from './Skelton.module.scss';
 
 type SkeltonProps = {
-  width: number,
-  height: number,
+  width?: number,
+  height?: number,
   additionalClass?: string
 }
 
