@@ -50,7 +50,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
@@ -75,6 +75,11 @@ const { removeHeadingSlash } = pathUtils;
 const IdenticalPathPage = (): JSX.Element => {
   const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
   return <IdenticalPathPage />;
+};
+
+const PutbackPageModal = (): JSX.Element => {
+  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
+  return <PutbackPageModal />;
 };
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
@@ -141,11 +146,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   // commons
-  useAppTitle(props.appTitle);
-  useSiteUrl(props.siteUrl);
   useXss(new Xss());
   // useEditorConfig(props.editorConfig);
-  useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -197,6 +199,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.pageWithMetaStr != null) {
     pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageToShowRevisionWithMeta;
   }
+
+  let shouldRenderPutbackPageModal = false;
+  if (pageWithMeta != null) {
+    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
+  }
+
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   // useSWRxPage(pageWithMeta?.data._id);
@@ -288,6 +296,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
       </BasicLayout>
     </>
