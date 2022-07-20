@@ -274,9 +274,9 @@ const PageEditor = (props: Props): JSX.Element => {
    * @param {number} line
    */
   const scrollPreviewByCursorMoving = useCallback((line: number) => {
-    // if (previewRef.current == null) {
-    //   return;
-    // }
+    if (previewRef.current == null) {
+      return;
+    }
 
     // prevent circular invocation
     if (isOriginOfScrollSyncPreview) {
@@ -424,9 +424,12 @@ const PageEditor = (props: Props): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const EditorAny = Editor as any;
 
+  // console.log('EditorAny', markdown);
+
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
+      EditorAny
         <EditorAny
           ref={editorRef}
           value={markdown}
@@ -444,6 +447,7 @@ const PageEditor = (props: Props): JSX.Element => {
         />
       </div>
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+      Preview
         <Preview
           markdown={markdown}
           rendererOptions={rendererOptions}
