@@ -11,9 +11,12 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
 import { useCurrentUser } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/modal';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -28,6 +31,7 @@ const BookmarksItem = ({ data, swr }) : JSX.Element => {
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const bookmarkItemId = `bookmark-item-${data._id}`;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(page.id);
@@ -74,6 +78,42 @@ const BookmarksItem = ({ data, swr }) : JSX.Element => {
     }
   }, [swr, page, t]);
 
+
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
+      const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+        if (typeof pathOrPathsToDelete !== 'string') {
+          return;
+        }
+        const path = pathOrPathsToDelete;
+
+        if (isCompletely) {
+          toastSuccess(t('deleted_pages_completely', { path }));
+        }
+        else {
+          toastSuccess(t('deleted_pages', { path }));
+        }
+        swr.mutate();
+      };
+      openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+    };
+
+    if (page._id == null || page.path == null) {
+      throw Error('_id and path must not be null.');
+    }
+
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
+    };
+
+    onClickDeleteMenuItem(pageToDelete);
+  }, [page, swr, openDeleteModal, t]);
+
   return (
     <>
       <li className="list-group-item py-3 px-2" id={bookmarkItemId}>
@@ -98,6 +138,7 @@ const BookmarksItem = ({ data, swr }) : JSX.Element => {
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
