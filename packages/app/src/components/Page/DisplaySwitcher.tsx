@@ -23,6 +23,8 @@ import { Page } from '../Page';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
 
+import styles from '../TableOfContents.module.scss';
+
 
 const WIKI_HEADER_LINK = 120;
 
@@ -110,7 +112,7 @@ const DisplaySwitcher = (): JSX.Element => {
                   ) }
 
                   <div className="d-none d-lg-block">
-                    <div id="revision-toc" className="revision-toc">
+                    <div id="revision-toc" className={`${styles['revision-toc']}`}>
                       <TableOfContents />
                     </div>
                     <ContentLinkButtons />
