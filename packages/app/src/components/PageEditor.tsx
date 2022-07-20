@@ -20,6 +20,7 @@ import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -102,12 +103,17 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: noCdn } = useNoCdn();
   const { data: uploadableFile } = useUploadableFile();
   const { data: uploadableImage } = useUploadableImage();
+  const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: rendererOptions } = usePreviewOptions();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  // const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
-  const [markdown, setMarkdown] = useState<string>('dummy');
+  const [markdown, setMarkdown] = useState<string>('');
+
+  useEffect(() => {
+    if (currentPage != null) {
+      setMarkdown(currentPage.revision.body);
+    }
+  }, [currentPage, currentPage?.revision.body]);
 
 
   const editorRef = useRef<EditorRef>(null);
