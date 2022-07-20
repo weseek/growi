@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { DevidedPagePath } from '@growi/core';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
+import { unbookmark } from '~/client/services/page-operation';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
 import { useCurrentUser } from '~/stores/context';
@@ -15,15 +16,20 @@ import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 import InfiniteScroll from './InfiniteScroll';
 
-
-const BookmarksItem = ({ data }) => {
+const BookmarksItem = ({ data, swr }) : JSX.Element => {
   const { page } = data;
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const bookmarkItemId = `bookmark-item-${data._id}`;
+
+  const bookmarkMenuItemClickHandler = useCallback(async() => {
+    await unbookmark(page.id);
+    swr.mutate();
+  }, [swr, page]);
+
   return (
     <>
-      <li className="list-group-item py-3 px-0" id={bookmarkItemId}>
+      <li className="list-group-item py-3 px-2" id={bookmarkItemId}>
         <div className="d-flex w-100 justify-content-between">
           <h5 className="my-0">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
@@ -32,6 +38,7 @@ const BookmarksItem = ({ data }) => {
             pageId={page._id}
             isEnableActions
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
@@ -44,7 +51,7 @@ const BookmarksItem = ({ data }) => {
             placement="left"
             target={bookmarkItemId}
           >
-            {data.page.path}
+            {page.path}
           </UncontrolledTooltip>
         </div>
       </li>
@@ -56,6 +63,7 @@ const BookmarksItem = ({ data }) => {
 
 BookmarksItem.propTypes = {
   data: PropTypes.any,
+  swr: PropTypes.any,
 };
 
 const Bookmarks = () : JSX.Element => {
@@ -64,6 +72,10 @@ const Bookmarks = () : JSX.Element => {
   const swr = useSWRInifiniteBookmarkedPage(currentUser?._id);
   const isEmpty = swr.data?.[0].docs.length === 0;
   const isReachingEnd = isEmpty || (swr.data && swr.data[0].nextPage == null);
+
+  useEffect(() => {
+    swr.mutate();
+  }, []);
 
   return (
     <>
@@ -79,7 +91,7 @@ const Bookmarks = () : JSX.Element => {
                 isReachingEnd={isReachingEnd}
               >
                 {paginationResult => paginationResult?.docs.map(data => (
-                  <BookmarksItem key={data._id} data={data} />
+                  <BookmarksItem key={data._id} data={data} swr={swr} />
                 ))
                 }
               </InfiniteScroll>
