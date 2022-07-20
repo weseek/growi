@@ -132,7 +132,7 @@ const GrowiNavbar = (props) => {
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
         <a className="grw-logo d-block" href="/">
-          <GrowiNavbarLogo logoSrc={...customizedLogoSrc} />
+          <GrowiNavbarLogo logoSrc={customizedLogoSrc} />
         </a>
       </div>
 
