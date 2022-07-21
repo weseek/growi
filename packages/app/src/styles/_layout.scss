@@ -1,10 +1,6 @@
 @use './variables' as var;
 @use './bootstrap/init' as bs;
 
-:root {
-  font-size: var.$font-size-root;
-}
-
 body {
   overflow-y: scroll !important;
   overscroll-behavior-y: none;
