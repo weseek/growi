@@ -685,8 +685,7 @@ module.exports = (crowi) => {
   });
 
   router.get('/customize-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const defaultLogoConfig = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
-    const isDefaultLogo = defaultLogoConfig === undefined || defaultLogoConfig;
+    const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
     const customizedLogoSrc = await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc');
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
