@@ -71,12 +71,12 @@ module.exports = function(crowi, app) {
 
   try {
     const trustProxy = trustProxyBool ?? trustProxyCsv ?? trustProxyHops;
-    if (trustProxy != null) {
-      app.set('trust proxy', trustProxy);
-    }
     if (isNotSpec) {
       // eslint-disable-next-line max-len
-      logger.warn(`If multiple environment variables TRUST_PROXY_ ~ are set, they are set preferentially in the order of BOOL → CSV → HOPS. Set value: ${app.get('trust proxy')}`);
+      logger.warn(`If multiple environment variables TRUST_PROXY_ ~ are set, they are set preferentially in the order of BOOL → CSV → HOPS. Set value: ${trustProxy}`);
+    }
+    if (trustProxy != null) {
+      app.set('trust proxy', trustProxy);
     }
   }
   catch (err) {
