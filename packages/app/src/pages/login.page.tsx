@@ -1,13 +1,16 @@
 import React from 'react';
 
+
 import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 
 import { RawLayout } from '~/components/Layout/RawLayout';
 import LoginForm from '~/components/LoginForm';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
   useCurrentPagePath, useCsrfToken,
@@ -16,19 +19,47 @@ import {
 
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './commons';
+
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
+function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const {
+    configManager,
+  } = crowi;
+
+  const enabledStrategies = {
+    google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
+    github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+    facebook: false,
+    twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+    smal: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+    oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
+    basic: configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
+  };
+
+  props.enabledStrategies = enabledStrategies;
+}
+
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const {
+    mailService,
+  } = crowi;
+
+  props.isMailerSetup = mailService.isMailerSetup;
 }
 
 type Props = CommonProps & {
 
   pageWithMetaStr: string,
+  isMailerSetup: boolean,
+  enabledStrategies: unknown,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -41,23 +72,32 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   // page
   useCurrentPagePath(props.currentPathname);
+  // useIsMailerSetup(props.isMailerSetup);
 
   const classNames: string[] = [];
+
+  const LoginForm = dynamic(() => import('~/components/LoginForm'), {
+    ssr: false,
+  });
 
   return (
     <>
       <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div id="page-wrapper">
-          <div className="main container-fluid">
+        <div className='nologin'>
+          <div className='wrapper'>
+            <div id="page-wrapper">
+              <div className="main container-fluid">
 
-            <div className="row">
-              <div className="col-md-12">
-                <div className="login-header mx-auto">
-                  <h1 className="my-3">GROWI</h1>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="login-header mx-auto">
+                      <h1 className="my-3">GROWI</h1>
+                    </div>
+                  </div>
+                  <div className="col-md-12">
+                    <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} />
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-12">
-                <LoginForm />
               </div>
             </div>
           </div>
@@ -78,7 +118,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  injectNextI18NextConfigurations(context, props, ['translation']);
+  injectServerConfigurations(context, props);
+  injectEnabledStrategies(context, props);
 
   return {
     props,

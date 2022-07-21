@@ -4,10 +4,10 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 
-import AppContainer from '~/client/services/AppContainer';
+// import AppContainer from '~/client/services/AppContainer';
 import { useCsrfToken } from '~/stores/context';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+// import { withUnstatedContainers } from './UnstatedUtils';
 
 class LoginForm extends React.Component {
 
@@ -148,7 +148,7 @@ class LoginForm extends React.Component {
   renderRegisterForm() {
     const {
       t,
-      appContainer,
+      // appContainer,
       csrfToken,
       isEmailAuthenticationEnabled,
       username,
@@ -156,9 +156,9 @@ class LoginForm extends React.Component {
       email,
       registrationMode,
       registrationWhiteList,
+      isMailerSetup,
     } = this.props;
 
-    const { isMailerSetup } = appContainer.config;
     let registerAction = '/register';
 
     let submitText = t('Sign up');
@@ -288,6 +288,7 @@ class LoginForm extends React.Component {
       objOfIsExternalAuthEnableds,
     } = this.props;
 
+
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
@@ -332,7 +333,7 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   csrfToken: PropTypes.string,
   isRegistering: PropTypes.bool,
@@ -347,18 +348,21 @@ LoginForm.propTypes = {
   isLocalStrategySetup: PropTypes.bool,
   isLdapStrategySetup: PropTypes.bool,
   objOfIsExternalAuthEnableds: PropTypes.object,
+  isMailerSetup: PropTypes.bool,
 };
 
 const LoginFormWrapperFC = (props) => {
   const { t } = useTranslation();
   const { data: csrfToken } = useCsrfToken();
 
-  return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
+  // return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
+  return <div>あああ</div>;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
+// const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
 
 export default LoginForm;
+// export default LoginFormWrapperFC;
