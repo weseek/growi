@@ -689,7 +689,7 @@ module.exports = (crowi) => {
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
 
-  router.put('/customize-logo', csrf, loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
       isDefaultLogo, customizedLogoSrc,
@@ -715,7 +715,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
@@ -756,7 +756,7 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
-  router.delete('/delete-brand-logo', csrf, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 
