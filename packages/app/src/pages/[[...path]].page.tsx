@@ -137,6 +137,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
 
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+  const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -254,8 +255,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
-          {/* <GrowiSubNavigationSwitcher /> */}
-          GrowiSubNavigationSwitcher
+          <GrowiSubNavigationSwitcher />
         </div>
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>

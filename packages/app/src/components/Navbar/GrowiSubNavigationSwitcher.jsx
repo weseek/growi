@@ -1,15 +1,17 @@
 import React, {
   useMemo, useState, useRef, useEffect, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
-import loggerFactory from '~/utils/logger';
 import { useSidebarCollapsed } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
+
+import styles from './GrowiSubNavigationSwitcher.module.scss';
 
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
@@ -108,11 +110,13 @@ const GrowiSubNavigationSwitcher = (props) => {
 
   }, [initWidth, initVisible]);
 
+  // ${styles['grw-subnav-switcher']}
+
   return (
-    <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
+    <div className={`${styles['grw-subnav-switcher']} ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div
         id="grw-subnav-fixed-container"
-        className="grw-subnav-fixed-container position-fixed grw-subnav-append-shadow-container"
+        className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}
         ref={fixedContainerRef}
         style={{ width }}
       >
