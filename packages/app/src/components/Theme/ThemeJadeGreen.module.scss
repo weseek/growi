@@ -1,8 +1,7 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-.theme[data-color-scheme='light'] :global {
+html[light] {
   // Theme colors
   $themecolor: #38b48b;
   $themelight: #ffffff;
@@ -71,8 +70,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import 'apply-colors';
+  @import 'apply-colors-light';
 
   // Navs {
   .nav-tabs {
@@ -90,12 +89,12 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, lighten($primary, 20%));
+      @include btn-page-editor-mode-manager(#ffffff, $primary, $primary, lighten($primary, 20%));
     }
   }
 }
 
-.theme[data-color-scheme='dark'] :global {
+html[dark] {
   // Theme colors
   $themecolor: #38b48b;
   $themedark: #333333;
@@ -172,8 +171,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
 
   // Navs
   .nav-tabs {
@@ -199,7 +198,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
+      @include btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
     }
   }
 }
