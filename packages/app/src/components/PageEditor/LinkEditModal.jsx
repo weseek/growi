@@ -312,7 +312,6 @@ class LinkEditModal extends React.PureComponent {
                       <Preview markdown={this.state.markdown} pagePath={pagePath} />
                     </div>
                     }
-                    {this.state.markdown }
                   </PopoverBody>
                 </Popover>
               </div>
