@@ -71,6 +71,7 @@ const DisplaySwitcher = (): JSX.Element => {
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPagePath)}
+                        data-testid="pageListButton"
                       >
                         <div className="grw-page-accessories-control-icon">
                           <PageListIcon />

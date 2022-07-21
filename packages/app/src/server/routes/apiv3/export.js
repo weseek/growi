@@ -1,6 +1,9 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:export');
 const fs = require('fs');
@@ -45,9 +48,11 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const { exportService, socketIoService } = crowi;
 
+  const activityEvent = crowi.event('activity');
   this.adminEvent = crowi.event('admin');
 
   // setup event
@@ -118,12 +123,15 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
 
       exportService.export(collections);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       // TODO: use res.apiv3
       return res.status(200).json({
@@ -161,13 +169,15 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 
     try {
       const zipFile = exportService.getFile(fileName);
       fs.unlinkSync(zipFile);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       // TODO: use res.apiv3
       return res.status(200).send({ ok: true });

@@ -7,7 +7,6 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
-  box-shadow: none !important;
 }
 
 .btn.btn-bookmark {
@@ -19,7 +18,6 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
-  box-shadow: none !important;
 }
 
 .btn.btn-subscribe {
@@ -31,6 +29,7 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
+  width: 44px;
 }
 
 .btn.btn-seen-user {
@@ -48,7 +47,6 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
-  box-shadow: none !important;
 }
 
 .btn-copy,

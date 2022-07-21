@@ -1,17 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import PropTypes from 'prop-types';
-
+import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 import { getOptionsToSave } from '~/client/util/editor';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import {
-  useCurrentPagePath, useIsGuestUser,
+  useCurrentPagePath, useIsGuestUser, useIsBlinkedHeaderAtBoot,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useViewRenderer } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
@@ -37,8 +42,6 @@ class Page extends React.Component {
       currentTargetTableArea: null,
       currentTargetDrawioArea: null,
     };
-
-    this.growiRenderer = this.props.appContainer.getRenderer('page');
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
@@ -148,7 +151,7 @@ class Page extends React.Component {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
+          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
         { !isGuestUser && (
@@ -170,6 +173,7 @@ Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   pagePath: PropTypes.string.isRequired,
   pageTags:  PropTypes.arrayOf(PropTypes.string),
@@ -194,8 +198,43 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: growiRenderer } = useViewRenderer();
+  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
 
   const pageRef = useRef(null);
+
+  // *************************** Blink header at boot ***************************
+  const blinkOnInit = useCallback(() => {
+
+    const result = blinkSectionHeaderAtBoot();
+
+    if (result != null) {
+      mutateBlinkedAtBoot(true);
+    }
+  }, [mutateBlinkedAtBoot]);
+
+  const blinkOnInitDebounced = useMemo(() => debounce(500, blinkOnInit), [blinkOnInit]);
+
+  const observerForBlinkingOnInit = useCallback((elem) => {
+    if (isBlinkedAtBoot || elem == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords) => {
+      mutationRecords.forEach(() => blinkOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(elem, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    blinkOnInitDebounced();
+
+    return function cleanup() {
+      observer.disconnect();
+    };
+  }, [blinkOnInitDebounced, isBlinkedAtBoot]);
+  // *******************************  end  *******************************
 
   // set handler to open DrawioModal
   useEffect(() => {
@@ -225,26 +264,29 @@ const PageWrapper = (props) => {
     };
   }, []);
 
-  if (currentPagePath == null || editorMode == null || isGuestUser == null) {
+  if (currentPagePath == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
     return null;
   }
 
 
   return (
-    <Page
-      {...props}
-      ref={pageRef}
-      pagePath={currentPagePath}
-      editorMode={editorMode}
-      isGuestUser={isGuestUser}
-      isMobile={isMobile}
-      isSlackEnabled={isSlackEnabled}
-      pageTags={pageTags}
-      slackChannels={slackChannelsData.toString()}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
-    />
+    <div ref={observerForBlinkingOnInit}>
+      <Page
+        {...props}
+        ref={pageRef}
+        growiRenderer={growiRenderer}
+        pagePath={currentPagePath}
+        editorMode={editorMode}
+        isGuestUser={isGuestUser}
+        isMobile={isMobile}
+        isSlackEnabled={isSlackEnabled}
+        pageTags={pageTags}
+        slackChannels={slackChannelsData.toString()}
+        grant={grant}
+        grantGroupId={grantGroupId}
+        grantGroupName={grantGroupName}
+      />
+    </div>
   );
 };
 
