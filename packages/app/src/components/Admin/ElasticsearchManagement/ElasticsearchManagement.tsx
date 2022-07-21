@@ -13,7 +13,7 @@ import RebuildIndexControls from './RebuildIndexControls';
 import ReconnectControls from './ReconnectControls';
 import StatusTable from './StatusTable';
 
-const ElasticsearchManagement = (props) => {
+const ElasticsearchManagement = () => {
   const { t } = useTranslation();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
   const { data: socket } = useAdminSocket();
@@ -26,7 +26,7 @@ const ElasticsearchManagement = (props) => {
   const [isRebuildingProcessing, setIsRebuildingProcessing] = useState(false);
   const [isRebuildingCompleted, setIsRebuildingCompleted] = useState(false);
 
-  const [isNormalized, setIsNormalized] = useState(null);
+  const [isNormalized, setIsNormalized] = useState(false);
   const [indicesData, setIndicesData] = useState(null);
   const [aliasesData, setAliasesData] = useState(null);
 
@@ -171,7 +171,6 @@ const ElasticsearchManagement = (props) => {
         <div className="col-md-6">
           <NormalizeIndicesControls
             isRebuildingProcessing={isRebuildingProcessing}
-            isRebuildingCompleted={isRebuildingCompleted}
             isNormalized={isNormalized}
             onNormalizingRequested={normalizeIndices}
           />
