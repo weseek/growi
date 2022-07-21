@@ -17,7 +17,6 @@ import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
-
 const formatDate = (date: Date | null) => {
   if (date == null) {
     return '';
@@ -94,6 +93,14 @@ export const AuditLogManagement: FC = () => {
     setSelectedUsernames(usernames);
   }, []);
 
+  const resetButtonPushedHandler = useCallback(() => {
+    setActivePage(1);
+    setStartDate(null);
+    setEndDate(null);
+    setSelectedUsernames([]);
+    setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])));
+  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActions]);
+
   const reloadButtonPushedHandler = useCallback(() => {
     setActivePage(1);
     mutateActivity();
@@ -144,9 +151,23 @@ export const AuditLogManagement: FC = () => {
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
 
-            <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-              <i className="icon icon-reload" />
-            </button>
+            <div className="ml-auto">
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={resetButtonPushedHandler}
+              >
+                <span
+                  className="icon-refresh mr-1"
+                >
+                </span>
+                Reset
+              </button>
+
+              <button type="button" className="btn" onClick={reloadButtonPushedHandler}>
+                <i className="icon icon-reload" />
+              </button>
+            </div>
           </div>
 
           <p
