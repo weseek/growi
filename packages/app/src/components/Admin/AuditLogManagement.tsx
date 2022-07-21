@@ -152,20 +152,14 @@ export const AuditLogManagement: FC = () => {
             />
 
             <div className="ml-auto">
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-                onClick={resetButtonPushedHandler}
-              >
-                <span
-                  className="icon-refresh mr-1"
-                >
-                </span>
+              <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={resetButtonPushedHandler}>
+                <span className="icon-refresh mr-1" />
                 Reset
               </button>
 
-              <button type="button" className="btn" onClick={reloadButtonPushedHandler}>
-                <i className="icon icon-reload" />
+              <button type="button" className="btn btn-outline-secondary btn-sm" onClick={reloadButtonPushedHandler}>
+                <i className="icon icon-reload mr-1" />
+                Reload
               </button>
             </div>
           </div>
