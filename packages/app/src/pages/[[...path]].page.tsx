@@ -371,12 +371,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-<<<<<<< HEAD
-=======
-
     props.IsNotCreatable = !isCreatablePage(currentPathname);
-
->>>>>>> 0c7cb70c9ed478d00abbee1657599fb302c0f54a
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
