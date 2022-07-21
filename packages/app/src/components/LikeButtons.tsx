@@ -50,7 +50,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`shadow-none btn ${styles['btn-like']} border-0
+        className={`shadow-none btn btn-like ${styles['btn-like']} border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>

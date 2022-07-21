@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -9,9 +11,11 @@ import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
+import LegacySlackIntegration from '~/components/Admin/LegacySlackIntegration/LegacySlackIntegration';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
 import NotificationSetting from '~/components/Admin/Notification/NotificationSetting';
 import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
+import SlackIntegration from '~/components/Admin/SlackIntegration/SlackIntegration';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/Layout/AdminLayout';
@@ -52,7 +56,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
 
-  // const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
+  const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 
   const adminPagesMap = {
     home: {
@@ -78,8 +82,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
-      // component: <CustomizeSettingContents />,
-      component: <>CustomizeSettingContents</>,
+      component: <CustomizeSettingContents />,
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
@@ -98,13 +101,21 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: '',
       component: <>global-notification</>,
     },
+    'slack-integration': {
+      title: useCustomTitle(props, t('slack_integration')),
+      component: <SlackIntegration />,
+    },
+    'slack-integration-legacy': {
+      title: useCustomTitle(props, t('Legacy_Slack_Integration')),
+      component: <LegacySlackIntegration />,
+    },
     users: {
       title: useCustomTitle(props, t('User_Management')),
       component: <UserManagement />,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <>user-groups</>,
+      component: <UserGroupPage />,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),

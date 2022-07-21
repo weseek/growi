@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
-import { useTheme } from 'next-themes';
 import Head from 'next/head';
 
 import { useGrowiTheme } from '~/stores/context';
+import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
@@ -22,7 +22,14 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   const { data: growiTheme } = useGrowiTheme();
 
   // get color scheme from next-themes
-  const { resolvedTheme: colorScheme } = useTheme();
+  const { resolvedTheme } = useNextThemes();
+
+  const [colorScheme, setColorScheme] = useState<Themes|undefined>(undefined);
+
+  // set colorScheme in CSR
+  useEffect(() => {
+    setColorScheme(resolvedTheme as Themes);
+  }, [resolvedTheme]);
 
   return (
     <>

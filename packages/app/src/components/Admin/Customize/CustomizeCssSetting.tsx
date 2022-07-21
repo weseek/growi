@@ -4,7 +4,6 @@ import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -12,7 +11,6 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomCssEditor from '../CustomCssEditor';
 
 type Props = {
-  appContainer: AppContainer,
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
@@ -63,6 +61,6 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
 
 };
 
-const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AdminCustomizeContainer]);
 
 export default CustomizeCssSettingWrapper;

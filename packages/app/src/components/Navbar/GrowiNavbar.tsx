@@ -18,18 +18,11 @@ import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
+import { GlobalSearchProps } from './GlobalSearch';
 import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
-import { GlobalSearchProps } from './GlobalSearch';
 
-
-const ShowSkeltonInSSR = memo(({ children }: HasChildren): JSX.Element => {
-  return isServer()
-    ? <></>
-    : <>{children}</>;
-});
-ShowSkeltonInSSR.displayName = 'ShowSkeltonInSSR';
 
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -53,7 +46,7 @@ const NavbarRight = memo((): JSX.Element => {
     return (
       <>
         <li className="nav-item">
-          <ShowSkeltonInSSR><InAppNotificationDropdown /></ShowSkeltonInSSR>
+          <InAppNotificationDropdown />
         </li>
 
         <li className="nav-item d-none d-md-block">
@@ -70,11 +63,11 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
 
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
-          <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
 
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
-          <ShowSkeltonInSSR><PersonalDropdown /></ShowSkeltonInSSR>
+          <PersonalDropdown />
         </li>
       </>
     );
@@ -84,7 +77,7 @@ const NavbarRight = memo((): JSX.Element => {
     return (
       <>
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
-          <ShowSkeltonInSSR><AppearanceModeDropdown isAuthenticated={isAuthenticated} /></ShowSkeltonInSSR>
+          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
 
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
