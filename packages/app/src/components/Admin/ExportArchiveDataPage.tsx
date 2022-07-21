@@ -20,11 +20,24 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions',
 ];
 
-const ExportArchiveDataPage = (props) => {
+type Props = {
+  adminSocketIoContainer: AdminSocketIoContainer,
+};
 
-  const [collections, setCollections] = useState([]);
-  const [zipFileStats, setZipFileStats] = useState([]);
-  const [progressList, setProgressList] = useState([]);
+type collectionsData = {
+  collections: any,
+};
+
+type statusData = {
+  status: any
+}
+
+
+const ExportArchiveDataPage = (props: Props) => {
+
+  const [collections, setCollections] = useState<any>([]);
+  const [zipFileStats, setZipFileStats] = useState<any>([]);
+  const [progressList, setProgressList] = useState<any>([]);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
@@ -34,8 +47,8 @@ const ExportArchiveDataPage = (props) => {
 
   const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
-      apiGet('/v3/mongo/collections', {}),
-      apiGet('/v3/export/status', {}),
+      apiGet<collectionsData>('/v3/mongo/collections', {}),
+      apiGet<statusData>('/v3/export/status', {}),
     ]);
     const filteredCollections = collections.filter((collectionName) => {
       return !IGNORED_COLLECTION_NAMES.includes(collectionName);
@@ -53,29 +66,18 @@ const ExportArchiveDataPage = (props) => {
       return;
     }
     // websocket event
-    socket.on('admin:onProgressForExport', () => {
-      setIsExporting(false);
-      setProgressList([]);
-    });
+    socket.off('admin:onProgressForExport');
 
     // websocket event
-    socket.on('admin:onStartZippingForExport', () => {
-      setIsZipping(false);
-    });
+    socket.off('admin:onStartZippingForExport');
 
     // websocket event
-    socket.on('admin:onTerminateForExport', () => {
-      setIsExporting(true);
-      setIsZipping(true);
-      setIsExported(false);
-      setZipFileStats([]);
-    });
+    socket.off('admin:onTerminateForExport');
   }, [props.adminSocketIoContainer]);
 
   const setupWebsocketEventHandler = useCallback(() => {
 
     const socket = props.adminSocketIoContainer.getSocket();
-    console.log(socket);
     if (socket == null) {
       return;
     }
@@ -239,10 +241,6 @@ const ExportArchiveDataPage = (props) => {
     </div>
   );
 
-};
-
-ExportArchiveDataPage.propTypes = {
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
 const ExportArchiveDataPageWrapperFC = (props) => {
