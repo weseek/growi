@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -32,7 +32,7 @@ const ElasticsearchManagement = () => {
   const [aliasesData, setAliasesData] = useState(null);
 
 
-  const retrieveIndicesStatus = async() => {
+  const retrieveIndicesStatus = useCallback(async() => {
     try {
       const { data } = await apiv3Get('/search/indices');
       const { info } = data;
@@ -59,7 +59,14 @@ const ElasticsearchManagement = () => {
     finally {
       setIsInitialized(true);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const fetchIndicesStatusData = async() => {
+      await retrieveIndicesStatus();
+    };
+    fetchIndicesStatusData();
+  }, [retrieveIndicesStatus]);
 
 
   useEffect(() => {
