@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -26,16 +28,14 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-
+import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PageEditorModeManager from './PageEditorModeManager';
 import { SubNavButtons } from './SubNavButtons';
 
 
@@ -150,6 +150,8 @@ type GrowiContextualSubNavigationProps = {
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+
+  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <Skelton width={208} height={32.49} /> });
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;

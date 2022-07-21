@@ -338,7 +338,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 };
 
 
-type PageItemControlProps = CommonProps & {
+export type PageItemControlProps = CommonProps & {
   pageId?: string,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
