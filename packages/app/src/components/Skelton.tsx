@@ -1,7 +1,5 @@
 import React from 'react';
 
-import styles from './Skelton.module.scss';
-
 type SkeltonProps = {
   width?: number,
   height?: number,
@@ -19,5 +17,5 @@ export const Skelton = (props: SkeltonProps): JSX.Element => {
     height,
   };
 
-  return <div style={style} className={`${styles['grw-skelton']} ${additionalClass} ${roundedPill ? 'rounded-pill' : ''}`}></div>;
+  return <div style={style} className={`grw-skelton ${additionalClass} ${roundedPill ? 'rounded-pill' : ''}`}></div>;
 };
