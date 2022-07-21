@@ -9,7 +9,6 @@ import { SocketEventName } from '~/interfaces/websocket';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { useAdminSocket } from '~/stores/socket-io';
 
-
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
 import ReconnectControls from './ReconnectControls';
