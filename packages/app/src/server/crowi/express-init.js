@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
 import { i18n, localePath } from '~/next-i18next.config';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:crowi:express-init');
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -57,10 +60,27 @@ module.exports = function(crowi, app) {
 
   app.use(compression());
 
+
   const { configManager } = crowi;
-  const trustedProxies = configManager.getConfig('crowi', 'security:trustedProxies');
-  if (trustedProxies != null) {
-    app.set('trust proxy', trustedProxies);
+
+  const trustProxyBool = configManager.getConfig('crowi', 'security:trustProxyBool');
+  const trustProxyCsv = configManager.getConfig('crowi', 'security:trustProxyCsv');
+  const trustProxyHops = configManager.getConfig('crowi', 'security:trustProxyHops');
+
+  const trustProxies = [trustProxyBool, trustProxyCsv, trustProxyHops];
+
+  const isNotSpec = trustProxies.filter(trustProxy => trustProxy != null).length !== 1;
+
+  for (const trustProxy of trustProxies) {
+    if (trustProxy != null) {
+      app.set('trust proxy', trustProxy);
+      break;
+    }
+  }
+
+  if (isNotSpec) {
+    // eslint-disable-next-line max-len
+    logger.warn(`If multiple environment variables TRUST_PROXY_ ~ are set, they are set preferentially in the order of BOOL → CSV → HOPS. Set value: ${app.get('trust proxy')}`);
   }
 
   app.use(helmet({
