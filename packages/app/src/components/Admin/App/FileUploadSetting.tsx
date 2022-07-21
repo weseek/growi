@@ -40,7 +40,7 @@ const FileUploadSetting = (props: Props) => {
         <br />
         <br />
         <span className="text-danger">
-          <i className="ti-unlink"></i>
+          <i className="ti ti-unlink"></i>
           {t('admin:app_setting.change_setting')}
         </span>
       </p>
