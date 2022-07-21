@@ -207,7 +207,13 @@
     "ctrl_space": "Ctrl+Space でコード補完",
     "custom_script": "カスタムスクリプト",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
-    "reflect_change": "変更の反映はページの更新が必要です。"
+    "reflect_change": "変更の反映はページの更新が必要です。",
+    "custom_logo": "カスタムロゴ",
+    "default_logo": "デフォルトのロゴ",
+    "upload_logo": "ロゴをアップロード",
+    "current_logo": "現在のロゴ",
+    "upload_new_logo": "新しいロゴをアップロードする",
+    "delete_logo": "ロゴを削除"
   },
   "export_management": {
     "exporting_collection_list": "エクスポート中のコレクション",

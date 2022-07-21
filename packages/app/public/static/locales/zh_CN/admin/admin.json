@@ -217,7 +217,13 @@
     "ctrl_space": "Ctrl+Space 自动完成",
     "custom_script": "定制纸条",
     "write_java": "您可以编写应用于整个系统的Javascript。",
-    "reflect_change": "您需要重新加载页面以反映更改。"
+    "reflect_change": "您需要重新加载页面以反映更改。",
+    "custom_logo": "自定义徽标",
+    "default_logo": "默认徽标",
+    "upload_logo": "上传徽标",
+    "current_logo": "当前标志",
+    "upload_new_logo": "上传新徽标",
+    "delete_logo": "删除徽标"
   },
   "importer_management": {
     "beta_warning": "这个函数是Beta。",
