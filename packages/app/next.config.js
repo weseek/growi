@@ -25,6 +25,11 @@ const setupWithTM = () => {
     'space-separated-tokens',
     'trim-lines',
     'emoticon',
+    'vfile',
+    'property-information',
+    'web-namespaces',
+    'zwitch',
+    'html-void-elements',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
   ];
 
