@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
 import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
@@ -19,8 +20,6 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
-
-// import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import {
   useCurrentUser,
   /* useSearchServiceConfigured, useSearchServiceReachable, */ useSiteUrl,
@@ -108,8 +107,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
-      // component: <ElasticsearchManagement />,
-      component: <>ElasticsearchManagement</>,
+      component: <ElasticsearchManagement />,
     },
   };
 

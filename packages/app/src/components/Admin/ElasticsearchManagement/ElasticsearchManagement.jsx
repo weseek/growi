@@ -1,14 +1,13 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import AppContainer from '~/client/services/AppContainer';
+
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { useIsSearchServiceReachable } from '~/stores/context';
+import { useAdminSocket } from '~/stores/socket-io';
 
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
@@ -48,30 +47,31 @@ class ElasticsearchManagement extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const { socket } = this.props;
 
-    socket.on('addPageProgress', (data) => {
-      this.setState({
-        isRebuildingProcessing: true,
+    if (socket != null) {
+      socket.on('addPageProgress', (data) => {
+        this.setState({
+          isRebuildingProcessing: true,
+        });
       });
-    });
 
-    socket.on('finishAddPage', async(data) => {
-      await this.retrieveIndicesStatus();
-      this.setState({
-        isRebuildingProcessing: false,
-        isRebuildingCompleted: true,
+      socket.on('finishAddPage', async(data) => {
+        await this.retrieveIndicesStatus();
+        this.setState({
+          isRebuildingProcessing: false,
+          isRebuildingCompleted: true,
+        });
       });
-    });
 
-    socket.on('rebuildingFailed', (data) => {
-      toastError(new Error(data.error), 'Rebuilding Index has failed.');
-    });
+      socket.on('rebuildingFailed', (data) => {
+        toastError(new Error(data.error), 'Rebuilding Index has failed.');
+      });
+    }
+
   }
 
   async retrieveIndicesStatus() {
-    const { appContainer } = this.props;
-
     try {
       const { data } = await apiv3Get('/search/indices');
       const { info } = data;
@@ -103,8 +103,6 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async reconnect() {
-    const { appContainer } = this.props;
-
     this.setState({ isReconnectingProcessing: true });
 
     try {
@@ -120,7 +118,6 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async normalizeIndices() {
-    const { appContainer } = this.props;
 
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
@@ -135,8 +132,6 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async rebuildIndices() {
-    const { appContainer } = this.props;
-
     this.setState({ isRebuildingProcessing: true });
 
     try {
@@ -151,14 +146,14 @@ class ElasticsearchManagement extends React.Component {
   }
 
   render() {
-    const { t, appContainer } = this.props;
+    const { t, isSearchServiceReachable } = this.props;
     const {
       isInitialized,
       isConnected, isConfigured, isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted,
       isNormalized, indicesData, aliasesData,
     } = this.state;
 
-    const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
+    const isErrorOccuredOnSearchService = !isSearchServiceReachable;
 
     const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
@@ -228,18 +223,21 @@ class ElasticsearchManagement extends React.Component {
 
 const ElasticsearchManagementWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <ElasticsearchManagement t={t} {...props} />;
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const { data: socket } = useAdminSocket();
+
+  // if (isSearchServiceReachable == null) {
+  //   return <></>;
+  // }
+
+  return <ElasticsearchManagement t={t} isSearchServiceReachable={isSearchServiceReachable} socket={socket} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagementWrapperFC, [AppContainer, AdminSocketIoContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+  isSearchServiceReachable: PropTypes.bool,
+  socket: PropTypes.object,
 };
 
-export default ElasticsearchManagementWrapper;
+export default ElasticsearchManagementWrapperFC;
