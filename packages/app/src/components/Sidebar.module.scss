@@ -163,21 +163,6 @@
     .grw-btn-reload {
       font-size: 18px;
     }
-    .grw-recent-changes-resize-button {
-      font-size: 12px;
-      line-height: normal;
-      transform: translateY(-2px);
-
-      .custom-control-label::before {
-        padding-left: 16px;
-        content: 'L';
-      }
-
-      .custom-control-input:checked + .custom-control-label::before {
-        padding-left: 5px;
-        content: 'S';
-      }
-    }
   }
 
   .list-group {
