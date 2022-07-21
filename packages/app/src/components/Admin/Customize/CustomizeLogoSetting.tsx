@@ -25,7 +25,9 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const retrieveData = useCallback(async() => {
     try {
       const response = await apiv3Get('/customize-setting/customize-logo');
-      const { isDefaultLogo, customizedLogoSrc } = response.data;
+      const { isDefaultLogo: _isDefaultLogo, customizedLogoSrc } = response.data;
+      const isDefaultLogo = _isDefaultLogo ?? true;
+
       setIsDefaultLogo(isDefaultLogo);
       setCustomizedLogoSrc(customizedLogoSrc);
     }
@@ -55,6 +57,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
         customizedLogoSrc,
       });
       const { customizedParams } = response.data;
+      setIsDefaultLogo(customizedParams.isDefaultLogo);
       setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
     }
