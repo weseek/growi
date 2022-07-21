@@ -1,17 +1,19 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
+import type { SWRInfiniteResponse } from 'swr/infinite';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
@@ -24,17 +26,21 @@ import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 import InfiniteScroll from './InfiniteScroll';
 
-const BookmarksItem = ({ data, swr }) : JSX.Element => {
-  const { t } = useTranslation('');
-  const { page } = data;
+type Props = {
+  page: IPageHasId,
+  swr: SWRInfiniteResponse
+}
+const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
+  const { t } = useTranslation();
+  const { page, swr } = props;
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-  const bookmarkItemId = `bookmark-item-${data._id}`;
+  const bookmarkItemId = `bookmark-item-${page._id}`;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
-    await unbookmark(page.id);
+    await unbookmark(page._id);
     swr.mutate();
   }, [swr, page]);
 
@@ -161,13 +167,8 @@ const BookmarksItem = ({ data, swr }) : JSX.Element => {
 
 };
 
-BookmarksItem.propTypes = {
-  data: PropTypes.any,
-  swr: PropTypes.any,
-};
-
 const Bookmarks = () : JSX.Element => {
-  const { t } = useTranslation('');
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const swr = useSWRInifiniteBookmarkedPage(currentUser?._id);
   const isEmpty = swr.data?.[0].docs.length === 0;
@@ -191,7 +192,7 @@ const Bookmarks = () : JSX.Element => {
                 isReachingEnd={isReachingEnd}
               >
                 {paginationResult => paginationResult?.docs.map(data => (
-                  <BookmarksItem key={data._id} data={data} swr={swr} />
+                  <BookmarksItem key={data.page._id} page={data.page} swr={swr} />
                 ))
                 }
               </InfiniteScroll>
