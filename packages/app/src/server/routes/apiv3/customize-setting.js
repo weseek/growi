@@ -767,14 +767,8 @@ module.exports = (crowi) => {
 
     try {
       await attachmentService.removeAllAttachments(attachments);
-      const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
       // update attachmentId immediately
-      const attachmentConfigParams = {
-        'customize:customizedLogoSrc': null,
-      };
-      if (!isDefaultLogo) {
-        attachmentConfigParams['customize:customizedLogoSrc'] = null;
-      }
+      const attachmentConfigParams = { 'customize:customizedLogoSrc': null };
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
     }
     catch (err) {
@@ -782,7 +776,7 @@ module.exports = (crowi) => {
       return res.status(500).apiv3Err(new ErrorV3('Error while deleting logo', 'delete-brand-logo-failed'));
     }
 
-    return res.apiv3({ });
+    return res.apiv3({});
   });
 
   return router;
