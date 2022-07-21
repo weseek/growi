@@ -135,7 +135,7 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
-        {...options}
+        {options}
       </select>
     );
   }, [availableOptions, actionName, handleActionChange, t]);
@@ -164,7 +164,7 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
-        {...options}
+        {options}
       </select>
     );
   }, [deleteUserGroup, userGroups, t, actionName, transferToUserGroupId, handleGroupChange]);

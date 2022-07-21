@@ -57,7 +57,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`shadow-none btn ${styles['btn-bookmark']} border-0
+        className={`shadow-none btn btn-bookmark ${styles['btn-bookmark']} border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
