@@ -5,8 +5,10 @@ import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { SocketEventName } from '~/interfaces/websocket';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { useAdminSocket } from '~/stores/socket-io';
+
 
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
@@ -65,24 +67,24 @@ const ElasticsearchManagement = () => {
     if (socket == null) {
       return;
     }
-    socket.on('addPageProgress', (data) => {
+    socket.on(SocketEventName.AddPageProgress, (data) => {
       setIsRebuildingProcessing(true);
     });
 
-    socket.on('finishAddPage', async(data) => {
+    socket.on(SocketEventName.FinishAddPage, async(data) => {
       await retrieveIndicesStatus();
       setIsRebuildingProcessing(false);
       setIsRebuildingCompleted(true);
     });
 
-    socket.on('rebuildingFailed', (data) => {
+    socket.on(SocketEventName.RebuildingFailed, (data) => {
       toastError(new Error(data.error), 'Rebuilding Index has failed.');
     });
 
     return () => {
-      socket.off('addPageProgress');
-      socket.off('finishAddPage');
-      socket.off('rebuildingFailed');
+      socket.off(SocketEventName.AddPageProgress);
+      socket.off(SocketEventName.FinishAddPage);
+      socket.off(SocketEventName.RebuildingFailed);
     };
   }, [socket]);
 
