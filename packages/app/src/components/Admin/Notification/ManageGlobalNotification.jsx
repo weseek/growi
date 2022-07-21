@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -172,7 +172,7 @@ class ManageGlobalNotification extends React.Component {
                 <>
                   <div className="input-group notify-to-option" id="mail-input">
                     <div className="input-group-prepend">
-                      <span className="input-group-text" id="mail-addon"><i className="ti-email" /></span>
+                      <span className="input-group-text" id="mail-addon"><i className="ti ti-email" /></span>
                     </div>
                     <input
                       className="form-control"
