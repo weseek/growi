@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -14,96 +13,82 @@ import RebuildIndexControls from './RebuildIndexControls';
 import ReconnectControls from './ReconnectControls';
 import StatusTable from './StatusTable';
 
-class ElasticsearchManagement extends React.Component {
+const ElasticsearchManagement = (props) => {
+  const { t } = useTranslation();
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const { data: socket } = useAdminSocket();
 
-  constructor(props) {
-    super(props);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-    this.state = {
-      isInitialized: false,
+  const [isConnected, setIsConnected] = useState(false);
+  const [isConfigured, setIsConfigured] = useState(false);
+  const [isReconnectingProcessing, setIsReconnectingProcessing] = useState(false);
+  const [isRebuildingProcessing, setIsRebuildingProcessing] = useState(false);
+  const [isRebuildingCompleted, setIsRebuildingCompleted] = useState(false);
 
-      isConnected: false,
-      isConfigured: false,
-      isReconnectingProcessing: false,
-      isRebuildingProcessing: false,
-      isRebuildingCompleted: false,
+  const [isNormalized, setIsNormalized] = useState(null);
+  const [indicesData, setIndicesData] = useState(null);
+  const [aliasesData, setAliasesData] = useState(null);
 
-      isNormalized: null,
-      indicesData: null,
-      aliasesData: null,
-    };
 
-    this.reconnect = this.reconnect.bind(this);
-    this.normalizeIndices = this.normalizeIndices.bind(this);
-    this.rebuildIndices = this.rebuildIndices.bind(this);
-  }
-
-  async UNSAFE_UNSAFE_componentWillMount() {
-    this.retrieveIndicesStatus();
-  }
-
-  componentDidMount() {
-    this.initWebSockets();
-  }
-
-  initWebSockets() {
-    const { socket } = this.props;
-
-    if (socket != null) {
-      socket.on('addPageProgress', (data) => {
-        this.setState({
-          isRebuildingProcessing: true,
-        });
-      });
-
-      socket.on('finishAddPage', async(data) => {
-        await this.retrieveIndicesStatus();
-        this.setState({
-          isRebuildingProcessing: false,
-          isRebuildingCompleted: true,
-        });
-      });
-
-      socket.on('rebuildingFailed', (data) => {
-        toastError(new Error(data.error), 'Rebuilding Index has failed.');
-      });
-    }
-
-  }
-
-  async retrieveIndicesStatus() {
+  const retrieveIndicesStatus = async() => {
     try {
       const { data } = await apiv3Get('/search/indices');
       const { info } = data;
 
-      this.setState({
-        isConnected: true,
-        isConfigured: true,
+      setIsConnected(true);
+      setIsConfigured(true);
 
-        indicesData: info.indices,
-        aliasesData: info.aliases,
-        isNormalized: info.isNormalized,
-      });
+      setIndicesData(info.indices);
+      setAliasesData(info.aliases);
+      setIsNormalized(info.isNormalized);
     }
     catch (errors) {
-      this.setState({ isConnected: false });
+      setIsConnected(false);
 
       // evaluate whether configured or not
       for (const error of errors) {
         if (error.code === 'search-service-unconfigured') {
-          this.setState({ isConfigured: false });
+          setIsConfigured(false);
         }
       }
 
       toastError(errors);
     }
     finally {
-      this.setState({ isInitialized: true });
+      setIsInitialized(true);
     }
-  }
+  };
 
-  async reconnect() {
-    this.setState({ isReconnectingProcessing: true });
+
+  useEffect(() => {
+    if (socket == null) {
+      return;
+    }
+    socket.on('addPageProgress', (data) => {
+      setIsRebuildingProcessing(true);
+    });
+
+    socket.on('finishAddPage', async(data) => {
+      await retrieveIndicesStatus();
+      setIsRebuildingProcessing(false);
+      setIsRebuildingCompleted(true);
+    });
+
+    socket.on('rebuildingFailed', (data) => {
+      toastError(new Error(data.error), 'Rebuilding Index has failed.');
+    });
+
+    return () => {
+      socket.off('addPageProgress');
+      socket.off('finishAddPage');
+      socket.off('rebuildingFailed');
+    };
+  }, [socket]);
+
+
+  const reconnect = async() => {
+    setIsReconnectingProcessing(true);
 
     try {
       await apiv3Post('/search/connection');
@@ -115,9 +100,9 @@ class ElasticsearchManagement extends React.Component {
 
     // reload
     window.location.reload();
-  }
+  };
 
-  async normalizeIndices() {
+  const normalizeIndices = async() => {
 
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
@@ -126,13 +111,13 @@ class ElasticsearchManagement extends React.Component {
       toastError(e);
     }
 
-    await this.retrieveIndicesStatus();
+    await retrieveIndicesStatus();
 
     toastSuccess('Normalizing has succeeded');
-  }
+  };
 
-  async rebuildIndices() {
-    this.setState({ isRebuildingProcessing: true });
+  const rebuildIndices = async() => {
+    setIsRebuildingProcessing(true);
 
     try {
       await apiv3Put('/search/indices', { operation: 'rebuild' });
@@ -142,102 +127,79 @@ class ElasticsearchManagement extends React.Component {
       toastError(e);
     }
 
-    await this.retrieveIndicesStatus();
-  }
+    await retrieveIndicesStatus();
+  };
 
-  render() {
-    const { t, isSearchServiceReachable } = this.props;
-    const {
-      isInitialized,
-      isConnected, isConfigured, isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted,
-      isNormalized, indicesData, aliasesData,
-    } = this.state;
+  const isErrorOccuredOnSearchService = !isSearchServiceReachable;
 
-    const isErrorOccuredOnSearchService = !isSearchServiceReachable;
+  const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
-    const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
-
-    return (
-      <>
-        <div className="row">
-          <div className="col-md-12">
-            <StatusTable
-              isInitialized={isInitialized}
-              isErrorOccuredOnSearchService={isErrorOccuredOnSearchService}
-              isConnected={isConnected}
-              isConfigured={isConfigured}
-              isNormalized={isNormalized}
-              indicesData={indicesData}
-              aliasesData={aliasesData}
-            />
-          </div>
+  return (
+    <>
+      <div className="row">
+        <div className="col-md-12">
+          <StatusTable
+            isInitialized={isInitialized}
+            isErrorOccuredOnSearchService={isErrorOccuredOnSearchService}
+            isConnected={isConnected}
+            isConfigured={isConfigured}
+            isNormalized={isNormalized}
+            indicesData={indicesData}
+            aliasesData={aliasesData}
+          />
         </div>
+      </div>
 
-        <hr />
+      <hr />
 
-        {/* Controls */}
-        <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
-          <div className="col-md-6">
-            <ReconnectControls
-              isEnabled={isReconnectBtnEnabled}
-              isProcessing={isReconnectingProcessing}
-              onReconnectingRequested={this.reconnect}
-            />
-          </div>
+      {/* Controls */}
+      <div className="row">
+        <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
+        <div className="col-md-6">
+          <ReconnectControls
+            isEnabled={isReconnectBtnEnabled}
+            isProcessing={isReconnectingProcessing}
+            onReconnectingRequested={reconnect}
+          />
         </div>
+      </div>
 
-        <hr />
+      <hr />
 
-        <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
-          <div className="col-md-6">
-            <NormalizeIndicesControls
-              isRebuildingProcessing={isRebuildingProcessing}
-              isRebuildingCompleted={isRebuildingCompleted}
-              isNormalized={isNormalized}
-              onNormalizingRequested={this.normalizeIndices}
-            />
-          </div>
+      <div className="row">
+        <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
+        <div className="col-md-6">
+          <NormalizeIndicesControls
+            isRebuildingProcessing={isRebuildingProcessing}
+            isRebuildingCompleted={isRebuildingCompleted}
+            isNormalized={isNormalized}
+            onNormalizingRequested={normalizeIndices}
+          />
         </div>
+      </div>
 
-        <hr />
+      <hr />
 
-        <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
-          <div className="col-md-6">
-            <RebuildIndexControls
-              isRebuildingProcessing={isRebuildingProcessing}
-              isRebuildingCompleted={isRebuildingCompleted}
-              isNormalized={isNormalized}
-              onRebuildingRequested={this.rebuildIndices}
-            />
-          </div>
+      <div className="row">
+        <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
+        <div className="col-md-6">
+          <RebuildIndexControls
+            isRebuildingProcessing={isRebuildingProcessing}
+            isRebuildingCompleted={isRebuildingCompleted}
+            isNormalized={isNormalized}
+            onRebuildingRequested={rebuildIndices}
+          />
         </div>
+      </div>
 
-      </>
-    );
-  }
+    </>
+  );
 
-}
-
-const ElasticsearchManagementWrapperFC = (props) => {
-  const { t } = useTranslation();
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
-  const { data: socket } = useAdminSocket();
-
-  if (isSearchServiceReachable == null) {
-    return <></>;
-  }
-
-  return <ElasticsearchManagement t={t} isSearchServiceReachable={isSearchServiceReachable} socket={socket} {...props} />;
 };
 
 
 ElasticsearchManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  isSearchServiceReachable: PropTypes.bool.isRequired,
-  socket: PropTypes.object,
+
 };
 
-export default ElasticsearchManagementWrapperFC;
+export default ElasticsearchManagement;
