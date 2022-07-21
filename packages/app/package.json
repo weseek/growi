@@ -155,6 +155,7 @@
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rehype-raw": "^6.1.1",
+    "rehype-sanitize": "^5.0.1",
     "rehype-slug": "^5.0.1",
     "rehype-toc": "^3.0.2",
     "remark-breaks": "^3.0.2",

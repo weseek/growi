@@ -10512,9 +10512,9 @@ hast-util-parse-selector@^3.0.0:
     "@types/hast" "^2.0.0"
 
 hast-util-raw@^7.2.0:
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/hast-util-raw/-/hast-util-raw-7.2.2.tgz#1974360b2d7f15b5ce26c2a4bac892d5d8185a18"
-  integrity sha512-0x3BhhdlBcqRIKyc095lBSDvmQNMY3Eulj2PLsT5XCyKYrxssI5yr3P4Kv/PBo1s/DMkZy2voGkMXECnFCZRLQ==
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/hast-util-raw/-/hast-util-raw-7.2.1.tgz#6e964cee098dbdd93d1b77cf180b5827d48048ab"
+  integrity sha512-wgtppqXVdXzkDXDFclLLdAyVUJSKMYYi6LWIAbA8oFqEdwksYIcPGM3RkKV1Dfn5GElvxhaOCs0jmCOMayxd3A==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/parse5" "^6.0.0"
@@ -10527,6 +10527,13 @@ hast-util-raw@^7.2.0:
     vfile "^5.0.0"
     web-namespaces "^2.0.0"
     zwitch "^2.0.0"
+
+hast-util-sanitize@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hast-util-sanitize/-/hast-util-sanitize-4.0.0.tgz#71a02ca2e50d04b852a5500846418070ca364f60"
+  integrity sha512-pw56+69jq+QSr/coADNvWTmBPDy+XsmwaF5KnUys4/wM1jt/fZdl7GPxhXXXYdXnz3Gj3qMkbUCH2uKjvX0MgQ==
+  dependencies:
+    "@types/hast" "^2.0.0"
 
 hast-util-to-parse5@^7.0.0:
   version "7.0.0"
@@ -17635,6 +17642,15 @@ rehype-raw@^6.1.1:
   dependencies:
     "@types/hast" "^2.0.0"
     hast-util-raw "^7.2.0"
+    unified "^10.0.0"
+
+rehype-sanitize@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/rehype-sanitize/-/rehype-sanitize-5.0.1.tgz#dac01a7417bdd329260c74c74449697b4be5eb56"
+  integrity sha512-da/jIOjq8eYt/1r9GN6GwxIR3gde7OZ+WV8pheu1tL8K0D9KxM2AyMh+UEfke+FfdM3PvGHeYJU0Td5OWa7L5A==
+  dependencies:
+    "@types/hast" "^2.0.0"
+    hast-util-sanitize "^4.0.0"
     unified "^10.0.0"
 
 rehype-slug@^5.0.1:

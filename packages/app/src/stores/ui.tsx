@@ -223,7 +223,7 @@ type PreferDrawerModeByUserUtils = {
   update: (preferDrawerMode: boolean) => void
 }
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<SWRResponse, PreferDrawerModeByUserUtils> => {
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
