@@ -1,8 +1,39 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.0](https://github.com/weseek/growi/compare/v5.0.11...v5.1.0) - 2022-07-21
+
+### 💎 Features
+
+- feat: Custom brand logo image (#5709) @mudana-grune
+- feat: Rate Limit by rate-limit-flexible (#6053) @yukendev
+- feat: Audit Log (#5915) @miya
+
+### 🚀 Improvement
+
+- imprv: Prevent XSS with React (#6274) @yuki-takei
+- imprv: Reflect tmp tag data (#6124) @kaoritokashiki
+- imprv: Update subscribe button icon on Navbar (#6213) @jam411
+- imprv: Event emittion by socket.io is triggered only when ES reindexing (#6077) @hirokei-camel
+
+### 🐛 Bug Fixes
+
+- fix: Drawio rendering (#6275) @hakumizuki
+- fix: Blink section header on init (#6249) @yuki-takei
+- fix: Error when trying login with an email that contains plus sign (#6232) @miya
+- fix: Use APIv3 for api get check_username (#6226) @kaoritokashiki
+- fix: Slack integration connection test (#6201) @yukendev
+- fix: Not found page for `/${ObjectId like string}` path (#6208) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Refactor PageInfo types (#6283) @yuki-takei
+- support: Refactor growi renderer using hooks 2 (#6237) @yuki-takei
+- support: Refactor growi renderer using hooks (#6223) @hakumizuki
+- imprv: Omit Personal Container (#6182) @kaoritokashiki
 
 ## [v5.0.11](https://github.com/weseek/growi/compare/v5.0.10...v5.0.11) - 2022-07-05
 
