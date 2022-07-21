@@ -23,7 +23,7 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser,
-  /* useSearchServiceConfigured, useSearchServiceReachable, */ useSiteUrl,
+  /* useSearchServiceConfigured , */ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 // import { useEnvVars } from '~/stores/admin-context';
 
@@ -122,7 +122,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
-  // useSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchServiceReachable(props.isSearchServiceReachable);
 
   useSiteUrl(props.siteUrl);
 

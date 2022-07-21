@@ -226,9 +226,9 @@ const ElasticsearchManagementWrapperFC = (props) => {
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
   const { data: socket } = useAdminSocket();
 
-  // if (isSearchServiceReachable == null) {
-  //   return <></>;
-  // }
+  if (isSearchServiceReachable == null) {
+    return <></>;
+  }
 
   return <ElasticsearchManagement t={t} isSearchServiceReachable={isSearchServiceReachable} socket={socket} {...props} />;
 };
@@ -236,7 +236,7 @@ const ElasticsearchManagementWrapperFC = (props) => {
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  isSearchServiceReachable: PropTypes.bool,
+  isSearchServiceReachable: PropTypes.bool.isRequired,
   socket: PropTypes.object,
 };
 
