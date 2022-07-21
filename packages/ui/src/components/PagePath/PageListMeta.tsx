@@ -2,8 +2,7 @@ import React, { FC } from 'react';
 
 import assert from 'assert';
 
-import { IPageHasId } from '@growi/app/src/interfaces/page';
-import { templateChecker, pagePathUtils } from '@growi/core';
+import { templateChecker, pagePathUtils, IPageHasId } from '@growi/core';
 
 import { FootstampIcon } from '../SearchPage/FootstampIcon';
 

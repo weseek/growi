@@ -1,4 +1,6 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
+
 
 /* eslint-disable no-use-before-define */
 
@@ -135,6 +137,8 @@ module.exports = function(crowi, app) {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
+  const activityEvent = crowi.event('activity');
+
   /**
    * Check the user is accessible to the related page
    *
@@ -213,6 +217,17 @@ module.exports = function(crowi, app) {
       logger.error(e);
       return res.json(ApiResponse.error(e.message));
     }
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
 
     return fileStream.pipe(res);
   }
@@ -472,6 +487,8 @@ module.exports = function(crowi, app) {
       pageCreated,
     };
 
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
+
     res.json(ApiResponse.success(result));
 
     if (pageCreated) {
@@ -640,6 +657,8 @@ module.exports = function(crowi, app) {
       logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
     }
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_REMOVE });
 
     return res.json(ApiResponse.success({}));
   };

@@ -73,12 +73,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  MATHJAX: {
-    ns:      'crowi',
-    key:     'app:mathJax',
-    type:    ValueType.STRING,
-    default: null,
-  },
   NO_CDN: {
     ns:      'crowi',
     key:     'app:noCdn',
@@ -364,6 +358,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  TRUSTED_PROXIES: {
+    ns:      'crowi',
+    key:     'security:trustedProxies',
+    type:    ValueType.STRING,
+    default: null,
+  },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',
@@ -621,6 +621,36 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key: 'app:minPasswordLength',
     type: ValueType.NUMBER,
     default: 8,
+  },
+  AUDIT_LOG_ENABLED: {
+    ns: 'crowi',
+    key: 'app:auditLogEnabled',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
+  ACTIVITY_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:activityExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 2592000, // 30 days
+  },
+  AUDIT_LOG_ACTION_GROUP_SIZE: {
+    ns: 'crowi',
+    key: 'app:auditLogActionGroupSize',
+    type: ValueType.STRING,
+    default: 'SMALL',
+  },
+  AUDIT_LOG_ADDITIONAL_ACTIONS: {
+    ns: 'crowi',
+    key: 'app:auditLogAdditionalActions',
+    type: ValueType.STRING,
+    default: null,
+  },
+  AUDIT_LOG_EXCLUDE_ACTIONS: {
+    ns: 'crowi',
+    key: 'app:auditLogExcludeActions',
+    type: ValueType.STRING,
+    default: null,
   },
 };
 

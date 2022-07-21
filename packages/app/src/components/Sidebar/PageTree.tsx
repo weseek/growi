@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
@@ -17,10 +17,9 @@ const PageTree: FC = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  const targetPathOrId = targetId || notFoundTargetPathOrId;
+  const targetPathOrId = targetId || currentPath;
 
   if (migrationStatus == null) {
     return (

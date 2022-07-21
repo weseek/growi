@@ -8,12 +8,13 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line no-unused-vars
-import styles from '../../css/index.css';
 import { LsxContext } from '../util/LsxContext';
 import { TagCacheManagerFactory } from '../util/TagCacheManagerFactory';
 
 import { LsxListView } from './LsxPageList/LsxListView';
 import { PageNode } from './PageNode';
+
+import styles from '../../css/index.css';
 
 export class Lsx extends React.Component {
 

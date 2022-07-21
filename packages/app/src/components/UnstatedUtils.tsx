@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import React from 'react';
+
 import { Subscribe } from 'unstated';
 
 /**
@@ -43,7 +44,7 @@ function generateAutoNamedProps(instances) {
  *  </Subscribe>
  */
 export function withUnstatedContainers<T, P>(Component, containerClasses): React.ForwardRefExoticComponent<React.PropsWithoutRef<P> & React.RefAttributes<T>> {
-  return React.forwardRef<T, P>((props, ref) => (
+  const unstatedContainer = React.forwardRef<T, P>((props, ref) => (
     // wrap with <Subscribe></Subscribe>
     <Subscribe to={containerClasses}>
       { (...containers) => {
@@ -52,4 +53,6 @@ export function withUnstatedContainers<T, P>(Component, containerClasses): React
       }}
     </Subscribe>
   ));
+  unstatedContainer.displayName = 'unstatedContainer';
+  return unstatedContainer;
 }

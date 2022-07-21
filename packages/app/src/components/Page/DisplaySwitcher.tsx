@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -6,9 +6,8 @@ import dynamic from 'next/dynamic';
 import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { isPopulated } from '~/interfaces/common';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -16,8 +15,9 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
+import { NotCreatablePage } from '../NotCreatablePage';
 import NotFoundPage from '../NotFoundPage';
-// import Page from '../Page';
+import { Page } from '../Page';
 // import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
@@ -46,6 +46,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isNotCreatable } = useIsNotCreatable();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -74,6 +75,7 @@ const DisplaySwitcher = (): JSX.Element => {
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPagePath)}
+                        data-testid="pageListButton"
                       >
                         <div className="grw-page-accessories-control-icon">
                           <PageListIcon />
@@ -113,9 +115,9 @@ const DisplaySwitcher = (): JSX.Element => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
-              {/* { !isNotFound && <Page /> } */}
-              { !isNotFound && revision != null && isPopulated(revision) && revision.body }
-              { isNotFound && <NotFoundPage /> }
+              { !isNotFound && <Page /> }
+              { isNotFound && !isNotCreatable && <NotFoundPage /> }
+              { isNotFound && isNotCreatable && <NotCreatablePage /> }
             </div>
 
           </div>

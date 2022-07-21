@@ -1,7 +1,14 @@
-import { pagePathUtils } from '@growi/core';
+import EventEmitter from 'events';
+
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+
+import { SupportedActionType } from '~/interfaces/activity';
+// import { CustomWindow } from '~/interfaces/global';
+import { RendererConfig } from '~/interfaces/services/renderer';
+import { GrowiThemes } from '~/interfaces/theme';
+import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
@@ -11,6 +18,10 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
+
+export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
+  return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
+};
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('csrfToken', initialData);
@@ -26,6 +37,10 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
 
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('confidential', initialData);
+};
+
+export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
+  return useStaticSWR('theme', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
@@ -48,16 +63,8 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
-export const useEmptyPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('emptyPageId', initialData);
-};
-
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData);
-};
-
-export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
-  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData);
 };
 
 export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
@@ -100,12 +107,12 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
 
-export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
-export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -116,8 +123,16 @@ export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Null
   return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
+export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
+};
+
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -134,14 +149,6 @@ export const usePageIdOnHackmd = (initialData?: Nullable<any>): SWRResponse<Null
 
 export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
-};
-
-export const useCreator = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('creator', initialData);
-};
-
-export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
@@ -188,8 +195,36 @@ export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number,
   return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
+export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+};
+
+export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+};
+
+export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
+  return useStaticSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
+};
+
 export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('growiVersion', initialData);
+};
+
+export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isEnabledStaleNotification', initialData);
+};
+
+export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isLatestRevision', initialData);
+};
+
+export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
+  return useStaticSWR('growiRendererConfig', initialData);
+};
+
+export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', initialData);
 };
 
 
@@ -203,6 +238,7 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
+    { fallbackData: currentUser == null },
   );
 };
 

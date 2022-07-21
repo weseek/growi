@@ -1,5 +1,5 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
-
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
 
@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const {
     configManager, appService, aclService, mailService,
   } = crowi;
+  const activityEvent = crowi.event('activity');
 
   const actions = {};
 
@@ -38,6 +39,10 @@ module.exports = function(crowi, app) {
       const { redirectTo } = req.session;
       // remove session.redirectTo
       delete req.session.redirectTo;
+
+      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.safeRedirect(redirectTo);
     });
   };
