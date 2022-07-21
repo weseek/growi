@@ -1,131 +1,84 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import { isValidObjectId } from 'mongoose';
+import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { classicNameResolver } from 'typescript';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IPageWithMeta } from '~/interfaces/page';
-import { PageModel } from '~/server/models/page';
+import { RawLayout } from '~/components/Layout/RawLayout';
+import LoginForm from '~/components/LoginForm';
 
-import { BasicLayout } from '../components/BasicLayout';
-import LoginForm from '../components/LoginForm';
 import {
-  useAppTitle, useConfidential, useCsrfToken, useSiteUrl,
+  useCurrentPagePath, useCsrfToken,
+  useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
-import loggerFactory from '../utils/logger';
 
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from './commons';
 
-const logger = loggerFactory('growi:pages:all');
+import {
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+} from './commons';
 
-type Props = CommonProps & {
-  currentUser: string,
-  username: string,
-  email: string,
+const { isTrashPage: _isTrashPage } = pagePathUtils;
 
-  pageWithMetaStr: string,
-
-  isForbidden: boolean,
-  isNotFound: boolean,
-
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-};
-
-async function injectPageInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const Page = crowi.model('Page');
-  const { pageService } = crowi;
-
-  const { user } = req;
-
-  const { currentPathname } = props;
-  console.log('What is the current pathName\n', currentPathname);
-
-  const pageIdStr = currentPathname.substring(1);
-  console.log('What is the pageIdStr and is it valid\n', pageIdStr, isValidObjectId(pageIdStr));
-  const pageId = isValidObjectId(pageIdStr) ? pageIdStr : null;
-  console.log('What is the pageId here\n', pageId);
-
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, '/', user, true);
-  const page = result.data;
-
-  if (page == null) {
-    const count = pageId != null ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
-    // check the page is forbidden or just does not exist.
-    props.isForbidden = count > 0;
-    props.isNotFound = true;
-    logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, currentPathname);
-  }
-
-  await (page as unknown as PageModel).populateDataToShowRevision();
-  props.pageWithMetaStr = JSON.stringify(result);
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-const LoginPage: NextPage<Props> = (props: Props) => {
-  const router = useRouter();
+type Props = CommonProps & {
 
+  pageWithMetaStr: string,
+};
+
+const LoginPage: NextPage<Props> = (props: Props) => {
+
+  // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
-
   useConfidential(props.confidential);
+  useCsrfToken(props.csrfToken);
+
+  // page
+  useCurrentPagePath(props.currentPathname);
 
   const classNames: string[] = [];
+
   return (
     <>
-      <Head>
+      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+        <div id="page-wrapper">
+          <div className="main container-fluid">
 
-      </Head>
-      <BasicLayout title="konnichia" className={classNames.join(' ')}>
-        <header className="py-0">
-          This is the LoginPage
-        </header>
-        <div className="col-md-12">
-          <LoginForm
-            registrationMode="aaaaaa"
-            name={props.currentUser}
-            username={props.username}
-            email={props.email}
-          />
+            <div className="row">
+              <div className="col-md-12">
+                <div className="login-header mx-auto">
+                  <h1 className="my-3">GROWI</h1>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <LoginForm />
+              </div>
+            </div>
+          </div>
         </div>
-      </BasicLayout>
+      </RawLayout>
     </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
-  } = crowi;
-
-  const { user } = req;
-  console.log('Who is the user\n', user);
-
   const result = await getServerSideCommonProps(context);
 
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
 
   const props: Props = result.props as Props;
-  await injectPageInformation(context, props);
 
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-    props.username = user.username;
-    props.email = user.email;
-  }
-
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
+  injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

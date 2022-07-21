@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
-import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { useCsrfToken } from '~/stores/context';
@@ -361,4 +361,4 @@ const LoginFormWrapperFC = (props) => {
  */
 const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
 
-export default LoginFormWrapper;
+export default LoginForm;
