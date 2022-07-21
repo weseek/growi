@@ -121,7 +121,6 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps): JSX
 });
 Confidential.displayName = 'Confidential';
 
-
 export const GrowiNavbar = (): JSX.Element => {
 
   const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
