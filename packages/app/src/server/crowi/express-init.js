@@ -67,21 +67,22 @@ module.exports = function(crowi, app) {
   const trustProxyCsv = configManager.getConfig('crowi', 'security:trustProxyCsv');
   const trustProxyHops = configManager.getConfig('crowi', 'security:trustProxyHops');
 
-  const trustProxies = [trustProxyBool, trustProxyCsv, trustProxyHops];
+  const isNotSpec = [trustProxyBool, trustProxyCsv, trustProxyHops].filter(trustProxy => trustProxy != null).length !== 1;
 
-  const isNotSpec = trustProxies.filter(trustProxy => trustProxy != null).length !== 1;
-
-  for (const trustProxy of trustProxies) {
+  try {
+    const trustProxy = trustProxyBool ?? trustProxyCsv ?? trustProxyHops;
     if (trustProxy != null) {
       app.set('trust proxy', trustProxy);
-      break;
+    }
+    if (isNotSpec) {
+      // eslint-disable-next-line max-len
+      logger.warn(`If multiple environment variables TRUST_PROXY_ ~ are set, they are set preferentially in the order of BOOL → CSV → HOPS. Set value: ${app.get('trust proxy')}`);
     }
   }
-
-  if (isNotSpec) {
-    // eslint-disable-next-line max-len
-    logger.warn(`If multiple environment variables TRUST_PROXY_ ~ are set, they are set preferentially in the order of BOOL → CSV → HOPS. Set value: ${app.get('trust proxy')}`);
+  catch (err) {
+    logger.error(err);
   }
+
 
   app.use(helmet({
     contentSecurityPolicy: false,
