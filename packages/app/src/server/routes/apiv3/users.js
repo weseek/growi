@@ -464,12 +464,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of admin user
    */
-  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.makeAdmin();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -506,12 +509,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.removeFromAdmin();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -547,7 +553,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of activate user
    */
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
@@ -561,6 +567,9 @@ module.exports = (crowi) => {
     try {
       const userData = await User.findById(id);
       await userData.statusActivate();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_ACTIVATE });
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -596,12 +605,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.statusSuspend();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_DEACTIVATE });
+
       return res.apiv3({ userData });
     }
     catch (err) {
@@ -637,7 +649,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -646,6 +658,8 @@ module.exports = (crowi) => {
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       return res.apiv3({ userData });
     }
@@ -814,13 +828,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Target user
    */
-  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
       const [newPassword, user] = await Promise.all([
         await User.resetPasswordByRandomString(id),
         await User.findById(id)]);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
 
       return res.apiv3({ newPassword, user });
     }
@@ -859,7 +875,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for email sending failure
    */
-  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
@@ -872,6 +888,9 @@ module.exports = (crowi) => {
       }];
       const sendEmail = await sendEmailByUserList(userList);
       // return null if absent
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_SEND_INVITATION_EMAIL });
+
       return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
