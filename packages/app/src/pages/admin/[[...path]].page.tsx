@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import AdminHome from '~/components/Admin/AdminHome/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import { AuditLogManagement } from '~/components/Admin/AuditLogManagement';
 import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
 import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
@@ -108,6 +109,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
       component: <ElasticsearchManagement />,
+    },
+    'audit-log': {
+      title: useCustomTitle(props, t('AuditLog')),
+      component: <AuditLogManagement />,
     },
   };
 
