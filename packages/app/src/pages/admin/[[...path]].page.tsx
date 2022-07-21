@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -52,7 +54,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
 
-  // const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
+  const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 
   const adminPagesMap = {
     home: {
@@ -78,8 +80,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
-      // component: <CustomizeSettingContents />,
-      component: <>CustomizeSettingContents</>,
+      component: <CustomizeSettingContents />,
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
