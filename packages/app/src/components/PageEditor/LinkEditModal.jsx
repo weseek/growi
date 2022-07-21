@@ -463,7 +463,7 @@ class LinkEditModal extends React.PureComponent {
 
 const LinkEditModalFc = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { data: currentPath = '' } = useCurrentPagePath();
+  const { data: currentPath } = useCurrentPagePath();
   return <LinkEditModal t={t} ref={ref} pagePath={currentPath} {...props} />;
 });
 
