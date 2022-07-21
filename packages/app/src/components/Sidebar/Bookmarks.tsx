@@ -61,7 +61,7 @@ const Bookmarks = () : JSX.Element => {
                     <UncontrolledTooltip
                       modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
                       autohide={false}
-                      placement="left"
+                      placement="right"
                       target={`bookmark-item-${data._id}`}
                     >
                       {data.page.path}
