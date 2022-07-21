@@ -47,19 +47,22 @@ const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivEl
   }, [markdown, pagePath, editorSettings?.renderDrawioInRealtime]);
 
   const renderPreview = useCallback(async() => {
-    if (interceptorManager != null) {
-      await interceptorManager.process('preRenderPreview', context);
-      await interceptorManager.process('prePreProcess', context);
-      context.markdown = rendererOptions.preProcess(context.markdown, context);
-      await interceptorManager.process('postPreProcess', context);
-      context.parsedHTML = rendererOptions.process(context.markdown, context);
-      await interceptorManager.process('prePostProcess', context);
-      context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-      await interceptorManager.process('postPostProcess', context);
-      await interceptorManager.process('preRenderPreviewHtml', context);
-    }
 
-    setHtml(context.parsedHTML ?? '');
+    // TODO: use ReactMarkdown
+
+    // if (interceptorManager != null) {
+    //   await interceptorManager.process('preRenderPreview', context);
+    //   await interceptorManager.process('prePreProcess', context);
+    //   context.markdown = rendererOptions.preProcess(context.markdown, context);
+    //   await interceptorManager.process('postPreProcess', context);
+    //   context.parsedHTML = rendererOptions.process(context.markdown, context);
+    //   await interceptorManager.process('prePostProcess', context);
+    //   context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
+    //   await interceptorManager.process('postPostProcess', context);
+    //   await interceptorManager.process('preRenderPreviewHtml', context);
+    // }
+
+    // setHtml(context.parsedHTML ?? '');
   }, [context, rendererOptions]);
 
   useEffect(() => {

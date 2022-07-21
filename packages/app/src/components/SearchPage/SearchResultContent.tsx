@@ -9,7 +9,7 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
@@ -55,7 +55,7 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,

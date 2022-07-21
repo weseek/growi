@@ -100,28 +100,30 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       parsedHTML: '',
     };
 
-    const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-    interceptorManager.process('preRenderCommnetPreview', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = rendererOptions.preProcess(context.markdown, context);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = rendererOptions.process(context.markdown, context);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-      .then(() => {
-        setHtml(context.parsedHTML);
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
+    // TODO: use ReactMarkdown
+
+    // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
+    // interceptorManager.process('preRenderCommnetPreview', context)
+    //   .then(() => { return interceptorManager.process('prePreProcess', context) })
+    //   .then(() => {
+    //     context.markdown = rendererOptions.preProcess(context.markdown, context);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
+    //   .then(() => {
+    //     const parsedHTML = rendererOptions.process(context.markdown, context);
+    //     context.parsedHTML = parsedHTML;
+    //   })
+    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
+    //   .then(() => {
+    //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
+    //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
+    //   .then(() => {
+    //     setHtml(context.parsedHTML);
+    //   })
+    //   // process interceptors for post rendering
+    //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
   }, [rendererOptions]);
 
   const handleSelect = useCallback((activeTab: string) => {

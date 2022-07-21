@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 
-import { Ref } from '../interfaces/common';
+import { Ref } from '@growi/core';
+
 import { IUser } from '../interfaces/user';
 
 import AuthorInfo from './Navbar/AuthorInfo';

@@ -1,9 +1,8 @@
+import { Nullable, HasObjectId } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
-import { Nullable } from '~/interfaces/common';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
 } from '~/interfaces/page';

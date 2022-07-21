@@ -1,15 +1,12 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  FC, useState, useEffect,
 } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 
-import { CustomWindow } from '~/interfaces/global';
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
-import Xss from '~/services/xss';
-import { useXss } from '~/stores/xss';
 
 type Props = {
   headerLabel?: TFunctionResult,
@@ -57,7 +54,6 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 
 
 const UserGroupTable: FC<Props> = (props: Props) => {
-  const { data: xss } = useXss();
   const { t } = useTranslation();
 
   /*
@@ -152,17 +148,17 @@ const UserGroupTable: FC<Props> = (props: Props) => {
               <tr key={group._id}>
                 {props.isAclEnabled
                   ? (
-                    <td><a href={`/admin/user-group-detail/${group._id}`}>{xss?.process(group.name)}</a></td>
+                    <td><a href={`/admin/user-group-detail/${group._id}`}>{group.name}</a></td>
                   )
                   : (
-                    <td>{xss?.process(group.name)}</td>
+                    <td>{group.name}</td>
                   )
                 }
-                <td>{xss?.process(group.description)}</td>
+                <td>{group.description}</td>
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{xss?.process(user.username)}</li>;
+                      return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{user.username}</li>;
                     })}
                   </ul>
                 </td>
@@ -173,10 +169,10 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                         <li key={group._id} className="list-inline-item badge badge-success">
                           {props.isAclEnabled
                             ? (
-                              <a href={`/admin/user-group-detail/${group._id}`}>{xss?.process(group.name)}</a>
+                              <a href={`/admin/user-group-detail/${group._id}`}>{group.name}</a>
                             )
                             : (
-                              <p>{xss?.process(group.name)}</p>
+                              <p>{group.name}</p>
                             )
                           }
                         </li>

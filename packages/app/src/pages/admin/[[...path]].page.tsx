@@ -16,7 +16,7 @@ import NotificationSetting from '~/components/Admin/Notification/NotificationSet
 import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
-import AdminLayout from '~/components/AdminLayout';
+import AdminLayout from '~/components/Layout/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';

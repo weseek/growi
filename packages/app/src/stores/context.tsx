@@ -7,6 +7,7 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
@@ -36,6 +37,10 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
 
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('confidential', initialData);
+};
+
+export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
+  return useStaticSWR('theme', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
@@ -106,8 +111,8 @@ export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
-export const useIsSharedUser = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isSharedUser', initialData);
+export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

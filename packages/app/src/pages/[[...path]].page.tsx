@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isClient, pagePathUtils, pathUtils } from '@growi/core';
+import {
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, pagePathUtils, pathUtils,
+} from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -21,7 +23,6 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { CustomWindow } from '~/interfaces/global';
-import { IPageWithMeta } from '~/interfaces/page';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { PageModel, PageDocument } from '~/server/models/page';
@@ -33,12 +34,11 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-import { BasicLayout } from '../components/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
@@ -50,7 +50,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
-  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
@@ -77,6 +77,12 @@ const IdenticalPathPage = (): JSX.Element => {
   return <IdenticalPathPage />;
 };
 
+const PutbackPageModal = (): JSX.Element => {
+  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
+  return <PutbackPageModal />;
+};
+
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
 
 type Props = CommonProps & {
   currentUser: string,
@@ -140,11 +146,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   // commons
-  useAppTitle(props.appTitle);
-  useSiteUrl(props.siteUrl);
   useXss(new Xss());
   // useEditorConfig(props.editorConfig);
-  useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -164,10 +167,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
-  useIsSharedUser(props.currentUser == null); // '/shared' is not routed this page
+  useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsBlinkedHeaderAtBoot(false);
 
@@ -193,10 +195,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // const { data: editorMode } = useEditorMode();
 
-  let pageWithMeta: IPageWithMeta | undefined;
+  let pageWithMeta: IPageToShowRevisionWithMeta | undefined;
   if (props.pageWithMetaStr != null) {
-    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageWithMeta;
+    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageToShowRevisionWithMeta;
   }
+
+  let shouldRenderPutbackPageModal = false;
+  if (pageWithMeta != null) {
+    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
+  }
+
   useCurrentPageId(pageWithMeta?.data._id);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   // useSWRxPage(pageWithMeta?.data._id);
@@ -254,10 +262,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-
-          <div className="row">
-            <div className="col">
-              <div id="content-main" className="content-main grw-container-convertible">
+          <div id="content-main" className="content-main grw-container-convertible">
+            <div className="row">
+              <div className="col">
                 { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
                 { !props.isIdenticalPathPage && (
@@ -282,7 +289,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div> */}
           </div>
-
         </div>
         <footer>
           {/* <PageComments /> */}
@@ -290,6 +296,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
       </BasicLayout>
     </>
@@ -312,7 +319,7 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageWithMeta|null> {
+async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageToShowRevisionWithMeta|null> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -335,7 +342,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
     }
   }
 
-  const result: IPageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const result: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = result?.data as unknown as PageDocument;
 
   // populate & check if the revision is latest
@@ -348,7 +355,7 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
   return result;
 }
 
-async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageWithMeta|null): Promise<void> {
+async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageToShowRevisionWithMeta|null): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const Page = crowi.model('Page') as PageModel;

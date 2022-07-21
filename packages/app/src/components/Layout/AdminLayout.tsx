@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { Provider } from 'unstated';
 
-import { GrowiNavbar } from './Navbar/GrowiNavbar';
+import { GrowiNavbar } from '../Navbar/GrowiNavbar';
+
 import { RawLayout } from './RawLayout';
 
 // import { injectableContainers } from '~/client/admin';
@@ -25,6 +26,7 @@ const AdminLayout = ({
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
+  const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
     <RawLayout title={title}>
@@ -48,6 +50,8 @@ const AdminLayout = ({
           </div>
         </div>
       </div>
+
+      <SystemVersion />
     </RawLayout>
   );
 };
