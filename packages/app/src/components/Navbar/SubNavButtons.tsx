@@ -52,13 +52,16 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   // dynamic import for show skelton
-  const SubscribeButton = dynamic(() => import('../SubscribeButton'), { ssr: false, loading: () => <Skelton width={37} height={40}/> });
-  const LikeButtons = dynamic(() => import('../LikeButtons'), { ssr: false, loading: () => <Skelton width={57.48} height={40}/> });
-  const BookmarkButtons = dynamic(() => import('../BookmarkButtons'), { ssr: false, loading: () => <Skelton width={53.48} height={40}/> });
-  const SeenUserInfo = dynamic(() => import('../User/SeenUserInfo'), { ssr: false, loading: () => <Skelton width={58.98} height={40}/> });
+  const SubscribeButton = dynamic(() => import('../SubscribeButton'), { ssr: false, loading: () => <Skelton width={37} additionalClass='btn-subscribe'/> });
+  const LikeButtons = dynamic(() => import('../LikeButtons'), { ssr: false, loading: () => <Skelton width={57.48} additionalClass='btn-like'/> });
+  const BookmarkButtons = dynamic(() => import('../BookmarkButtons'), {
+    ssr: false,
+    loading: () => <Skelton width={53.48} additionalClass='total-bookmarks'/>,
+  });
+  const SeenUserInfo = dynamic(() => import('../User/SeenUserInfo'), { ssr: false, loading: () => <Skelton width={58.98} additionalClass='btn-seen-user'/> });
   const PageItemControl = dynamic<PageItemControlProps>(() => import('../Common/Dropdown/PageItemControl').then(mod => mod.PageItemControl), {
     ssr: false,
-    loading: () => <Skelton width={37} height={40}/>,
+    loading: () => <Skelton width={37} additionalClass='btn-page-item-control'/>,
   });
 
 
