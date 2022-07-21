@@ -22,8 +22,7 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/c
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser,
-  /* useSearchServiceConfigured , */ useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 // import { useEnvVars } from '~/stores/admin-context';
 
