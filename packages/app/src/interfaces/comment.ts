@@ -1,5 +1,5 @@
-import { Nullable, Ref } from './common';
-import { HasObjectId } from './has-object-id';
+import { Nullable, Ref, HasObjectId } from '@growi/core';
+
 import { IPage } from './page';
 import { IRevision } from './revision';
 import { IUser } from './user';

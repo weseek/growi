@@ -8,7 +8,6 @@ import PutbackPageModal from '~/components/PutbackPageModal';
 import ShortcutsModal from '~/components/ShortcutsModal';
 import SystemVersion from '~/components/SystemVersion';
 import InterceptorManager from '~/services/interceptor-manager';
-import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import EmptyTrashModal from '../components/EmptyTrashModal';
@@ -29,10 +28,6 @@ const logger = loggerFactory('growi:cli:app');
 if (!window) {
   window = {};
 }
-
-// setup xss library
-const xss = new Xss();
-window.xss = xss;
 
 window.globalEmitter = new EventEmitter();
 window.interceptorManager = new InterceptorManager();

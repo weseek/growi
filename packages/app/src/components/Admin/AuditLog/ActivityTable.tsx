@@ -34,7 +34,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
               <tr data-testid="activity-table" key={activity._id}>
                 <td>{activity.snapshot?.username}</td>
                 <td>{formatDate(activity.createdAt)}</td>
-                <td>{activity.action}</td>
+                <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
                 <td>{activity.ip}</td>
                 <td>{activity.endpoint}</td>
               </tr>

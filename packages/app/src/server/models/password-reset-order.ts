@@ -1,11 +1,12 @@
+import crypto from 'crypto';
+
+import { getOrCreateModel } from '@growi/core';
+import { addMinutes } from 'date-fns';
 import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
-
-import { addMinutes } from 'date-fns';
 import uniqueValidator from 'mongoose-unique-validator';
-import crypto from 'crypto';
-import { getOrCreateModel } from '@growi/core';
+
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -20,7 +21,7 @@ export interface IPasswordResetOrder {
 }
 
 export interface PasswordResetOrderDocument extends IPasswordResetOrder, Document {
-  isExpired(): Promise<boolean>
+  isExpired(): boolean
   revokeOneTimeToken(): Promise<void>
 }
 

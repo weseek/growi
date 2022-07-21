@@ -1,19 +1,16 @@
+import { ITag } from '@growi/core';
+
 import { IPageHasId } from './page';
 
-export type ITag<ID = string> = {
-  _id: ID
-  name: string,
-}
+export type { ITag } from '@growi/core';
 
 export type IDataTagCount = ITag & {count: number}
-
 
 export type IPageTagsInfo = {
   tags : string[],
 }
 
 export type IListTagNamesByPage = string[];
-
 
 export type IResTagsUpdateApiv1 = {
   ok: boolean,

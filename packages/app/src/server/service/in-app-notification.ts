@@ -1,11 +1,10 @@
+import { HasObjectId, SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import { IPage } from '~/interfaces/page';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
 import { IUser } from '~/interfaces/user';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import { ActivityDocument } from '~/server/models/activity';

@@ -1,9 +1,9 @@
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, Lang } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { Lang } from '~/interfaces/lang';
+import { GrowiThemes } from '~/interfaces/theme';
 
 import * as nextI18NextConfig from '../next-i18next.config';
 
@@ -13,6 +13,7 @@ export type CommonProps = {
   appTitle: string,
   siteUrl: string,
   confidential: string,
+  theme: GrowiThemes,
   customTitleTemplate: string,
   csrfToken: string,
   growiVersion: string,
@@ -24,7 +25,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, customizeService,
+    appService, configManager, customizeService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -36,6 +37,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     appTitle: appService.getAppTitle(),
     siteUrl: appService.getSiteUrl(),
     confidential: appService.getAppConfidential() || '',
+    theme: configManager.getConfig('crowi', 'customize:theme'),
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
     growiVersion: crowi.version,
