@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { useSWRxLegacySlackIntegrationSetting } from '~/stores/legacy-slack-integration';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -15,10 +16,16 @@ import SlackConfiguration from './SlackConfiguration';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-const retrieveErrors = null;
+// const retrieveErrors = null;
 function LegacySlackIntegration(props) {
   const { t } = useTranslation();
+  const { data: legacySlackIntegrationSettingData } = useSWRxLegacySlackIntegrationSetting();
   const { adminSlackIntegrationLegacyContainer } = props;
+
+
+  useEffect(() => {
+
+  }, [legacySlackIntegrationSettingData]);
 
   if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
     // TODO: SWRize  adminSlackIntegrationLegacyContainer.retrieveData();
@@ -36,9 +43,9 @@ function LegacySlackIntegration(props) {
     // })();
   }
 
-  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  // if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError) {
+  //   throw new Error(`${retrieveErrors.length} errors occured`);
+  // }
 
   const isDisabled = adminSlackIntegrationLegacyContainer.state.isSlackbotConfigured;
 
