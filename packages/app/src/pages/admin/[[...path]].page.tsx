@@ -9,14 +9,15 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
-} from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
+
+import {
+  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+} from '../utils/commons';
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });

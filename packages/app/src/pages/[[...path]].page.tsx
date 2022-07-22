@@ -65,7 +65,7 @@ import { useXss } from '../stores/xss';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
-} from './commons';
+} from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
