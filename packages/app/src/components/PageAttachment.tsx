@@ -11,10 +11,6 @@ import PaginationWrapper from './PaginationWrapper';
 
 // Utility
 const checkIfFileInUse = (markdown: string, attachment) => {
-  if (markdown == null) {
-    return false;
-  }
-
   return markdown.match(attachment._id);
 };
 
