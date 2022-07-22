@@ -103,7 +103,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
                       className="form-check-input"
                       id={`checkbox${action}`}
                       onChange={() => { actionCheckboxChangedHandler(action) }}
-                      checked={actionMap.get(action) || false}
+                      checked={actionMap.get(action)}
                     />
                     <label
                       className="form-check-label"
