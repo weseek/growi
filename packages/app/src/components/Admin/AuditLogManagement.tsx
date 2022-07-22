@@ -35,7 +35,6 @@ export const AuditLogManagement: FC = () => {
   const typeaheadRef = useRef<IClearable>(null);
 
   const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
-  const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
 
   /*
    * State
@@ -47,7 +46,7 @@ export const AuditLogManagement: FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])),
+    new Map<SupportedActionType, boolean>(auditLogAvailableActionsData != null ? auditLogAvailableActionsData.map(action => [action, true]) : []),
   );
 
   /*
@@ -102,10 +101,13 @@ export const AuditLogManagement: FC = () => {
     setActivePage(1);
     setStartDate(null);
     setEndDate(null);
-    typeaheadRef.current?.clear();
     setSelectedUsernames([]);
-    setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])));
-  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActions]);
+    typeaheadRef.current?.clear();
+
+    if (auditLogAvailableActionsData != null) {
+      setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActionsData.map(action => [action, true])));
+    }
+  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActionsData]);
 
   const reloadButtonPushedHandler = useCallback(() => {
     setActivePage(1);
@@ -153,7 +155,7 @@ export const AuditLogManagement: FC = () => {
 
             <SelectActionDropdown
               actionMap={actionMap}
-              availableActions={auditLogAvailableActions}
+              availableActions={auditLogAvailableActionsData || []}
               onChangeAction={actionCheckboxChangedHandler}
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
