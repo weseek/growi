@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
+
 import { SupportedAction } from '~/interfaces/activity';
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -13,8 +15,10 @@ const express = require('express');
 const router = express.Router();
 
 const { body, query } = require('express-validator');
+const multer = require('multer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
 
 /**
  * @swagger
@@ -100,8 +104,9 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const { customizeService } = crowi;
-
+  const { customizeService, attachmentService } = crowi;
+  const Attachment = crowi.model('Attachment');
+  const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const validator = {
     layout: [
       body('isContainerFluid').isBoolean(),
@@ -146,6 +151,10 @@ module.exports = (crowi) => {
     customizeScript: [
       body('customizeScript').isString(),
     ],
+    logo: [
+      body('isDefaultLogo').isBoolean().optional({ nullable: true }),
+      body('customizedLogoSrc').isString().optional({ nullable: true }),
+    ],
   };
 
   /**
@@ -169,7 +178,6 @@ module.exports = (crowi) => {
    *                      description: customize params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-
     const customizeParams = {
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
@@ -674,6 +682,101 @@ module.exports = (crowi) => {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
     }
+  });
+
+  router.get('/customize-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+    const customizedLogoSrc = await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc');
+    return res.apiv3({ isDefaultLogo, customizedLogoSrc });
+  });
+
+  router.put('/customize-logo', csrf, loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+
+    const {
+      isDefaultLogo, customizedLogoSrc,
+    } = req.body;
+
+    const requestParams = {
+      'customize:isDefaultLogo': isDefaultLogo,
+      'customize:customizedLogoSrc': customizedLogoSrc,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+        customizedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeLogo';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeLogo-failed'));
+    }
+  });
+
+  router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
+    adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+
+      if (req.file == null) {
+        return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
+      }
+      if (req.user == null) {
+        return res.apiv3Err(new ErrorV3('param "user" must be set.', 'upload-brand-logo-failed'));
+      }
+
+      const file = req.file;
+
+      // check type
+      const acceptableFileType = /image\/.+/;
+      if (!file.mimetype.match(acceptableFileType)) {
+        const msg = 'File type error. Only image files is allowed to set as user picture.';
+        return res.apiv3Err(new ErrorV3(msg, 'upload-brand-logo-failed'));
+      }
+
+      // Check if previous attachment exists and remove it
+      const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
+      if (attachments != null) {
+        await attachmentService.removeAllAttachments(attachments);
+      }
+
+      let attachment;
+      try {
+        attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
+        const attachmentConfigParams = {
+          'customize:customizedLogoSrc': attachment.filePathProxied,
+        };
+
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3(err.message, 'upload-brand-logo-failed'));
+      }
+      attachment.toObject({ virtuals: true });
+      return res.apiv3({ attachment });
+    });
+
+  router.delete('/delete-brand-logo', csrf, loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
+
+    if (attachments == null) {
+      return res.apiv3Err(new ErrorV3('attachment not found', 'delete-brand-logo-failed'));
+    }
+
+    try {
+      await attachmentService.removeAllAttachments(attachments);
+      // update attachmentId immediately
+      const attachmentConfigParams = { 'customize:customizedLogoSrc': null };
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(500).apiv3Err(new ErrorV3('Error while deleting logo', 'delete-brand-logo-failed'));
+    }
+
+    return res.apiv3({});
   });
 
   return router;

@@ -207,7 +207,13 @@
     "ctrl_space": "Ctrl+Space to autocomplete",
     "custom_script": "Custom script",
     "write_java": "You can write Javascript that is applied to whole system.",
-    "reflect_change": "You need to reload the page to reflect the change."
+    "reflect_change": "You need to reload the page to reflect the change.",
+    "custom_logo" : "Custom Logo",
+    "default_logo": "Default Logo",
+    "upload_logo": "Upload Logo",
+    "current_logo": "Current Logo",
+    "upload_new_logo": "Upload New Logo",
+    "delete_logo": "Delete Logo"
   },
   "importer_management": {
     "beta_warning": "This function is Beta.",
