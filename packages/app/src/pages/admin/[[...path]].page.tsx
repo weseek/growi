@@ -180,7 +180,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user);
   }
 
-  injectNextI18NextConfigurations(context, props, ['translation', 'admin']);
+  injectNextI18NextConfigurations(context, props, ['admin']);
 
   props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
