@@ -53,7 +53,7 @@ type Props = CommonProps & {
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const router = useRouter();
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
