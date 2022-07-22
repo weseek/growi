@@ -20,7 +20,6 @@ $bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
 $color-page-list-group-item-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
-$bgcolor-list-hover: darken($primary, 8%) !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -323,9 +322,6 @@ ul.pagination {
     .list-group {
       .list-group-item {
         background-color: transparent;
-        &:hover{
-          background-color: $bgcolor-list-hover;
-        }
       }
     }
     .list-group-flush {
