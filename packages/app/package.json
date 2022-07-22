@@ -160,7 +160,6 @@
     "rehype-toc": "^3.0.2",
     "remark-breaks": "^3.0.2",
     "remark-emoji": "^3.0.2",
-    "remark-footnotes": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "rimraf": "^3.0.0",
     "socket.io": "^4.2.0",

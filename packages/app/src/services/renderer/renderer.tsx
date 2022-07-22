@@ -5,7 +5,6 @@ import slug from 'rehype-slug';
 import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
-import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
 
 import { Header } from '~/components/ReactMarkdownComponents/Header';
@@ -244,7 +243,6 @@ export const generateViewOptions = (
 
   // add remark plugins
   if (remarkPlugins != null) {
-    remarkPlugins.push(footnotes);
     remarkPlugins.push(emoji);
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
