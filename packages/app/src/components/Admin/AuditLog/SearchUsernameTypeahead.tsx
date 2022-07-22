@@ -1,5 +1,5 @@
 import React, {
-  Fragment, useState, useCallback, useRef, forwardRef, useImperativeHandle,
+  Fragment, useState, useCallback, useRef, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
@@ -26,7 +26,7 @@ type Props = {
   onChange: (text: string[]) => void
 }
 
-export const SearchUsernameTypeahead = forwardRef<IClearable, Props>((props: Props, ref) => {
+const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Props> = ((props: Props, ref) => {
   const { onChange } = props;
   const { t } = useTranslation();
 
@@ -133,3 +133,5 @@ export const SearchUsernameTypeahead = forwardRef<IClearable, Props>((props: Pro
     </div>
   );
 });
+
+export const SearchUsernameTypeahead = forwardRef(SearchUsernameTypeaheadSubstance);
