@@ -1,4 +1,4 @@
-import { getOrCreateModel, IUser } from '@growi/core';
+import { getOrCreateModel, Ref, IUser } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
@@ -9,7 +9,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 
 export interface UserUISettingsDocument extends IUserUISettings, Document {
-  user: IUser,
+  user: Ref<IUser>,
 }
 export type UserUISettingsModel = Model<UserUISettingsDocument>
 
