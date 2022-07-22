@@ -50,7 +50,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
         { pageId != null && (
           <div className="mx-2">
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
-              <i className="ti-clipboard"></i>
+              <i className="ti ti-clipboard"></i>
             </CopyDropdown>
           </div>
         ) }
