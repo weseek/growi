@@ -81,14 +81,14 @@ const Bookmarks = () : JSX.Element => {
                 {paginationResult => paginationResult?.docs.map(data => (
                   <>
                     <BookmarksItem key={data._id} data={data} />
-                      <UncontrolledTooltip
-                        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-                        autohide={false}
-                        placement="right"
-                        target={`bookmark-item-${data._id}`}
-                      >
+                    <UncontrolledTooltip
+                      modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+                      autohide={false}
+                      placement="right"
+                      target={`bookmark-item-${data._id}`}
+                    >
                       {data.page.path}
-                      </UncontrolledTooltip>
+                    </UncontrolledTooltip>
                   </>
                 ))
                 }
