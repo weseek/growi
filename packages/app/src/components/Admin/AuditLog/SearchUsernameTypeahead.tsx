@@ -1,10 +1,11 @@
 import React, {
-  FC, Fragment, useState, useCallback,
+  FC, Fragment, useState, useCallback, useRef, forwardRef, useImperativeHandle,
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
+import { IClearable } from '~/client/interfaces/clearable';
 import { useSWRxUsernames } from '~/stores/user';
 
 
@@ -25,9 +26,11 @@ type Props = {
   onChange: (text: string[]) => void
 }
 
-export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
+export const SearchUsernameTypeahead = forwardRef<IClearable, Props>((props: Props, ref) => {
   const { onChange } = props;
   const { t } = useTranslation();
+
+  const typeaheadRef = useRef<IClearable>(null);
 
   /*
    * State
@@ -96,6 +99,15 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
     );
   }, []);
 
+  useImperativeHandle(ref, () => ({
+    clear() {
+      const instance = typeaheadRef?.current;
+      if (instance != null) {
+        instance.clear();
+      }
+    },
+  }));
+
   return (
     <div className="input-group mr-2">
       <div className="input-group-prepend">
@@ -104,6 +116,7 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
         </span>
       </div>
       <AsyncTypeahead
+        ref={typeaheadRef}
         id="search-username-typeahead-asynctypeahead"
         multiple
         delay={400}
@@ -119,4 +132,4 @@ export const SearchUsernameTypeahead: FC<Props> = (props: Props) => {
       />
     </div>
   );
-};
+});

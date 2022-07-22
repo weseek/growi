@@ -1,8 +1,11 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback, useRef,
+} from 'react';
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/apiNotification';
 import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
@@ -28,6 +31,8 @@ const PAGING_LIMIT = 10;
 
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
+
+  const typeaheadRef = useRef<IClearable>(null);
 
   const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
   const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
@@ -97,6 +102,7 @@ export const AuditLogManagement: FC = () => {
     setActivePage(1);
     setStartDate(null);
     setEndDate(null);
+    typeaheadRef.current?.clear();
     setSelectedUsernames([]);
     setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])));
   }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActions]);
@@ -135,6 +141,7 @@ export const AuditLogManagement: FC = () => {
         <>
           <div className="form-inline mb-3">
             <SearchUsernameTypeahead
+              ref={typeaheadRef}
               onChange={setUsernamesHandler}
             />
 
