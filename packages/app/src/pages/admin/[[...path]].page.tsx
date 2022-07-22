@@ -4,6 +4,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
@@ -22,7 +23,9 @@ import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/components/Admin/UserManagement';
 import AdminLayout from '~/components/Layout/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
+import {
+  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+} from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
@@ -145,6 +148,17 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -153,7 +167,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   } = crowi;
 
   const { user } = req;
-
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -166,6 +179,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     // props.currentUser = JSON.stringify(user.toObject());
     props.currentUser = JSON.stringify(user);
   }
+
+  injectNextI18NextConfigurations(context, props, ['translation', 'admin']);
 
   props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;

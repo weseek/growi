@@ -22,7 +22,7 @@ const logger = loggerFactory('growi:admin');
 
 const AdminHome = (props) => {
   const { adminHomeContainer } = props;
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   const fetchAdminHomeData = useCallback(async() => {

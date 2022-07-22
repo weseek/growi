@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const AuditLogDisableMode: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'admin']);
 
   return (
     <div id="content-main" className="content-main container-lg">
