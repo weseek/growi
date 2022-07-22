@@ -4,10 +4,9 @@ import React, { useEffect } from 'react';
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUser, IUserHasId, pagePathUtils, pathUtils,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import { Types as MongooseTypes } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -66,6 +65,7 @@ import { useXss } from '../stores/xss';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -79,7 +79,10 @@ const { removeHeadingSlash } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
+
 // register custom serializer
+registerTransformerForObjectId();
+
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
   {
     isApplicable: (v): v is IPageToShowRevisionWithMeta => {
@@ -91,7 +94,6 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
     serialize: (v) => {
       return {
         data: superjson.stringify(v.data.toObject()),
-        // data: superjson.stringify(v.data),
         meta: superjson.stringify(v.meta),
       };
     },
@@ -103,15 +105,6 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
     },
   },
   'IPageToShowRevisionWithMetaTransformer',
-);
-
-superjson.registerCustom<MongooseTypes.ObjectId|string, string>(
-  {
-    isApplicable: (v): v is MongooseTypes.ObjectId => v instanceof MongooseTypes.ObjectId,
-    serialize: v => (v instanceof MongooseTypes.ObjectId ? v.toHexString() : v),
-    deserialize: v => v,
-  },
-  'ObjectidTransformer',
 );
 
 
