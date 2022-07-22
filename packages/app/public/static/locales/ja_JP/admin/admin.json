@@ -535,6 +535,8 @@
     "url": "URL",
     "settings": "設定",
     "return": "戻る",
+    "clear": "検索条件のクリア",
+    "reload": "再読み込み",
     "activity_expiration_date": "監査ログの有効期限",
     "activity_expiration_date_explain": "作成された監査ログは、作成時間から環境変数に設定した秒数後に自動的に削除されます",
     "fixed_by_env_var": "環境変数により固定されています <code>{{key}}={{value}}</code>.",
