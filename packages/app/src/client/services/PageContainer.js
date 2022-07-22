@@ -135,6 +135,7 @@ export default class PageContainer extends Container {
 
   /**
    * initialize state for markdown data
+   * [Already SWRized]
    */
   initStateMarkdown() {
     let pageContent = '';

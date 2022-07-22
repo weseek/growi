@@ -55,7 +55,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useCurrentMarkdown,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -130,6 +130,8 @@ type Props = CommonProps & {
   userUISettings: UserUISettingsDocument | null
   // Sidebar
   sidebarConfig: ISidebarConfig,
+  // Markdown
+  markdown: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -173,6 +175,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsBlinkedHeaderAtBoot(false);
+  useCurrentMarkdown(props.markdown);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -515,6 +518,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   // UI
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
+
+  // Markdown
+  props.markdown = pageWithMeta.revision.body;
 
   return {
     props,
