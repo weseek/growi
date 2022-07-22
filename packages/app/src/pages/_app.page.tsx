@@ -16,7 +16,7 @@ import {
   useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
 } from '../stores/context';
 
-import { CommonProps } from './commons';
+import { CommonProps } from './utils/commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
