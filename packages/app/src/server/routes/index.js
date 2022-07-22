@@ -219,7 +219,7 @@ module.exports = function(crowi, app) {
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
-  app.get('/_search'                            , loginRequired, injectUserUISettings, search.searchPage);
+  app.get('/_search'                            , loginRequired, injectUserUISettings, next.delegateToNext);
 
   app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
