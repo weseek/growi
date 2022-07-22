@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useRef,
+  FC, useState, useCallback, useEffect, useRef,
 } from 'react';
 
 import { format } from 'date-fns';
@@ -34,9 +34,6 @@ export const AuditLogManagement: FC = () => {
 
   const typeaheadRef = useRef<IClearable>(null);
 
-  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
-  const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
-
   /*
    * State
    */
@@ -46,9 +43,7 @@ export const AuditLogManagement: FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
-  const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])),
-  );
+  const [actionMap, setActionMap] = useState(new Map<SupportedActionType, boolean>([]));
 
   /*
    * Fetch
@@ -67,6 +62,13 @@ export const AuditLogManagement: FC = () => {
   }
 
   const { data: auditLogEnabled } = useAuditLogEnabled();
+
+  const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
+  useEffect(() => {
+    if (auditLogAvailableActionsData != null) {
+      setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActionsData.map(action => [action, true])));
+    }
+  }, [auditLogAvailableActionsData]);
 
   /*
    * Functions
@@ -104,8 +106,11 @@ export const AuditLogManagement: FC = () => {
     setEndDate(null);
     typeaheadRef.current?.clear();
     setSelectedUsernames([]);
-    setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])));
-  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActions]);
+
+    if (auditLogAvailableActionsData != null) {
+      setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActionsData.map(action => [action, true])));
+    }
+  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActionsData]);
 
   const reloadButtonPushedHandler = useCallback(() => {
     setActivePage(1);
@@ -153,7 +158,7 @@ export const AuditLogManagement: FC = () => {
 
             <SelectActionDropdown
               actionMap={actionMap}
-              availableActions={auditLogAvailableActions}
+              availableActions={auditLogAvailableActionsData || []}
               onChangeAction={actionCheckboxChangedHandler}
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
