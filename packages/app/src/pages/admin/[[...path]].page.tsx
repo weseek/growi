@@ -7,20 +7,6 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
-import AdminHome from '~/components/Admin/AdminHome/AdminHome';
-import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
-import { AuditLogManagement } from '~/components/Admin/AuditLogManagement';
-import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
-import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
-import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
-import LegacySlackIntegration from '~/components/Admin/LegacySlackIntegration/LegacySlackIntegration';
-import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
-import NotificationSetting from '~/components/Admin/Notification/NotificationSetting';
-import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-import SlackIntegration from '~/components/Admin/SlackIntegration/SlackIntegration';
-import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
-import UserManagement from '~/components/Admin/UserManagement';
-import AdminLayout from '~/components/Layout/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -29,6 +15,24 @@ import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 // import { useEnvVars } from '~/stores/admin-context';
+
+const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
+const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const SecurityManagementContents = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
+const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
+const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
+const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
+const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
+const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
+const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
+const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
+// named export
+const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
+
+const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 
@@ -45,7 +49,6 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
 
   siteUrl: string,
-
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -54,8 +57,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
-
-  const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 
   const adminPagesMap = {
     home: {
