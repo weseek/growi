@@ -1,5 +1,5 @@
 import React, {
-  FC, Fragment, useState, useCallback, useRef, forwardRef, useImperativeHandle,
+  Fragment, useState, useCallback, useRef, forwardRef, useImperativeHandle,
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
