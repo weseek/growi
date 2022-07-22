@@ -82,6 +82,11 @@ const PutbackPageModal = (): JSX.Element => {
   return <PutbackPageModal />;
 };
 
+const DescendantsPageListModal = (): JSX.Element => {
+  const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
+  return <DescendantsPageListModal />;
+};
+
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
 
 type Props = CommonProps & {
@@ -296,6 +301,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        <DescendantsPageListModal />
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
       </BasicLayout>
