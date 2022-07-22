@@ -97,7 +97,7 @@ export const AuditLogManagement: FC = () => {
     setSelectedUsernames(usernames);
   }, []);
 
-  const resetButtonPushedHandler = useCallback(() => {
+  const clearButtonPushedHandler = useCallback(() => {
     setActivePage(1);
     setStartDate(null);
     setEndDate(null);
@@ -161,7 +161,7 @@ export const AuditLogManagement: FC = () => {
             />
 
             <div className="ml-auto">
-              <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={resetButtonPushedHandler}>
+              <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={clearButtonPushedHandler}>
                 <span className="icon-refresh mr-1" />
                 {t('admin:audit_log_management.clear')}
               </button>
