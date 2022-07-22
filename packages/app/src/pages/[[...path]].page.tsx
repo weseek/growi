@@ -4,9 +4,10 @@ import React, { useEffect } from 'react';
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUserHasId, pagePathUtils, pathUtils,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
+import { Types as MongooseTypes } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -31,7 +32,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -104,6 +105,15 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
   'IPageToShowRevisionWithMetaTransformer',
 );
 
+superjson.registerCustom<MongooseTypes.ObjectId|string, string>(
+  {
+    isApplicable: (v): v is MongooseTypes.ObjectId => v instanceof MongooseTypes.ObjectId,
+    serialize: v => (v instanceof MongooseTypes.ObjectId ? v.toHexString() : v),
+    deserialize: v => v,
+  },
+  'ObjectidTransformer',
+);
+
 
 const IdenticalPathPage = (): JSX.Element => {
   const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
@@ -116,7 +126,7 @@ const PutbackPageModal = (): JSX.Element => {
 };
 
 type Props = CommonProps & {
-  currentUser: IUserHasId,
+  currentUser: IUser,
 
   pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
@@ -158,7 +168,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 
   // UI
-  userUISettings: IUserUISettings | null
+  userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
 };
@@ -228,8 +238,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { data: editorMode } = useEditorMode();
 
   const { pageWithMeta, userUISettings } = props;
-
-  console.log({ pageWithMeta, currentUser, userUISettings });
 
   let shouldRenderPutbackPageModal = false;
   if (pageWithMeta != null) {
@@ -385,6 +393,16 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   props.pageWithMeta = pageWithMeta;
 }
 
+async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  if (userUISettings != null) {
+    props.userUISettings = userUISettings.toObject();
+  }
+}
+
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -438,7 +456,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 //   }
 // }
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
@@ -520,6 +538,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (user != null) {
+    props.currentUser = user.toObject();
+  }
+
   try {
     await injectPageData(context, props);
   }
@@ -532,19 +555,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
   }
 
-  injectRoutingInformation(context, props);
+  await injectUserUISettings(context, props);
+  await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
-  injectNextI18NextConfigurations(context, props, ['translation']);
-
-  // if (user != null) {
-  //   props.currentUser = superjson.stringify(user.toObject());
-  // }
-
-  // UI
-  // const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  // if (userUISettings != null) {
-  //   props.userUISettings = userUISettings.toJSON();
-  // }
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
