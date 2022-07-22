@@ -536,6 +536,8 @@
     "url": "URL",
     "settings": "Settings",
     "return": "Return",
+    "clear": "Clear search criteria",
+    "reload": "Reload",
     "activity_expiration_date": "Audit Log expiration date",
     "activity_expiration_date_explain": "Created Audit Log are automatically deleted after the number of seconds set in the environment variable from the creation time",
     "fixed_by_env_var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",

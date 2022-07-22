@@ -163,12 +163,12 @@ export const AuditLogManagement: FC = () => {
             <div className="ml-auto">
               <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={resetButtonPushedHandler}>
                 <span className="icon-refresh mr-1" />
-                Reset
+                {t('admin:audit_log_management.clear')}
               </button>
 
               <button type="button" className="btn btn-outline-secondary btn-sm" onClick={reloadButtonPushedHandler}>
                 <i className="icon icon-reload mr-1" />
-                Reload
+                {t('admin:audit_log_management.reload')}
               </button>
             </div>
           </div>
