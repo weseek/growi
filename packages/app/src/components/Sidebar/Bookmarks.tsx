@@ -79,7 +79,17 @@ const Bookmarks = () : JSX.Element => {
                 isReachingEnd={isReachingEnd}
               >
                 {paginationResult => paginationResult?.docs.map(data => (
-                  <BookmarksItem key={data._id} data={data} />
+                  <>
+                    <BookmarksItem key={data._id} data={data} />
+                      <UncontrolledTooltip
+                        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+                        autohide={false}
+                        placement="right"
+                        target={`bookmark-item-${data._id}`}
+                      >
+                      {data.page.path}
+                      </UncontrolledTooltip>
+                  </>
                 ))
                 }
               </InfiniteScroll>
