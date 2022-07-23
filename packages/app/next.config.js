@@ -1,10 +1,17 @@
-import eazyLogger from 'eazy-logger';
-import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
-import { withSuperjson } from 'next-superjson';
-import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+/**
+ * == Notes for production build==
+ * The modules required from this file must be transpiled before running `next build`.
+ *
+ * See: https://github.com/vercel/next.js/discussions/35969#discussioncomment-2522954
+ */
 
-import { i18n, localePath } from './src/next-i18next.config';
-import { listScopedPackages, listPrefixedPackages } from './src/utils/next.config.utils';
+const eazyLogger = require('eazy-logger');
+const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+const { withSuperjson } = require('next-superjson');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+
+const { i18n, localePath } = require('./src/next-i18next.config');
+const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
 
 
 // setup logger
@@ -17,7 +24,7 @@ const logger = eazyLogger.Logger({
 const setupWithTM = () => {
   // define transpiled packages for '@growi/*'
   const packages = [
-    ...listScopedPackages(['@growi'], { ignorePackageNames: '@growi/app' }),
+    ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',
