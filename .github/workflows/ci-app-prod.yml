@@ -3,7 +3,8 @@ name: Node CI for app production
 on:
   push:
     branches:
-      - master
+      # - master
+      - support/ci-for-prod
     paths:
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
