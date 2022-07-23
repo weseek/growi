@@ -743,4 +743,93 @@ describe('Test page service methods', () => {
       expect(page5.parent).toStrictEqual(page4._id);
     });
   });
+
+  describe.only('Page recursive fetch', () => {
+    test.only('Find all pages recursively using $graphLookup', async() => {
+      // Insert
+      const $parentID = new mongoose.Types.ObjectId();
+      const $child1ID = new mongoose.Types.ObjectId();
+      const $child2ID = new mongoose.Types.ObjectId();
+      const $grandChild1ID = new mongoose.Types.ObjectId();
+      const $grandChild2ID = new mongoose.Types.ObjectId();
+
+      const Page = mongoose.model('Page');
+
+      await Page.insertMany([
+        {
+          _id: $parentID,
+          path: '/$parent',
+          parent: null,
+        },
+        {
+          _id: $child1ID,
+          path: '/$parent/child1',
+          parent: $parentID,
+        },
+        {
+          _id: $child2ID,
+          path: '/$parent/child2',
+          parent: $parentID,
+        },
+        {
+          _id: $grandChild1ID,
+          path: '/$parent/child1/grandChild1',
+          parent: $child1ID,
+        },
+        {
+          _id: $grandChild2ID,
+          path: '/$parent/child1/grandChild2',
+          parent: $child1ID,
+        },
+      ]);
+
+      const descendants = await Page.aggregate([
+        {
+          $match: {
+            _id: $parentID,
+          },
+        },
+        {
+          $graphLookup: {
+            from: 'pages',
+            startWith: '$_id',
+            connectFromField: '_id',
+            connectToField: 'parent',
+            as: 'descendants',
+          },
+        },
+        // Flatten by descendants.
+        {
+          $unwind: '$descendants',
+        },
+        {
+          $replaceRoot: {
+            newRoot: '$descendants',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            parent: 1,
+            path: 1,
+            pathLength: { $strLenCP: '$path' },
+            children: 1,
+          },
+        },
+        {
+          $sort: {
+            pathLength: -1,
+          },
+        },
+      ]);
+
+      expect(descendants.length).toBe(4);
+      expect(descendants.map(p => p.path)).toStrictEqual([
+        '/$parent/child1',
+        '/$parent/child2',
+        '/$parent/child1/grandChild1',
+        '/$parent/child1/grandChild2',
+      ].sort((a, b) => a.length - b.length));
+    });
+  });
 });
