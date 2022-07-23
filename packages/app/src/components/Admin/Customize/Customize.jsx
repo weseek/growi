@@ -55,7 +55,9 @@ function Customize(props) {
         <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
-        <CustomizeSidebarSetting />
+        {/* TODO: [resolve browser err] A component is changing an uncontrolled input to be controlled. by https://redmine.weseek.co.jp/issues/101155
+          <CustomizeSidebarSetting />
+        */}
       </div>
       <div className="mb-5">
         <CustomizeFunctionSetting />

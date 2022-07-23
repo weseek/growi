@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { GrowiThemes } from '~/interfaces/theme';
+import { useGrowiTheme } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -51,6 +52,7 @@ const CustomizeThemeOptions = (props) => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
+  const { mutate: mutateGrowiTheme } = useGrowiTheme();
   const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
   return (
@@ -64,7 +66,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                onSelected={() => mutateGrowiTheme(theme.name)}
                 {...theme}
               />
             );
@@ -80,7 +82,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                onSelected={() => mutateGrowiTheme(theme.name)}
                 {...theme}
               />
             );
