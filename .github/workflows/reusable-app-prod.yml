@@ -49,6 +49,7 @@ jobs:
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
+        rm "node_modules/@growi/slackbot-proxy"
 
     - name: Build
       run: |
