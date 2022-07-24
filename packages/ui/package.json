@@ -11,6 +11,8 @@
     "dist"
   ],
   "scripts": {
+    "build": "run-p build:*",
+    "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
