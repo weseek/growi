@@ -44,13 +44,15 @@ const ElasticsearchManagement = () => {
       setAliasesData(info.aliases);
       setIsNormalized(info.isNormalized);
     }
-    catch (errors) {
+    catch (errors: unknown) {
       setIsConnected(false);
 
       // evaluate whether configured or not
-      for (const error of errors) {
-        if (error.code === 'search-service-unconfigured') {
-          setIsConfigured(false);
+      if (Array.isArray(errors)) {
+        for (const error of errors) {
+          if (error.code === 'search-service-unconfigured') {
+            setIsConfigured(false);
+          }
         }
       }
 
