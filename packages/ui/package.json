@@ -17,6 +17,6 @@
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
-    "react": "^16.8.3"
+    "react": "^18.2.0"
   }
 }
