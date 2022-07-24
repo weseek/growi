@@ -19,7 +19,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeTheme();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
@@ -35,7 +35,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
           <CustomizeThemeOptions />
-          <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+          <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
         </div>
       </div>
     </React.Fragment>
