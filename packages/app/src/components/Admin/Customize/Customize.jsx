@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -23,28 +23,24 @@ import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-const retrieveErrors = null;
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
-  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
-  //   throw (async() => {
-  //     try {
-  //       await adminCustomizeContainer.retrieveCustomizeData();
-  //     }
-  //     catch (err) {
-  //       const errs = toArrayIfNot(err);
-  //       toastError(errs);
-  //       logger.error(errs);
-  //       retrieveErrors = errs;
-  //       adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
-  //     }
-  //   })();
-  // }
+  useEffect(() => {
+    async function fetchCustomizeSettingsData() {
+      await adminCustomizeContainer.retrieveCustomizeData();
+    }
 
-  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
-  //   throw new Error(`${retrieveErrors.length} errors occured`);
-  // }
+    try {
+      fetchCustomizeSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminCustomizeContainer]);
+
 
   return (
     <div data-testid="admin-customize">
