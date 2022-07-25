@@ -528,7 +528,8 @@
     }
   },
   "audit_log_management": {
-    "username": "ユーザー名",
+    "user": "ユーザー",
+    "username": "ユーザ名",
     "date": "日付",
     "action": "アクション",
     "ip": "IPアドレス",
