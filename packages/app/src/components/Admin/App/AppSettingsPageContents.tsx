@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
+
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -14,6 +18,8 @@ import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
 
+const logger = loggerFactory('growi:appSettings');
+
 type Props = {
   adminAppContainer: AdminAppContainer,
 }
@@ -22,6 +28,21 @@ const AppSettingsPageContents = (props: Props) => {
   const { t } = useTranslation();
   const { adminAppContainer } = props;
   const { isV5Compatible } = adminAppContainer.state;
+
+  useEffect(() => {
+    const fetchAppSettingsData = async() => {
+      await adminAppContainer.retrieveAppSettingsData();
+    };
+
+    try {
+      fetchAppSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminAppContainer]);
 
   return (
     <div data-testid="admin-app-settings">
