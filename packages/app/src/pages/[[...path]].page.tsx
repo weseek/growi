@@ -58,7 +58,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -246,6 +246,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
+  useEditingMarkdown(pageWithMeta?.data.revision.body);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {

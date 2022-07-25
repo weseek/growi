@@ -19,7 +19,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const submitHandler = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeTheme();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
@@ -29,24 +29,13 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     }
   }, [t, adminCustomizeContainer]);
 
-  const renderDevAlert = useCallback(() => {
-    if (process.env.NODE_ENV === 'development') {
-      return (
-        <div className="alert alert-warning">
-          <strong>DEBUG MESSAGE:</strong> Live preview for theme is disabled in development mode.
-        </div>
-      );
-    }
-  }, []);
-
   return (
     <React.Fragment>
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-          {renderDevAlert()}
           <CustomizeThemeOptions />
-          <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+          <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
         </div>
       </div>
     </React.Fragment>

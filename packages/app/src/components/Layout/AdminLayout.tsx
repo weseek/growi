@@ -7,6 +7,9 @@ import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
 
+import styles from './Admin.module.scss';
+
+
 // import { injectableContainers } from '~/client/admin';
 
 type Props = {
@@ -29,7 +32,7 @@ const AdminLayout = ({
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
-    <RawLayout title={title}>
+    <RawLayout title={title} className={`admin-page ${styles['admin-page']}`}>
       <GrowiNavbar />
 
       <header className="py-0">
