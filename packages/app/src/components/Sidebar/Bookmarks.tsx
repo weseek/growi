@@ -30,15 +30,14 @@ const BookmarksItem = (props: Props) => {
     const dPagePath = new DevidedPagePath(page.path, false, true);
     const { latter: pageTitle, former: formerPagePath } = dPagePath;
     const bookmarkItemId = `bookmark-item-${page._id}`;
+
     return (
-      <div key={page._id}>
+      <div className="d-flex justify-content-between" key={page._id}>
         <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
           <a href={`/${page._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
             <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
           </a>
-        </li>
-
-        <PageItemControl
+          <PageItemControl
             pageId={page._id}
             isEnableActions
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
@@ -47,15 +46,15 @@ const BookmarksItem = (props: Props) => {
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
-
-        <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-          autohide={false}
-          placement="right"
-          target={bookmarkItemId}
-        >
-          { formerPagePath || '/' }
-        </UncontrolledTooltip>
+          <UncontrolledTooltip
+            modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+            autohide={false}
+            placement="right"
+            target={bookmarkItemId}
+          >
+            { formerPagePath || '/' }
+          </UncontrolledTooltip>
+        </li>
       </div>
     );
   });
