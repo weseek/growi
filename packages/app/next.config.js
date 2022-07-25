@@ -8,12 +8,12 @@
 const eazyLogger = require('eazy-logger');
 const { withSuperjson } = require('next-superjson');
 
-const { i18n, localePath } = require('./src/next-i18next.config');
-
-
 const isProduction = process.env.NODE_ENV === 'production';
 const isBuildingNext = process.env.BUILDING_NEXT === 'true';
 
+const { i18n, localePath } = isProduction
+  ? require('./src/next-i18next.config')
+  : require('./dist/next-i18next.config');
 
 // define additional entries
 const additionalWebpackEntries = {
