@@ -64,6 +64,7 @@ module.exports = async(phase, { defaultConfig }) => {
     // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
 
     reactStrictMode: true,
+    swcMinify: true,
     typescript: {
       tsconfigPath: 'tsconfig.build.client.json',
     },
