@@ -11,7 +11,7 @@ import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
@@ -220,7 +220,9 @@ class PageService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false): Promise<IPageWithMeta|null> {
+  async findPageAndMetaDataByViewer(
+      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+  ): Promise<IPageWithMeta<IPageInfoAll>|null> {
 
     const Page = this.crowi.model('Page');
 

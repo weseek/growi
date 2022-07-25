@@ -169,13 +169,15 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 
     try {
       const zipFile = exportService.getFile(fileName);
       fs.unlinkSync(zipFile);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       // TODO: use res.apiv3
       return res.status(200).send({ ok: true });

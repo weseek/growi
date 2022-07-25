@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { AttachmentType } from '../interfaces/attachment';
+
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
@@ -34,6 +36,11 @@ module.exports = function(crowi) {
     fileSize: { type: Number, default: 0 },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
+    attachmentType: {
+      type: String,
+      enum: AttachmentType,
+      required: true,
+    },
   }, {
     timestamps: { createdAt: true, updatedAt: false },
   });
@@ -52,7 +59,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -68,7 +75,7 @@ module.exports = function(crowi) {
     attachment.fileName = fileName;
     attachment.fileFormat = fileFormat;
     attachment.fileSize = fileSize;
-
+    attachment.attachmentType = attachmentType;
     return attachment;
   };
 
