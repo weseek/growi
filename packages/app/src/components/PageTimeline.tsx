@@ -22,7 +22,7 @@ export const PageTimeline = (): JSX.Element => {
 
   const handlePage = useCallback(async(selectedPage: number) => {
     if (currentPagePath == null) { return }
-    const res = await apiv3Get('/pages/list', { currentPagePath, selectedPage });
+    const res = await apiv3Get('/pages/list', { path: currentPagePath, selectedPage });
     setTotalPageItems(res.data.totalCount);
     setPages(res.data.pages);
     setLimit(res.data.limit);
@@ -37,7 +37,7 @@ export const PageTimeline = (): JSX.Element => {
     return <></>;
   }
 
-  if (pages == null) {
+  if (pages == null || pages.length === 0) {
     return (
       <div className="mt-2">
         {/* eslint-disable-next-line react/no-danger */}
