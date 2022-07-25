@@ -55,7 +55,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
           <div className="form-group">
             <textarea
               className="form-control"
-              name="CustomizeHeader"
+              name="customizeHeader"
               value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeHeader(e.target.value) }}
             />

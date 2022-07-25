@@ -68,8 +68,7 @@ function Customize(props) {
         <CustomizeHeaderSetting />
       </div>
       <div className="mb-5">
-        CustomizeCssSetting
-        {/* <CustomizeCssSetting /> */}
+        <CustomizeCssSetting />
       </div>
       <div className="mb-5">
         CustomizeScriptSetting
