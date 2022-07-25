@@ -290,7 +290,8 @@ class LoginForm extends React.Component {
 
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+    // const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+    const isSomeExternalAuthEnabled = true;
 
     return (
       <div className="login-dialog mx-auto" id="login-dialog">
@@ -355,8 +356,7 @@ const LoginFormWrapperFC = (props) => {
   const { t } = useTranslation();
   const { data: csrfToken } = useCsrfToken();
 
-  // return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
-  return <div>あああ</div>;
+  return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
 };
 
 /**
@@ -364,5 +364,5 @@ const LoginFormWrapperFC = (props) => {
  */
 // const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
 
-export default LoginForm;
-// export default LoginFormWrapperFC;
+// export default LoginForm;
+export default LoginFormWrapperFC;

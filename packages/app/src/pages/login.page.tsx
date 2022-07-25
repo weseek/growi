@@ -50,9 +50,11 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   const { crowi } = req;
   const {
     mailService,
+    configManager,
   } = crowi;
 
   props.isMailerSetup = mailService.isMailerSetup;
+  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
 }
 
 type Props = CommonProps & {
@@ -60,6 +62,7 @@ type Props = CommonProps & {
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
+  registrationWhiteList: string[],
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -84,21 +87,10 @@ const LoginPage: NextPage<Props> = (props: Props) => {
     <>
       <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
         <div className='nologin'>
-          <div className='wrapper'>
+          <div id='wrapper'>
             <div id="page-wrapper">
-              <div className="main container-fluid">
-
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="login-header mx-auto">
-                      <h1 className="my-3">GROWI</h1>
-                    </div>
-                  </div>
-                  <div className="col-md-12">
-                    <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} />
-                  </div>
-                </div>
-              </div>
+              <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
+                isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
             </div>
           </div>
         </div>
