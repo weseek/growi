@@ -12,7 +12,7 @@ const { i18n, localePath } = require('./src/next-i18next.config');
 
 
 const isProduction = process.env.NODE_ENV === 'production';
-let isServer = true;
+const isBuildingNext = process.env.BUILDING_NEXT === 'true';
 
 
 // define additional entries
@@ -37,11 +37,9 @@ const nextConfig = {
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
-    isServer = options.isServer;
-
     // Avoid "Module not found: Can't resolve 'fs'"
     // See: https://stackoverflow.com/a/68511591
-    if (!isServer) {
+    if (!options.isServer) {
       config.resolve.fallback.fs = false;
     }
 
@@ -79,7 +77,7 @@ const nextConfig = {
 const passThrough = nextConfig => nextConfig;
 let withTM = passThrough;
 
-if (!isProduction || !isServer) {
+if (!isProduction || isBuildingNext) {
   const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
 
   // setup logger
