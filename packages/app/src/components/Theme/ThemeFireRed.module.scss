@@ -2,7 +2,7 @@
 @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
-.theme :global {
+.theme[data-color-scheme='light'] :global {
   // Theme colors
   $themecolor: #ea5532;
   $themelight: #ffffff;
@@ -95,7 +95,7 @@
   }
 }
 
-.theme :global {
+.theme[data-color-scheme='dark'] :global {
   // Theme colors
   $themecolor: #ea5532;
   $themedark: #333333;
