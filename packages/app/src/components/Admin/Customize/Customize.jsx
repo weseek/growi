@@ -73,7 +73,6 @@ function Customize(props) {
       <div className="mb-5">
         <CustomizeScriptSetting />
       </div>
-
       <div className="mb-5">
         <CustomizeLogoSetting />
       </div>
