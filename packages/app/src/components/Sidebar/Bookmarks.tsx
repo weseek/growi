@@ -87,7 +87,7 @@ const Bookmarks = () : JSX.Element => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
 
-  const renderBookmarkList = () => {
+  const renderBookmarksItem = () => {
     if (pages.length === 0) {
       return (
         <h3 className="pl-3">
@@ -108,10 +108,9 @@ const Bookmarks = () : JSX.Element => {
           <h3 className="pl-3">
             { t('Not available for guest') }
           </h3>
-        ) : (
-          { renderBookmarkList }
-        )
+        ) : renderBookmarksItem()
       }
+
     </>
   );
 
