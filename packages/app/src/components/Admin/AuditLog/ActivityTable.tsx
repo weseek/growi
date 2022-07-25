@@ -35,7 +35,9 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             return (
               <tr data-testid="activity-table" key={activity._id}>
                 <td>
-                  <UserPicture user={activity.user} className="picture rounded-circle" />
+                  {activity.user != null && (
+                    <UserPicture user={activity.user} className="picture rounded-circle" />
+                  )}
                 </td>
                 <td>{activity.snapshot?.username}</td>
                 <td>{formatDate(activity.createdAt)}</td>
