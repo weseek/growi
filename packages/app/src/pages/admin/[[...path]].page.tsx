@@ -22,7 +22,7 @@ import {
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
 const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
-const SecurityManagementContents = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const SecurityManagementContents = dynamic(() => import('../../components/Admin/Security/SecurityManagementContents'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
