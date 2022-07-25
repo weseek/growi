@@ -85,14 +85,14 @@ const Bookmarks = () : JSX.Element => {
 
 
   const renderBookmarksItem = () => {
-    if (pages.length === 0) {
+    if (pages?.length === 0) {
       return (
         <h3 className="pl-3">
           { t('No bookmarks yet') }
         </h3>
       );
     }
-    return  <BookmarksItem pages={pages} refreshBookmarkList={mutateCurrentUserBookmark} />;
+    return <BookmarksItem pages={pages} refreshBookmarkList={mutateCurrentUserBookmark} />;
   };
 
   return (
