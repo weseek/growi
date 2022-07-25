@@ -101,14 +101,7 @@ const Bookmarks = () : JSX.Element => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
 
-  const renderBar = () => {
-    if (isGuestUser) {
-      return (
-        <h3 className="pl-3">
-          { t('Not available for guest') }
-        </h3>
-      );
-    }
+  const renderBookmarkList = () => {
     if (pages.length === 0) {
       return (
         <h3 className="pl-3">
@@ -116,7 +109,7 @@ const Bookmarks = () : JSX.Element => {
         </h3>
       );
     }
-    return null;
+    return <BookmarksItem pages={pages} />;
   };
 
   return (
@@ -124,8 +117,15 @@ const Bookmarks = () : JSX.Element => {
       <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
-      { renderBar() }
-      <BookmarksItem pages={pages} />
+      { isGuestUser
+        ? (
+          <h3 className="pl-3">
+            { t('Not available for guest') }
+          </h3>
+        ) : (
+          { renderBookmarkList }
+        )
+      }
     </>
   );
 
