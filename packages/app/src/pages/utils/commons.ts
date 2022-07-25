@@ -5,7 +5,7 @@ import { SSRConfig, UserConfig } from 'next-i18next';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiThemes } from '~/interfaces/theme';
 
-import * as nextI18NextConfig from '../next-i18next.config';
+import * as nextI18NextConfig from '../../next-i18next.config';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next

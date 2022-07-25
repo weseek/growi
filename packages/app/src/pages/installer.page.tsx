@@ -17,7 +17,7 @@ import {
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
-} from './commons';
+} from './utils/commons';
 
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
