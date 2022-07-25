@@ -6,12 +6,14 @@
   "keywords": [
     "growi"
   ],
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "run-p build:*",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
     "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
     "clean": "npx -y shx rm -rf dist",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
