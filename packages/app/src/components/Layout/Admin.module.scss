@@ -1,14 +1,17 @@
+@use '~/styles/bootstrap/init' as *;
+@use '~/styles/mixins';
+
 $slack-work-space-name-card-background: #fff5ff;
 $slack-work-space-name-card-border: #efc1f6;
 
-.admin-page {
+.admin-page :global {
   .title {
     padding-top: 1rem;
     padding-bottom: 1rem;
 
     line-height: 1em;
 
-    @include variable-font-size(28px);
+    @include mixins.variable-font-size(28px);
     line-height: 1.1em;
   }
 
@@ -28,8 +31,6 @@ $slack-work-space-name-card-border: #efc1f6;
   }
 
   .admin-customize {
-    @import 'hljs';
-
     .ss-container img {
       padding: 0.5em;
       background-color: $gray-300;
@@ -169,15 +170,8 @@ $slack-work-space-name-card-border: #efc1f6;
 
     // switch layout for Bridge component
     .grw-bridge-container {
-      .label {
-        @extend .mt-5;
-      }
-
       // with ProxyCircle
       &.with-proxy {
-        .label {
-          @extend .mt-0;
-        }
         .hr-container {
           margin-top: 40px;
           @include media-breakpoint-up(lg) {
@@ -293,13 +287,15 @@ $slack-work-space-name-card-border: #efc1f6;
       background-color: rgba($info, 0.1);
     }
   }
+
+  .admin-navigation {
+    & > a + a {
+      margin-top: 2px;
+    }
+    &.sticky-top {
+      top: 30px;
+    }
+  }
 }
 
-.admin-navigation {
-  & > a + a {
-    margin-top: 2px;
-  }
-  &.sticky-top {
-    top: 30px;
-  }
-}
+
