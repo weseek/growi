@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +40,13 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                     <UserPicture user={activity.user} className="picture rounded-circle" />
                   )}
                 </td>
-                <td>{activity.snapshot?.username}</td>
+                <td>
+                  {
+                    activity.user != null
+                      ? (<a href={pagePathUtils.userPageRoot(activity.user)}>{activity.snapshot?.username}</a>)
+                      : (<>{activity.snapshot?.username}</>)
+                  }
+                </td>
                 <td>{formatDate(activity.createdAt)}</td>
                 <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
                 <td>{activity.ip}</td>
