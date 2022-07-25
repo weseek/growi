@@ -4,10 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 
-// import AppContainer from '~/client/services/AppContainer';
 import { useCsrfToken } from '~/stores/context';
-
-// import { withUnstatedContainers } from './UnstatedUtils';
 
 class LoginForm extends React.Component {
 
