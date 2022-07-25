@@ -13,7 +13,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:BookmarkList');
 
-// TODO: Adjust pagination
+// TODO: Remove pagination and apply  scrolling (not infinity)
 const ACTIVE_PAGE = 1;
 
 type Props = {
@@ -65,7 +65,7 @@ const Bookmarks = () : JSX.Element => {
   const [pages, setPages] = useState<IPageHasId[]>([]);
 
   const getMyBookmarkList = useCallback(async() => {
-    // TODO: Adjust pagination
+    // TODO: Remove pagination and apply  scrolling (not infinity)
     const page = ACTIVE_PAGE;
 
     try {
@@ -87,33 +87,31 @@ const Bookmarks = () : JSX.Element => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
 
+  const renderBar = () => {
+    if (isGuestUser) {
+      return (
+        <h3 className="pl-3">
+          { t('Not available for guest') }
+        </h3>
+      );
+    }
+    if (pages.length === 0) {
+      return (
+        <h3 className="pl-3">
+          { t('No bookmarks yet') }
+        </h3>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
-
-      { isGuestUser
-        ? (
-          <h3 className="pl-3">
-            { t('Not available for guest') }
-          </h3>
-        )
-        : (
-          <>
-            { pages.length === 0
-              ? (
-                <h3 className="pl-3">
-                  { t('No bookmarks yet') }
-                </h3>
-              )
-              : (
-                <BookmarksItem pages={pages} />
-              )
-            }
-          </>
-        )
-      }
+      { renderBar() }
+      <BookmarksItem pages={pages} />
     </>
   );
 
