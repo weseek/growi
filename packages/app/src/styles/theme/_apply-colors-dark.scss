@@ -300,6 +300,19 @@ ul.pagination {
       box-shadow: none !important;
     }
   }
+
+  // bookmarks
+  .grw-bookmarks-list {
+    @include override-list-group-item-for-pagetree(
+      $color-sidebar-context,
+      lighten($bgcolor-sidebar-context, 8%),
+      lighten($bgcolor-sidebar-context, 15%),
+      darken($color-sidebar-context, 15%),
+      darken($color-sidebar-context, 10%),
+      lighten($bgcolor-sidebar-context, 18%),
+      lighten($bgcolor-sidebar-context, 24%)
+    );
+  }
   .private-legacy-pages-link {
     &:hover {
       background: $bgcolor-list-hover;

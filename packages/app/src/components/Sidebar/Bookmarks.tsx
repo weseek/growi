@@ -1,34 +1,44 @@
 
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { DevidedPagePath } from '@growi/core';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
-import { useCurrentUser } from '~/stores/context';
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
+import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
+
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
-import InfiniteScroll from './InfiniteScroll';
+const logger = loggerFactory('growi:BookmarkList');
 
+// TODO: Remove pagination and apply  scrolling (not infinity)
+const ACTIVE_PAGE = 1;
 
-const BookmarksItem = ({ data }) => {
-  const { page } = data;
-  const dPagePath = new DevidedPagePath(page.path, false, true);
-  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-  const bookmarkItemId = `bookmark-item-${data._id}`;
-  return (
-    <>
-      <li className="list-group-item py-3 px-0" id={bookmarkItemId}>
-        <div className="d-flex w-100 justify-content-between">
-          <h5 className="my-0">
-            <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-          </h5>
-          <PageItemControl
+type Props = {
+  pages: IPageHasId[]
+}
+
+const BookmarksItem = (props: Props) => {
+  const { pages } = props;
+
+  const generateBookmarkedPageList = pages.map((page) => {
+    const dPagePath = new DevidedPagePath(page.path, false, true);
+    const { latter: pageTitle, former: formerPagePath } = dPagePath;
+    const bookmarkItemId = `bookmark-item-${page._id}`;
+    return (
+      <div key={page._id}>
+        <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
+          <a href={`/${page._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
+          </a>
+        </li>
+
+        <PageItemControl
             pageId={page._id}
             isEnableActions
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
@@ -38,65 +48,85 @@ const BookmarksItem = ({ data }) => {
             </DropdownToggle>
           </PageItemControl>
 
-          <UncontrolledTooltip
-            modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-            autohide={false}
-            placement="left"
-            target={bookmarkItemId}
-          >
-            {data.page.path}
-          </UncontrolledTooltip>
-        </div>
-      </li>
+        <UncontrolledTooltip
+          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+          autohide={false}
+          placement="right"
+          target={bookmarkItemId}
+        >
+          { formerPagePath || '/' }
+        </UncontrolledTooltip>
+      </div>
+    );
+  });
 
+
+  return (
+    <>
+      <ul className="grw-bookmarks-list list-group p-3">
+        <div className="grw-bookmarks-item-container">
+          {generateBookmarkedPageList}
+        </div>
+      </ul>
     </>
   );
-
 };
 
-BookmarksItem.propTypes = {
-  data: PropTypes.any,
-};
 
 const Bookmarks = () : JSX.Element => {
-  const { t } = useTranslation('');
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
-  const swr = useSWRInifiniteBookmarkedPage(currentUser?._id);
-  const isEmpty = swr.data?.[0].docs.length === 0;
-  const isReachingEnd = isEmpty || (swr.data && swr.data[0].nextPage == null);
+  const { data: isGuestUser } = useIsGuestUser();
+  const [pages, setPages] = useState<IPageHasId[]>([]);
+
+  const getMyBookmarkList = useCallback(async() => {
+    // TODO: Remove pagination and apply  scrolling (not infinity)
+    const page = ACTIVE_PAGE;
+
+    try {
+      const res = await apiv3Get(`/bookmarks/${currentUser?._id}`, { page });
+      const { paginationResult } = res.data;
+      setPages(paginationResult.docs.map((page) => {
+        return {
+          ...page.page,
+        };
+      }));
+    }
+    catch (error) {
+      logger.error('failed to fetch data', error);
+      toastError(error, 'Error occurred in bookmark page list');
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    getMyBookmarkList();
+  }, [getMyBookmarkList]);
+
+  const renderBar = () => {
+    if (isGuestUser) {
+      return (
+        <h3 className="pl-3">
+          { t('Not available for guest') }
+        </h3>
+      );
+    }
+    if (pages.length === 0) {
+      return (
+        <h3 className="pl-3">
+          { t('No bookmarks yet') }
+        </h3>
+      );
+    }
+    return null;
+  };
 
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
-      <div className="grw-bookmarks-list p-3">
-        {isEmpty ? t('No bookmarks yet') : (
-          <div>
-            <ul className="list-group list-group-flush">
-              <InfiniteScroll
-                swrInifiniteResponse={swr}
-                isReachingEnd={isReachingEnd}
-              >
-                {paginationResult => paginationResult?.docs.map(data => (
-                  <>
-                    <BookmarksItem key={data._id} data={data} />
-                    <UncontrolledTooltip
-                      modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-                      autohide={false}
-                      placement="right"
-                      target={`bookmark-item-${data._id}`}
-                    >
-                      {data.page.path}
-                    </UncontrolledTooltip>
-                  </>
-                ))
-                }
-              </InfiniteScroll>
-            </ul>
-          </div>
-        )}
-      </div>
+      { renderBar() }
+      <BookmarksItem pages={pages} />
     </>
   );
 
