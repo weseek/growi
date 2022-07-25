@@ -9,42 +9,10 @@ const eazyLogger = require('eazy-logger');
 const { withSuperjson } = require('next-superjson');
 
 const { i18n, localePath } = require('./src/next-i18next.config');
-const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
 
 
-// setup logger
-const logger = eazyLogger.Logger({
-  prefix: '[{green:next.config.js}] ',
-  useLevelPrefixes: false,
-});
-
-
-const setupWithTM = () => {
-  // define transpiled packages for '@growi/*'
-  const packages = [
-    ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
-    // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
-    'react-markdown',
-    'unified',
-    'comma-separated-tokens',
-    'decode-named-character-reference',
-    'html-void-elements',
-    'property-information',
-    'space-separated-tokens',
-    'trim-lines',
-    'web-namespaces',
-    'vfile',
-    'zwitch',
-    'emoticon',
-    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
-  ];
-
-  logger.info('{bold:Listing scoped packages for transpiling:}');
-  logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
-
-  return require('next-transpile-modules')(packages);
-};
-const withTM = setupWithTM();
+const isProduction = process.env.NODE_ENV === 'production';
+let isServer = true;
 
 
 // define additional entries
@@ -69,9 +37,11 @@ const nextConfig = {
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
+    isServer = options.isServer;
+
     // Avoid "Module not found: Can't resolve 'fs'"
     // See: https://stackoverflow.com/a/68511591
-    if (!options.isServer) {
+    if (!isServer) {
       config.resolve.fallback.fs = false;
     }
 
@@ -104,5 +74,47 @@ const nextConfig = {
   },
 
 };
+
+
+const passThrough = nextConfig => nextConfig;
+let withTM = passThrough;
+
+if (!isProduction || !isServer) {
+  const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
+
+  // setup logger
+  const logger = eazyLogger.Logger({
+    prefix: '[{green:next.config.js}] ',
+    useLevelPrefixes: false,
+  });
+
+  const setupWithTM = () => {
+    // define transpiled packages for '@growi/*'
+    const packages = [
+      ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
+      // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
+      'react-markdown',
+      'unified',
+      'comma-separated-tokens',
+      'decode-named-character-reference',
+      'html-void-elements',
+      'property-information',
+      'space-separated-tokens',
+      'trim-lines',
+      'web-namespaces',
+      'vfile',
+      'zwitch',
+      'emoticon',
+      ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
+    ];
+
+    logger.info('{bold:Listing scoped packages for transpiling:}');
+    logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
+
+    return require('next-transpile-modules')(packages);
+  };
+
+  withTM = setupWithTM();
+}
 
 module.exports = withSuperjson()(withTM(nextConfig));
