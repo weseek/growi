@@ -13,6 +13,7 @@ const ThemeDefault = dynamic(() => import('../ThemeDefault'));
 const ThemeJadeGreen = dynamic(() => import('../ThemeJadeGreen'));
 const ThemeIsland = dynamic(() => import('../ThemeIsland'));
 const ThemeSpring = dynamic(() => import('../ThemeSpring'));
+const ThemeNature = dynamic(() => import('../ThemeNature'));
 
 
 type Props = {
@@ -34,6 +35,8 @@ export const ThemeProvider = ({ theme, children }: Props): JSX.Element => {
       return <ThemeIsland>{children}</ThemeIsland>;
     case GrowiThemes.SPRING:
       return <ThemeSpring>{children}</ThemeSpring>;
+    case GrowiThemes.NATURE:
+      return <ThemeNature>{children}</ThemeNature>;
     default:
       return <ThemeDefault>{children}</ThemeDefault>;
   }
