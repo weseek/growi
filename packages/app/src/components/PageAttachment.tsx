@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useCurrentMarkdown, useCurrentPageId, useIsGuestUser } from '~/stores/context';
+import { useEditingMarkdown, useCurrentPageId, useIsGuestUser } from '~/stores/context';
 
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
@@ -16,7 +16,7 @@ const checkIfFileInUse = (markdown: string, attachment) => {
 
 // Custom hook that handles processes related to inUseAttachments
 const useInUseAttachments = (attachments) => {
-  const { data: markdown } = useCurrentMarkdown();
+  const { data: markdown } = useEditingMarkdown();
   const [inUse, setInUse] = useState<any>({});
 
   // Update inUse when either of attachments or markdown is updated
