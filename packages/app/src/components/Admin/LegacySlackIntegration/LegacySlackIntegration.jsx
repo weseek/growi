@@ -21,9 +21,9 @@ const LegacySlackIntegration = (props) => {
 
 
   useEffect(() => {
-    async function fetchLegacySlackIntegrationData() {
+    const fetchLegacySlackIntegrationData = async() => {
       await adminSlackIntegrationLegacyContainer.retrieveData();
-    }
+    };
 
     try {
       fetchLegacySlackIntegrationData();
