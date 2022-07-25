@@ -133,6 +133,7 @@ activitySchema.statics.getPaginatedActivity = async function(limit: number, offs
       limit,
       offset,
       sort: { createdAt: -1 },
+      populate: 'user',
     },
   );
   return paginateResult;

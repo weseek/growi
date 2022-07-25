@@ -2,12 +2,13 @@ import { parseISO, addMinutes, isValid } from 'date-fns';
 import express, { Request, Router } from 'express';
 import { query } from 'express-validator';
 
-import { ISearchFilter } from '~/interfaces/activity';
+import { IActivity, ISearchFilter } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -93,7 +94,21 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
-      return res.apiv3({ paginationResult });
+
+      const User = crowi.model('User');
+      const serializedDocs = paginationResult.docs.map((doc: IActivity) => {
+        if (doc.user != null && doc.user instanceof User) {
+          doc.user = serializeUserSecurely(doc.user);
+        }
+        return doc;
+      });
+
+      const serializedPaginationResult = {
+        ...paginationResult,
+        docs: serializedDocs,
+      };
+
+      return res.apiv3({ serializedPaginationResult });
     }
     catch (err) {
       logger.error('Failed to get paginated activity', err);
