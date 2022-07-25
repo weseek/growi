@@ -23,8 +23,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
       <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
-            <th scope="col"></th>
-            <th scope="col">{t('admin:audit_log_management.username')}</th>
+            <th scope="col">{t('admin:audit_log_management.user')}</th>
             <th scope="col">{t('admin:audit_log_management.date')}</th>
             <th scope="col">{t('admin:audit_log_management.action')}</th>
             <th scope="col">{t('admin:audit_log_management.ip')}</th>
@@ -36,16 +35,12 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             return (
               <tr data-testid="activity-table" key={activity._id}>
                 <td>
-                  {activity.user != null && (
-                    <UserPicture user={activity.user} className="picture rounded-circle" />
+                  { activity.user != null && (
+                    <>
+                      <UserPicture user={activity.user} className="picture rounded-circle" />
+                      <a className="ml-2" href={pagePathUtils.userPageRoot(activity.user)}>{activity.snapshot?.username}</a>
+                    </>
                   )}
-                </td>
-                <td>
-                  {
-                    activity.user != null
-                      ? (<a href={pagePathUtils.userPageRoot(activity.user)}>{activity.snapshot?.username}</a>)
-                      : (<>{activity.snapshot?.username}</>)
-                  }
                 </td>
                 <td>{formatDate(activity.createdAt)}</td>
                 <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
