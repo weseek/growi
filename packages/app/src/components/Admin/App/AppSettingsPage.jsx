@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -13,28 +13,25 @@ import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
 
-let retrieveErrors = null;
+// let retrieveErrors = null;
 function AppSettingsPage(props) {
-  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
-    throw (async() => {
-      try {
-        await props.adminAppContainer.retrieveAppSettingsData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        logger.error(errs);
-        props.adminAppContainer.setState({
-          title: props.adminAppContainer.dummyTitleForError,
-        });
-        retrieveErrors = errs;
-      }
-    })();
-  }
 
-  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitleForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  const { adminAppContainer } = props;
+
+  useEffect(() => {
+    const fetchAppSettingsData = async() => {
+      await adminAppContainer.retrieveAppSettingsData();
+    };
+
+    try {
+      fetchAppSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminAppContainer]);
 
   return <AppSettingsPageContents />;
 }

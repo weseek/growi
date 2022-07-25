@@ -21,7 +21,7 @@ import {
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
-const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const AppSettingsPage = dynamic(() => import('../../components/Admin/App/AppSettingsPage'), { ssr: false });
 const SecurityManagementContents = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
@@ -74,7 +74,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     app: {
       title: useCustomTitle(props, t('App Settings')),
-      component: <AppSettingsPageContents />,
+      component: <AppSettingsPage />,
     },
     security: {
       title: useCustomTitle(props, t('security_settings')),
