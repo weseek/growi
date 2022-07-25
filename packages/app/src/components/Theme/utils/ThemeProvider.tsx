@@ -10,6 +10,7 @@ const ThemeAntarctic = dynamic(() => import('../ThemeAntarctic'));
 const ThemeBlackboard = dynamic(() => import('../ThemeBlackboard'));
 const ThemeChristmas = dynamic(() => import('../ThemeChristmas'));
 const ThemeDefault = dynamic(() => import('../ThemeDefault'));
+const ThemeFireRed = dynamic(() => import('../ThemeFireRed'));
 const ThemeJadeGreen = dynamic(() => import('../ThemeJadeGreen'));
 
 
@@ -26,6 +27,8 @@ export const ThemeProvider = ({ theme, children }: Props): JSX.Element => {
       return <ThemeBlackboard>{children}</ThemeBlackboard>;
     case GrowiThemes.CHRISTMAS:
       return <ThemeChristmas>{children}</ThemeChristmas>;
+    case GrowiThemes.FIRE_RED:
+      return <ThemeFireRed>{children}</ThemeFireRed>;
     case GrowiThemes.JADE_GREEN:
       return <ThemeJadeGreen>{children}</ThemeJadeGreen>;
     default:
