@@ -6,7 +6,7 @@
  */
 
 const { withSuperjson } = require('next-superjson');
-const { PHASE_PRODUCTION_SERVER } = require('next/constants');
+const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
 
 // define additional entries
@@ -116,5 +116,9 @@ module.exports = async(phase, { defaultConfig }) => {
   }
 
   const withTM = setupTranspileModules();
-  return withSuperjson()(withTM(nextConfig));
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: phase === PHASE_PRODUCTION_BUILD || process.env.ANALYZE === 'true',
+  });
+
+  return withBundleAnalyzer(withTM(withSuperjson()(nextConfig)));
 };

@@ -83,7 +83,9 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Bundle Analyzing Report
-        path: packages/app/report/bundle-analyzer.html
+        path: |
+          packages/app/.next/analyze/client.html
+          packages/app/.next/analyze/server.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
