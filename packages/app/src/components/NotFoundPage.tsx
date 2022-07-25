@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-// import PageTimeline from './PageTimeline';
+import { PageTimeline } from './PageTimeline';
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
@@ -23,8 +23,7 @@ const NotFoundPage = (): JSX.Element => {
       },
       timeLine: {
         Icon: TimeLineIcon,
-        // Content: PageTimeline,
-        Content: () => <></>,
+        Content: PageTimeline,
         i18n: t('Timeline View'),
         index: 1,
       },
