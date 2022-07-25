@@ -6,9 +6,7 @@
  */
 
 const eazyLogger = require('eazy-logger');
-const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
 const { withSuperjson } = require('next-superjson');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const { i18n, localePath } = require('./src/next-i18next.config');
 const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
@@ -89,6 +87,7 @@ const nextConfig = {
       });
     };
 
+    const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
     config.plugins.push(
       new WebpackManifestPlugin({
         fileName: 'custom-manifest.json',
@@ -97,6 +96,7 @@ const nextConfig = {
 
     // setup i18next-hmr
     if (!options.isServer && options.dev) {
+      const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
       config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }));
     }
 
