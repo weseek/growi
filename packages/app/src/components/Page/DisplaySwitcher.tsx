@@ -15,9 +15,7 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
-import { NotCreatablePage } from '../NotCreatablePage';
 import NotFoundPage from '../NotFoundPage';
-import ForbiddenPage from '../ForbiddenPage';
 import { Page } from '../Page';
 // import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
@@ -50,8 +48,6 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
-  const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isForbidden } = useIsForbidden();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -72,9 +68,7 @@ const DisplaySwitcher = (): JSX.Element => {
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
               { !isNotFound && <Page /> }
-              { isForbidden && <ForbiddenPage /> }
-              { isNotFound && !isNotCreatable && <NotFoundPage /> }
-              { isNotFound && isNotCreatable && !isForbidden && <NotCreatablePage /> }
+              { isNotFound && <NotFoundPage /> }
             </div>
 
             { !isNotFound && !currentPage?.isEmpty && (

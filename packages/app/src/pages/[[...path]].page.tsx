@@ -44,6 +44,8 @@ import loggerFactory from '~/utils/logger';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import { NotCreatablePage } from '../components/NotCreatablePage'
+import ForbiddenPage from '../components/ForbiddenPage';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -302,7 +304,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 { !props.isIdenticalPathPage && (
                   <>
                     <PageAlerts />
-                    <DisplaySwitcher />
+                    { props.isForbidden && <ForbiddenPage /> }
+                    { props.IsNotCreatable && <NotCreatablePage />}
+                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+
+                    {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
                     PageStatusAlert
