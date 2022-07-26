@@ -4,6 +4,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
+import urljoin from 'url-join';
+import { pathUtils } from '@growi/core';
+
+import { useSiteUrl } from '~/stores/context';
+
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
@@ -33,8 +38,9 @@ class OidcSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer, siteUrl } = this.props;
     const { isOidcEnabled } = adminGeneralSecurityContainer.state;
+    const  oidcCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/oidc/callback')
 
     return (
 
@@ -69,11 +75,11 @@ class OidcSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminOidcSecurityContainer.state.callbackUrl}
+              value={oidcCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            {!siteUrl && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -365,11 +371,11 @@ class OidcSecurityManagementContents extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminOidcSecurityContainer.state.callbackUrl || ''}
+                  defaultValue={oidcCallbackUrl}
                   readOnly
                 />
                 <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-                {!adminGeneralSecurityContainer.state.appSiteUrl && (
+                {!siteUrl && (
                   <div className="alert alert-danger">
                     <i
                       className="icon-exclamation"
@@ -465,11 +471,13 @@ OidcSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
+  siteUrl: PropTypes.string,
 };
 
 const OidcSecurityManagementContentsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <OidcSecurityManagementContents t={t} {...props} />;
+  const { data: siteUrl } = useSiteUrl();
+  return <OidcSecurityManagementContents t={t} {...props} siteUrl={siteUrl} />;
 };
 
 const OidcSecurityManagementContentsWrapper = withUnstatedContainers(OidcSecurityManagementContentsWrapperFC, [

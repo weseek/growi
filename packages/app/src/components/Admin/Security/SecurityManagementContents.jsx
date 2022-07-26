@@ -11,7 +11,7 @@ import CustomNav from '../../CustomNavigation/CustomNav';
 // import GoogleSecuritySetting from './GoogleSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
-// import OidcSecuritySetting from './OidcSecuritySetting';
+import OidcSecuritySetting from './OidcSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
@@ -121,7 +121,7 @@ const SecurityManagementContents = () => {
             {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_oidc">
-            {/* {activeComponents.has('passport_oidc') && <OidcSecuritySetting />} */}
+            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_basic">
             {/* {activeComponents.has('passport_basic') && <BasicSecuritySetting />} */}
