@@ -2,7 +2,7 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { Nullable } from '^/../core/src/interfaces/common';
+import { Nullable } from '@growi/core';
 import { Button } from 'reactstrap';
 
 
