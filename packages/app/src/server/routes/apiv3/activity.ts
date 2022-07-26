@@ -93,10 +93,18 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      const paginationResult = await Activity.getPaginatedActivity(limit, offset, query);
+      const paginateResult = await Activity.paginate(
+        query,
+        {
+          limit,
+          offset,
+          sort: { createdAt: -1 },
+          populate: 'user',
+        },
+      );
 
       const User = crowi.model('User');
-      const serializedDocs = paginationResult.docs.map((doc: IActivity) => {
+      const serializedDocs = paginateResult.docs.map((doc: IActivity) => {
         if (doc.user != null && doc.user instanceof User) {
           doc.user = serializeUserSecurely(doc.user);
         }
@@ -104,7 +112,7 @@ module.exports = (crowi: Crowi): Router => {
       });
 
       const serializedPaginationResult = {
-        ...paginationResult,
+        ...paginateResult,
         docs: serializedDocs,
       };
 
