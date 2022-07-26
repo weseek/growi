@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -14,23 +13,21 @@ import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 let retrieveErrors = null;
 function LocalSecuritySetting(props) {
   const { adminLocalSecurityContainer } = props;
-  // if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
-  //   throw (async() => {
-  //     try {
-  //       await adminLocalSecurityContainer.retrieveSecurityData();
-  //     }
-  //     catch (err) {
-  //       const errs = toArrayIfNot(err);
-  //       toastError(errs);
-  //       retrieveErrors = errs;
-  //       adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError });
-  //     }
-  //   })();
-  // }
 
-  if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationModeForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  useEffect(() => {
+    const fetchLocalSecuritySettingsData = async() => {
+      await adminLocalSecurityContainer.retrieveSecurityData();
+    };
+
+    try {
+      fetchLocalSecuritySettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminLocalSecurityContainer]);
 
   return <LocalSecuritySettingContents />;
 }
