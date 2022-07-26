@@ -39,7 +39,7 @@ class GitHubSecurityManagementContents extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
-    const gitHubCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback')
+    const gitHubCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 
     return (
 
