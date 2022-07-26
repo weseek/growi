@@ -23,7 +23,7 @@ export default class AdminGitHubSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
+      // callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
       // set dummy value tile for using suspense
       githubClientId: this.dummyGithubClientId,
       githubClientSecret: '',

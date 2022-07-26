@@ -7,7 +7,7 @@ import CustomNav from '../../CustomNavigation/CustomNav';
 
 import BasicSecuritySetting from './BasicSecuritySetting';
 // import FacebookSecuritySetting from './FacebookSecuritySetting';
-// import GitHubSecuritySetting from './GitHubSecuritySetting';
+import GitHubSecuritySetting from './GitHubSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
@@ -130,7 +130,7 @@ const SecurityManagementContents = () => {
             {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_github">
-            {/* {activeComponents.has('passport_github') && <GitHubSecuritySetting />} */}
+            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_twitter">
             {/* {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />} */}
