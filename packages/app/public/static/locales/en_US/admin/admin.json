@@ -544,6 +544,8 @@
     "fixed_by_env_var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "available_action_list": "Search / View All Available Actions",
     "available_action_list_explain": "List of actions that can be search / view in the Audit Log",
+    "all_supported_actions_length": "Number of all actions supported",
+    "available_actions_length": "Number of available actions",
     "action_list": "Action List",
     "disable_mode_explain": "Audit log is currently disabled. To enable it, set the environment variable <code>AUDIT_LOG_ENABLED</code> to true."
   },

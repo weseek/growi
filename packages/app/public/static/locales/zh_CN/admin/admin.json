@@ -553,6 +553,8 @@
     "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
     "available_action_list": "搜索/查看 所有可用的行动",
     "available_action_list_explain": "可以在审计日志中 搜索/查看 的行动列表",
+    "all_supported_actions_length": "支持的所有行动的数量",
+    "available_actions_length": "可用的行动的数量",
     "action_list": "行动清单",
     "disable_mode_explain": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。"
   },
