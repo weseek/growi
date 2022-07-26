@@ -528,6 +528,7 @@
     }
   },
   "audit_log_management": {
+    "user": "ユーザー",
     "username": "ユーザー名",
     "date": "日付",
     "action": "アクション",

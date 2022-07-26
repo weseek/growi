@@ -529,6 +529,7 @@
     }
   },
   "audit_log_management": {
+    "user": "User",
     "username": "Username",
     "date": "Date",
     "action": "Action",

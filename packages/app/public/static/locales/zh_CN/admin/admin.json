@@ -538,6 +538,7 @@
     }
   },
   "audit_log_management": {
+    "user": "用户",
     "username": "帐号",
     "date": "日期",
     "action": "行动",
