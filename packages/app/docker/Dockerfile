@@ -116,7 +116,6 @@ RUN tar -cf packages.tar \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
   packages/*/package.json \
   packages/*/dist

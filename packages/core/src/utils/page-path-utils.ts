@@ -1,7 +1,7 @@
 import nodePath from 'path';
 
+import ObjectId from 'bson-objectid';
 import escapeStringRegexp from 'escape-string-regexp';
-import { isValidObjectId } from 'mongoose';
 
 
 import { addTrailingSlash } from './path-utils';
@@ -28,7 +28,7 @@ export const isUsersTopPage = (path: string): boolean => {
  */
 export const isPermalink = (path: string): boolean => {
   const pageIdStr = path.substring(1);
-  return isValidObjectId(pageIdStr);
+  return ObjectId.isValid(pageIdStr);
 };
 
 /**

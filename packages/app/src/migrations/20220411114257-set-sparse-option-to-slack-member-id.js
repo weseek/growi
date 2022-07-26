@@ -1,6 +1,6 @@
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:set-sparse-option-to-slack-member-id');

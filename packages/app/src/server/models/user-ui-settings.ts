@@ -1,4 +1,4 @@
-import { getOrCreateModel, Ref, IUser } from '@growi/core';
+import { Ref, IUser } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
@@ -6,6 +6,8 @@ import {
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface UserUISettingsDocument extends IUserUISettings, Document {
