@@ -76,6 +76,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
+    if (grantData.grant === 1) {
+      return t('fix_page_grant.modal.grant_label.public');
+    }
+
     if (grantData.grant === 4) {
       return t('fix_page_grant.modal.radio_btn.only_me');
     }
