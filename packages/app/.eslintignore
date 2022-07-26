@@ -1,3 +1,4 @@
+/_obsolete/**
 /dist/**
 /transpiled/**
 /public/**
@@ -6,6 +7,5 @@
 /src/client/util/reveal/plugins/markdown.js
 /src/linter-checker/**
 /src/utils/next.config.utils.js
-/src-obsolete/**
 /tmp/**
 /next-env.d.ts
