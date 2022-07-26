@@ -17,7 +17,7 @@ Object.values(locales).forEach((locale) => {
 });
 
 /*
-* Note: This file will be deleted. use "~/next-i18next.config" instead
+* Note: This file will be deleted. use "^/config/next-i18next.config" instead
 */
 // extract metadata list from 'public/static/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);

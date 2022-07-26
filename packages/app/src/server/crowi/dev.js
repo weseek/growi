@@ -1,6 +1,7 @@
 import path from 'path';
 
-import { i18n } from '~/next-i18next.config';
+import { i18n } from '^/config/next-i18next.config';
+
 import loggerFactory from '~/utils/logger';
 
 import nextFactory from '../routes/next';
