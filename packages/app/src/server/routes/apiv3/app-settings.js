@@ -1,7 +1,8 @@
 import { body } from 'express-validator';
 
+import { i18n } from '^/config/next-i18next.config';
+
 import { SupportedAction } from '~/interfaces/activity';
-import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';

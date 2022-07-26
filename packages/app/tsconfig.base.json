@@ -5,6 +5,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "src/**/*"],
+  "include": ["next-env.d.ts", "config/**/*", "src/**/*"],
   "exclude": ["node_modules"]
 }

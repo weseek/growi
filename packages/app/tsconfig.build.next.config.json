@@ -10,9 +10,8 @@
       "^/*": ["./*"]
     }
   },
-  "include": [
-    "src/next-i18next.config.ts",
+  "files": [
+    "config/next-i18next.config.ts",
     "src/utils/next.config.utils.ts"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

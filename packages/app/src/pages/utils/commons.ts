@@ -2,10 +2,11 @@ import { DevidedPagePath, Lang } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
 
+import * as nextI18NextConfig from '^/config/next-i18next.config';
+
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiThemes } from '~/interfaces/theme';
 
-import * as nextI18NextConfig from '../../next-i18next.config';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next

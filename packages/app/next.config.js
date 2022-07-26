@@ -53,9 +53,7 @@ const setupTranspileModules = () => {
 
 module.exports = async(phase, { defaultConfig }) => {
 
-  const { i18n, localePath } = phase === PHASE_PRODUCTION_SERVER
-    ? require('./dist/next-i18next.config')
-    : require('./src/next-i18next.config');
+  const { i18n, localePath } = require('./config/next-i18next.config');
 
   /** @type {import('next').NextConfig} */
   const nextConfig = {

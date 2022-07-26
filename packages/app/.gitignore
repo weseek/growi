@@ -17,7 +17,7 @@ test/cypress/videos
 /tmp/
 
 # transpiled configuration files for production build
-/src/next-i18next.config.js
+/config/next-i18next.config.js
 /src/utils/next.config.utils.js
 
 # dist (for GROWI v4.x and below)
