@@ -24,7 +24,6 @@ function SamlSecurityManagement(props) {
     catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
-      logger.error(errs);
     }
   }, [adminSamlSecurityContainer]);
 

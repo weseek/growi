@@ -1,20 +1,20 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
-import PropTypes from 'prop-types';
+import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 import urljoin from 'url-join';
-import { pathUtils } from '@growi/core';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import { useSiteUrl } from '~/stores/context';
 
 class SamlSecurityManagementContents extends React.Component {
 
@@ -42,11 +42,13 @@ class SamlSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl,
+    } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
 
-    const samlCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback')
+    const samlCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
 
     return (
       <React.Fragment>

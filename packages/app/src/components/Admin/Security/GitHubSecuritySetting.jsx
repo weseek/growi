@@ -25,7 +25,6 @@ function GitHubSecurityManagement(props) {
     catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
-      logger.error(errs);
     }
   }, [adminGitHubSecurityContainer]);
 

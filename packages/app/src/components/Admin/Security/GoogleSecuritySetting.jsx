@@ -24,7 +24,6 @@ function GoogleSecurityManagement(props) {
     catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
-      logger.error(errs);
     }
   }, [adminGoogleSecurityContainer]);
 
