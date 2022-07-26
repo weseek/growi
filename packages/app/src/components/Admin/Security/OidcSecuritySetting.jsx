@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import OidcSecurityManagementContents from './OidcSecuritySettingContents';
 
-let retrieveErrors = null;
 function OidcSecurityManagement(props) {
   const { adminOidcSecurityContainer } = props;
 

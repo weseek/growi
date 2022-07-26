@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
-let retrieveErrors = null;
 function GoogleSecurityManagement(props) {
   const { adminGoogleSecurityContainer } = props;
 

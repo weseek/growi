@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
 
-let retrieveErrors = null;
 function LdapSecuritySetting(props) {
   const { adminLdapSecurityContainer } = props;
 

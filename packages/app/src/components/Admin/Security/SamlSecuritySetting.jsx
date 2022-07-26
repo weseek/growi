@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 
-let retrieveErrors = null;
 function SamlSecurityManagement(props) {
   const { adminSamlSecurityContainer } = props;
 

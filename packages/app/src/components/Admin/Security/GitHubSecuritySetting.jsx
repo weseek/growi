@@ -11,7 +11,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
 
-let retrieveErrors = null;
 function GitHubSecurityManagement(props) {
   const { adminGitHubSecurityContainer } = props;
 

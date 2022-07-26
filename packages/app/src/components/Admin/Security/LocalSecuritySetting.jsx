@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
-let retrieveErrors = null;
 function LocalSecuritySetting(props) {
   const { adminLocalSecurityContainer } = props;
 
