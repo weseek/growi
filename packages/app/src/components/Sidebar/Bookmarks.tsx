@@ -1,18 +1,20 @@
 
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { DevidedPagePath } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
-import { useSWRCurrentUserBookmark } from '~/stores/bookmark';
 import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
-
+const logger = loggerFactory('growi:BookmarkList');
 // TODO: Remove pagination and apply  scrolling (not infinity)
 const ACTIVE_PAGE = 1;
 
@@ -81,8 +83,28 @@ const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: pages, mutate: mutateCurrentUserBookmark } = useSWRCurrentUserBookmark(currentUser?._id, ACTIVE_PAGE);
+  const [pages, setPages] = useState<IPageHasId[]>([]);
+  const page = ACTIVE_PAGE;
 
+  const getMyBookmarkList = useCallback(async() => {
+    try {
+      const res = await apiv3Get(`/bookmarks/${currentUser?._id}`, { page });
+      const { paginationResult } = res.data;
+      setPages(paginationResult.docs.map((page) => {
+        return {
+          ...page.page,
+        };
+      }));
+    }
+    catch (error) {
+      logger.error('failed to fetch data', error);
+      toastError(error, 'Error occurred in bookmark page list');
+    }
+  }, [currentUser, page]);
+
+  useEffect(() => {
+    getMyBookmarkList();
+  }, [getMyBookmarkList]);
 
   const renderBookmarksItem = () => {
     if (pages?.length === 0) {
@@ -92,7 +114,7 @@ const Bookmarks = () : JSX.Element => {
         </h3>
       );
     }
-    return <BookmarksItem pages={pages} refreshBookmarkList={mutateCurrentUserBookmark} />;
+    return <BookmarksItem pages={pages} refreshBookmarkList={getMyBookmarkList} />;
   };
 
   return (
