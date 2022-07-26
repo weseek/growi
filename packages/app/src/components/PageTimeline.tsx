@@ -19,16 +19,16 @@ const PageTimeline = (): JSX.Element => {
   const [limit, setLimit] = useState();
   const [pages, setPages] = useState<IPageHasId[] | null>(null);
 
-  const { data: currentPagepath } = useCurrentPagePath();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererOptions } = useTimelineOptions();
 
   const handlePage = useCallback(async(selectedPageNum: number) => {
-    const res = await apiv3Get('/pages/list', { currentPagepath, selectedPageNum });
+    const res = await apiv3Get('/pages/list', { path: currentPagePath, page: selectedPageNum });
     setTotalPageItems(res.data.totalCount);
     setPages(res.data.pages);
     setLimit(res.data.limit);
     setActivePage(selectedPageNum);
-  }, [currentPagepath]);
+  }, [currentPagePath]);
 
   useEffect(() => {
     handlePage(1);
