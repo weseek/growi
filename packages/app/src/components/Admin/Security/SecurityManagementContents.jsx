@@ -10,7 +10,7 @@ import CustomNav from '../../CustomNavigation/CustomNav';
 // import GitHubSecuritySetting from './GitHubSecuritySetting';
 // import GoogleSecuritySetting from './GoogleSecuritySetting';
 // import LdapSecuritySetting from './LdapSecuritySetting';
-// import LocalSecuritySetting from './LocalSecuritySetting';
+import LocalSecuritySetting from './LocalSecuritySetting';
 // import OidcSecuritySetting from './OidcSecuritySetting';
 // import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
@@ -112,7 +112,7 @@ const SecurityManagementContents = () => {
         />
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
-            {/* {activeComponents.has('passport_local') && <LocalSecuritySetting />} */}
+            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_ldap">
             {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
