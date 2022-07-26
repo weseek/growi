@@ -19,13 +19,10 @@ export default class AdminOidcSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyOidcProviderName = 0;
-    this.dummyOidcProviderNameForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      oidcProviderName: this.dummyOidcProviderName,
+      oidcProviderName: '',
       oidcIssuerHost: '',
       oidcAuthorizationEndpoint: '',
       oidcTokenEndpoint: '',

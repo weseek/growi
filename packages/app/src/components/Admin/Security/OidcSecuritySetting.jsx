@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -31,6 +30,21 @@ function OidcSecurityManagement(props) {
   // if (adminOidcSecurityContainer.state.oidcProviderName === adminOidcSecurityContainer.dummyOidcProviderNameForError) {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
+
+  useEffect(() => {
+    const fetchOidcSecuritySettingsData = async() => {
+      await adminOidcSecurityContainer.retrieveSecurityData();
+    };
+
+    try {
+      fetchOidcSecuritySettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminOidcSecurityContainer]);
 
   return <OidcSecurityManagementContents />;
 }
