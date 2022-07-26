@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -15,23 +14,21 @@ import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
 let retrieveErrors = null;
 function GitHubSecurityManagement(props) {
   const { adminGitHubSecurityContainer } = props;
-  // if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientId) {
-  //   throw (async() => {
-  //     try {
-  //       await adminGitHubSecurityContainer.retrieveSecurityData();
-  //     }
-  //     catch (err) {
-  //       const errs = toArrayIfNot(err);
-  //       toastError(errs);
-  //       retrieveErrors = errs;
-  //       adminGitHubSecurityContainer.setState({ githubClientId: adminGitHubSecurityContainer.dummyGithubClientIdForError });
-  //     }
-  //   })();
-  // }
 
-  // if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientIdForError) {
-  //   throw new Error(`${retrieveErrors.length} errors occured`);
-  // }
+  useEffect(() => {
+    const fetchGitHubSecuritySettingsData = async() => {
+      await adminGitHubSecurityContainer.retrieveSecurityData();
+    };
+
+    try {
+      fetchGitHubSecuritySettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminGitHubSecurityContainer]);
 
   return <GitHubSecuritySettingContents />;
 }
