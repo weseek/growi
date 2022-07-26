@@ -1096,6 +1096,7 @@
       "no_grant_available": "无法找到可选择的权限列表。 请先修改父页的权限，然后再试一次。",
       "need_to_fix_grant": "为了正确使用该功能，需要修改与该页面相关的权限。 <br> 请从以下选项中选择进行更改。",
       "grant_label": {
+        "public": "向公众提供",
         "isForbidden": "无权查看的机构",
         "currentPageGrantLabel": "本页的权限: ",
         "parentPageGrantLabel": "父页的权限: ",
