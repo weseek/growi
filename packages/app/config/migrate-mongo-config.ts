@@ -5,7 +5,9 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-const { URL } = require('url');
+import { URL } from 'url';
+
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // get migrationsDir from env var
 const migrationsDir = process.env.MIGRATIONS_DIR;
@@ -13,7 +15,6 @@ if (migrationsDir == null) {
   throw new Error('An env var MIGRATIONS_DIR must be set.');
 }
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
 initMongooseGlobalSettings();
 
