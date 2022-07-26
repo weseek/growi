@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,29 +10,23 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import SecurityManagementContents from './SecurityManagementContents';
 
-let retrieveErrors = null;
 function SecurityManagement(props) {
   const { adminGeneralSecurityContainer } = props;
 
-  if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
-    throw (async() => {
-      try {
-        await adminGeneralSecurityContainer.retrieveSecurityData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        retrieveErrors = errs;
-        adminGeneralSecurityContainer.setState({
-          currentRestrictGuestMode: adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError,
-        });
-      }
-    })();
-  }
+  useEffect(() => {
+    const fetchGeneralSecuritySettingsData = async() => {
+      await adminGeneralSecurityContainer.retrieveSecurityData();
+    };
 
-  if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+    try {
+      fetchGeneralSecuritySettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminGeneralSecurityContainer]);
 
   return <SecurityManagementContents />;
 }
