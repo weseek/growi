@@ -33,7 +33,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      // appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
