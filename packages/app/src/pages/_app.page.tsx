@@ -10,7 +10,8 @@ import '~/styles/style-next.scss';
 // import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
-import * as nextI18nConfig from '../next-i18next.config';
+import * as nextI18nConfig from '^/config/next-i18next.config';
+
 import { useI18nextHMR } from '../services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
