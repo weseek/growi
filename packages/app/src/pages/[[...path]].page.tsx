@@ -307,7 +307,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     { props.isForbidden && <ForbiddenPage /> }
                     { props.IsNotCreatable && <NotCreatablePage />}
                     { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
-
                     {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
