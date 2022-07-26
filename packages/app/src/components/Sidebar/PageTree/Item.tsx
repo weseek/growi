@@ -258,7 +258,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
-  const onPressEnterForRenameHandler = async(inputText: string) => {
+  const pressEnterForRenameHandler = async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -443,7 +443,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               value={nodePath.basename(page.path ?? '')}
               placeholder={t('Input page name')}
               onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
+              onPressEnter={pressEnterForRenameHandler}
               inputValidator={inputValidator}
             />
           )

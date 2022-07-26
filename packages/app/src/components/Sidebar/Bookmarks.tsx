@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import nodePath from 'path';
+
 import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
@@ -12,6 +13,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { useCurrentUser, useIsGuestUser } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
+
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
@@ -20,67 +22,65 @@ const logger = loggerFactory('growi:BookmarkList');
 const ACTIVE_PAGE = 1;
 
 type Props = {
-  pages: IPageHasId[] | undefined,
+  page: IPageHasId,
   refreshBookmarkList: () => void
 }
 
 const BookmarksItem = (props: Props) => {
   const { t } = useTranslation();
-  const { pages, refreshBookmarkList } = props;
+  const { page, refreshBookmarkList } = props;
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const dPagePath = new DevidedPagePath(page.path, false, true);
+  const { latter: pageTitle, former: formerPagePath } = dPagePath;
+  const bookmarkItemId = `bookmark-item-${page._id}`;
 
-  const generateBookmarkedPageList = pages?.map((page) => {
-    const dPagePath = new DevidedPagePath(page.path, false, true);
-    const { latter: pageTitle, former: formerPagePath } = dPagePath;
-    const bookmarkItemId = `bookmark-item-${page._id}`;
-    const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-    const bookmarkMenuItemClickHandler = (async() => {
-      await unbookmark(page._id);
+  const bookmarkMenuItemClickHandler = useCallback(async() => {
+    await unbookmark(page._id);
+    refreshBookmarkList();
+  }, [page, refreshBookmarkList]);
+
+  const renameMenuItemClickHandler = useCallback(() => {
+    setRenameInputShown(true);
+  }, []);
+
+  const inputValidator = (title: string | null): AlertInfo | null => {
+    if (title == null || title === '' || title.trim() === '') {
+      return {
+        type: AlertType.WARNING,
+        message: t('form_validation.title_required'),
+      };
+    }
+
+    return null;
+  };
+
+  const pressEnterForRenameHandler = (async(inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
+    if (newPagePath === page.path) {
+      setRenameInputShown(false);
+      return;
+    }
+
+    try {
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', {
+        pageId: page._id,
+        revisionId: page.revision,
+        newPagePath,
+      });
       refreshBookmarkList();
-    });
-
-
-    const renameMenuItemClickHandler = () => {
+      toastSuccess(t('renamed_pages', { path: page.path }));
+    }
+    catch (err) {
       setRenameInputShown(true);
-    };
+      toastError(err);
+    }
+  });
 
-    const inputValidator = (title: string | null): AlertInfo | null => {
-      if (title == null || title === '' || title.trim() === '') {
-        return {
-          type: AlertType.WARNING,
-          message: t('form_validation.title_required'),
-        };
-      }
-
-      return null;
-    };
-
-    const onPressEnterForRenameHandler = useCallback(async(inputText: string) => {
-      const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
-      const newPagePath = nodePath.resolve(parentPath, inputText);
-
-      if (newPagePath === page.path) {
-        setRenameInputShown(false);
-        return;
-      }
-
-      try {
-        setRenameInputShown(false);
-        await apiv3Put('/pages/rename', {
-          pageId: page._id,
-          revisionId: page.revision,
-          newPagePath,
-        });
-        refreshBookmarkList();
-        toastSuccess(t('renamed_pages', { path: page.path }));
-      }
-      catch (err) {
-        setRenameInputShown(true);
-        toastError(err);
-      }
-    }, [page, t]);
-
-    return (
+  return (
+    <>
       <div className="d-flex justify-content-between" key={page._id}>
         <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
           { isRenameInputShown ? (
@@ -88,7 +88,7 @@ const BookmarksItem = (props: Props) => {
               value={nodePath.basename(page.path ?? '')}
               placeholder={t('Input page name')}
               onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
+              onPressEnter={pressEnterForRenameHandler}
               inputValidator={inputValidator}
             />
           ) : (
@@ -101,6 +101,7 @@ const BookmarksItem = (props: Props) => {
             isEnableActions
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
@@ -116,17 +117,6 @@ const BookmarksItem = (props: Props) => {
           </UncontrolledTooltip>
         </li>
       </div>
-    );
-  });
-
-
-  return (
-    <>
-      <ul className="grw-bookmarks-list list-group p-3">
-        <div className="grw-bookmarks-item-container">
-          {generateBookmarkedPageList}
-        </div>
-      </ul>
     </>
   );
 };
@@ -159,6 +149,20 @@ const Bookmarks = () : JSX.Element => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
 
+  const generateBookmarkList = () => {
+    return (
+      <ul className="grw-bookmarks-list list-group p-3">
+        <div className="grw-bookmarks-item-container">
+          { pages.map((page) => {
+            return (
+              <BookmarksItem key={page._id} page={page} refreshBookmarkList={getMyBookmarkList} />
+            );
+          })}
+        </div>
+      </ul>
+    );
+  };
+
   const renderBookmarksItem = () => {
     if (pages?.length === 0) {
       return (
@@ -167,7 +171,7 @@ const Bookmarks = () : JSX.Element => {
         </h3>
       );
     }
-    return <BookmarksItem pages={pages} refreshBookmarkList={getMyBookmarkList} />;
+    return generateBookmarkList();
   };
 
   return (
