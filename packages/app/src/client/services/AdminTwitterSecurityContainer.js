@@ -19,12 +19,9 @@ export default class AdminTwitterSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyTwitterConsumerKey = 0;
-    this.dummyTwitterConsumerKeyForError = 1;
 
     this.state = {
-      // set dummy value tile for using suspense
-      twitterConsumerKey: this.dummyTwitterConsumerKey,
+      twitterConsumerKey: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };
