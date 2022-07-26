@@ -7,11 +7,10 @@ import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import { PageTimeline } from './PageTimeline';
+import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const CustomNavAndContents = dynamic(() => import('./CustomNavigation/CustomNavAndContents'), { ssr: false });
 
   const navTabMapping = useMemo(() => {
     return {
