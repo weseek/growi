@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 
 import { UserPicture } from '@growi/ui';
-import { bool } from 'aws-sdk/clients/redshiftdata';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -24,7 +23,7 @@ import CommentEditor from './CommentEditor';
 
 type CommentProps = {
   comment: ICommentHasId,
-  isReadOnly: bool,
+  isReadOnly: boolean,
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
