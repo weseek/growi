@@ -5,17 +5,18 @@ import { UserPicture } from '@growi/ui';
 import { bool } from 'aws-sdk/clients/redshiftdata';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
-import ReactMarkdown from 'react-markdown';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
 import {
   useCurrentUser, useRevisionId, useRevisionCreatedAt, useInterceptorManager,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
+import RevisionRenderer from '../Page/RevisionRenderer';
 import Username from '../User/Username';
 
 import CommentControl from './CommentControl';
@@ -24,7 +25,7 @@ import CommentEditor from './CommentEditor';
 type CommentProps = {
   comment: ICommentHasId,
   isReadOnly: bool,
-  deleteBtnClicked: () => void,
+  deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
 }
@@ -34,10 +35,10 @@ export const Comment = (props: CommentProps): JSX.Element => {
     comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
   } = props;
   const { t } = useTranslation();
+  const { data: currentPage }: any = useSWRxCurrentPage(); // TODO: check currentPage type
   const { data: currentUser } = useCurrentUser();
   const { data: revisionId } = useRevisionId();
   const { data: revisionCreatedAt } = useRevisionCreatedAt();
-  // const { data: config } = useRendererConfig();
   const { data: interceptorManager } = useInterceptorManager();
 
   const [markdown, setMarkdown] = useState('');
@@ -50,29 +51,21 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
 
-  const initCurrentRenderingContext = () => {
-    const currentRenderingContext = {
-      markdown: comment.comment,
-    };
-  };
+  // if (interceptorManager === undefined) {
+  //   return <></>;
+  // }
 
   useEffect(() => {
-    initCurrentRenderingContext();
-    // renderHtml();
     setMarkdown(comment.comment);
 
-    // // render only when props.markdown is updated
-    // if (comment !== prevComment) {
-    //   initCurrentRenderingContext();
-    //   // renderHtml();
-    //   setMarkdown(comment.comment.markdown);
-    //   return;
-    // }
+    // interceptorManager.process('postRenderCommentHtml', comment.comment);
 
-    interceptorManager.process('postRenderCommentHtml', comment.comment);
+    const isCurrentRevision = () => {
+      return comment.revision === revisionId;
+    };
 
     isCurrentRevision();
-  }, [comment]);
+  }, [comment, interceptorManager, revisionId]);
 
   const isCurrentUserEqualsToAuthor = () => {
     const { creator }: any = comment;
@@ -81,10 +74,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
       return false;
     }
     return creator.username === currentUser.username;
-  };
-
-  const isCurrentRevision = () => {
-    return comment.revision === revisionId;
   };
 
   const getRootClassName = (comment) => {
@@ -117,29 +106,9 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const renderRevisionBody = () => {
     return (
-      <ReactMarkdown {...rendererOptions} className="comment">
-        {markdown}
-      </ReactMarkdown>
+      <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} additionalClassName="comment" pagePath={currentPage} />
     );
   };
-
-  // async renderHtml() {
-  //   // TODO: Check rendererOptions when remarked.
-  //   const { interceptorManager, rendererOptions } = this.props;
-  //   const context = this.currentRenderingContext;
-
-  //   await interceptorManager.process('preRenderComment', context);
-  //   await interceptorManager.process('prePreProcess', context);
-  //   context.markdown = await rendererOptions.preProcess(context.markdown, context);
-  //   await interceptorManager.process('postPreProcess', context);
-  //   context.parsedHTML = await rendererOptions.process(context.markdown, context);
-  //   await interceptorManager.process('prePostProcess', context);
-  //   context.parsedHTML = await rendererOptions.postProcess(context.parsedHTML, context);
-  //   await interceptorManager.process('postPostProcess', context);
-  //   await interceptorManager.process('preRenderCommentHtml', context);
-  //   this.setState({ html: context.parsedHTML });
-  //   await interceptorManager.process('postRenderCommentHtml', context);
-  // }
 
   const rootClassName = getRootClassName(comment);
   const commentBody = isMarkdown ? renderRevisionBody() : renderText(comment.comment);
