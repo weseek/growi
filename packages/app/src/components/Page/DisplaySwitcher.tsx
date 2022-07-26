@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable, useIsForbidden
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -17,6 +17,7 @@ import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
 import { NotCreatablePage } from '../NotCreatablePage';
 import NotFoundPage from '../NotFoundPage';
+import ForbiddenPage from '../ForbiddenPage';
 import { Page } from '../Page';
 // import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
@@ -49,6 +50,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden()
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -69,8 +71,9 @@ const DisplaySwitcher = (): JSX.Element => {
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
               { !isNotFound && <Page /> }
+              { isForbidden && <ForbiddenPage /> }
               { isNotFound && !isNotCreatable && <NotFoundPage /> }
-              { isNotFound && isNotCreatable && <NotCreatablePage /> }
+              { isNotFound && isNotCreatable && !isForbidden && <NotCreatablePage /> }
             </div>
 
             { !isNotFound && !currentPage?.isEmpty && (

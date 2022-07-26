@@ -302,10 +302,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 { !props.isIdenticalPathPage && (
                   <>
                     <PageAlerts />
-                    { props.isForbidden
-                      ? <>ForbiddenPage</>
-                      : <DisplaySwitcher />
-                    }
+                    <DisplaySwitcher />
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
                     PageStatusAlert
