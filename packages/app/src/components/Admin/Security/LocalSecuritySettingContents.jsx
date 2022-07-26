@@ -1,15 +1,13 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
-
-import { useIsMailerSetup } from '~/stores/context';
+import PropTypes from 'prop-types';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -38,7 +36,7 @@ class LocalSecuritySettingContents extends React.Component {
       t,
       adminGeneralSecurityContainer,
       adminLocalSecurityContainer,
-      isMailerSetup
+      isMailerSetup,
     } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;

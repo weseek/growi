@@ -1,17 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
-import PropTypes from 'prop-types';
-import { useTranslation } from 'next-i18next';
-
-import urljoin from 'url-join';
 import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
+import urljoin from 'url-join';
 
-import { useSiteUrl } from '~/stores/context';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -37,7 +36,9 @@ class GitHubSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl,
+    } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
     const gitHubCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 

@@ -193,7 +193,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user);
   }
 
-  injectServerConfigurations(context, props)
+  injectServerConfigurations(context, props);
   injectNextI18NextConfigurations(context, props, ['admin']);
 
   props.siteUrl = appService.getSiteUrl();

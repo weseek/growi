@@ -11,7 +11,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import BasicSecurityManagementContents from './BasicSecuritySettingContents';
 
 const BasicSecurityManagement = (props) => {
-  const { adminBasicSecurityContainer } = props
+  const { adminBasicSecurityContainer } = props;
 
   useEffect(() => {
     const fetchBasicSecuritySettingsData = async() => {
@@ -30,7 +30,7 @@ const BasicSecurityManagement = (props) => {
 
 
   return <BasicSecurityManagementContents />;
-}
+};
 
 BasicSecurityManagement.propTypes = {
   adminBasicSecurityContainer: PropTypes.instanceOf(AdminBasicSecurityContainer).isRequired,
