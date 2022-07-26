@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath } from '~/stores/context';
 import { useTimelineOptions } from '~/stores/renderer';
 
@@ -10,33 +11,28 @@ import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
 
 
-const PageTimeline = (props) => {
+const PageTimeline = (): JSX.Element => {
   const { t } = useTranslation();
+
   const [activePage, setActivePage] = useState(1);
   const [totalPageItems, setTotalPageItems] = useState(0);
-  const [limit, setLimit] = useState(null);
-  const [pages, setPages] = useState(props.pages);
+  const [limit, setLimit] = useState();
+  const [pages, setPages] = useState<IPageHasId[] | null>(null);
 
-  const { data: path } = useCurrentPagePath();
+  const { data: currentPagepath } = useCurrentPagePath();
   const { data: rendererOptions } = useTimelineOptions();
 
-  const handlePage = async(selectedPage) => {
-    const page = selectedPage;
-    const res = await apiv3Get('/pages/list', { path, page });
-    const totalPageItems = res.data.totalCount;
-    const pages = res.data.pages;
-    const pagingLimit = res.data.limit;
-
-    setActivePage(selectedPage);
-    setTotalPageItems(totalPageItems);
-    setLimit(pagingLimit);
-    setPages(pages);
-  };
+  const handlePage = useCallback(async(selectedPageNum: number) => {
+    const res = await apiv3Get('/pages/list', { currentPagepath, selectedPageNum });
+    setTotalPageItems(res.data.totalCount);
+    setPages(res.data.pages);
+    setLimit(res.data.limit);
+    setActivePage(selectedPageNum);
+  }, [currentPagepath]);
 
   useEffect(() => {
     handlePage(1);
-    setActivePage(1);
-  }, []);
+  }, [handlePage]);
 
   if (rendererOptions == null) {
     return <></>;
