@@ -16,15 +16,7 @@ export default class AdminBasicSecurityContainer extends Container {
   constructor() {
     super();
 
-    this.dummyIsSameUsernameTreatedAsIdenticalUser = 0;
-    this.dummyIsSameUsernameTreatedAsIdenticalUserForError = 1;
-
-    this.state = {
-      retrieveError: null,
-      // set dummy value tile for using suspense
-      isSameUsernameTreatedAsIdenticalUser: this.dummyIsSameUsernameTreatedAsIdenticalUser,
-    };
-
+    this.state = {};
   }
 
   /**
