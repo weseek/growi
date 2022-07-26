@@ -7,7 +7,11 @@
 
 import { URL } from 'url';
 
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+const isProduction = process.env.NODE_ENV === 'production';
+
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = isProduction
+  ? require('../dist/server/util/mongoose-utils')
+  : require('../src/server/util/mongoose-utils');
 
 // get migrationsDir from env var
 const migrationsDir = process.env.MIGRATIONS_DIR;
