@@ -1,5 +1,3 @@
-import ObjectId from 'bson-objectid';
-
 import { IPage } from './page';
 import { IUser } from './user';
 
@@ -55,7 +53,7 @@ export interface ISubscribeRule {
   name: subscribeRuleNames;
   isEnabled: boolean;
 }
-export interface IInAppNotificationSettings {
-  userId: ObjectId | string;
+export interface IInAppNotificationSettings<UserID> {
+  userId: UserID | string;
   subscribeRules: ISubscribeRule[];
 }

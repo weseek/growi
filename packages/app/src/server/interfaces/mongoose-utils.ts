@@ -1,3 +1,3 @@
-import ObjectId from 'bson-objectid';
+import mongoose from 'mongoose';
 
-export type ObjectIdLike = ObjectId | string;
+export type ObjectIdLike = mongoose.Types.ObjectId | string;
