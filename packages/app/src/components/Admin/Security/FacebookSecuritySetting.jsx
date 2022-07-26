@@ -14,15 +14,13 @@ class FacebookSecurityManagement extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <React.Fragment>
-
+      <>
         <h2 className="alert-anchor border-bottom">
           Facebook OAuth { t('security_setting.configuration') }
         </h2>
 
         <p className="well">(TBD)</p>
-
-      </React.Fragment>
+      </>
     );
   }
 
