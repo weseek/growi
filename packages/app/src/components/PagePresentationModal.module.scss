@@ -1,5 +1,7 @@
-.grw-presentation-modal {
-  @include expand-modal-fullscreen(false, false);
+@use '~/styles/mixins' as mi;
+
+.grw-presentation-modal :global {
+  @include mi.expand-modal-fullscreen(false, false);
 
   .modal-body {
     background: black;

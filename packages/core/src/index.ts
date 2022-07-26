@@ -27,3 +27,4 @@ export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
 export * from './utils/browser-utils';
 export * from './utils/mongoose-utils';
+export * from './utils/with-utils';

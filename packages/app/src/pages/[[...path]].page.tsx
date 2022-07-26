@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 
+
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, pagePathUtils, pathUtils,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -13,6 +14,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
@@ -25,10 +27,11 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
-import UserUISettings, { UserUISettingsDocument } from '~/server/models/user-ui-settings';
+import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPageInfo, useSWRxPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
@@ -55,21 +58,54 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
-} from './commons';
+} from './utils/commons';
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
 const logger = loggerFactory('growi:pages:all');
+
 const {
   isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
+
+
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
+type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
+
+// register custom serializer
+registerTransformerForObjectId();
+
+superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
+  {
+    isApplicable: (v): v is IPageToShowRevisionWithMeta => {
+      return v?.data != null
+        && v?.data.toObject != null
+        && v?.meta != null
+        && isIPageInfoForEntity(v.meta);
+    },
+    serialize: (v) => {
+      return {
+        data: superjson.stringify(v.data.toObject()),
+        meta: superjson.stringify(v.meta),
+      };
+    },
+    deserialize: (v) => {
+      return {
+        data: superjson.parse(v.data),
+        meta: v.meta != null ? superjson.parse(v.meta) : undefined,
+      };
+    },
+  },
+  'IPageToShowRevisionWithMetaTransformer',
+);
 
 
 const IdenticalPathPage = (): JSX.Element => {
@@ -87,12 +123,10 @@ const DescendantsPageListModal = (): JSX.Element => {
   return <DescendantsPageListModal />;
 };
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision, IPageInfoForEntity>;
-
 type Props = CommonProps & {
-  currentUser: string,
+  currentUser: IUser,
 
-  pageWithMetaStr: string,
+  pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
   // redirectTo?: string;
   // redirectFrom?: string;
@@ -132,7 +166,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 
   // UI
-  userUISettings: UserUISettingsDocument | null
+  userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
 };
@@ -144,7 +178,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
   const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
-  const { data: currentUser } = useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
   if (isClient()) {
@@ -201,10 +235,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // const { data: editorMode } = useEditorMode();
 
-  let pageWithMeta: IPageToShowRevisionWithMeta | undefined;
-  if (props.pageWithMetaStr != null) {
-    pageWithMeta = JSON.parse(props.pageWithMetaStr) as IPageToShowRevisionWithMeta;
-  }
+  const { pageWithMeta, userUISettings } = props;
 
   let shouldRenderPutbackPageModal = false;
   if (pageWithMeta != null) {
@@ -220,6 +251,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
+  useEditingMarkdown(pageWithMeta?.data.revision.body);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -325,7 +357,7 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-async function getPageData(context: GetServerSidePropsContext, props: Props): Promise<IPageToShowRevisionWithMeta|null> {
+async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -348,8 +380,8 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
     }
   }
 
-  const result: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
-  const page = result?.data as unknown as PageDocument;
+  const pageWithMeta: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const page = pageWithMeta?.data as unknown as PageDocument;
 
   // populate & check if the revision is latest
   if (page != null) {
@@ -358,10 +390,20 @@ async function getPageData(context: GetServerSidePropsContext, props: Props): Pr
     props.isLatestRevision = page.isLatestRevision();
   }
 
-  return result;
+  props.pageWithMeta = pageWithMeta;
 }
 
-async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props, pageWithMeta: IPageToShowRevisionWithMeta|null): Promise<void> {
+async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  if (userUISettings != null) {
+    props.userUISettings = userUISettings.toObject();
+  }
+}
+
+async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const Page = crowi.model('Page') as PageModel;
@@ -370,7 +412,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
 
-  const page = pageWithMeta?.data;
+  const page = props.pageWithMeta?.data;
 
   if (props.isIdenticalPathPage) {
     // TBD
@@ -414,7 +456,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 //   }
 // }
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
@@ -483,7 +525,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
+  const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -496,10 +538,13 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
-  let pageWithMeta;
+
+  if (user != null) {
+    props.currentUser = user.toObject();
+  }
+
   try {
-    pageWithMeta = await getPageData(context, props);
-    props.pageWithMetaStr = JSON.stringify(pageWithMeta);
+    await injectPageData(context, props);
   }
   catch (err) {
     if (err instanceof MultiplePagesHitsError) {
@@ -510,17 +555,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
   }
 
-  injectRoutingInformation(context, props, pageWithMeta);
+  await injectUserUISettings(context, props);
+  await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
-  injectNextI18NextConfigurations(context, props, ['translation']);
-
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
-
-  // UI
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  props.userUISettings = JSON.parse(JSON.stringify(userUISettings));
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

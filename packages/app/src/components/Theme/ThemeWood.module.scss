@@ -1,5 +1,6 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -36,8 +37,7 @@ $themelight: #f5f3ee;
 
 //== Light Mode
 //
-html[light],
-html[dark] {
+.theme :global {
   $primary: #aaa45f;
 
   // Background colors
@@ -114,8 +114,8 @@ html[dark] {
   // portal
   $info: lighten($themecolor, 10%);
 
-  @import 'apply-colors';
-  @import 'apply-colors-light';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-light';
 
   /*
    * Modal
@@ -164,7 +164,7 @@ html[dark] {
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
     }
   }
 }

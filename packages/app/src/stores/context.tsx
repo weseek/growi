@@ -232,6 +232,10 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useStaticSWR('isBlinkedAtBoot', initialData);
 };
 
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('currentMarkdown', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts

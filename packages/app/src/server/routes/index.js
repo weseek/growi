@@ -76,7 +76,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_next/*'                  , next.delegateToNext);
 
-  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
@@ -219,7 +219,7 @@ module.exports = function(crowi, app) {
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
-  app.get('/_search'                            , loginRequired, injectUserUISettings, search.searchPage);
+  app.get('/_search'                            , loginRequired, next.delegateToNext);
 
   app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
@@ -249,9 +249,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, next.delegateToNext);
-
-  app.get('/*/$'                   , loginRequired , injectUserUISettings, next.delegateToNext);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, next.delegateToNext);
+  app.get('/*/$'                   , loginRequired, next.delegateToNext);
+  app.get('/*'                     , loginRequired, autoReconnectToSearch, next.delegateToNext);
 
 };
