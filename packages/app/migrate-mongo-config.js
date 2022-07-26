@@ -13,7 +13,7 @@ if (migrationsDir == null) {
   throw new Error('An env var MIGRATIONS_DIR must be set.');
 }
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
 initMongooseGlobalSettings();
 

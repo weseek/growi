@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '@growi/core';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:drop-configs-indices');

@@ -3,7 +3,6 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 import next from 'next';
 
@@ -29,6 +28,7 @@ import PageOperationService from '../service/page-operation';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');

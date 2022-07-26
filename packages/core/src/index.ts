@@ -5,12 +5,13 @@ import * as _envUtils from './utils/env-utils';
 export const envUtils = _envUtils;
 export const customTagUtils = _customTagUtils;
 
-// export utils
+// export utils with namespace
 export * as templateChecker from './utils/template-checker';
 export * as pagePathUtils from './utils/page-path-utils';
 export * as pathUtils from './utils/path-utils';
 export * as pageUtils from './utils/page-utils';
 
+// export all
 export * from './interfaces/attachment';
 export * from './interfaces/common';
 export * from './interfaces/has-object-id';
@@ -26,5 +27,4 @@ export * from './models/devided-page-path';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
 export * from './utils/browser-utils';
-export * from './utils/mongoose-utils';
 export * from './utils/with-utils';

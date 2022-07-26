@@ -5,6 +5,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "config/**/*", "src/**/*"],
+  "include": ["next-env.d.ts", "migrate-mongo-config.js", "config/**/*", "src/**/*"],
   "exclude": ["node_modules"]
 }
