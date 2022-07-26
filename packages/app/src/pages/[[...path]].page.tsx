@@ -65,7 +65,6 @@ import { useXss } from '../stores/xss';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -79,9 +78,6 @@ const { removeHeadingSlash } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
-
-// register custom serializer
-registerTransformerForObjectId();
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
   {
