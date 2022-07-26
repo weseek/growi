@@ -5,7 +5,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-// import BasicSecuritySetting from './BasicSecuritySetting';
+import BasicSecuritySetting from './BasicSecuritySetting';
 // import FacebookSecuritySetting from './FacebookSecuritySetting';
 // import GitHubSecuritySetting from './GitHubSecuritySetting';
 // import GoogleSecuritySetting from './GoogleSecuritySetting';
@@ -124,7 +124,7 @@ const SecurityManagementContents = () => {
             {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_basic">
-            {/* {activeComponents.has('passport_basic') && <BasicSecuritySetting />} */}
+            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_google">
             {/* {activeComponents.has('passport_google') && <GoogleSecuritySetting />} */}
