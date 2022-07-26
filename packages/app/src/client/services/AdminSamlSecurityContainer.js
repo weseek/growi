@@ -19,16 +19,13 @@ export default class AdminSamlSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummySamlEntryPoint = 0;
-    this.dummySamlEntryPointForError = 1;
 
     this.state = {
       retrieveError: null,
       // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
       missingMandatoryConfigKeys: [],
-      // set dummy value tile for using suspense
-      samlEntryPoint: this.dummySamlEntryPoint,
+      samlEntryPoint: '',
       samlIssuer: '',
       samlCert: '',
       samlAttrMapId: '',

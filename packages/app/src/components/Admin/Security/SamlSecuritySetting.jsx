@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -14,23 +13,21 @@ import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 let retrieveErrors = null;
 function SamlSecurityManagement(props) {
   const { adminSamlSecurityContainer } = props;
-  // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
-  //   throw (async() => {
-  //     try {
-  //       await adminSamlSecurityContainer.retrieveSecurityData();
-  //     }
-  //     catch (err) {
-  //       const errs = toArrayIfNot(err);
-  //       toastError(errs);
-  //       retrieveErrors = errs;
-  //       adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError });
-  //     }
-  //   })();
-  // }
 
-  // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
-  //   throw new Error(`${retrieveErrors.length} errors occured`);
-  // }
+  useEffect(() => {
+    const fetchSamlSecuritySettingsData = async() => {
+      await adminSamlSecurityContainer.retrieveSecurityData();
+    };
+
+    try {
+      fetchSamlSecuritySettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminSamlSecurityContainer]);
 
   return <SamlSecuritySettingContents />;
 }
