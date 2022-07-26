@@ -24,7 +24,6 @@ export default class AdminOidcSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      // callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/oidc/callback'),
       // set dummy value tile for using suspense
       oidcProviderName: this.dummyOidcProviderName,
       oidcIssuerHost: '',
