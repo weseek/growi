@@ -44,8 +44,7 @@ class OidcSecurityManagementContents extends React.Component {
 
     return (
 
-      <React.Fragment>
-
+      <>
         <h2 className="alert-anchor border-bottom">
           {t('security_setting.OAuth.OIDC.name')}
         </h2>
@@ -92,7 +91,7 @@ class OidcSecurityManagementContents extends React.Component {
         </div>
 
         {isOidcEnabled && (
-          <React.Fragment>
+          <>
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
@@ -443,7 +442,7 @@ class OidcSecurityManagementContents extends React.Component {
                 </button>
               </div>
             </div>
-          </React.Fragment>
+          </>
         )}
 
 
@@ -461,7 +460,7 @@ class OidcSecurityManagementContents extends React.Component {
           </ol>
         </div>
 
-      </React.Fragment>
+      </>
     );
   }
 
