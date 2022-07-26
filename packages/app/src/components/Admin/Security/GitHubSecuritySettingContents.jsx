@@ -40,7 +40,7 @@ class GitHubSecurityManagementContents extends React.Component {
       t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl,
     } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
-    const gitHubCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
+    const gitHubCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 
     return (
 
@@ -81,7 +81,7 @@ class GitHubSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={gitHubCallBackUrl}
+              value={gitHubCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
@@ -178,7 +178,7 @@ class GitHubSecurityManagementContents extends React.Component {
           <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: gitHubCallBackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: gitHubCallbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_3') }} />
           </ol>
         </div>

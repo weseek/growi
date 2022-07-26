@@ -40,7 +40,7 @@ class TwitterSecuritySettingContents extends React.Component {
       t, adminGeneralSecurityContainer, adminTwitterSecurityContainer, siteUrl,
     } = this.props;
     const { isTwitterEnabled } = adminGeneralSecurityContainer.state;
-    const twitterCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/twitter/callback');
+    const twitterCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/twitter/callback');
 
     return (
 
@@ -81,7 +81,7 @@ class TwitterSecuritySettingContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={twitterCallBackUrl}
+              value={twitterCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>

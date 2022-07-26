@@ -48,7 +48,7 @@ class SamlSecurityManagementContents extends React.Component {
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
 
-    const samlCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
+    const samlCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
 
     return (
       <React.Fragment>
@@ -90,7 +90,7 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={samlCallBackUrl}
+              defaultValue={samlCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
