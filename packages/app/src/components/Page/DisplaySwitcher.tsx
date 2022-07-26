@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable, useIsForbidden
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable, useIsForbidden,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -50,7 +50,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isForbidden } = useIsForbidden()
+  const { data: isForbidden } = useIsForbidden();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
