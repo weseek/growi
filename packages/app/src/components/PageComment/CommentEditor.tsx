@@ -300,8 +300,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                 value={comment}
                 lineNumbers={false}
                 isMobile={isMobile}
-                isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                // isUploadable={isUploadable}
+                // isUploadableFile={isUploadableFile}
                 onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
@@ -325,7 +325,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            { isSlackConfigured
+            {/* { isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -337,7 +337,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                   />
                 </div>
               )
-            }
+            } */}
             <div className="d-none d-sm-block">
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
