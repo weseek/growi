@@ -15,7 +15,7 @@ import OidcSecuritySetting from './OidcSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
-// import TwitterSecuritySetting from './TwitterSecuritySetting';
+import TwitterSecuritySetting from './TwitterSecuritySetting';
 
 const SecurityManagementContents = () => {
   const { t } = useTranslation();
@@ -133,7 +133,7 @@ const SecurityManagementContents = () => {
             {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_twitter">
-            {/* {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />} */}
+            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_facebook">
             {/* {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />} */}

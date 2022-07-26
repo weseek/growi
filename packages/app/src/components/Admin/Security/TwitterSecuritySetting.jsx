@@ -15,25 +15,25 @@ import TwitterSecuritySettingContents from './TwitterSecuritySettingContents';
 let retrieveErrors = null;
 function TwitterSecurityManagement(props) {
   const { adminTwitterSecurityContainer } = props;
-  if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKey) {
-    throw (async() => {
-      try {
-        await adminTwitterSecurityContainer.retrieveSecurityData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        retrieveErrors = errs;
-        adminTwitterSecurityContainer.setState({
-          twitterConsumerKey: adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError,
-        });
-      }
-    })();
-  }
+  // if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKey) {
+  //   throw (async() => {
+  //     try {
+  //       await adminTwitterSecurityContainer.retrieveSecurityData();
+  //     }
+  //     catch (err) {
+  //       const errs = toArrayIfNot(err);
+  //       toastError(errs);
+  //       retrieveErrors = errs;
+  //       adminTwitterSecurityContainer.setState({
+  //         twitterConsumerKey: adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError,
+  //       });
+  //     }
+  //   })();
+  // }
 
-  if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  // if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError) {
+  //   throw new Error(`${retrieveErrors.length} errors occured`);
+  // }
 
   return <TwitterSecuritySettingContents />;
 }

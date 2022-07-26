@@ -5,6 +5,12 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
 
+import urljoin from 'url-join';
+import { pathUtils } from '@growi/core';
+
+import { useSiteUrl } from '~/stores/context';
+
+
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -33,8 +39,9 @@ class TwitterSecuritySettingContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer, siteUrl } = this.props;
     const { isTwitterEnabled } = adminGeneralSecurityContainer.state;
+    const twitterCallBackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/twitter/callback')
 
     return (
 
@@ -75,11 +82,11 @@ class TwitterSecuritySettingContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminTwitterSecurityContainer.state.callbackUrl}
+              value={twitterCallBackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            {!siteUrl && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -197,11 +204,13 @@ TwitterSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
+  siteUrl: PropTypes.string,
 };
 
 const TwitterSecuritySettingContentsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <TwitterSecuritySettingContents t={t} {...props} />;
+  const { data: siteUrl } = useSiteUrl();
+  return <TwitterSecuritySettingContents t={t} siteUrl={siteUrl} {...props} />;
 };
 
 /**
