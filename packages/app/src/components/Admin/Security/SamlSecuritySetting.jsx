@@ -14,23 +14,23 @@ import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 let retrieveErrors = null;
 function SamlSecurityManagement(props) {
   const { adminSamlSecurityContainer } = props;
-  if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
-    throw (async() => {
-      try {
-        await adminSamlSecurityContainer.retrieveSecurityData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        retrieveErrors = errs;
-        adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError });
-      }
-    })();
-  }
+  // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
+  //   throw (async() => {
+  //     try {
+  //       await adminSamlSecurityContainer.retrieveSecurityData();
+  //     }
+  //     catch (err) {
+  //       const errs = toArrayIfNot(err);
+  //       toastError(errs);
+  //       retrieveErrors = errs;
+  //       adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError });
+  //     }
+  //   })();
+  // }
 
-  if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
+  //   throw new Error(`${retrieveErrors.length} errors occured`);
+  // }
 
   return <SamlSecuritySettingContents />;
 }
