@@ -75,9 +75,9 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: config } = useRendererConfig();
 
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isSlackConfigured = config.isSlackConfigured;
+  // const isUploadable = config.upload.image || config.upload.file;
+  // const isUploadableFile = config.upload.file;
+  // const isSlackConfigured = config.isSlackConfigured;
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
