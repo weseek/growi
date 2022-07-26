@@ -81,6 +81,7 @@ module.exports = async(phase, { defaultConfig }) => {
       // See: https://webpack.js.org/configuration/externals/
       // This provides a way of excluding dependencies from the output bundles
       config.externals.push('dtrace-provider');
+      config.externals.push('mongoose');
 
       // configure additional entries
       const orgEntry = config.entry;
