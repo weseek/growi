@@ -38,6 +38,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
   const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
   const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
+  const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 
   // get element for smoothScroll
   // const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
