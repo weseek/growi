@@ -1,13 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useRendererConfig } from '~/stores/context';
 
-import Comment from './Comment';
+import { Comment } from './Comment';
 
-import { RendererOptions } from '~/services/renderer/renderer';
 
 class ReplayComments extends React.PureComponent {
 
@@ -39,7 +39,7 @@ class ReplayComments extends React.PureComponent {
   }
 
   render() {
-    const { config } = this.props
+    const { config } = this.props;
 
     const isAllReplyShown = config.isAllReplyShown || false;
     const replyList = this.props.replyList;

@@ -20,8 +20,7 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
-  // TODO: Do not use Nullable, create presentaion for if cannot get pageId.
-  pageId?: Nullable<string>,
+  pageId?: Nullable<string>, // TODO: check pageId type
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
@@ -109,16 +108,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
-    <Comment
-      rendererOptions={rendererOptions}
-      deleteBtnClicked={onClickDeleteButton}
-      comment={comment}
-      onComment={mutate}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
     <ReplayComments
       replyList={replyComments}
@@ -142,10 +131,19 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-
   if (rendererOptions == null) {
     return <></>;
   }
+
+  const generateCommentInnerElement = (comment: ICommentHasId) => (
+    <Comment
+      rendererOptions={rendererOptions}
+      deleteBtnClicked={onClickDeleteButton}
+      comment={comment}
+      onComment={mutate}
+      isReadOnly={isReadOnly}
+    />
+  );
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;

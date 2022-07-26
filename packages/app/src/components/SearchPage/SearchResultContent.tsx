@@ -24,7 +24,7 @@ import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
-import PageComment from '../PageComment';
+import { PageComment } from '../PageComment';
 import PageContentFooter from '../PageContentFooter';
 
 

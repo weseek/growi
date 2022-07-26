@@ -51,20 +51,19 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
 
-  // if (interceptorManager === undefined) {
-  //   return <></>;
-  // }
-
   useEffect(() => {
-    setMarkdown(comment.comment);
 
-    // interceptorManager.process('postRenderCommentHtml', comment.comment);
+    if (interceptorManager !== undefined) {
+      setMarkdown(comment.comment);
+      interceptorManager.process('postRenderCommentHtml', comment.comment);
 
-    const isCurrentRevision = () => {
-      return comment.revision === revisionId;
-    };
+      const isCurrentRevision = () => {
+        return comment.revision === revisionId;
+      };
 
-    isCurrentRevision();
+      isCurrentRevision();
+    }
+
   }, [comment, interceptorManager, revisionId]);
 
   const isCurrentUserEqualsToAuthor = () => {
