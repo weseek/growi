@@ -16,7 +16,9 @@ export default class AdminBasicSecurityContainer extends Container {
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      isSameUsernameTreatedAsIdenticalUser: false,
+    };
   }
 
   /**
