@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
-import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { useCsrfToken } from '~/stores/context';
@@ -309,7 +309,7 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                   <div className="text-right mb-2">
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                      <i className="ti-check-box"></i> {t('Sign up is here')}
+                      <i className="ti ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>
                 )}

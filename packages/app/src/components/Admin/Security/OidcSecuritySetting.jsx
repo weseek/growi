@@ -1,13 +1,13 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import OidcSecurityManagementContents from './OidcSecuritySettingContents';
 
@@ -39,7 +39,7 @@ OidcSecurityManagement.propTypes = {
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
-const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(OidcSecurityManagement), [
+const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(OidcSecurityManagement, [
   AdminOidcSecurityContainer,
 ]);
 

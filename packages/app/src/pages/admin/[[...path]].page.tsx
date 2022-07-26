@@ -1,31 +1,42 @@
+import React from 'react';
+
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
-import AdminHome from '~/components/Admin/AdminHome/AdminHome';
-import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
-import ExportArchiveDataPage from '~/components/Admin/ExportArchiveDataPage';
-import DataImportPageContents from '~/components/Admin/ImportData/ImportDataPageContents';
-import MarkDownSettingContents from '~/components/Admin/MarkdownSetting/MarkDownSettingContents';
-import NotificationSetting from '~/components/Admin/Notification/NotificationSetting';
-import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
-import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
-import UserManagement from '~/components/Admin/UserManagement';
-import AdminLayout from '~/components/AdminLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/pages/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
-
-// import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import {
-  useCurrentUser,
-  /* useSearchServiceConfigured, useSearchServiceReachable, */ useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
+
+import {
+  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+} from '../utils/commons';
 // import { useEnvVars } from '~/stores/admin-context';
+
+const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
+const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const SecurityManagementContents = dynamic(() => import('../../components/Admin/Security/SecurityManagementContents'), { ssr: false });
+const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
+const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
+const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
+const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
+const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
+const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
+const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
+const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
+// named export
+const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
+
+const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 
@@ -42,17 +53,14 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
 
   siteUrl: string,
-
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const router = useRouter();
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
-
-  // const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 
   const adminPagesMap = {
     home: {
@@ -78,8 +86,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     customize: {
       title: useCustomTitle(props, t('Customize Settings')),
-      // component: <CustomizeSettingContents />,
-      component: <>CustomizeSettingContents</>,
+      component: <CustomizeSettingContents />,
     },
     importer: {
       title: useCustomTitle(props, t('Import Data')),
@@ -98,18 +105,29 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: '',
       component: <>global-notification</>,
     },
+    'slack-integration': {
+      title: useCustomTitle(props, t('slack_integration')),
+      component: <SlackIntegration />,
+    },
+    'slack-integration-legacy': {
+      title: useCustomTitle(props, t('Legacy_Slack_Integration')),
+      component: <LegacySlackIntegration />,
+    },
     users: {
       title: useCustomTitle(props, t('User_Management')),
       component: <UserManagement />,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <>user-groups</>,
+      component: <UserGroupPage />,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
-      // component: <ElasticsearchManagement />,
-      component: <>ElasticsearchManagement</>,
+      component: <ElasticsearchManagement />,
+    },
+    'audit-log': {
+      title: useCustomTitle(props, t('AuditLog')),
+      component: <AuditLogManagement />,
     },
   };
 
@@ -119,7 +137,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
-  // useSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchServiceReachable(props.isSearchServiceReachable);
 
   useSiteUrl(props.siteUrl);
 
@@ -132,6 +150,17 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -140,7 +169,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   } = crowi;
 
   const { user } = req;
-
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -153,6 +181,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     // props.currentUser = JSON.stringify(user.toObject());
     props.currentUser = JSON.stringify(user);
   }
+
+  injectNextI18NextConfigurations(context, props, ['admin']);
 
   props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;

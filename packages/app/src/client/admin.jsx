@@ -30,16 +30,16 @@ import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import AdminHome from '../components/Admin/AdminHome/AdminHome';
-import AppSettingsPage from '../components/Admin/App/AppSettingsPage';
+// import AppSettingsPage from '../components/Admin/App/AppSettingsPage';
 import { AuditLogManagement } from '../components/Admin/AuditLogManagement';
 import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 import Customize from '../components/Admin/Customize/Customize';
 import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
-import ImportDataPage from '../components/Admin/ImportDataPage';
+// import ImportDataPage from '../components/Admin/ImportDataPage';
 import LegacySlackIntegration from '../components/Admin/LegacySlackIntegration/LegacySlackIntegration';
 import ManageExternalAccount from '../components/Admin/ManageExternalAccount';
-import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
+// import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
 import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
 import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
 import SecurityManagement from '../components/Admin/Security/SecurityManagement';
@@ -94,10 +94,10 @@ logger.info('unstated containers have been initialized');
  */
 Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
-  'admin-app': <AppSettingsPage />,
-  'admin-markdown-setting': <MarkdownSetting />,
+  // 'admin-app': <AppSettingsPage />,
+  // 'admin-markdown-setting': <MarkdownSetting />,
   'admin-customize': <Customize />,
-  'admin-importer': <ImportDataPage />,
+  // 'admin-importer': <ImportDataPage />,
   'admin-export-page': <ExportArchiveDataPage />,
   'admin-notification-setting': <NotificationSetting />,
   'admin-slack-integration': <SlackIntegration />,

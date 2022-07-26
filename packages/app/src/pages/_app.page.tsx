@@ -1,19 +1,22 @@
 import React, { useEffect } from 'react';
 
 import { appWithTranslation } from 'next-i18next';
+import { ThemeProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import '~/styles/style-next.scss';
-import '~/styles/theme/default.scss';
+// import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import * as nextI18nConfig from '../next-i18next.config';
 import { useI18nextHMR } from '../services/i18next-hmr';
-import { useGrowiVersion } from '../stores/context';
+import {
+  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
+} from '../stores/context';
 
-import { CommonProps } from './commons';
+import { CommonProps } from './utils/commons';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -31,12 +34,18 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
+  useAppTitle(commonPageProps.appTitle);
+  useSiteUrl(commonPageProps.siteUrl);
+  useConfidential(commonPageProps.confidential);
+  useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <Component {...pageProps} />
-    </DndProvider>
+    <ThemeProvider>
+      <DndProvider backend={HTML5Backend}>
+        <Component {...pageProps} />
+      </DndProvider>
+    </ThemeProvider>
   );
 }
 

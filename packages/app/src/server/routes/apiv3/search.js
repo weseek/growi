@@ -75,7 +75,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -84,6 +84,9 @@ module.exports = (crowi) => {
 
     try {
       await searchService.reconnectClient();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
+
       return res.status(200).send();
     }
     catch (err) {

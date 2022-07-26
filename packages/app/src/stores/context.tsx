@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -7,6 +8,7 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
@@ -36,6 +38,10 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
 
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('confidential', initialData);
+};
+
+export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
+  return useStaticSWR('theme', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
@@ -218,8 +224,16 @@ export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<Ren
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  return useStaticSWR('currentPageTocNode');
+};
+
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isBlinkedAtBoot', initialData);
+};
+
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('currentMarkdown', initialData);
 };
 
 

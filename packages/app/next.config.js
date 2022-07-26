@@ -1,5 +1,6 @@
 import eazyLogger from 'eazy-logger';
 import { I18NextHMRPlugin } from 'i18next-hmr/plugin';
+import { withSuperjson } from 'next-superjson';
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
 import { i18n, localePath } from './src/next-i18next.config';
@@ -22,8 +23,13 @@ const setupWithTM = () => {
     'unified',
     'comma-separated-tokens',
     'decode-named-character-reference',
+    'html-void-elements',
+    'property-information',
     'space-separated-tokens',
     'trim-lines',
+    'web-namespaces',
+    'vfile',
+    'zwitch',
     'emoticon',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
   ];
@@ -58,7 +64,6 @@ const nextConfig = {
 
   /** @param config {import('next').NextConfig} */
   webpack(config, options) {
-
     // Avoid "Module not found: Can't resolve 'fs'"
     // See: https://stackoverflow.com/a/68511591
     if (!options.isServer) {
@@ -93,4 +98,4 @@ const nextConfig = {
 
 };
 
-module.exports = withTM(nextConfig);
+module.exports = withSuperjson()(withTM(nextConfig));
