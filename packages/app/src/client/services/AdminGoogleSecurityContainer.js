@@ -23,7 +23,7 @@ export default class AdminGoogleSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
+      // callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
       // set dummy value tile for using suspense
       googleClientId: this.dummyGoogleClientId,
       googleClientSecret: '',
