@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
+import { AllSupportedActions } from '~/interfaces/activity';
 import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores/context';
 
 export const AuditLogSettings: FC = () => {
@@ -15,6 +16,9 @@ export const AuditLogSettings: FC = () => {
 
   const { data: availableActionsData } = useAuditLogAvailableActions();
   const availableActions = availableActionsData != null ? availableActionsData : [];
+
+  // eslint-disable-next-line max-len
+  const actionCounter = `<b>${t('admin:audit_log_management.available_actions_length')}: ${availableActions.length} / ${t('admin:audit_log_management.all_supported_actions_length')}: ${AllSupportedActions.length}</b>`;
 
   return (
     <>
@@ -36,6 +40,10 @@ export const AuditLogSettings: FC = () => {
 
       <h4 className="mt-4">{t('admin:audit_log_management.available_action_list')}</h4>
       <p className="form-text text-muted">{t('admin:audit_log_management.available_action_list_explain')}</p>
+      <p
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: actionCounter }}
+      />
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>
           <i className={`fa fa-fw fa-arrow-right ${isExpandActionList ? 'fa-rotate-90' : ''}`}></i>
