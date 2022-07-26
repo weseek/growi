@@ -4,12 +4,12 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-
-import { URL } from 'url';
-
 const isProduction = process.env.NODE_ENV === 'production';
 
+const { URL } = require('url');
+
 const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = isProduction
+  // eslint-disable-next-line import/extensions, import/no-unresolved
   ? require('../dist/server/util/mongoose-utils')
   : require('../src/server/util/mongoose-utils');
 
