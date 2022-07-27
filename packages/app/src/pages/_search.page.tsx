@@ -1,6 +1,7 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -22,7 +23,9 @@ import {
 } from '~/stores/ui';
 import { useXss } from '~/stores/xss';
 
-import { CommonProps, getServerSideCommonProps, useCustomTitle } from './utils/commons';
+import {
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+} from './utils/commons';
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -85,7 +88,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'Search')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div id="main" className="main search-page mt-0">
@@ -145,6 +148,17 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
 }
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
@@ -165,6 +179,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
