@@ -11,6 +11,7 @@ import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUser, IUserHasId } from '~/interfaces/user';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
+import Xss from '~/services/xss';
 import {
   useCurrentUser,
   useIsSearchPage, useIsSearchScopeChildrenAsDefault, useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
@@ -18,6 +19,7 @@ import {
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { useXss } from '~/stores/xss';
 
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './utils/commons';
 
@@ -42,6 +44,9 @@ type Props = CommonProps & {
 
 const SearchPage: NextPage<Props> = (props: Props) => {
   const { userUISettings } = props;
+
+  // commons
+  useXss(new Xss());
 
   useCurrentUser(props.currentUser ?? null);
 
