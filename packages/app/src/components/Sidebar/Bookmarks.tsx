@@ -1,20 +1,19 @@
 
-import React, {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
+
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { usePageDeleteModal } from '~/stores/modal';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
@@ -36,7 +35,7 @@ const BookmarksItem = (props: Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${page._id}`;
-
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(page._id);
@@ -82,7 +81,6 @@ const BookmarksItem = (props: Props) => {
     }
   });
 
-
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
       const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -116,7 +114,7 @@ const BookmarksItem = (props: Props) => {
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [page, openDeleteModal, t]);
+  }, [page, openDeleteModal, refreshBookmarkList, t]);
 
   return (
     <>
