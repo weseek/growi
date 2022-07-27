@@ -53,6 +53,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser ?? null);
 
+  // Search
   useIsSearchPage(true);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
