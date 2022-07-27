@@ -61,7 +61,7 @@
 {% block html_body %}
 {% set additionalBodyClasses = []; %}
 {% block html_additional_body_classes %}{% endblock %}
-{% if getConfig('crowi', 'customize:isContainerFluid') %}
+{% if getConfig('crowi', 'customize:isContainerFluid') || page.isContainerFluid %}
   {% set additionalBodyClasses = additionalBodyClasses|push('growi-layout-fluid') %}
 {% endif %}
 <body

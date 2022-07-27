@@ -300,7 +300,11 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
       setShouldFetch(true);
     }
-    if (presetPageInfo?.isContainerFluid && !$('body').hasClass('on-search')) {
+  }, [isOpen, presetPageInfo, shouldFetch]);
+
+  // Change body class on change content width
+  const updateBodyClass = useCallback((isContainerFluid: boolean) => {
+    if (isContainerFluid && !$('body').hasClass('on-search')) {
       if (!$('body').hasClass('growi-layout-fluid')) {
         $('body').addClass('growi-layout-fluid');
       }
@@ -308,7 +312,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     else if ($('body').hasClass('growi-layout-fluid')) {
       $('body').removeClass('growi-layout-fluid');
     }
-  }, [isOpen, presetPageInfo, shouldFetch]);
+  }, []);
 
   const switchContentWidthMenuItemHandler = useCallback(async(_pageId: string, _isContainerFluid: boolean) => {
     if (onClickSwitchContentWidthMenuItem != null) {
@@ -318,7 +322,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (shouldFetch) {
       mutatePageInfo();
     }
-  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch]);
+    updateBodyClass(!_isContainerFluid);
+  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch, updateBodyClass]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
