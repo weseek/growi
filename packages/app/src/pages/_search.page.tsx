@@ -158,7 +158,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
-  console.log(props.rendererConfig);
+
   return {
     props,
   };
