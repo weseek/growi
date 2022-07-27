@@ -3,7 +3,8 @@
 import {
   Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 export interface IPageRedirect {
   fromPath: string,

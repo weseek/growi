@@ -1,8 +1,9 @@
-import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { GrowiThemes } from '~/interfaces/theme';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface Config {

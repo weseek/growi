@@ -15,7 +15,7 @@ import { DescendantsPageList } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import PageTimeline from './PageTimeline';
+import { PageTimeline } from './PageTimeline';
 
 
 export const DescendantsPageListModal = (): JSX.Element => {

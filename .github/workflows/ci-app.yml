@@ -150,16 +150,17 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules
+      - name: Cache/Restore node_modules and next cache files
         id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+            ${{ github.workspace }}/packages/app/.next/cache
+          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: lerna bootstrap
         run: |

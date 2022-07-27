@@ -10,11 +10,12 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
-  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -121,6 +122,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -162,6 +164,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -344,13 +347,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (currentPage == null) {
+  if (currentPathname == null) {
     return <></>;
   }
 
+  const notFoundPage: Partial<IPageHasId> = {
+    path: currentPathname,
+  };
+
   return (
     <GrowiSubNavigation
-      page={currentPage}
+      page={currentPage ?? notFoundPage}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}

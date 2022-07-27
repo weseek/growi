@@ -35,7 +35,7 @@ import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLa
 import PageContentFooter from '../components/PageContentFooter';
 import BookmarkList from '../components/PageList/BookmarkList';
 import PageStatusAlert from '../components/PageStatusAlert';
-import PageTimeline from '../components/PageTimeline';
+import { PageTimeline } from '../components/PageTimeline';
 import RecentCreated from '../components/RecentCreated/RecentCreated';
 import { SearchPage } from '../components/SearchPage';
 import Sidebar from '../components/Sidebar';
