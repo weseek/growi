@@ -44,7 +44,7 @@ import loggerFactory from '~/utils/logger';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-import { NotCreatablePage } from '../components/NotCreatablePage'
+import { NotCreatablePage } from '../components/NotCreatablePage';
 import ForbiddenPage from '../components/ForbiddenPage';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
