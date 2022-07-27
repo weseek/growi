@@ -1,7 +1,6 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -37,9 +36,7 @@ type Props = CommonProps & {
 };
 
 const SearchPage: NextPage<Props> = (props: Props) => {
-  const { t } = useTranslation();
   const { userUISettings } = props;
-  const title = useCustomTitle(props, t('search_result.title'));
 
   useCurrentUser(props.currentUser ?? null);
 
@@ -73,7 +70,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <BasicLayout title={title} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI Search')} className={classNames.join(' ')}>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div id="main" className="main search-page mt-0">
