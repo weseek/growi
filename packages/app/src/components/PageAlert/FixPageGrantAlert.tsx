@@ -76,6 +76,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
+    if (grantData.grant === 1) {
+      return t('fix_page_grant.modal.grant_label.public');
+    }
+
     if (grantData.grant === 4) {
       return t('fix_page_grant.modal.radio_btn.only_me');
     }
@@ -87,7 +91,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
     }
 
-    throw Error('cannnot get grant label'); // this error can't be throwed
+    throw Error('cannot get grant label'); // this error can't be throwed
   }, [t]);
 
   const renderGrantDataLabel = useCallback(() => {

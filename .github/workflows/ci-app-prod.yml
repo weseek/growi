@@ -3,7 +3,8 @@ name: Node CI for app production
 on:
   push:
     branches:
-      - master
+      # - master
+      - support/apply-nextjs-2
     paths:
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
@@ -16,27 +17,29 @@ on:
       - packages/slack/**
       - packages/ui/**
       - packages/plugin-**
-  # pull_request:
-  #   branches:
-  #       - master
-  #   types: [opened, reopened, synchronize]
-  #   paths:
-  #     - .github/workflows/ci-app-prod.yml
-  #     - .github/workflows/reusable-app-prod.yml
-  #     - .github/workflows/reusable-app-reg-suit.yml
-  #     - tsconfig.base.json
-  #     - yarn.lock
-  #     - packages/app/**
-  #     - '!packages/app/docker/**'
-  #     - packages/core/**
-  #     - packages/slack/**
-  #     - packages/ui/**
-  #     - packages/plugin-**
+  pull_request:
+    branches:
+      # - master
+      - support/apply-nextjs-2
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/ci-app-prod.yml
+      - .github/workflows/reusable-app-prod.yml
+      - .github/workflows/reusable-app-reg-suit.yml
+      - tsconfig.base.json
+      - yarn.lock
+      - packages/app/**
+      - '!packages/app/docker/**'
+      - packages/core/**
+      - packages/slack/**
+      - packages/ui/**
+      - packages/plugin-**
 
 jobs:
 
   test-prod-node14:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    # uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/apply-nextjs-2
     with:
       node-version: 14.x
       skip-cypress: true
@@ -45,28 +48,30 @@ jobs:
 
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    # uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/apply-nextjs-2
     with:
       node-version: 16.x
-      skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
+      # skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
+      skip-cypress: true
       cypress-report-artifact-name: Cypress report
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  run-reg-suit-node16:
-    needs: [test-prod-node16]
+  # run-reg-suit-node16:
+  #   needs: [test-prod-node16]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+  #   uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
 
-    if: always()
+  #   if: always()
 
-    with:
-      node-version: 16.x
-      skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
-      cypress-report-artifact-name: Cypress report
-    secrets:
-      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #   with:
+  #     node-version: 16.x
+  #     skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
+  #     cypress-report-artifact-name: Cypress report
+  #   secrets:
+  #     REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

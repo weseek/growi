@@ -1,8 +1,11 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback, useRef,
+} from 'react';
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/apiNotification';
 import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
@@ -17,7 +20,6 @@ import { DateRangePicker } from './AuditLog/DateRangePicker';
 import { SearchUsernameTypeahead } from './AuditLog/SearchUsernameTypeahead';
 import { SelectActionDropdown } from './AuditLog/SelectActionDropdown';
 
-
 const formatDate = (date: Date | null) => {
   if (date == null) {
     return '';
@@ -30,8 +32,9 @@ const PAGING_LIMIT = 10;
 export const AuditLogManagement: FC = () => {
   const { t } = useTranslation();
 
+  const typeaheadRef = useRef<IClearable>(null);
+
   const { data: auditLogAvailableActionsData } = useAuditLogAvailableActions();
-  const auditLogAvailableActions = auditLogAvailableActionsData != null ? auditLogAvailableActionsData : [];
 
   /*
    * State
@@ -43,7 +46,7 @@ export const AuditLogManagement: FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
   const [actionMap, setActionMap] = useState(
-    new Map<SupportedActionType, boolean>(auditLogAvailableActions.map(action => [action, true])),
+    new Map<SupportedActionType, boolean>(auditLogAvailableActionsData != null ? auditLogAvailableActionsData.map(action => [action, true]) : []),
   );
 
   /*
@@ -94,6 +97,18 @@ export const AuditLogManagement: FC = () => {
     setSelectedUsernames(usernames);
   }, []);
 
+  const clearButtonPushedHandler = useCallback(() => {
+    setActivePage(1);
+    setStartDate(null);
+    setEndDate(null);
+    setSelectedUsernames([]);
+    typeaheadRef.current?.clear();
+
+    if (auditLogAvailableActionsData != null) {
+      setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActionsData.map(action => [action, true])));
+    }
+  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActionsData]);
+
   const reloadButtonPushedHandler = useCallback(() => {
     setActivePage(1);
     mutateActivity();
@@ -128,6 +143,7 @@ export const AuditLogManagement: FC = () => {
         <>
           <div className="form-inline mb-3">
             <SearchUsernameTypeahead
+              ref={typeaheadRef}
               onChange={setUsernamesHandler}
             />
 
@@ -139,14 +155,22 @@ export const AuditLogManagement: FC = () => {
 
             <SelectActionDropdown
               actionMap={actionMap}
-              availableActions={auditLogAvailableActions}
+              availableActions={auditLogAvailableActionsData || []}
               onChangeAction={actionCheckboxChangedHandler}
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
 
-            <button type="button" className="btn ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-              <i className="icon icon-reload" />
-            </button>
+            <div className="ml-auto">
+              <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={clearButtonPushedHandler}>
+                <span className="icon-refresh mr-1" />
+                {t('admin:audit_log_management.clear')}
+              </button>
+
+              <button type="button" className="btn btn-outline-secondary btn-sm" onClick={reloadButtonPushedHandler}>
+                <i className="icon icon-reload mr-1" />
+                {t('admin:audit_log_management.reload')}
+              </button>
+            </div>
           </div>
 
           <p

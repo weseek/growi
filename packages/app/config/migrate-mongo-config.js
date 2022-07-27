@@ -4,8 +4,14 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+const isProduction = process.env.NODE_ENV === 'production';
 
 const { URL } = require('url');
+
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = isProduction
+  // eslint-disable-next-line import/extensions, import/no-unresolved
+  ? require('../dist/server/util/mongoose-utils')
+  : require('../src/server/util/mongoose-utils');
 
 // get migrationsDir from env var
 const migrationsDir = process.env.MIGRATIONS_DIR;
@@ -13,7 +19,6 @@ if (migrationsDir == null) {
   throw new Error('An env var MIGRATIONS_DIR must be set.');
 }
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 initMongooseGlobalSettings();
 

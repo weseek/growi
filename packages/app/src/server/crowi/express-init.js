@@ -1,7 +1,8 @@
 import csrf from 'csurf';
 import mongoose from 'mongoose';
 
-import { i18n, localePath } from '~/next-i18next.config';
+import { i18n, localePath } from '^/config/next-i18next.config';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:crowi:express-init');
