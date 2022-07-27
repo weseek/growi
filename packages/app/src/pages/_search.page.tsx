@@ -83,6 +83,21 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
+}
+
+async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  if (userUISettings != null) {
+    props.userUISettings = userUISettings.toObject();
+  }
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -103,6 +118,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
+  await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
 
   return {
