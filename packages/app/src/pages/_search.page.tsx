@@ -19,7 +19,6 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
-import UnsavedAlertDialog from './UnsavedAlertDialog';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './utils/commons';
 
 type Props = CommonProps & {
@@ -84,7 +83,6 @@ const SearchPage: NextPage<Props> = (props: Props) => {
           </div>
 
         </div>
-        <UnsavedAlertDialog />
         <PutbackPageModal />
       </BasicLayout>
 
