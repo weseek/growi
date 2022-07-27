@@ -7,11 +7,17 @@ import Head from 'next/head';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUser, IUserHasId } from '~/interfaces/user';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import UserUISettings from '~/server/models/user-ui-settings';
 import {
   useCurrentUser,
   useIsSearchPage, useIsSearchScopeChildrenAsDefault, useIsSearchServiceConfigured, useIsSearchServiceReachable,
 } from '~/stores/context';
+import {
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
 
 import UnsavedAlertDialog from './UnsavedAlertDialog';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from './utils/commons';
@@ -24,10 +30,16 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  // UI
+  userUISettings?: IUserUISettings
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const SearchPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { userUISettings } = props;
   const title = useCustomTitle(props, t('search_result.title'));
 
   useCurrentUser(props.currentUser ?? null);
@@ -36,6 +48,13 @@ const SearchPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   const PutbackPageModal = (): JSX.Element => {
     const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
