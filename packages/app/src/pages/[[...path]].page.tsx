@@ -499,6 +499,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+    isSlackConfigured: crowi.slackIntegrationService.isSlackConfigured,
   };
 
   props.sidebarConfig = {
