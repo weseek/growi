@@ -7,6 +7,7 @@ import { MySkelton } from '~/components/MySkelton';
 
 import { IUser } from '../interfaces/user';
 
+
 const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), { ssr: false });
 
 type Props = {
