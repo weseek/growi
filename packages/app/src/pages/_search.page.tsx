@@ -70,7 +70,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI Search')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'Search')} className={classNames.join(' ')}>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div id="main" className="main search-page mt-0">
