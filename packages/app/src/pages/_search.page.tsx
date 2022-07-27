@@ -30,8 +30,6 @@ import {
 type Props = CommonProps & {
   currentUser: IUser,
 
-  disableLinkSharing: boolean,
-
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
@@ -124,8 +122,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-
-  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
