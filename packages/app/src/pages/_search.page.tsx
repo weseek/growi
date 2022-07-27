@@ -13,11 +13,12 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import {
-  useCurrentUser,
-  useIsSearchPage, useIsSearchScopeChildrenAsDefault, useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
+  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
 } from '~/stores/context';
 import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+  useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import { useXss } from '~/stores/xss';
 
@@ -47,6 +48,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useXss(new Xss());
+  useCsrfToken(props.csrfToken);
 
   useCurrentUser(props.currentUser ?? null);
 
