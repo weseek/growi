@@ -319,21 +319,6 @@ ul.pagination {
     }
   }
 
-  .grw-bookmarks-list {
-    .list-group {
-      .list-group-item {
-        background-color: transparent;
-        &:hover{
-          background-color: $bgcolor-list-hover;
-        }
-      }
-    }
-    .list-group-flush {
-      .list-group-item {
-        border: none;
-      }
-    }
-  }
 }
 
 /*

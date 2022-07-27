@@ -8,41 +8,40 @@ import nodePath from 'path';
 import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
-import type { SWRInfiniteResponse } from 'swr/infinite';
-
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRInifiniteBookmarkedPage } from '~/stores/bookmark';
-import { useCurrentUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
-import InfiniteScroll from './InfiniteScroll';
+const logger = loggerFactory('growi:BookmarkList');
+// TODO: Remove pagination and apply  scrolling (not infinity)
+const ACTIVE_PAGE = 1;
 
 type Props = {
   page: IPageHasId,
-  swr: SWRInfiniteResponse
+  refreshBookmarkList: () => void
 }
-const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
+
+const BookmarksItem = (props: Props) => {
   const { t } = useTranslation();
-  const { page, swr } = props;
-  const dPagePath = new DevidedPagePath(page.path, false, true);
-  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-  const bookmarkItemId = `bookmark-item-${page._id}`;
+  const { page, refreshBookmarkList } = props;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const dPagePath = new DevidedPagePath(page.path, false, true);
+  const { latter: pageTitle, former: formerPagePath } = dPagePath;
+  const bookmarkItemId = `bookmark-item-${page._id}`;
+
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(page._id);
-    swr.mutate();
-  }, [swr, page]);
+    refreshBookmarkList();
+  }, [page, refreshBookmarkList]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     setRenameInputShown(true);
@@ -59,10 +58,9 @@ const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
     return null;
   };
 
-  const onPressEnterForRenameHandler = useCallback(async(inputText: string) => {
+  const pressEnterForRenameHandler = (async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
-
     if (newPagePath === page.path) {
       setRenameInputShown(false);
       return;
@@ -75,14 +73,14 @@ const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
         revisionId: page.revision,
         newPagePath,
       });
-      swr.mutate();
+      refreshBookmarkList();
       toastSuccess(t('renamed_pages', { path: page.path }));
     }
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [swr, page, t]);
+  });
 
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
@@ -99,7 +97,7 @@ const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
         else {
           toastSuccess(t('deleted_pages', { path }));
         }
-        swr.mutate();
+        refreshBookmarkList();
       };
       openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
     };
@@ -118,26 +116,25 @@ const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [page, swr, openDeleteModal, t]);
+  }, [page, openDeleteModal, t]);
 
   return (
     <>
-      <li className="list-group-item py-3 px-2" id={bookmarkItemId}>
-        <div className="d-flex w-100 justify-content-between">
+      <div className="d-flex justify-content-between" key={page._id}>
+        <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
           { isRenameInputShown ? (
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
               placeholder={t('Input page name')}
               onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
+              onPressEnter={pressEnterForRenameHandler}
               inputValidator={inputValidator}
             />
           ) : (
-            <h5 className="my-0">
-              <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-            </h5>
+            <a href={`/${page._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
+              <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
+            </a>
           )}
-
           <PageItemControl
             pageId={page._id}
             isEnableActions
@@ -150,56 +147,86 @@ const BookmarksItem:FC<Props> = (props: Props) : JSX.Element => {
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
-
           <UncontrolledTooltip
             modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
             autohide={false}
-            placement="left"
+            placement="right"
             target={bookmarkItemId}
           >
-            {page.path}
+            { formerPagePath || '/' }
           </UncontrolledTooltip>
-        </div>
-      </li>
-
+        </li>
+      </div>
     </>
   );
-
 };
+
 
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
-  const swr = useSWRInifiniteBookmarkedPage(currentUser?._id);
-  const isEmpty = swr.data?.[0].docs.length === 0;
-  const isReachingEnd = isEmpty || (swr.data && swr.data[0].nextPage == null);
+  const { data: isGuestUser } = useIsGuestUser();
+  const [pages, setPages] = useState<IPageHasId[]>([]);
+  const page = ACTIVE_PAGE;
+
+  const getMyBookmarkList = useCallback(async() => {
+    try {
+      const res = await apiv3Get(`/bookmarks/${currentUser?._id}`, { page });
+      const { paginationResult } = res.data;
+      setPages(paginationResult.docs.map((page) => {
+        return {
+          ...page.page,
+        };
+      }));
+    }
+    catch (error) {
+      logger.error('failed to fetch data', error);
+      toastError(error, 'Error occurred in bookmark page list');
+    }
+  }, [currentUser, page]);
 
   useEffect(() => {
-    swr.mutate();
-  }, []);
+    getMyBookmarkList();
+  }, [getMyBookmarkList]);
+
+  const generateBookmarkList = () => {
+    return (
+      <ul className="grw-bookmarks-list list-group p-3">
+        <div className="grw-bookmarks-item-container">
+          { pages.map((page) => {
+            return (
+              <BookmarksItem key={page._id} page={page} refreshBookmarkList={getMyBookmarkList} />
+            );
+          })}
+        </div>
+      </ul>
+    );
+  };
+
+  const renderBookmarksItem = () => {
+    if (pages?.length === 0) {
+      return (
+        <h3 className="pl-3">
+          { t('No bookmarks yet') }
+        </h3>
+      );
+    }
+    return generateBookmarkList();
+  };
 
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
-      <div className="grw-bookmarks-list p-3">
-        {isEmpty ? t('No bookmarks yet') : (
-          <div>
-            <ul className="list-group list-group-flush">
-              <InfiniteScroll
-                swrInifiniteResponse={swr}
-                isReachingEnd={isReachingEnd}
-              >
-                {paginationResult => paginationResult?.docs.map(data => (
-                  <BookmarksItem key={data.page._id} page={data.page} swr={swr} />
-                ))
-                }
-              </InfiniteScroll>
-            </ul>
-          </div>
-        )}
-      </div>
+      { isGuestUser
+        ? (
+          <h3 className="pl-3">
+            { t('Not available for guest') }
+          </h3>
+        ) : renderBookmarksItem()
+      }
+
     </>
   );
 
