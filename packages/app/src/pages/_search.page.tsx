@@ -94,6 +94,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         <div id="main" className="main search-page mt-0">
 
           <div id="search-page">
+            Search Result Page
             {/* render SearchPage component here */}
           </div>
 
