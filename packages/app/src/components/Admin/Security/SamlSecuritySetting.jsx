@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,16 +10,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 
-function SamlSecurityManagement(props) {
+const SamlSecurityManagement = (props) => {
   const { adminSamlSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchSamlSecuritySettingsData = async() => {
-      await adminSamlSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchSamlSecuritySettingsData = useCallback(async() => {
     try {
-      fetchSamlSecuritySettingsData();
+      await adminSamlSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -27,8 +23,12 @@ function SamlSecurityManagement(props) {
     }
   }, [adminSamlSecurityContainer]);
 
+  useEffect(() => {
+    fetchSamlSecuritySettingsData();
+  }, [adminSamlSecurityContainer, fetchSamlSecuritySettingsData]);
+
   return <SamlSecuritySettingContents />;
-}
+};
 
 SamlSecurityManagement.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,

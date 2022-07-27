@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -11,16 +11,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
 
-function GitHubSecurityManagement(props) {
+const GitHubSecurityManagement = (props) => {
   const { adminGitHubSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchGitHubSecuritySettingsData = async() => {
-      await adminGitHubSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchGitHubSecuritySettingsData = useCallback(async() => {
     try {
-      fetchGitHubSecuritySettingsData();
+      await adminGitHubSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -28,8 +24,12 @@ function GitHubSecurityManagement(props) {
     }
   }, [adminGitHubSecurityContainer]);
 
+  useEffect(() => {
+    fetchGitHubSecuritySettingsData();
+  }, [adminGitHubSecurityContainer, fetchGitHubSecuritySettingsData]);
+
   return <GitHubSecuritySettingContents />;
-}
+};
 
 
 GitHubSecurityManagement.propTypes = {

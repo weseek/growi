@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,16 +10,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
-function LocalSecuritySetting(props) {
+const LocalSecuritySetting = (props) => {
   const { adminLocalSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchLocalSecuritySettingsData = async() => {
-      await adminLocalSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchLocalSecuritySettingsData = useCallback(async() => {
     try {
-      fetchLocalSecuritySettingsData();
+      await adminLocalSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -27,8 +23,13 @@ function LocalSecuritySetting(props) {
     }
   }, [adminLocalSecurityContainer]);
 
+
+  useEffect(() => {
+    fetchLocalSecuritySettingsData();
+  }, [adminLocalSecurityContainer, fetchLocalSecuritySettingsData]);
+
   return <LocalSecuritySettingContents />;
-}
+};
 
 LocalSecuritySetting.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,

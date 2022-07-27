@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,16 +10,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
-function GoogleSecurityManagement(props) {
+const GoogleSecurityManagement = (props) => {
   const { adminGoogleSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchGoogleSecuritySettingsData = async() => {
-      await adminGoogleSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchGoogleSecuritySettingsData = useCallback(async() => {
     try {
-      fetchGoogleSecuritySettingsData();
+      await adminGoogleSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -27,8 +23,13 @@ function GoogleSecurityManagement(props) {
     }
   }, [adminGoogleSecurityContainer]);
 
+
+  useEffect(() => {
+    fetchGoogleSecuritySettingsData();
+  }, [adminGoogleSecurityContainer, fetchGoogleSecuritySettingsData]);
+
   return <GoogleSecurityManagementContents />;
-}
+};
 
 
 GoogleSecurityManagement.propTypes = {

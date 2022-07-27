@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -13,19 +13,19 @@ import BasicSecurityManagementContents from './BasicSecuritySettingContents';
 const BasicSecurityManagement = (props) => {
   const { adminBasicSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchBasicSecuritySettingsData = async() => {
-      await adminBasicSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchBasicSecuritySettingsData = useCallback(async() => {
     try {
-      fetchBasicSecuritySettingsData();
+      await adminBasicSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }
   }, [adminBasicSecurityContainer]);
+
+  useEffect(() => {
+    fetchBasicSecuritySettingsData();
+  }, [adminBasicSecurityContainer, fetchBasicSecuritySettingsData]);
 
 
   return <BasicSecurityManagementContents />;

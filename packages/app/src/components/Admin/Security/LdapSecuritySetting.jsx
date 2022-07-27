@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,16 +10,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
 
-function LdapSecuritySetting(props) {
+const LdapSecuritySetting = (props) => {
   const { adminLdapSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchLdapSecuritySettingsData = async() => {
-      await adminLdapSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchLdapSecuritySettingsData = useCallback(async() => {
     try {
-      fetchLdapSecuritySettingsData();
+      await adminLdapSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -27,8 +23,12 @@ function LdapSecuritySetting(props) {
     }
   }, [adminLdapSecurityContainer]);
 
+  useEffect(() => {
+    fetchLdapSecuritySettingsData();
+  }, [adminLdapSecurityContainer, fetchLdapSecuritySettingsData]);
+
   return <LdapSecuritySettingContents />;
-}
+};
 
 LdapSecuritySetting.propTypes = {
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,

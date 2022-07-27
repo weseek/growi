@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,16 +10,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import TwitterSecuritySettingContents from './TwitterSecuritySettingContents';
 
-function TwitterSecurityManagement(props) {
+const TwitterSecurityManagement = (props) => {
   const { adminTwitterSecurityContainer } = props;
 
-  useEffect(() => {
-    const fetchTwitterSecuritySettingsData = async() => {
-      await adminTwitterSecurityContainer.retrieveSecurityData();
-    };
-
+  const fetchTwitterSecuritySettingsData = useCallback(async() => {
     try {
-      fetchTwitterSecuritySettingsData();
+      await adminTwitterSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -27,8 +23,12 @@ function TwitterSecurityManagement(props) {
     }
   }, [adminTwitterSecurityContainer]);
 
+  useEffect(() => {
+    fetchTwitterSecuritySettingsData();
+  }, [adminTwitterSecurityContainer, fetchTwitterSecuritySettingsData]);
+
   return <TwitterSecuritySettingContents />;
-}
+};
 
 TwitterSecurityManagement.propTypes = {
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
