@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
@@ -13,47 +13,31 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import ShareLinkForm from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
-class ShareLink extends React.Component {
+const ShareLink = (props) => {
+  const { t } = useTranslation();
+  const { pageContainer } = props;
+  const { pageId } = pageContainer.state;
+  const [shareLinks, setShareLinks] = useState([]);
+  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
 
-  constructor() {
-    super();
-    this.state = {
-      shareLinks: [],
-      isOpenShareLinkForm: false,
-    };
-
-    this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
-    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
-    this.deleteLinkById = this.deleteLinkById.bind(this);
-  }
-
-  componentDidMount() {
-    this.retrieveShareLinks();
-  }
-
-  async retrieveShareLinks() {
-    const { pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
-
+  const retrieveShareLinks = useCallback(async() => {
     try {
       const res = await apiv3Get('/share-links/', { relatedPage: pageId });
       const { shareLinksResult } = res.data;
-      this.setState({ shareLinks: shareLinksResult });
+      setShareLinks(shareLinksResult);
     }
     catch (err) {
       toastError(err);
     }
 
-  }
+  }, [pageId]);
 
-  toggleShareLinkFormHandler() {
-    this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
-    this.retrieveShareLinks();
-  }
+  const toggleShareLinkFormHandler = useCallback(() => {
+    setIsOpenShareLinkForm(prev => !prev);
+    retrieveShareLinks();
+  }, [retrieveShareLinks]);
 
-  async deleteAllLinksButtonHandler() {
-    const { t, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+  const deleteAllLinksButtonHandler = useCallback(async() => {
 
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
@@ -64,11 +48,10 @@ class ShareLink extends React.Component {
       toastError(err);
     }
 
-    this.retrieveShareLinks();
-  }
+    retrieveShareLinks();
+  }, [retrieveShareLinks, pageId, t]);
 
-  async deleteLinkById(shareLinkId) {
-    const { t } = this.props;
+  const deleteLinkById = useCallback(async(shareLinkId) => {
 
     try {
       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
@@ -79,47 +62,45 @@ class ShareLink extends React.Component {
       toastError(err);
     }
 
-    this.retrieveShareLinks();
-  }
+    retrieveShareLinks();
+  }, [t, retrieveShareLinks]);
 
-  render() {
-    const { t } = this.props;
+  useEffect(() => {
+    retrieveShareLinks();
+  }, [retrieveShareLinks]);
 
-    return (
-      <div className="container p-0" data-testid="share-link-management">
-        <h3 className="grw-modal-head d-flex pb-2">
-          { t('share_links.share_link_list') }
-          <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
-        </h3>
+  return (
+    <div className="container p-0" data-testid="share-link-management">
+      <h3 className="grw-modal-head d-flex pb-2">
+        { t('share_links.share_link_list') }
+        <button className="btn btn-danger ml-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+      </h3>
 
-        <div>
-          <ShareLinkList
-            shareLinks={this.state.shareLinks}
-            onClickDeleteButton={this.deleteLinkById}
-          />
-          <button
-            className="btn btn-outline-secondary d-block mx-auto px-5"
-            type="button"
-            onClick={this.toggleShareLinkFormHandler}
-          >
-            {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
-          </button>
-          {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
-        </div>
+      <div>
+        <ShareLinkList
+          shareLinks={shareLinks}
+          onClickDeleteButton={deleteLinkById}
+        />
+        <button
+          className="btn btn-outline-secondary d-block mx-auto px-5"
+          type="button"
+          onClick={toggleShareLinkFormHandler}
+        >
+          {isOpenShareLinkForm ? t('Close') : t('New')}
+        </button>
+        {isOpenShareLinkForm && <ShareLinkForm onCloseForm={toggleShareLinkFormHandler} />}
       </div>
-    );
-  }
+    </div>
+  );
 
-}
+};
 
 ShareLink.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 const ShareLinkWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <ShareLink t={t} {...props} />;
+  return <ShareLink {...props} />;
 };
 
 /**
