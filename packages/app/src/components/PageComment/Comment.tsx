@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 
 import { UserPicture } from '@growi/ui';
+import { ConsoleFormattedStream } from 'browser-bunyan';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -76,7 +77,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
     }
-    else if (Date.parse(comment.createdAt) / 1000 > Date.parse(currentRevisionCreatedAt.toString())) {
+    else if (Date.parse(comment.createdAt.toString()) > Date.parse(currentRevisionCreatedAt.toString())) {
       className += ' page-comment-newer';
     }
     else {
