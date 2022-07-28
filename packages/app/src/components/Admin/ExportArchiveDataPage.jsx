@@ -35,38 +35,38 @@ const ExportArchiveDataPage = (props) => {
 
   const { t } = useTranslation();
 
-  const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet(endpoint, {})));
-  const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet(endpoint, {})));
-  // const { data: statusData } = useSWR('/v3/export/status', apiGet);
+  // Keigo-h will use in https://redmine.weseek.co.jp/issues/101571
+  // const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet(endpoint, {})));
+  // const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet(endpoint, {})));
 
   const fetchData = useCallback(async() => {
-    // const [{ collections }, { status }] = await Promise.all([
-    //   apiGet<collectionsType>('/v3/mongo/collections', {}),
-    //   apiGet<statusType>('/v3/export/status', {}),
-    // ]);
-    // const filteredCollections = collections.filter((collectionName) => {
-    //   return !IGNORED_COLLECTION_NAMES.includes(collectionName);
-    // });
-    // const { zipFileStats, isExporting, progressList } = status;
-    // setCollections(filteredCollections);
-    // setZipFileStats(zipFileStats);
-    // setIsExporting(isExporting);
-    // setProgressList(progressList);
-    if (collectionsData != null) {
-      console.log(`dataの値: ${JSON.stringify(collectionsData)}`);
-      const filteredCollections = collectionsData.collections.filter((collectionName) => {
-        return !IGNORED_COLLECTION_NAMES.includes(collectionName);
-      });
-      setCollections(filteredCollections);
-    }
+    const [{ collections }, { status }] = await Promise.all([
+      apiGet('/v3/mongo/collections', {}),
+      apiGet('/v3/export/status', {}),
+    ]);
+    const filteredCollections = collections.filter((collectionName) => {
+      return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+    });
+    const { zipFileStats, isExporting, progressList } = status;
+    setCollections(filteredCollections);
+    setZipFileStats(zipFileStats);
+    setIsExporting(isExporting);
+    setProgressList(progressList);
+    // if (collectionsData != null) {
+    //   console.log(`dataの値: ${JSON.stringify(collectionsData)}`);
+    //   const filteredCollections = collectionsData.collections.filter((collectionName) => {
+    //     return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+    //   });
+    //   setCollections(filteredCollections);
+    // }
 
-    if (statusData != null) {
-      const { zipFileStats, isExporting, progressList } = statusData.status;
-      setZipFileStats(zipFileStats);
-      setIsExporting(isExporting);
-      setProgressList(progressList);
-    }
-  }, [collectionsData, statusData]);
+    // if (statusData != null) {
+    //   const { zipFileStats, isExporting, progressList } = statusData.status;
+    //   setZipFileStats(zipFileStats);
+    //   setIsExporting(isExporting);
+    //   setProgressList(progressList);
+    // }
+  }, []);
 
   const cleanupWebsocketEventHandler = useCallback(() => {
     const socket = props.adminSocketIoContainer.getSocket();
@@ -256,11 +256,5 @@ ExportArchiveDataPage.propTypes = {
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
-const ExportArchiveDataPageWrapperFC = (props) => {
-  return <ExportArchiveDataPage {...props} />;
-};
-/**
- * Wrapper component for using unstated
- */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AppContainer, AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
 export default ExportArchiveDataPageWrapper;
