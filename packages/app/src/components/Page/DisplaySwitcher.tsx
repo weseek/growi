@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable, useIsEmpty,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -49,6 +49,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isEmpty } = useIsEmpty();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -68,8 +69,8 @@ const DisplaySwitcher = (): JSX.Element => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               { isUserPage && <UserInfo pageUser={pageUser} />}
-              { !isNotFound && <Page /> }
-              { isNotFound && !isNotCreatable && <NotFoundPage /> }
+              { !isNotFound && !isEmpty && <Page /> }
+              { ((isNotFound && !isNotCreatable) || isEmpty) && <NotFoundPage /> }
               { isNotFound && isNotCreatable && <NotCreatablePage /> }
             </div>
 

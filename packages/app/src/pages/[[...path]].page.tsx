@@ -55,7 +55,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri,
+  useHackmdUri, useIsEmpty,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
@@ -133,6 +133,7 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   IsNotCreatable: boolean,
+  isEmpty: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -199,6 +200,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
+  useIsEmpty(props.isEmpty);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -246,7 +248,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision.body);
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -421,6 +423,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     props.isForbidden = count > 0;
   }
   else {
+    props.isEmpty = page.isEmpty;
+
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;

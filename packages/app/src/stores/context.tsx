@@ -100,6 +100,10 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
+export const useIsEmpty = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmpty', initialData, { fallbackData: false });
+};
+
 export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
 };
