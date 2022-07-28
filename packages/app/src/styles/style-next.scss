@@ -8,6 +8,7 @@
 
 // import SimpleBar styles
 @import '~simplebar/dist/simplebar.min.css';
+
 // override simplebar-react styles
 @import 'override-simplebar';
 
@@ -15,6 +16,8 @@
 @import '~simple-line-icons';
 @import '~material-icons/iconfont/filled';
 @import '~font-awesome';
+@import '~@icon/themify-icons/themify-icons';
+
 
 // // atoms
 @import 'atoms/buttons';

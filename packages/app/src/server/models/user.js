@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
-import { i18n } from '~/next-i18next.config';
+import { i18n } from '^/config/next-i18next.config';
+
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 

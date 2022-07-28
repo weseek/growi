@@ -1,15 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
+
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import IndentForm from './IndentForm';
 import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
-const MarkDownSettingContents = React.memo((): JSX.Element => {
+const logger = loggerFactory('growi:MarkDown');
+
+type Props ={
+  adminMarkDownContainer: AdminMarkDownContainer
+}
+
+const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { adminMarkDownContainer } = props;
+
+  useEffect(() => {
+    const fetchMarkdownData = async() => {
+      await adminMarkDownContainer.retrieveMarkdownData();
+    };
+
+    try {
+      fetchMarkdownData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminMarkDownContainer]);
 
   return (
     <div data-testid="admin-markdown">
@@ -45,4 +74,8 @@ const MarkDownSettingContents = React.memo((): JSX.Element => {
 });
 MarkDownSettingContents.displayName = 'MarkDownSettingContents';
 
-export default MarkDownSettingContents;
+
+const MarkdownSettingWithUnstatedContainer = withUnstatedContainers(MarkDownSettingContents, [AdminMarkDownContainer]);
+
+
+export default MarkdownSettingWithUnstatedContainer;

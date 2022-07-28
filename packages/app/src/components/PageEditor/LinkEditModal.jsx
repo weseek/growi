@@ -2,8 +2,8 @@ import React from 'react';
 
 import path from 'path';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   Modal,
   ModalHeader,
@@ -14,15 +14,15 @@ import {
 } from 'reactstrap';
 import validator from 'validator';
 
+
 import Linker from '~/client/models/Linker';
-import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { useCurrentPagePath } from '~/stores/context';
 
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
-import PreviewWithSuspense from './PreviewWithSuspense';
+import Preview from './Preview';
 
 
 class LinkEditModal extends React.PureComponent {
@@ -44,7 +44,7 @@ class LinkEditModal extends React.PureComponent {
       isPreviewOpen: false,
     };
 
-    this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+    // this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
 
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
@@ -267,8 +267,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   getRootPath(type) {
-    const { pageContainer } = this.props;
-    const pagePath = pageContainer.state.path;
+    const { pagePath } = this.props;
     // rootPaths of md link and pukiwiki link are different
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
@@ -308,7 +307,11 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} pagePath={pagePath} error={this.state.previewError} />
+                    {this.state.markdown != null && pagePath != null
+                    && <div className="linkedit-preview">
+                      <Preview markdown={this.state.markdown} pagePath={pagePath} />
+                    </div>
+                    }
                   </PopoverBody>
                 </Popover>
               </div>
@@ -460,18 +463,15 @@ class LinkEditModal extends React.PureComponent {
 
 const LinkEditModalFc = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  return <LinkEditModal t={t} ref={ref} {...props} />;
+  const { data: currentPath } = useCurrentPagePath();
+  return <LinkEditModal t={t} ref={ref} pagePath={currentPath} {...props} />;
 });
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pagePath: PropTypes.string,
   onSave: PropTypes.func,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModalFc, [PageContainer]);
 
-export default LinkEditModalWrapper;
+export default LinkEditModalFc;

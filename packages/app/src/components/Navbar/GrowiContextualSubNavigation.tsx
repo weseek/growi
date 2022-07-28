@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
-  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -26,16 +29,14 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-
+import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PageEditorModeManager from './PageEditorModeManager';
 import { SubNavButtons } from './SubNavButtons';
 
 
@@ -121,6 +122,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -151,6 +153,8 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
+  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <Skelton width={208} height={32.49} /> });
+
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
 
@@ -160,6 +164,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -342,13 +347,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (currentPage == null) {
+  if (currentPathname == null) {
     return <></>;
   }
 
+  const notFoundPage: Partial<IPageHasId> = {
+    path: currentPathname,
+  };
+
   return (
     <GrowiSubNavigation
-      page={currentPage}
+      page={currentPage ?? notFoundPage}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}

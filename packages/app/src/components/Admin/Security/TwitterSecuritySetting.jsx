@@ -1,13 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 
 import TwitterSecuritySettingContents from './TwitterSecuritySettingContents';
 
@@ -41,7 +42,7 @@ TwitterSecurityManagement.propTypes = {
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(TwitterSecurityManagement), [
+const TwitterSecurityManagementWithUnstatedContainer = withUnstatedContainers(TwitterSecurityManagement, [
   AdminTwitterSecurityContainer,
 ]);
 

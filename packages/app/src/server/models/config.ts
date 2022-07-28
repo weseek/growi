@@ -1,8 +1,9 @@
-import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { GrowiThemes } from '~/interfaces/theme';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface Config {
@@ -193,6 +194,8 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 schema.statics.getLocalconfig = function(crowi) {
   const env = process.env;
 
+  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+
   const localConfig = {
     crowi: {
       title: crowi.appService.getAppTitle(),
@@ -247,6 +250,9 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
+    customizedLogoSrc: isDefaultLogo != null && !isDefaultLogo
+      ? crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc')
+      : null,
     auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
     activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
     auditLogAvailableActions: crowi.activityService.getAvailableActions(false),

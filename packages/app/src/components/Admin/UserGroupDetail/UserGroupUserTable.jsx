@@ -2,8 +2,8 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -96,7 +96,7 @@ class UserGroupUserTable extends React.Component {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
-                <i className="ti-plus"></i>
+                <i className="ti ti-plus"></i>
               </button>
             </td>
             <td></td>

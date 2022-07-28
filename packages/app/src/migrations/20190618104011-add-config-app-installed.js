@@ -1,8 +1,8 @@
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-named-as-default
 import Config from '~/server/models/config';
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:add-config-app-installed');

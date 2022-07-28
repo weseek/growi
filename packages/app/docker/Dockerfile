@@ -111,11 +111,11 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
+  packages/app/.next \
   packages/app/config \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
   packages/*/package.json \
   packages/*/dist

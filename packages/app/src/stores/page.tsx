@@ -17,14 +17,14 @@ import { useCurrentPageId } from './context';
 export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
   return useSWR<IPagePopulatedToShowRevision, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
+    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
   );
 };
 
 export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
   return useSWR<IPagePopulatedToShowRevision, Error>(
     path != null ? ['/page', path] : null,
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
+    (endpoint, path) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
   );
 };
 

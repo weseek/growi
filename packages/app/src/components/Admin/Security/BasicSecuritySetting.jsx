@@ -1,13 +1,13 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import BasicSecurityManagementContents from './BasicSecuritySettingContents';
 
@@ -44,7 +44,7 @@ BasicSecurityManagement.propTypes = {
   adminBasicSecurityContainer: PropTypes.instanceOf(AdminBasicSecurityContainer).isRequired,
 };
 
-const BasicSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(BasicSecurityManagement), [
+const BasicSecurityManagementWithUnstatedContainer = withUnstatedContainers(BasicSecurityManagement, [
   AdminBasicSecurityContainer,
 ]);
 

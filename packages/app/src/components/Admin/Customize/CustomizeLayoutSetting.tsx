@@ -12,7 +12,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const { resolvedTheme } = useNextThemes();
 
   const [isContainerFluid, setIsContainerFluid] = useState(false);
-  const [retrieveError, setRetrieveError] = useState();
+  const [retrieveError, setRetrieveError] = useState<any>();
 
   const retrieveData = useCallback(async() => {
     try {
