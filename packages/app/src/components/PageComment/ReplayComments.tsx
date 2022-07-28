@@ -40,6 +40,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
     );
   };
 
+  // TODO: Remove isAllReplyShown from rendererconfig.
   if (rendererConfig === undefined) {
     return <></>;
   }
