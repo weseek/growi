@@ -555,7 +555,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Move notification failed', err);
     }
-    // activityEvent.emit('update', activityId, parameters, page, descendantPages);
 
     return res.apiv3(result);
   });
