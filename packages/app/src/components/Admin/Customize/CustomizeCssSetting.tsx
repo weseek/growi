@@ -8,7 +8,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomCssEditor from '../CustomCssEditor';
 
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
@@ -43,9 +42,11 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
           </Card>
 
           <div className="form-group">
-            <CustomCssEditor
+            <textarea
+              className="form-control"
+              name="customizeCss"
               value={adminCustomizeContainer.state.currentCustomizeCss || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />

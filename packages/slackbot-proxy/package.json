@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "clean": "npx -y shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
     "cp:bootstrap": "cp -RT ./node_modules/bootstrap/dist ./dist/public/bootstrap",
@@ -58,7 +59,7 @@
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
     "morgan": "^1.10.0",
-    "ts-node-dev": "^1.1.6",
+    "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.2.9"
   }
 }

@@ -11,13 +11,9 @@ export default class AdminAppContainer extends Container {
   constructor() {
     super();
 
-    this.dummyTitle = 0;
-    this.dummyTitleForError = 1;
-
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      title: this.dummyTitle,
+      title: '',
       confidential: '',
       globalLang: '',
       isEmailPublishedForNewUser: true,

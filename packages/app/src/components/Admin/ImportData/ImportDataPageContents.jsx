@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminImportContainer from '~/client/services/AdminImportContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GrowiArchiveSection from './GrowiArchiveSection';
+
+const logger = loggerFactory('growi:importer');
 
 class ImportDataPageContents extends React.Component {
 
@@ -241,6 +246,23 @@ ImportDataPageContents.propTypes = {
 
 const ImportDataPageContentsWrapperFc = (props) => {
   const { t } = useTranslation();
+
+  const { adminImportContainer } = props;
+
+  useEffect(() => {
+    const fetchImportSettingsData = async() => {
+      await adminImportContainer.retrieveImportSettingsData();
+    };
+
+    try {
+      fetchImportSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminImportContainer]);
 
   return <ImportDataPageContents t={t} {...props} />;
 };

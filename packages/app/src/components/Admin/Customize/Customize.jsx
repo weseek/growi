@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -23,28 +23,24 @@ import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-const retrieveErrors = null;
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
-  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
-  //   throw (async() => {
-  //     try {
-  //       await adminCustomizeContainer.retrieveCustomizeData();
-  //     }
-  //     catch (err) {
-  //       const errs = toArrayIfNot(err);
-  //       toastError(errs);
-  //       logger.error(errs);
-  //       retrieveErrors = errs;
-  //       adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
-  //     }
-  //   })();
-  // }
+  useEffect(() => {
+    async function fetchCustomizeSettingsData() {
+      await adminCustomizeContainer.retrieveCustomizeData();
+    }
 
-  // if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
-  //   throw new Error(`${retrieveErrors.length} errors occured`);
-  // }
+    try {
+      fetchCustomizeSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminCustomizeContainer]);
+
 
   return (
     <div data-testid="admin-customize">
@@ -55,7 +51,9 @@ function Customize(props) {
         <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
-        <CustomizeSidebarSetting />
+        {/* TODO: [resolve browser err] A component is changing an uncontrolled input to be controlled. by https://redmine.weseek.co.jp/issues/101155
+          <CustomizeSidebarSetting />
+        */}
       </div>
       <div className="mb-5">
         <CustomizeFunctionSetting />
@@ -66,7 +64,6 @@ function Customize(props) {
       <div className="mb-5">
         <CustomizeTitle />
       </div>
-      {/* TODO: show CustomizeHeaderSetting, CustomizeCssSetting and CustomizeScriptSetting by https://redmine.weseek.co.jp/issues/100534
       <div className="mb-5">
         <CustomizeHeaderSetting />
       </div>
@@ -76,7 +73,6 @@ function Customize(props) {
       <div className="mb-5">
         <CustomizeScriptSetting />
       </div>
-    */}
       <div className="mb-5">
         <CustomizeLogoSetting />
       </div>

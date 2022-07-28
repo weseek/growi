@@ -15,31 +15,26 @@ import SlackConfiguration from './SlackConfiguration';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-const retrieveErrors = null;
-function LegacySlackIntegration(props) {
+const LegacySlackIntegration = (props) => {
   const { t } = useTranslation();
   const { adminSlackIntegrationLegacyContainer } = props;
 
-  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
-    // TODO: Omit AdminSlackIntegrationLegacyContainer by https://redmine.weseek.co.jp/issues/100947
 
-    // throw (async() => {
-    //   try {
-    //     await adminSlackIntegrationLegacyContainer.retrieveData();
-    //   }
-    //   catch (err) {
-    //     const errs = toArrayIfNot(err);
-    //     toastError(errs);
-    //     logger.error(errs);
-    //     retrieveErrors = errs;
-    //     adminSlackIntegrationLegacyContainer.setState({ webhookUrl: adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError });
-    //   }
-    // })();
-  }
+  useEffect(() => {
+    const fetchLegacySlackIntegrationData = async() => {
+      await adminSlackIntegrationLegacyContainer.retrieveData();
+    };
 
-  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+    try {
+      fetchLegacySlackIntegrationData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminSlackIntegrationLegacyContainer]);
+
 
   const isDisabled = adminSlackIntegrationLegacyContainer.state.isSlackbotConfigured;
 
@@ -62,7 +57,7 @@ function LegacySlackIntegration(props) {
       <SlackConfiguration />
     </div>
   );
-}
+};
 
 const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(LegacySlackIntegration, [AdminSlackIntegrationLegacyContainer]);
 
