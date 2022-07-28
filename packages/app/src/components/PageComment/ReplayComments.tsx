@@ -29,6 +29,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const renderReply = (reply: ICommentHasId) => {
     return (
       <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
+        {/* TODO: Update props */}
         <Comment
           comment={reply}
           deleteBtnClicked={deleteBtnClicked}
@@ -40,7 +41,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
     );
   };
 
-  // TODO: Remove isAllReplyShown from rendererconfig.
+  // TODO: Remove isAllReplyShown from rendererconfig
   if (rendererConfig === undefined) {
     return <></>;
   }
@@ -48,11 +49,11 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
 
   if (isAllReplyShown) {
     return (
-      <React.Fragment>
+      <>
         {replyList.map((reply) => {
           return renderReply(reply);
         })}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -74,7 +75,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   });
 
   return (
-    <React.Fragment>
+    <>
       {areThereHiddenReplies && (
         <div className="page-comments-hidden-replies">
           <Collapse isOpen={isOlderRepliesShown}>
@@ -92,7 +93,6 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
         </div>
       )}
       {shownElements}
-
-    </React.Fragment>
+    </>
   );
 };
