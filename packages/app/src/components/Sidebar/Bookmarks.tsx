@@ -51,6 +51,7 @@ const BookmarksItem = (props: Props) => {
             autohide={false}
             placement="right"
             target={bookmarkItemId}
+            fade={false}
           >
             { formerPagePath || '/' }
           </UncontrolledTooltip>
