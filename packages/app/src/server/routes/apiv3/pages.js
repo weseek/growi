@@ -504,13 +504,8 @@ module.exports = (crowi) => {
     const nOptions = {
       ip: req.ip,
       endpoint: req.originalUrl,
-      action: options.isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
+      activityId: res.locals.activity._id,
     };
-    const activityId = res.locals.activity._id;
 
     if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
@@ -544,7 +539,7 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, nOptions, activityId);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, nOptions);
     }
     catch (err) {
       logger.error(err);

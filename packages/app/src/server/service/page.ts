@@ -350,18 +350,23 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  async renamePage(page: IPage, newPagePath, user, options, nOptions, activityId): Promise<PageDocument | null> {
+  async renamePage(page: IPage, newPagePath, user, options, nOptions): Promise<PageDocument | null> {
     /*
      * Common Operation
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
-    this.crowi.activityService.createActivity(nOptions);
 
     const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: nOptions.action,
+      ip: nOptions.ip,
+      endpoint: nOptions.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
+      user,
+      snapshot: {
+        username: user.username,
+      },
     };
+
+    this.crowi.activityService.createActivity(parameters);
 
     const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
@@ -412,15 +417,20 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, parameters, activityId);
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, nOptions);
     if (!options.isRecursively) {
-      this.activityEvent.emit('update', activityId, parameters, page);
+      const parameters = {
+        targetModel: SupportedTargetModel.MODEL_PAGE,
+        target: page,
+        action: SupportedAction.ACTION_PAGE_RENAME,
+      };
+      this.activityEvent.emit('update', nOptions.activityId, parameters, page);
     }
 
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, parameters, activityId): Promise<PageDocument | null> {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, nOptions): Promise<PageDocument | null> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -505,21 +515,26 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, parameters, activityId);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, nOptions);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, parameters?, activityId?): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, nOptions?): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
 
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME,
+    };
     try {
     // update descendants first
       const descendantPages = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
-      this.activityEvent.emit('update', activityId, parameters, page, descendantPages);
+      this.activityEvent.emit('update', nOptions.activityId, parameters, page, descendantPages);
     }
     catch (err) {
       logger.warn(err);

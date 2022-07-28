@@ -422,7 +422,7 @@ describe('PageService', () => {
     });
   });
 
-  describe('rename page', () => {
+  describe.only('rename page', () => {
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     // mock new Date() and Date.now()
@@ -438,7 +438,8 @@ describe('PageService', () => {
 
       test('rename page without options', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
+        const resultPage = await crowi.pageService.renamePage(parentForRename1,
+          '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
@@ -451,7 +452,8 @@ describe('PageService', () => {
 
       test('rename page with updateMetadata option', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
@@ -464,7 +466,8 @@ describe('PageService', () => {
 
       test('rename page with createRedirectPage option', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
@@ -476,7 +479,8 @@ describe('PageService', () => {
 
       test('rename page with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -489,7 +493,8 @@ describe('PageService', () => {
 
       test('rename page with different tree with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 

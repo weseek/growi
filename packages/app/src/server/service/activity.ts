@@ -98,11 +98,11 @@ class ActivityService {
     }
 
     return Array.from(availableActionsSet);
-  }
+  };
 
   shoudUpdateActivity = function(action: SupportedActionType): boolean {
     return this.getAvailableActions().includes(action);
-  }
+  };
 
   // for GET request
   createActivity = async function(parameters): Promise<void> {
