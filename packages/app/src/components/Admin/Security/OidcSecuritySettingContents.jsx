@@ -77,7 +77,7 @@ class OidcSecurityManagementContents extends React.Component {
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!siteUrl && (
+            {siteUrl != null && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -373,7 +373,7 @@ class OidcSecurityManagementContents extends React.Component {
                   readOnly
                 />
                 <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-                {!siteUrl && (
+                {siteUrl != null && (
                   <div className="alert alert-danger">
                     <i
                       className="icon-exclamation"
