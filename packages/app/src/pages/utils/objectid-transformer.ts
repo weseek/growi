@@ -6,6 +6,9 @@ export const registerTransformerForObjectId = (): void => {
   superjson.registerCustom<ObjectId|string, string>(
     {
       isApplicable: (v): v is ObjectId => {
+        if (v == null) {
+          return false;
+        }
         if (typeof v === 'string') {
           return ObjectId.isValid(v);
         }
