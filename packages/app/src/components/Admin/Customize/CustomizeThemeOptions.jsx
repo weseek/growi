@@ -55,6 +55,11 @@ const CustomizeThemeOptions = (props) => {
   const { mutate: mutateGrowiTheme } = useGrowiTheme();
   const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
+  const selectedHandler = (themeName) => {
+    adminCustomizeContainer.switchThemeType(themeName);
+    mutateGrowiTheme(themeName);
+  };
+
   return (
     <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
       {/* Light and Dark Themes */}
@@ -66,7 +71,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => mutateGrowiTheme(theme.name)}
+                onSelected={() => selectedHandler(theme.name)}
                 {...theme}
               />
             );
@@ -82,7 +87,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => mutateGrowiTheme(theme.name)}
+                onSelected={() => selectedHandler(theme.name)}
                 {...theme}
               />
             );
