@@ -19,6 +19,7 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
+import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -59,6 +60,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCreator, useRevisionAuthor,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -247,6 +249,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision.body);
+
+  const { data: createdAt } = useCurrentCreatedAt(pageWithMeta?.data.createdAt);
+  const { data: updatedAt } = useCurrentUpdatedAt(pageWithMeta?.data.updatedAt);
+  const { data: creator } = useCreator(pageWithMeta?.data.creator);
+  const { data: revisionAuthor } = useRevisionAuthor(pageWithMeta?.data.revision.author);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
