@@ -2,8 +2,8 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
@@ -24,17 +24,19 @@ type Props = {
   adminSocketIoContainer: AdminSocketIoContainer,
 };
 
-type collectionsData = {
+// それぞれのデータの型指定もっと具体的に
+type collectionsType = {
   collections: any,
 };
 
-type statusData = {
+type statusType = {
   status: any
 }
 
 
 const ExportArchiveDataPage = (props: Props) => {
 
+  // anyで指定した箇所もっと具体的に指定
   const [collections, setCollections] = useState<any>([]);
   const [zipFileStats, setZipFileStats] = useState<any>([]);
   const [progressList, setProgressList] = useState<any>([]);
@@ -45,20 +47,38 @@ const ExportArchiveDataPage = (props: Props) => {
 
   const { t } = useTranslation();
 
+  const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet<collectionsType>(endpoint, {})));
+  const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet<statusType>(endpoint, {})));
+  // const { data: statusData } = useSWR('/v3/export/status', apiGet);
+
   const fetchData = useCallback(async() => {
-    const [{ collections }, { status }] = await Promise.all([
-      apiGet<collectionsData>('/v3/mongo/collections', {}),
-      apiGet<statusData>('/v3/export/status', {}),
-    ]);
-    const filteredCollections = collections.filter((collectionName) => {
-      return !IGNORED_COLLECTION_NAMES.includes(collectionName);
-    });
-    const { zipFileStats, isExporting, progressList } = status;
-    setCollections(filteredCollections);
-    setZipFileStats(zipFileStats);
-    setIsExporting(isExporting);
-    setProgressList(progressList);
-  }, []);
+    // const [{ collections }, { status }] = await Promise.all([
+    //   apiGet<collectionsType>('/v3/mongo/collections', {}),
+    //   apiGet<statusType>('/v3/export/status', {}),
+    // ]);
+    // const filteredCollections = collections.filter((collectionName) => {
+    //   return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+    // });
+    // const { zipFileStats, isExporting, progressList } = status;
+    // setCollections(filteredCollections);
+    // setZipFileStats(zipFileStats);
+    // setIsExporting(isExporting);
+    // setProgressList(progressList);
+    if (collectionsData != null) {
+      console.log(`dataの値: ${JSON.stringify(collectionsData)}`);
+      const filteredCollections = collectionsData.collections.filter((collectionName) => {
+        return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+      });
+      setCollections(filteredCollections);
+    }
+
+    if (statusData != null) {
+      const { zipFileStats, isExporting, progressList } = statusData.status;
+      setZipFileStats(zipFileStats);
+      setIsExporting(isExporting);
+      setProgressList(progressList);
+    }
+  }, [collectionsData, statusData]);
 
   const cleanupWebsocketEventHandler = useCallback(() => {
     const socket = props.adminSocketIoContainer.getSocket();
