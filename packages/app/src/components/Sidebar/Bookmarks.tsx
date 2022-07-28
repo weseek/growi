@@ -1,30 +1,25 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { DevidedPagePath } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
-import loggerFactory from '~/utils/logger';
+import { useSWRCurrentUserBookmarks } from '~/stores/bookmark';
+import { useIsGuestUser } from '~/stores/context';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
-const logger = loggerFactory('growi:BookmarkList');
-// TODO: Remove pagination and apply  scrolling (not infinity)
-const ACTIVE_PAGE = 1;
 
 type Props = {
   pages: IPageHasId[] | undefined,
-  refreshBookmarkList: () => void
 }
 
 const BookmarksItem = (props: Props) => {
-  const { pages, refreshBookmarkList } = props;
+  const { pages } = props;
+  const { mutate: mutateCurrentUserBookmark } = useSWRCurrentUserBookmarks();
 
   const generateBookmarkedPageList = pages?.map((page) => {
     const dPagePath = new DevidedPagePath(page.path, false, true);
@@ -33,7 +28,7 @@ const BookmarksItem = (props: Props) => {
 
     const bookmarkMenuItemClickHandler = (async() => {
       await unbookmark(page._id);
-      refreshBookmarkList();
+      mutateCurrentUserBookmark();
     });
 
 
@@ -81,30 +76,8 @@ const BookmarksItem = (props: Props) => {
 
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
-  const [pages, setPages] = useState<IPageHasId[]>([]);
-  const page = ACTIVE_PAGE;
-
-  const getMyBookmarkList = useCallback(async() => {
-    try {
-      const res = await apiv3Get(`/bookmarks/${currentUser?._id}`, { page });
-      const { paginationResult } = res.data;
-      setPages(paginationResult.docs.map((page) => {
-        return {
-          ...page.page,
-        };
-      }));
-    }
-    catch (error) {
-      logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in bookmark page list');
-    }
-  }, [currentUser, page]);
-
-  useEffect(() => {
-    getMyBookmarkList();
-  }, [getMyBookmarkList]);
+  const { data: pages } = useSWRCurrentUserBookmarks();
 
   const renderBookmarksItem = () => {
     if (pages?.length === 0) {
@@ -114,7 +87,7 @@ const Bookmarks = () : JSX.Element => {
         </h3>
       );
     }
-    return <BookmarksItem pages={pages} refreshBookmarkList={getMyBookmarkList} />;
+    return <BookmarksItem pages={pages} />;
   };
 
   return (

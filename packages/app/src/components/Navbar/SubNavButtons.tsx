@@ -7,7 +7,7 @@ import {
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
-import { useSWRBookmarkInfo } from '../../stores/bookmark';
+import { useSWRBookmarkInfo, useSWRCurrentUserBookmarks } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
@@ -51,6 +51,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+  const { mutate: mutateCurrentUserBookmark } = useSWRCurrentUserBookmarks();
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
@@ -95,7 +96,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     await toggleBookmark(pageId, pageInfo.isBookmarked);
     mutatePageInfo();
     mutateBookmarkInfo();
-  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
+    mutateCurrentUserBookmark();
+  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, mutateCurrentUserBookmark, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDuplicateMenuItem == null || path == null) {
