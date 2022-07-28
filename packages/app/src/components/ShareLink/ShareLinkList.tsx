@@ -76,7 +76,7 @@ const ShareLinkList = (props: Props): JSX.Element => {
       <>
         {props.shareLinks.map(shareLink => (
           <ShareLinkTr
-            key={shareLink}
+            key={shareLink._id}
             isAdmin={props.isAdmin}
             shareLink={shareLink}
             onDelete={() => {

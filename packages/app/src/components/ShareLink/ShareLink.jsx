@@ -99,13 +99,6 @@ ShareLink.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-const ShareLinkWrapperFC = (props) => {
-  return <ShareLink {...props} />;
-};
-
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkWrapper = withUnstatedContainers(ShareLinkWrapperFC, [PageContainer]);
+const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
 
 export default ShareLinkWrapper;
