@@ -11,7 +11,6 @@ import {
 import PagePathNav from '../PagePathNav';
 import { Skelton } from '../Skelton';
 
-import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
 
