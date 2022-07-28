@@ -490,6 +490,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+    isAllReplyShown: configManager.getConfig('crowi', 'customize:isAllReplyShown'),
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
