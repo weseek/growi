@@ -52,6 +52,7 @@ const ExportArchiveDataPage = (props) => {
     setZipFileStats(zipFileStats);
     setIsExporting(isExporting);
     setProgressList(progressList);
+    // Keigo-h will use in https://redmine.weseek.co.jp/issues/101571
     // if (collectionsData != null) {
     //   console.log(`dataの値: ${JSON.stringify(collectionsData)}`);
     //   const filteredCollections = collectionsData.collections.filter((collectionName) => {
