@@ -38,8 +38,8 @@ type Props = {
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
-  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={124.5} height={21.99} /> });
-  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={148.32} height={32.84} /> });
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={137} height={16} componentHeight={21.99} /> });
+  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={139} height={27} componentHeight={32.84} /> });
 
   const { data: editorMode } = useEditorMode();
 
