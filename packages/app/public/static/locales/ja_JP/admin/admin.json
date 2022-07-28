@@ -543,8 +543,6 @@
     "fixed_by_env_var": "環境変数により固定されています <code>{{key}}={{value}}</code>.",
     "available_action_list": "検索 / 表示 可能なアクション一覧",
     "available_action_list_explain": "現在の設定で検索 / 表示 可能なアクション一覧です",
-    "all_supported_actions_length": "対応している全てのアクション数",
-    "available_actions_length": "利用可能なアクション数",
     "action_list": "アクション一覧",
     "disable_mode_explain": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。"
   },
