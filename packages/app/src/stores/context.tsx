@@ -24,6 +24,10 @@ export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> 
   return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
 };
 
+export const useEditorConfig = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('editorConfig', initialData);
+};
+
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('csrfToken', initialData);
 };

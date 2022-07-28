@@ -59,6 +59,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useEditorConfig,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -150,7 +151,7 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
   // isContainerFluid: boolean,
-  // editorConfig: any,
+  editorConfig: any,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
@@ -182,7 +183,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useXss(new Xss());
-  // useEditorConfig(props.editorConfig);
+  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -476,12 +477,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  // props.editorConfig = {
-  //   upload: {
-  //     image: crowi.fileUploadService.getIsUploadable(),
-  //     file: crowi.fileUploadService.getFileUploadEnabled(),
-  //   },
-  // };
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+  };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
@@ -500,12 +501,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-
-    upload: {
-      image: crowi.fileUploadService.getIsUploadable(),
-      file: crowi.fileUploadService.getFileUploadEnabled(),
-    },
-    isSlackConfigured: crowi.slackIntegrationService.isSlackConfigured,
   };
 
   props.sidebarConfig = {

@@ -14,7 +14,8 @@ import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig, useIsSlackConfigured,
+  useEditorConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -73,6 +74,8 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: rendererConfig } = useRendererConfig();
+  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: upload } = useEditorConfig();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -289,7 +292,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     }
     const isUploadable = rendererConfig.upload.image || rendererConfig.upload.file;
     const isUploadableFile = rendererConfig.upload.file;
-    const isSlackConfigured = rendererConfig.isSlackConfigured;
 
     return (
       <>

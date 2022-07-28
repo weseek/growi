@@ -18,10 +18,4 @@ export type RendererConfig = {
 
   plantumlUri: string | null,
   blockdiagUri: string | null,
-
-  upload: {
-    image: string,
-    file: string,
-  },
-  isSlackConfigured: boolean,
 } & XssOptionConfig;
