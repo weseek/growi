@@ -2,11 +2,13 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { apiDelete, apiGet } from '~/client/util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -20,26 +22,12 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions',
 ];
 
-type Props = {
-  adminSocketIoContainer: AdminSocketIoContainer,
-};
-
-// それぞれのデータの型指定もっと具体的に
-type collectionsType = {
-  collections: any,
-};
-
-type statusType = {
-  status: any
-}
-
-
-const ExportArchiveDataPage = (props: Props) => {
+const ExportArchiveDataPage = (props) => {
 
   // anyで指定した箇所もっと具体的に指定
-  const [collections, setCollections] = useState<any>([]);
-  const [zipFileStats, setZipFileStats] = useState<any>([]);
-  const [progressList, setProgressList] = useState<any>([]);
+  const [collections, setCollections] = useState([]);
+  const [zipFileStats, setZipFileStats] = useState([]);
+  const [progressList, setProgressList] = useState([]);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
@@ -47,8 +35,8 @@ const ExportArchiveDataPage = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet<collectionsType>(endpoint, {})));
-  const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet<statusType>(endpoint, {})));
+  const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet(endpoint, {})));
+  const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet(endpoint, {})));
   // const { data: statusData } = useSWR('/v3/export/status', apiGet);
 
   const fetchData = useCallback(async() => {
@@ -263,11 +251,16 @@ const ExportArchiveDataPage = (props: Props) => {
 
 };
 
+ExportArchiveDataPage.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+};
+
 const ExportArchiveDataPageWrapperFC = (props) => {
   return <ExportArchiveDataPage {...props} />;
 };
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AppContainer, AdminSocketIoContainer]);
 export default ExportArchiveDataPageWrapper;
