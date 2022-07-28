@@ -325,6 +325,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
+          <PageContentFooter
+            createdAt={new Date(createdAt)}
+            updatedAt={new Date(updatedAt)}
+            creator={creator}
+            revisionAuthor={revisionAuthor}
+          />
         </footer>
 
         <UnsavedAlertDialog />
