@@ -3,7 +3,6 @@ import React from 'react';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
 
-import ShareLink from '../Icons/ShareLinkIcon';
 import CopyDropdown from '../Page/CopyDropdown';
 
 
