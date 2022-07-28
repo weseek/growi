@@ -18,7 +18,7 @@ import {
 
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
-} from './commons';
+} from './utils/commons';
 
 type Props = CommonProps & {
 
