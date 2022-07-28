@@ -542,7 +542,7 @@
     "activity_expiration_date_explain": "作成された監査ログは、作成時間から環境変数に設定した秒数後に自動的に削除されます",
     "fixed_by_env_var": "環境変数により固定されています <code>{{key}}={{value}}</code>.",
     "available_action_list": "検索 / 表示 可能なアクション一覧",
-    "available_action_list_explain": "監査ログで 検索 / 表示 可能なアクション一覧です",
+    "available_action_list_explain": "現在の設定で検索 / 表示 可能なアクション一覧です",
     "all_supported_actions_length": "対応している全てのアクション数",
     "available_actions_length": "利用可能なアクション数",
     "action_list": "アクション一覧",
