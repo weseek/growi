@@ -8,7 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
 import {
-  useCurrentUser, useRevisionId, useRevisionCreatedAt, useInterceptorManager,
+  useCurrentUser, useRevisionId, useRevisionCreatedAt,
 } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -38,7 +38,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: revisionId } = useRevisionId();
   const { data: revisionCreatedAt } = useRevisionCreatedAt();
-  const { data: interceptorManager } = useInterceptorManager();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -52,18 +51,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   useEffect(() => {
 
-    if (interceptorManager !== undefined) {
-      setMarkdown(comment.comment);
-      interceptorManager.process('postRenderCommentHtml', comment.comment);
+    setMarkdown(comment.comment);
 
-      const isCurrentRevision = () => {
-        return comment.revision === revisionId;
-      };
+    const isCurrentRevision = () => {
+      return comment.revision === revisionId;
+    };
+    isCurrentRevision();
 
-      isCurrentRevision();
-    }
-
-  }, [comment, interceptorManager, revisionId]);
+  }, [comment, revisionId]);
 
   const isCurrentUserEqualsToAuthor = () => {
     const { creator }: any = comment;
