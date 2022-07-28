@@ -345,7 +345,7 @@ export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (con
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
-    if (config.isEnabledLinebreaks) {
+    if (config.isEnabledLinebreaksInComments) {
       remarkPlugins.push(breaks);
     }
   }

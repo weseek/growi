@@ -24,14 +24,14 @@ type CommentProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
-  page: any,
-  currentRevisionId: any, // TODO: check type
-  currentRevisionCreatedAt: any, // TODO: check type
+  currentPagePath: string,
+  currentRevisionId: string,
+  currentRevisionCreatedAt: Date,
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
   const {
-    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions, page, currentRevisionId, currentRevisionCreatedAt,
+    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions, currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
@@ -45,6 +45,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
+
+  // TODO: Remove when update ReplayComments.jsx
+  if (currentPagePath == null) {
+    return <></>;
+  }
 
   useEffect(() => {
     setMarkdown(comment.comment);
@@ -71,7 +76,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
     }
-    else if (Date.parse(comment.createdAt) / 1000 > currentRevisionCreatedAt) {
+    else if (Date.parse(comment.createdAt) / 1000 > Date.parse(currentRevisionCreatedAt.toString())) {
       className += ' page-comment-newer';
     }
     else {
@@ -99,7 +104,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
         rendererOptions={rendererOptions}
         markdown={markdown}
         additionalClassName="comment"
-        pagePath={page}
+        pagePath={currentPagePath}
       />
     );
   };

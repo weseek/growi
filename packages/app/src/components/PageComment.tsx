@@ -134,7 +134,7 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-  if (rendererOptions == null) {
+  if (rendererOptions == null || currentPagePath == null) {
     return <></>;
   }
 
@@ -146,12 +146,11 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
         comment={comment}
         onComment={mutate}
         isReadOnly={isReadOnly}
-        page={currentPagePath}
+        currentPagePath={currentPagePath}
         currentRevisionId={currentPage.revision._id}
         currentRevisionCreatedAt={currentPage.revision.createdAt}
       />
     )
-
   );
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
