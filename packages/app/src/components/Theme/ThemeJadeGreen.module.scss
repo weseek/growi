@@ -1,7 +1,8 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
-html[light] {
+.theme[data-color-scheme='light'] :global {
   // Theme colors
   $themecolor: #38b48b;
   $themelight: #ffffff;
@@ -70,8 +71,8 @@ html[light] {
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import 'apply-colors';
-  @import 'apply-colors-light';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-light';
 
   // Navs {
   .nav-tabs {
@@ -89,12 +90,12 @@ html[light] {
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(#ffffff, $primary, $primary, lighten($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, lighten($primary, 20%));
     }
   }
 }
 
-html[dark] {
+.theme[data-color-scheme='dark'] :global {
   // Theme colors
   $themecolor: #38b48b;
   $themedark: #333333;
@@ -171,8 +172,8 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import 'apply-colors';
-  @import 'apply-colors-dark';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-dark';
 
   // Navs
   .nav-tabs {
@@ -198,7 +199,7 @@ html[dark] {
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
     }
   }
 }

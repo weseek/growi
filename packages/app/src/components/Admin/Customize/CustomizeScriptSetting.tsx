@@ -8,7 +8,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomScriptEditor from '../CustomScriptEditor';
 
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
@@ -84,9 +83,11 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
           </div>
 
           <div className="form-group">
-            <CustomScriptEditor
+            <textarea
+              className="form-control"
+              name="customizeScript"
               value={adminCustomizeContainer.state.currentCustomizeScript || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />

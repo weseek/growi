@@ -1,13 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 
 import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
 
@@ -40,7 +41,7 @@ GitHubSecurityManagement.propTypes = {
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GitHubSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(GitHubSecurityManagement), [
+const GitHubSecurityManagementWithUnstatedContainer = withUnstatedContainers(GitHubSecurityManagement, [
   AdminGitHubSecurityContainer,
 ]);
 

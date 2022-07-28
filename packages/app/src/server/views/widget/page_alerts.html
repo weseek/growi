@@ -39,7 +39,7 @@
       {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
       {% if user and not page.isDeleted() and hasRedirectLink %}
         <button type="button" id="unlink-page-button" class="btn btn-outline-dark btn-sm float-right">
-          <i class="ti-unlink" aria-hidden="true"></i>
+          <i class="ti ti-unlink" aria-hidden="true"></i>
           Unlink redirection
         </button>
       {% endif %}

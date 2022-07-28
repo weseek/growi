@@ -1,11 +1,12 @@
 import crypto from 'crypto';
 
-import { getOrCreateModel } from '@growi/core';
 import { addHours } from 'date-fns';
 import {
   Schema, Model, Document,
 } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface IUserRegistrationOrder {

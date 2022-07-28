@@ -1,13 +1,13 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
@@ -39,7 +39,7 @@ LocalSecuritySetting.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
-const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LocalSecuritySetting), [
+const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [
   AdminLocalSecurityContainer,
 ]);
 

@@ -20,7 +20,7 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginSuccessHandler = async(req, res, user) => {
+  const loginSuccessHandler = async(req, res, user, action) => {
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -32,6 +32,17 @@ module.exports = function(crowi, app) {
     const { redirectTo } = req.session;
     // remove session.redirectTo
     delete req.session.redirectTo;
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
 
     return res.safeRedirect(redirectTo);
   };
@@ -141,10 +152,7 @@ module.exports = function(crowi, app) {
     await req.logIn(user, (err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = { action: SupportedAction.ACTION_USER_LOGIN_WITH_LDAP };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LDAP);
     });
   };
 
@@ -236,10 +244,7 @@ module.exports = function(crowi, app) {
       req.logIn(user, (err) => {
         if (err) { debug(err.message); return next() }
 
-        const parameters = { action: SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL };
-        activityEvent.emit('update', res.locals.activity._id, parameters);
-
-        return loginSuccessHandler(req, res, user);
+        return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL);
       });
     })(req, res, next);
   };
@@ -310,18 +315,7 @@ module.exports = function(crowi, app) {
     req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_USER_LOGIN_WITH_GOOGLE,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      await crowi.activityService.createActivity(parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GOOGLE);
     });
   };
 
@@ -364,18 +358,7 @@ module.exports = function(crowi, app) {
     req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_USER_LOGIN_WITH_GITHUB,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      await crowi.activityService.createActivity(parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GITHUB);
     });
   };
 
@@ -418,18 +401,7 @@ module.exports = function(crowi, app) {
     req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      await crowi.activityService.createActivity(parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER);
     });
   };
 
@@ -478,18 +450,7 @@ module.exports = function(crowi, app) {
     req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = {
-        ip:  req.ip,
-        endpoint: req.originalUrl,
-        action: SupportedAction.ACTION_USER_LOGIN_WITH_OIDC,
-        user: req.user?._id,
-        snapshot: {
-          username: req.user?.username,
-        },
-      };
-      await crowi.activityService.createActivity(parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_OIDC);
     });
   };
 
@@ -552,10 +513,7 @@ module.exports = function(crowi, app) {
         return loginFailureHandler(req, res);
       }
 
-      const parameters = { action: SupportedAction.ACTION_USER_LOGIN_WITH_SAML };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_SAML);
     });
   };
 
@@ -598,10 +556,7 @@ module.exports = function(crowi, app) {
     await req.logIn(user, (err) => {
       if (err) { debug(err.message); return next() }
 
-      const parameters = { action: SupportedAction.ACTION_USER_LOGIN_WITH_BASIC };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return loginSuccessHandler(req, res, user);
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC);
     });
   };
 

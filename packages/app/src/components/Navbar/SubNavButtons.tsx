@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
@@ -10,13 +12,10 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import BookmarkButtons from '../BookmarkButtons';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControlProps,
 } from '../Common/Dropdown/PageItemControl';
-import LikeButtons from '../LikeButtons';
-import SubscribeButton from '../SubscribeButton';
-import SeenUserInfo from '../User/SeenUserInfo';
+import { Skelton } from '../Skelton';
 
 
 type CommonProps = {
@@ -51,6 +50,20 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+
+  // dynamic import for show skelton
+  const SubscribeButton = dynamic(() => import('../SubscribeButton'), { ssr: false, loading: () => <Skelton width={37} additionalClass='btn-subscribe'/> });
+  const LikeButtons = dynamic(() => import('../LikeButtons'), { ssr: false, loading: () => <Skelton width={57.48} additionalClass='btn-like'/> });
+  const BookmarkButtons = dynamic(() => import('../BookmarkButtons'), {
+    ssr: false,
+    loading: () => <Skelton width={53.48} additionalClass='total-bookmarks'/>,
+  });
+  const SeenUserInfo = dynamic(() => import('../User/SeenUserInfo'), { ssr: false, loading: () => <Skelton width={58.98} additionalClass='btn-seen-user'/> });
+  const PageItemControl = dynamic<PageItemControlProps>(() => import('../Common/Dropdown/PageItemControl').then(mod => mod.PageItemControl), {
+    ssr: false,
+    loading: () => <Skelton width={37} additionalClass='btn-page-item-control'/>,
+  });
+
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];

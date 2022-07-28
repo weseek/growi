@@ -31,7 +31,7 @@ const botDetails = {
 };
 
 const BotTypeCard = (props) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
 
   const isBotTypeOfficial = props.botType === SlackbotType.OFFICIAL;
 

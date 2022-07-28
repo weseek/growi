@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { getOrCreateModel } from '@growi/core';
 import {
   Types, Schema, Model, Document,
 } from 'mongoose';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 export interface IUpdatePost {
   pathPattern: string

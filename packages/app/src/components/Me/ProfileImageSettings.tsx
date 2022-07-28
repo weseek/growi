@@ -6,10 +6,10 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import ImageCropModal from '~/components/Common/ImageCropModal';
 import { useCurrentUser } from '~/stores/context';
 import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 
-import ImageCropModal from './ImageCropModal';
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
@@ -155,10 +155,11 @@ const ProfileImageSettings = (): JSX.Element => {
       </div>
 
       <ImageCropModal
-        show={showImageCropModal}
+        isShow={showImageCropModal}
         src={imageCropSrc}
         onModalClose={() => setShowImageCropModal(false)}
         onCropCompleted={cropCompletedHandler}
+        isCircular
       />
 
       <div className="row my-3">

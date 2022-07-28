@@ -1,10 +1,10 @@
 import { Request } from 'express';
 
-import { IUserHasId } from './user';
+import { IUser, IUserHasId } from './user';
 
-export interface CrowiRequest extends Request {
+export interface CrowiRequest<U extends IUser = IUserHasId> extends Request {
 
-  user?: IUserHasId,
+  user?: U,
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   crowi: any,
