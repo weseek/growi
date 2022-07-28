@@ -7,10 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
-import {
-  useCurrentUser, useRevisionId, useRevisionCreatedAt,
-} from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
 
 import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -27,17 +24,17 @@ type CommentProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
+  page: any,
+  currentRevisionId: any, // TODO: check type
+  currentRevisionCreatedAt: any, // TODO: check type
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
   const {
-    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
+    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions, page, currentRevisionId, currentRevisionCreatedAt,
   } = props;
   const { t } = useTranslation();
-  const { data: currentPage }: any = useSWRxCurrentPage(); // TODO: check currentPage type
   const { data: currentUser } = useCurrentUser();
-  const { data: revisionId } = useRevisionId();
-  const { data: revisionCreatedAt } = useRevisionCreatedAt();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -50,15 +47,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const isEdited = createdAt < updatedAt;
 
   useEffect(() => {
-
     setMarkdown(comment.comment);
 
     const isCurrentRevision = () => {
-      return comment.revision === revisionId;
+      return comment.revision === currentRevisionId;
     };
     isCurrentRevision();
 
-  }, [comment, revisionId]);
+  }, [comment, currentRevisionId]);
 
   const isCurrentUserEqualsToAuthor = () => {
     const { creator }: any = comment;
@@ -72,10 +68,10 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const getRootClassName = (comment) => {
     let className = 'page-comment flex-column';
 
-    if (comment.revision === revisionId) {
+    if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
     }
-    else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
+    else if (Date.parse(comment.createdAt) / 1000 > currentRevisionCreatedAt) {
       className += ' page-comment-newer';
     }
     else {
@@ -99,7 +95,12 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const renderRevisionBody = () => {
     return (
-      <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} additionalClassName="comment" pagePath={currentPage} />
+      <RevisionRenderer
+        rendererOptions={rendererOptions}
+        markdown={markdown}
+        additionalClassName="comment"
+        pagePath={page}
+      />
     );
   };
 

@@ -5,14 +5,14 @@ import React, {
 import { Nullable } from '@growi/core';
 import { Button } from 'reactstrap';
 
-
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
-
 
 import { Comment } from './PageComment/Comment';
 import CommentEditor from './PageComment/CommentEditor';
@@ -35,6 +35,8 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -109,6 +111,7 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+    // TODO: need page props path
     <ReplayComments
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
@@ -136,13 +139,19 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   }
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
-    <Comment
-      rendererOptions={rendererOptions}
-      deleteBtnClicked={onClickDeleteButton}
-      comment={comment}
-      onComment={mutate}
-      isReadOnly={isReadOnly}
-    />
+    currentPage != null && (
+      <Comment
+        rendererOptions={rendererOptions}
+        deleteBtnClicked={onClickDeleteButton}
+        comment={comment}
+        onComment={mutate}
+        isReadOnly={isReadOnly}
+        page={currentPagePath}
+        currentRevisionId={currentPage.revision._id}
+        currentRevisionCreatedAt={currentPage.revision.createdAt}
+      />
+    )
+
   );
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
