@@ -11,8 +11,8 @@ import { RawLayout } from '~/components/Layout/RawLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
-  useCurrentPagePath, useCsrfToken,
-  useAppTitle, useSiteUrl, useConfidential,
+  useCsrfToken,
+  useCurrentPathname,
 } from '../stores/context';
 
 
@@ -20,6 +20,43 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './commons';
 
+type Props = CommonProps & {
+
+  pageWithMetaStr: string,
+  isMailerSetup: boolean,
+  enabledStrategies: unknown,
+  registrationWhiteList: string[],
+};
+
+const LoginPage: NextPage<Props> = (props: Props) => {
+
+  // commons
+  useCsrfToken(props.csrfToken);
+
+  // page
+  useCurrentPathname(props.currentPathname);
+
+  const classNames: string[] = [];
+
+  const LoginForm = dynamic(() => import('~/components/LoginForm'), {
+    ssr: false,
+  });
+
+  return (
+    <>
+      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+        <div className='nologin'>
+          <div id='wrapper'>
+            <div id="page-wrapper">
+              <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
+                isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
+            </div>
+          </div>
+        </div>
+      </RawLayout>
+    </>
+  );
+};
 
 function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -52,47 +89,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isMailerSetup = mailService.isMailerSetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
 }
-
-type Props = CommonProps & {
-
-  pageWithMetaStr: string,
-  isMailerSetup: boolean,
-  enabledStrategies: unknown,
-  registrationWhiteList: string[],
-};
-
-const LoginPage: NextPage<Props> = (props: Props) => {
-
-  // commons
-  useAppTitle(props.appTitle);
-  useSiteUrl(props.siteUrl);
-  useConfidential(props.confidential);
-  useCsrfToken(props.csrfToken);
-
-  // page
-  useCurrentPagePath(props.currentPathname);
-
-  const classNames: string[] = [];
-
-  const LoginForm = dynamic(() => import('~/components/LoginForm'), {
-    ssr: false,
-  });
-
-  return (
-    <>
-      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className='nologin'>
-          <div id='wrapper'>
-            <div id="page-wrapper">
-              <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
-                isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
-            </div>
-          </div>
-        </div>
-      </RawLayout>
-    </>
-  );
-};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);

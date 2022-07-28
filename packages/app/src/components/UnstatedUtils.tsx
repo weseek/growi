@@ -47,14 +47,12 @@ function generateAutoNamedProps(instances) {
 export function withUnstatedContainers<T, P>(Component, containerClasses): React.ForwardRefExoticComponent<React.PropsWithoutRef<P> & React.RefAttributes<T>> {
   const unstatedContainer = React.forwardRef<T, P>((props, ref) => (
     // wrap with <Subscribe></Subscribe>
-    <Provider>
-      <Subscribe to={containerClasses}>
-        { (...containers) => {
-          const propsForContainers = generateAutoNamedProps(containers);
-          return <Component {...props} {...propsForContainers} ref={ref} />;
-        }}
-      </Subscribe>
-    </Provider>
+    <Subscribe to={containerClasses}>
+      { (...containers) => {
+        const propsForContainers = generateAutoNamedProps(containers);
+        return <Component {...props} {...propsForContainers} ref={ref} />;
+      }}
+    </Subscribe>
   ));
   unstatedContainer.displayName = 'unstatedContainer';
   return unstatedContainer;
