@@ -120,7 +120,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     : null;
 
   return (
-    <React.Fragment>
+    <>
       {(isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
@@ -173,6 +173,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
         </div>
       )
       }
-    </React.Fragment>
+    </>
   );
 };
