@@ -215,7 +215,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
-  useEditorConfig(props.editorConfig);
   useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
