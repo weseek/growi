@@ -10,7 +10,6 @@ import {
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
-import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
@@ -40,7 +39,6 @@ const navTabMapping = {
 };
 
 type PropsType = {
-  rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
@@ -58,7 +56,7 @@ type EditorRef = {
 export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    rendererOptions, isForNewComment, replyTo,
+    isForNewComment, replyTo,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -211,12 +209,11 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
     return (
       <CommentPreview
-        rendererOptions={rendererOptions}
         markdown={markdown}
-        currentPagePath={currentPagePath}
+        path={currentPagePath}
       />
     );
-  }, [currentPagePath, markdown, rendererOptions]);
+  }, [currentPagePath, markdown]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
