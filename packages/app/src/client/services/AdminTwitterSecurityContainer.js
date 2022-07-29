@@ -19,13 +19,9 @@ export default class AdminTwitterSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyTwitterConsumerKey = 0;
-    this.dummyTwitterConsumerKeyForError = 1;
 
     this.state = {
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/twitter/callback'),
-      // set dummy value tile for using suspense
-      twitterConsumerKey: this.dummyTwitterConsumerKey,
+      twitterConsumerKey: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };
