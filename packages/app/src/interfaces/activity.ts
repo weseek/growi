@@ -388,6 +388,8 @@ export const SmallActionGroup = {
   ACTION_USER_LOGOUT,
   ACTION_PAGE_CREATE,
   ACTION_PAGE_DELETE,
+  ACTION_PAGE_DELETE_COMPLETELY,
+  ACTION_PAGE_EMPTY_TRASH,
 } as const;
 
 // SmallActionGroup + Action by all General Users - PAGE_VIEW

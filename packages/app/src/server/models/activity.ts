@@ -128,18 +128,6 @@ activitySchema.statics.updateByParameters = async function(activityId: string, p
   return activity;
 };
 
-activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
-  const paginateResult = await this.paginate(
-    query,
-    {
-      limit,
-      offset,
-      sort: { createdAt: -1 },
-    },
-  );
-  return paginateResult;
-};
-
 activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(
     q: string, option: { sortOpt: number | string, offset: number, limit: number},
 ): Promise<{usernames: string[], totalCount: number}> {
