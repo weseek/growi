@@ -401,7 +401,19 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+
+    let renamedPage: PageDocument | null = null;
+    try {
+      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+    }
+    catch (err) {
+      logger.err('Error occurred while running renameMainOperation', err);
+
+      // cleanup
+      await PageOperation.deleteOne({ _id: pageOp._id });
+
+      throw err;
+    }
 
     return renamedPage;
   }
@@ -996,7 +1008,20 @@ class PageService {
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
-      this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
+
+      (async() => {
+        try {
+          await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running duplicateRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     const result = serializePageSecurely(duplicatedTarget);
@@ -1387,7 +1412,19 @@ class PageService {
       /*
        * Resumable Operation
        */
-      this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+      (async() => {
+        try {
+          await this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running deleteRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return deletedPage;
@@ -1703,7 +1740,19 @@ class PageService {
       /*
        * Main Operation
        */
-      this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+      (async() => {
+        try {
+          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running deleteCompletelyRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return;
@@ -1911,7 +1960,19 @@ class PageService {
       /*
        * Resumable Operation
        */
-      this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+      (async() => {
+        try {
+          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running revertRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return updatedPage;
@@ -2295,7 +2356,19 @@ class PageService {
       throw err;
     }
 
-    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+    (async() => {
+      try {
+        await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+      }
+      catch (err) {
+        logger.error('Error occurred while running normalizeParentRecursivelyMainOperation.', err);
+
+        // cleanup
+        await PageOperation.deleteOne({ _id: pageOp._id });
+
+        throw err;
+      }
+    })();
   }
 
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
@@ -2481,6 +2554,10 @@ class PageService {
       catch (err) {
         errorPagePaths.push(page.path);
         logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+
+        // cleanup
+        await PageOperation.deleteOne({ _id: pageOp._id });
+
         throw err;
       }
     }
