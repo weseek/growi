@@ -111,11 +111,6 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchThemeType(themeName) {
     this.setState({ currentTheme: themeName });
-
-    // preview if production
-    if (process.env.NODE_ENV !== 'development') {
-      this.previewTheme(themeName);
-    }
   }
 
   /**
@@ -234,24 +229,6 @@ export default class AdminCustomizeContainer extends Container {
    */
   changeCustomizeScript(inpuValue) {
     this.setState({ currentCustomizeScript: inpuValue });
-  }
-
-  /**
-   * Preview theme
-   * @param {string} themeName
-   */
-  async previewTheme(themeName) {
-    try {
-      // get theme asset path
-      const response = await apiv3Get('/customize-setting/theme/asset-path', { themeName });
-      const { assetPath } = response.data;
-
-      const themeLink = document.getElementById('grw-theme-link');
-      themeLink.setAttribute('href', assetPath);
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   /**
