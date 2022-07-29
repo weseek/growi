@@ -17,7 +17,9 @@ import { useCurrentPageId } from './context';
 export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
   return useSWR<IPagePopulatedToShowRevision, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
+    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(
+      endpoint, { pageId, shareLinkId, includeEmpty: true },
+    ).then(result => result.data.page),
   );
 };
 

@@ -251,7 +251,9 @@ module.exports = (crowi) => {
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user } = req;
-    const { pageId, path, findAll } = req.query;
+    const {
+      pageId, path, findAll, includeEmpty = false,
+    } = req.query;
 
     if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
@@ -261,13 +263,13 @@ module.exports = (crowi) => {
     let pages;
     try {
       if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, user);
+        page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, includeEmpty);
       }
       else {
-        pages = await Page.findByPathAndViewer(path, user, null, false);
+        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
     }
     catch (err) {
@@ -443,6 +445,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -519,6 +522,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -543,6 +547,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
