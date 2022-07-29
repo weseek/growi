@@ -94,14 +94,14 @@ class SamlSecurityManagementContents extends React.Component {
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
-            {siteUrl != null && siteUrl !== '' && (
+            {siteUrl == null || siteUrl === ''(
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
                   dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
                 />
-              </div>
+              </div>,
             )}
           </div>
         </div>
