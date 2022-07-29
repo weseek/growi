@@ -14,7 +14,7 @@ import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig, useIsSlackConfigured,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
   useEditorConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
@@ -26,7 +26,7 @@ import NotAvailableForGuest from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
-import CommentPreview from './CommentPreview';
+import { CommentPreview } from './CommentPreview';
 
 
 const navTabMapping = {
@@ -78,49 +78,49 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
-  const [html, setHtml] = useState('');
+  const [markdown, setMarkdown] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
   const editorRef = useRef<EditorRef>(null);
 
-  const renderHtml = useCallback((markdown: string) => {
-    const context = {
-      markdown,
-      parsedHTML: '',
-    };
+  // const renderHtml = useCallback((markdown: string) => {
+  //   const context = {
+  //     markdown,
+  //     parsedHTML: '',
+  //   };
 
-    // TODO: use ReactMarkdown
+  //   // TODO: use ReactMarkdown
 
-    // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-    // interceptorManager.process('preRenderCommnetPreview', context)
-    //   .then(() => { return interceptorManager.process('prePreProcess', context) })
-    //   .then(() => {
-    //     context.markdown = rendererOptions.preProcess(context.markdown, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
-    //   .then(() => {
-    //     const parsedHTML = rendererOptions.process(context.markdown, context);
-    //     context.parsedHTML = parsedHTML;
-    //   })
-    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
-    //   .then(() => {
-    //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
-    //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-    //   .then(() => {
-    //     setHtml(context.parsedHTML);
-    //   })
-    //   // process interceptors for post rendering
-    //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }, [rendererOptions]);
+  //   // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
+  //   // interceptorManager.process('preRenderCommnetPreview', context)
+  //   //   .then(() => { return interceptorManager.process('prePreProcess', context) })
+  //   //   .then(() => {
+  //   //     context.markdown = rendererOptions.preProcess(context.markdown, context);
+  //   //   })
+  //   //   .then(() => { return interceptorManager.process('postPreProcess', context) })
+  //   //   .then(() => {
+  //   //     const parsedHTML = rendererOptions.process(context.markdown, context);
+  //   //     context.parsedHTML = parsedHTML;
+  //   //   })
+  //   //   .then(() => { return interceptorManager.process('prePostProcess', context) })
+  //   //   .then(() => {
+  //   //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
+  //   //   })
+  //   //   .then(() => { return interceptorManager.process('postPostProcess', context) })
+  //   //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
+  //   //   .then(() => {
+  //   //     setHtml(context.parsedHTML);
+  //   //   })
+  //   //   // process interceptors for post rendering
+  //   //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
+  // }, [rendererOptions]);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
-    renderHtml(comment);
-  }, [comment, renderHtml]);
+    setMarkdown(comment);
+  }, [comment, setMarkdown]);
 
   useEffect(() => {
     if (slackChannels === undefined) { return }
@@ -129,7 +129,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const initializeEditor = useCallback(() => {
     setComment('');
-    setHtml('');
+    setMarkdown('');
     setActiveTab('comment_editor');
     setError(undefined);
     // reset value
@@ -241,10 +241,12 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const getCommentHtml = useCallback(() => {
     return (
       <CommentPreview
-        html={html}
+        rendererOptions={rendererOptions}
+        markdown={markdown}
+        currentPagePath={currentPagePath}
       />
     );
-  }, [html]);
+  }, [markdown]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
