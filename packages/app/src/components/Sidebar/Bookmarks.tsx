@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
@@ -78,11 +78,7 @@ const BookmarksItem = (props: Props) => {
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: pages, mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
-
-  useEffect(() => {
-    mutateCurrentUserBookmark();
-  }, [mutateCurrentUserBookmark]);
+  const { data: pages } = useSWRxCurrentUserBookmarks();
 
   const renderBookmarksItem = () => {
     if (pages?.length === 0) {
