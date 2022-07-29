@@ -77,6 +77,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: editorConfig } = useEditorConfig();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
+  // TODO: Refactor comment and markdown variable names or logic
   const [comment, setComment] = useState(commentBody ?? '');
   const [markdown, setMarkdown] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
