@@ -41,11 +41,11 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import ForbiddenPage from '../components/ForbiddenPage';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
-import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { NotCreatablePage } from '../components/NotCreatablePage';
-import ForbiddenPage from '../components/ForbiddenPage';
+import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -57,7 +57,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri, useIsEmpty,
+  useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
@@ -131,7 +131,6 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   IsNotCreatable: boolean,
-  isEmpty: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -198,7 +197,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
-  useIsEmpty(props.isEmpty);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -420,7 +418,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     props.isForbidden = count > 0;
   }
   else {
-    props.isEmpty = page.isEmpty;
+    page.isNotFound = page.isEmpty;
 
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {

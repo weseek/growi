@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
-  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId, useIsEmpty,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -416,13 +416,13 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: currentPageId } = useCurrentPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isEmpty } = useIsEmpty();
+  const { data: isNotFound } = useIsNotFound();
 
   const key = `isAbleToShowPageManagement ${currentPageId}`;
 
   const pageId = currentPageId;
   const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
-  const isPageExist = (pageId != null) && !isEmpty;
+  const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
@@ -436,7 +436,6 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isNotFound } = useIsNotFound();
-  const { data: isEmpty } = useIsEmpty();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -450,7 +449,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : [key, editorMode],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound) && !isEmpty,
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 
@@ -472,12 +471,12 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
-  const { data: isEmpty } = useIsEmpty();
+  const { data: isNotFound } = useIsNotFound();
 
   const key = `isAbleToShowPageAuthors ${currentPageId}`;
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
-  const isPageExist = (currentPageId != null) && !isEmpty;
+  const isPageExist = (currentPageId != null) && !isNotFound;
 
   return useSWRImmutable(
     includesUndefined ? null : key,

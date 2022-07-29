@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { useIsEmpty } from '~/stores/context';
+import { useIsNotFound } from '~/stores/context';
 
 import LinkedPagePath from '../models/linked-page-path';
 
@@ -23,7 +23,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
-  const { data: isEmpty } = useIsEmpty();
+  const { data: isNotFound } = useIsNotFound();
 
   const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
@@ -51,7 +51,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        { pageId != null && !isEmpty && (
+        { pageId != null && !isNotFound && (
           <div className="mx-2">
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
               <i className="ti ti-clipboard"></i>

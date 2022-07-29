@@ -2,7 +2,7 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useIsEmpty } from '~/stores/context';
+import { useIsNotFound } from '~/stores/context';
 
 import { FixPageGrantAlert } from './FixPageGrantAlert';
 import { OldRevisionAlert } from './OldRevisionAlert';
@@ -14,13 +14,13 @@ const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.
 
 export const PageAlerts = (): JSX.Element => {
 
-  const { data: isEmpty } = useIsEmpty();
+  const { data: isNotFound } = useIsNotFound();
 
   return (
     <div className="row d-edit-none">
       <div className="col-sm-12">
         {/* alerts */}
-        { !isEmpty && <FixPageGrantAlert /> }
+        { !isNotFound && <FixPageGrantAlert /> }
         <PageGrantAlert />
         <TrashPageAlert />
         <PageStaleAlert />
