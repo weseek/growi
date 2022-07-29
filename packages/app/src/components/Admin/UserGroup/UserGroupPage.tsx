@@ -1,20 +1,19 @@
 import React, { FC, useState, useCallback } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import UserGroupTable from './UserGroupTable';
-import UserGroupModal from './UserGroupModal';
-import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
-import Xss from '~/services/xss';
-import { CustomWindow } from '~/interfaces/global';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
-import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
+import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+
+import UserGroupDeleteModal from './UserGroupDeleteModal';
+import UserGroupModal from './UserGroupModal';
+import UserGroupTable from './UserGroupTable';
 
 const UserGroupPage: FC = () => {
-  const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
 
   const { data: isAclEnabled } = useIsAclEnabled();

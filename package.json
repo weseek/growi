@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "5.1.0-RC.2",
+  "version": "5.1.1-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -81,9 +81,9 @@
     "stylelint": "^14.2.0",
     "stylelint-config-recess-order": "^3.0.0",
     "ts-jest": "^27.0.4",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~4.6",
+    "typescript": "~4.7",
     "yargs": "^17.3.1"
   },
   "engines": {
