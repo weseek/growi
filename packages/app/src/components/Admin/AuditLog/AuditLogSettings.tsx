@@ -42,7 +42,7 @@ export const AuditLogSettings: FC = () => {
         </span>
         <a
           className="ml-2"
-          href="https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
+          href={t('admin:audit_log_management.docs_url.log_type')}
           target="_blank"
           rel="noopener noreferrer"
         >
