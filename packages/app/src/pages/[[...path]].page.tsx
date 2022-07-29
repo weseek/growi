@@ -7,6 +7,7 @@ import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
+import mongoose from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -29,6 +30,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
+import { PageRedirectModel } from '~/server/models/page-redirect';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
@@ -41,11 +43,11 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import ForbiddenPage from '../components/ForbiddenPage';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
-import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { NotCreatablePage } from '../components/NotCreatablePage';
-import ForbiddenPage from '../components/ForbiddenPage';
+import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -121,8 +123,7 @@ type Props = CommonProps & {
 
   pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
-  // redirectTo?: string;
-  // redirectFrom?: string;
+  redirectFrom?: string;
 
   // shareLinkId?: string;
   isLatestRevision?: boolean
@@ -355,17 +356,28 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { revisionId } = req.query;
 
   const Page = crowi.model('Page') as PageModel;
+  const PageRedirect = mongoose.model('PageRedirect') as PageRedirectModel;
   const { pageService } = crowi;
 
-  const { currentPathname } = props;
+  let currentPathname = props.currentPathname;
 
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
 
   const { user } = req;
 
-  // check whether the specified page path hits to multiple pages
   if (!isPermalink) {
+    // check redirects
+    const chains = await PageRedirect.retrievePageRedirectChains(currentPathname);
+    if (chains != null) {
+      // overwrite currentPathname
+      currentPathname = chains.end.toPath;
+      props.currentPathname = currentPathname;
+      // set redirectFrom
+      props.redirectFrom = chains.start.fromPath;
+    }
+
+    // check whether the specified page path hits to multiple pages
     const count = await Page.countByPathAndViewer(currentPathname, user, null, true);
     if (count > 1) {
       throw new MultiplePagesHitsError(currentPathname);
