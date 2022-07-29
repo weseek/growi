@@ -15,7 +15,9 @@ import {
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
+import {
+  IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
+} from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
@@ -27,7 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
+import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -407,7 +409,7 @@ class PageService {
       renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
     }
     catch (err) {
-      logger.err('Error occurred while running renameMainOperation', err);
+      logger.error('Error occurred while running renameMainOperation', err);
 
       // cleanup
       await PageOperation.deleteOne({ _id: pageOp._id });
@@ -2553,7 +2555,7 @@ class PageService {
       }
       catch (err) {
         errorPagePaths.push(page.path);
-        logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+        logger.error('Failed to run normalizeParentRecursivelyMainOperation.', err);
 
         // cleanup
         await PageOperation.deleteOne({ _id: pageOp._id });
