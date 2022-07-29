@@ -8,7 +8,8 @@ import { Skelton } from './Skelton';
 
 export const PageContentFooter = memo((): JSX.Element => {
 
-  const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), { ssr: false, loading: () => <p><Skelton width={300} height={20} /></p> });
+  const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
+    { ssr: false, loading: () => <Skelton width={300} height={20} additionalClass={'mb-3'} /> });
 
   const { data: page } = useSWRxCurrentPage();
 
