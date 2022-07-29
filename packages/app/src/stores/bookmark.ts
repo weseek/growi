@@ -1,6 +1,7 @@
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { Nullable } from '~/interfaces/common';
 import { IPageHasId } from '~/interfaces/page';
 
 import { apiv3Get } from '../client/util/apiv3-client';
@@ -21,9 +22,9 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
   );
 };
 
-export const useSWRCurrentUserBookmarks = (page?: number| null| undefined): SWRResponse<IPageHasId[], Error> => {
+export const useSWRxCurrentUserBookmarks = (pageNum?: Nullable<number>): SWRResponse<IPageHasId[], Error> => {
   const { data: currentUser } = useCurrentUser();
-  const currentPage = page ?? 1;
+  const currentPage = pageNum ?? 1;
   return useSWRImmutable(
     currentUser != null ? `/bookmarks/${currentUser._id}` : null,
     endpoint => apiv3Get(endpoint, { page: currentPage }).then((response) => {

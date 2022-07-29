@@ -1,13 +1,13 @@
 
 import React, { useEffect } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { IPageHasId } from '~/interfaces/page';
-import { useSWRCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -19,11 +19,12 @@ type Props = {
 
 const BookmarksItem = (props: Props) => {
   const { pages } = props;
-  const { mutate: mutateCurrentUserBookmark } = useSWRCurrentUserBookmarks();
+  const { mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
 
   const generateBookmarkedPageList = pages?.map((page) => {
     const dPagePath = new DevidedPagePath(page.path, false, true);
-    const { latter: pageTitle, former: formerPagePath } = dPagePath;
+    const { latter: pageTitle, former, isRoot } = dPagePath;
+    const formerPagePath = isRoot ? pageTitle : pathUtils.addTrailingSlash(former);
     const bookmarkItemId = `bookmark-item-${page._id}`;
 
     const bookmarkMenuItemClickHandler = (async() => {
@@ -54,7 +55,7 @@ const BookmarksItem = (props: Props) => {
             placement="right"
             target={bookmarkItemId}
           >
-            { formerPagePath || '/' }
+            { formerPagePath }
           </UncontrolledTooltip>
         </li>
       </div>
@@ -77,7 +78,11 @@ const BookmarksItem = (props: Props) => {
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: pages } = useSWRCurrentUserBookmarks();
+  const { data: pages, mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
+
+  useEffect(() => {
+    mutateCurrentUserBookmark();
+  }, [mutateCurrentUserBookmark]);
 
   const renderBookmarksItem = () => {
     if (pages?.length === 0) {

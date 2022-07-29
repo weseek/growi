@@ -7,7 +7,7 @@ import {
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
-import { useSWRBookmarkInfo, useSWRCurrentUserBookmarks } from '../../stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
@@ -51,7 +51,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
-  const { mutate: mutateCurrentUserBookmark } = useSWRCurrentUserBookmarks();
+  const { mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
