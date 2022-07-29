@@ -94,7 +94,7 @@ class SamlSecurityManagementContents extends React.Component {
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
-            {siteUrl != null && (
+            {siteUrl != null && siteUrl !== '' && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
