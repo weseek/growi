@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
-  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId, useIsEmpty,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -465,12 +465,14 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
-  const key = 'isAbleToShowPageAuthors';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
+  const { data: isEmpty } = useIsEmpty();
+
+  const key = `isAbleToShowPageAuthors ${currentPageId}`;
 
   const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
-  const isPageExist = currentPageId != null;
+  const isPageExist = (currentPageId != null) && !isEmpty;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
