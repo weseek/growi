@@ -48,17 +48,26 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div id="page-wrapper">
-          <div className="main container-fluid">
+        <div className='nologin'>
+          <div id="wrapper">
+            <div id="page-wrapper">
+              <div className="main container-fluid">
 
-            <div className="row">
-              <div className="col-md-12">
-                <div className="login-header mx-auto">
-                  <h1 className="my-3">GROWI</h1>
+                <div className="row">
+
+                  <div className="col-md-12">
+                    <div className="login-header mx-auto">
+                      <h1 className="my-3">GROWI</h1>
+                    </div>
+                  </div>
+
+                  <div className="col-md-12">
+                    <div id="installer-form-container">
+                      <InstallerForm />
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-              <div className="col-md-12">
-                <InstallerForm />
               </div>
             </div>
           </div>
