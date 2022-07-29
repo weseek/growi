@@ -21,10 +21,8 @@ export const PageContentFooter = memo((): JSX.Element => {
     <div className="page-content-footer py-4 d-edit-none d-print-none">
       <div className="grw-container-convertible">
         <div className="page-meta">
-          <>
-            <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
-            <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
-          </>
+          <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
+          <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
         </div>
       </div>
     </div>
