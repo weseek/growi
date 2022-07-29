@@ -17,7 +17,7 @@ export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFu
   const passwordResetOrder = await PasswordResetOrder.findOne({ token });
 
   // check if the token is valid
-  if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
+  if (passwordResetOrder == null) {
     return next(createError(400, 'passwordResetOrder is null or expired or revoked', { code: 'password-reset-order-is-not-appropriate' }));
   }
 
