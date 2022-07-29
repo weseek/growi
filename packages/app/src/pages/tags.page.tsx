@@ -9,8 +9,8 @@ import TagList from '~/components/TagList';
 import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
-import { BasicLayout } from '../components/BasicLayout';
-import { CommonProps } from './commons';
+import { BasicLayout } from '../components/Layout/BasicLayout';
+import { CommonProps } from './utils/commons';
 
 const PAGING_LIMIT = 10;
 
@@ -65,5 +65,9 @@ const TagPage: NextPage<CommonProps> = () => {
   );
 
 };
+
+// export async function getStaticProps(context) {
+
+// }
 
 export default TagPage;
