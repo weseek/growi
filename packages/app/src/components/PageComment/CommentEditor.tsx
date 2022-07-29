@@ -45,7 +45,6 @@ type PropsType = {
   replyTo?: string,
   currentCommentId?: string,
   commentBody?: string,
-  commentCreator?: string,
   onCancelButtonClicked?: () => void,
   onCommentButtonClicked?: () => void,
 }
@@ -74,7 +73,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: editorConfig } = useEditorConfig();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
-  // TODO: Refactor comment and markdown variable names or logic
+  // TODO: Refactor comment and markdown variable names or logic after presentation
   const [comment, setComment] = useState(commentBody ?? '');
   const [markdown, setMarkdown] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
