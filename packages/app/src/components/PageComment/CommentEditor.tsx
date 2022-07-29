@@ -9,8 +9,8 @@ import {
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
-import { CustomWindow } from '~/interfaces/global';
-import { IInterceptorManager } from '~/interfaces/interceptor-manager';
+// import { CustomWindow } from '~/interfaces/global';
+// import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
@@ -238,7 +238,12 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [apiErrorHandler, currentPageId, currentPagePath]);
 
+
   const getCommentHtml = useCallback(() => {
+    if (currentPagePath == null) {
+      return <></>;
+    }
+
     return (
       <CommentPreview
         rendererOptions={rendererOptions}
@@ -246,7 +251,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
         currentPagePath={currentPagePath}
       />
     );
-  }, [markdown]);
+  }, [currentPagePath, markdown, rendererOptions]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
