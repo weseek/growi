@@ -74,13 +74,10 @@ const ExportArchiveDataPage = (props) => {
     if (socket == null) {
       return;
     }
-    // websocket event
     socket.off('admin:onProgressForExport');
 
-    // websocket event
     socket.off('admin:onStartZippingForExport');
 
-    // websocket event
     socket.off('admin:onTerminateForExport');
   }, [props.adminSocketIoContainer]);
 
