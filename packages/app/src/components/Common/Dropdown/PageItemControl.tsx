@@ -70,9 +70,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const updateBodyClass = useCallback((isContainerFluid: boolean) => {
     const bodyClasses = document.body.classList;
     const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
-    const isOnSearch = bodyClasses.contains('on-search');
 
-    if (isContainerFluid && !isOnSearch && !isLayoutFluid) {
+    if (isContainerFluid && !isLayoutFluid) {
       bodyClasses.add('growi-layout-fluid');
     }
     else if (isLayoutFluid) {
