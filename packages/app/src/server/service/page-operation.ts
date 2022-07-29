@@ -26,9 +26,10 @@ class PageOperationService {
   }
 
   async init(): Promise<void> {
-    // cleanup PageOperation documents except ones with actionType: Rename
+    // cleanup PageOperation documents except ones with { actionType: Rename, actionStage: Sub }
     const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
+    await PageOperation.deleteMany({ actionType: PageActionType.Rename, actionStage: PageActionStage.Main });
   }
 
   /**
