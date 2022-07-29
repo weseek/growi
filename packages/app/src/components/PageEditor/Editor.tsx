@@ -39,7 +39,7 @@ type DropzoneRef = {
 
 const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const {
-    onUpload, isUploadable, isUploadableFile, indentSize,
+    onUpload, isUploadable, isUploadableFile, indentSize, isGfmMode = true,
   } = props;
 
   const [dropzoneActive, setDropzoneActive] = useState(false);
@@ -298,6 +298,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
                     onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
                     onAddAttachmentButtonClicked={addAttachmentHandler}
                     editorSettings={editorSettings}
+                    isGfmMode={isGfmMode}
                     {...props}
                   />
                 )}
