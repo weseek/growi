@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
@@ -55,10 +55,10 @@ const CustomizeThemeOptions = (props) => {
   const { mutate: mutateGrowiTheme } = useGrowiTheme();
   const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
-  const selectedHandler = (themeName) => {
+  const selectedHandler = useCallback((themeName) => {
     adminCustomizeContainer.switchThemeType(themeName);
-    mutateGrowiTheme(themeName);
-  };
+    mutateGrowiTheme(themeName, false);
+  }, [adminCustomizeContainer, mutateGrowiTheme]);
 
   return (
     <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
