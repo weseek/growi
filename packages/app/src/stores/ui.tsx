@@ -431,13 +431,16 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
-  const key = 'isAbleToShowTagLabel';
+  const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isEmpty } = useIsEmpty();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
+
+  const key = `isAbleToShowTagLabel ${currentPageId}`;
 
   const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
@@ -447,7 +450,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : [key, editorMode],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound) && !isEmpty,
   );
 };
 
