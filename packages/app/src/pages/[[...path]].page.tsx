@@ -24,6 +24,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -36,6 +37,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -151,7 +153,7 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
   // isContainerFluid: boolean,
-  editorConfig: any,
+  editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
@@ -213,6 +215,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useEditorConfig(props.editorConfig);
   useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);

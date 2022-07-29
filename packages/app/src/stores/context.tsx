@@ -6,6 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
@@ -22,10 +23,6 @@ type Nullable<T> = T | null;
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
   return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
-};
-
-export const useEditorConfig = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('editorConfig', initialData);
 };
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
@@ -222,6 +219,10 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useStaticSWR('isLatestRevision', initialData);
+};
+
+export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
+  return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {

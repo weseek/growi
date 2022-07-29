@@ -75,7 +75,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: rendererConfig } = useRendererConfig();
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: upload } = useEditorConfig();
+  const { data: editorConfig } = useEditorConfig();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -287,11 +287,11 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     // TODO: typescriptize Editor
     const AnyEditor = Editor as any;
 
-    if (rendererConfig === undefined) {
+    if (editorConfig === undefined) {
       return <></>;
     }
-    const isUploadable = rendererConfig.upload.image || rendererConfig.upload.file;
-    const isUploadableFile = rendererConfig.upload.file;
+    const isUploadable = editorConfig.upload.image || editorConfig.upload.file;
+    const isUploadableFile = editorConfig.upload.file;
 
     return (
       <>
