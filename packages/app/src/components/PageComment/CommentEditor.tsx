@@ -73,7 +73,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: rendererConfig } = useRendererConfig();
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: editorConfig } = useEditorConfig();
 
