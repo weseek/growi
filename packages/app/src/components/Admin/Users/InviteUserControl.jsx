@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -29,7 +28,6 @@ class InviteUserControl extends React.Component {
 
 InviteUserControl.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
@@ -41,6 +39,6 @@ const InviteUserControlWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const InviteUserControlWrapper = withUnstatedContainers(InviteUserControlWrapperFC, [AppContainer, AdminUsersContainer]);
+const InviteUserControlWrapper = withUnstatedContainers(InviteUserControlWrapperFC, [AdminUsersContainer]);
 
 export default InviteUserControlWrapper;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 type RenderTagLabelsProps = {
@@ -52,5 +52,6 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
 
 });
 
+RenderTagLabels.displayName = 'RenderTagLabels';
 
 export default RenderTagLabels;

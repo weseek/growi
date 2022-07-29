@@ -2,12 +2,13 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import Xss from '~/services/xss';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -16,7 +17,7 @@ class UserGroupUserTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.xss = window.xss;
+    this.xss = new Xss();
 
     this.removeUser = this.removeUser.bind(this);
   }
@@ -95,7 +96,7 @@ class UserGroupUserTable extends React.Component {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
-                <i className="ti-plus"></i>
+                <i className="ti ti-plus"></i>
               </button>
             </td>
             <td></td>

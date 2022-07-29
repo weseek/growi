@@ -1,13 +1,14 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 
+import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-
+import urljoin from 'url-join';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -33,8 +34,11 @@ class GoogleSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminGoogleSecurityContainer, siteUrl,
+    } = this.props;
     const { isGoogleEnabled } = adminGeneralSecurityContainer.state;
+    const googleCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/google/callback');
 
     return (
 
@@ -75,11 +79,11 @@ class GoogleSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGoogleSecurityContainer.state.callbackUrl}
+              value={googleCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -179,7 +183,7 @@ class GoogleSecurityManagementContents extends React.Component {
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_2') }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_3') }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_4', { url: adminGoogleSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_4', { url: googleCallbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_5') }} />
           </ol>
         </div>
@@ -194,7 +198,8 @@ class GoogleSecurityManagementContents extends React.Component {
 
 const GoogleSecurityManagementContentsFc = (props) => {
   const { t } = useTranslation();
-  return <GoogleSecurityManagementContents t={t} {...props} />;
+  const { data: siteUrl } = useSiteUrl();
+  return <GoogleSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 
 
@@ -202,6 +207,7 @@ GoogleSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
+  siteUrl: PropTypes.string,
 };
 
 const GoogleSecurityManagementContentsWrapper = withUnstatedContainers(GoogleSecurityManagementContentsFc, [

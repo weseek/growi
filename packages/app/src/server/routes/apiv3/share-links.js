@@ -30,7 +30,6 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const ShareLink = crowi.model('ShareLink');
@@ -136,7 +135,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, linkSharingRequired, csrf, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -188,7 +187,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
-  router.delete('/', loginRequired, csrf, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
+  router.delete('/', loginRequired, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
 
@@ -223,7 +222,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to remove all share links
   */
-  router.delete('/all', loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/all', loginRequired, adminRequired, addActivity, async(req, res) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
@@ -262,7 +261,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, csrf, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequired, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { user } = req;
 

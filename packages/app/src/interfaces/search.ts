@@ -1,4 +1,4 @@
-import { IPageWithMeta } from './page';
+import { IDataWithMeta, IPageHasId } from './page';
 
 export type IPageSearchMeta = {
   bookmarkCount?: number,
@@ -14,10 +14,6 @@ export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
   return meta != null && 'elasticSearchResult' in meta;
 };
 
-export type ISearchResult<T > = ISearchResultMeta & {
-  data: T[],
-}
-
 export type ISearchResultMeta = {
   meta: {
     took?: number
@@ -26,7 +22,15 @@ export type ISearchResultMeta = {
   },
 }
 
-export type IFormattedSearchResult = ISearchResult<IPageWithMeta<IPageSearchMeta>>;
+export type ISearchResult<T> = ISearchResultMeta & {
+  data: T[],
+}
+
+export type IPageWithSearchMeta = IDataWithMeta<IPageHasId, IPageSearchMeta>;
+
+export type IFormattedSearchResult = ISearchResultMeta & {
+  data: IPageWithSearchMeta[],
+}
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',

@@ -18,13 +18,10 @@ export default class AdminImportContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyEsaTeamName = 0;
-    this.dummyEsaTeamNameForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      esaTeamName: this.dummyEsaTeamName,
+      esaTeamName: '',
       esaAccessToken: '',
       qiitaTeamName: '',
       qiitaAccessToken: '',

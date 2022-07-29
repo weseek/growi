@@ -1,11 +1,10 @@
-import { Ref } from './common';
-import { IPage } from './page';
-import { IUser } from './user';
+import type { IAttachment } from '@growi/core';
 
-export type IAttachment = {
-  page?: Ref<IPage>,
-  creator?: Ref<IUser>,
+import type { PaginateResult } from './mongoose-utils';
 
-  // virtual property
-  filePathProxied: string,
+
+export type IResAttachmentList = {
+  data: {
+    paginateResult: PaginateResult<IAttachment>
+  }
 };

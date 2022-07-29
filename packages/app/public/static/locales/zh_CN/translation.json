@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
   "Help": "帮助",
   "view": "View",
 	"Edit": "编辑",
@@ -28,6 +31,7 @@
   "New": "新建",
   "Close": "Close",
 	"Shortcuts": "快捷方式",
+  "CustomSidebar": "Custom Sidebar",
 	"eg": "e.g.",
 	"add": "添加",
 	"Undo": "撤销",
@@ -194,6 +198,9 @@
     "Create Page": "创建页面",
     "page_not_exist": "该页面不存在",
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
+  "not_creatable_page": {
+    "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
     "no_page_list": "There are no pages under this page.",
@@ -368,7 +375,8 @@
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
 		"notice": {
 			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
-		}
+		},
+    "changes_not_saved": "您所做的更改可能不会保存。"
   },
   "page_comment": {
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
@@ -1085,11 +1093,18 @@
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
   },
+  "crop_image_modal": {
+    "image_crop": "图像裁剪",
+    "crop": "修剪",
+    "reset": "重启",
+    "cancel": "取消"
+  },
   "fix_page_grant": {
     "modal": {
       "no_grant_available": "无法找到可选择的权限列表。 请先修改父页的权限，然后再试一次。",
       "need_to_fix_grant": "为了正确使用该功能，需要修改与该页面相关的权限。 <br> 请从以下选项中选择进行更改。",
       "grant_label": {
+        "public": "向公众提供",
         "isForbidden": "无权查看的机构",
         "currentPageGrantLabel": "本页的权限: ",
         "parentPageGrantLabel": "父页的权限: ",

@@ -13,10 +13,10 @@ import { apiv3Post } from '../util/apiv3-client';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
-} from '../util/interceptor/detach-code-blocks';
+} from '../../services/renderer/interceptor/detach-code-blocks';
 import {
   DrawioInterceptor,
-} from '../util/interceptor/drawio-interceptor';
+} from '../../services/renderer/interceptor/drawio-interceptor';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -54,9 +54,6 @@ export default class PageContainer extends Container {
       path,
       isEmpty: mainContent.getAttribute('data-page-is-empty'),
 
-      createdAt: mainContent.getAttribute('data-page-created-at'),
-      // please use useCurrentUpdatedAt instead
-      updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
@@ -138,6 +135,7 @@ export default class PageContainer extends Container {
 
   /**
    * initialize state for markdown data
+   * [Already SWRized]
    */
   initStateMarkdown() {
     let pageContent = '';

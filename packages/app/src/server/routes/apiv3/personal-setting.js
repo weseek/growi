@@ -1,7 +1,8 @@
 import { body } from 'express-validator';
 
+import { i18n } from '^/config/next-i18next.config';
+
 import { SupportedAction } from '~/interfaces/activity';
-import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -70,7 +71,6 @@ const router = express.Router();
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const { User, ExternalAccount } = crowi.models;
@@ -231,7 +231,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
 
     try {
       const user = await User.findOne({ _id: req.user.id });
@@ -276,7 +276,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.imageType, apiV3FormValidator, async(req, res) => {
+  router.put('/image-type', accessTokenParser, loginRequiredStrictly, addActivity, validator.imageType, apiV3FormValidator, async(req, res) => {
     const { isGravatarEnabled } = req.body;
 
     try {
@@ -353,7 +353,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/password', accessTokenParser, loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator, async(req, res) => {
     const { body, user } = req;
     const { oldPassword, newPassword } = body;
 
@@ -395,7 +395,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/api-token', loginRequiredStrictly, csrf, addActivity, async(req, res) => {
+  router.put('/api-token', loginRequiredStrictly, addActivity, async(req, res) => {
     const { user } = req;
 
     try {
@@ -439,7 +439,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account associate to me
    */
-  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.associateLdap, apiV3FormValidator, async(req, res) => {
+  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.associateLdap, apiV3FormValidator, async(req, res) => {
     const { passportService } = crowi;
     const { user, body } = req;
     const { username } = body;
@@ -492,7 +492,7 @@ module.exports = (crowi) => {
    *                      description: Ldap account disassociate to me
    */
   // eslint-disable-next-line max-len
-  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
+  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
     const { user, body } = req;
     const { providerType, accountId } = body;
 
@@ -536,7 +536,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const { body } = req;
 
@@ -629,7 +629,7 @@ module.exports = (crowi) => {
    *                      description: in-app-notification-settings
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const subscribeRules = req.body.subscribeRules;
 

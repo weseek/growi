@@ -1,45 +1,41 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
-let retrieveErrors = null;
-function LocalSecuritySetting(props) {
+const LocalSecuritySetting = (props) => {
   const { adminLocalSecurityContainer } = props;
-  if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
-    throw (async() => {
-      try {
-        await adminLocalSecurityContainer.retrieveSecurityData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        retrieveErrors = errs;
-        adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError });
-      }
-    })();
-  }
 
-  if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationModeForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  const fetchLocalSecuritySettingsData = useCallback(async() => {
+    try {
+      await adminLocalSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+    }
+  }, [adminLocalSecurityContainer]);
+
+
+  useEffect(() => {
+    fetchLocalSecuritySettingsData();
+  }, [adminLocalSecurityContainer, fetchLocalSecuritySettingsData]);
 
   return <LocalSecuritySettingContents />;
-}
+};
 
 LocalSecuritySetting.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
-const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LocalSecuritySetting), [
+const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [
   AdminLocalSecurityContainer,
 ]);
 

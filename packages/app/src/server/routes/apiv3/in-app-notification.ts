@@ -13,7 +13,6 @@ const router = express.Router();
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const inAppNotificationService = crowi.inAppNotificationService;
@@ -84,7 +83,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/read', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.post('/read', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
 
     try {
@@ -96,7 +95,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.post('/open', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
     const id = req.body.id;
 
@@ -110,7 +109,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, addActivity, async(req, res) => {
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
     const user = req.user;
 
     try {

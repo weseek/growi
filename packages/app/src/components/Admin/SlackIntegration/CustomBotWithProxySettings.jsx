@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
@@ -19,7 +18,7 @@ const logger = loggerFactory('growi:cli:SlackIntegration:CustomBotWithProxySetti
 
 const CustomBotWithProxySettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri,
+    slackAppIntegrations, proxyServerUri,
     onClickAddSlackWorkspaceBtn, onPrimaryUpdated,
     connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
@@ -27,6 +26,7 @@ const CustomBotWithProxySettings = (props) => {
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const [siteName, setSiteName] = useState('');
   const { t } = useTranslation();
+  const { data: appTitle } = useAppTitle();
 
   // componentDidUpdate
   useEffect(() => {
@@ -86,9 +86,8 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   useEffect(() => {
-    const siteName = appContainer.config.crowi.title;
-    setSiteName(siteName);
-  }, [appContainer]);
+    setSiteName(appTitle);
+  }, [appTitle]);
 
   return (
     <>
@@ -183,14 +182,11 @@ const CustomBotWithProxySettings = (props) => {
   );
 };
 
-const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithProxySettings, [AppContainer]);
-
 CustomBotWithProxySettings.defaultProps = {
   slackAppIntegrations: [],
 };
 
 CustomBotWithProxySettings.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
@@ -201,4 +197,4 @@ CustomBotWithProxySettings.propTypes = {
   onUpdateTokens: PropTypes.func,
 };
 
-export default CustomBotWithProxySettingsWrapper;
+export default CustomBotWithProxySettings;

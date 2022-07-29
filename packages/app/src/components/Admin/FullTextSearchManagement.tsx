@@ -1,14 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
 
-type Props = {
-
-};
-
-const FullTextSearchManagement: FC<Props> = () => {
+const FullTextSearchManagement = (): JSX.Element => {
   const { t } = useTranslation();
 
   return (

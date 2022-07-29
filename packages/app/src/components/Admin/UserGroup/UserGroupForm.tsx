@@ -1,11 +1,10 @@
 import React, { FC, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
-import { CustomWindow } from '~/interfaces/global';
-import Xss from '~/services/xss';
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -15,7 +14,6 @@ type Props = {
 };
 
 const UserGroupForm: FC<Props> = (props: Props) => {
-  const xss: Xss = (window as CustomWindow).xss;
 
   const { t } = useTranslation();
 

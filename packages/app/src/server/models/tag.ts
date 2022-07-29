@@ -1,9 +1,9 @@
-import { getOrCreateModel } from '@growi/core';
 import {
   Types, Model, Schema,
 } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');

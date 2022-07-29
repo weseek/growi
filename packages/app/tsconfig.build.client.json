@@ -2,10 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "esnext",
+    "strict": false,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],

@@ -26,7 +26,7 @@ export default class RevisionBody extends React.PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJaxWithDebounce();
@@ -73,7 +73,6 @@ export default class RevisionBody extends React.PureComponent {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,

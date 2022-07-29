@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
 
-import AppContainer from '~/client/services/AppContainer';
-import loggerFactory from '~/utils/logger';
-import { useSWRxPageByPath } from '~/stores/page';
+import { useTranslation } from 'next-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import RevisionRenderer from '../Page/RevisionRenderer';
 import { IRevision } from '~/interfaces/revision';
+import { useSWRxPageByPath } from '~/stores/page';
+import { useCustomSidebarOptions } from '~/stores/renderer';
+import loggerFactory from '~/utils/logger';
+
+import RevisionRenderer from '../Page/RevisionRenderer';
+
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -21,17 +23,15 @@ const SidebarNotFound = () => {
   );
 };
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const CustomSidebar: FC<Props> = (props: Props) => {
-
-  const { appContainer } = props;
-
-  const renderer = appContainer.getRenderer('sidebar');
+const CustomSidebar: FC = () => {
+  const { t } = useTranslation();
+  const { data: rendererOptions } = useCustomSidebarOptions();
 
   const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
+
+  if (rendererOptions == null) {
+    return <></>;
+  }
 
   const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
@@ -40,7 +40,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">
-          Custom Sidebar
+          {t('CustomSidebar')}
           <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
         </h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
@@ -60,7 +60,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
         (!isLoading && markdown != null) && (
           <div className="p-3">
             <RevisionRenderer
-              growiRenderer={renderer}
+              rendererOptions={rendererOptions}
               markdown={markdown}
               pagePath="/Sidebar"
               additionalClassName="grw-custom-sidebar-content"
@@ -78,9 +78,4 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
-
-export default CustomSidebarWrapper;
+export default CustomSidebar;

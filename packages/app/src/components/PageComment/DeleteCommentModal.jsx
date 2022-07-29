@@ -17,7 +17,7 @@ export default class DeleteCommentModal extends React.Component {
    */
   static get OMIT_BODY_THRES() { return 400 }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
   }
 
   render() {

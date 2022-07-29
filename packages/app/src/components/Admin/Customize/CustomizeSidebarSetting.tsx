@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 import { useSWRxSidebarConfig } from '~/stores/ui';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation();
@@ -13,10 +13,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
     update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
   } = useSWRxSidebarConfig();
 
-  const isDarkMode = isDarkModeByUtil();
-  const colorText = isDarkMode ? 'dark' : 'light';
-  const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
-  const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
+  const { resolvedTheme } = useNextThemes();
+  const drawerIconFileName = `/images/customize-settings/drawer-${resolvedTheme}.svg`;
+  const dockIconFileName = `/images/customize-settings/dock-${resolvedTheme}.svg`;
 
   const onClickSubmit = useCallback(async() => {
     try {

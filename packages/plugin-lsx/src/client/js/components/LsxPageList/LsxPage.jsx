@@ -21,7 +21,7 @@ export class LsxPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const pageNode = this.props.pageNode;
 
     if (pageNode.page !== undefined) {
@@ -74,8 +74,8 @@ export class LsxPage extends React.Component {
 
   getIconElement() {
     return (this.state.isExists)
-      ? <i className="ti-agenda" aria-hidden="true"></i>
-      : <i className="ti-file lsx-page-not-exist" aria-hidden="true"></i>;
+      ? <i className="ti ti-agenda" aria-hidden="true"></i>
+      : <i className="ti ti-file lsx-page-not-exist" aria-hidden="true"></i>;
   }
 
   render() {

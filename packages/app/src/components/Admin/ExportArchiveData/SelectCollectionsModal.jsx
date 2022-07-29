@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -13,13 +13,15 @@ import { apiPost } from '~/client/util/apiv1-client';
 
 
 const GROUPS_PAGE = [
-  'pages', 'revisions', 'tags', 'pagetagrelations',
+  'pages', 'revisions', 'tags', 'pagetagrelations', 'pageredirects', 'comments', 'sharelinks',
 ];
 const GROUPS_USER = [
   'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
+  'useruisettings', 'editorsettings', 'bookmarks', 'subscriptions',
+  'inappnotificationsettings',
 ];
 const GROUPS_CONFIG = [
-  'configs', 'updateposts', 'globalnotificationsettings',
+  'configs', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 

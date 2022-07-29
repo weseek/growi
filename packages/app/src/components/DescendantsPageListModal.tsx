@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -15,13 +15,10 @@ import { DescendantsPageList } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import PageTimeline from './PageTimeline';
+import { PageTimeline } from './PageTimeline';
 
 
-type Props = {
-}
-
-export const DescendantsPageListModal = (props: Props): JSX.Element => {
+export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('pagelist');

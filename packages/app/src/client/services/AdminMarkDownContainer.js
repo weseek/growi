@@ -12,13 +12,10 @@ export default class AdminMarkDownContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyIsEnabledLinebreaks = 0;
-    this.dummyIsEnabledLinebreaksForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
+      isEnabledLinebreaks: false,
       isEnabledLinebreaksInComments: false,
       adminPreferredIndentSize: 4,
       isIndentSizeForced: false,

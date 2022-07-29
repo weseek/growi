@@ -1,14 +1,13 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -37,14 +36,13 @@ class LocalSecuritySettingContents extends React.Component {
       t,
       adminGeneralSecurityContainer,
       adminLocalSecurityContainer,
-      appContainer,
+      isMailerSetup,
     } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
-    const { isMailerSetup } = appContainer.config;
 
     return (
-      <React.Fragment>
+      <>
         {adminLocalSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
             <p>
@@ -97,7 +95,7 @@ class LocalSecuritySettingContents extends React.Component {
         </div>
 
         {isLocalEnabled && (
-          <React.Fragment>
+          <>
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row">
@@ -236,9 +234,9 @@ class LocalSecuritySettingContents extends React.Component {
                 </button>
               </div>
             </div>
-          </React.Fragment>
+          </>
         )}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -246,18 +244,17 @@ class LocalSecuritySettingContents extends React.Component {
 
 LocalSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
 const LocalSecuritySettingContentsWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <LocalSecuritySettingContents t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <LocalSecuritySettingContents t={t} {...props} isMailerSetup={isMailerSetup ?? false} />;
 };
 
 const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContentsWrapperFC, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminLocalSecurityContainer,
 ]);

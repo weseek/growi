@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
@@ -130,7 +129,6 @@ class GlobalNotification extends React.Component {
 
 GlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
@@ -141,6 +139,6 @@ const GlobalNotificationWrapperFC = (props) => {
   return <GlobalNotification t={t} {...props} />;
 };
 
-const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AppContainer, AdminNotificationContainer]);
+const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AdminNotificationContainer]);
 
 export default GlobalNotificationWrapper;

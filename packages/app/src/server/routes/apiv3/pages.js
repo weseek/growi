@@ -144,7 +144,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -289,7 +288,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
@@ -489,7 +488,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, addActivity, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -562,7 +561,7 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, csrf, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
+  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
 
     const { pageId } = req.body;
     const { user } = req;
@@ -597,7 +596,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, csrf, addActivity, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, addActivity, apiV3FormValidator, async(req, res) => {
     const options = {};
 
     const pagesInTrash = await crowi.pageService.findChildrenByParentPathOrIdAndViewer('/trash', req.user);
@@ -723,7 +722,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, addActivity, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
@@ -828,7 +827,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.post('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
+  router.post('/delete', accessTokenParser, loginRequiredStrictly, validator.deletePages, apiV3FormValidator, async(req, res) => {
     const { pageIdToRevisionIdMap, isCompletely, isRecursively } = req.body;
     const pageIds = Object.keys(pageIdToRevisionIdMap);
 
@@ -877,7 +876,7 @@ module.exports = (crowi) => {
 
 
   // eslint-disable-next-line max-len
-  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
+  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
     const { convertPath } = req.body;
 
     // Convert by path
@@ -899,7 +898,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
 
     // Convert by pageIds

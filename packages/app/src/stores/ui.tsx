@@ -1,6 +1,9 @@
 import { RefObject } from 'react';
 
-import { isClient } from '@growi/core';
+import {
+  isClient, isServer, pagePathUtils, Nullable,
+} from '@growi/core';
+import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
@@ -11,20 +14,19 @@ import useSWRImmutable from 'swr/immutable';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { Nullable } from '~/interfaces/common';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { isTrashTopPage } from '../../../core/src/utils/page-path-utils';
-
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
+  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
+
+const { isTrashTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -111,6 +113,10 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  if (isServer()) {
+    return EditorMode.View;
+  }
+
   const { hash } = window.location;
 
   switch (hash) {
@@ -217,15 +223,13 @@ type PreferDrawerModeByUserUtils = {
   update: (preferDrawerMode: boolean) => void
 }
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
   const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
 
-  return {
-    ...swrResponse,
-    data: swrResponse.data,
+  const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
 
@@ -234,6 +238,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
       }
     },
   };
+
+  return withUtils(swrResponse, utils);
+
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -253,9 +260,9 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<num
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
@@ -270,12 +277,17 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
+  const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
+  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
+  const fallbackOption = useFallbackData
+    ? { fallbackData: true }
+    : { fallback: calcDrawerMode };
+
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
-    {
-      fallback: calcDrawerMode,
-    },
+    fallbackOption,
   );
 };
 
@@ -403,11 +415,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const pageId = currentPageId ?? emptyPageId;
+  const pageId = currentPageId;
   const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
   const isPageExist = pageId != null;
 
@@ -422,20 +433,19 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
-  const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, editorMode],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 

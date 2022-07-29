@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import AppContainer from '~/client/services/AppContainer';
@@ -17,11 +17,10 @@ class ManageExternalAccount extends React.Component {
 
   constructor(props) {
     super(props);
-    this.xss = window.xss;
     this.handleExternalAccountPage = this.handleExternalAccountPage.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_UNSAFE_componentWillMount() {
     this.handleExternalAccountPage(1);
   }
 

@@ -2,6 +2,7 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -19,7 +20,7 @@ import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 
 
 const IGNORED_COLLECTION_NAMES = [
-  'sessions',
+  'sessions', 'rlflx', 'activities',
 ];
 
 const ExportArchiveDataPage = (props) => {

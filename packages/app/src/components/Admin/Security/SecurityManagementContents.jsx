@@ -1,6 +1,6 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
@@ -82,12 +82,12 @@ const SecurityManagementContents = () => {
   return (
     <div data-testid="admin-security">
       <div className="mb-5">
-        <SecuritySetting />
+        {/* <SecuritySetting /> */}
       </div>
 
       {/* Shared Link List */}
       <div className="mb-5">
-        <ShareLinkSetting />
+        {/* <ShareLinkSetting /> */}
       </div>
 
 

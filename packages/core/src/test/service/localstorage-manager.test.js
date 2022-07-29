@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import 'jest-localstorage-mock';
 
-import LocalStorageManager from '~/service/localstorage-manager';
+import * as LocalStorageManager from '~/service/localstorage-manager';
 
 let localStorageManager = null;
 

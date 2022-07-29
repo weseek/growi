@@ -73,7 +73,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   this.adminEvent = crowi.event('admin');
@@ -212,7 +211,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, optionsMap } = req.body;
 
@@ -331,7 +330,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
@@ -373,7 +372,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
       importService.deleteAllZipFiles();
 

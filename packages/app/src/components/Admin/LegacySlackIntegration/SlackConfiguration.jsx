@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';

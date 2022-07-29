@@ -1,28 +1,25 @@
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { SlackbotType } from '@growi/slack';
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   TabContent, TabPane,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-
-import { SlackbotType } from '@growi/slack';
-
-import loggerFactory from '~/utils/logger';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import { CustomNavTab } from '../../CustomNavigation/CustomNav';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import UserTriggerNotification from './UserTriggerNotification';
+
 import GlobalNotification from './GlobalNotification';
+import UserTriggerNotification from './UserTriggerNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
@@ -174,7 +171,7 @@ function NotificationSetting(props) {
   );
 }
 
-const NotificationSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(NotificationSetting), [AdminNotificationContainer]);
+const NotificationSettingWithUnstatedContainer = withUnstatedContainers(NotificationSetting, [AdminNotificationContainer]);
 
 NotificationSetting.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,

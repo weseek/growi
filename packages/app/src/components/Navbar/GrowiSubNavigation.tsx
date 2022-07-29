@@ -1,16 +1,21 @@
 import React from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-import TagLabels from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
+import { Skelton } from '../Skelton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
+
+
+import styles from './GrowiSubNavigation.module.scss';
 
 
 type Props = {
@@ -32,6 +37,10 @@ type Props = {
 }
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
+
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={124.5} height={21.99} /> });
+  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={148.32} height={32.84} /> });
+
   const { data: editorMode } = useEditorMode();
 
   const {
@@ -57,7 +66,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   return (
     <div className={
-      'grw-subnav d-flex align-items-center justify-content-between'
+      `grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between`
       + ` ${additionalClasses.join(' ')}`
       + ` ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}
     >

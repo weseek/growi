@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 class StatusTable extends React.PureComponent {
 

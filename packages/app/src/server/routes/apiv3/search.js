@@ -25,7 +25,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -76,7 +75,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -85,6 +84,9 @@ module.exports = (crowi) => {
 
     try {
       await searchService.reconnectClient();
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
+
       return res.status(200).send();
     }
     catch (err) {
@@ -120,7 +122,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Return 200
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
 
     const { searchService } = crowi;
