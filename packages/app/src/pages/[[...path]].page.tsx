@@ -252,7 +252,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
-    if (isClient() && window.location.pathname !== props.currentPathname) {
+    const decodedURI = decodeURI(window.location.pathname);
+    if (isClient() && decodedURI !== props.currentPathname) {
       router.replace(props.currentPathname, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
