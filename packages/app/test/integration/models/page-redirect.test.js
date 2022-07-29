@@ -45,6 +45,18 @@ describe('PageRedirect', () => {
   });
 
   describe('.retrievePageRedirectChains', () => {
+    test('shoud return null when data is not found', async() => {
+      // setup:
+      expect(await PageRedirect.findOne({ fromPath: '/path1' })).toBeNull();
+
+      // when:
+      // retrieve
+      const chains = await PageRedirect.retrievePageRedirectChains('/path1');
+
+      // then:
+      expect(chains).toBeNull();
+    });
+
     test('shoud return IPageRedirectChains', async() => {
       // setup:
       await PageRedirect.insertMany([
