@@ -48,7 +48,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
-
+import { CommentEditorLazyRenderer } from '../components/PageComment/CommentEditorLazyRenderer';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
@@ -325,6 +325,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
+          <CommentEditorLazyRenderer />
         </footer>
 
         <UnsavedAlertDialog />
