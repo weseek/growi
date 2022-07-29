@@ -12,7 +12,7 @@ export default async(req, res, next): Promise<void> => {
   const userRegistrationOrder = await UserRegistrationOrder.findOne({ token });
 
   // check if the token is valid
-  if (userRegistrationOrder == null || userRegistrationOrder.isExpired() || userRegistrationOrder.isRevoked) {
+  if (userRegistrationOrder == null) {
     return next(createError(400, 'userRegistrationOrder is null or expired or revoked', { code: 'password-reset-order-is-not-appropriate' }));
   }
 
