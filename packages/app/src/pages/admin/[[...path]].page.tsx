@@ -12,7 +12,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser, /* useSearchServiceConfigured, */ useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ /* useIsMailerSetup*/ useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
 import {
@@ -136,7 +136,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const title = content.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
-  useIsMailerSetup(props.isMailerSetup);
+  // useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
