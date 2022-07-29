@@ -2,9 +2,7 @@ import React, { memo } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCreator, useRevisionAuthor,
-} from '../stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { Skelton } from './Skelton';
 
@@ -12,17 +10,18 @@ export const PageContentFooter = memo((): JSX.Element => {
 
   const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), { ssr: false, loading: () => <p><Skelton width={300} height={20} /></p> });
 
-  const { data: createdAt } = useCurrentCreatedAt();
-  const { data: updatedAt } = useCurrentUpdatedAt();
-  const { data: creator } = useCreator();
-  const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: page } = useSWRxCurrentPage();
+
+  if (page == null) {
+    return <></>;
+  }
 
   return (
     <div className="page-content-footer py-4 d-edit-none d-print-none">
       <div className="grw-container-convertible">
         <div className="page-meta">
-          <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
-          <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
+          <AuthorInfo user={page.creator} date={page.createdAt} mode="create" locate="footer" />
+          <AuthorInfo user={page.revision.author} date={page.updatedAt} mode="update" locate="footer" />
         </div>
       </div>
     </div>

@@ -60,7 +60,6 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCreator, useRevisionAuthor,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -249,11 +248,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision.body);
-
-  useCurrentCreatedAt(pageWithMeta?.data.createdAt);
-  useCurrentUpdatedAt(pageWithMeta?.data.updatedAt);
-  useCreator(pageWithMeta?.data.creator);
-  useRevisionAuthor(pageWithMeta?.data.revision.author);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
