@@ -191,7 +191,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             </div>
           </DropdownItem>
         ) }
-        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && <DropdownItem divider /> }
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && !pageInfo.isEmpty && <DropdownItem divider /> }
 
 
         {/* Bookmark */}
