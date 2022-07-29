@@ -44,6 +44,8 @@ import loggerFactory from '~/utils/logger';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import { NotCreatablePage } from '../components/NotCreatablePage';
+import ForbiddenPage from '../components/ForbiddenPage';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -65,7 +67,6 @@ import { useXss } from '../stores/xss';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -79,9 +80,6 @@ const { removeHeadingSlash } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
-
-// register custom serializer
-registerTransformerForObjectId();
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
   {
@@ -302,10 +300,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 { !props.isIdenticalPathPage && (
                   <>
                     <PageAlerts />
-                    { props.isForbidden
-                      ? <>ForbiddenPage</>
-                      : <DisplaySwitcher />
-                    }
+                    { props.isForbidden && <ForbiddenPage /> }
+                    { props.IsNotCreatable && <NotCreatablePage />}
+                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                    {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
                     PageStatusAlert
@@ -413,9 +411,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-
     props.IsNotCreatable = !isCreatablePage(currentPathname);
-
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;

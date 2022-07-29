@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Subscribe } from 'unstated';
+import { Provider, Subscribe } from 'unstated';
 
 /**
  * generate K/V object by specified instances
@@ -15,6 +15,7 @@ import { Subscribe } from 'unstated';
  *     exampleContainer: <ExampleContainer />,
  *   }
  */
+
 function generateAutoNamedProps(instances) {
   const props = {};
 
