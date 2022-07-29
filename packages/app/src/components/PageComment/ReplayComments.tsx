@@ -6,7 +6,7 @@ import { Collapse } from 'reactstrap';
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
 import { useRendererConfig } from '../../stores/context';
 
-import { Comment } from './Comment';
+import Comment from './Comment';
 
 type ReplaycommentsProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
