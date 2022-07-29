@@ -13,7 +13,8 @@ export type RendererConfig = {
   isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
-  highlightJsStyleBorder: boolean
+  highlightJsStyleBorder: boolean,
+  isAllReplyShown: boolean,
 
   plantumlUri: string | null,
   blockdiagUri: string | null,
