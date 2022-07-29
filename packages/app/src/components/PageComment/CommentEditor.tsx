@@ -3,14 +3,13 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
+import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
-// import { CustomWindow } from '~/interfaces/global';
-// import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
@@ -23,11 +22,9 @@ import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
 import { CommentPreview } from './CommentPreview';
-
 
 const navTabMapping = {
   comment_editor: {
@@ -85,38 +82,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
   const editorRef = useRef<EditorRef>(null);
-
-  // const renderHtml = useCallback((markdown: string) => {
-  //   const context = {
-  //     markdown,
-  //     parsedHTML: '',
-  //   };
-
-  //   // TODO: use ReactMarkdown
-
-  //   // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-  //   // interceptorManager.process('preRenderCommnetPreview', context)
-  //   //   .then(() => { return interceptorManager.process('prePreProcess', context) })
-  //   //   .then(() => {
-  //   //     context.markdown = rendererOptions.preProcess(context.markdown, context);
-  //   //   })
-  //   //   .then(() => { return interceptorManager.process('postPreProcess', context) })
-  //   //   .then(() => {
-  //   //     const parsedHTML = rendererOptions.process(context.markdown, context);
-  //   //     context.parsedHTML = parsedHTML;
-  //   //   })
-  //   //   .then(() => { return interceptorManager.process('prePostProcess', context) })
-  //   //   .then(() => {
-  //   //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-  //   //   })
-  //   //   .then(() => { return interceptorManager.process('postPostProcess', context) })
-  //   //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-  //   //   .then(() => {
-  //   //     setHtml(context.parsedHTML);
-  //   //   })
-  //   //   // process interceptors for post rendering
-  //   //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  // }, [rendererOptions]);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
@@ -291,6 +256,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
+    const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
     // TODO: typescriptize Editor
     const AnyEditor = Editor as any;
 
