@@ -20,7 +20,6 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const submitHandler = useCallback(async() => {
-    console.log('adminCustomizeContainer_currentTheme', adminCustomizeContainer.state.currentTheme);
     try {
       await adminCustomizeContainer.updateCustomizeTheme();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
