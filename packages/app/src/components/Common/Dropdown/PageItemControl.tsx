@@ -66,12 +66,27 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
+  // Change body class on change content width
+  const updateBodyClass = useCallback((isContainerFluid: boolean) => {
+    const bodyClasses = document.body.classList;
+    const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
+    const isOnSearch = bodyClasses.contains('on-search');
+
+    if (isContainerFluid && !isOnSearch && !isLayoutFluid) {
+      bodyClasses.add('growi-layout-fluid');
+    }
+    else if (isLayoutFluid) {
+      bodyClasses.remove('growi-layout-fluid');
+    }
+  }, []);
+
   const switchContentWidthHandler = useCallback(async() => {
     if (!isIPageInfoForOperation(pageInfo) || onClickSwitchContentWidthMenuItem == null) {
       return;
     }
     await onClickSwitchContentWidthMenuItem(pageId, pageInfo.isContainerFluid);
-  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo]);
+    updateBodyClass(!pageInfo.isContainerFluid);
+  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo, updateBodyClass]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
@@ -302,18 +317,6 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
   }, [isOpen, presetPageInfo, shouldFetch]);
 
-  // Change body class on change content width
-  const updateBodyClass = useCallback((isContainerFluid: boolean) => {
-    if (isContainerFluid && !$('body').hasClass('on-search')) {
-      if (!$('body').hasClass('growi-layout-fluid')) {
-        $('body').addClass('growi-layout-fluid');
-      }
-    }
-    else if ($('body').hasClass('growi-layout-fluid')) {
-      $('body').removeClass('growi-layout-fluid');
-    }
-  }, []);
-
   const switchContentWidthMenuItemHandler = useCallback(async(_pageId: string, _isContainerFluid: boolean) => {
     if (onClickSwitchContentWidthMenuItem != null) {
       await onClickSwitchContentWidthMenuItem(_pageId, _isContainerFluid);
@@ -322,8 +325,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (shouldFetch) {
       mutatePageInfo();
     }
-    updateBodyClass(!_isContainerFluid);
-  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch, updateBodyClass]);
+  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
