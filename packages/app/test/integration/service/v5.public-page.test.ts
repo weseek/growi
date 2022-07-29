@@ -144,6 +144,7 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename30 = new mongoose.Types.ObjectId();
 
     pageOpId1 = new mongoose.Types.ObjectId();
+    const activityId1 = new mongoose.Types.ObjectId();
     const pageOpRevisionId1 = new mongoose.Types.ObjectId();
 
     // Create Pages
@@ -428,6 +429,11 @@ describe('PageService page operations with only public pages', () => {
         options: {
           createRedirectPage: false,
           updateMetadata: true,
+        },
+        nOptions: {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: activityId1,
         },
         unprocessableExpiryDate: null,
       },
@@ -1139,10 +1145,10 @@ describe('PageService page operations with only public pages', () => {
 
   describe('Rename', () => {
 
-    const renamePage = async(page, newPagePath, user, options) => {
+    const renamePage = async(page, newPagePath, user, options, nOptions?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, nOptions);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
@@ -1159,7 +1165,7 @@ describe('PageService page operations with only public pages', () => {
     /**
      * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
      */
-    const renameMainOperation = async(page, newPagePath, user, options) => {
+    const renameMainOperation = async(page, newPagePath, user, options, nOptions?) => {
       // create page operation from target page
       const pageOp = await PageOperation.create({
         actionType: PageActionType.Rename,
@@ -1173,7 +1179,7 @@ describe('PageService page operations with only public pages', () => {
 
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id, nOptions);
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();
@@ -1185,7 +1191,11 @@ describe('PageService page operations with only public pages', () => {
       expect(rootPage).toBeTruthy();
       let isThrown = false;
       try {
-        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
+        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -1201,7 +1211,11 @@ describe('PageService page operations with only public pages', () => {
       expect(parentPage).toBeTruthy();
 
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename1' });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -1219,7 +1233,11 @@ describe('PageService page operations with only public pages', () => {
       expect(parentPage.isEmpty).toBe(true);
 
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename2' });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -1238,7 +1256,11 @@ describe('PageService page operations with only public pages', () => {
 
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
       const oldUpdateAt = childPage.updatedAt;
-      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { updateMetadata: true });
+      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { updateMetadata: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
@@ -1255,7 +1277,11 @@ describe('PageService page operations with only public pages', () => {
 
       const oldPath = childPage.path;
       const newPath = '/v5_ParentForRename4/renamedChildForRename4';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { createRedirectPage: true });
+      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { createRedirectPage: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
       const pageRedirect = await PageRedirect.findOne({ fromPath: oldPath, toPath: renamedPage.path });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -1274,7 +1300,11 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
       // find child of renamed page
       const renamedGrandchild = await Page.findOne({ parent: renamedPage._id });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename5' });
@@ -1300,7 +1330,11 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
       const grandchildAfterRename = await Page.findOne({ parent: renamedPage._id });
       const grandchildBeforeRename = await Page.findOne({ path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
@@ -1320,7 +1354,11 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_ParentForRename9';
       let isThrown;
       try {
-        await renamePage(page, newPath, dummyUser1, {});
+        await renamePage(page, newPath, dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -1339,7 +1377,11 @@ describe('PageService page operations with only public pages', () => {
 
       const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
       const newPath = newParentalPath + page1.path;
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1376,7 +1418,11 @@ describe('PageService page operations with only public pages', () => {
 
       const newParentalPath = '/v5_pageForRename19/v5_pageForRename20';
       const newPath = newParentalPath + page1.path;
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1417,7 +1463,11 @@ describe('PageService page operations with only public pages', () => {
       const newParentalPath = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
       const newPath = newParentalPath + page1.path;
 
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1519,7 +1569,11 @@ describe('PageService page operations with only public pages', () => {
       expect(_page1.descendantCount).toBe(0);
 
       // renameSubOperation only
-      await crowi.pageService.renameSubOperation(_page1, newPath, dummyUser1, {}, _page1, pageOperation._id);
+      await crowi.pageService.renameSubOperation(_page1, newPath, dummyUser1, {}, _page1, pageOperation._id, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       // page
       const page0 = await Page.findById(_page0._id); // new parent
@@ -1561,7 +1615,11 @@ describe('PageService page operations with only public pages', () => {
       expect(_page1.descendantCount).toBe(1);
       expect(_page2.descendantCount).toBe(0);
 
-      await renamePage(_page1, newPath, dummyUser1, {});
+      await renamePage(_page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const page0 = await Page.findById(_page0._id); // new parent
       const page1 = await Page.findById(_page1._id); // renamed

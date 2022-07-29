@@ -859,10 +859,10 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('Rename', () => {
-    const renamePage = async(page, newPagePath, user, options) => {
+    const renamePage = async(page, newPagePath, user, options, nOptions?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, nOptions);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
@@ -894,7 +894,11 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename1_destination/np_rename2';
       const newPathForPage3 = '/np_rename1_destination/np_rename2/np_rename3';
-      await renamePage(_page2, newPathForPage2, npDummyUser2, {});
+      await renamePage(_page2, newPathForPage2, npDummyUser2, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
       const page2 = await Page.findOne({ path: _path2, ..._properties2 }); // not exist
@@ -930,7 +934,11 @@ describe('PageService page operations with non-public pages', () => {
       const newPathForPage3 = '/np_rename4_destination/np_rename5/np_rename6';
       let isThrown = false;
       try {
-        await renamePage(_page2, newPathForPage2, dummyUser1, {});
+        await renamePage(_page2, newPathForPage2, dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -958,7 +966,11 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename7_destination/np_rename8';
       const newpathForPage3 = '/np_rename7_destination/np_rename8/np_rename9';
-      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true });
+      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const page2 = await Page.findOne({ path: _path2 }); // not exist
       const page3 = await Page.findOne({ path: _path3 }); // not renamed thus exist

@@ -424,7 +424,7 @@ describe('PageService', () => {
     });
   });
 
-  describe('rename page', () => {
+  describe.only('rename page', () => {
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     // mock new Date() and Date.now()

@@ -565,7 +565,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
+  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument, nOptions?): Promise<void> {
     const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
@@ -578,7 +578,7 @@ class PageService {
       page, fromPath, toPath, options, user,
     } = pageOp;
 
-    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath, nOptions);
   }
 
   /**
@@ -586,8 +586,8 @@ class PageService {
    * `renameSubOperation` to restart rename operation
    * `updateDescendantCountOfPagesWithPaths` to fix descendantCount of ancestors
    */
-  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath): Promise<void> {
-    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
+  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath, nOptions?): Promise<void> {
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId, nOptions);
     const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
     await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
