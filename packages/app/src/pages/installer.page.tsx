@@ -57,7 +57,9 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
 
                   <div className="col-md-12">
                     <div className="login-header mx-auto">
+                      <div className="logo"></div>
                       <h1 className="my-3">GROWI</h1>
+                      <div className="login-form-errors px-3"></div>
                     </div>
                   </div>
 
