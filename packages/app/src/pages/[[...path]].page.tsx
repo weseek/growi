@@ -250,10 +250,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision.body);
 
-  const { data: createdAt } = useCurrentCreatedAt(pageWithMeta?.data.createdAt);
-  const { data: updatedAt } = useCurrentUpdatedAt(pageWithMeta?.data.updatedAt);
-  const { data: creator } = useCreator(pageWithMeta?.data.creator);
-  const { data: revisionAuthor } = useRevisionAuthor(pageWithMeta?.data.revision.author);
+  useCurrentCreatedAt(pageWithMeta?.data.createdAt);
+  useCurrentUpdatedAt(pageWithMeta?.data.updatedAt);
+  useCreator(pageWithMeta?.data.creator);
+  useRevisionAuthor(pageWithMeta?.data.revision.author);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -332,12 +332,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
-          <PageContentFooter
-            createdAt={new Date(createdAt)}
-            updatedAt={new Date(updatedAt)}
-            creator={creator}
-            revisionAuthor={revisionAuthor}
-          />
+          <PageContentFooter />
         </footer>
 
         <UnsavedAlertDialog />

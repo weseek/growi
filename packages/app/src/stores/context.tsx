@@ -52,6 +52,10 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
   return useStaticSWR<Nullable<any>, Error>('revisionId', initialData);
 };
 
+export const useRevisionAuthor = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
+  return useStaticSWR<Nullable<IUser>, Error>('revisionAuthor', initialData);
+};
+
 export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
 };
@@ -64,8 +68,16 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
+export const useCreator = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
+  return useStaticSWR<Nullable<IUser>, Error>('creator', initialData);
+};
+
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData);
+};
+
+export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
+  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData);
 };
 
 export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
