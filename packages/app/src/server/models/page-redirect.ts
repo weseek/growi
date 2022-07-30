@@ -17,21 +17,23 @@ export type IPageRedirect = {
   toPath: string,
 }
 
-const CHAINS_ATTRIBUTE_NAME = 'chains';
-type IPageRedirectChains = IPageRedirect & { [CHAINS_ATTRIBUTE_NAME]: IPageRedirect[] };
-
 export type IPageRedirectEndpoints = {
   start: IPageRedirect,
   end: IPageRedirect,
 }
 
-
 export interface PageRedirectDocument extends IPageRedirect, Document {}
 
 export interface PageRedirectModel extends Model<PageRedirectDocument> {
   retrievePageRedirectEndpoints(fromPath: string): Promise<IPageRedirectEndpoints>
-  removePageRedirectByToPath(toPath: string): Promise<void>
+  removePageRedirectsByToPath(toPath: string): Promise<void>
 }
+
+const CHAINS_FIELD_NAME = 'chains';
+const DEPTH_FIELD_NAME = 'depth';
+type IPageRedirectWithChains = PageRedirectDocument & {
+  [CHAINS_FIELD_NAME]: (PageRedirectDocument & { [DEPTH_FIELD_NAME]: number })[]
+};
 
 const schema = new Schema<PageRedirectDocument, PageRedirectModel>({
   fromPath: {
@@ -41,7 +43,7 @@ const schema = new Schema<PageRedirectDocument, PageRedirectModel>({
 });
 
 schema.statics.retrievePageRedirectEndpoints = async function(fromPath: string): Promise<IPageRedirectEndpoints|null> {
-  const chainedRedirect: IPageRedirectChains[] = await this.aggregate([
+  const aggResult: IPageRedirectWithChains[] = await this.aggregate([
     { $match: { fromPath } },
     {
       $graphLookup: {
@@ -49,25 +51,29 @@ schema.statics.retrievePageRedirectEndpoints = async function(fromPath: string):
         startWith: '$toPath',
         connectFromField: 'toPath',
         connectToField: 'fromPath',
-        as: CHAINS_ATTRIBUTE_NAME,
+        as: CHAINS_FIELD_NAME,
+        depthField: DEPTH_FIELD_NAME,
       },
     },
   ]);
 
-  if (chainedRedirect.length === 0) {
+  if (aggResult.length === 0) {
     return null;
   }
 
-  if (chainedRedirect.length > 1) {
+  if (aggResult.length > 1) {
     logger.warn(`Although two or more PageRedirect documents starts from '${fromPath}' exists, The first one is used.`);
   }
 
-  const chains = chainedRedirect[0];
-  const start = { fromPath: chains.fromPath, toPath: chains.toPath };
-  const chainsNum = chains[CHAINS_ATTRIBUTE_NAME].length;
-  const end = chainsNum === 0
+  const redirectWithChains = aggResult[0];
+
+  // sort chains in desc
+  const sortedChains = redirectWithChains[CHAINS_FIELD_NAME].sort((a, b) => b[DEPTH_FIELD_NAME] - a[DEPTH_FIELD_NAME]);
+
+  const start = { fromPath: redirectWithChains.fromPath, toPath: redirectWithChains.toPath };
+  const end = sortedChains.length === 0
     ? start
-    : chains[CHAINS_ATTRIBUTE_NAME][chainsNum - 1];
+    : sortedChains[0];
 
   return { start, end };
 };
