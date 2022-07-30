@@ -368,7 +368,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   if (!isPermalink) {
     // check redirects
-    const chains = await PageRedirect.retrievePageRedirectChains(currentPathname);
+    const chains = await PageRedirect.retrievePageRedirectEndpoints(currentPathname);
     if (chains != null) {
       // overwrite currentPathname
       currentPathname = chains.end.toPath;

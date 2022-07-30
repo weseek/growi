@@ -14,6 +14,11 @@ describe('PageRedirect', () => {
     PageRedirect = mongoose.model('PageRedirect');
   });
 
+  beforeEach(async() => {
+    // clear collection
+    await PageRedirect.deleteMany({});
+  });
+
   describe('.removePageRedirectByToPath', () => {
     test('works fine', async() => {
       // setup:
@@ -43,20 +48,41 @@ describe('PageRedirect', () => {
     });
   });
 
-  describe('.retrievePageRedirectChains', () => {
+  describe('.retrievePageRedirectEndpoints', () => {
     test('shoud return null when data is not found', async() => {
       // setup:
       expect(await PageRedirect.findOne({ fromPath: '/path1' })).toBeNull();
 
       // when:
       // retrieve
-      const chains = await PageRedirect.retrievePageRedirectChains('/path1');
+      const endpoints = await PageRedirect.retrievePageRedirectEndpoints('/path1');
 
       // then:
-      expect(chains).toBeNull();
+      expect(endpoints).toBeNull();
     });
 
-    test('shoud return IPageRedirectChains', async() => {
+    test('shoud return IPageRedirectEnds (start and end is the same)', async() => {
+      // setup:
+      await PageRedirect.insertMany([
+        { fromPath: '/path1', toPath: '/path2' },
+      ]);
+      expect(await PageRedirect.findOne({ fromPath: '/path1' })).not.toBeNull();
+
+      // when:
+      // retrieve
+      const endpoints = await PageRedirect.retrievePageRedirectEndpoints('/path1');
+
+      // then:
+      expect(endpoints).not.toBeNull();
+      expect(endpoints.start).not.toBeNull();
+      expect(endpoints.start.fromPath).toEqual('/path1');
+      expect(endpoints.start.toPath).toEqual('/path2');
+      expect(endpoints.end).not.toBeNull();
+      expect(endpoints.end.fromPath).toEqual('/path1');
+      expect(endpoints.end.toPath).toEqual('/path2');
+    });
+
+    test('shoud return IPageRedirectEnds', async() => {
       // setup:
       await PageRedirect.insertMany([
         { fromPath: '/path1', toPath: '/path2' },
@@ -69,16 +95,16 @@ describe('PageRedirect', () => {
 
       // when:
       // retrieve
-      const chains = await PageRedirect.retrievePageRedirectChains('/path1');
+      const endpoints = await PageRedirect.retrievePageRedirectEndpoints('/path1');
 
       // then:
-      expect(chains).not.toBeNull();
-      expect(chains.start).not.toBeNull();
-      expect(chains.start.fromPath).toEqual('/path1');
-      expect(chains.start.toPath).toEqual('/path2');
-      expect(chains.end).not.toBeNull();
-      expect(chains.end.fromPath).toEqual('/path3');
-      expect(chains.end.toPath).toEqual('/path4');
+      expect(endpoints).not.toBeNull();
+      expect(endpoints.start).not.toBeNull();
+      expect(endpoints.start.fromPath).toEqual('/path1');
+      expect(endpoints.start.toPath).toEqual('/path2');
+      expect(endpoints.end).not.toBeNull();
+      expect(endpoints.end.fromPath).toEqual('/path3');
+      expect(endpoints.end.toPath).toEqual('/path4');
     });
   });
 
