@@ -78,14 +78,35 @@ schema.statics.retrievePageRedirectEndpoints = async function(fromPath: string):
   return { start, end };
 };
 
-schema.statics.removePageRedirectByToPath = async function(toPath: string): Promise<void> {
-  await this.deleteMany({ toPath });
+schema.statics.removePageRedirectsByToPath = async function(toPath: string): Promise<void> {
+  const aggResult: IPageRedirectWithChains[] = await this.aggregate([
+    { $match: { toPath } },
+    {
+      $graphLookup: {
+        from: 'pageredirects',
+        startWith: '$fromPath',
+        connectFromField: 'fromPath',
+        connectToField: 'toPath',
+        as: CHAINS_FIELD_NAME,
+      },
+    },
+  ]);
 
+  if (aggResult.length === 0) {
+    return;
+  }
+
+  const idsToRemove = aggResult
+    .map((redirectWithChains) => {
+      return [
+        redirectWithChains._id,
+        redirectWithChains[CHAINS_FIELD_NAME].map(doc => doc._id),
+      ].flat();
+    })
+    .flat();
+
+  await this.deleteMany({ _id: { $in: idsToRemove } });
   return;
 };
-
-// schema.statics.removePageRedirectsByChains = async function(redirectChains: IPageRedirectChains): Promise<void> {
-//   return;
-// };
 
 export default getOrCreateModel<PageRedirectDocument, PageRedirectModel>('PageRedirect', schema);

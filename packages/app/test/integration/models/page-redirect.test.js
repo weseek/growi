@@ -19,7 +19,7 @@ describe('PageRedirect', () => {
     await PageRedirect.deleteMany({});
   });
 
-  describe('.removePageRedirectByToPath', () => {
+  describe('.removePageRedirectsByToPath', () => {
     test('works fine', async() => {
       // setup:
       await PageRedirect.insertMany([
@@ -37,7 +37,7 @@ describe('PageRedirect', () => {
 
       // when:
       // remove all documents that have { toPath: '/path/3' }
-      await PageRedirect.removePageRedirectByToPath('/path3');
+      await PageRedirect.removePageRedirectsByToPath('/path3');
 
       // then:
       expect(await PageRedirect.findOne({ fromPath: '/org/path1' })).not.toBeNull();
