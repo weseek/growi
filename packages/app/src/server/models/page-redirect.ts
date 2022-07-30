@@ -56,6 +56,27 @@ schema.statics.retrievePageRedirectEndpoints = async function(fromPath: string):
       },
     },
   ]);
+  /* ---------- aggResult example ----------
+  {
+    "_id" : ObjectId("62e5650d6134d37aa0935e6d"),
+    "fromPath" : "/page1",
+    "toPath" : "/page2",
+    "chains" : [
+        {
+            "_id" : ObjectId("62e5651b6134d37aa0935e7a"),
+            "fromPath" : "/page2",
+            "toPath" : "/page3",
+            "depth" : NumberLong(0)
+        },
+        {
+            "_id" : ObjectId("62e565256134d37aa0935e80"),
+            "fromPath" : "/page3",
+            "toPath" : "/Sandbox",
+            "depth" : NumberLong(1)
+        }
+    ]
+  }
+  */
 
   if (aggResult.length === 0) {
     return null;
@@ -78,14 +99,64 @@ schema.statics.retrievePageRedirectEndpoints = async function(fromPath: string):
   return { start, end };
 };
 
-schema.statics.removePageRedirectByToPath = async function(toPath: string): Promise<void> {
-  await this.deleteMany({ toPath });
+schema.statics.removePageRedirectsByToPath = async function(toPath: string): Promise<void> {
+  const aggResult: IPageRedirectWithChains[] = await this.aggregate([
+    { $match: { toPath } },
+    {
+      $graphLookup: {
+        from: 'pageredirects',
+        startWith: '$fromPath',
+        connectFromField: 'fromPath',
+        connectToField: 'toPath',
+        as: CHAINS_FIELD_NAME,
+      },
+    },
+  ]);
+  /* ---------- aggResult example ----------
+  // 1
+  {
+    "_id" : ObjectId("62e565256134d37aa0935e80"),
+    "fromPath" : "/page3",
+    "toPath" : "/page4",
+    "chains" : [
+        {
+            "_id" : ObjectId("62e5651b6134d37aa0935e7a"),
+            "fromPath" : "/page2",
+            "toPath" : "/page3",
+            "depth" : NumberLong(0)
+        },
+        {
+            "_id" : ObjectId("62e5650d6134d37aa0935e6d"),
+            "fromPath" : "/page1",
+            "toPath" : "/page2",
+            "depth" : NumberLong(1)
+        }
+    ]
+  }
+  // 2
+  {
+    "_id" : ObjectId("62e5937a6134d37aa0936405"),
+    "fromPath" : "/org/page4",
+    "toPath" : "/page4",
+    "chains" : []
+  }
+  */
 
+  if (aggResult.length === 0) {
+    return;
+  }
+
+  const idsToRemove = aggResult
+    .map((redirectWithChains) => {
+      return [
+        redirectWithChains._id,
+        redirectWithChains[CHAINS_FIELD_NAME].map(doc => doc._id),
+      ].flat();
+    })
+    .flat();
+
+  await this.deleteMany({ _id: { $in: idsToRemove } });
   return;
 };
-
-// schema.statics.removePageRedirectsByChains = async function(redirectChains: IPageRedirectChains): Promise<void> {
-//   return;
-// };
 
 export default getOrCreateModel<PageRedirectDocument, PageRedirectModel>('PageRedirect', schema);

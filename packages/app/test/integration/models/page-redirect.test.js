@@ -19,33 +19,32 @@ describe('PageRedirect', () => {
     await PageRedirect.deleteMany({});
   });
 
-  describe('.removePageRedirectByToPath', () => {
+  describe('.removePageRedirectsByToPath', () => {
     test('works fine', async() => {
       // setup:
       await PageRedirect.insertMany([
         { fromPath: '/org/path1', toPath: '/path1' },
         { fromPath: '/org/path2', toPath: '/path2' },
         { fromPath: '/org/path3', toPath: '/path3' },
-        { fromPath: '/org/path33', toPath: '/path3' },
+        { fromPath: '/org/path33', toPath: '/org/path333' },
+        { fromPath: '/org/path333', toPath: '/path3' },
       ]);
       expect(await PageRedirect.findOne({ fromPath: '/org/path1' })).not.toBeNull();
       expect(await PageRedirect.findOne({ fromPath: '/org/path2' })).not.toBeNull();
       expect(await PageRedirect.findOne({ fromPath: '/org/path3' })).not.toBeNull();
       expect(await PageRedirect.findOne({ fromPath: '/org/path33' })).not.toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path333' })).not.toBeNull();
 
       // when:
       // remove all documents that have { toPath: '/path/3' }
-      await PageRedirect.removePageRedirectByToPath('/path3');
+      await PageRedirect.removePageRedirectsByToPath('/path3');
 
       // then:
-      const r1 = await PageRedirect.findOne({ fromPath: '/org/path1' });
-      const r2 = await PageRedirect.findOne({ fromPath: '/org/path2' });
-      const r3 = await PageRedirect.findOne({ fromPath: '/org/path3' });
-      const r4 = await PageRedirect.findOne({ fromPath: '/org/path33' });
-      expect(r1).not.toBeNull();
-      expect(r2).not.toBeNull();
-      expect(r3).toBeNull();
-      expect(r4).toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path1' })).not.toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path2' })).not.toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path3' })).toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path33' })).toBeNull();
+      expect(await PageRedirect.findOne({ fromPath: '/org/path333' })).toBeNull();
     });
   });
 
