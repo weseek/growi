@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { GrowiThemes } from '~/interfaces/theme';
-import { useGrowiTheme } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -50,15 +49,11 @@ const uniqueTheme = [{
 
 const CustomizeThemeOptions = (props) => {
 
-  const { adminCustomizeContainer } = props;
-  const { t } = useTranslation();
-  const { mutate: mutateGrowiTheme } = useGrowiTheme();
-  const { currentLayout, currentTheme } = adminCustomizeContainer.state;
+  const { adminCustomizeContainer, currentTheme } = props;
+  const { currentLayout } = adminCustomizeContainer.state;
 
-  const selectedHandler = useCallback((themeName) => {
-    adminCustomizeContainer.switchThemeType(themeName);
-    mutateGrowiTheme(themeName);
-  }, [adminCustomizeContainer, mutateGrowiTheme]);
+  const { t } = useTranslation();
+
 
   return (
     <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
@@ -71,7 +66,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => selectedHandler(theme.name)}
+                onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
             );
@@ -87,7 +82,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => selectedHandler(theme.name)}
+                onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
             );
@@ -103,6 +98,8 @@ const CustomizeThemeOptionsWrapper = withUnstatedContainers(CustomizeThemeOption
 
 CustomizeThemeOptions.propTypes = {
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+  onSelected: PropTypes.func,
+  currentTheme: PropTypes.string,
 };
 
 export default CustomizeThemeOptionsWrapper;

@@ -2,6 +2,10 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { apiv3Put } from '~/client/util/apiv3-client';
+
+import { useGrowiTheme } from '~/stores/context';
+
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
@@ -17,11 +21,21 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
+  const { data: currentTheme, mutate: mutateGrowiTheme } = useGrowiTheme();
   const { t } = useTranslation();
+
+  const selectedHandler = useCallback((themeName) => {
+    mutateGrowiTheme(themeName);
+  }, [adminCustomizeContainer, mutateGrowiTheme]);
 
   const submitHandler = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeTheme();
+      if(currentTheme != null){
+        await apiv3Put('/customize-setting/theme', {
+          themeType: currentTheme,
+        });
+      }
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
@@ -33,7 +47,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-        <CustomizeThemeOptions />
+        <CustomizeThemeOptions onSelected={selectedHandler} currentTheme={currentTheme} />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </div>
     </div>
