@@ -30,15 +30,13 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   }, [t, adminCustomizeContainer]);
 
   return (
-    <React.Fragment>
-      <div className="row">
-        <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-          <CustomizeThemeOptions />
-          <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
-        </div>
+    <div className="row">
+      <div className="col-12">
+        <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
+        <CustomizeThemeOptions />
+        <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
