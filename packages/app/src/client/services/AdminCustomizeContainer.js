@@ -19,8 +19,6 @@ export default class AdminCustomizeContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      currentTheme: 'default',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
@@ -77,7 +75,7 @@ export default class AdminCustomizeContainer extends Container {
       const { customizeParams } = response.data;
 
       this.setState({
-        currentTheme: customizeParams.themeType,
+        // currentTheme: customizeParams.themeType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
@@ -106,12 +104,6 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  /**
-   * Switch themeType
-   */
-  switchThemeType(themeName) {
-    this.setState({ currentTheme: themeName });
-  }
 
   /**
    * Switch enabledTimeLine
@@ -242,25 +234,6 @@ export default class AdminCustomizeContainer extends Container {
     styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
   }
 
-  /**
-   * Update theme
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeTheme() {
-    try {
-      const response = await apiv3Put('/customize-setting/theme', {
-        themeType: this.state.currentTheme,
-      });
-      const { customizedParams } = response.data;
-      this.setState({
-        themeType: customizedParams.themeType,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update data');
-    }
-  }
 
   /**
    * Update function
