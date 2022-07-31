@@ -57,7 +57,7 @@ const CustomizeThemeOptions = (props) => {
 
   const selectedHandler = useCallback((themeName) => {
     adminCustomizeContainer.switchThemeType(themeName);
-    mutateGrowiTheme(themeName, false);
+    mutateGrowiTheme(themeName);
   }, [adminCustomizeContainer, mutateGrowiTheme]);
 
   return (
