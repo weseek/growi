@@ -21,11 +21,12 @@ type Props = {
    */
   selectedNavOpt: string
   children?: ReactNode
+  injectableContainers: any
 }
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt,
+  children, title, selectedNavOpt, injectableContainers
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
@@ -46,7 +47,7 @@ const AdminLayout = ({
             </div>
             <div className="col-lg-9">
               {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
-              <Provider>
+              <Provider inject={injectableContainers}>
                 {children}
               </Provider>
             </div>

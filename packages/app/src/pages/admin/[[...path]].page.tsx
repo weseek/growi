@@ -18,6 +18,9 @@ import {
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
@@ -143,8 +146,27 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   // useEnvVars(props.envVars);
 
+
+  const adminCustomizeContainer = new AdminCustomizeContainer();
+
+  const injectableContainers = [
+    // appContainer,
+    // adminAppContainer,
+    // adminImportContainer,
+    // adminSocketIoContainer,
+    // adminHomeContainer,
+    adminCustomizeContainer,
+    // adminUsersContainer,
+    // adminExternalAccountsContainer,
+    // adminNotificationContainer,
+    // adminSlackIntegrationLegacyContainer,
+    // adminMarkDownContainer,
+    // adminUserGroupDetailContainer,
+    // socketIoContainer,
+  ];
+
   return (
-    <AdminLayout title={title} selectedNavOpt={name}>
+    <AdminLayout title={title} selectedNavOpt={name} injectableContainers={injectableContainers}>
       {content.component}
     </AdminLayout>
   );
