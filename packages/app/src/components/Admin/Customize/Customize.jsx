@@ -26,16 +26,16 @@ const logger = loggerFactory('growi:services:AdminCustomizePage');
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
-  const fetchCustomizeSettingsData = useCallback(async() =>  {
+  const fetchCustomizeSettingsData = useCallback(async() => {
     try {
-      await adminCustomizeContainer.retrieveCustomizeData()
+      await adminCustomizeContainer.retrieveCustomizeData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
       logger.error(errs);
     }
-  }, []);
+  }, [adminCustomizeContainer]);
 
   useEffect(() => {
     fetchCustomizeSettingsData();

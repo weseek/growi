@@ -10,8 +10,6 @@ import { RawLayout } from './RawLayout';
 import styles from './Admin.module.scss';
 
 
-// import { injectableContainers } from '~/client/admin';
-
 type Props = {
   title: string
   /**
@@ -26,7 +24,7 @@ type Props = {
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt, injectableContainers
+  children, title, selectedNavOpt, injectableContainers,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
