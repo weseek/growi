@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
-
-import { useGrowiTheme } from '~/stores/context';
-
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { useGrowiTheme } from '~/stores/context';
+
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -26,11 +25,11 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const selectedHandler = useCallback((themeName) => {
     mutateGrowiTheme(themeName);
-  }, [adminCustomizeContainer, mutateGrowiTheme]);
+  }, [mutateGrowiTheme]);
 
   const submitHandler = useCallback(async() => {
     try {
-      if(currentTheme != null){
+      if (currentTheme != null) {
         await apiv3Put('/customize-setting/theme', {
           themeType: currentTheme,
         });
@@ -41,7 +40,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [t, adminCustomizeContainer]);
+  }, [currentTheme, t]);
 
   return (
     <div className="row">
