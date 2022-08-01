@@ -17,7 +17,7 @@ import { useEditorMode } from '~/stores/ui';
 import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
-import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
+import UncontrolledCodeMirrorCore from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -229,7 +229,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
             <div className="col-12">
               <div className="border border-dark">
                 <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <UncontrolledCodeMirror
+                <UncontrolledCodeMirrorCore
                   ref={uncontrolledRef}
                   value={resolvedRevision}
                   options={{

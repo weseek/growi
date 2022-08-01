@@ -12,7 +12,7 @@ import urljoin from 'url-join';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
+import UncontrolledCodeMirrorCore from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
@@ -991,7 +991,7 @@ class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        <UncontrolledCodeMirror
+        <UncontrolledCodeMirrorCore
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"
