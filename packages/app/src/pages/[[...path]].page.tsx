@@ -20,6 +20,7 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
+import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -322,6 +323,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
+          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
         </footer>
 
         <UnsavedAlertDialog />

@@ -17,14 +17,12 @@ import { useEditorMode } from '~/stores/ui';
 import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
-// import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
 require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
-
-const { UncontrolledCodeMirror } = require('../UncontrolledCodeMirror');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
