@@ -143,7 +143,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     <ReplayComments
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
       onComment={mutate}
     />
@@ -192,7 +191,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);
