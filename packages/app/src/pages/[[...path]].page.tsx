@@ -26,6 +26,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -39,6 +40,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -64,7 +66,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
-  useIsAllReplyShown,
+  useEditorConfig, useIsAllReplyShown,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -151,7 +153,7 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
-  // editorConfig: any,
+  editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
@@ -183,7 +185,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useXss(new Xss());
-  // useEditorConfig(props.editorConfig);
+  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -487,12 +489,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  // props.editorConfig = {
-  //   upload: {
-  //     image: crowi.fileUploadService.getIsUploadable(),
-  //     file: crowi.fileUploadService.getFileUploadEnabled(),
-  //   },
-  // };
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+  };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 

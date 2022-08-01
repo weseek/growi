@@ -3,22 +3,17 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
+import dynamic from 'next/dynamic';
 import {
-  Button,
-  TabContent, TabPane,
+  Button, TabContent, TabPane,
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
 import { apiPostForm } from '~/client/util/apiv1-client';
-import { CustomWindow } from '~/interfaces/global';
-import { IInterceptorManager } from '~/interfaces/interceptor-manager';
-import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
+  useEditorConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -26,12 +21,9 @@ import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
-import CommentPreview from './CommentPreview';
-
+import { CommentPreview } from './CommentPreview';
 
 const navTabMapping = {
   comment_editor: {
@@ -47,14 +39,10 @@ const navTabMapping = {
 };
 
 type PropsType = {
-  appContainer: AppContainer,
-
-  rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
   commentBody?: string,
-  commentCreator?: string,
   onCancelButtonClicked?: () => void,
   onCommentButtonClicked?: () => void,
 }
@@ -65,11 +53,11 @@ type EditorRef = {
   terminateUploadingState: () => void,
 }
 
-const CommentEditor = (props: PropsType): JSX.Element => {
+export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, rendererOptions, isForNewComment, replyTo,
-    currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
+    isForNewComment, replyTo,
+    currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -79,57 +67,23 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-
-  const config = appContainer.getConfig();
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isSlackConfigured = config.isSlackConfigured;
+  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: editorConfig } = useEditorConfig();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
+  // TODO: Refactor comment and markdown variable names or logic after presentation
   const [comment, setComment] = useState(commentBody ?? '');
-  const [html, setHtml] = useState('');
+  const [markdown, setMarkdown] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
   const editorRef = useRef<EditorRef>(null);
 
-  const renderHtml = useCallback((markdown: string) => {
-    const context = {
-      markdown,
-      parsedHTML: '',
-    };
-
-    // TODO: use ReactMarkdown
-
-    // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-    // interceptorManager.process('preRenderCommnetPreview', context)
-    //   .then(() => { return interceptorManager.process('prePreProcess', context) })
-    //   .then(() => {
-    //     context.markdown = rendererOptions.preProcess(context.markdown, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
-    //   .then(() => {
-    //     const parsedHTML = rendererOptions.process(context.markdown, context);
-    //     context.parsedHTML = parsedHTML;
-    //   })
-    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
-    //   .then(() => {
-    //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
-    //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-    //   .then(() => {
-    //     setHtml(context.parsedHTML);
-    //   })
-    //   // process interceptors for post rendering
-    //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }, [rendererOptions]);
-
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
-    renderHtml(comment);
-  }, [comment, renderHtml]);
+    setMarkdown(comment);
+  }, [comment, setMarkdown]);
 
   useEffect(() => {
     if (slackChannels === undefined) { return }
@@ -138,7 +92,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const initializeEditor = useCallback(() => {
     setComment('');
-    setHtml('');
+    setMarkdown('');
     setActiveTab('comment_editor');
     setError(undefined);
     // reset value
@@ -247,13 +201,19 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [apiErrorHandler, currentPageId, currentPagePath]);
 
+
   const getCommentHtml = useCallback(() => {
+    if (currentPagePath == null) {
+      return <></>;
+    }
+
     return (
       <CommentPreview
-        html={html}
+        markdown={markdown}
+        path={currentPagePath}
       />
     );
-  }, [html]);
+  }, [currentPagePath, markdown]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
@@ -292,8 +252,15 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
+    const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
     // TODO: typescriptize Editor
     const AnyEditor = Editor as any;
+
+    if (editorConfig === undefined) {
+      return <></>;
+    }
+    const isUploadable = editorConfig.upload.image || editorConfig.upload.file;
+    const isUploadableFile = editorConfig.upload.file;
 
     return (
       <>
@@ -376,12 +343,3 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   );
 
 };
-
-/**
- * Wrapper component for using unstated
- */
-const CommentEditorWrapper = withUnstatedContainers<unknown, Partial<PropsType>>(
-  CommentEditor, [AppContainer, PageContainer, EditorContainer],
-);
-
-export default CommentEditorWrapper;
