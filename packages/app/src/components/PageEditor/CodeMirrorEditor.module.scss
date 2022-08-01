@@ -1,0 +1,12 @@
+.grw-codemirror-editor :global {
+  @import '~codemirror/lib/codemirror';
+
+  // addons
+  @import '~codemirror/addon/hint/show-hint';
+  @import '~codemirror/addon/fold/foldgutter';
+  @import '~codemirror/addon/lint/lint';
+
+  // themes
+  @import '~codemirror/theme/elegant';
+  @import '~codemirror/theme/eclipse';
+}

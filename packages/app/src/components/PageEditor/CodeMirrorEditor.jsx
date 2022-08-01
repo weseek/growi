@@ -32,6 +32,8 @@ import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
+import styles from './CodeMirrorEditor.module.scss';
+
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
@@ -50,7 +52,6 @@ require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/selection/active-line');
@@ -58,12 +59,10 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/scroll/scrollpastend');
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
@@ -992,7 +991,7 @@ class CodeMirrorEditor extends AbstractEditor {
     console.log(' this.props.value', this.props.value);
 
     return (
-      <React.Fragment>
+      <div className={`grw-codemirror-editor ${styles['grw-codemirror-editor']}`}>
 
         <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
@@ -1075,7 +1074,7 @@ class CodeMirrorEditor extends AbstractEditor {
           onSave={this.onSaveForDrawio}
         /> */}
 
-      </React.Fragment>
+      </div>
     );
   }
 
