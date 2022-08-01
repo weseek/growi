@@ -155,11 +155,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const PageEditorModeManager = dynamic(
     () => import('./PageEditorModeManager'),
-    { ssr: false, loading: () => <Skelton width={213} height={35} componentHeight={33.99} /> },
+    { ssr: false, loading: () => <Skelton width={213} height={33.99} /> },
   );
   const SubNavButtons = dynamic<SubNavButtonsProps>(
     () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-    { ssr: false, loading: () => <Skelton width={245} height={16} componentHeight={40} /> },
+    { ssr: false, loading: () => <Skelton width={245} additionalClass='btn-skelton py-2' /> },
   );
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
