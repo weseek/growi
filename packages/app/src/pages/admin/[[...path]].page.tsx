@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isClient } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -7,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Provider } from 'unstated';
+import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
@@ -26,7 +27,7 @@ import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityConta
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-// import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -57,6 +58,7 @@ const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/Use
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 // named export
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
+
 
 const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 
@@ -167,57 +169,67 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   // useEnvVars(props.envVars);
 
+  const injectableContainers: Container<any>[] = [];
 
-  /*
-  * Create unstated container instances
-  */
-  //  Except Security
-  const adminAppContainer = new AdminAppContainer();
-  const adminImportContainer = new AdminImportContainer();
-  const adminHomeContainer = new AdminHomeContainer();
-  const adminCustomizeContainer = new AdminCustomizeContainer();
-  const adminUsersContainer = new AdminUsersContainer();
-  const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
-  const adminNotificationContainer = new AdminNotificationContainer();
-  const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
-  const adminMarkDownContainer = new AdminMarkDownContainer();
-  // const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
+  if (isClient()) {
+    // Create unstated container instances (except Security)
+    const adminAppContainer = new AdminAppContainer();
+    const adminImportContainer = new AdminImportContainer();
+    const adminHomeContainer = new AdminHomeContainer();
+    const adminCustomizeContainer = new AdminCustomizeContainer();
+    const adminUsersContainer = new AdminUsersContainer();
+    const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
+    const adminNotificationContainer = new AdminNotificationContainer();
+    const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
+    const adminMarkDownContainer = new AdminMarkDownContainer();
+    const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
 
-  const injectableContainers = [
-    adminAppContainer,
-    adminImportContainer,
-    adminHomeContainer,
-    adminCustomizeContainer,
-    adminUsersContainer,
-    adminExternalAccountsContainer,
-    adminNotificationContainer,
-    adminSlackIntegrationLegacyContainer,
-    adminMarkDownContainer,
-    // adminUserGroupDetailContainer,
-  ];
+    injectableContainers.push(
+      adminAppContainer,
+      adminImportContainer,
+      adminHomeContainer,
+      adminCustomizeContainer,
+      adminUsersContainer,
+      adminExternalAccountsContainer,
+      adminNotificationContainer,
+      adminSlackIntegrationLegacyContainer,
+      adminMarkDownContainer,
+      adminUserGroupDetailContainer,
+    );
+  }
 
-  // Security
-  const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
-  const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
-  const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
-  const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
-  const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
-  const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
-  const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
-  const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
-  const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
 
-  const adminSecurityContainers = [
-    adminGeneralSecurityContainer,
-    adminLocalSecurityContainer,
-    adminLdapSecurityContainer,
-    adminSamlSecurityContainer,
-    adminOidcSecurityContainer,
-    adminBasicSecurityContainer,
-    adminGoogleSecurityContainer,
-    adminGitHubSecurityContainer,
-    adminTwitterSecurityContainer,
-  ];
+  const adminSecurityContainers: Container<any>[] = [];
+
+  if (isClient()) {
+    const adminSecuritySettingElem = document.getElementById('admin-security-setting');
+
+    if (adminSecuritySettingElem != null) {
+      const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
+      const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
+      const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
+      const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
+      const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
+      const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
+      const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
+      const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
+      const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
+
+      adminSecurityContainers.push(
+        adminGeneralSecurityContainer,
+        adminLocalSecurityContainer,
+        adminLdapSecurityContainer,
+        adminSamlSecurityContainer,
+        adminOidcSecurityContainer,
+        adminBasicSecurityContainer,
+        adminGoogleSecurityContainer,
+        adminGitHubSecurityContainer,
+        adminTwitterSecurityContainer,
+      );
+    }
+
+  }
+
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
