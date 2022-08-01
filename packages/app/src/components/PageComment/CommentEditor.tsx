@@ -259,8 +259,8 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     if (editorConfig === undefined) {
       return <></>;
     }
-    const isUploadable = editorConfig.upload.image || editorConfig.upload.file;
-    const isUploadableFile = editorConfig.upload.file;
+    const isUploadable = editorConfig.upload.isImageUploaded || editorConfig.upload.isFileUploaded;
+    const isUploadableFile = editorConfig.upload.isFileUploaded;
 
     return (
       <>

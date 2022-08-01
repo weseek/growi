@@ -492,8 +492,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      image: crowi.fileUploadService.getIsUploadable(),
-      file: crowi.fileUploadService.getFileUploadEnabled(),
+      isImageUploaded: crowi.fileUploadService.getIsUploadable(),
+      isFileUploaded: crowi.fileUploadService.getFileUploadEnabled(),
     },
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
