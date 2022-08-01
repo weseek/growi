@@ -15,7 +15,7 @@ interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
   lineNumbers?: boolean;
 }
 
-interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
+export interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
   forwardedRef: Ref<UncontrolledCodeMirrorCore>;
 }
 
@@ -45,7 +45,7 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
 
 }
 
-const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
+export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
   return (
     <UncontrolledCodeMirrorCore
       {...props}
@@ -55,5 +55,3 @@ const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, Uncontroll
 });
 
 UncontrolledCodeMirror.displayName = 'UncontrolledCodeMirror';
-
-export default UncontrolledCodeMirror;

@@ -24,7 +24,7 @@ require('codemirror/addon/merge/merge');
 require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
 
-const UncontrolledCodeMirror = require('../UncontrolledCodeMirror');
+const { UncontrolledCodeMirror } = require('../UncontrolledCodeMirror');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 

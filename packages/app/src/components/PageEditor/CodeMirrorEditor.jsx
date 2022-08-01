@@ -96,7 +96,7 @@ require('codemirror/mode/vue/vue');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/yaml/yaml');
 
-const UncontrolledCodeMirror = require('../UncontrolledCodeMirror');
+const { UncontrolledCodeMirror } = require('../UncontrolledCodeMirror');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
