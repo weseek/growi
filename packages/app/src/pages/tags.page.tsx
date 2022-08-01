@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -12,7 +12,6 @@ import Head from 'next/head';
 
 
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
-import GrowiSubNavigationSwitcher from '~/components/Navbar/GrowiSubNavigationSwitcher';
 import TagCloudBox from '~/components/TagCloudBox';
 import TagList from '~/components/TagList';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -32,13 +31,13 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
-  useIsAclEnabled, useIsUserPage, useIsNotCreatable,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useIsAclEnabled, useIsNotCreatable,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -49,7 +48,7 @@ import {
 const PAGING_LIMIT = 10;
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
 } = pagePathUtils;
 
 const { removeHeadingSlash } = pathUtils;
@@ -60,47 +59,27 @@ type Props = CommonProps & {
   currentUser: IUser,
 
   pageWithMeta: IPageToShowRevisionWithMeta,
-  // pageUser?: any,
-  // redirectTo?: string;
-  // redirectFrom?: string;
-
-  // shareLinkId?: string;
   isLatestRevision?: boolean
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
   IsNotCreatable: boolean,
-  // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
 
   isSlackConfigured: boolean,
-  // isMailerSetup: boolean,
   isAclEnabled: boolean,
-  // hasSlackConfig: boolean,
-  // drawioUri: string,
   hackmdUri: string,
-  // mathJax: string,
-  // noCdn: string,
-  // highlightJsStyle: string,
-  // isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
-  // editorConfig: any,
   isEnabledStaleNotification: boolean,
-  // isEnabledLinebreaks: boolean,
-  // isEnabledLinebreaksInComments: boolean,
-  // adminPreferredIndentSize: number,
-  // isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
   rendererConfig: RendererConfig,
 
-  // UI
   userUISettings?: IUserUISettings
-  // Sidebar
+
   sidebarConfig: ISidebarConfig,
 };
 
@@ -110,6 +89,8 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 
   const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
+  useCurrentUser(props.currentUser ?? null);
+
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
   const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
@@ -117,29 +98,23 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 
   const { t } = useTranslation('');
 
-  // commons
   useXss(new Xss());
 
-  // UserUISettings
+  useCsrfToken(props.csrfToken);
+
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
   useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
-  // page
   useCurrentPagePath(props.currentPathname);
   useIsLatestRevision(props.isLatestRevision);
-  // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
-  // useShared();
-  // useShareLinkId(props.shareLinkId);
-  useIsSharedUser(false); // this page cann't be routed for '/share'
-  useIsIdenticalPath(false); // TODO: need to initialize from props
-  // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsSharedUser(false);
+  useIsIdenticalPath(false);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsBlinkedHeaderAtBoot(false);
 
@@ -148,31 +123,24 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSlackConfigured(props.isSlackConfigured);
-  // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
-  // useHasSlackConfig(props.hasSlackConfig);
-  // useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
-  // useMathJax(props.mathJax);
-  // useNoCdn(props.noCdn);
-  // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
 
   useRendererConfig(props.rendererConfig);
-  // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
-  // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
 
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
     setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   }, []);
 
-  // todo: adjust margin and redesign tags page
+  const classNames: string[] = [];
+
   return (
     <>
       <Head>
       </Head>
-      <BasicLayout title='tags'>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
         <header className="py-0">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
@@ -374,13 +342,9 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
-  console.log(user);
 
   const result = await getServerSideCommonProps(context);
 
-
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
@@ -407,6 +371,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
+  console.log(props);
 
   return {
     props,
