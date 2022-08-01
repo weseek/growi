@@ -8,7 +8,7 @@ window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
 require('~/client/util/codemirror/gfm-growi.mode');
 
-export interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
+interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
   value: string;
   options?: ICodeMirror['options'];
   isGfmMode?: boolean;
