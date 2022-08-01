@@ -1,7 +1,7 @@
 import { addSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import { PageActionStage, PageActionType } from '../../../src/server/models/page-operation';
+import { PageActionStage, PageActionType } from '../../../src/interfaces/page-operation';
 import { getInstance } from '../setup-crowi';
 
 

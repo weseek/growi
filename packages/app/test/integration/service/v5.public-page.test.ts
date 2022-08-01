@@ -2,7 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
-import { PageActionType, PageActionStage } from '../../../src/server/models/page-operation';
+import { PageActionType, PageActionStage } from '../../../src/interfaces/page-operation';
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
