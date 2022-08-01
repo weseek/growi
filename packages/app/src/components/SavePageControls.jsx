@@ -12,7 +12,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useCurrentPageId, useIsAclEnabled } from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -138,15 +138,13 @@ const SavePageControlsWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
-  const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || editorMode == null || isAclEnabled == null) {
+  if (isEditable == null || editorMode == null || isAclEnabled == null || grantData == null) {
     return null;
   }
 
@@ -161,12 +159,12 @@ const SavePageControlsWrapper = (props) => {
       {...props}
       editorMode={editorMode}
       isAclEnabled={isAclEnabled}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
+      grant={grantData.grant}
+      grantGroupId={grantData.grantGroup?.id}
+      grantGroupName={grantData.grantedGroup?.name}
       mutateGrant={mutateGrant}
-      mutateGrantGroupId={mutateGrantGroupId}
-      mutateGrantGroupName={mutateGrantGroupName}
+      // mutateGrantGroupId={mutateGrantGroupId}
+      // mutateGrantGroupName={mutateGrantGroupName}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
       pageTags={pageTags}
     />

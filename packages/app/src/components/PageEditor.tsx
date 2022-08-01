@@ -24,7 +24,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useIsMobile, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -93,9 +93,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
@@ -134,13 +132,17 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   const saveWithShortcut = useCallback(async() => {
-    if (grant == null) {
+    if (grantData == null) {
       return;
     }
 
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
+    const optionsToSave = getOptionsToSave(
+      isSlackEnabled ?? false, slackChannels,
+      grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
+      pageTags || [],
+    );
 
     try {
       // disable unsaved warning
@@ -159,19 +161,7 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       // pageContainer.showErrorToastr(error);
     }
-  }, [
-    // editorContainer,
-    editorMode,
-    grant,
-    grantGroupId,
-    grantGroupName,
-    isSlackEnabled,
-    slackChannelsData,
-    markdown,
-    // pageContainer,
-    pageTags,
-    mutateIsEnabledUnsavedWarning,
-  ]);
+  }, [grantData, isSlackEnabled, slackChannelsData, pageTags, mutateIsEnabledUnsavedWarning]);
 
 
   /**
