@@ -39,7 +39,6 @@ import { PageTimeline } from '../components/PageTimeline';
 import RecentCreated from '../components/RecentCreated/RecentCreated';
 import { SearchPage } from '../components/SearchPage';
 import Sidebar from '../components/Sidebar';
-import TagPage from '../components/TagPage';
 import TrashPageList from '../components/TrashPageList';
 
 import { appContainer, componentMappings } from './base';
@@ -75,7 +74,6 @@ Object.assign(componentMappings, {
   'identical-path-page': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'tags-page': <TagPage />,
 
   'grw-page-status-alert-container': <PageStatusAlert />,
 
