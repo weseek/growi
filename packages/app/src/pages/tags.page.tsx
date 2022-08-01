@@ -2,12 +2,10 @@ import React, { useState, useCallback } from 'react';
 
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId, pagePathUtils, pathUtils,
+  IUser, IUserHasId,
 } from '@growi/core';
-import ExtensibleCustomError from 'extensible-custom-error';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -16,11 +14,8 @@ import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSub
 import TagCloudBox from '~/components/TagCloudBox';
 import TagList from '~/components/TagList';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IDataTagCount } from '~/interfaces/tag';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxTagsList } from '~/stores/tag';
@@ -34,24 +29,15 @@ import {
 import { useXss } from '../stores/xss';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
 
-const {
-  isPermalink: _isPermalink,
-} = pagePathUtils;
-
-const { removeHeadingSlash } = pathUtils;
-
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
-
 type Props = CommonProps & {
   currentUser: IUser,
 
-  pageWithMeta: IPageToShowRevisionWithMeta,
-  isLatestRevision?: boolean
+  isLatestRevision?: boolean,
 
   isIdenticalPathPage?: boolean,
 
@@ -59,18 +45,9 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
 
-  // おそらく消す
-  isSlackConfigured: boolean,
-  isAclEnabled: boolean,
-  hackmdUri: string,
-  isEnabledStaleNotification: boolean,
   disableLinkSharing: boolean,
 
-  rendererConfig: RendererConfig,
-
   userUISettings?: IUserUISettings
-
-  sidebarConfig: ISidebarConfig,
 };
 
 const TagPage: NextPage<CommonProps> = (props: Props) => {
@@ -143,59 +120,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
       </BasicLayout>
     </>
   );
-
 };
-
-function getPageIdFromPathname(currentPathname: string): string | null {
-  return _isPermalink(currentPathname) ? removeHeadingSlash(currentPathname) : null;
-}
-
-class MultiplePagesHitsError extends ExtensibleCustomError {
-
-  pagePath: string;
-
-  constructor(pagePath: string) {
-    super(`MultiplePagesHitsError occured by '${pagePath}'`);
-    this.pagePath = pagePath;
-  }
-
-}
-
-async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const { revisionId } = req.query;
-
-  const Page = crowi.model('Page') as PageModel;
-  const { pageService } = crowi;
-
-  const { currentPathname } = props;
-
-  const pageId = getPageIdFromPathname(currentPathname);
-  const isPermalink = _isPermalink(currentPathname);
-
-  const { user } = req;
-
-  // check whether the specified page path hits to multiple pages
-  if (!isPermalink) {
-    const count = await Page.countByPathAndViewer(currentPathname, user, null, true);
-    if (count > 1) {
-      throw new MultiplePagesHitsError(currentPathname);
-    }
-  }
-
-  const pageWithMeta: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
-  const page = pageWithMeta?.data as unknown as PageDocument;
-
-  // populate & check if the revision is latest
-  if (page != null) {
-    page.initLatestRevisionField(revisionId);
-    await page.populateDataToShowRevision();
-    props.isLatestRevision = page.isLatestRevision();
-  }
-
-  props.pageWithMeta = pageWithMeta;
-}
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req = context.req as CrowiRequest<IUserHasId & any>;
@@ -211,43 +136,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager, aclService,
+    searchService, configManager,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-
-  props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
-  props.isAclEnabled = aclService.isAclEnabled();
-  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
-  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-
-  props.rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-
-    plantumlUri: process.env.PLANTUML_URI ?? null,
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
-
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-  };
-
-  props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
-  };
-}
-
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -265,22 +159,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
-
-  try {
-    await injectPageData(context, props);
-  }
-  catch (err) {
-    if (err instanceof MultiplePagesHitsError) {
-      props.isIdenticalPathPage = true;
-    }
-    else {
-      throw err;
-    }
-  }
-
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
