@@ -23,7 +23,7 @@ import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
+// import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
@@ -286,8 +286,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    // TODO: typescriptize Editor
-    const AnyEditor = Editor as any;
+    // // TODO: typescriptize Editor
+    // const AnyEditor = Editor as any;
 
     return (
       <>
@@ -295,7 +295,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <AnyEditor
+              {/* <AnyEditor
                 ref={editorRef}
                 value={comment}
                 lineNumbers={false}
@@ -306,7 +306,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
