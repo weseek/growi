@@ -504,7 +504,6 @@ module.exports = (crowi) => {
     const activityParameters = {
       ip: req.ip,
       endpoint: req.originalUrl,
-      // activityId: res.locals.activity._id,
     };
 
     if (!isCreatablePage(newPagePath)) {
