@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -26,13 +26,9 @@ const logger = loggerFactory('growi:services:AdminCustomizePage');
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
-  useEffect(() => {
-    async function fetchCustomizeSettingsData() {
-      await adminCustomizeContainer.retrieveCustomizeData();
-    }
-
+  const fetchCustomizeSettingsData = useCallback(async() => {
     try {
-      fetchCustomizeSettingsData();
+      await adminCustomizeContainer.retrieveCustomizeData();
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -40,6 +36,10 @@ function Customize(props) {
       logger.error(errs);
     }
   }, [adminCustomizeContainer]);
+
+  useEffect(() => {
+    fetchCustomizeSettingsData();
+  }, [fetchCustomizeSettingsData]);
 
 
   return (
