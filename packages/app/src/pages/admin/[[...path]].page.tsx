@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
@@ -19,7 +20,6 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
 
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 
 // import { useEnvVars } from '~/stores/admin-context';
 
@@ -152,10 +152,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminCustomizeContainer = new AdminCustomizeContainer();
 
   const injectableContainers = [
-    // appContainer,
     // adminAppContainer,
     // adminImportContainer,
-    // adminSocketIoContainer,
     // adminHomeContainer,
     adminCustomizeContainer,
     // adminUsersContainer,
@@ -164,7 +162,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     // adminSlackIntegrationLegacyContainer,
     // adminMarkDownContainer,
     // adminUserGroupDetailContainer,
-    // socketIoContainer,
   ];
 
   return (
