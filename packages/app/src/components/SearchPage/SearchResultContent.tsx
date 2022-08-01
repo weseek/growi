@@ -216,10 +216,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
         <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
         <PageContentFooter
-          createdAt={new Date(pageWithMeta.data.createdAt)}
-          updatedAt={new Date(pageWithMeta.data.updatedAt)}
-          creator={pageWithMeta.data.creator}
-          revisionAuthor={pageWithMeta.data.lastUpdateUser}
+          // createdAt={new Date(pageWithMeta.data.createdAt)}
+          // updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          // creator={pageWithMeta.data.creator}
+          // revisionAuthor={pageWithMeta.data.lastUpdateUser}
         />
       </div>
     </div>
