@@ -15,10 +15,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
-<<<<<<< HEAD
-=======
 import PageOperation from '../models/page-operation';
->>>>>>> 5406365b4cbf9f778150965c3a765dd0f09abc2b
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
