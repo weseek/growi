@@ -14,14 +14,14 @@ import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemContro
 
 
 type Props = {
-  pages: IPageHasId[] | undefined,
+  currentUserBookmarksData: IPageHasId[] | undefined,
+  onPageOperationSuccess: () => void
 }
 
-const BookmarksItem = (props: Props) => {
-  const { pages } = props;
-  const { mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
+const BookmarkItem = (props: Props) => {
+  const { currentUserBookmarksData, onPageOperationSuccess } = props;
 
-  const generateBookmarkedPageList = pages?.map((page) => {
+  const generateBookmarkedPageList = currentUserBookmarksData?.map((page) => {
     const dPagePath = new DevidedPagePath(page.path, false, true);
     const { latter: pageTitle, former, isRoot } = dPagePath;
     const formerPagePath = isRoot ? pageTitle : pathUtils.addTrailingSlash(former);
@@ -29,7 +29,7 @@ const BookmarksItem = (props: Props) => {
 
     const bookmarkMenuItemClickHandler = (async() => {
       await unbookmark(page._id);
-      mutateCurrentUserBookmark();
+      onPageOperationSuccess();
     });
 
 
@@ -78,17 +78,17 @@ const BookmarksItem = (props: Props) => {
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: pages } = useSWRxCurrentUserBookmarks();
+  const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
 
   const renderBookmarksItem = () => {
-    if (pages?.length === 0) {
+    if (currentUserBookmarksData?.length === 0) {
       return (
-        <h3 className="pl-3">
+        <h4 className="pl-3">
           { t('No bookmarks yet') }
-        </h3>
+        </h4>
       );
     }
-    return <BookmarksItem pages={pages} />;
+    return <BookmarkItem currentUserBookmarksData={currentUserBookmarksData} onPageOperationSuccess={mutateCurrentUserBookmarks} />;
   };
 
   return (
@@ -99,9 +99,9 @@ const Bookmarks = () : JSX.Element => {
 
       { isGuestUser
         ? (
-          <h3 className="pl-3">
+          <h4 className="pl-3">
             { t('Not available for guest') }
-          </h3>
+          </h4>
         ) : renderBookmarksItem()
       }
 
