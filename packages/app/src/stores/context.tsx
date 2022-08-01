@@ -173,6 +173,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isMailerSetup', initialData);
+};
+
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };

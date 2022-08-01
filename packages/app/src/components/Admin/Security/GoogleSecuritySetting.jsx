@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -11,29 +10,26 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
-let retrieveErrors = null;
-function GoogleSecurityManagement(props) {
+const GoogleSecurityManagement = (props) => {
   const { adminGoogleSecurityContainer } = props;
-  if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientId) {
-    throw (async() => {
-      try {
-        await adminGoogleSecurityContainer.retrieveSecurityData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        retrieveErrors = errs;
-        adminGoogleSecurityContainer.setState({ googleClientId: adminGoogleSecurityContainer.dummyGoogleClientIdForError });
-      }
-    })();
-  }
 
-  if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientIdForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  const fetchGoogleSecuritySettingsData = useCallback(async() => {
+    try {
+      await adminGoogleSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+    }
+  }, [adminGoogleSecurityContainer]);
+
+
+  useEffect(() => {
+    fetchGoogleSecuritySettingsData();
+  }, [adminGoogleSecurityContainer, fetchGoogleSecuritySettingsData]);
 
   return <GoogleSecurityManagementContents />;
-}
+};
 
 
 GoogleSecurityManagement.propTypes = {
