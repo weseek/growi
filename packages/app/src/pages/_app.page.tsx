@@ -18,6 +18,7 @@ import {
 } from '../stores/context';
 
 import { CommonProps } from './utils/commons';
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -25,6 +26,8 @@ const isDev = process.env.NODE_ENV === 'development';
 type GrowiAppProps = AppProps & {
   pageProps: CommonProps;
 };
+// register custom serializer
+registerTransformerForObjectId();
 
 function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useI18nextHMR(isDev);
