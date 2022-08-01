@@ -20,6 +20,7 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { PageComments } from '~/components/PageComment/PageComments';
 // import { useTranslation } from '~/i18n';
+import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -63,6 +64,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useIsAllReplyShown,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -147,7 +149,7 @@ type Props = CommonProps & {
   // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
-  // isAllReplyShown: boolean,
+  isAllReplyShown: boolean,
   // isContainerFluid: boolean,
   // editorConfig: any,
   isEnabledStaleNotification: boolean,
@@ -225,7 +227,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
-
+  useIsAllReplyShown(props.isAllReplyShown);
 
   // const { data: editorMode } = useEditorMode();
 
@@ -324,6 +326,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer>
           {/* <PageComments /> */}
           PageComments
+          <PageContentFooter />
         </footer>
 
         <UnsavedAlertDialog />
@@ -478,7 +481,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
@@ -498,7 +501,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-    isAllReplyShown: configManager.getConfig('crowi', 'customize:isAllReplyShown'),
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
