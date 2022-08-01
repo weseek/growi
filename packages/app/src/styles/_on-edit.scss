@@ -293,13 +293,13 @@ body.on-edit {
 }
 
 body.on-edit {
-  &:not(.growi-layout-fluid) .page-editor-preview-body {
+  .wrapper:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;
       margin: 0 auto;
     }
   }
-  &.growi-layout-fluid .page-editor-preview-body {
+  .wrapper.growi-layout-fluid .page-editor-preview-body {
     .wiki {
       margin: 0 auto;
     }

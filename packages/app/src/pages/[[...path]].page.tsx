@@ -149,7 +149,6 @@ type Props = CommonProps & {
   // noCdn: string,
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
   // editorConfig: any,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
@@ -271,9 +270,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   //     classNames.push('on-edit', 'hackmd');
   //     break;
   // }
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
@@ -289,7 +285,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
         <header className="py-0">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
@@ -486,7 +482,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
