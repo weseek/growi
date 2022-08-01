@@ -105,16 +105,19 @@ class ActivityService {
   };
 
   // for GET request
-  createActivity = async function(parameters): Promise<void> {
+  createActivity = async function(parameters): Promise<IActivity | null> {
     const shoudCreateActivity = this.crowi.activityService.shoudUpdateActivity(parameters.action);
     if (shoudCreateActivity) {
+      let activity: IActivity;
       try {
-        await Activity.createByParameters(parameters);
+        activity = await Activity.createByParameters(parameters);
+        return activity;
       }
       catch (err) {
         logger.error('Create activity failed', err);
       }
     }
+    return null;
   };
 
   createTtlIndex = async function() {

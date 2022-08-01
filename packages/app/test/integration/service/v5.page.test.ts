@@ -489,9 +489,9 @@ describe('Test page service methods', () => {
   });
 
   describe('restart renameOperation', () => {
-    const resumeRenameSubOperation = async(renamePage, pageOp, activityParameters?) => {
+    const resumeRenameSubOperation = async(renamePage, pageOp, activity?) => {
       const mockedPathsAndDescendantCountOfAncestors = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors').mockReturnValue(null);
-      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, activityParameters);
+      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, activity);
 
       const argsForRenameSubOperation = mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
 
@@ -513,11 +513,7 @@ describe('Test page service methods', () => {
       const path3 = '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
 
       // activity options
-      const activityParameters = {
-        ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
-        activityId: '62e291bc10e0ab61bd691794',
-      };
+      const activity = 'randomActivityId';
 
       // page
       const _page0 = await Page.findOne({ path: _path0 });
@@ -543,7 +539,7 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation, activityParameters);
+      await resumeRenameSubOperation(_page1, _pageOperation, activity);
 
       // page
       const page0 = await Page.findById(_page0._id);
