@@ -24,7 +24,6 @@ const IGNORED_COLLECTION_NAMES = [
 
 const ExportArchiveDataPage = (props) => {
 
-  // anyで指定した箇所もっと具体的に指定
   const [collections, setCollections] = useState([]);
   const [zipFileStats, setZipFileStats] = useState([]);
   const [progressList, setProgressList] = useState([]);
@@ -34,10 +33,6 @@ const ExportArchiveDataPage = (props) => {
   const [isExported, setIsExported] = useState(false);
 
   const { t } = useTranslation();
-
-  // Keigo-h will use in https://redmine.weseek.co.jp/issues/101571
-  // const { data: collectionsData } = useSWR('/v3/mongo/collections', (endpoint => apiGet(endpoint, {})));
-  // const { data: statusData } = useSWR('/v3/export/status', (endpoint => apiGet(endpoint, {})));
 
   const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
@@ -52,21 +47,6 @@ const ExportArchiveDataPage = (props) => {
     setZipFileStats(zipFileStats);
     setIsExporting(isExporting);
     setProgressList(progressList);
-    // Keigo-h will use in https://redmine.weseek.co.jp/issues/101571
-    // if (collectionsData != null) {
-    //   console.log(`dataの値: ${JSON.stringify(collectionsData)}`);
-    //   const filteredCollections = collectionsData.collections.filter((collectionName) => {
-    //     return !IGNORED_COLLECTION_NAMES.includes(collectionName);
-    //   });
-    //   setCollections(filteredCollections);
-    // }
-
-    // if (statusData != null) {
-    //   const { zipFileStats, isExporting, progressList } = statusData.status;
-    //   setZipFileStats(zipFileStats);
-    //   setIsExporting(isExporting);
-    //   setProgressList(progressList);
-    // }
   }, []);
 
   const cleanupWebsocketEventHandler = useCallback(() => {
