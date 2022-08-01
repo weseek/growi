@@ -2,12 +2,13 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentUser } from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -17,9 +18,8 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import Username from '../User/Username';
 
 import CommentControl from './CommentControl';
-import CommentEditor from './CommentEditor';
+import { CommentEditor } from './CommentEditor';
 
-import { RendererOptions } from '~/services/renderer/renderer';
 
 /**
  *

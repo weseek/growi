@@ -6,6 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
@@ -172,6 +173,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isMailerSetup', initialData);
+};
+
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
@@ -220,8 +225,16 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isLatestRevision', initialData);
 };
 
+export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
+  return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
+};
+
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useStaticSWR('growiRendererConfig', initialData);
+};
+
+export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isAllReplyShown', initialData);
 };
 
 export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {

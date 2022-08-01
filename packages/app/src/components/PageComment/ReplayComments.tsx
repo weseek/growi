@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
-import { RendererOptions } from '~/services/renderer/renderer';
-
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
-import { useRendererConfig } from '../../stores/context';
+import { useRendererConfig, useIsAllReplyShown } from '../../stores/context';
 
-import { Comment } from './Comment';
+import Comment from './Comment';
 
 type ReplaycommentsProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
-  rendererOptions: RendererOptions,
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
   onComment: () => void,
@@ -20,9 +17,10 @@ type ReplaycommentsProps = {
 
 export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const {
-    deleteBtnClicked, rendererOptions, isReadOnly, replyList, onComment,
+    deleteBtnClicked, isReadOnly, replyList, onComment,
   } = props;
   const { data: rendererConfig } = useRendererConfig();
+  const { data: isAllReplyShown } = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
 
@@ -33,19 +31,12 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
         <Comment
           comment={reply}
           deleteBtnClicked={deleteBtnClicked}
-          rendererOptions={rendererOptions}
           isReadOnly={isReadOnly}
           onComment={onComment}
         />
       </div>
     );
   };
-
-  // TODO: Remove isAllReplyShown from rendererconfig
-  if (rendererConfig === undefined) {
-    return <></>;
-  }
-  const isAllReplyShown = rendererConfig.isAllReplyShown || false;
 
   if (isAllReplyShown) {
     return (

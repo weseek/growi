@@ -15,9 +15,9 @@ import { useSWRxPageComment } from '../stores/comment';
 
 
 import Comment from './PageComment/Comment';
-import CommentEditor from './PageComment/CommentEditor';
+import { CommentEditor } from './PageComment/CommentEditor';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import ReplayComments from './PageComment/ReplayComments';
+import { ReplayComments } from './PageComment/ReplayComments';
 
 type Props = {
   appContainer: AppContainer,
@@ -110,25 +110,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
-    <Comment
-      rendererOptions={rendererOptions}
-      deleteBtnClicked={onClickDeleteButton}
-      comment={comment}
-      onComment={mutate}
-      isReadOnly={isReadOnly}
-    />
-  );
-
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    <ReplayComments
-      replyList={replyComments}
-      deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={rendererOptions}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -147,6 +128,25 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (rendererOptions == null) {
     return <></>;
   }
+
+  const generateCommentInnerElement = (comment: ICommentHasId) => (
+    <Comment
+      rendererOptions={rendererOptions}
+      deleteBtnClicked={onClickDeleteButton}
+      comment={comment}
+      onComment={mutate}
+      isReadOnly={isReadOnly}
+    />
+  );
+
+  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+    <ReplayComments
+      replyList={replyComments}
+      deleteBtnClicked={onClickDeleteButton}
+      isReadOnly={isReadOnly}
+      onComment={mutate}
+    />
+  );
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
@@ -191,7 +191,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

@@ -1,11 +1,9 @@
 import React from 'react';
 
+import { useSWRxPageComment } from '~/stores/comment';
 import { useCurrentPageId } from '~/stores/context';
 
-import { useSWRxPageComment } from '../../stores/comment';
-
 import { CommentEditor } from './CommentEditor';
-
 
 export const CommentEditorLazyRenderer = (): JSX.Element => {
 
