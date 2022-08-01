@@ -25,7 +25,7 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
 import PageComment from '../PageComment';
-import PageContentFooter from '../PageContentFooter';
+import { PageContentFooter } from '../PageContentFooter';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -216,10 +216,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
         <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
         <PageContentFooter
-          createdAt={new Date(pageWithMeta.data.createdAt)}
-          updatedAt={new Date(pageWithMeta.data.updatedAt)}
-          creator={pageWithMeta.data.creator}
-          revisionAuthor={pageWithMeta.data.lastUpdateUser}
+          // createdAt={new Date(pageWithMeta.data.createdAt)}
+          // updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          // creator={pageWithMeta.data.creator}
+          // revisionAuthor={pageWithMeta.data.lastUpdateUser}
         />
       </div>
     </div>

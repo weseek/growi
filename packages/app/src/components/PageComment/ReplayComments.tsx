@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Collapse } from 'reactstrap';
 
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
-import { useRendererConfig } from '../../stores/context';
+import { useRendererConfig, useIsAllReplyShown } from '../../stores/context';
 
 import Comment from './Comment';
 
@@ -20,6 +20,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
     deleteBtnClicked, isReadOnly, replyList, onComment,
   } = props;
   const { data: rendererConfig } = useRendererConfig();
+  const { data: isAllReplyShown } = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
 
@@ -36,12 +37,6 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
       </div>
     );
   };
-
-  // TODO: Remove isAllReplyShown from rendererconfig
-  if (rendererConfig === undefined) {
-    return <></>;
-  }
-  const isAllReplyShown = rendererConfig.isAllReplyShown || false;
 
   if (isAllReplyShown) {
     return (
