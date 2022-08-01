@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 
 import PageContainer from '~/client/services/PageContainer';
@@ -99,13 +99,6 @@ ShareLink.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-const ShareLinkWrapperFC = (props) => {
-  return <ShareLink {...props} />;
-};
-
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkWrapper = withUnstatedContainers(ShareLinkWrapperFC, [PageContainer]);
+const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
 
 export default ShareLinkWrapper;
