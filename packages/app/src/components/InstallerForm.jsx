@@ -114,7 +114,8 @@ class InstallerForm extends React.Component {
                         >
                           {fixedT('meta.display_name')}
                         </button>
-                    );})
+                      );
+                    })
                   };
                 </div>
               </div>
