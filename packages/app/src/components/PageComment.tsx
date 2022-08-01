@@ -2,12 +2,11 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { Nullable } from '@growi/core';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPageId, useCurrentPagePath } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
@@ -20,7 +19,6 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import { ReplayComments } from './PageComment/ReplayComments';
 
 type Props = {
-  pageId?: Nullable<string>, // TODO: check pageId type
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
@@ -30,9 +28,10 @@ type Props = {
 export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
-    pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
+  const { data: pageId } = useCurrentPageId();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -110,16 +109,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    // TODO: need page props path
-    <ReplayComments
-      replyList={replyComments}
-      deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={rendererOptions}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -134,7 +123,7 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-  if (rendererOptions == null || currentPagePath == null) {
+  if (rendererOptions == null || currentPagePath == null || currentPage == null) {
     return <></>;
   }
 
@@ -145,7 +134,9 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       comment={comment}
       onComment={mutate}
       isReadOnly={isReadOnly}
-    />
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt} />
   );
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (

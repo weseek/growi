@@ -10,6 +10,7 @@ import {
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
@@ -39,6 +40,7 @@ const navTabMapping = {
 };
 
 type PropsType = {
+  rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
@@ -56,7 +58,7 @@ type EditorRef = {
 export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    isForNewComment, replyTo,
+    rendererOptions, isForNewComment, replyTo,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -209,6 +211,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
     return (
       <CommentPreview
+        rendererOptions={rendererOptions}
         markdown={markdown}
         path={currentPagePath}
       />
@@ -252,15 +255,15 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    // const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
+    const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
     // TODO: typescriptize Editor
-    // const AnyEditor = Editor as any;
+    const AnyEditor = Editor as any;
 
-    // if (editorConfig === undefined) {
-    //   return <></>;
-    // }
-    // const isUploadable = editorConfig.upload.isImageUploaded || editorConfig.upload.isFileUploaded;
-    // const isUploadableFile = editorConfig.upload.isFileUploaded;
+    if (editorConfig === undefined) {
+      return <></>;
+    }
+    const isUploadable = editorConfig.upload.isImageUploaded || editorConfig.upload.isFileUploaded;
+    const isUploadableFile = editorConfig.upload.isFileUploaded;
 
     return (
       <>
@@ -298,7 +301,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            {/* { isSlackConfigured
+            { isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -310,7 +313,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
                   />
                 </div>
               )
-            } */}
+            }
             <div className="d-none d-sm-block">
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-
 import { UserPicture } from '@growi/ui';
-import { ConsoleFormattedStream } from 'browser-bunyan';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -32,7 +30,8 @@ type CommentProps = {
 
 export const Comment = (props: CommentProps): JSX.Element => {
   const {
-    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions, currentPagePath, currentRevisionId, currentRevisionCreatedAt,
+    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
+    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
@@ -93,11 +92,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const renderText = (comment) => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
-
-  // TODO: Remove when update ReplayComments.jsx
-  if (currentPagePath == null) {
-    return <></>;
-  }
 
   const renderRevisionBody = () => {
     return (
