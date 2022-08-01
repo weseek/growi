@@ -75,7 +75,6 @@ export default class AdminCustomizeContainer extends Container {
       const { customizeParams } = response.data;
 
       this.setState({
-        // currentTheme: customizeParams.themeType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
