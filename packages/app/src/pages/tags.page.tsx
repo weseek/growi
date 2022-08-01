@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
+
 import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
@@ -23,21 +24,12 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxTagsList } from '~/stores/tag';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useCurrentPagePath,
-  useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsSharedUser,
-  useIsEnabledStaleNotification, useIsIdenticalPath,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri,
-  useIsAclEnabled, useIsNotCreatable,
+  useCurrentUser,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -48,7 +40,7 @@ import {
 const PAGING_LIMIT = 10;
 
 const {
-  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
+  isPermalink: _isPermalink,
 } = pagePathUtils;
 
 const { removeHeadingSlash } = pathUtils;
@@ -62,14 +54,12 @@ type Props = CommonProps & {
   isLatestRevision?: boolean
 
   isIdenticalPathPage?: boolean,
-  isForbidden: boolean,
-  isNotFound: boolean,
-  IsNotCreatable: boolean,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
 
+  // おそらく消す
   isSlackConfigured: boolean,
   isAclEnabled: boolean,
   hackmdUri: string,
@@ -102,32 +92,9 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 
   useCsrfToken(props.csrfToken);
 
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
-
-  useCurrentPagePath(props.currentPathname);
-  useIsLatestRevision(props.isLatestRevision);
-  useIsForbidden(props.isForbidden);
-  useIsNotFound(props.isNotFound);
-  useIsNotCreatable(props.IsNotCreatable);
-  useIsSharedUser(false);
-  useIsIdenticalPath(false);
-  useIsEnabledStaleNotification(props.isEnabledStaleNotification);
-  useIsBlinkedHeaderAtBoot(false);
-
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
-  useIsSlackConfigured(props.isSlackConfigured);
-  useIsAclEnabled(props.isAclEnabled);
-  useHackmdUri(props.hackmdUri);
-  useDisableLinkSharing(props.disableLinkSharing);
-
-  useRendererConfig(props.rendererConfig);
 
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
@@ -240,48 +207,11 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
   }
 }
 
-async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const Page = crowi.model('Page') as PageModel;
-
-  const { currentPathname } = props;
-  const pageId = getPageIdFromPathname(currentPathname);
-  const isPermalink = _isPermalink(currentPathname);
-
-  const page = props.pageWithMeta?.data;
-
-  if (props.isIdenticalPathPage) {
-    // TBD
-  }
-  else if (page == null) {
-    props.isNotFound = true;
-    props.IsNotCreatable = !isCreatablePage(currentPathname);
-    // check the page is forbidden or just does not exist.
-    const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
-    props.isForbidden = count > 0;
-  }
-  else {
-    // /62a88db47fed8b2d94f30000 ==> /path/to/page
-    if (isPermalink && page.isEmpty) {
-      props.currentPathname = page.path;
-    }
-
-    // /path/to/page ==> /62a88db47fed8b2d94f30000
-    if (!isPermalink && !page.isEmpty) {
-      const isToppage = pagePathUtils.isTopPage(props.currentPathname);
-      if (!isToppage) {
-        props.currentPathname = `/${page._id}`;
-      }
-    }
-  }
-}
-
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
+    searchService, configManager, aclService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -289,28 +219,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
-  // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
-  // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
-  // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
-  // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
-  // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
-  // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  // props.editorConfig = {
-  //   upload: {
-  //     image: crowi.fileUploadService.getIsUploadable(),
-  //     file: crowi.fileUploadService.getFileUploadEnabled(),
-  //   },
-  // };
-  // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
-  // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
@@ -321,7 +233,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
-    // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
@@ -368,10 +279,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   await injectUserUISettings(context, props);
-  await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
-  console.log(props);
 
   return {
     props,
