@@ -17,12 +17,14 @@ import { useEditorMode } from '~/stores/ui';
 import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
-import UncontrolledCodeMirrorCore from '../UncontrolledCodeMirror';
+// import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
 require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
+
+const UncontrolledCodeMirror = require('../UncontrolledCodeMirror');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
@@ -229,7 +231,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
             <div className="col-12">
               <div className="border border-dark">
                 <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <UncontrolledCodeMirrorCore
+                <UncontrolledCodeMirror
                   ref={uncontrolledRef}
                   value={resolvedRevision}
                   options={{

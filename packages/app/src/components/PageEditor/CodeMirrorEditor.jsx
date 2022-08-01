@@ -12,7 +12,7 @@ import urljoin from 'url-join';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import UncontrolledCodeMirrorCore from '../UncontrolledCodeMirror';
+// import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
@@ -95,6 +95,8 @@ require('codemirror/mode/vb/vb');
 require('codemirror/mode/vue/vue');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/yaml/yaml');
+
+const UncontrolledCodeMirror = require('../UncontrolledCodeMirror');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
@@ -991,7 +993,7 @@ class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        <UncontrolledCodeMirrorCore
+        <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"
