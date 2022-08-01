@@ -9,16 +9,13 @@ import {
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { CustomWindow } from '~/interfaces/global';
 import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -26,9 +23,8 @@ import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
+// import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import CommentPreview from './CommentPreview';
 
@@ -47,8 +43,6 @@ const navTabMapping = {
 };
 
 type PropsType = {
-  appContainer: AppContainer,
-
   rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
@@ -68,7 +62,7 @@ type EditorRef = {
 const CommentEditor = (props: PropsType): JSX.Element => {
 
   const {
-    appContainer, rendererOptions, isForNewComment, replyTo,
+    rendererOptions, isForNewComment, replyTo,
     currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
   const { data: currentUser } = useCurrentUser();
@@ -79,11 +73,11 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: config } = useRendererConfig();
 
-  const config = appContainer.getConfig();
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isSlackConfigured = config.isSlackConfigured;
+  // const isUploadable = config.upload.image || config.upload.file;
+  // const isUploadableFile = config.upload.file;
+  // const isSlackConfigured = config.isSlackConfigured;
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -292,8 +286,8 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    // TODO: typescriptize Editor
-    const AnyEditor = Editor as any;
+    // // TODO: typescriptize Editor
+    // const AnyEditor = Editor as any;
 
     return (
       <>
@@ -301,18 +295,18 @@ const CommentEditor = (props: PropsType): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <AnyEditor
+              {/* <AnyEditor
                 ref={editorRef}
                 value={comment}
                 lineNumbers={false}
                 isMobile={isMobile}
-                isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                // isUploadable={isUploadable}
+                // isUploadableFile={isUploadableFile}
                 onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
@@ -331,7 +325,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            { isSlackConfigured
+            {/* { isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -343,7 +337,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                   />
                 </div>
               )
-            }
+            } */}
             <div className="d-none d-sm-block">
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
@@ -377,11 +371,4 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CommentEditorWrapper = withUnstatedContainers<unknown, Partial<PropsType>>(
-  CommentEditor, [AppContainer, PageContainer, EditorContainer],
-);
-
-export default CommentEditorWrapper;
+export default CommentEditor;
