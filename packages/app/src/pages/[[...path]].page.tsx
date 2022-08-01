@@ -18,8 +18,9 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { PageComments } from '~/components/PageComment/PageComments';
+import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
+import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
 import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -327,7 +328,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           {/* <PageComments /> */}
-          PageComments
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
+          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
           <PageContentFooter />
         </footer>
 

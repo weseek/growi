@@ -340,6 +340,15 @@ export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: Re
 
 export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
+  const { remarkPlugins } = options;
+
+  // add remark plugins
+  if (remarkPlugins != null) {
+    remarkPlugins.push(emoji);
+    if (config.isEnabledLinebreaksInComments) {
+      remarkPlugins.push(breaks);
+    }
+  }
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),

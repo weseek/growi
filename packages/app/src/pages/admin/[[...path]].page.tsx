@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
@@ -18,6 +19,8 @@ import {
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
@@ -145,8 +148,24 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   // useEnvVars(props.envVars);
 
+
+  const adminCustomizeContainer = new AdminCustomizeContainer();
+
+  const injectableContainers = [
+    // adminAppContainer,
+    // adminImportContainer,
+    // adminHomeContainer,
+    adminCustomizeContainer,
+    // adminUsersContainer,
+    // adminExternalAccountsContainer,
+    // adminNotificationContainer,
+    // adminSlackIntegrationLegacyContainer,
+    // adminMarkDownContainer,
+    // adminUserGroupDetailContainer,
+  ];
+
   return (
-    <AdminLayout title={title} selectedNavOpt={name}>
+    <AdminLayout title={title} selectedNavOpt={name} injectableContainers={injectableContainers}>
       {content.component}
     </AdminLayout>
   );

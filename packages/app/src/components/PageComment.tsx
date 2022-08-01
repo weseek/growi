@@ -2,41 +2,41 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { Nullable } from '@growi/core';
 import { Button } from 'reactstrap';
 
-
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { useCurrentPagePath } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
-
-import Comment from './PageComment/Comment';
+import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import { ReplayComments } from './PageComment/ReplayComments';
 
 type Props = {
-  appContainer: AppContainer,
-  pageId: string,
+  pageId?: Nullable<string>, // TODO: check pageId type
   isReadOnly : boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?:string[],
   hideIfEmpty?: boolean,
 }
 
-
-const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const {
-    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -110,6 +110,16 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
+  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+    // TODO: need page props path
+    <ReplayComments
+      replyList={replyComments}
+      deleteBtnClicked={onClickDeleteButton}
+      rendererOptions={rendererOptions}
+      isReadOnly={isReadOnly}
+    />
+  );
+
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -124,8 +134,7 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-
-  if (rendererOptions == null) {
+  if (rendererOptions == null || currentPagePath == null) {
     return <></>;
   }
 
@@ -223,5 +232,3 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 });
 
 PageComment.displayName = 'PageComment';
-
-export default PageComment;

@@ -30,7 +30,7 @@ import { Page } from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
-import PageComment from '../components/PageComment';
+import { PageComment } from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
 import BookmarkList from '../components/PageList/BookmarkList';

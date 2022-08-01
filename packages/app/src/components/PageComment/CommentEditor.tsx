@@ -268,18 +268,18 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <AnyEditor
+              {/* <AnyEditor
                 ref={editorRef}
                 value={comment}
                 lineNumbers={false}
                 isMobile={isMobile}
-                isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                // isUploadable={isUploadable}
+                // isUploadableFile={isUploadableFile}
                 onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
@@ -298,7 +298,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            { isSlackConfigured
+            {/* { isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -310,7 +310,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
                   />
                 </div>
               )
-            }
+            } */}
             <div className="d-none d-sm-block">
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>

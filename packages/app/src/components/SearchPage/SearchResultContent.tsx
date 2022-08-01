@@ -24,7 +24,7 @@ import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
-import PageComment from '../PageComment';
+import { PageComment } from '../PageComment';
 import { PageContentFooter } from '../PageContentFooter';
 
 
@@ -214,7 +214,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
+        <PageComment pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
         <PageContentFooter
           // createdAt={new Date(pageWithMeta.data.createdAt)}
           // updatedAt={new Date(pageWithMeta.data.updatedAt)}
