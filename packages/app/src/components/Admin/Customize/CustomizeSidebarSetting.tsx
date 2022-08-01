@@ -78,7 +78,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-open"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={(!isSidebarDrawerMode && !isSidebarClosedAtDockMode) === true}
+                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === false}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
@@ -92,7 +92,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-closed"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={(!isSidebarDrawerMode && isSidebarClosedAtDockMode) === true}
+                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === true}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
