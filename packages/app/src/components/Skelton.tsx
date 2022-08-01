@@ -3,19 +3,14 @@ import React from 'react';
 type SkeltonProps = {
   width?: number,
   height?: number,
-  componentClass?: string,
-  componentHeight?: number,
+  additionalClass?: string,
   roundedPill?: boolean,
 }
 
 export const Skelton = (props: SkeltonProps): JSX.Element => {
   const {
-    width, height, componentHeight, componentClass, roundedPill,
+    width, height, additionalClass, roundedPill,
   } = props;
-
-  const componentStyle = {
-    height: componentHeight,
-  };
 
   const skeltonStyle = {
     width,
@@ -23,8 +18,8 @@ export const Skelton = (props: SkeltonProps): JSX.Element => {
   };
 
   return (
-    <div style={componentStyle} className={`d-flex align-items-center ${componentClass}`}>
-      <div style={skeltonStyle} className={`grw-skelton ${roundedPill ? 'rounded-pill' : ''}`}></div>
+    <div style={skeltonStyle} className={`${additionalClass}`}>
+      <div className={`grw-skelton h-100 w-100 ${roundedPill ? 'rounded-pill' : ''}`}></div>
     </div>
   );
 };
