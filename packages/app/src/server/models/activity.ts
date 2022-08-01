@@ -62,7 +62,6 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   target: {
     type: Schema.Types.ObjectId,
-    ref: 'Page',
     refPath: 'targetModel',
   },
   eventModel: {

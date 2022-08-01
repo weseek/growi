@@ -430,7 +430,7 @@ describe('PageService page operations with only public pages', () => {
           createRedirectPage: false,
           updateMetadata: true,
         },
-        nOptions: {
+        activityParameters: {
           ip: '::ffff:127.0.0.1',
           endpoint: '/_api/v3/pages/rename',
           activityId: activityId1,
@@ -1145,10 +1145,10 @@ describe('PageService page operations with only public pages', () => {
 
   describe('Rename', () => {
 
-    const renamePage = async(page, newPagePath, user, options, nOptions?) => {
+    const renamePage = async(page, newPagePath, user, options, activityParameters?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, nOptions);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, activityParameters);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
@@ -1165,7 +1165,7 @@ describe('PageService page operations with only public pages', () => {
     /**
      * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
      */
-    const renameMainOperation = async(page, newPagePath, user, options, nOptions?) => {
+    const renameMainOperation = async(page, newPagePath, user, options, activityParameters?) => {
       // create page operation from target page
       const pageOp = await PageOperation.create({
         actionType: PageActionType.Rename,
@@ -1179,7 +1179,7 @@ describe('PageService page operations with only public pages', () => {
 
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id, nOptions);
+      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id, activityParameters);
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();

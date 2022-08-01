@@ -501,7 +501,7 @@ module.exports = (crowi) => {
       isMoveMode: req.body.isMoveMode,
     };
 
-    const nOptions = {
+    const activityParameters = {
       ip: req.ip,
       endpoint: req.originalUrl,
       activityId: res.locals.activity._id,
@@ -539,7 +539,7 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, nOptions);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, activityParameters);
     }
     catch (err) {
       logger.error(err);

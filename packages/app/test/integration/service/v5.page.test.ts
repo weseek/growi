@@ -489,9 +489,9 @@ describe('Test page service methods', () => {
   });
 
   describe('restart renameOperation', () => {
-    const resumeRenameSubOperation = async(renamePage, pageOp, nOptions?) => {
+    const resumeRenameSubOperation = async(renamePage, pageOp, activityParameters?) => {
       const mockedPathsAndDescendantCountOfAncestors = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors').mockReturnValue(null);
-      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, nOptions);
+      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, activityParameters);
 
       const argsForRenameSubOperation = mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
 
@@ -513,7 +513,7 @@ describe('Test page service methods', () => {
       const path3 = '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
 
       // activity options
-      const nOptions = {
+      const activityParameters = {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/rename',
         activityId: '62e291bc10e0ab61bd691794',
@@ -543,7 +543,7 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation, nOptions);
+      await resumeRenameSubOperation(_page1, _pageOperation, activityParameters);
 
       // page
       const page0 = await Page.findById(_page0._id);
@@ -581,7 +581,7 @@ describe('Test page service methods', () => {
       const path2 = '/resume_rename_8/resume_rename_9/resume_rename_10';
 
       // activity options
-      const nOptions = {
+      const activityParameters = {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/rename',
         activityId: '62e291bc10e0ab61bd691794',
@@ -608,7 +608,7 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation, nOptions);
+      await resumeRenameSubOperation(_page1, _pageOperation, activityParameters);
 
       // page
       const page0 = await Page.findById(_page0._id);

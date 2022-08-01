@@ -859,10 +859,10 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('Rename', () => {
-    const renamePage = async(page, newPagePath, user, options, nOptions?) => {
+    const renamePage = async(page, newPagePath, user, options, activityParameters?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, nOptions);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, activityParameters);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
