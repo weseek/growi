@@ -3,6 +3,8 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { Provider } from 'unstated';
 
+import { AdminInjectableContainers } from '~/interfaces/unstated-container';
+
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -19,7 +21,7 @@ type Props = {
    */
   selectedNavOpt: string
   children?: ReactNode
-  injectableContainers: any
+  injectableContainers: AdminInjectableContainers
 }
 
 
