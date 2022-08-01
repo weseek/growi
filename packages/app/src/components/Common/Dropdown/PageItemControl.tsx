@@ -11,6 +11,7 @@ import {
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
+import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
@@ -136,7 +137,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
     // PathRecovery
     // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-    const shouldShowPathRecoveryButton = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
+    const shouldShowPathRecoveryButton = operationProcessData != null ? shouldRecoverPagePaths(operationProcessData) : false;
 
     contents = (
       <>

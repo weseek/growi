@@ -4,7 +4,6 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import useSWR from 'swr';
 import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
