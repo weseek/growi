@@ -1,15 +1,18 @@
 import React, { useState, useCallback } from 'react';
 
+import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
-import { NextPage } from 'next';
 
+import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
+import GrowiSubNavigationSwitcher from '~/components/Navbar/GrowiSubNavigationSwitcher';
 import TagCloudBox from '~/components/TagCloudBox';
 import TagList from '~/components/TagList';
 import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+
 import { CommonProps } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -36,6 +39,14 @@ const TagPage: NextPage<CommonProps> = () => {
       <Head>
       </Head>
       <BasicLayout title='tags'>
+        <header className="py-0">
+          <GrowiContextualSubNavigation isLinkSharingDisabled={true} />
+        </header>
+        <div className="d-edit-none">
+          <GrowiSubNavigationSwitcher />
+        </div>
+        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div className="grw-container-convertible mb-5 pb-5">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
