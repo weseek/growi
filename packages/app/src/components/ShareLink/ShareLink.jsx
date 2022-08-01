@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 
 import PageContainer from '~/client/services/PageContainer';
