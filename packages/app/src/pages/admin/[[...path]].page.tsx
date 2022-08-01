@@ -12,7 +12,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
 import {
@@ -54,6 +54,7 @@ type Props = CommonProps & {
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isMailerSetup: boolean,
 
   siteUrl: string,
 };
@@ -138,6 +139,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const title = content.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -172,6 +174,15 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+
+function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { mailService } = crowi;
+
+  props.isMailerSetup = mailService.isMailerSetup;
+}
+
 /**
  * for Server Side Translations
  * @param context
@@ -204,6 +215,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user);
   }
 
+  injectServerConfigurations(context, props);
   injectNextI18NextConfigurations(context, props, ['admin']);
 
   props.siteUrl = appService.getSiteUrl();
