@@ -1,5 +1,6 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -35,8 +36,7 @@ $themecolor: #12b105;
 
 //== Light Mode
 //
-html[light],
-html[dark] {
+.theme :global {
   $primary: #460039;
   $light: $gray-100;
 
@@ -90,8 +90,8 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import 'apply-colors';
-  @import 'apply-colors-light';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-light';
 
   // Search Top
   .grw-global-search {
@@ -111,7 +111,7 @@ html[dark] {
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
     }
   }
 }

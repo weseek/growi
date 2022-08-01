@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Subscribe } from 'unstated';
+import { Provider, Subscribe } from 'unstated';
 
 
 /**
@@ -16,6 +16,7 @@ import { Subscribe } from 'unstated';
  *     exampleContainer: <ExampleContainer />,
  *   }
  */
+
 function generateAutoNamedProps(instances) {
   const props = {};
 

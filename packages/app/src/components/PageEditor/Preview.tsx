@@ -19,8 +19,6 @@ type Props = {
   onScroll?: (scrollTop: number) => void,
 }
 
-// type UnstatedProps = Props & { appContainer: AppContainer };
-
 const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
@@ -42,11 +40,6 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
       }}
     >
       <ReactMarkdown {...rendererOptions} >{markdown || ''}</ReactMarkdown>
-      {/* <RevisionBody
-        {...props}
-        html={html}
-        renderMathJaxInRealtime={editorSettings?.renderMathJaxInRealtime}
-      /> */}
     </div>
   );
 
@@ -54,11 +47,4 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
 
 Preview.displayName = 'Preview';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PreviewWrapper = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
-  return <Preview ref={ref} {...props} />;
-});
-
-PreviewWrapper.displayName = 'PreviewWrapper';
-
-export default PreviewWrapper;
+export default Preview;

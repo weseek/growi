@@ -14,7 +14,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useNoCdn, useUploadableFile, useUploadableImage,
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -100,9 +100,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { data: noCdn } = useNoCdn();
-  const { data: uploadableFile } = useUploadableFile();
-  const { data: uploadableImage } = useUploadableImage();
+  const { data: isUploadableFile } = useIsUploadableFile();
+  const { data: isUploadableImage } = useIsUploadableImage();
   const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -412,9 +411,7 @@ const PageEditor = (props: Props): JSX.Element => {
 
   // const config = props.appContainer.getConfig();
   // const isUploadable = config.upload.image || config.upload.file;
-  const isUploadable = uploadableImage || uploadableFile;
-  const isNoCdn = envUtils.toBoolean(noCdn || '');
-  const isUploadableFile = uploadableFile;
+  const isUploadable = isUploadableImage || isUploadableFile;
 
 
   // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
@@ -432,7 +429,6 @@ const PageEditor = (props: Props): JSX.Element => {
         <EditorAny
           ref={editorRef}
           value={markdown}
-          noCdn={isNoCdn}
           isMobile={isMobile}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}

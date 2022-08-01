@@ -2,6 +2,14 @@
 @use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
+%subnav-buttons-height {
+  height: 40px;
+}
+
+%compact-subnav-buttons-height {
+  height: 32px;
+}
+
 // https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
 // workaround to use '&' in global scope
 .grw-subnav {
@@ -36,15 +44,20 @@
       }
     }
 
+    .btn-skelton {
+      @extend %subnav-buttons-height;
+      width: 100%;
+    }
+
     .btn-subscribe {
-      height: 40px;
+      @extend %subnav-buttons-height;
       font-size: 20px;
     }
 
     .btn-like,
     .btn-bookmark,
     .btn-seen-user {
-      height: 40px;
+      @extend %subnav-buttons-height;
       padding-right: 6px;
       padding-left: 8px;
       font-size: 20px;
@@ -135,17 +148,22 @@
         min-height: 90px;
       }
 
+      .btn-skelton {
+        @extend %compact-subnav-buttons-height;
+        width: 100%;
+      }
+
       .btn-like,
       .btn-bookmark,
       .btn-subscribe {
         width: 32px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         padding: 4px;
         font-size: 16px;
       }
       .btn-seen-user {
         width: 48px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         padding: 4px;
         font-size: 16px;
 
@@ -156,7 +174,7 @@
       }
       .btn-page-item-control {
         width: 32px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         font-size: 12px;
       }
     }
@@ -169,31 +187,5 @@
 .grw-subnav-append-shadow-container {
   .grw-subnav {
     box-shadow: 0px 0px 6px 3px rgba(black, 0.15);
-  }
-}
-
-/*
- * Fixed ver
- */
-$easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
-
-.grw-subnav-fixed-container {
-  top: var.$grw-navbar-border-width;
-  z-index: bs.$zindex-sticky - 5;
-}
-
-/*
- * Switching show/hide
- */
-.grw-subnav-switcher {
-  .grw-subnav-fixed-container {
-    transition: transform 150ms $easeInOutCubic;
-  }
-
-  &.grw-subnav-switcher-hidden {
-    .grw-subnav-fixed-container {
-      transition: unset;
-      transform: translateY(-100%);
-    }
   }
 }

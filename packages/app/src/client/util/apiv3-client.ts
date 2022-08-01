@@ -13,7 +13,7 @@ const apiv3Root = '/_api/v3';
 const logger = loggerFactory('growi:apiv3');
 
 
-const apiv3ErrorHandler = (_err) => {
+const apiv3ErrorHandler = (_err: any): any[] => {
   // extract api errors from general 400 err
   const err = _err.response ? _err.response.data.errors : _err;
   const errs = toArrayIfNot(err);

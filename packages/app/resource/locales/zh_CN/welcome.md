@@ -1,7 +1,7 @@
 # :tada: 欢迎来到GROWI
 
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
 
 GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
 公司、大学实验室和俱乐部的知识可以轻松共享，任何人都可以编辑页面。

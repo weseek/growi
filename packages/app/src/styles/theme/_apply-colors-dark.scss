@@ -513,3 +513,10 @@ ul.pagination {
 .grw-modal-head {
   border-color: $border-color-global;
 }
+
+/*
+ * skelton
+ */
+.grw-skelton {
+  background-color: lighten($bgcolor-subnav, 15%);
+}

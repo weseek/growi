@@ -453,9 +453,15 @@ export default class HandsontableModal extends React.PureComponent {
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </button>
             <div role="group" className="btn-group">
-              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
-              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
-              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}>
+                <i className="ti ti-align-left"></i>
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}>
+                <i className="ti ti-align-center"></i>
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}>
+                <i className="ti ti-align-right"></i>
+              </button>
             </div>
             <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div className="mt-4">

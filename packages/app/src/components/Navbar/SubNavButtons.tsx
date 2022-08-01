@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
   IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
@@ -12,7 +14,8 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
+  PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
@@ -202,7 +205,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   );
 };
 
-type SubNavButtonsProps= CommonProps & {
+export type SubNavButtonsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,

@@ -1,9 +1,10 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import raw from 'rehype-raw';
+import sanitize, { defaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-// import toc, { HtmlElementNode } from 'rehype-toc';
+import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
-import footnotes from 'remark-footnotes';
 import gfm from 'remark-gfm';
 
 import { Header } from '~/components/ReactMarkdownComponents/Header';
@@ -214,14 +215,27 @@ export interface ReactMarkdownOptionsGenerator {
 const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   return {
     remarkPlugins: [gfm],
-    rehypePlugins: [slug],
+    rehypePlugins: [
+      slug,
+      raw,
+      [sanitize, {
+        ...defaultSchema,
+        attributes: {
+          ...defaultSchema.attributes,
+          '*': ['className', 'class'],
+        },
+      }],
+    ],
     components: {
       a: NextLink,
     },
   };
 };
 
-export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateViewOptions = (
+    config: RendererConfig,
+    storeTocNode: (node: HtmlElementNode) => void,
+): RendererOptions => {
 
   const options = generateCommonOptions(config);
 
@@ -229,18 +243,35 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
 
   // add remark plugins
   if (remarkPlugins != null) {
-    remarkPlugins.push(footnotes);
     remarkPlugins.push(emoji);
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
   }
 
-  // add rehypePlugins
-  // rehypePlugins.push([toc, {
-  //   headings: ['h1', 'h2', 'h3'],
-  //   customizeTOC: storeTocNode,
-  // }]);
+  // store toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      nav: false,
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: (toc: HtmlElementNode) => {
+        // method for replace <ol> to <ul>
+        const replacer = (children) => {
+          children.forEach((child) => {
+            if (child.type === 'element' && child.tagName === 'ol') {
+              child.tagName = 'ul';
+            }
+            if (child.children) {
+              replacer(child.children);
+            }
+          });
+        };
+        replacer([toc]); // replace <ol> to <ul>
+        storeTocNode(toc); // store tocNode to global state with swr
+        return false; // not show toc in body
+      },
+    }]);
+  }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
@@ -267,6 +298,30 @@ export const generateViewOptions: ReactMarkdownOptionsGenerator = (config: Rende
   return options;
 };
 
+export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
+
+  const options = generateCommonOptions(config);
+
+  const { remarkPlugins, rehypePlugins } = options;
+
+  // add remark plugins
+  if (remarkPlugins != null) {
+    remarkPlugins.push(emoji);
+  }
+  // set toc node
+  if (rehypePlugins != null) {
+    rehypePlugins.push([toc, {
+      headings: ['h1', 'h2', 'h3'],
+      customizeTOC: () => tocNode,
+    }]);
+  }
+  // renderer.rehypePlugins.push([autoLinkHeadings, {
+  //   behavior: 'append',
+  // }]);
+
+  return options;
+};
+
 export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
 
@@ -285,6 +340,15 @@ export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: Re
 
 export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
+  const { remarkPlugins } = options;
+
+  // add remark plugins
+  if (remarkPlugins != null) {
+    remarkPlugins.push(emoji);
+    if (config.isEnabledLinebreaksInComments) {
+      remarkPlugins.push(breaks);
+    }
+  }
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),

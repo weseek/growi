@@ -1,9 +1,11 @@
 import React, { FC } from 'react';
+
 import { DevidedPagePath } from '@growi/core';
-import PagePathHierarchicalLink from './PagePathHierarchicalLink';
-import CopyDropdown from './Page/CopyDropdown';
+import dynamic from 'next/dynamic';
 
 import LinkedPagePath from '../models/linked-page-path';
+
+import PagePathHierarchicalLink from './PagePathHierarchicalLink';
 
 
 type Props = {
@@ -18,6 +20,8 @@ const PagePathNav: FC<Props> = (props: Props) => {
     pageId, pagePath, isSingleLineMode, isCompactMode,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
+
+  const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
   let formerLink;
   let latterLink;
@@ -46,7 +50,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
         { pageId != null && (
           <div className="mx-2">
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
-              <i className="ti-clipboard"></i>
+              <i className="ti ti-clipboard"></i>
             </CopyDropdown>
           </div>
         ) }

@@ -1,7 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
-const mongoose = require('mongoose');
 const fs = require('fs');
+
+const mongoose = require('mongoose');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AttachmentService');
@@ -15,7 +16,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null) {
+  async createAttachment(file, user, pageId = null, attachmentType) {
     const { fileUploadService } = this.crowi;
 
     // check limit
@@ -33,7 +34,7 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
-      attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
+      attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadFile(fileStream, attachment);
       await attachment.save();
     }

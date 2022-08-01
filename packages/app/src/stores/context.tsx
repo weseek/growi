@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -171,6 +172,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isMailerSetup', initialData);
+};
+
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
@@ -223,22 +228,25 @@ export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<Ren
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
-export const useNoCdn = (initialData?: string): SWRResponse<string, any> => {
-  return useStaticSWR('noCdn', initialData);
-};
-
-export const useUploadableImage = (initialData?: any): SWRResponse<any, any> => {
-  return useStaticSWR('uploadableImage', initialData);
-};
-
-export const useUploadableFile = (initialData?: any): SWRResponse<any, any> => {
-  return useStaticSWR('uploadableFile', initialData);
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  return useStaticSWR('currentPageTocNode');
 };
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isBlinkedAtBoot', initialData);
 };
 
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('currentMarkdown', initialData);
+};
+
+export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableImage', initialData);
+};
+
+export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableFile', initialData);
+};
 
 /** **********************************************************
  *                     Computed contexts

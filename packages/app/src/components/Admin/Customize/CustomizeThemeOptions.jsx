@@ -49,9 +49,11 @@ const uniqueTheme = [{
 
 const CustomizeThemeOptions = (props) => {
 
-  const { adminCustomizeContainer } = props;
+  const { adminCustomizeContainer, currentTheme } = props;
+  const { currentLayout } = adminCustomizeContainer.state;
+
   const { t } = useTranslation();
-  const { currentLayout, currentTheme } = adminCustomizeContainer.state;
+
 
   return (
     <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
@@ -64,7 +66,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
             );
@@ -80,7 +82,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
             );
@@ -96,6 +98,8 @@ const CustomizeThemeOptionsWrapper = withUnstatedContainers(CustomizeThemeOption
 
 CustomizeThemeOptions.propTypes = {
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+  onSelected: PropTypes.func,
+  currentTheme: PropTypes.string,
 };
 
 export default CustomizeThemeOptionsWrapper;

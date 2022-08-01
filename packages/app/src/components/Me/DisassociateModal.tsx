@@ -57,7 +57,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
           { t('Cancel') }
         </button>
         <button type="button" className="btn btn-sm btn-danger" onClick={disassociateAccountHandler}>
-          <i className="ti-unlink"></i>
+          <i className="ti ti-unlink"></i>
           { t('Disassociate') }
         </button>
       </ModalFooter>

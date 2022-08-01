@@ -3,11 +3,14 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { Provider } from 'unstated';
 
+import { AdminInjectableContainers } from '~/interfaces/unstated-container';
+
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
 
-// import { injectableContainers } from '~/client/admin';
+import styles from './Admin.module.scss';
+
 
 type Props = {
   title: string
@@ -18,18 +21,19 @@ type Props = {
    */
   selectedNavOpt: string
   children?: ReactNode
+  injectableContainers: AdminInjectableContainers
 }
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt,
+  children, title, selectedNavOpt, injectableContainers,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
-    <RawLayout title={title}>
+    <RawLayout title={title} className={`admin-page ${styles['admin-page']}`}>
       <GrowiNavbar />
 
       <header className="py-0">
@@ -42,8 +46,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
-              <Provider>
+              <Provider inject={injectableContainers}>
                 {children}
               </Provider>
             </div>

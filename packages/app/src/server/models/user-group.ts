@@ -1,10 +1,11 @@
-import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { IUserGroup } from '~/interfaces/user';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface UserGroupDocument extends IUserGroup, Document {}

@@ -17,6 +17,7 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import InfiniteScroll from './InfiniteScroll';
 
+import styles from './RecentChanges.module.scss';
 
 const logger = loggerFactory('growi:History');
 
@@ -72,7 +73,7 @@ const LargePageItem = memo(({ page }: PageItemProps): JSX.Element => {
   });
 
   return (
-    <li className="list-group-item py-3 px-0">
+    <li className={`list-group-item ${styles['list-group-item']} py-3 px-0`}>
       <div className="d-flex w-100">
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
@@ -157,7 +158,7 @@ const RecentChanges = (): JSX.Element => {
           <i className="icon icon-reload"></i>
         </button>
         <div className="d-flex align-items-center">
-          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-1">
+          <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
               id="recentChangesResize"
               className="custom-control-input"
