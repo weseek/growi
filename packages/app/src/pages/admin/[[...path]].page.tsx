@@ -13,7 +13,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser, /* useSearchServiceConfigured, */ useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
 import {
@@ -51,7 +51,7 @@ type Props = CommonProps & {
   yarnVersion: string,
   installedPlugins: any,
   envVars: any,
-
+  isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
@@ -144,6 +144,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
 
+  console.log('iii', props.isAclEnabled);
+  useIsAclEnabled(props.isAclEnabled);
   useSiteUrl(props.siteUrl);
 
   // useEnvVars(props.envVars);
@@ -195,7 +197,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService,
+    appService, searchService, aclService,
   } = crowi;
 
   const { user } = req;
@@ -221,6 +223,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.installedPlugins = pluginUtils.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
+  props.isAclEnabled = aclService.isAclEnabled();
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
