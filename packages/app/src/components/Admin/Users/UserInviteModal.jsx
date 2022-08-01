@@ -8,9 +8,10 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/apiNotification';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -99,9 +100,9 @@ class UserInviteModal extends React.Component {
   }
 
   renderModalFooter() {
-    const { t, appContainer } = this.props;
+    const { t, isMailerSetup } = this.props;
     const { isCreateUserButtonPushed } = this.state;
-    const { isMailerSetup } = appContainer.config;
+    // const { isMailerSetup } = appContainer.config;
 
     return (
       <>
@@ -112,7 +113,7 @@ class UserInviteModal extends React.Component {
             className="custom-control-input"
             name="sendEmail"
             defaultChecked={this.state.sendEmail}
-            disabled={!isMailerSetup}
+            disabled={isMailerSetup === true}
           />
           <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
@@ -282,18 +283,18 @@ class UserInviteModal extends React.Component {
 
 const UserInviteModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <UserInviteModal t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <UserInviteModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AppContainer, AdminUsersContainer]);
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
