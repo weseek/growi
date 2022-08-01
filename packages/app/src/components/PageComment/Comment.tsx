@@ -77,7 +77,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
     }
-    else if (Date.parse(comment.createdAt.toString()) > Date.parse(currentRevisionCreatedAt.toString())) {
+    else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
       className += ' page-comment-newer';
     }
     else {
