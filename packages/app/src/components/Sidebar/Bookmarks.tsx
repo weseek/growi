@@ -30,7 +30,7 @@ const BookmarkItem = (props: Props) => {
     await unbookmark(bookmarkedPage._id);
     onPageOperationSuccess();
   }, [onPageOperationSuccess, bookmarkedPage]);
-  
+
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
       <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
