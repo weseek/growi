@@ -1,3 +1,4 @@
+@use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
 
 .grw-codemirror-editor :global {
@@ -66,4 +67,27 @@
     font-size: #{bs.$line-height-base}rem;
   }
 
+  // overwrite .CodeMirror-hints
+  .CodeMirror-hints {
+    max-height: 30em !important;
+
+    .CodeMirror-hint.crowi-emoji-autocomplete {
+      font-family: var.$font-family-monospace-not-strictly;
+      line-height: 1.6em;
+
+      .img-container {
+        display: inline-block;
+        width: 30px;
+      }
+    }
+
+    // active line
+    .CodeMirror-hint-active.crowi-emoji-autocomplete {
+      .img-container {
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+        font-size: 15px; // adjust to .wiki
+      }
+    }
+  }
 }
