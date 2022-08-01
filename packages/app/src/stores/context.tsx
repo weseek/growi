@@ -233,7 +233,7 @@ export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<Ren
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
-export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, any> => {
+export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isAllReplyShown', initialData);
 };
 
