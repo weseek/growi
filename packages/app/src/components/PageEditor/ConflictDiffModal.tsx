@@ -17,7 +17,7 @@ import { useEditorMode } from '~/stores/ui';
 import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import UncontrolledCodeMirror from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');

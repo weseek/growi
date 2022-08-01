@@ -45,7 +45,7 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
 
 }
 
-export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
+const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
   return (
     <UncontrolledCodeMirrorCore
       {...props}
@@ -55,3 +55,5 @@ export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, Unc
 });
 
 UncontrolledCodeMirror.displayName = 'UncontrolledCodeMirror';
+
+export default UncontrolledCodeMirror;
