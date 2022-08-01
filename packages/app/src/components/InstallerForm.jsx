@@ -1,11 +1,12 @@
 import React from 'react';
 
 import i18next from 'i18next';
-import { useTranslation } from 'next-i18next';
+
+import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-// import { localeMetadatas } from '~/client/util/i18n';
 import { useCsrfToken } from '~/stores/context';
+import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 class InstallerForm extends React.Component {
 
@@ -22,13 +23,13 @@ class InstallerForm extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  // UNSAFE_componentWillMount() {
-  //   const meta = localeMetadatas.find(v => v.id === i18next.language);
-  //   if (meta == null) {
-  //     return this.setState({ selectedLang: localeMetadatas[0] });
-  //   }
-  //   this.setState({ selectedLang: meta });
-  // }
+  UNSAFE_componentWillMount() {
+    const meta = i18nConfig.locales.find(v => v.id === i18next.language);
+    if (meta == null) {
+      return this.setState({ selectedLang: i18nConfig.locales[0] });
+    }
+    this.setState({ selectedLang: meta });
+  }
 
   checkUserName(event) {
     const axios = require('axios').create({
@@ -42,9 +43,9 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
-    this.setState({ selectedLang: meta });
+  changeLanguage(lang) {
+    i18next.changeLanguage(lang);
+    this.setState({ selectedLang: lang });
   }
 
   submitHandler() {
@@ -89,7 +90,7 @@ class InstallerForm extends React.Component {
                   aria-expanded="true"
                 >
                   <span className="float-left">
-                    {this.state.selectedLang.displayName}
+                    { i18n.getFixedT(this.state.selectedLang)('meta.display_name') }
                   </span>
                 </button>
                 <input
@@ -97,21 +98,25 @@ class InstallerForm extends React.Component {
                   value={this.state.selectedLang.id}
                   name="registerForm[app:globalLang]"
                 />
-                {/* <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
+                <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
-                    localeMetadatas.map(meta => (
-                      <button
-                        key={meta.id}
-                        data-testid={`dropdownLanguageMenu-${meta.id}`}
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { this.changeLanguage(meta) }}
-                      >
-                        {meta.displayName}
-                      </button>
-                    ))
+                    i18nConfig.locales.map(locale => {
+                      const fixedT = i18n.getFixedT(locale);
+                      i18n.loadLanguages(i18nConfig.locales);
+
+                      return (
+                        <button
+                          key={locale}
+                          data-testid={`dropdownLanguageMenu-${locale}`}
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => { this.changeLanguage(locale) }}
+                        >
+                          {fixedT('meta.display_name')}
+                        </button>
+                    )})
                   }
-                </div> */}
+                </div>
               </div>
             </div>
 
