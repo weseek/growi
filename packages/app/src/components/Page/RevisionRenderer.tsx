@@ -98,6 +98,8 @@ const RevisionRenderer = (props: Props): JSX.Element => {
     growiRenderer, markdown, pagePath, highlightKeywords,
   } = props;
 
+  const isMathJaxEnabled = !!growiRenderer.growiRendererConfig.env.MATHJAX;
+
   const [html, setHtml] = useState('');
 
   const { data: editorSettings } = useEditorSettings();
@@ -158,6 +160,7 @@ const RevisionRenderer = (props: Props): JSX.Element => {
     <RevisionBody
       html={html}
       additionalClassName={props.additionalClassName}
+      isMathJaxEnabled={isMathJaxEnabled}
       renderMathJaxOnInit
     />
   );
