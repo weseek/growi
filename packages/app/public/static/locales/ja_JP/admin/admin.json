@@ -528,6 +528,7 @@
     }
   },
   "audit_log_management": {
+    "user": "ユーザー",
     "username": "ユーザー名",
     "date": "日付",
     "action": "アクション",
@@ -535,13 +536,18 @@
     "url": "URL",
     "settings": "設定",
     "return": "戻る",
+    "clear": "検索条件のクリア",
+    "reload": "再読み込み",
     "activity_expiration_date": "監査ログの有効期限",
     "activity_expiration_date_explain": "作成された監査ログは、作成時間から環境変数に設定した秒数後に自動的に削除されます",
     "fixed_by_env_var": "環境変数により固定されています <code>{{key}}={{value}}</code>.",
     "available_action_list": "検索 / 表示 可能なアクション一覧",
-    "available_action_list_explain": "監査ログで 検索 / 表示 可能なアクション一覧です",
+    "available_action_list_explain": "現在の設定で検索 / 表示 可能なアクション一覧です",
     "action_list": "アクション一覧",
-    "disable_mode_explain": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。"
+    "disable_mode_explain": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。",
+    "docs_url": {
+      "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
+    }
   },
   "audit_log_action_category": {
     "Page": "ページ",

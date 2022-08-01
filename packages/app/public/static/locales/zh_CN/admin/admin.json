@@ -538,6 +538,7 @@
     }
   },
   "audit_log_management": {
+    "user": "用户",
     "username": "帐号",
     "date": "日期",
     "action": "行动",
@@ -545,13 +546,19 @@
     "url": "URL",
     "settings": "设置",
     "return": "返回",
+    "clear": "清除搜索标准",
+    "reload": "重新加载",
     "activity_expiration_date": "审计日志的到期日",
     "activity_expiration_date_explain": "创建的审计日志会在环境变量中设置的从创建时间算起的秒数后自动删除",
     "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
     "available_action_list": "搜索/查看 所有可用的行动",
-    "available_action_list_explain": "可以在审计日志中 搜索/查看 的行动列表",
+    "available_action_list_explain": "在当前配置中可以搜索/查看的行动列表",
     "action_list": "行动清单",
-    "disable_mode_explain": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。"
+    "disable_mode_explain": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。",
+    "docs_url": {
+      "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
+    }
+
   },
   "audit_log_action_category": {
     "Page": "页面",
