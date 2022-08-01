@@ -47,11 +47,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
 
-  // TODO: Remove when update ReplayComments.jsx
-  if (currentPagePath == null) {
-    return <></>;
-  }
-
   useEffect(() => {
     setMarkdown(comment.comment);
 
@@ -98,6 +93,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const renderText = (comment) => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
+
+  // TODO: Remove when update ReplayComments.jsx
+  if (currentPagePath == null) {
+    return <></>;
+  }
 
   const renderRevisionBody = () => {
     return (
