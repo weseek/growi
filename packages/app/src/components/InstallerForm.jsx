@@ -79,7 +79,7 @@ class InstallerForm extends React.Component {
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={this.submitHandler}>
             <div className="dropdown mb-3">
               <div className="d-flex dropdown-with-icon">
-                <i className="icon-bubbles border-0 rounded-0" />
+                <i className="icon-bubbles border-0 rounded-0" />44
                 <button
                   type="button"
                   className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
@@ -100,7 +100,7 @@ class InstallerForm extends React.Component {
                 />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
-                    i18nConfig.locales.map(locale => {
+                    i18nConfig.locales.map((locale) => {
                       const fixedT = i18n.getFixedT(locale);
                       i18n.loadLanguages(i18nConfig.locales);
 
@@ -114,8 +114,8 @@ class InstallerForm extends React.Component {
                         >
                           {fixedT('meta.display_name')}
                         </button>
-                    )})
-                  }
+                    );})
+                  };
                 </div>
               </div>
             </div>
